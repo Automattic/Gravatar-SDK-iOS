@@ -17,7 +17,7 @@ open class GravatarServiceRemote {
     ///     - failure: A failure block.
     ///
     open func fetchProfile(_ email: String, success: @escaping ((_ profile: RemoteGravatarProfile) -> Void), failure: @escaping ((_ error: Error?) -> Void)) {
-        guard let hash = (email as NSString).md5() else {
+        guard let hash = email.sha256() else {
             assertionFailure()
             return
         }
