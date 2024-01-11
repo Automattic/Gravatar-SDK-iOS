@@ -30,7 +30,6 @@ open class GravatarService {
             onCompletion(profile)
 
         }, failure: { error in
-            DDLogError(error.debugDescription)
             onCompletion(nil)
         })
     }
@@ -40,13 +39,14 @@ open class GravatarService {
     ///
     /// - Parameters:
     ///     - image: The new Gravatar Image, to be uploaded
-    ///     - account: The WPAccount instance for which to upload a new image.
+    ///     - accountEmail: The email address associated with the Gravatar image
+    ///     - accountToken: A Gravatar OAuth token
     ///     - completion: An optional closure to be executed on completion.
     ///
-    open func uploadImage(_ image: UIImage, forAccount account: WPAccount, completion: ((_ error: NSError?) -> ())? = nil) {
+    open func uploadImage(_ image: UIImage, accountEmail: String, accountToken: String, completion: ((_ error: NSError?) -> ())? = nil) {
         guard
-            let accountToken = account.authToken, !accountToken.isEmpty,
-            let accountEmail = account.email, !accountEmail.isEmpty else {
+            !accountToken.isEmpty,
+            !accountEmail.isEmpty else {
                 completion?(GravatarServiceError.invalidAccountInfo as NSError)
                 return
         }
@@ -54,15 +54,12 @@ open class GravatarService {
         let email = accountEmail.trimmingCharacters(in: CharacterSet.whitespaces).lowercased()
 
         let remote = gravatarServiceRemote()
-        remote.uploadImage(image, accountEmail: email, accountToken: accountToken) { (error) in
-            if let theError = error {
-                DDLogError("GravatarService.uploadImage Error: \(theError)")
-            } else {
-                DDLogInfo("GravatarService.uploadImage Success!")
-            }
-
-            completion?(error)
-        }
+        remote.uploadImage(
+            image,
+            accountEmail: email,
+            accountToken: accountToken,
+            completion: completion
+        )
     }
 
     /// Overridden by tests for mocking.
