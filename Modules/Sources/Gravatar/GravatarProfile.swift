@@ -5,6 +5,11 @@
 //  Created by Andrew Montgomery on 1/10/24.
 //
 
+public enum GravatarProfileResult {
+    case success(GravatarProfile)
+    case failure(GravatarServiceError)
+}
+
 public struct GravatarProfile {
 
     var profileID = ""

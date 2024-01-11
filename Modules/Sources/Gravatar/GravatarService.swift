@@ -5,9 +5,20 @@ public enum GravatarServiceError: Int, Error {
     case invalidAccountInfo
 }
 
+extension GravatarServiceError: CustomDebugStringConvertible {
+    public var debugDescription: String {
+        switch self {
+        case .invalidAccountInfo:
+            return "Invalid account info"
+        }
+    }
+}
+
 /// This Service exposes all of the valid operations we can execute, to interact with the Gravatar Service.
 ///
 open class GravatarService {
+
+    public init() {}
 
     /// This method fetches the Gravatar profile for the specified email address.
     ///
@@ -15,7 +26,7 @@ open class GravatarService {
     ///     - email: The email address of the gravatar profile to fetch.
     ///     - completion: A completion block.
     ///
-    open func fetchProfile(email: String, onCompletion: @escaping ((_ profile: GravatarProfile?) -> Void)) {
+    open func fetchProfile(email: String, onCompletion: @escaping ((_ result: GravatarProfileResult) -> Void)) {
         let remote = gravatarServiceRemote()
         remote.fetchProfile(email, success: { remoteProfile in
             var profile = GravatarProfile()
@@ -27,10 +38,10 @@ open class GravatarService {
             profile.thumbnailUrl = remoteProfile.thumbnailUrl
             profile.name = remoteProfile.name
             profile.displayName = remoteProfile.displayName
-            onCompletion(profile)
+            onCompletion(.success(profile))
 
         }, failure: { error in
-            onCompletion(nil)
+            onCompletion(.failure(.invalidAccountInfo))
         })
     }
 
