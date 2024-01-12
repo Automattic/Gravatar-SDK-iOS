@@ -6,12 +6,12 @@ import XCTest
 ///
 class GravatarServiceTests: XCTestCase {
     class GravatarServiceRemoteMock: GravatarServiceRemote {
-        var capturedAccountToken: String = ""
-        var capturedAccountEmail: String = ""
+        var capturedAccountTokens = [String]()
+        var capturedAccountEmails = [String]()
 
         override func uploadImage(_ image: UIImage, accountEmail: String, accountToken: String, completion: ((NSError?) -> ())?) {
-            capturedAccountEmail = accountEmail
-            capturedAccountToken = accountToken
+            capturedAccountEmails.append(accountEmail)
+            capturedAccountTokens.append(accountToken)
 
             if let completion = completion {
                 completion(nil)
@@ -36,7 +36,7 @@ class GravatarServiceTests: XCTestCase {
         let gravatarService = GravatarServiceTester()
         gravatarService.uploadImage(UIImage(), accountEmail: emailAddress, accountToken: token)
 
-        XCTAssertEqual("email@wordpress.com", gravatarService.gravatarServiceRemoteMock!.capturedAccountEmail)
+        XCTAssertEqual(["email@wordpress.com"], gravatarService.gravatarServiceRemoteMock!.capturedAccountEmails)
     }
 
     func testServiceSanitizesEmailAddressTrimsSpaces() {
@@ -46,6 +46,6 @@ class GravatarServiceTests: XCTestCase {
         let gravatarService = GravatarServiceTester()
         gravatarService.uploadImage(UIImage(), accountEmail: emailAddress, accountToken: token)
 
-        XCTAssertEqual("email@wordpress.com", gravatarService.gravatarServiceRemoteMock!.capturedAccountEmail)
+        XCTAssertEqual(["email@wordpress.com"], gravatarService.gravatarServiceRemoteMock!.capturedAccountEmails)
     }
 }
