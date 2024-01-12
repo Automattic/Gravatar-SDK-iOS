@@ -12,13 +12,13 @@ public enum GravatarProfileResult {
 
 public struct GravatarProfile {
 
-    var profileID = ""
-    var hash = ""
-    var requestHash = ""
-    var profileUrl = ""
-    var preferredUsername = ""
-    var thumbnailUrl = ""
-    var name = ""
-    var displayName = ""
+    public internal(set) var profileID = ""
+    public internal(set) var hash = ""
+    public internal(set) var requestHash = ""
+    public internal(set) var profileUrl = ""
+    public internal(set) var preferredUsername = ""
+    public internal(set) var thumbnailUrl = ""
+    public internal(set) var name = ""
+    public internal(set) var displayName = ""
 
 }
