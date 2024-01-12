@@ -48,7 +48,7 @@ class GravatarServiceTests: XCTestCase {
         }
     }
 
-    func testServiceSanitizesEmailAddressCapitals() {
+    func testUploadImageSanitizesEmailAddressCapitals() {
         let token = "1234"
         let emailAddress = "emAil@wordpress.com"
 
@@ -58,7 +58,7 @@ class GravatarServiceTests: XCTestCase {
         XCTAssertEqual(["email@wordpress.com"], gravatarService.gravatarServiceRemoteMock!.capturedAccountEmails)
     }
 
-    func testServiceSanitizesEmailAddressTrimsSpaces() {
+    func testUploadImageSanitizesEmailAddressTrimsSpaces() {
         let token = "1234"
         let emailAddress = " email@wordpress.com "
 
