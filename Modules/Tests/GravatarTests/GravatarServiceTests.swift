@@ -32,9 +32,8 @@ class GravatarServiceTests: XCTestCase {
             )
         }
 
-            if let completion = completion {
-                completion(nil)
-            }
+        func complete(with error: NSError?, at index: Int) {
+            messages[index].capturedImageUploadCompletion?(error)
         }
 
     }
@@ -67,4 +66,49 @@ class GravatarServiceTests: XCTestCase {
 
         XCTAssertEqual(["email@wordpress.com"], gravatarService.gravatarServiceRemoteMock!.capturedAccountEmails)
     }
+
+    func testUploadsImage() {
+        let token = "1234"
+        let emailAddress = "email@wordpress.com"
+        let image = UIImage(systemName: "scribble")!
+
+        let gravatarService = GravatarServiceTester()
+        gravatarService.uploadImage(image, accountEmail: emailAddress, accountToken: token)
+
+        XCTAssertEqual([image], gravatarService.gravatarServiceRemoteMock!.caputuredImageUploads)
+    }
+
+    func testUploadImageCompletesWithError() {
+        let token = "1234"
+        let emailAddress = "email@wordpress.com"
+        let image = UIImage(systemName: "scribble")!
+        let error = NSError(domain: "test", code: 1)
+
+        var capturedErrors = [NSError?]()
+        let gravatarService = GravatarServiceTester()
+        gravatarService.uploadImage(image, accountEmail: emailAddress, accountToken: token, completion: { error in
+            capturedErrors.append(error)
+        })
+
+        gravatarService.gravatarServiceRemoteMock!.complete(with: error, at: 0)
+
+        XCTAssertEqual([error], capturedErrors)
+    }
+
+    func testUploadImageCompletesWithoutError() {
+        let token = "1234"
+        let emailAddress = "email@wordpress.com"
+        let image = UIImage(systemName: "scribble")!
+
+        var capturedErrors = [NSError?]()
+        let gravatarService = GravatarServiceTester()
+        gravatarService.uploadImage(image, accountEmail: emailAddress, accountToken: token, completion: { error in
+            capturedErrors.append(error)
+        })
+
+        gravatarService.gravatarServiceRemoteMock!.complete(with: nil, at: 0)
+
+        XCTAssertEqual([nil], capturedErrors)
+    }
+
 }
