@@ -50,15 +50,22 @@ open class GravatarService {
     ///
     /// - Parameters:
     ///     - image: The new Gravatar Image, to be uploaded
-    ///     - gravatarAccount: A Gravatar account
+    ///     - accountEmail: Email address associated with the image
+    ///     - accountToken: OAuth token
     ///     - completion: An optional closure to be executed on completion.
     ///
-    open func uploadImage(_ image: UIImage, gravatarAccount: GravatarAccount, completion: ((_ error: NSError?) -> ())? = nil) {
+    open func uploadImage(_ image: UIImage, accountEmail: String, accountToken: String, completion: ((_ error: NSError?) -> ())? = nil) {
+        guard !accountEmail.isEmpty,
+              !accountToken.isEmpty else {
+            completion?(GravatarServiceError.invalidAccountInfo as NSError)
+            return
+        }
+
         let remote = gravatarServiceRemote()
         remote.uploadImage(
             image,
-            accountEmail: gravatarAccount.email,
-            accountToken: gravatarAccount.authToken,
+            accountEmail: accountEmail,
+            accountToken: accountToken,
             completion: completion
         )
     }
