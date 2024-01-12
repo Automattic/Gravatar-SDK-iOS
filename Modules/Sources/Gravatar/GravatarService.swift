@@ -28,7 +28,7 @@ open class GravatarService {
     ///
     open func fetchProfile(email: String, onCompletion: @escaping ((_ result: GravatarProfileFetchResult) -> Void)) {
         let remote = gravatarServiceRemote()
-        remote.fetchProfile(email, success: { remoteProfile in
+        remote.fetchProfile(email.normalized(), success: { remoteProfile in
             var profile = GravatarProfile()
             profile.profileID = remoteProfile.profileID
             profile.hash = remoteProfile.hash
@@ -64,7 +64,7 @@ open class GravatarService {
         let remote = gravatarServiceRemote()
         remote.uploadImage(
             image,
-            accountEmail: accountEmail,
+            accountEmail: accountEmail.normalized(),
             accountToken: accountToken,
             completion: completion
         )
@@ -72,7 +72,13 @@ open class GravatarService {
 
     /// Overridden by tests for mocking.
     ///
-    func gravatarServiceRemote() -> GravatarServiceRemote {
+    open func gravatarServiceRemote() -> GravatarServiceRemote {
         return GravatarServiceRemote()
+    }
+}
+
+extension String {
+    func normalized() -> String {
+        self.trimmingCharacters(in: .whitespaces).lowercased()
     }
 }
