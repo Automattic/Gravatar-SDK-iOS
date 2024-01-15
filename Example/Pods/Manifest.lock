@@ -1,0 +1,16 @@
+PODS:
+  - Gravatar (0.1.0)
+
+DEPENDENCIES:
+  - Gravatar (from `../`)
+
+EXTERNAL SOURCES:
+  Gravatar:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  Gravatar: 100f96942ac4bbab50eea2b807353b8989a9644f
+
+PODFILE CHECKSUM: 6adb462290a1582cfb67a1f12bbeac0802eb52bb
+
+COCOAPODS: 1.14.3

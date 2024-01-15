@@ -1,0 +1,22 @@
+{
+  "name": "Gravatar",
+  "version": "0.1.0",
+  "summary": "A short description of Gravatar.",
+  "description": "TODO: Add long description of the pod here.",
+  "homepage": "https://github.com/Pinar Olguc/Gravatar",
+  "license": {
+    "type": "MIT",
+    "file": "LICENSE"
+  },
+  "authors": {
+    "Pinar Olguc": "pinar.olguc@automattic.com"
+  },
+  "source": {
+    "git": "https://github.com/Pinar Olguc/Gravatar.git",
+    "tag": "0.1.0"
+  },
+  "platforms": {
+    "ios": "10.0"
+  },
+  "source_files": "Gravatar/Classes/**/*"
+}
