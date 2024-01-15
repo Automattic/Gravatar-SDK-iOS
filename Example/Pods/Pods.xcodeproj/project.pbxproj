@@ -8,66 +8,67 @@
 
 /* Begin PBXBuildFile section */
 		164CFBF06E07EB73360162ABC491BD01 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */; };
-		18E780077398A3ED05DF437B61DBC1C2 /* Gravatar-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 93CF6381706736DA865F2A9EA7359B12 /* Gravatar-dummy.m */; };
+		18E780077398A3ED05DF437B61DBC1C2 /* Gravatar-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 28E332CC61A1673A12AD51362D87DFE3 /* Gravatar-dummy.m */; };
 		4F49FBB9744270AF548582C69344C44D /* Pods-Gravatar_Tests-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 2AAB0F545919FC6643FCE1D1C31B1219 /* Pods-Gravatar_Tests-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		54C7799442DC87E273A5EA6041E73096 /* Gravatar-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 42C7AB22A78D37082DB045707E55EBE8 /* Gravatar-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		54C7799442DC87E273A5EA6041E73096 /* Gravatar-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 1CAF98A580520A87C119134C0E5F50AD /* Gravatar-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5BF74633A22E8BE2E7BDD480556D3D37 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */; };
 		80E2810DF29195E3B1E40AD8BB29A763 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */; };
 		92E61D20A1050BF97CC92B1069757F51 /* Pods-Gravatar_Tests-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = AEEA55E2E1E11270B7C8705983A545E5 /* Pods-Gravatar_Tests-dummy.m */; };
 		C1CE05738FCD379DEACDA5C1E53AD39E /* Pods-Gravatar_Example-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 6C68EBE1998735B65A438C11C1F0AA08 /* Pods-Gravatar_Example-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		DA4691981F338C5EF97EB4B262427FE8 /* ReplaceMe.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD7ECBA94039CBF4D291454AC0A762EE /* ReplaceMe.swift */; };
+		DA4691981F338C5EF97EB4B262427FE8 /* ReplaceMe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 998D7D9A89B626930039B5B93D0E87AF /* ReplaceMe.swift */; };
 		F15AE2E65533BA3DD2957AF5C115BFB0 /* Pods-Gravatar_Example-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 94C6E18CEC0E6F7EF7CD990546997C82 /* Pods-Gravatar_Example-dummy.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		B0BB415B6D32FA1D88B001CA684AD394 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = F4020ED578C98F787402F2CC168699E6;
-			remoteInfo = "Pods-Gravatar_Example";
-		};
-		B35C1798A9031B748A713F288A22724E /* PBXContainerItemProxy */ = {
+		2AB3615ECA8672910741C611BF3E6EDA /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 44C8E384CA6FC8A34176E281BF28C5A0;
 			remoteInfo = Gravatar;
 		};
+		9BA48D8CA2DBAF7BC02D3C47540D1D8F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F4020ED578C98F787402F2CC168699E6;
+			remoteInfo = "Pods-Gravatar_Example";
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0D95FA2086E393BA4DBC40719A6FD18A /* Gravatar.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = Gravatar.release.xcconfig; sourceTree = "<group>"; };
+		0DCB0BF3F09D78DA1F645EC3152007A1 /* Gravatar.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = Gravatar.modulemap; sourceTree = "<group>"; };
+		1CAF98A580520A87C119134C0E5F50AD /* Gravatar-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Gravatar-umbrella.h"; sourceTree = "<group>"; };
 		244579637B4E743084075BC3818410B2 /* Pods-Gravatar_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Gravatar_Example.release.xcconfig"; sourceTree = "<group>"; };
+		28E332CC61A1673A12AD51362D87DFE3 /* Gravatar-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Gravatar-dummy.m"; sourceTree = "<group>"; };
 		2AAB0F545919FC6643FCE1D1C31B1219 /* Pods-Gravatar_Tests-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-Gravatar_Tests-umbrella.h"; sourceTree = "<group>"; };
 		3836F7EA0856C7B7301681D54B8C174D /* Pods-Gravatar_Tests-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-Gravatar_Tests-acknowledgements.markdown"; sourceTree = "<group>"; };
-		390AEEC7BDF08E9DC3AF1C2850295593 /* Gravatar.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = Gravatar.modulemap; sourceTree = "<group>"; };
-		42C7AB22A78D37082DB045707E55EBE8 /* Gravatar-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Gravatar-umbrella.h"; sourceTree = "<group>"; };
 		47478AB7185517246BE24B9D4A47AEF1 /* Pods-Gravatar_Example */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = "Pods-Gravatar_Example"; path = Pods_Gravatar_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4754EF02285DDA80C6E1C02CBA2BCB8C /* Pods-Gravatar_Example-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-Gravatar_Example-Info.plist"; sourceTree = "<group>"; };
-		4E8A3540DE8446BE6958693A37908E6C /* Gravatar.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; path = Gravatar.podspec; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		4CEEB52E637BDAAA7FAD4C3E107D51FE /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; path = README.md; sourceTree = "<group>"; };
 		57BF1CF8AFAD4ADFC79EBC76AD5D63AE /* Pods-Gravatar_Example-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-Gravatar_Example-acknowledgements.markdown"; sourceTree = "<group>"; };
-		62A7048B6FBF9493E1DFCCC8C06AD624 /* Gravatar-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Gravatar-Info.plist"; sourceTree = "<group>"; };
-		647234476A21F36A9994C2D7A1C5DFC2 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; path = LICENSE; sourceTree = "<group>"; };
+		6BF5A129AF43856817BB0FAD2D5AA1A0 /* Gravatar.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; path = Gravatar.podspec; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		6C5B793BE3B32BA918AC0F5CD22EA64B /* Pods-Gravatar_Tests */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = "Pods-Gravatar_Tests"; path = Pods_Gravatar_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6C68EBE1998735B65A438C11C1F0AA08 /* Pods-Gravatar_Example-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-Gravatar_Example-umbrella.h"; sourceTree = "<group>"; };
-		708C35F809DF82D2451A561CC9BA38EB /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; path = README.md; sourceTree = "<group>"; };
 		73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS14.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		7B9F211039B5FB2C6D93F72F77E387A8 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; path = LICENSE; sourceTree = "<group>"; };
+		82D2C3853AA16A5108D0922FECCE80D7 /* Gravatar-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Gravatar-Info.plist"; sourceTree = "<group>"; };
 		906309A1D24856A7475740C63953847C /* Pods-Gravatar_Example-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-Gravatar_Example-acknowledgements.plist"; sourceTree = "<group>"; };
-		93CF6381706736DA865F2A9EA7359B12 /* Gravatar-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Gravatar-dummy.m"; sourceTree = "<group>"; };
 		94C6E18CEC0E6F7EF7CD990546997C82 /* Pods-Gravatar_Example-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-Gravatar_Example-dummy.m"; sourceTree = "<group>"; };
+		998D7D9A89B626930039B5B93D0E87AF /* ReplaceMe.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ReplaceMe.swift; path = Gravatar/Classes/ReplaceMe.swift; sourceTree = "<group>"; };
 		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		A5990D36550884FCB10FF4FF6C4EA12C /* Pods-Gravatar_Example.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-Gravatar_Example.modulemap"; sourceTree = "<group>"; };
 		A7E8EBB2F2920E8B940B78D1E4659CB7 /* Pods-Gravatar_Tests-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-Gravatar_Tests-acknowledgements.plist"; sourceTree = "<group>"; };
+		AA9E857CC2A2F9829049A3F66C40D144 /* Gravatar.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = Gravatar.debug.xcconfig; sourceTree = "<group>"; };
 		AEEA55E2E1E11270B7C8705983A545E5 /* Pods-Gravatar_Tests-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-Gravatar_Tests-dummy.m"; sourceTree = "<group>"; };
 		AEF575932189C5B5255EA5FAA2BD59F2 /* Pods-Gravatar_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Gravatar_Example.debug.xcconfig"; sourceTree = "<group>"; };
-		C0963F0E0BD2BC26D089856DF3F1FA07 /* Gravatar.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = Gravatar.release.xcconfig; sourceTree = "<group>"; };
+		C2508ED2656355EC0E0EBA2A534FC754 /* Gravatar-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Gravatar-prefix.pch"; sourceTree = "<group>"; };
 		C35C00E9F4D3431668A00372C11066A2 /* Pods-Gravatar_Example-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-Gravatar_Example-frameworks.sh"; sourceTree = "<group>"; };
 		C69F461971F055A06240FFF9345F0E0C /* Pods-Gravatar_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Gravatar_Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		C6E65D1F55C4FBB7947FD3D8E1C1A2BD /* Pods-Gravatar_Tests-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-Gravatar_Tests-Info.plist"; sourceTree = "<group>"; };
-		C8BF27DAF963BD00A8D09760FBC96CFB /* Gravatar.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = Gravatar.debug.xcconfig; sourceTree = "<group>"; };
-		CD7ECBA94039CBF4D291454AC0A762EE /* ReplaceMe.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ReplaceMe.swift; path = Gravatar/Classes/ReplaceMe.swift; sourceTree = "<group>"; };
 		D0EDDF2FB751C5CCDD219C146E062943 /* Pods-Gravatar_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Gravatar_Tests.release.xcconfig"; sourceTree = "<group>"; };
-		D5AB78875118070EFD93184269FB43FB /* Gravatar-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Gravatar-prefix.pch"; sourceTree = "<group>"; };
+		DB1238569EF33D92754EB6D6D03763ED /* ruby.md */ = {isa = PBXFileReference; includeInIndex = 1; name = ruby.md; path = docs/ruby.md; sourceTree = "<group>"; };
 		F2D15D5A1B267DA2E5FDE821B0C84F43 /* Pods-Gravatar_Tests.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-Gravatar_Tests.modulemap"; sourceTree = "<group>"; };
 		FDE1BBA032C1FFFEB35042A879767D60 /* Gravatar */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Gravatar; path = Gravatar.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -100,17 +101,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		06A9F49AC1FC28A6D7D3FAF30F57B808 /* Gravatar */ = {
-			isa = PBXGroup;
-			children = (
-				CD7ECBA94039CBF4D291454AC0A762EE /* ReplaceMe.swift */,
-				1495757823A859D98B033493F5D456F4 /* Pod */,
-				580084C7E5C127DE99AEEAC39061DA0B /* Support Files */,
-			);
-			name = Gravatar;
-			path = ../..;
-			sourceTree = "<group>";
-		};
 		0917C9E81A5A0BE1BE17C0466919BAB3 /* Pods-Gravatar_Example */ = {
 			isa = PBXGroup;
 			children = (
@@ -128,22 +118,23 @@
 			path = "Target Support Files/Pods-Gravatar_Example";
 			sourceTree = "<group>";
 		};
-		1495757823A859D98B033493F5D456F4 /* Pod */ = {
-			isa = PBXGroup;
-			children = (
-				4E8A3540DE8446BE6958693A37908E6C /* Gravatar.podspec */,
-				647234476A21F36A9994C2D7A1C5DFC2 /* LICENSE */,
-				708C35F809DF82D2451A561CC9BA38EB /* README.md */,
-			);
-			name = Pod;
-			sourceTree = "<group>";
-		};
 		19BC4FED0D6500FF8D8CC8AE8C08D806 /* Development Pods */ = {
 			isa = PBXGroup;
 			children = (
-				06A9F49AC1FC28A6D7D3FAF30F57B808 /* Gravatar */,
+				365F75822A6B85E21FC9A4BB45AD68E3 /* Gravatar */,
 			);
 			name = "Development Pods";
+			sourceTree = "<group>";
+		};
+		365F75822A6B85E21FC9A4BB45AD68E3 /* Gravatar */ = {
+			isa = PBXGroup;
+			children = (
+				998D7D9A89B626930039B5B93D0E87AF /* ReplaceMe.swift */,
+				6B9ECE7B7058FBF54A525EDFFF213C58 /* Pod */,
+				E391149AEE516701EEA1AFBAD776E914 /* Support Files */,
+			);
+			name = Gravatar;
+			path = ../..;
 			sourceTree = "<group>";
 		};
 		578452D2E740E91742655AC8F1636D1F /* iOS */ = {
@@ -154,19 +145,15 @@
 			name = iOS;
 			sourceTree = "<group>";
 		};
-		580084C7E5C127DE99AEEAC39061DA0B /* Support Files */ = {
+		6B9ECE7B7058FBF54A525EDFFF213C58 /* Pod */ = {
 			isa = PBXGroup;
 			children = (
-				390AEEC7BDF08E9DC3AF1C2850295593 /* Gravatar.modulemap */,
-				93CF6381706736DA865F2A9EA7359B12 /* Gravatar-dummy.m */,
-				62A7048B6FBF9493E1DFCCC8C06AD624 /* Gravatar-Info.plist */,
-				D5AB78875118070EFD93184269FB43FB /* Gravatar-prefix.pch */,
-				42C7AB22A78D37082DB045707E55EBE8 /* Gravatar-umbrella.h */,
-				C8BF27DAF963BD00A8D09760FBC96CFB /* Gravatar.debug.xcconfig */,
-				C0963F0E0BD2BC26D089856DF3F1FA07 /* Gravatar.release.xcconfig */,
+				6BF5A129AF43856817BB0FAD2D5AA1A0 /* Gravatar.podspec */,
+				7B9F211039B5FB2C6D93F72F77E387A8 /* LICENSE */,
+				4CEEB52E637BDAAA7FAD4C3E107D51FE /* README.md */,
+				DB1238569EF33D92754EB6D6D03763ED /* ruby.md */,
 			);
-			name = "Support Files";
-			path = "Example/Pods/Target Support Files/Gravatar";
+			name = Pod;
 			sourceTree = "<group>";
 		};
 		7625B51A53AD3805DC736A4550A3F312 /* Targets Support Files */ = {
@@ -221,6 +208,21 @@
 			);
 			name = "Pods-Gravatar_Tests";
 			path = "Target Support Files/Pods-Gravatar_Tests";
+			sourceTree = "<group>";
+		};
+		E391149AEE516701EEA1AFBAD776E914 /* Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				0DCB0BF3F09D78DA1F645EC3152007A1 /* Gravatar.modulemap */,
+				28E332CC61A1673A12AD51362D87DFE3 /* Gravatar-dummy.m */,
+				82D2C3853AA16A5108D0922FECCE80D7 /* Gravatar-Info.plist */,
+				C2508ED2656355EC0E0EBA2A534FC754 /* Gravatar-prefix.pch */,
+				1CAF98A580520A87C119134C0E5F50AD /* Gravatar-umbrella.h */,
+				AA9E857CC2A2F9829049A3F66C40D144 /* Gravatar.debug.xcconfig */,
+				0D95FA2086E393BA4DBC40719A6FD18A /* Gravatar.release.xcconfig */,
+			);
+			name = "Support Files";
+			path = "Example/Pods/Target Support Files/Gravatar";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -283,7 +285,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				3E5134DF04DA39AD0C5DB9B787294166 /* PBXTargetDependency */,
+				993EC5369D58D544ADD9086C65955151 /* PBXTargetDependency */,
 			);
 			name = "Pods-Gravatar_Tests";
 			productName = Pods_Gravatar_Tests;
@@ -302,7 +304,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				21A7B51EEF3F78DFDAE52EC26E0A9C42 /* PBXTargetDependency */,
+				C9D6B5A50D694C0F8F9DA0D47EB27990 /* PBXTargetDependency */,
 			);
 			name = "Pods-Gravatar_Example";
 			productName = Pods_Gravatar_Example;
@@ -391,24 +393,24 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		21A7B51EEF3F78DFDAE52EC26E0A9C42 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = Gravatar;
-			target = 44C8E384CA6FC8A34176E281BF28C5A0 /* Gravatar */;
-			targetProxy = B35C1798A9031B748A713F288A22724E /* PBXContainerItemProxy */;
-		};
-		3E5134DF04DA39AD0C5DB9B787294166 /* PBXTargetDependency */ = {
+		993EC5369D58D544ADD9086C65955151 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = "Pods-Gravatar_Example";
 			target = F4020ED578C98F787402F2CC168699E6 /* Pods-Gravatar_Example */;
-			targetProxy = B0BB415B6D32FA1D88B001CA684AD394 /* PBXContainerItemProxy */;
+			targetProxy = 9BA48D8CA2DBAF7BC02D3C47540D1D8F /* PBXContainerItemProxy */;
+		};
+		C9D6B5A50D694C0F8F9DA0D47EB27990 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = Gravatar;
+			target = 44C8E384CA6FC8A34176E281BF28C5A0 /* Gravatar */;
+			targetProxy = 2AB3615ECA8672910741C611BF3E6EDA /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		36DA7558EF8D3661FEFD02242C5211A8 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C8BF27DAF963BD00A8D09760FBC96CFB /* Gravatar.debug.xcconfig */;
+			baseConfigurationReference = AA9E857CC2A2F9829049A3F66C40D144 /* Gravatar.debug.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
@@ -439,7 +441,7 @@
 		};
 		513E4114A8264A9C1F1FFB23F66933AD /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C0963F0E0BD2BC26D089856DF3F1FA07 /* Gravatar.release.xcconfig */;
+			baseConfigurationReference = 0D95FA2086E393BA4DBC40719A6FD18A /* Gravatar.release.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
