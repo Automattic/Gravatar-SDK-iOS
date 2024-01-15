@@ -28,7 +28,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		11845B315957D165BC1D5A89 /* Gravatar.podspec */ = {isa = PBXFileReference; includeInIndex = 1; name = Gravatar.podspec; path = ../Gravatar.podspec; sourceTree = "<group>"; };
+		11845B315957D165BC1D5A89 /* Gravatar.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = Gravatar.podspec; path = ../Gravatar.podspec; sourceTree = "<group>"; };
 		15B3209F6CC121D6C3BFC5EA /* Pods-Gravatar_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Gravatar_Tests.debug.xcconfig"; path = "Target Support Files/Pods-Gravatar_Tests/Pods-Gravatar_Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		552EEE15024603A5D280B8BE /* Pods-Gravatar_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Gravatar_Tests.release.xcconfig"; path = "Target Support Files/Pods-Gravatar_Tests/Pods-Gravatar_Tests.release.xcconfig"; sourceTree = "<group>"; };
 		597A995EF59B2FB2FAEC348F /* Pods-Gravatar_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Gravatar_Example.debug.xcconfig"; path = "Target Support Files/Pods-Gravatar_Example/Pods-Gravatar_Example.debug.xcconfig"; sourceTree = "<group>"; };
@@ -45,8 +45,8 @@
 		89FA80F971A598C038E3C8F0 /* Pods_Gravatar_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Gravatar_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9E394A0C65BC9616D93C1A3F /* Pods-Gravatar_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Gravatar_Example.release.xcconfig"; path = "Target Support Files/Pods-Gravatar_Example/Pods-Gravatar_Example.release.xcconfig"; sourceTree = "<group>"; };
 		B2945F0C4E7124A724903E40 /* Pods_Gravatar_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Gravatar_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		CCE33B964DE890EA497BBBFB /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; name = README.md; path = ../README.md; sourceTree = "<group>"; };
-		EE0A4FBEFFD9639F10890826 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
+		CCE33B964DE890EA497BBBFB /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
+		EE0A4FBEFFD9639F10890826 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -77,7 +77,6 @@
 				15B3209F6CC121D6C3BFC5EA /* Pods-Gravatar_Tests.debug.xcconfig */,
 				552EEE15024603A5D280B8BE /* Pods-Gravatar_Tests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -227,6 +226,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -419,7 +419,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -465,7 +465,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
