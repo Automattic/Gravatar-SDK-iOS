@@ -44,12 +44,10 @@
 		28E332CC61A1673A12AD51362D87DFE3 /* Gravatar-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Gravatar-dummy.m"; sourceTree = "<group>"; };
 		2AAB0F545919FC6643FCE1D1C31B1219 /* Pods-Gravatar_Tests-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-Gravatar_Tests-umbrella.h"; sourceTree = "<group>"; };
 		3836F7EA0856C7B7301681D54B8C174D /* Pods-Gravatar_Tests-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-Gravatar_Tests-acknowledgements.markdown"; sourceTree = "<group>"; };
-		47478AB7185517246BE24B9D4A47AEF1 /* Pods-Gravatar_Example */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = "Pods-Gravatar_Example"; path = Pods_Gravatar_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4754EF02285DDA80C6E1C02CBA2BCB8C /* Pods-Gravatar_Example-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-Gravatar_Example-Info.plist"; sourceTree = "<group>"; };
 		4CEEB52E637BDAAA7FAD4C3E107D51FE /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; path = README.md; sourceTree = "<group>"; };
 		57BF1CF8AFAD4ADFC79EBC76AD5D63AE /* Pods-Gravatar_Example-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-Gravatar_Example-acknowledgements.markdown"; sourceTree = "<group>"; };
 		6BF5A129AF43856817BB0FAD2D5AA1A0 /* Gravatar.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; path = Gravatar.podspec; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
-		6C5B793BE3B32BA918AC0F5CD22EA64B /* Pods-Gravatar_Tests */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = "Pods-Gravatar_Tests"; path = Pods_Gravatar_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6C68EBE1998735B65A438C11C1F0AA08 /* Pods-Gravatar_Example-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-Gravatar_Example-umbrella.h"; sourceTree = "<group>"; };
 		73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS14.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		7B9F211039B5FB2C6D93F72F77E387A8 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; path = LICENSE; sourceTree = "<group>"; };
@@ -169,8 +167,6 @@
 			isa = PBXGroup;
 			children = (
 				FDE1BBA032C1FFFEB35042A879767D60 /* Gravatar */,
-				47478AB7185517246BE24B9D4A47AEF1 /* Pods-Gravatar_Example */,
-				6C5B793BE3B32BA918AC0F5CD22EA64B /* Pods-Gravatar_Tests */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -289,7 +285,6 @@
 			);
 			name = "Pods-Gravatar_Tests";
 			productName = Pods_Gravatar_Tests;
-			productReference = 6C5B793BE3B32BA918AC0F5CD22EA64B /* Pods-Gravatar_Tests */;
 			productType = "com.apple.product-type.framework";
 		};
 		F4020ED578C98F787402F2CC168699E6 /* Pods-Gravatar_Example */ = {
@@ -308,7 +303,6 @@
 			);
 			name = "Pods-Gravatar_Example";
 			productName = Pods_Gravatar_Example;
-			productReference = 47478AB7185517246BE24B9D4A47AEF1 /* Pods-Gravatar_Example */;
 			productType = "com.apple.product-type.framework";
 		};
 /* End PBXNativeTarget section */
@@ -320,7 +314,7 @@
 				LastSwiftUpdateCheck = 1500;
 				LastUpgradeCheck = 1500;
 			};
-			buildConfigurationList = 4821239608C13582E20E6DA73FD5F1F9 /* Build configuration list for PBXProject "Pods" */;
+			buildConfigurationList = 4821239608C13582E20E6DA73FD5F1F9 /* Build configuration list for PBXProject "_Pods" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -754,7 +748,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		4821239608C13582E20E6DA73FD5F1F9 /* Build configuration list for PBXProject "Pods" */ = {
+		4821239608C13582E20E6DA73FD5F1F9 /* Build configuration list for PBXProject "_Pods" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				D299434AB35E7FD6F7921C8EF24742FF /* Debug */,
