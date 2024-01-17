@@ -1,0 +1,26 @@
+{
+  "configurations" : [
+    {
+      "id" : "9AA3673F-36D9-47E3-A357-C0F11B32583F",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : false,
+    "testExecutionOrdering" : "random"
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:Gravatar.xcodeproj",
+        "identifier" : "49EE9D2D2B58475B00016FE5",
+        "name" : "GravatarTests"
+      }
+    }
+  ],
+  "version" : 1
+}
