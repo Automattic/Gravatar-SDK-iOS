@@ -13,7 +13,23 @@
 		49EE9DF82B58681500016FE5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 49EE9DF62B58681500016FE5 /* Main.storyboard */; };
 		49EE9DFA2B58681500016FE5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 49EE9DF92B58681500016FE5 /* Assets.xcassets */; };
 		49EE9DFD2B58681500016FE5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 49EE9DFB2B58681500016FE5 /* LaunchScreen.storyboard */; };
+		49EE9E062B58693A00016FE5 /* Gravatar.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 49EE9E052B58693A00016FE5 /* Gravatar.framework */; };
+		49EE9E072B58693A00016FE5 /* Gravatar.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 49EE9E052B58693A00016FE5 /* Gravatar.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		49EE9E082B58693A00016FE5 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				49EE9E072B58693A00016FE5 /* Gravatar.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		49EE9DED2B58681500016FE5 /* Gravatar-Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Gravatar-Demo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -24,6 +40,7 @@
 		49EE9DF92B58681500016FE5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		49EE9DFC2B58681500016FE5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		49EE9DFE2B58681500016FE5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		49EE9E052B58693A00016FE5 /* Gravatar.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Gravatar.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -31,6 +48,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				49EE9E062B58693A00016FE5 /* Gravatar.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -42,6 +60,7 @@
 			children = (
 				49EE9DEF2B58681500016FE5 /* Demo */,
 				49EE9DEE2B58681500016FE5 /* Products */,
+				49EE9E042B58693A00016FE5 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -67,6 +86,14 @@
 			path = Demo;
 			sourceTree = "<group>";
 		};
+		49EE9E042B58693A00016FE5 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				49EE9E052B58693A00016FE5 /* Gravatar.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -77,6 +104,7 @@
 				49EE9DE92B58681500016FE5 /* Sources */,
 				49EE9DEA2B58681500016FE5 /* Frameworks */,
 				49EE9DEB2B58681500016FE5 /* Resources */,
+				49EE9E082B58693A00016FE5 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
