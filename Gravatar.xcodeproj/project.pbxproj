@@ -58,8 +58,8 @@
 			children = (
 				49EE9D762B58539C00016FE5 /* Sources */,
 				49EE9D812B5853C400016FE5 /* Tests */,
-				49EE9D742B58539000016FE5 /* Gravatar.docc */,
 				49EE9D252B58475B00016FE5 /* Products */,
+				49EE9D742B58539000016FE5 /* Gravatar.docc */,
 			);
 			sourceTree = "<group>";
 		};
