@@ -16,7 +16,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		49EE9DED2B58681500016FE5 /* Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Demo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		49EE9DED2B58681500016FE5 /* Gravatar-Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Gravatar-Demo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		49EE9DF02B58681500016FE5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		49EE9DF22B58681500016FE5 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		49EE9DF42B58681500016FE5 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -48,7 +48,7 @@
 		49EE9DEE2B58681500016FE5 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				49EE9DED2B58681500016FE5 /* Demo.app */,
+				49EE9DED2B58681500016FE5 /* Gravatar-Demo.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -70,9 +70,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		49EE9DEC2B58681500016FE5 /* Demo */ = {
+		49EE9DEC2B58681500016FE5 /* Gravatar-Demo */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 49EE9E012B58681500016FE5 /* Build configuration list for PBXNativeTarget "Demo" */;
+			buildConfigurationList = 49EE9E012B58681500016FE5 /* Build configuration list for PBXNativeTarget "Gravatar-Demo" */;
 			buildPhases = (
 				49EE9DE92B58681500016FE5 /* Sources */,
 				49EE9DEA2B58681500016FE5 /* Frameworks */,
@@ -82,9 +82,9 @@
 			);
 			dependencies = (
 			);
-			name = Demo;
+			name = "Gravatar-Demo";
 			productName = Demo;
-			productReference = 49EE9DED2B58681500016FE5 /* Demo.app */;
+			productReference = 49EE9DED2B58681500016FE5 /* Gravatar-Demo.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -102,7 +102,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 49EE9DE82B58681500016FE5 /* Build configuration list for PBXProject "Demo" */;
+			buildConfigurationList = 49EE9DE82B58681500016FE5 /* Build configuration list for PBXProject "Gravatar-Demo" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -115,7 +115,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				49EE9DEC2B58681500016FE5 /* Demo */,
+				49EE9DEC2B58681500016FE5 /* Gravatar-Demo */,
 			);
 		};
 /* End PBXProject section */
@@ -342,7 +342,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		49EE9DE82B58681500016FE5 /* Build configuration list for PBXProject "Demo" */ = {
+		49EE9DE82B58681500016FE5 /* Build configuration list for PBXProject "Gravatar-Demo" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				49EE9DFF2B58681500016FE5 /* Debug */,
@@ -351,7 +351,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		49EE9E012B58681500016FE5 /* Build configuration list for PBXNativeTarget "Demo" */ = {
+		49EE9E012B58681500016FE5 /* Build configuration list for PBXNativeTarget "Gravatar-Demo" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				49EE9E022B58681500016FE5 /* Debug */,
