@@ -28,7 +28,6 @@
 		49EE9D242B58475B00016FE5 /* Gravatar.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Gravatar.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		49EE9D2E2B58475B00016FE5 /* GravatarTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GravatarTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		49EE9D742B58539000016FE5 /* Gravatar.docc */ = {isa = PBXFileReference; lastKnownFileType = folder.documentationcatalog; path = Gravatar.docc; sourceTree = "<group>"; };
-		49EE9D792B58539C00016FE5 /* .gitkeep */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitkeep; sourceTree = "<group>"; };
 		49EE9D7B2B58539C00016FE5 /* Gravatar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Gravatar.h; sourceTree = "<group>"; };
 		49EE9D7C2B58539C00016FE5 /* ReplaceMe.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReplaceMe.swift; sourceTree = "<group>"; };
 		49EE9D832B5853C400016FE5 /* GravatarTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GravatarTests.swift; sourceTree = "<group>"; };
@@ -84,9 +83,9 @@
 		49EE9D772B58539C00016FE5 /* Gravatar */ = {
 			isa = PBXGroup;
 			children = (
-				49EE9D782B58539C00016FE5 /* Resources */,
-				49EE9D7B2B58539C00016FE5 /* Gravatar.h */,
 				49EE9D7C2B58539C00016FE5 /* ReplaceMe.swift */,
+				49EE9D7B2B58539C00016FE5 /* Gravatar.h */,
+				49EE9D782B58539C00016FE5 /* Resources */,
 			);
 			path = Gravatar;
 			sourceTree = "<group>";
@@ -94,7 +93,6 @@
 		49EE9D782B58539C00016FE5 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				49EE9D792B58539C00016FE5 /* .gitkeep */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
