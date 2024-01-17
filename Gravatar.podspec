@@ -1,42 +1,39 @@
-#
-# Be sure to run `pod lib lint Gravatar.podspec' to ensure this is a
-# valid spec before submitting.
-#
-# Any lines starting with a # are optional, but their use is encouraged
-# To learn more about a Podspec see https://guides.cocoapods.org/syntax/podspec.html
-#
-
 Pod::Spec.new do |s|
   s.name             = 'Gravatar'
   s.version          = '0.1.0'
-  s.summary          = 'A short description of Gravatar.'
-
-# This description is used to generate tags and improve search results.
-#   * Think: What does it do? Why did you write it? What is the focus?
-#   * Try to keep it short, snappy and to the point.
-#   * Write the description between the DESC delimiters below.
-#   * Finally, don't worry about the indent, CocoaPods strips it!
+  s.summary          = 'Gravatar SDK'
 
   s.description      = <<-DESC
-TODO: Add long description of the pod here.
+Gravatar SDK provides a convient wrapper for accessing the Gravatar API
                        DESC
 
-  s.homepage         = 'https://github.com/Pinar Olguc/Gravatar'
-  # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
+  s.homepage         = 'https://gravatar.com'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
-  s.author           = { 'Pinar Olguc' => 'pinar.olguc@automattic.com' }
-  s.source           = { :git => 'https://github.com/Pinar Olguc/Gravatar.git', :tag => s.version.to_s }
-  # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
+  s.authors           = 'Automattic, Inc.'
+  s.source           = {
+      :git => 'https://github.com/gravatar/Gravatar-SDK-iOS.git',
+      :tag => 'CocoaPods-' + s.version.to_s
+  }
 
-  s.ios.deployment_target = '10.0'
+  s.swift_version     = '5.9'
 
-  s.source_files = 'Gravatar/Classes/**/*'
-  
-  # s.resource_bundles = {
-  #   'Gravatar' => ['Gravatar/Assets/*.png']
-  # }
+  ios_deployment_target = '12.0'
+  osx_deployment_target = '11.0'
 
-  # s.public_header_files = 'Pod/Classes/**/*.h'
-  # s.frameworks = 'UIKit', 'MapKit'
-  # s.dependency 'AFNetworking', '~> 2.3'
+  s.ios.deployment_target = ios_deployment_target
+  s.osx.deployment_target = osx_deployment_target
+
+  s.source_files = 'Sources/**/*.swift'
+
+  s.test_spec 'Tests' do |swift_unit_tests|
+      swift_unit_tests.platforms = {
+          :ios => ios_deployment_target,
+          :osx => osx_deployment_target
+      }
+      swift_unit_tests.source_files = [
+          'Tests/**/*.swift'
+      ]
+      swift_unit_tests.requires_app_host = false
+  end
 end
+
