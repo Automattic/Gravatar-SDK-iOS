@@ -4,4 +4,7 @@
    <FileRef
       location = "container:Gravatar.xcodeproj">
    </FileRef>
+   <FileRef
+      location = "group:Demo/Demo/Gravatar-Demo.xcodeproj">
+   </FileRef>
 </Workspace>
