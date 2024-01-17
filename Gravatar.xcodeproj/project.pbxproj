@@ -7,10 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		49EE9D292B58475B00016FE5 /* Gravatar.docc in Sources */ = {isa = PBXBuildFile; fileRef = 49EE9D282B58475B00016FE5 /* Gravatar.docc */; };
 		49EE9D2F2B58475B00016FE5 /* Gravatar.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 49EE9D242B58475B00016FE5 /* Gravatar.framework */; };
-		49EE9D342B58475B00016FE5 /* GravatarTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49EE9D332B58475B00016FE5 /* GravatarTests.swift */; };
-		49EE9D352B58475B00016FE5 /* Gravatar.h in Headers */ = {isa = PBXBuildFile; fileRef = 49EE9D272B58475B00016FE5 /* Gravatar.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		49EE9D752B58539000016FE5 /* Gravatar.docc in Sources */ = {isa = PBXBuildFile; fileRef = 49EE9D742B58539000016FE5 /* Gravatar.docc */; };
+		49EE9D7F2B58539C00016FE5 /* Gravatar.h in Headers */ = {isa = PBXBuildFile; fileRef = 49EE9D7B2B58539C00016FE5 /* Gravatar.h */; };
+		49EE9D802B58539C00016FE5 /* ReplaceMe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49EE9D7C2B58539C00016FE5 /* ReplaceMe.swift */; };
+		49EE9D842B5853C400016FE5 /* GravatarTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49EE9D832B5853C400016FE5 /* GravatarTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -25,10 +26,12 @@
 
 /* Begin PBXFileReference section */
 		49EE9D242B58475B00016FE5 /* Gravatar.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Gravatar.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		49EE9D272B58475B00016FE5 /* Gravatar.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Gravatar.h; sourceTree = "<group>"; };
-		49EE9D282B58475B00016FE5 /* Gravatar.docc */ = {isa = PBXFileReference; lastKnownFileType = folder.documentationcatalog; path = Gravatar.docc; sourceTree = "<group>"; };
 		49EE9D2E2B58475B00016FE5 /* GravatarTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GravatarTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		49EE9D332B58475B00016FE5 /* GravatarTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GravatarTests.swift; sourceTree = "<group>"; };
+		49EE9D742B58539000016FE5 /* Gravatar.docc */ = {isa = PBXFileReference; lastKnownFileType = folder.documentationcatalog; path = Gravatar.docc; sourceTree = "<group>"; };
+		49EE9D792B58539C00016FE5 /* .gitkeep */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitkeep; sourceTree = "<group>"; };
+		49EE9D7B2B58539C00016FE5 /* Gravatar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Gravatar.h; sourceTree = "<group>"; };
+		49EE9D7C2B58539C00016FE5 /* ReplaceMe.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReplaceMe.swift; sourceTree = "<group>"; };
+		49EE9D832B5853C400016FE5 /* GravatarTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GravatarTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -53,8 +56,9 @@
 		49EE9D1A2B58475B00016FE5 = {
 			isa = PBXGroup;
 			children = (
-				49EE9D262B58475B00016FE5 /* Gravatar */,
-				49EE9D322B58475B00016FE5 /* GravatarTests */,
+				49EE9D762B58539C00016FE5 /* Sources */,
+				49EE9D812B5853C400016FE5 /* Tests */,
+				49EE9D742B58539000016FE5 /* Gravatar.docc */,
 				49EE9D252B58475B00016FE5 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -68,19 +72,44 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		49EE9D262B58475B00016FE5 /* Gravatar */ = {
+		49EE9D762B58539C00016FE5 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				49EE9D272B58475B00016FE5 /* Gravatar.h */,
-				49EE9D282B58475B00016FE5 /* Gravatar.docc */,
+				49EE9D772B58539C00016FE5 /* Gravatar */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		49EE9D772B58539C00016FE5 /* Gravatar */ = {
+			isa = PBXGroup;
+			children = (
+				49EE9D782B58539C00016FE5 /* Resources */,
+				49EE9D7B2B58539C00016FE5 /* Gravatar.h */,
+				49EE9D7C2B58539C00016FE5 /* ReplaceMe.swift */,
 			);
 			path = Gravatar;
 			sourceTree = "<group>";
 		};
-		49EE9D322B58475B00016FE5 /* GravatarTests */ = {
+		49EE9D782B58539C00016FE5 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				49EE9D332B58475B00016FE5 /* GravatarTests.swift */,
+				49EE9D792B58539C00016FE5 /* .gitkeep */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		49EE9D812B5853C400016FE5 /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				49EE9D822B5853C400016FE5 /* GravatarTests */,
+			);
+			path = Tests;
+			sourceTree = "<group>";
+		};
+		49EE9D822B5853C400016FE5 /* GravatarTests */ = {
+			isa = PBXGroup;
+			children = (
+				49EE9D832B5853C400016FE5 /* GravatarTests.swift */,
 			);
 			path = GravatarTests;
 			sourceTree = "<group>";
@@ -92,7 +121,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				49EE9D352B58475B00016FE5 /* Gravatar.h in Headers */,
+				49EE9D7F2B58539C00016FE5 /* Gravatar.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -194,7 +223,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				49EE9D292B58475B00016FE5 /* Gravatar.docc in Sources */,
+				49EE9D802B58539C00016FE5 /* ReplaceMe.swift in Sources */,
+				49EE9D752B58539000016FE5 /* Gravatar.docc in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -202,7 +232,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				49EE9D342B58475B00016FE5 /* GravatarTests.swift in Sources */,
+				49EE9D842B5853C400016FE5 /* GravatarTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -414,6 +444,7 @@
 		49EE9D3C2B58475B00016FE5 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -433,6 +464,7 @@
 		49EE9D3D2B58475B00016FE5 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
