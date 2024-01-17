@@ -75,8 +75,7 @@
 		49EE9DE42B58681500016FE5 = {
 			isa = PBXGroup;
 			children = (
-				49EE9DEF2B58681500016FE5 /* Demo */,
-				49EE9E122B588B0C00016FE5 /* Gravatar-macOS-Demo */,
+				49EE9E202B588BB900016FE5 /* Demo */,
 				49EE9DEE2B58681500016FE5 /* Products */,
 				49EE9E042B58693A00016FE5 /* Frameworks */,
 			);
@@ -91,7 +90,7 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		49EE9DEF2B58681500016FE5 /* Demo */ = {
+		49EE9DEF2B58681500016FE5 /* Gravatar-Demo */ = {
 			isa = PBXGroup;
 			children = (
 				49EE9DF02B58681500016FE5 /* AppDelegate.swift */,
@@ -102,7 +101,7 @@
 				49EE9DFB2B58681500016FE5 /* LaunchScreen.storyboard */,
 				49EE9DFE2B58681500016FE5 /* Info.plist */,
 			);
-			path = Demo;
+			path = "Gravatar-Demo";
 			sourceTree = "<group>";
 		};
 		49EE9E042B58693A00016FE5 /* Frameworks */ = {
@@ -131,6 +130,15 @@
 				49EE9E1A2B588B0D00016FE5 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		49EE9E202B588BB900016FE5 /* Demo */ = {
+			isa = PBXGroup;
+			children = (
+				49EE9DEF2B58681500016FE5 /* Gravatar-Demo */,
+				49EE9E122B588B0C00016FE5 /* Gravatar-macOS-Demo */,
+			);
+			path = Demo;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
