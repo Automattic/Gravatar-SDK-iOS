@@ -15,6 +15,10 @@
 		49EE9DFD2B58681500016FE5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 49EE9DFB2B58681500016FE5 /* LaunchScreen.storyboard */; };
 		49EE9E062B58693A00016FE5 /* Gravatar.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 49EE9E052B58693A00016FE5 /* Gravatar.framework */; };
 		49EE9E072B58693A00016FE5 /* Gravatar.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 49EE9E052B58693A00016FE5 /* Gravatar.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		49EE9E142B588B0C00016FE5 /* Gravatar_macOS_DemoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49EE9E132B588B0C00016FE5 /* Gravatar_macOS_DemoApp.swift */; };
+		49EE9E162B588B0C00016FE5 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49EE9E152B588B0C00016FE5 /* ContentView.swift */; };
+		49EE9E182B588B0D00016FE5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 49EE9E172B588B0D00016FE5 /* Assets.xcassets */; };
+		49EE9E1B2B588B0D00016FE5 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 49EE9E1A2B588B0D00016FE5 /* Preview Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -41,6 +45,12 @@
 		49EE9DFC2B58681500016FE5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		49EE9DFE2B58681500016FE5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		49EE9E052B58693A00016FE5 /* Gravatar.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Gravatar.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		49EE9E112B588B0C00016FE5 /* Gravatar-macOS-Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Gravatar-macOS-Demo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		49EE9E132B588B0C00016FE5 /* Gravatar_macOS_DemoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Gravatar_macOS_DemoApp.swift; sourceTree = "<group>"; };
+		49EE9E152B588B0C00016FE5 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		49EE9E172B588B0D00016FE5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		49EE9E1A2B588B0D00016FE5 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		49EE9E1C2B588B0D00016FE5 /* Gravatar_macOS_Demo.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Gravatar_macOS_Demo.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -52,6 +62,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		49EE9E0E2B588B0C00016FE5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -59,6 +76,7 @@
 			isa = PBXGroup;
 			children = (
 				49EE9DEF2B58681500016FE5 /* Demo */,
+				49EE9E122B588B0C00016FE5 /* Gravatar-macOS-Demo */,
 				49EE9DEE2B58681500016FE5 /* Products */,
 				49EE9E042B58693A00016FE5 /* Frameworks */,
 			);
@@ -68,6 +86,7 @@
 			isa = PBXGroup;
 			children = (
 				49EE9DED2B58681500016FE5 /* Gravatar-Demo.app */,
+				49EE9E112B588B0C00016FE5 /* Gravatar-macOS-Demo.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -94,6 +113,26 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		49EE9E122B588B0C00016FE5 /* Gravatar-macOS-Demo */ = {
+			isa = PBXGroup;
+			children = (
+				49EE9E132B588B0C00016FE5 /* Gravatar_macOS_DemoApp.swift */,
+				49EE9E152B588B0C00016FE5 /* ContentView.swift */,
+				49EE9E172B588B0D00016FE5 /* Assets.xcassets */,
+				49EE9E1C2B588B0D00016FE5 /* Gravatar_macOS_Demo.entitlements */,
+				49EE9E192B588B0D00016FE5 /* Preview Content */,
+			);
+			path = "Gravatar-macOS-Demo";
+			sourceTree = "<group>";
+		};
+		49EE9E192B588B0D00016FE5 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				49EE9E1A2B588B0D00016FE5 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -115,6 +154,23 @@
 			productReference = 49EE9DED2B58681500016FE5 /* Gravatar-Demo.app */;
 			productType = "com.apple.product-type.application";
 		};
+		49EE9E102B588B0C00016FE5 /* Gravatar-macOS-Demo */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 49EE9E1D2B588B0D00016FE5 /* Build configuration list for PBXNativeTarget "Gravatar-macOS-Demo" */;
+			buildPhases = (
+				49EE9E0D2B588B0C00016FE5 /* Sources */,
+				49EE9E0E2B588B0C00016FE5 /* Frameworks */,
+				49EE9E0F2B588B0C00016FE5 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Gravatar-macOS-Demo";
+			productName = "Gravatar-macOS-Demo";
+			productReference = 49EE9E112B588B0C00016FE5 /* Gravatar-macOS-Demo.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -126,6 +182,9 @@
 				LastUpgradeCheck = 1510;
 				TargetAttributes = {
 					49EE9DEC2B58681500016FE5 = {
+						CreatedOnToolsVersion = 15.1;
+					};
+					49EE9E102B588B0C00016FE5 = {
 						CreatedOnToolsVersion = 15.1;
 					};
 				};
@@ -144,6 +203,7 @@
 			projectRoot = "";
 			targets = (
 				49EE9DEC2B58681500016FE5 /* Gravatar-Demo */,
+				49EE9E102B588B0C00016FE5 /* Gravatar-macOS-Demo */,
 			);
 		};
 /* End PBXProject section */
@@ -159,6 +219,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		49EE9E0F2B588B0C00016FE5 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				49EE9E1B2B588B0D00016FE5 /* Preview Assets.xcassets in Resources */,
+				49EE9E182B588B0D00016FE5 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -169,6 +238,15 @@
 				49EE9DF52B58681500016FE5 /* ViewController.swift in Sources */,
 				49EE9DF12B58681500016FE5 /* AppDelegate.swift in Sources */,
 				49EE9DF32B58681500016FE5 /* SceneDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		49EE9E0D2B588B0C00016FE5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				49EE9E162B588B0C00016FE5 /* ContentView.swift in Sources */,
+				49EE9E142B588B0C00016FE5 /* Gravatar_macOS_DemoApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -367,6 +445,60 @@
 			};
 			name = Release;
 		};
+		49EE9E1E2B588B0D00016FE5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Gravatar-macOS-Demo/Gravatar_macOS_Demo.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"Gravatar-macOS-Demo/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.gravatar.Gravatar-macOS-Demo";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		49EE9E1F2B588B0D00016FE5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Gravatar-macOS-Demo/Gravatar_macOS_Demo.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"Gravatar-macOS-Demo/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.gravatar.Gravatar-macOS-Demo";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -384,6 +516,15 @@
 			buildConfigurations = (
 				49EE9E022B58681500016FE5 /* Debug */,
 				49EE9E032B58681500016FE5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		49EE9E1D2B588B0D00016FE5 /* Build configuration list for PBXNativeTarget "Gravatar-macOS-Demo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				49EE9E1E2B588B0D00016FE5 /* Debug */,
+				49EE9E1F2B588B0D00016FE5 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
