@@ -16,6 +16,9 @@ build:
 test:
 	swift test
 
+test-xcode:
+	xcodebuild -project Example/Example.xcodeproj -scheme 'Gravatar Example' test
+
 lint-pod:
 	bundle install
 	bundle exec pod lib lint Gravatar.podspec
