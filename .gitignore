@@ -18,6 +18,10 @@ DerivedData
 *.hmap
 *.ipa
 
+# SPM
+/.build
+/.swiftpm
+
 # Bundler
 vendor/bundle
 
