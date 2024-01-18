@@ -18,6 +18,9 @@ DerivedData
 *.hmap
 *.ipa
 
+# Swift Package Manager
+/.swiftpm
+
 # Bundler
 vendor/bundle
 
