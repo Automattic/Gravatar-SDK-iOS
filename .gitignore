@@ -38,3 +38,6 @@ Carthage/Build
 # `pod install` in .travis.yml
 #
 # Pods/
+
+# Auto-generated Documentation
+/docs/Gravatar.doccarchive
