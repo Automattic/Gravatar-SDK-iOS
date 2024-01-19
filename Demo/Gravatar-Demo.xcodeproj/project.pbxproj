@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 60;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -13,6 +13,8 @@
 		495775E92B5B34970082812A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 495775E72B5B34970082812A /* Main.storyboard */; };
 		495775EB2B5B34980082812A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 495775EA2B5B34980082812A /* Assets.xcassets */; };
 		495775EE2B5B34980082812A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 495775EC2B5B34980082812A /* LaunchScreen.storyboard */; };
+		495775F52B5B35460082812A /* Gravatar in Frameworks */ = {isa = PBXBuildFile; productRef = 495775F42B5B35460082812A /* Gravatar */; };
+		495775F72B5B35540082812A /* Gravatar in Frameworks */ = {isa = PBXBuildFile; productRef = 495775F62B5B35540082812A /* Gravatar */; };
 		49C5D60E2B5B33E20067C2A8 /* DemoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49C5D60D2B5B33E20067C2A8 /* DemoApp.swift */; };
 		49C5D6102B5B33E20067C2A8 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49C5D60F2B5B33E20067C2A8 /* ContentView.swift */; };
 		49C5D6122B5B33E20067C2A8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 49C5D6112B5B33E20067C2A8 /* Assets.xcassets */; };
@@ -40,6 +42,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				495775F52B5B35460082812A /* Gravatar in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -47,6 +50,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				495775F72B5B35540082812A /* Gravatar in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -128,6 +132,9 @@
 			dependencies = (
 			);
 			name = "Gravatar-Demo";
+			packageProductDependencies = (
+				495775F42B5B35460082812A /* Gravatar */,
+			);
 			productName = "Gravatar-Demo";
 			productReference = 495775DF2B5B34970082812A /* Gravatar-Demo.app */;
 			productType = "com.apple.product-type.application";
@@ -145,6 +152,9 @@
 			dependencies = (
 			);
 			name = "Gravatar-SwiftUI-Demo";
+			packageProductDependencies = (
+				495775F62B5B35540082812A /* Gravatar */,
+			);
 			productName = Demo;
 			productReference = 49C5D60A2B5B33E20067C2A8 /* Gravatar-SwiftUI-Demo.app */;
 			productType = "com.apple.product-type.application";
@@ -176,6 +186,9 @@
 				Base,
 			);
 			mainGroup = 49C5D6012B5B33E20067C2A8;
+			packageReferences = (
+				495775F32B5B35460082812A /* XCLocalSwiftPackageReference ".." */,
+			);
 			productRefGroup = 49C5D60B2B5B33E20067C2A8 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -510,6 +523,24 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		495775F32B5B35460082812A /* XCLocalSwiftPackageReference ".." */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ..;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		495775F42B5B35460082812A /* Gravatar */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Gravatar;
+		};
+		495775F62B5B35540082812A /* Gravatar */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Gravatar;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 49C5D6022B5B33E20067C2A8 /* Project object */;
 }
