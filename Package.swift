@@ -4,12 +4,10 @@
 import PackageDescription
 
 let package = Package(
-    // Exclude `sdk-ios` because I can't see why this wouldn't work on Apple's other platforms, too?
     name: "Gravatar", 
     platforms: [
-        .macOS(.v12),
         .iOS(.v15),
-        .tvOS(.v15),
+
     ],
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
