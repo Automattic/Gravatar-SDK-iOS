@@ -1,6 +1,5 @@
 import Foundation
 import CryptoKit
-import UIKit
 
 #if canImport(SwiftUI)
 import SwiftUI
