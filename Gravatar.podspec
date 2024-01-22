@@ -1,30 +1,39 @@
 Pod::Spec.new do |s|
   s.name             = 'Gravatar'
   s.version          = '0.1.0'
-  s.summary          = 'Helpful for Gravatar'
-  s.swift_version    = '5.9'
+  s.summary          = 'Gravatar SDK'
 
   s.description      = <<-DESC
-  Does gravatar things in a gravatar way
+Gravatar SDK provides a convient wrapper for accessing the Gravatar API
                        DESC
 
-  s.homepage         = 'https://github.com/gravatar/Gravatar-SDK-iOS'
-  # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
+  s.homepage         = 'https://gravatar.com'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
-  s.author           = { 'Pinar Olguc' => 'pinar.olguc@automattic.com' }
-  s.source           = { :git => 'https://github.com/Pinar Olguc/Gravatar.git', :tag => s.version.to_s }
-  # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
+  s.authors           = 'Automattic, Inc.'
+  s.source           = {
+      :git => 'https://github.com/gravatar/Gravatar-SDK-iOS.git',
+      :tag => 'CocoaPods-' + s.version.to_s
+  }
 
-  s.ios.deployment_target = '15.0'
-  s.osx.deployment_target = '12.0'
+  s.swift_version     = '5.9'
 
-  s.source_files = 'Sources/Gravatar/**/*'
-  
-  # s.resource_bundles = {
-  #   'Gravatar' => ['Gravatar/Assets/*.png']
-  # }
+  ios_deployment_target = '12.0'
+  osx_deployment_target = '11.0'
 
-  # s.public_header_files = 'Pod/Classes/**/*.h'
-  # s.frameworks = 'UIKit', 'MapKit'
-  # s.dependency 'AFNetworking', '~> 2.3'
+  s.ios.deployment_target = ios_deployment_target
+  s.osx.deployment_target = osx_deployment_target
+
+  s.source_files = 'Sources/**/*.swift'
+
+  s.test_spec 'Tests' do |swift_unit_tests|
+      swift_unit_tests.platforms = {
+          :ios => ios_deployment_target,
+          :osx => osx_deployment_target
+      }
+      swift_unit_tests.source_files = [
+          'Tests/**/*.swift'
+      ]
+      swift_unit_tests.requires_app_host = false
+  end
 end
+
