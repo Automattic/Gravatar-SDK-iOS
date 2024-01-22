@@ -11,6 +11,9 @@ test:
 		-scheme Gravatar \
 		-destination 'platform=iOS Simulator,OS=17.2,name=iPhone SE (3rd generation)'
 
+swiftformat:
+	swift package plugin --allow-writing-to-package-directory swiftformat
+
 lint-pod:
 	bundle install
 	bundle exec pod lib lint --verbose --fail-fast
