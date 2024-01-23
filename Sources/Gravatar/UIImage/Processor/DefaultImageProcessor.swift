@@ -1,10 +1,3 @@
-//
-//  DefaultImageProcessor.swift
-//
-//
-//  Created by Pinar Olguc on 22.01.2024.
-//
-
 import UIKit
 
 /// The default processor. It applies the scale factor on the given image data and converts it into an image.
