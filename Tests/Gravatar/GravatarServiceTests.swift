@@ -47,6 +47,28 @@ class GravatarServiceTests: XCTestCase {
         }
     }
 
+    func testUploadImageFailsWithEmptyEmailAddress() {
+        let token = "1234"
+        let emailAddress = ""
+        
+        let gravatarService = GravatarServiceTester()
+        gravatarService.uploadImage(UIImage(), accountEmail: emailAddress, accountToken: token) { error in
+            let expectedError = GravatarServiceError.invalidAccountInfo as NSError
+            XCTAssertEqual(error, expectedError)
+        }
+    }
+    
+    func testUploadImageFailsWithEmptyToken() {
+        let token = ""
+        let emailAddress = "email@wordpress.com"
+        
+        let gravatarService = GravatarServiceTester()
+        gravatarService.uploadImage(UIImage(), accountEmail: emailAddress, accountToken: token) { error in
+            let expectedError = GravatarServiceError.invalidAccountInfo as NSError
+            XCTAssertEqual(error, expectedError)
+        }
+    }
+    
     func testUploadImageSanitizesEmailAddressCapitals() {
         let token = "1234"
         let emailAddress = "emAil@wordpress.com"
