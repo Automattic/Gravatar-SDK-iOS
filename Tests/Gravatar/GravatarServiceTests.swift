@@ -154,4 +154,17 @@ class GravatarServiceTests: XCTestCase {
 
         XCTAssertEqual(["email@wordpress.com"], gravatarService.gravatarServiceRemoteMock!.capturedAccountEmails)
     }
+    
+    func testFetchProfileFailsWithEmptyEmailAddress() {
+        let emailAddress = ""
+        
+        var capturedResults = [GravatarProfileFetchResult]()
+        
+        let gravatarService = GravatarServiceTester()
+        gravatarService.fetchProfile(email: emailAddress) { result in
+            capturedResults.append(result)
+        }
+        
+        XCTAssertEqual(capturedResults, [.failure(.invalidAccountInfo)])
+    }
 }

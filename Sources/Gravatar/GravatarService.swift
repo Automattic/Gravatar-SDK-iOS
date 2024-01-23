@@ -27,6 +27,11 @@ open class GravatarService {
     ///     - completion: A completion block.
     ///
     open func fetchProfile(email: String, onCompletion: @escaping ((_ result: GravatarProfileFetchResult) -> Void)) {
+        guard !email.isEmpty else {
+            onCompletion(.failure(.invalidAccountInfo))
+            return
+        }
+        
         let remote = gravatarServiceRemote()
         remote.fetchProfile(email.normalized(), success: { remoteProfile in
             var profile = GravatarProfile()
