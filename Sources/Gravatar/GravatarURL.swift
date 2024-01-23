@@ -9,7 +9,7 @@ public enum GravatarDefaultImage: String {
     case identicon
 }
 
-public struct Gravatar {
+public struct GravatarURL {
     fileprivate struct Defaults {
         static let scheme = "https"
         static let host = "secure.gravatar.com"
@@ -80,15 +80,15 @@ public struct Gravatar {
     }
 }
 
-extension Gravatar: Equatable {}
+extension GravatarURL: Equatable {}
 
-public func ==(lhs: Gravatar, rhs: Gravatar) -> Bool {
+public func ==(lhs: GravatarURL, rhs: GravatarURL) -> Bool {
     return lhs.canonicalURL == rhs.canonicalURL
 }
 
-public extension Gravatar {
+public extension GravatarURL {
     init?(_ url: URL) {
-        guard Gravatar.isGravatarURL(url) else {
+        guard GravatarURL.isGravatarURL(url) else {
             return nil
         }
 
