@@ -10,19 +10,11 @@ import XCTest
 
 final class GravatarURLTests: XCTestCase {
 
-    // TODO: This should work without `www.`, but currently the tests break.
+    // TODO: This should work without `www.`, but currently the tests would break.
     let verifiedGravatarURL = URL(string: "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50")!
 
     let exampleEmail = "some@email.com"
     let exampleEmailSHA = "676212ff796c79a3c06261eb10e3f455aa93998ee6e45263da13679c74b1e674"
-
-    override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-    }
-
-    override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-    }
 
     func testIsGravatarUrl() throws {
         XCTAssertTrue(GravatarURL.isGravatarURL(verifiedGravatarURL))
@@ -57,5 +49,19 @@ final class GravatarURLTests: XCTestCase {
 
         let urlWithRating = GravatarURL.gravatarUrl(for: exampleEmail, rating: .pg)
         XCTAssertEqual(urlWithRating?.absoluteString, "\(emailPrefix)?d=404&s=80&r=pg")
+    }
+
+    func testGravatarURLIsEquatable() throws {
+        let lhs = GravatarURL(verifiedGravatarURL)
+        let rhs = GravatarURL(verifiedGravatarURL)
+
+        XCTAssertEqual(lhs, rhs)
+    }
+
+    func testGravatarURLIsEquatableFails() throws {
+        let lhs = GravatarURL(URL(string: "https://www.gravatar.com/avatar/000")!)
+        let rhs = GravatarURL(verifiedGravatarURL)
+
+        XCTAssertNotEqual(lhs, rhs)
     }
 }
