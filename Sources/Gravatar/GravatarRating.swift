@@ -1,10 +1,3 @@
-//
-//  File.swift
-//  
-//
-//  Created by eToledo on 23/1/24.
-//
-
 import Foundation
 
 /// Helper Enum that specifies all of the available Gravatar Image Ratings

@@ -1,14 +1,5 @@
 import Foundation
 
-/// Helper Enum that specifies some of the options for default images
-/// To see all available options, visit : https://en.gravatar.com/site/implement/images/
-///
-public enum GravatarDefaultImage: String {
-    case fileNotFound = "404"
-    case mp
-    case identicon
-}
-
 public struct GravatarURL {
     fileprivate struct Defaults {
         static let scheme = "https"
@@ -111,4 +102,14 @@ public extension GravatarURL {
 
         self.canonicalURL = sanitizedURL
     }
+}
+
+// TODO: Implement other options
+/// Helper Enum that specifies some of the options for default images
+/// To see all available options, visit : https://en.gravatar.com/site/implement/images/
+public enum GravatarDefaultImage: String {
+    case fileNotFound = "404"
+    // TODO: let's use `misteryPerson` instead if `mp` to make it more literal.
+    case mp
+    case identicon
 }
