@@ -21,7 +21,7 @@ public enum GravatarDownloadOption {
     case scaleFactor(CGFloat)
 
     // Gravatar Image Ratings. Defaults to: GravatarRatings.default.
-    case gravatarRating(Rating)
+    case gravatarRating(GravatarRating)
 
     // Transition style to use when setting the new image downloaded. Default: .none
     case transition(ImageTransition)
@@ -51,7 +51,7 @@ public struct GravatarDownloadOptions {
     static let defaultSize: CGSize = .init(width: 80, height: 80)
 
     var scaleFactor: CGFloat = UIScreen.main.scale
-    var gravatarRating: Rating = .default
+    var gravatarRating: GravatarRating = .default
     var transition: ImageTransition = .none
     var preferredSize: CGSize? = nil
     var removeCurrentImageWhileLoading = false

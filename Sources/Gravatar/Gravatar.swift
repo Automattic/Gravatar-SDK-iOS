@@ -4,7 +4,7 @@ import Foundation
 /// TODO: Convert into a pure Swift String Enum. It's done this way to maintain ObjC Compatibility
 ///
 @objc
-public enum Rating: Int {
+public enum GravatarRating: Int {
     case g
     case pg
     case r
@@ -81,7 +81,7 @@ public struct Gravatar {
     public static func gravatarUrl(for email: String,
                                    defaultImage: GravatarDefaultImage? = nil,
                                    size: Int? = nil,
-                                   rating: Rating = .default) -> URL? {
+                                   rating: GravatarRating = .default) -> URL? {
         let hash = gravatarHash(of: email)
         let targetURL = String(format: "%@/%@?d=%@&s=%d&r=%@",
                                Defaults.baseURL,
