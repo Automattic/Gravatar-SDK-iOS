@@ -31,6 +31,10 @@ class GravatarServiceTests: XCTestCase {
                 )
             )
         }
+        
+        override func fetchProfile(_ email: String, success: @escaping ((RemoteGravatarProfile) -> Void), failure: @escaping ((Error?) -> Void)) {
+            messages.append(MessageData(capturedEmail: email))
+        }
 
         func complete(with error: NSError?, at index: Int) {
             messages[index].capturedImageUploadCompletion?(error)
@@ -133,4 +137,21 @@ class GravatarServiceTests: XCTestCase {
         XCTAssertEqual([nil], capturedErrors)
     }
 
+    func testFetchProfileSanitizesEmailAddressCapitals() {
+        let emailAddress = "emAil@wordpress.com"
+
+        let gravatarService = GravatarServiceTester()
+        gravatarService.fetchProfile(email: emailAddress, onCompletion: { _ in })
+
+        XCTAssertEqual(["email@wordpress.com"], gravatarService.gravatarServiceRemoteMock!.capturedAccountEmails)
+    }
+    
+    func testFetchProfileSanitizesEmailAddressTrimsSpaces() {
+        let emailAddress = " email@wordpress.com "
+        
+        let gravatarService = GravatarServiceTester()
+        gravatarService.fetchProfile(email: emailAddress, onCompletion: { _ in })
+
+        XCTAssertEqual(["email@wordpress.com"], gravatarService.gravatarServiceRemoteMock!.capturedAccountEmails)
+    }
 }
