@@ -3,25 +3,32 @@ import UIKit
 
 public typealias ImageDownloadCompletion = ((Result<GravatarImageDownloadResult, GravatarImageDownloadError>) -> Void)
 
-public class GravatarNetworkManager {
-
-    private let imageCache: GravatarImageCaching
-    private let urlSession: URLSession
-
-    public init(imageCache: GravatarImageCaching, urlSession: URLSession) {
+public class GravatarImageRetriever {
+    
+    internal let imageCache: GravatarImageCaching
+    private let urlSession: URLSessionProtocol
+    
+    public init(imageCache: GravatarImageCaching, urlSession: URLSessionProtocol) {
         self.imageCache = imageCache
         self.urlSession = urlSession
     }
-
+    
     public convenience init() {
         self.init(imageCache: GravatarImageCache.shared, urlSession: URLSession.shared)
     }
-
+    
+    /// Downloads the the avatar image of the given email.
+    /// - Parameters:
+    ///   - email: Gravatar account email
+    ///   - options: Options used while downloading.
+    ///   - completionHandler: Completion handler to call when the download is completed.
+    /// - Returns: A `CancellableDataTask` to cancel the download.
     @discardableResult
     public func retrieveImage(
         with email: String,
         options: GravatarImageDownloadOptions? = nil,
-        completionHandler: ImageDownloadCompletion? = nil) -> CancellableDataTask? {
+        completionHandler: ImageDownloadCompletion? = nil
+    ) -> CancellableDataTask? {
         let options = options ?? GravatarImageDownloadOptions()
         let size = options.preferredSize ?? GravatarImageDownloadOptions.defaultSize
         let targetSize = max(size.width, size.height) * UIScreen.main.scale
@@ -29,28 +36,42 @@ public class GravatarNetworkManager {
             completionHandler?(.failure(GravatarImageDownloadError.requestError(reason: .urlInitializationFailed)))
             return nil
         }
-
-        return retrieveImage(with: gravatarURL, options: options, completionHandler: completionHandler)
+        
+        return retrieveImage(with: gravatarURL, forceRefresh: options.forceRefresh, processor: options.processor, completionHandler: completionHandler)
     }
-
+    
+    /// Downloads the the image from the given url.
+    /// - Parameters:
+    ///   - url: Image URL
+    ///   - forceRefresh: If true ignores the cache and fetches the image from the given URL. Default: false
+    ///   - processor: A `GravatarImageProcessor` to use when converting the downloaded `Data` to `UIImage`.
+    ///   - completionHandler: Completion handler to call when the download is completed.
+    /// - Returns: A `CancellableDataTask` to cancel the download.
     @discardableResult
     public func retrieveImage(
         with url: URL,
-        options: GravatarImageDownloadOptions? = nil,
+        forceRefresh: Bool = false,
+        processor: GravatarImageProcessor = DefaultImageProcessor.common,
         completionHandler: ImageDownloadCompletion? = nil
     ) -> CancellableDataTask? {
-        let options = options ?? GravatarImageDownloadOptions()
         let request = request(for: url)
-        return retrieveImage(with: request, options: options, completionHandler: completionHandler)
+        return retrieveImage(with: request, forceRefresh: forceRefresh, processor: processor,  completionHandler: completionHandler)
     }
     
+    /// Downloads the the image with the given `URLRequest`.
+    /// - Parameters:
+    ///   - request: URLRequest for the image.
+    ///   - forceRefresh: If true ignores the cache and fetches the image from the given URL. Default: false
+    ///   - processor: A `GravatarImageProcessor` to use when converting the downloaded `Data` to `UIImage`.
+    ///   - completionHandler: Completion handler to call when the download is completed.
+    /// - Returns: A `CancellableDataTask` to cancel the download.
     @discardableResult
     public func retrieveImage(
         with request: URLRequest,
-        options: GravatarImageDownloadOptions? = nil,
+        forceRefresh: Bool = false,
+        processor: GravatarImageProcessor = DefaultImageProcessor.common,
         completionHandler: ImageDownloadCompletion? = nil
     ) -> CancellableDataTask? {
-        let options = options ?? GravatarImageDownloadOptions()
         
         guard let url = request.url else {
             completionHandler?(.failure(GravatarImageDownloadError.requestError(reason: .emptyURL)))
@@ -58,7 +79,7 @@ public class GravatarNetworkManager {
         }
         
         // Ignore the cache value if forceRefresh is true
-        if !options.forceRefresh, let cachedImage = imageCache.getImage(forKey: url.absoluteString) {
+        if !forceRefresh, let cachedImage = imageCache.getImage(forKey: url.absoluteString) {
             completionHandler?(.success(GravatarImageDownloadResult(image: cachedImage, sourceURL: url)))
             return nil
         }
@@ -74,11 +95,11 @@ public class GravatarNetworkManager {
                 return
             }
             
-            guard let data = data, let image = options.processor.process(data, options: options) else {
+            guard let data = data, let image = processor.process(data) else {
                 completionHandler?(.failure(.responseError(reason: .imageInitializationFailed)))
                 return
             }
-
+            
             if response?.url == url {
                 self?.imageCache.setImage(image, forKey: url.absoluteString)
                 completionHandler?(.success(GravatarImageDownloadResult(image: image, sourceURL: url)))
@@ -87,10 +108,9 @@ public class GravatarNetworkManager {
                 completionHandler?(.failure(.responseError(reason: .urlMismatch)))
             }
         })
-
+        
         task.resume()
         return task
-
     }
     
     private func request(for url: URL) -> URLRequest {

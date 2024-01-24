@@ -83,7 +83,7 @@ class DemoAvatarDownloadViewController: UIViewController {
         return stack
     }()
     
-    private let downloadManager = GravatarNetworkManager()
+    private let imageRetriever = GravatarImageRetriever()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -125,7 +125,7 @@ class DemoAvatarDownloadViewController: UIViewController {
         
         avatarImageView.image = nil // Setting to nil to make the effect of `forceRefresh more visible
         
-        downloadManager.retrieveImage(with: emailInputField.text ?? "",
+        imageRetriever.retrieveImage(with: emailInputField.text ?? "",
                                       options: options) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {

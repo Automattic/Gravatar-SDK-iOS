@@ -40,7 +40,7 @@ public struct GravatarImageSettingOptions {
     var removeCurrentImageWhileLoading = false
     var forceRefresh = false
     var shouldCancelOngoingDownload = false
-    var processor: GravatarImageProcessor = DefaultImageProcessor()
+    var processor: GravatarImageProcessor = DefaultImageProcessor.common
 
     init(options: [GravatarImageSettingOption]?) {
         guard let options = options else { return }
@@ -80,15 +80,14 @@ public struct GravatarImageSettingOptions {
 // Download options to use outside of `GravatarCompatible` UI components. Refer to `GravatarImageSettingOption`.
 public struct GravatarImageDownloadOptions {
     static let defaultSize: CGSize = .init(width: 80, height: 80)
-    public static let defaultProcessor = DefaultImageProcessor()
     
-    var scaleFactor: CGFloat = UIScreen.main.scale
-    var gravatarRating: GravatarRating = .default
-    var preferredSize: CGSize? = nil
-    var forceRefresh = false
-    var processor: GravatarImageProcessor = DefaultImageProcessor()
+    let scaleFactor: CGFloat
+    let gravatarRating: GravatarRating
+    let preferredSize: CGSize?
+    let forceRefresh: Bool
+    let processor: GravatarImageProcessor
     
-    public init(scaleFactor: CGFloat = UIScreen.main.scale, gravatarRating: GravatarRating = .default, preferredSize: CGSize? = nil, forceRefresh: Bool = false, processor: GravatarImageProcessor = GravatarImageDownloadOptions.defaultProcessor) {
+    public init(scaleFactor: CGFloat = UIScreen.main.scale, gravatarRating: GravatarRating = .default, preferredSize: CGSize? = nil, forceRefresh: Bool = false, processor: GravatarImageProcessor = DefaultImageProcessor.common) {
         self.scaleFactor = scaleFactor
         self.gravatarRating = gravatarRating
         self.preferredSize = preferredSize
