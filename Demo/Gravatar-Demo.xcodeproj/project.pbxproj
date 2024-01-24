@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		495775E22B5B34970082812A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 495775E12B5B34970082812A /* AppDelegate.swift */; };
 		495775E42B5B34970082812A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 495775E32B5B34970082812A /* SceneDelegate.swift */; };
-		495775E62B5B34970082812A /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 495775E52B5B34970082812A /* ViewController.swift */; };
 		495775E92B5B34970082812A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 495775E72B5B34970082812A /* Main.storyboard */; };
 		495775EB2B5B34980082812A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 495775EA2B5B34980082812A /* Assets.xcassets */; };
 		495775EE2B5B34980082812A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 495775EC2B5B34980082812A /* LaunchScreen.storyboard */; };
@@ -19,13 +18,15 @@
 		49C5D6102B5B33E20067C2A8 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49C5D60F2B5B33E20067C2A8 /* ContentView.swift */; };
 		49C5D6122B5B33E20067C2A8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 49C5D6112B5B33E20067C2A8 /* Assets.xcassets */; };
 		49C5D6152B5B33E20067C2A8 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 49C5D6142B5B33E20067C2A8 /* Preview Assets.xcassets */; };
+		91F0B3D32B6127FF0025C4F8 /* MainTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91F0B3D22B6127FF0025C4F8 /* MainTableViewController.swift */; };
+		91F0B3D52B6129A00025C4F8 /* DemoAvatarDownloadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91F0B3D42B6129A00025C4F8 /* DemoAvatarDownloadViewController.swift */; };
+		91F0B3D72B613A6A0025C4F8 /* Gravatar in Frameworks */ = {isa = PBXBuildFile; productRef = 91F0B3D62B613A6A0025C4F8 /* Gravatar */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		495775DF2B5B34970082812A /* Gravatar-Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Gravatar-Demo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		495775E12B5B34970082812A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		495775E32B5B34970082812A /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		495775E52B5B34970082812A /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		495775E82B5B34970082812A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		495775EA2B5B34980082812A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		495775ED2B5B34980082812A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -35,6 +36,8 @@
 		49C5D60F2B5B33E20067C2A8 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		49C5D6112B5B33E20067C2A8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		49C5D6142B5B33E20067C2A8 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		91F0B3D22B6127FF0025C4F8 /* MainTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTableViewController.swift; sourceTree = "<group>"; };
+		91F0B3D42B6129A00025C4F8 /* DemoAvatarDownloadViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoAvatarDownloadViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -42,6 +45,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				91F0B3D72B613A6A0025C4F8 /* Gravatar in Frameworks */,
 				495775F52B5B35460082812A /* Gravatar in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -73,11 +77,12 @@
 			children = (
 				495775E12B5B34970082812A /* AppDelegate.swift */,
 				495775E32B5B34970082812A /* SceneDelegate.swift */,
-				495775E52B5B34970082812A /* ViewController.swift */,
 				495775E72B5B34970082812A /* Main.storyboard */,
 				495775EA2B5B34980082812A /* Assets.xcassets */,
 				495775EC2B5B34980082812A /* LaunchScreen.storyboard */,
 				495775EF2B5B34980082812A /* Info.plist */,
+				91F0B3D22B6127FF0025C4F8 /* MainTableViewController.swift */,
+				91F0B3D42B6129A00025C4F8 /* DemoAvatarDownloadViewController.swift */,
 			);
 			path = "Gravatar-Demo";
 			sourceTree = "<group>";
@@ -134,6 +139,7 @@
 			name = "Gravatar-Demo";
 			packageProductDependencies = (
 				495775F42B5B35460082812A /* Gravatar */,
+				91F0B3D62B613A6A0025C4F8 /* Gravatar */,
 			);
 			productName = "Gravatar-Demo";
 			productReference = 495775DF2B5B34970082812A /* Gravatar-Demo.app */;
@@ -226,7 +232,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				495775E62B5B34970082812A /* ViewController.swift in Sources */,
+				91F0B3D32B6127FF0025C4F8 /* MainTableViewController.swift in Sources */,
+				91F0B3D52B6129A00025C4F8 /* DemoAvatarDownloadViewController.swift in Sources */,
 				495775E22B5B34970082812A /* AppDelegate.swift in Sources */,
 				495775E42B5B34970082812A /* SceneDelegate.swift in Sources */,
 			);
@@ -537,6 +544,10 @@
 			productName = Gravatar;
 		};
 		495775F62B5B35540082812A /* Gravatar */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Gravatar;
+		};
+		91F0B3D62B613A6A0025C4F8 /* Gravatar */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Gravatar;
 		};
