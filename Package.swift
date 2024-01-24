@@ -21,6 +21,7 @@ let package = Package(
             name: "Gravatar"),
         .testTarget(
             name: "Gravatar-Tests",
-            dependencies: ["Gravatar"]),
+            dependencies: ["Gravatar"],
+            resources: [.copy("ResourceFiles")])
     ]
 )
