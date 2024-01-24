@@ -5,12 +5,12 @@
 //  Created by Andrew Montgomery on 1/10/24.
 //
 
-public enum GravatarProfileFetchResult {
+public enum GravatarProfileFetchResult: Equatable {
     case success(GravatarProfile)
     case failure(GravatarServiceError)
 }
 
-public struct GravatarProfile {
+public struct GravatarProfile: Equatable {
 
     public internal(set) var profileID = ""
     public internal(set) var hash = ""
