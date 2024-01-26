@@ -1,6 +1,7 @@
 import Foundation
 import UIKit
-//import WordPressShared
+
+// TODO: Refactor to be able to test this class.
 
 /// This ServiceRemote encapsulates all of the interaction with the Gravatar endpoint.
 ///
@@ -101,8 +102,25 @@ open class GravatarServiceRemote {
 
         // Task
         let session = URLSession.shared
-        let task = session.uploadTask(with: request as URLRequest, from: requestBody, completionHandler: { (_, _, error) in
-            completion?(error as NSError?)
+        let task = session.uploadTask(with: request as URLRequest, from: requestBody, completionHandler: { (data, response, error) in
+            if let completion = completion, // Avoid extra work if there's no completion handler
+               let data = data, // The error comes in the body as a json string.
+               let errorfromData = ImageUplaodError.decode(from: data),
+               let errorMessage = errorfromData.errorMessage,
+               let httpResponse = response as? HTTPURLResponse
+            {
+                let error = NSError(
+                    domain: NSURLErrorDomain,
+                    code: httpResponse.statusCode,
+                    userInfo: [
+                        NSDebugDescriptionErrorKey: errorMessage,
+                        NSLocalizedDescriptionKey: HTTPURLResponse.localizedString(forStatusCode: httpResponse.statusCode)
+                    ]
+                )
+                completion(error)
+            } else {
+                completion?(error as NSError?)
+            }
         })
 
         task.resume()
@@ -155,5 +173,17 @@ open class GravatarServiceRemote {
         static let filename             = "profile.png"
         static let imageKey             = "filedata"
         static let accountKey           = "account"
+    }
+}
+
+private struct ImageUplaodError: Decodable {
+    let errors: [String: String]
+
+    var errorMessage: String? {
+        errors["error"]
+    }
+
+    static func decode(from data: Data) -> Self? {
+        try? JSONDecoder().decode(Self.self, from: data)
     }
 }
