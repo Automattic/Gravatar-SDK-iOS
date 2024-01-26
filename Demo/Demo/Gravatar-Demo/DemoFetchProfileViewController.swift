@@ -32,6 +32,8 @@ class DemoFetchProfileViewController: UIViewController {
         return button
     }()
 
+    let activityIndicator = UIActivityIndicatorView(style: .large)
+
     let profileTextView: UITextView = {
         let textView = UITextView()
         textView.translatesAutoresizingMaskIntoConstraints = false
@@ -45,7 +47,7 @@ class DemoFetchProfileViewController: UIViewController {
         title = "Fetch Profile"
         view.backgroundColor = .white
 
-        [emailField, fetchProfileButton, profileTextView].forEach(rootStackView.addArrangedSubview)
+        [emailField, fetchProfileButton, activityIndicator, profileTextView].forEach(rootStackView.addArrangedSubview)
         view.addSubview(rootStackView)
 
         NSLayoutConstraint.activate([
@@ -59,29 +61,35 @@ class DemoFetchProfileViewController: UIViewController {
     }
 
     @objc func fetchProfileButtonHandler() {
-        guard let email = emailField.text, email.isEmpty == false else {
+        guard activityIndicator.isAnimating == false, let email = emailField.text, email.isEmpty == false else {
             return
         }
-
+        profileTextView.text = nil
+        activityIndicator.startAnimating()
         let service = GravatarService()
         service.fetchProfile(email: email) { [weak self] result in
             switch result {
             case .success(let profile):
                 self?.setProfile(with: profile)
             case .failure(let error):
-                print(error)
+                self?.showError(error)
             }
         }
     }
 
     func setProfile(with profile: GravatarProfile) {
-        let text = """
+        activityIndicator.stopAnimating()
+        profileTextView.text = """
 Profile URL:\t\(profile.profileUrl)
 Display name:\t\(profile.displayName)
 Name:\t\(profile.name)
 Preferred User Name: \(profile.preferredUsername)
 Thumbnail URL: \(profile.thumbnailUrl)
 """
-        profileTextView.text = text
+    }
+
+    func showError(_ error: Error) {
+        activityIndicator.stopAnimating()
+        profileTextView.text = String(describing: error)
     }
 }
