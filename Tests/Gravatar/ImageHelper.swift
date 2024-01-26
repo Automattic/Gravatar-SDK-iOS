@@ -19,6 +19,10 @@ class ImageHelper {
         return dataFromImage(named: "test", type: "png")!
     }
     
+    static var placeholderImage: UIImage {
+        return image(named: "placeholder", type: "png")!
+    }
+    
     static func dataFromImage(named: String, type: String) -> Data? {
         let bundle = Bundle(for: ImageHelper.self)
         guard let url = bundle.url(forResource: named, withExtension: type, subdirectory: Self.testResourcesDir) else {
