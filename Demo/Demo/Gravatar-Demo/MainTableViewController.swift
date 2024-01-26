@@ -12,6 +12,7 @@ class MainTableViewController: UITableViewController {
 
     enum Row: Int, CaseIterable {
         case imageDownloadNetworking
+        case fetchProfile
     }
     
     private static let reuseID =  "DefaultCell"
@@ -33,6 +34,8 @@ class MainTableViewController: UITableViewController {
         switch row {
         case .imageDownloadNetworking:
             content.text = "Image download - Networking"
+        case .fetchProfile:
+            content.text = "Fetch Profile"
             break
         }
         cell.contentConfiguration = content
@@ -45,6 +48,9 @@ class MainTableViewController: UITableViewController {
         switch row {
         case .imageDownloadNetworking:
             let vc = DemoAvatarDownloadViewController()
+            navigationController?.pushViewController(vc, animated: true)
+        case .fetchProfile:
+            let vc = DemoFetchProfileViewController()
             navigationController?.pushViewController(vc, animated: true)
         }
     }
