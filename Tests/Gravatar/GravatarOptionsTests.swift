@@ -49,7 +49,7 @@ final class GravatarOptionsTests: XCTestCase {
 }
 
 private struct TestImageProcessor: GravatarImageProcessor {
-    func process(_ data: Data, options: GravatarImageDownloadOptions) -> UIImage? {
+    func process(_ data: Data) -> UIImage? {
         return nil
     }
 }
