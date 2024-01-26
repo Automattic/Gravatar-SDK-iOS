@@ -116,9 +116,9 @@ class DemoUploadImageViewController: UIViewController {
 
     func uploadResult(with error: Error?) {
         activityIndicator.stopAnimating()
-        if let error = error {
+        if let error = error as? NSError {
             print("Error: \(error)")
-            resultLabel.text = "Error"
+            resultLabel.text = "Error \(error.code): \(error.localizedDescription)"
         } else {
             resultLabel.text = "Success! 🎉"
         }
