@@ -63,7 +63,7 @@ final class GravatarImageRetrieverTests: XCTestCase {
         imageRetriever.retrieveImage(with: "pinar@gmail.com") { result in
             switch result {
             case .success:
-                XCTAssert(false)
+                XCTFail()
             case .failure(let error):
                 XCTAssertEqual(error, GravatarImageDownloadError.responseError(reason: .imageInitializationFailed))
                 expectation.fulfill()
@@ -82,7 +82,7 @@ final class GravatarImageRetrieverTests: XCTestCase {
         imageRetriever.retrieveImage(with: "pinar@gmail.com") { result in
             switch result {
             case .success:
-                XCTAssert(false)
+                XCTFail()
             case .failure(let error):
                 XCTAssertEqual(error, GravatarImageDownloadError.responseError(reason: .notFound))
                 expectation.fulfill()
@@ -101,7 +101,7 @@ final class GravatarImageRetrieverTests: XCTestCase {
         imageRetriever.retrieveImage(with: "pinar@gmail.com") { result in
             switch result {
             case .success:
-                XCTAssert(false)
+                XCTFail()
             case .failure(let error):
                 XCTAssertEqual(error, GravatarImageDownloadError.responseError(reason: .urlMismatch))
                 expectation.fulfill()
@@ -120,7 +120,7 @@ final class GravatarImageRetrieverTests: XCTestCase {
         imageRetriever.retrieveImage(with: "pinar@gmail.com") { result in
             switch result {
             case .success:
-                XCTAssert(false)
+                XCTFail()
             case .failure(let error):
                 XCTAssertEqual(error, GravatarImageDownloadError.responseError(reason: .URLSessionError(error: TestURLSession.error)))
                 expectation.fulfill()
@@ -161,7 +161,7 @@ final class GravatarImageRetrieverTests: XCTestCase {
         imageRetriever.retrieveImage(with: request) { result in
             switch result {
             case .success:
-                XCTAssert(false)
+                XCTFail()
             case .failure(let error):
                 XCTAssertEqual(error, GravatarImageDownloadError.requestError(reason: .emptyURL))
             }

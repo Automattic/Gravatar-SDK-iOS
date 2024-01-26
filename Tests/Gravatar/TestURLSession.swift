@@ -28,7 +28,7 @@ class TestURLSession: URLSessionProtocol {
     func dataTask(with request: URLRequest, completionHandler: @escaping @Sendable (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTask {
         dataTaskCount += 1
         guard let url = request.url else {
-            XCTAssert(false)
+            XCTFail()
             return URLSession.shared.dataTask(with: request)
         }
         guard let failReason else {
