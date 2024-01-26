@@ -3,18 +3,14 @@ import UIKit
 
 public typealias ImageDownloadCompletion = ((Result<GravatarImageDownloadResult, GravatarImageDownloadError>) -> Void)
 
-public class GravatarImageRetriever {
+public class GravatarImageRetriever: GravatarImageRetrieverProtocol {
     
     internal let imageCache: GravatarImageCaching
     private let urlSession: URLSessionProtocol
     
-    public init(imageCache: GravatarImageCaching, urlSession: URLSessionProtocol) {
+    public init(imageCache: GravatarImageCaching = GravatarImageCache.shared, urlSession: URLSessionProtocol = URLSession.shared) {
         self.imageCache = imageCache
         self.urlSession = urlSession
-    }
-    
-    public convenience init() {
-        self.init(imageCache: GravatarImageCache.shared, urlSession: URLSession.shared)
     }
     
     /// Downloads the the avatar image of the given email.

@@ -7,53 +7,48 @@ public enum GravatarImageSettingOption {
     // Default value is: UIScreen.main.scale. You may set values as `1.0`, `2.0`, `3.0`.
     case scaleFactor(CGFloat)
 
-    // Gravatar Image Ratings. Defaults to: GravatarRatings.default.
-    case gravatarRating(GravatarRating)
-
     // Transition style to use when setting the new image downloaded. Default: .none
     case transition(GravatarImageTransition)
 
-    // Preferred size of the image that will be downloaded. If not provided, layoutIfNeeded() is called on the view to get its bounds properly.
-    // You can pass the preferred size to avoid the layoutIfNeeded() call and get a performance benefit.
-    case preferredSize(CGSize)
-
-    // By setting this option, the current image will be removed and the placeholder will be shown while downloading the new image.
+    // By setting this option, the current image will be removed and the placeholder will be shown while downloading the new image. Default: false
     case removeCurrentImageWhileLoading
 
-    // Ignore the cached value and re-download the image.
+    // Ignore the cached value and re-download the image. Default: false
     case forceRefresh
 
-    // Cancels the ongoing download in the view wrapper if a new download starts.
+    // Cancels the ongoing download in the view wrapper if a new download starts. Default: false.
     case cancelOngoingDownload
     
     // Processor to run on the the downloaded data while converting it into an image.
-    // If not set `DefaultImageProcessor` will be used.
+    // If not set `DefaultImageProcessor.common` will be used.
     case processor(GravatarImageProcessor)
+    
+    // By setting this you can pass a cache of your preference to save the downloaded image. Default: GravatarImageCache.shared
+    case imageCache(GravatarImageCaching)
+    
+    // A custom image downloader. Defaults to `GravatarimageDownloader` if not set.
+    case imageDownloader(GravatarImageRetrieverProtocol)
 }
 
 // Parsed options derived from [GravatarImageSettingOption]
 public struct GravatarImageSettingOptions {
     var scaleFactor: CGFloat = UIScreen.main.scale
-    var gravatarRating: GravatarRating = .default
     var transition: GravatarImageTransition = .none
-    var preferredSize: CGSize? = nil
     var removeCurrentImageWhileLoading = false
     var forceRefresh = false
     var shouldCancelOngoingDownload = false
     var processor: GravatarImageProcessor = DefaultImageProcessor.common
+    var imageCache: GravatarImageCaching = GravatarImageCache.shared
+    var imageDownloader: GravatarImageRetrieverProtocol? = nil
 
     init(options: [GravatarImageSettingOption]?) {
         guard let options = options else { return }
         for option in options {
             switch option {
-            case .gravatarRating(let rating):
-                gravatarRating = rating
             case .scaleFactor(let scale):
                 scaleFactor = scale
             case .transition(let imageTransition):
                 transition = imageTransition
-            case .preferredSize(let size):
-                preferredSize = size
             case .removeCurrentImageWhileLoading:
                 removeCurrentImageWhileLoading = true
             case .forceRefresh:
@@ -62,15 +57,19 @@ public struct GravatarImageSettingOptions {
                 shouldCancelOngoingDownload = true
             case .processor(let imageProcessor):
                 processor = imageProcessor
+            case .imageCache(let customCache):
+                imageCache = customCache
+            case .imageDownloader(let retriever):
+                imageDownloader = retriever
             }
         }
     }
     
-    func deriveDownloadOptions() -> GravatarImageDownloadOptions {
+    func deriveDownloadOptions(garavatarRating rating: GravatarRating, preferredSize size: CGSize) -> GravatarImageDownloadOptions {
         return GravatarImageDownloadOptions(
             scaleFactor: scaleFactor,
-            gravatarRating: gravatarRating,
-            preferredSize: preferredSize,
+            gravatarRating: rating,
+            preferredSize: size,
             forceRefresh: forceRefresh,
             processor: processor
         )
