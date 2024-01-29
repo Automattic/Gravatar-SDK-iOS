@@ -125,15 +125,16 @@ extension GravatarWrapper where Component: UIImageView {
     ///   You can get a performance benefit by setting this value since it will avoid the `layoutIfNeeded()` call.
     ///   - options: A set of options to define image setting behaviour. See `GravatarImageSettingOption` for more info.
     ///   - completionHandler: Completion block that's called when image downloading and setting completes.
+    @discardableResult
     public func setImage(email: String,
                          placeholder: UIImage? = nil,
                          rating: GravatarRating = GravatarRating.default,
                          preferredSize: CGSize? = nil,
                          options: [GravatarImageSettingOption]? = nil,
-                         completionHandler: GravatarImageSetCompletion? = nil)
+                         completionHandler: GravatarImageSetCompletion? = nil) -> CancellableDataTask?
     {
         let gravatarURL = GravatarURL.gravatarUrl(for: email, size: calculatedLongerEdgeSize(preferredSize: preferredSize), rating: rating)
-        setImage(with: gravatarURL, placeholder: placeholder, options: options, completionHandler: completionHandler)
+        return setImage(with: gravatarURL, placeholder: placeholder, options: options, completionHandler: completionHandler)
     }
     
     /// Downloads the  image and sets it to this UIImageView.
@@ -142,25 +143,22 @@ extension GravatarWrapper where Component: UIImageView {
     ///   - placeholder: A placeholder to show while downloading the image.
     ///   - options: A set of options to define image setting behaviour. See `GravatarImageSettingOption` for more info.
     ///   - completionHandler: Completion block that's called when image downloading and setting completes.
+    @discardableResult
     public func setImage(with source: URL?,
                          placeholder: UIImage? = nil,
                          options: [GravatarImageSettingOption]? = nil,
-                         completionHandler: GravatarImageSetCompletion? = nil)
+                         completionHandler: GravatarImageSetCompletion? = nil) -> CancellableDataTask?
     {
         var mutatingSelf = self
         guard let source = source else {
             mutatingSelf.placeholder = placeholder
             mutatingSelf.taskIdentifier = nil
             completionHandler?(.failure(GravatarImageSetError.requestError(reason: .emptyURL)))
-            return
+            return nil
         }
         
         let options = GravatarImageSettingOptions(options: options)
-        
-        if options.shouldCancelOngoingDownload {
-            cancelImageDownload()
-        }
-        
+                
         let isEmptyImage = component.image == nil && self.placeholder == nil
         if options.removeCurrentImageWhileLoading || isEmptyImage {
             // Always set placeholder while there is no image/placeholder yet.
@@ -173,7 +171,7 @@ extension GravatarWrapper where Component: UIImageView {
         mutatingSelf.taskIdentifier = issuedIdentifier
         
         let networkManager = options.imageDownloader ?? GravatarImageRetriever(imageCache: options.imageCache)
-        let task = networkManager.retrieveImage(with: source, forceRefresh: options.forceRefresh, processor: options.processor) { result in
+        let task = networkManager.retrieveImage(with: source, forceRefresh: options.forceRefresh, processor: options.processor) { [weak component] result in
             DispatchQueue.main.async {
                 self.activityIndicator?.stopAnimatingView()
                 guard issuedIdentifier == self.taskIdentifier else {
@@ -197,18 +195,13 @@ extension GravatarWrapper where Component: UIImageView {
                     mutatingSelf.placeholder = nil
                     switch options.transition {
                     case .none:
-                        self.component.image = value.image
+                        component?.image = value.image
                         completionHandler?(result.convert())
                         return
                     case .fade(let duration):
-                        UIView.transition(
-                            with: self.component,
-                            duration: duration,
-                            animations: { mutatingSelf.component.image = value.image },
-                            completion: { finished in
-                                completionHandler?(result.convert())
-                            }
-                        )
+                        self.transition(into: value.image, duration: duration) {
+                            completionHandler?(result.convert())
+                        }
                     }
                 case .failure:
                     completionHandler?(result.convert())
@@ -216,6 +209,7 @@ extension GravatarWrapper where Component: UIImageView {
             }
         }
         mutatingSelf.downloadTask = task
+        return task
     }
     
     private func calculatedLongerEdgeSize(preferredSize: CGSize?) -> Int {
@@ -236,5 +230,17 @@ extension GravatarWrapper where Component: UIImageView {
             }
         }
         return size
+    }
+    
+    private func transition(into image: UIImage, duration: Double, completion: @escaping ()->Void) {
+        UIView.transition(
+            with: self.component,
+            duration: duration,
+            options: [.transitionCrossDissolve],
+            animations: { self.component.image = image },
+            completion: { finished in
+                completion()
+            }
+        )
     }
 }

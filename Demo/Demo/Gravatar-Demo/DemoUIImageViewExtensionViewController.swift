@@ -52,6 +52,12 @@ class DemoUIImageViewExtensionViewController: UIViewController {
         return view
     }()
     
+    private lazy var animatedFadeInSwitch: SwitchWithLabel = {
+        let view = SwitchWithLabel(labelText: "Enable Fade In Animation")
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
     private lazy var fetchAvatarButton: UIButton = {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -70,7 +76,7 @@ class DemoUIImageViewExtensionViewController: UIViewController {
     }()
     
     private lazy var stackView: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [emailInputField, activityIndictorSwitchWithLabel, cancelOngoingSwitchWithLabel, removeCurrentImageSwitchWithLabel, showPlaceholderSwitchWithLabel, igonreCacheSwitchWithLabel, fetchAvatarButton, avatarImageView])
+        let stack = UIStackView(arrangedSubviews: [emailInputField, activityIndictorSwitchWithLabel, cancelOngoingSwitchWithLabel, removeCurrentImageSwitchWithLabel, showPlaceholderSwitchWithLabel, igonreCacheSwitchWithLabel, animatedFadeInSwitch, fetchAvatarButton, avatarImageView])
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.axis = .vertical
         stack.spacing = 12
@@ -95,7 +101,10 @@ class DemoUIImageViewExtensionViewController: UIViewController {
     
     @objc private func fetchAvatarButtonHandler() {
         let options = setupOptions()
-        let placeholderImage: UIImage? = showPlaceholderSwitchWithLabel.switchView.isOn ?  UIImage(named: "placeholder") : nil
+        if cancelOngoingSwitchWithLabel.switchView.isOn {
+            avatarImageView.gravatar.cancelImageDownload()
+        }
+        let placeholderImage: UIImage? = showPlaceholderSwitchWithLabel.switchView.isOn ? UIImage(named: "placeholder") : nil
         avatarImageView.gravatar.setImage(email: emailInputField.text ?? "",
                                           placeholder: placeholderImage,
                                           options: options) { result in
@@ -111,8 +120,11 @@ class DemoUIImageViewExtensionViewController: UIViewController {
     private func setupOptions() -> [GravatarImageSettingOption] {
         var options: [GravatarImageSettingOption] = []
         
-        if cancelOngoingSwitchWithLabel.switchView.isOn {
-            options.append(.cancelOngoingDownload)
+        if animatedFadeInSwitch.switchView.isOn {
+            options.append(.transition(.fade(0.3)))
+        }
+        else {
+            options.append(.transition(.none))
         }
         
         if removeCurrentImageSwitchWithLabel.switchView.isOn {

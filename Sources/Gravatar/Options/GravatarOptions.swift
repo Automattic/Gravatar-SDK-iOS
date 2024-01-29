@@ -15,9 +15,6 @@ public enum GravatarImageSettingOption {
 
     // Ignore the cached value and re-download the image. Default: false
     case forceRefresh
-
-    // Cancels the ongoing download in the view wrapper if a new download starts. Default: false.
-    case cancelOngoingDownload
     
     // Processor to run on the the downloaded data while converting it into an image.
     // If not set `DefaultImageProcessor.common` will be used.
@@ -36,7 +33,6 @@ public struct GravatarImageSettingOptions {
     var transition: GravatarImageTransition = .none
     var removeCurrentImageWhileLoading = false
     var forceRefresh = false
-    var shouldCancelOngoingDownload = false
     var processor: GravatarImageProcessor = DefaultImageProcessor.common
     var imageCache: GravatarImageCaching = GravatarImageCache.shared
     var imageDownloader: GravatarImageRetrieverProtocol? = nil
@@ -53,8 +49,6 @@ public struct GravatarImageSettingOptions {
                 removeCurrentImageWhileLoading = true
             case .forceRefresh:
                 forceRefresh = true
-            case .cancelOngoingDownload:
-                shouldCancelOngoingDownload = true
             case .processor(let imageProcessor):
                 processor = imageProcessor
             case .imageCache(let customCache):
