@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1E0087932B63CFFE0012ECEA /* DemoFetchProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E0087922B63CFFE0012ECEA /* DemoFetchProfileViewController.swift */; };
+		1E0087952B63DBCB0012ECEA /* DemoUploadImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E0087942B63DBCB0012ECEA /* DemoUploadImageViewController.swift */; };
 		4948C4EC2B61C41100AC4875 /* Gravatar in Frameworks */ = {isa = PBXBuildFile; productRef = 4948C4EB2B61C41100AC4875 /* Gravatar */; };
 		4948C4EE2B61C41800AC4875 /* Gravatar in Frameworks */ = {isa = PBXBuildFile; productRef = 4948C4ED2B61C41800AC4875 /* Gravatar */; };
 		495775E22B5B34970082812A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 495775E12B5B34970082812A /* AppDelegate.swift */; };
@@ -23,6 +25,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1E0087922B63CFFE0012ECEA /* DemoFetchProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoFetchProfileViewController.swift; sourceTree = "<group>"; };
+		1E0087942B63DBCB0012ECEA /* DemoUploadImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoUploadImageViewController.swift; sourceTree = "<group>"; };
 		4948C4E92B61C3FD00AC4875 /* Gravatar-SDK-iOS */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "Gravatar-SDK-iOS"; path = ..; sourceTree = "<group>"; };
 		495775DF2B5B34970082812A /* Gravatar-Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Gravatar-Demo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		495775E12B5B34970082812A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -85,6 +89,8 @@
 				91F0B3E12B6281A60025C4F8 /* Main.storyboard */,
 				495775E32B5B34970082812A /* SceneDelegate.swift */,
 				91F0B3DC2B62815F0025C4F8 /* DemoAvatarDownloadViewController.swift */,
+				1E0087922B63CFFE0012ECEA /* DemoFetchProfileViewController.swift */,
+				1E0087942B63DBCB0012ECEA /* DemoUploadImageViewController.swift */,
 				91F0B3DB2B62815F0025C4F8 /* MainTableViewController.swift */,
 				495775EA2B5B34980082812A /* Assets.xcassets */,
 				495775EC2B5B34980082812A /* LaunchScreen.storyboard */,
@@ -239,6 +245,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				91F0B3DD2B62815F0025C4F8 /* MainTableViewController.swift in Sources */,
+				1E0087932B63CFFE0012ECEA /* DemoFetchProfileViewController.swift in Sources */,
+				1E0087952B63DBCB0012ECEA /* DemoUploadImageViewController.swift in Sources */,
 				495775E22B5B34970082812A /* AppDelegate.swift in Sources */,
 				91F0B3DE2B62815F0025C4F8 /* DemoAvatarDownloadViewController.swift in Sources */,
 				495775E42B5B34970082812A /* SceneDelegate.swift in Sources */,
