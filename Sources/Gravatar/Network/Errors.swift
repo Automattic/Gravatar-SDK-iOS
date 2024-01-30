@@ -36,7 +36,7 @@ public enum GravatarImageDownload {
         case emptyURL
         
         /// The resource task is finished, but it is not the one expected now. It's outdated because of new requests.
-        /// In any case the result of this original task is contained in the associated value. So if the task succeeded  the image is available in the result, if failed the error is.
+        /// In any case the result of this original task is contained in the associated value. So if the task succeeded the image is available in the result, if failed the error is.
         /// - result: The `GravatarImageDownloadResult` if the source task is finished without problem. `nil` if an error
         ///           happens.
         /// - error: The `Error` if an issue happens. `nil` if the task finishes without problem.
