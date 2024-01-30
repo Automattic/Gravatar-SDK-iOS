@@ -35,13 +35,8 @@ public enum GravatarImageDownload {
         /// The input url is empty or `nil`.
         case emptyURL
         
-        /// The resource task is finished, but it is not the one expected now. This usually happens when you start another
-        /// download on the view without cancelling the current on-going one.
-        /// You can pass`GravatarImageSettingOption.cancelOngoingDownload` option  to cancel the
-        /// ongoing task deliberately before starting a new one. In that case this error code will not happen.
-        ///
-        /// Otherwise the previous setting task will fail with this `.notCurrentSourceTask` even if it was successful.
-        /// But the  result of this original task is contained in the associated value.
+        /// The resource task is finished, but it is not the one expected now. It's outdated because of new requests.
+        /// In any case the result of this original task is contained in the associated value. So if the task succeeded  the image is available in the result, if failed the error is.
         /// - result: The `GravatarImageDownloadResult` if the source task is finished without problem. `nil` if an error
         ///           happens.
         /// - error: The `Error` if an issue happens. `nil` if the task finishes without problem.
