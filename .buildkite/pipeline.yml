@@ -16,10 +16,7 @@ steps:
     command: |
       echo "--- 🛠 Building + Testing"
       make test
-    env: *common_env
-    plugins: *common_plugins
-    agents:
-      queue: "mac"
+    plugins: [$CI_TOOLKIT]
 
   ###################
   # Validate Podspec
