@@ -17,6 +17,14 @@ struct ServiceRemote {
         return (data, urlResponse)
     }
 
+    func uploadData(with request: URLRequest, data: Data) async throws -> URLResponse {
+        let (_, urlResponse) = try await urlSession.upload(for: request, from: data)
+        if let response = urlResponse as? HTTPURLResponse, isErrorResponse(response) {
+            throw error(for: response)
+        }
+        return urlResponse
+    }
+
     func fetchObject<T: Decodable>(from path: String) async throws -> T {
         let url = try url(from: path)
         let request = URLRequest(url: url)
@@ -25,27 +33,16 @@ struct ServiceRemote {
         return object
     }
 
-    func fetchImage(from path: String, imageProcressor: ImageProcessing = ImageProcessor()) async throws -> GravatarImageDownloadResult {
-        let url = try url(from: path)
-        let request = URLRequest.imageRequest(url: url)
-
-        let (data, response) = try await fetchData(with: request)
-        guard let url = response.url else {
-            throw GravatarImageDownloadError.responseError(reason: .urlMismatch)
+    func url(from path: String) throws -> URL {
+        guard let url = URL(string: baseUrl + path) else {
+            throw GravatarServiceError.invalidURL
         }
-        guard let image = imageProcressor.process(data: data) else {
-            throw GravatarImageDownloadError.responseError(reason: .imageInitializationFailed)
-        }
-
-        return GravatarImageDownloadResult(image: image, sourceURL: url)
+        return url
     }
-}
 
-private func url(from path: String) throws -> URL {
-    guard let url = URL(string: baseUrl + path) else {
-        throw GravatarServiceError.invalidURL
+    func authenticateRequest(_ request: inout URLRequest, token: String) {
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
     }
-    return url
 }
 
 private func isErrorResponse(_ response: HTTPURLResponse) -> Bool {
@@ -58,13 +55,4 @@ private func error(for response: HTTPURLResponse) -> NSError {
         code: response.statusCode,
         userInfo: [NSLocalizedDescriptionKey: HTTPURLResponse.localizedString(forStatusCode: response.statusCode)]
     )
-}
-
-private extension URLRequest {
-    static func imageRequest(url: URL) -> URLRequest {
-        var request = URLRequest(url: url)
-        request.httpShouldHandleCookies = false
-        request.addValue("image/*", forHTTPHeaderField: "Accept")
-        return request
-    }
 }

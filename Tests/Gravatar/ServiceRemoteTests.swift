@@ -38,29 +38,6 @@ final class ServiceRemoteTests: XCTestCase {
             XCTAssertEqual((error as NSError).localizedDescription, "not found")
         }
     }
-
-    func testFetchImage() async throws {
-        let response = HTTPURLResponse(url: URL(string: "https://gravatar.com/image.jpg")!, statusCode: 200, httpVersion: nil, headerFields: nil)!
-        let sessionMock = URLSessionMock(returnData: ImageHelper.testImageData, response: response)
-        let remote = ServiceRemote(urlSession: sessionMock)
-        let imageResponse = try await remote.fetchImage(from: "image")
-
-        XCTAssertEqual(sessionMock.request?.url?.absoluteString, "https://gravatar.com/image")
-        XCTAssertNotNil(imageResponse.image)
-    }
-
-    func testFetchImageURLResponseError() async throws {
-
-        let response = HTTPURLResponse()
-        let sessionMock = URLSessionMock(returnData: ImageHelper.testImageData, response: response)
-        let remote = ServiceRemote(urlSession: sessionMock)
-
-        do {
-            _ = try await remote.fetchImage(from: "")
-        } catch {
-            XCTAssertEqual(error.localizedDescription, (GravatarImageDownloadError.responseError(reason: .urlMismatch) as NSError).localizedDescription)
-        }
-    }
 }
 
 private struct TestObject: Decodable {
@@ -76,6 +53,10 @@ let jsonData = """
 """.data(using: .utf8)!
 
 class URLSessionMock: URLSessionProtocol {
+    func upload(for request: URLRequest, from bodyData: Data) async throws -> (Data, URLResponse) {
+        fatalError("Not yet implemented")
+    }
+    
     let returnData: Data
     let response: HTTPURLResponse
     let error: NSError?

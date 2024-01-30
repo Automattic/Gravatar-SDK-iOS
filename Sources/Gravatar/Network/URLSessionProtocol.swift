@@ -8,6 +8,8 @@ public protocol URLSessionProtocol {
     ) -> URLSessionDataTask
 
     func data(for request: URLRequest)  async throws -> (Data, URLResponse)
+
+    func upload(for request: URLRequest, from bodyData: Data) async throws -> (Data, URLResponse)
 }
 
 extension URLSession: URLSessionProtocol { 
