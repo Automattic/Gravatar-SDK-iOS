@@ -1,7 +1,7 @@
 import UIKit
 
 public struct ImageService {
-    let remote: ServiceRemote
+    private let remote: ServiceRemote
 
     public init(urlSession: URLSessionProtocol = URLSession.shared) {
         self.remote = ServiceRemote(urlSession: urlSession)
@@ -36,7 +36,7 @@ public struct ImageService {
     @discardableResult
     public func uploadImage(_ image: UIImage, accountEmail: String, accountToken: String) async throws -> URLResponse {
         let boundary = "Boundary-\(UUID().uuidString)"
-        var request = imageUploadRequest(with: boundary)
+        var request = URLRequest.imageUploadRequest(with: boundary)
         remote.authenticateRequest(&request, token: accountToken)
         let body = imageUploadBody(with: image.pngData()!, account: accountEmail, boundary: boundary)
         let response = try await remote.uploadData(with: request, data: body)
@@ -53,14 +53,6 @@ public struct ImageService {
             }
         }
     }
-}
-
-private func imageUploadRequest(with boundary: String) -> URLRequest {
-    let url = URL(string: "https://api.gravatar.com/v1/upload-image")!
-    var request = URLRequest(url: url)
-    request.addValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
-    request.httpMethod = "POST"
-    return request
 }
 
 private func imageUploadBody(with imageData: Data, account: String, boundary: String) -> Data {
@@ -105,6 +97,14 @@ private extension URLRequest {
         var request = URLRequest(url: url)
         request.httpShouldHandleCookies = false
         request.addValue("image/*", forHTTPHeaderField: "Accept")
+        return request
+    }
+
+    static func imageUploadRequest(with boundary: String) -> URLRequest {
+        let url = URL(string: "https://api.gravatar.com/v1/upload-image")!
+        var request = URLRequest(url: url)
+        request.addValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+        request.httpMethod = "POST"
         return request
     }
 }

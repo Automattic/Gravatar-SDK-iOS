@@ -53,15 +53,12 @@ let jsonData = """
 """.data(using: .utf8)!
 
 class URLSessionMock: URLSessionProtocol {
-    func upload(for request: URLRequest, from bodyData: Data) async throws -> (Data, URLResponse) {
-        fatalError("Not yet implemented")
-    }
-    
     let returnData: Data
     let response: HTTPURLResponse
     let error: NSError?
 
     var request: URLRequest? = nil
+    var uploadData: Data? = nil
 
     init(returnData: Data, response: HTTPURLResponse, error: NSError? = nil) {
         self.returnData = returnData
@@ -75,6 +72,15 @@ class URLSessionMock: URLSessionProtocol {
     
     func data(for request: URLRequest) async throws -> (Data, URLResponse) {
         self.request = request
+        if let error = error {
+            throw error
+        }
+        return (returnData, response)
+    }
+
+    func upload(for request: URLRequest, from bodyData: Data) async throws -> (Data, URLResponse) {
+        self.request = request
+        self.uploadData = bodyData
         if let error = error {
             throw error
         }
