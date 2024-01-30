@@ -1,0 +1,28 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/buildkite/pipeline-schema/main/schema.json
+---
+
+# Variables used in this pipeline are defined in `shared-pipeline-vars`, which is `source`'d before calling `buidkite-agent pipeline upload`
+
+agents:
+  queue: "mac"
+env:
+  IMAGE_ID: $IMAGE_ID
+
+steps:
+  #################
+  # Build and Test
+  #################
+  - label: "🧪 Build and Test"
+    command: |
+      echo "--- 🛠 Building + Testing"
+      make test
+    env: *common_env
+    plugins: *common_plugins
+    agents:
+      queue: "mac"
+
+  ###################
+  # Validate Podspec
+  ###################
+  - label: "🧪 Validate Podspec"
+    command: validate_podspec
