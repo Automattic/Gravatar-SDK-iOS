@@ -2,35 +2,60 @@ import UIKit
 
 public struct ImageService {
     private let remote: ServiceRemote
+    let imageCache: GravatarImageCaching
 
-    public init(urlSession: URLSessionProtocol = URLSession.shared) {
+    public init(urlSession: URLSessionProtocol = URLSession.shared, cache: GravatarImageCaching = GravatarImageCache()) {
         self.remote = ServiceRemote(urlSession: urlSession)
+        self.imageCache = cache
     }
 
-    public func fetchImage(from email: String, imageProcressor: ImageProcessing = ImageProcessor()) async throws -> GravatarImageDownloadResult {
-        let path = "avatar/\(try email.sha256())"
-
-        let (data, response) = try await fetchImage(from: path)
-
-        guard let url = response.url else {
-            throw GravatarImageDownloadError.responseError(reason: .urlMismatch)
+    public func retrieveImage(
+        with email: String,
+        options: GravatarImageDownloadOptions = GravatarImageDownloadOptions(),
+        completionHandler: ImageDownloadCompletion? = nil
+    ) {
+        Task {
+            do {
+                let result = try await fetchImage(with: email, options: options)
+                completionHandler?(Result.success(result))
+            } catch {
+                completionHandler?(Result.failure(error))
+            } 
         }
-        guard let image = imageProcressor.process(data: data) else {
-            throw GravatarImageDownloadError.responseError(reason: .imageInitializationFailed)
-        }
-
-        return GravatarImageDownloadResult(image: image, sourceURL: url)
     }
 
-    private func fetchImage(from path: String) async throws -> (Data, URLResponse) {
-        let url = try remote.url(from: path)
-        guard GravatarURL.isGravatarURL(url) else {
-            throw GravatarServiceError.invalidURL
+    public func fetchImage(
+        with email: String,
+        options: GravatarImageDownloadOptions = GravatarImageDownloadOptions()
+    ) async throws -> GravatarImageDownloadResult
+    {
+        let size = options.preferredSize ?? GravatarImageDownloadOptions.defaultSize
+        let targetSize = await max(size.width, size.height) * UIScreen.main.scale
+
+        guard let gravatarURL = GravatarURL.gravatarUrl(for: email, size: Int(targetSize), rating: options.gravatarRating) else {
+            throw URLError(.badURL)
         }
 
+        if !options.forceRefresh, let cachedImage = imageCache.getImage(forKey: gravatarURL.absoluteString) {
+            return GravatarImageDownloadResult(image: cachedImage, sourceURL: gravatarURL)
+        }
+
+        return try await fetchImage(from: gravatarURL)
+    }
+
+    private func fetchImage(from url: URL, imageProcressor: ImageProcessing = ImageProcessor()) async throws -> GravatarImageDownloadResult {
         let request = URLRequest.imageRequest(url: url)
+        let (data, response) = try await remote.fetchData(with: request)
 
-        return try await remote.fetchData(with: request)
+        guard 
+            let responseUrl = response.url,
+            let image = imageProcressor.process(data: data)
+        else {
+            throw URLError(.badServerResponse)
+        }
+
+        imageCache.setImage(image, forKey: url.absoluteString)
+        return GravatarImageDownloadResult(image: image, sourceURL: responseUrl)
     }
 
     @discardableResult

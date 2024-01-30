@@ -35,7 +35,7 @@ struct ServiceRemote {
 
     func url(from path: String) throws -> URL {
         guard let url = URL(string: baseUrl + path) else {
-            throw GravatarServiceError.invalidURL
+            throw URLError(.unsupportedURL)
         }
         return url
     }

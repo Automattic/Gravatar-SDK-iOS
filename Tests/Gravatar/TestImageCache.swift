@@ -12,8 +12,10 @@ import UIKit
 class TestImageCache: GravatarImageCaching {
     var dict: [String: UIImage] = [:]
     var getImageCallCount = 0
-    
+    var setImageCallsCount =  0
+
     public func setImage(_ image: UIImage, forKey key: String) {
+        setImageCallsCount += 1
         dict[key] = image
     }
 

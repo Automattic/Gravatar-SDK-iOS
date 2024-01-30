@@ -64,9 +64,11 @@ final class GravatarImageRetrieverTests: XCTestCase {
             switch result {
             case .success:
                 XCTFail()
-            case .failure(let error):
+            case .failure(let error as GravatarImageDownloadError):
                 XCTAssertEqual(error, GravatarImageDownloadError.responseError(reason: .imageInitializationFailed))
                 expectation.fulfill()
+            case .failure:
+                XCTFail()
             }
         }
         wait(for: [expectation], timeout: 2.0)
@@ -83,9 +85,11 @@ final class GravatarImageRetrieverTests: XCTestCase {
             switch result {
             case .success:
                 XCTFail()
-            case .failure(let error):
+            case .failure(let error as GravatarImageDownloadError):
                 XCTAssertEqual(error, GravatarImageDownloadError.responseError(reason: .notFound))
                 expectation.fulfill()
+            case .failure:
+                XCTFail()
             }
         }
         wait(for: [expectation], timeout: 2.0)
@@ -102,9 +106,11 @@ final class GravatarImageRetrieverTests: XCTestCase {
             switch result {
             case .success:
                 XCTFail()
-            case .failure(let error):
+            case .failure(let error as GravatarImageDownloadError):
                 XCTAssertEqual(error, GravatarImageDownloadError.responseError(reason: .urlMismatch))
                 expectation.fulfill()
+            case .failure:
+                XCTFail()
             }
         }
         wait(for: [expectation], timeout: 2.0)
@@ -121,9 +127,11 @@ final class GravatarImageRetrieverTests: XCTestCase {
             switch result {
             case .success:
                 XCTFail()
-            case .failure(let error):
+            case .failure(let error as GravatarImageDownloadError):
                 XCTAssertEqual(error, GravatarImageDownloadError.responseError(reason: .URLSessionError(error: TestURLSession.error)))
                 expectation.fulfill()
+            case .failure:
+                XCTFail()
             }
         }
         wait(for: [expectation], timeout: 2.0)
@@ -162,8 +170,10 @@ final class GravatarImageRetrieverTests: XCTestCase {
             switch result {
             case .success:
                 XCTFail()
-            case .failure(let error):
+            case .failure(let error as GravatarImageDownloadError):
                 XCTAssertEqual(error, GravatarImageDownloadError.requestError(reason: .emptyURL))
+            case .failure:
+                XCTFail()
             }
 
             expectation.fulfill()

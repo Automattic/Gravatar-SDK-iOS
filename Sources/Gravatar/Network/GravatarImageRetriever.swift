@@ -1,7 +1,7 @@
 import Foundation
 import UIKit
 
-public typealias ImageDownloadCompletion = ((Result<GravatarImageDownloadResult, GravatarImageDownloadError>) -> Void)
+public typealias ImageDownloadCompletion = ((Result<GravatarImageDownloadResult, Error>) -> Void)
 
 public class GravatarImageRetriever {
     
@@ -16,7 +16,7 @@ public class GravatarImageRetriever {
     public convenience init() {
         self.init(imageCache: GravatarImageCache.shared, urlSession: URLSession.shared)
     }
-    
+
     /// Downloads the the avatar image of the given email.
     /// - Parameters:
     ///   - email: Gravatar account email
@@ -86,17 +86,17 @@ public class GravatarImageRetriever {
         
         let task = urlSession.dataTask(with: request, completionHandler: { [weak self] data, response, error in
             if let error {
-                completionHandler?(.failure(.responseError(reason: .URLSessionError(error: error))))
+                completionHandler?(.failure(GravatarImageDownloadError.responseError(reason: .URLSessionError(error: error))))
                 return
             }
             
             if (response as? HTTPURLResponse)?.statusCode == HTTPStatus.notFound.rawValue {
-                completionHandler?(.failure(.responseError(reason: .notFound)))
+                completionHandler?(.failure(GravatarImageDownloadError.responseError(reason: .notFound)))
                 return
             }
             
             guard let data = data, let image = processor.process(data) else {
-                completionHandler?(.failure(.responseError(reason: .imageInitializationFailed)))
+                completionHandler?(.failure(GravatarImageDownloadError.responseError(reason: .imageInitializationFailed)))
                 return
             }
             
@@ -105,7 +105,7 @@ public class GravatarImageRetriever {
                 completionHandler?(.success(GravatarImageDownloadResult(image: image, sourceURL: url)))
             }
             else {
-                completionHandler?(.failure(.responseError(reason: .urlMismatch)))
+                completionHandler?(.failure(GravatarImageDownloadError.responseError(reason: .urlMismatch)))
             }
         })
         

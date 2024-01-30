@@ -7,9 +7,9 @@ final class ImageServiceTests: XCTestCase {
         let sessionMock = URLSessionMock(returnData: ImageHelper.testImageData, response: response)
         let service = ImageService(urlSession: sessionMock)
 
-        let imageResponse = try await service.fetchImage(from: "some@email.com")
+        let imageResponse = try await service.fetchImage(with: "some@email.com")
 
-        XCTAssertEqual(sessionMock.request?.url?.absoluteString, "https://gravatar.com/avatar/676212ff796c79a3c06261eb10e3f455aa93998ee6e45263da13679c74b1e674")
+        XCTAssertEqual(sessionMock.request?.url?.absoluteString, "https://gravatar.com/avatar/676212ff796c79a3c06261eb10e3f455aa93998ee6e45263da13679c74b1e674?d=404&s=240&r=g")
         XCTAssertNotNil(imageResponse.image)
     }
 
@@ -19,9 +19,9 @@ final class ImageServiceTests: XCTestCase {
         let service = ImageService(urlSession: sessionMock)
 
         do {
-            _ = try await service.fetchImage(from: "")
-        } catch {
-            XCTAssertEqual(error.localizedDescription, (GravatarImageDownloadError.responseError(reason: .urlMismatch) as NSError).localizedDescription)
+            _ = try await service.fetchImage(with: "")
+        } catch let error as NSError {
+            XCTAssertEqual(error.code, URLError.Code.badServerResponse.rawValue)
         }
     }
 

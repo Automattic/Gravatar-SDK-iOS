@@ -38,6 +38,35 @@ final class ServiceRemoteTests: XCTestCase {
             XCTAssertEqual((error as NSError).localizedDescription, "not found")
         }
     }
+
+    func testForceRefreshEnabled() async throws {
+        let cache = TestImageCache()
+        let urlSession = URLSessionMock(returnData: ImageHelper.testImageData, response: HTTPURLResponse.successResponse(with: URL(string: "https://gravatar.com")))
+        let service = ImageService(urlSession: urlSession, cache: cache)
+        let options = GravatarImageDownloadOptions(forceRefresh: true)
+
+        _ = try await service.fetchImage(with: "some@email.com", options: options)
+        _ = try await service.fetchImage(with: "some@email.com", options: options)
+        _ = try await service.fetchImage(with: "some@email.com", options: options)
+
+        XCTAssertEqual(cache.getImageCallCount, 0, "We should not hit the cache")
+        XCTAssertEqual(urlSession.callsCount, 3, "We should fetch from network")
+    }
+
+    func testForceRefreshDisabled() async throws {
+        let cache = TestImageCache()
+        let urlSession = URLSessionMock(returnData: ImageHelper.testImageData, response: HTTPURLResponse.successResponse(with: URL(string: "https://gravatar.com")))
+        let service = ImageService(urlSession: urlSession, cache: cache)
+        let options = GravatarImageDownloadOptions(forceRefresh: false)
+
+        _ = try await service.fetchImage(with: "some@email.com", options: options)
+        _ = try await service.fetchImage(with: "some@email.com", options: options)
+        _ = try await service.fetchImage(with: "some@email.com", options: options)
+
+        XCTAssertEqual(cache.getImageCallCount, 3, "We should hit the cache")
+        XCTAssertEqual(cache.setImageCallsCount, 1, "We should save once to the cache")
+        XCTAssertEqual(urlSession.callsCount, 1, "We should fetch from network only the first time")
+    }
 }
 
 private struct TestObject: Decodable {
@@ -56,6 +85,7 @@ class URLSessionMock: URLSessionProtocol {
     let returnData: Data
     let response: HTTPURLResponse
     let error: NSError?
+    var callsCount = 0
 
     var request: URLRequest? = nil
     var uploadData: Data? = nil
@@ -71,6 +101,7 @@ class URLSessionMock: URLSessionProtocol {
     }
     
     func data(for request: URLRequest) async throws -> (Data, URLResponse) {
+        callsCount += 1
         self.request = request
         if let error = error {
             throw error
