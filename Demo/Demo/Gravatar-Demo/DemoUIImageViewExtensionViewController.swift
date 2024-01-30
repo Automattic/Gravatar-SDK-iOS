@@ -15,7 +15,6 @@ class DemoUIImageViewExtensionViewController: UIViewController {
     private lazy var emailInputField: UITextField = {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
-        textField.text = "pinarolguc@yahoo.com"
         textField.placeholder = "Enter Gravatar email"
         textField.autocapitalizationType = .none
         textField.keyboardType = .emailAddress
