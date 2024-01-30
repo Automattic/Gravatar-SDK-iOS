@@ -31,6 +31,10 @@ class SwitchWithLabel: UIView {
         return stack
     }()
     
+    var isOn: Bool {
+        return switchView.isOn
+    }
+
     init(labelText: String) {
         super.init(frame: .zero)
         label.text = labelText

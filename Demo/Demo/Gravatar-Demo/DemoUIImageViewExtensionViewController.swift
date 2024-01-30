@@ -101,10 +101,10 @@ class DemoUIImageViewExtensionViewController: UIViewController {
     
     @objc private func fetchAvatarButtonHandler() {
         let options = setupOptions()
-        if cancelOngoingSwitchWithLabel.switchView.isOn {
+        if cancelOngoingSwitchWithLabel.isOn {
             avatarImageView.gravatar.cancelImageDownload()
         }
-        let placeholderImage: UIImage? = showPlaceholderSwitchWithLabel.switchView.isOn ? UIImage(named: "placeholder") : nil
+        let placeholderImage: UIImage? = showPlaceholderSwitchWithLabel.isOn ? UIImage(named: "placeholder") : nil
         avatarImageView.gravatar.setImage(email: emailInputField.text ?? "",
                                           placeholder: placeholderImage,
                                           options: options) { result in
@@ -120,22 +120,22 @@ class DemoUIImageViewExtensionViewController: UIViewController {
     private func setupOptions() -> [GravatarImageSettingOption] {
         var options: [GravatarImageSettingOption] = []
         
-        if animatedFadeInSwitch.switchView.isOn {
+        if animatedFadeInSwitch.isOn {
             options.append(.transition(.fade(0.3)))
         }
         else {
             options.append(.transition(.none))
         }
         
-        if removeCurrentImageSwitchWithLabel.switchView.isOn {
+        if removeCurrentImageSwitchWithLabel.isOn {
             options.append(.removeCurrentImageWhileLoading)
         }
         
-        if igonreCacheSwitchWithLabel.switchView.isOn {
+        if igonreCacheSwitchWithLabel.isOn {
             options.append(.forceRefresh)
         }
         
-        if activityIndictorSwitchWithLabel.switchView.isOn {
+        if activityIndictorSwitchWithLabel.isOn {
             avatarImageView.gravatar.activityIndicatorType = .activity
         }
         else {

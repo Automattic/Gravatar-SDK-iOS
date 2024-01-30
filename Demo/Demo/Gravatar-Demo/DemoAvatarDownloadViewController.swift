@@ -106,7 +106,7 @@ class DemoAvatarDownloadViewController: UIViewController {
         
         let options: GravatarImageDownloadOptions = .init(gravatarRating: preferredRating ?? .default, 
                                                           preferredSize: preferredSize,
-                                                          forceRefresh: igonreCacheSwitchWithLabel.switchView.isOn)
+                                                          forceRefresh: igonreCacheSwitchWithLabel.isOn)
         
         avatarImageView.image = nil // Setting to nil to make the effect of `forceRefresh more visible
         
