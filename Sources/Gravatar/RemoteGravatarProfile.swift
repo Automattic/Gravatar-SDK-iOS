@@ -32,3 +32,19 @@ public class RemoteGravatarProfile {
         currentLocation = dictionary.string(forKey: "currentLocation") ?? ""
     }
 }
+
+public struct GravatarProfileRemote: Decodable {
+    let id: String
+    let hash: String
+    let requestHash: String
+    let profileUrl: String
+    let preferredUsername: String
+    let thumbnailUrl: String
+    let name: ProfileName?
+}
+
+public struct ProfileName: Decodable {
+    let givenName: String
+    let familyName: String
+    let formatted: String
+}

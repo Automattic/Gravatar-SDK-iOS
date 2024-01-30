@@ -11,3 +11,15 @@ public struct DefaultImageProcessor: GravatarImageProcessor {
         return UIImage(data: data, scale: scaleFactor)
     }
 }
+
+struct ImageProcessor: ImageProcessing {}
+
+protocol ImageProcessing {
+    func process(data: Data, with scaleFactor: CGFloat) -> UIImage?
+}
+
+extension ImageProcessing {
+    func process(data: Data, with scaleFactor: CGFloat = UIScreen.main.scale) -> UIImage? {
+        UIImage(data: data, scale: scaleFactor)
+    }
+}

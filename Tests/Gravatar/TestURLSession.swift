@@ -17,6 +17,11 @@ enum TestDataTaskFailReason: Equatable {
 }
 
 class TestURLSession: URLSessionProtocol {
+    func data(for request: URLRequest) async throws -> (Data, URLResponse) {
+        XCTFail("Not implemented")
+        fatalError()
+    }
+
     var failReason: TestDataTaskFailReason?
     private(set) var dataTaskCount: Int = 0
     static let error = NSError(domain: "test", code: 1234)

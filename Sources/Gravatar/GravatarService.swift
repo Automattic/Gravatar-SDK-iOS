@@ -1,8 +1,8 @@
-import Foundation
 import UIKit
 
 public enum GravatarServiceError: Int, Error {
     case invalidAccountInfo
+    case invalidURL
 }
 
 extension GravatarServiceError: CustomDebugStringConvertible {
@@ -10,6 +10,8 @@ extension GravatarServiceError: CustomDebugStringConvertible {
         switch self {
         case .invalidAccountInfo:
             return "Invalid account info"
+        case .invalidURL:
+            return "Invalid URL"
         }
     }
 }
@@ -19,6 +21,13 @@ extension GravatarServiceError: CustomDebugStringConvertible {
 open class GravatarService {
 
     public init() {}
+
+
+    public func fetchProfile(email: String) async throws -> GravatarProfileRemote {
+        let path = try email.sha256() + ".json"
+        let remote = ServiceRemote()
+        return try await remote.fetchObject(from: path)
+    }
 
     /// This method fetches the Gravatar profile for the specified email address.
     ///

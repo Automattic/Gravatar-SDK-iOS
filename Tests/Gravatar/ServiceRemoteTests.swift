@@ -1,0 +1,102 @@
+import XCTest
+@testable import Gravatar
+
+final class ServiceRemoteTests: XCTestCase {
+    func testFetchObject() async throws {
+        let sessionMock = URLSessionMock(returnData: jsonData, response: HTTPURLResponse())
+        let remote = ServiceRemote(urlSession: sessionMock)
+        let testObject: TestObject = try await remote.fetchObject(from: "name")
+
+        XCTAssertEqual(sessionMock.request?.url?.absoluteString, "https://gravatar.com/name")
+        XCTAssertEqual(testObject.name, "John")
+        XCTAssertEqual(testObject.surname, "Appleseed")
+    }
+
+    func testFetchObjectError() async throws {
+        let anError = NSError(domain: NSURLErrorDomain, code: 400)
+        let sessionMock = URLSessionMock(returnData: "".data(using: .utf8)!, response: HTTPURLResponse(), error: anError)
+        let remote = ServiceRemote(urlSession: sessionMock)
+
+        do {
+            let _: TestObject = try await remote.fetchObject(from: "name")
+            XCTFail("This should throw")
+        } catch {
+            XCTAssertEqual((error as NSError).code, 400)
+        }
+    }
+
+    func testFetchObjectErrorWithoutErrorObject() async throws {
+        let response = HTTPURLResponse(url: URL(string: "https://gravatar.com")!, statusCode: 404, httpVersion: nil, headerFields: nil)!
+        let sessionMock = URLSessionMock(returnData: "Error happened".data(using: .utf8)!, response: response)
+        let remote = ServiceRemote(urlSession: sessionMock)
+
+        do {
+            let _: TestObject = try await remote.fetchObject(from: "name")
+            XCTFail("This should throw")
+        } catch {
+            XCTAssertEqual((error as NSError).code, 404)
+            XCTAssertEqual((error as NSError).localizedDescription, "not found")
+        }
+    }
+
+    func testFetchImage() async throws {
+        let response = HTTPURLResponse(url: URL(string: "https://gravatar.com/image.jpg")!, statusCode: 200, httpVersion: nil, headerFields: nil)!
+        let sessionMock = URLSessionMock(returnData: ImageHelper.testImageData, response: response)
+        let remote = ServiceRemote(urlSession: sessionMock)
+        let imageResponse = try await remote.fetchImage(from: "image")
+
+        XCTAssertEqual(sessionMock.request?.url?.absoluteString, "https://gravatar.com/image")
+        XCTAssertNotNil(imageResponse.image)
+    }
+
+    func testFetchImageURLResponseError() async throws {
+
+        let response = HTTPURLResponse()
+        let sessionMock = URLSessionMock(returnData: ImageHelper.testImageData, response: response)
+        let remote = ServiceRemote(urlSession: sessionMock)
+
+        do {
+            _ = try await remote.fetchImage(from: "")
+        } catch {
+            XCTAssertEqual(error.localizedDescription, (GravatarImageDownloadError.responseError(reason: .urlMismatch) as NSError).localizedDescription)
+        }
+    }
+}
+
+private struct TestObject: Decodable {
+    let name: String
+    let surname: String
+}
+
+let jsonData = """
+{
+    "name": "John",
+    "surname": "Appleseed"
+}
+""".data(using: .utf8)!
+
+class URLSessionMock: URLSessionProtocol {
+    let returnData: Data
+    let response: HTTPURLResponse
+    let error: NSError?
+
+    var request: URLRequest? = nil
+
+    init(returnData: Data, response: HTTPURLResponse, error: NSError? = nil) {
+        self.returnData = returnData
+        self.response = response
+        self.error = error
+    }
+
+    func dataTask(with request: URLRequest, completionHandler: @escaping @Sendable (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTask {
+        fatalError()
+    }
+    
+    func data(for request: URLRequest) async throws -> (Data, URLResponse) {
+        self.request = request
+        if let error = error {
+            throw error
+        }
+        return (returnData, response)
+    }
+}
