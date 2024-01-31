@@ -24,7 +24,7 @@ public struct GravatarProfile: Equatable {
 }
 
 extension GravatarProfile {
-    init(with remote: GravatarProfileRemote) {
+    init(with remote: ProfileRemote) {
         hash = remote.hash
         requestHash = remote.requestHash
         profileUrl = remote.profileUrl

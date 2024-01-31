@@ -80,14 +80,43 @@ final class ImageServiceTests: XCTestCase {
 
         wait(for: [expectation], timeout: 0.1)
     }
+
+    func testForceRefreshEnabled() async throws {
+        let cache = TestImageCache()
+        let urlSession = URLSessionMock(returnData: ImageHelper.testImageData, response: HTTPURLResponse.successResponse(with: URL(string: "https://gravatar.com")))
+        let service = ImageService(urlSession: urlSession, cache: cache)
+        let options = GravatarImageDownloadOptions(forceRefresh: true)
+
+        _ = try await service.fetchImage(with: "some@email.com", options: options)
+        _ = try await service.fetchImage(with: "some@email.com", options: options)
+        _ = try await service.fetchImage(with: "some@email.com", options: options)
+
+        XCTAssertEqual(cache.getImageCallCount, 0, "We should not hit the cache")
+        XCTAssertEqual(urlSession.callsCount, 3, "We should fetch from network")
+    }
+
+    func testForceRefreshDisabled() async throws {
+        let cache = TestImageCache()
+        let urlSession = URLSessionMock(returnData: ImageHelper.testImageData, response: HTTPURLResponse.successResponse(with: URL(string: "https://gravatar.com")))
+        let service = ImageService(urlSession: urlSession, cache: cache)
+        let options = GravatarImageDownloadOptions(forceRefresh: false)
+
+        _ = try await service.fetchImage(with: "some@email.com", options: options)
+        _ = try await service.fetchImage(with: "some@email.com", options: options)
+        _ = try await service.fetchImage(with: "some@email.com", options: options)
+
+        XCTAssertEqual(cache.getImageCallCount, 3, "We should hit the cache")
+        XCTAssertEqual(cache.setImageCallsCount, 1, "We should save once to the cache")
+        XCTAssertEqual(urlSession.callsCount, 1, "We should fetch from network only the first time")
+    }
 }
 
 extension HTTPURLResponse {
-    static func successResponse(with url: URL?) -> HTTPURLResponse {
+    static func successResponse(with url: URL? = URL(string: "https://gravatar.com")) -> HTTPURLResponse {
         HTTPURLResponse(url: url!, statusCode: 200, httpVersion: nil, headerFields: nil)!
     }
 
-    static func errorResponse(with url: URL?, code: Int) -> HTTPURLResponse {
+    static func errorResponse(with url: URL? = URL(string: "https://gravatar.com"), code: Int) -> HTTPURLResponse {
         HTTPURLResponse(url: url!, statusCode: code, httpVersion: nil, headerFields: nil)!
     }
 }

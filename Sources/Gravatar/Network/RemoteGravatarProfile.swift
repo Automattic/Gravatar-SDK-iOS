@@ -34,10 +34,10 @@ public class RemoteGravatarProfile {
 }
 
 struct FetchProfileResponse: Decodable {
-    let entry: [GravatarProfileRemote]
+    let entry: [ProfileRemote]
 }
 
-struct GravatarProfileRemote: Decodable {
+struct ProfileRemote: Decodable {
     let hash: String
     let requestHash: String
     let profileUrl: String
