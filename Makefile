@@ -1,4 +1,4 @@
-.PHONY: docs
+.PHONY: all clean run
 
 dev:
 	xed .
