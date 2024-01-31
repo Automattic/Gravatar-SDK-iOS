@@ -1,11 +1,11 @@
 import UIKit
 
 public struct ImageService {
-    private let remote: ServiceRemote
+    private let client: HTTPClient
     let imageCache: GravatarImageCaching
 
-    public init(urlSession: URLSessionProtocol = URLSession.shared, cache: GravatarImageCaching = GravatarImageCache()) {
-        self.remote = ServiceRemote(urlSession: urlSession)
+    public init(client: HTTPClient? = nil, cache: GravatarImageCaching = GravatarImageCache()) {
+        self.client = client ?? URLSessionHTTPClient()
         self.imageCache = cache
     }
 
@@ -45,7 +45,7 @@ public struct ImageService {
 
     private func fetchImage(from url: URL, imageProcressor: ImageProcessing = ImageProcessor()) async throws -> GravatarImageDownloadResult {
         let request = URLRequest.imageRequest(url: url)
-        let (data, response) = try await remote.fetchData(with: request)
+        let (data, response) = try await client.fetchData(with: request)
 
         guard 
             let responseUrl = response.url,
@@ -65,11 +65,9 @@ public struct ImageService {
         }
 
         let boundary = "Boundary-\(UUID().uuidString)"
-        var request = URLRequest.imageUploadRequest(with: boundary)
-        remote.authenticateRequest(&request, token: accountToken)
-
+        let request = URLRequest.imageUploadRequest(with: boundary).settingAuthorizationHeaderField(with: accountToken)
         let body = imageUploadBody(with: data, account: accountEmail, boundary: boundary)
-        let response = try await remote.uploadData(with: request, data: body)
+        let response = try await client.uploadData(with: request, data: body)
         return response
     }
 

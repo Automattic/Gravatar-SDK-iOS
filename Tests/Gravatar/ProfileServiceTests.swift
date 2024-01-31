@@ -4,7 +4,8 @@ import XCTest
 final class ProfileServiceTests: XCTestCase {
     func testFetchGravatarProfile() async throws {
         let session = URLSessionMock(returnData: jsonData, response: .successResponse())
-        let service = ProfileService(urlSession: session)
+        let client = URLSessionHTTPClient(urlSession: session)
+        let service = ProfileService(client: client)
         let profile = try await service.fetchProfile(email: "some@email.com")
 
         XCTAssertEqual(profile.displayName, "Beau Lebens")
@@ -12,7 +13,8 @@ final class ProfileServiceTests: XCTestCase {
 
     func testFetchGravatarProfileError() async throws {
         let session = URLSessionMock(returnData: jsonData, response: .errorResponse(code: 404))
-        let service = ProfileService(urlSession: session)
+        let client = URLSessionHTTPClient(urlSession: session)
+        let service = ProfileService(client: client)
 
         do {
             _ = try await service.fetchProfile(email: "some@email.com")
@@ -24,7 +26,8 @@ final class ProfileServiceTests: XCTestCase {
 
     func testFetchGravatarProfileWithCompletionHandler() {
         let session = URLSessionMock(returnData: jsonData, response: .successResponse())
-        let service = ProfileService(urlSession: session)
+        let client = URLSessionHTTPClient(urlSession: session)
+        let service = ProfileService(client: client)
         let expectation = expectation(description: "request finishes")
 
         service.fetchProfile(email: "some@email.com") { result in
@@ -42,7 +45,8 @@ final class ProfileServiceTests: XCTestCase {
 
     func testFetchGravatarProfileWithCompletionHandlerError() {
         let session = URLSessionMock(returnData: jsonData, response: .errorResponse(code: 404))
-        let service = ProfileService(urlSession: session)
+        let client = URLSessionHTTPClient(urlSession: session)
+        let service = ProfileService(client: client)
         let expectation = expectation(description: "request finishes")
 
         service.fetchProfile(email: "some@email.com") { result in
@@ -59,6 +63,20 @@ final class ProfileServiceTests: XCTestCase {
         wait(for: [expectation], timeout: 0.1)
     }
 }
+
+//struct HTTPCLientMock: HTTPClient {
+//    func fetchData(with request: URLRequest) async throws -> (Data, URLResponse) {
+//        <#code#>
+//    }
+//    
+//    func uploadData(with request: URLRequest, data: Data) async throws -> URLResponse {
+//        <#code#>
+//    }
+//    
+//    func fetchObject<T>(from path: String) async throws -> T where T : Decodable {
+//        <#code#>
+//    }
+//}
 
 
 private let jsonData = """

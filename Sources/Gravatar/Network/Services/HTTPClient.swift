@@ -2,7 +2,13 @@ import Foundation
 
 private let baseUrl = "https://gravatar.com/"
 
-struct ServiceRemote {
+public protocol HTTPClient {
+    func fetchData(with request: URLRequest) async throws -> (Data, URLResponse)
+    func uploadData(with request: URLRequest, data: Data) async throws -> URLResponse
+    func fetchObject<T: Decodable>(from path: String) async throws -> T
+}
+
+struct URLSessionHTTPClient: HTTPClient {
     let urlSession: URLSessionProtocol
 
     init(urlSession: URLSessionProtocol = URLSession(configuration: .default)) {
@@ -39,9 +45,13 @@ struct ServiceRemote {
         }
         return url
     }
+}
 
-    func authenticateRequest(_ request: inout URLRequest, token: String) {
-        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+extension URLRequest {
+    func settingAuthorizationHeaderField(with token: String) -> URLRequest {
+        var requestCopy = self
+        requestCopy.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        return requestCopy
     }
 }
 

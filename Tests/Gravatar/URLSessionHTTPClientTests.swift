@@ -1,10 +1,10 @@
 import XCTest
 @testable import Gravatar
 
-final class ServiceRemoteTests: XCTestCase {
+final class URLSessionHTTPClientTests: XCTestCase {
     func testFetchObject() async throws {
         let sessionMock = URLSessionMock(returnData: jsonData, response: HTTPURLResponse())
-        let remote = ServiceRemote(urlSession: sessionMock)
+        let remote = URLSessionHTTPClient(urlSession: sessionMock)
         let testObject: TestObject = try await remote.fetchObject(from: "name")
 
         XCTAssertEqual(sessionMock.request?.url?.absoluteString, "https://gravatar.com/name")
@@ -15,7 +15,7 @@ final class ServiceRemoteTests: XCTestCase {
     func testFetchObjectError() async throws {
         let anError = NSError(domain: NSURLErrorDomain, code: 400)
         let sessionMock = URLSessionMock(returnData: "".data(using: .utf8)!, response: HTTPURLResponse(), error: anError)
-        let remote = ServiceRemote(urlSession: sessionMock)
+        let remote = URLSessionHTTPClient(urlSession: sessionMock)
 
         do {
             let _: TestObject = try await remote.fetchObject(from: "name")
@@ -28,7 +28,7 @@ final class ServiceRemoteTests: XCTestCase {
     func testFetchObjectErrorWithoutErrorObject() async throws {
         let response = HTTPURLResponse(url: URL(string: "https://gravatar.com")!, statusCode: 404, httpVersion: nil, headerFields: nil)!
         let sessionMock = URLSessionMock(returnData: "Error happened".data(using: .utf8)!, response: response)
-        let remote = ServiceRemote(urlSession: sessionMock)
+        let remote = URLSessionHTTPClient(urlSession: sessionMock)
 
         do {
             let _: TestObject = try await remote.fetchObject(from: "name")

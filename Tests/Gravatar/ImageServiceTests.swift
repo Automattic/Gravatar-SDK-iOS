@@ -5,7 +5,7 @@ final class ImageServiceTests: XCTestCase {
     func testFetchImage() async throws {
         let response = HTTPURLResponse.successResponse()
         let sessionMock = URLSessionMock(returnData: ImageHelper.testImageData, response: response)
-        let service = ImageService(urlSession: sessionMock)
+        let service = imageService(with: sessionMock)
 
         let imageResponse = try await service.fetchImage(with: "some@email.com")
 
@@ -16,7 +16,7 @@ final class ImageServiceTests: XCTestCase {
     func testFetchImageURLResponseError() async throws {
         let response = HTTPURLResponse()
         let sessionMock = URLSessionMock(returnData: ImageHelper.testImageData, response: response)
-        let service = ImageService(urlSession: sessionMock)
+        let service = imageService(with: sessionMock)
 
         do {
             _ = try await service.fetchImage(with: "")
@@ -28,7 +28,7 @@ final class ImageServiceTests: XCTestCase {
     func testFetchImageWithCompletionHandler() {
         let response = HTTPURLResponse.successResponse()
         let sessionMock = URLSessionMock(returnData: ImageHelper.testImageData, response: response)
-        let service = ImageService(urlSession: sessionMock)
+        let service = imageService(with: sessionMock)
         let expectation = expectation(description: "Request finishes")
 
         service.retrieveImage(with: "some@email.com") { response in
@@ -47,7 +47,7 @@ final class ImageServiceTests: XCTestCase {
     func testFetchImageWithCompletionHandlerError() {
         let response = HTTPURLResponse.errorResponse(code: 404)
         let sessionMock = URLSessionMock(returnData: ImageHelper.testImageData, response: response)
-        let service = ImageService(urlSession: sessionMock)
+        let service = imageService(with: sessionMock)
         let expectation = expectation(description: "Request finishes")
 
         service.retrieveImage(with: "some@email.com") { response in
@@ -67,7 +67,7 @@ final class ImageServiceTests: XCTestCase {
     func testUploadImage() async throws {
         let successResponse = HTTPURLResponse.successResponse()
         let sessionMock = URLSessionMock(returnData: "Success".data(using: .utf8)!, response: successResponse)
-        let service = ImageService(urlSession: sessionMock)
+        let service = imageService(with: sessionMock)
 
         try await service.uploadImage(ImageHelper.testImage, accountEmail: "some@email.com", accountToken: "AccessToken")
 
@@ -81,7 +81,7 @@ final class ImageServiceTests: XCTestCase {
     func testUploadImageError() async throws {
         let successResponse = HTTPURLResponse.errorResponse(code: 408)
         let sessionMock = URLSessionMock(returnData: "Error".data(using: .utf8)!, response: successResponse)
-        let service = ImageService(urlSession: sessionMock)
+        let service = imageService(with: sessionMock)
 
         do {
             try await service.uploadImage(ImageHelper.testImage, accountEmail: "some@email.com", accountToken: "AccessToken")
@@ -94,7 +94,7 @@ final class ImageServiceTests: XCTestCase {
     func testUploadImageDataError() async throws {
         let successResponse = HTTPURLResponse.errorResponse(code: 408)
         let sessionMock = URLSessionMock(returnData: "Error".data(using: .utf8)!, response: successResponse)
-        let service = ImageService(urlSession: sessionMock)
+        let service = imageService(with: sessionMock)
 
         do {
             try await service.uploadImage(UIImage(), accountEmail: "some@email.com", accountToken: "AccessToken")
@@ -107,7 +107,7 @@ final class ImageServiceTests: XCTestCase {
     func testUploadImageWithCompletionHandler() {
         let successResponse = HTTPURLResponse.successResponse(with: URL(string: "http://gravatar.com"))
         let sessionMock = URLSessionMock(returnData: "Success".data(using: .utf8)!, response: successResponse)
-        let service = ImageService(urlSession: sessionMock)
+        let service = imageService(with: sessionMock)
         let expectation = expectation(description: "Should succeed")
 
         service.uploadImage(ImageHelper.testImage, accountEmail: "some@email.com", accountToken: "AccessToken") { error in
@@ -121,7 +121,7 @@ final class ImageServiceTests: XCTestCase {
     func testUploadImageWithCompletionHandlerError() {
         let successResponse = HTTPURLResponse.errorResponse(with: URL(string: "http://gravatar.com"), code: 415)
         let sessionMock = URLSessionMock(returnData: "Error".data(using: .utf8)!, response: successResponse)
-        let service = ImageService(urlSession: sessionMock)
+        let service = imageService(with: sessionMock)
         let expectation = expectation(description: "Should error")
 
         service.uploadImage(ImageHelper.testImage, accountEmail: "some@email.com", accountToken: "AccessToken") { error in
@@ -135,8 +135,8 @@ final class ImageServiceTests: XCTestCase {
 
     func testForceRefreshEnabled() async throws {
         let cache = TestImageCache()
-        let urlSession = URLSessionMock(returnData: ImageHelper.testImageData, response: HTTPURLResponse.successResponse(with: URL(string: "https://gravatar.com")))
-        let service = ImageService(urlSession: urlSession, cache: cache)
+        let sessionMock = URLSessionMock(returnData: ImageHelper.testImageData, response: HTTPURLResponse.successResponse(with: URL(string: "https://gravatar.com")))
+        let service = imageService(with: sessionMock, cache: cache)
         let options = GravatarImageDownloadOptions(forceRefresh: true)
 
         _ = try await service.fetchImage(with: "some@email.com", options: options)
@@ -144,13 +144,14 @@ final class ImageServiceTests: XCTestCase {
         _ = try await service.fetchImage(with: "some@email.com", options: options)
 
         XCTAssertEqual(cache.getImageCallCount, 0, "We should not hit the cache")
-        XCTAssertEqual(urlSession.callsCount, 3, "We should fetch from network")
+        XCTAssertEqual(cache.setImageCallsCount, 3, "We should have cached the image on every forced refresh")
+        XCTAssertEqual(sessionMock.callsCount, 3, "We should fetch from network")
     }
 
     func testForceRefreshDisabled() async throws {
         let cache = TestImageCache()
-        let urlSession = URLSessionMock(returnData: ImageHelper.testImageData, response: HTTPURLResponse.successResponse(with: URL(string: "https://gravatar.com")))
-        let service = ImageService(urlSession: urlSession, cache: cache)
+        let sessionMock = URLSessionMock(returnData: ImageHelper.testImageData, response: HTTPURLResponse.successResponse(with: URL(string: "https://gravatar.com")))
+        let service = imageService(with: sessionMock, cache: cache)
         let options = GravatarImageDownloadOptions(forceRefresh: false)
 
         _ = try await service.fetchImage(with: "some@email.com", options: options)
@@ -159,8 +160,14 @@ final class ImageServiceTests: XCTestCase {
 
         XCTAssertEqual(cache.getImageCallCount, 3, "We should hit the cache")
         XCTAssertEqual(cache.setImageCallsCount, 1, "We should save once to the cache")
-        XCTAssertEqual(urlSession.callsCount, 1, "We should fetch from network only the first time")
+        XCTAssertEqual(sessionMock.callsCount, 1, "We should fetch from network only the first time")
     }
+}
+
+private func imageService(with session: URLSessionProtocol, cache: GravatarImageCaching = GravatarImageCache()) -> ImageService {
+    let client = URLSessionHTTPClient(urlSession: session)
+    let service = ImageService(client: client, cache: cache)
+    return service
 }
 
 extension HTTPURLResponse {
