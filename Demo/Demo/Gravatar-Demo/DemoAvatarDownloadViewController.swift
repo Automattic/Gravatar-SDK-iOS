@@ -82,9 +82,8 @@ class DemoAvatarDownloadViewController: UIViewController {
         stack.alignment = .center
         return stack
     }()
-    
+
 //    private let imageRetriever = GravatarImageRetriever()
-    
     private let imageRetriever = Gravatar.ImageService()
 
     override func viewDidLoad() {

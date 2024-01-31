@@ -5,9 +5,9 @@
 //  Created by Andrew Montgomery on 1/10/24.
 //
 
-public enum GravatarProfileFetchResult: Equatable {
+public enum GravatarProfileFetchResult {
     case success(GravatarProfile)
-    case failure(GravatarServiceError)
+    case failure(Error)
 }
 
 public struct GravatarProfile: Equatable {
@@ -21,4 +21,16 @@ public struct GravatarProfile: Equatable {
     public internal(set) var name = ""
     public internal(set) var displayName = ""
 
+}
+
+extension GravatarProfile {
+    init(with remote: GravatarProfileRemote) {
+        hash = remote.hash
+        requestHash = remote.requestHash
+        profileUrl = remote.profileUrl
+        preferredUsername = remote.preferredUsername
+        thumbnailUrl = remote.thumbnailUrl
+        name = remote.name?.formatted ?? ""
+        displayName = remote.displayName
+    }
 }

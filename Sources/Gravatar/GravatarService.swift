@@ -22,13 +22,6 @@ open class GravatarService {
 
     public init() {}
 
-
-    public func fetchProfile(email: String) async throws -> GravatarProfileRemote {
-        let path = try email.sha256() + ".json"
-        let remote = ServiceRemote()
-        return try await remote.fetchObject(from: path)
-    }
-
     /// This method fetches the Gravatar profile for the specified email address.
     ///
     /// - Parameters:
@@ -37,7 +30,7 @@ open class GravatarService {
     ///
     open func fetchProfile(email: String, onCompletion: @escaping ((_ result: GravatarProfileFetchResult) -> Void)) {
         guard !email.isEmpty else {
-            onCompletion(.failure(.invalidAccountInfo))
+            onCompletion(.failure(GravatarServiceError.invalidAccountInfo))
             return
         }
         
@@ -55,7 +48,7 @@ open class GravatarService {
             onCompletion(.success(profile))
 
         }, failure: { error in
-            onCompletion(.failure(.invalidAccountInfo))
+            onCompletion(.failure(GravatarServiceError.invalidAccountInfo))
         })
     }
 
