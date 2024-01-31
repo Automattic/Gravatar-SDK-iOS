@@ -30,3 +30,7 @@ public enum GravatarImageDownloadError: Error {
     case requestError(reason: GravatarImageDownloadError.RequestErrorReason)
     case responseError(reason: GravatarImageDownloadError.ResponseErrorReason)
 }
+
+public enum UploadError: Error {
+    case cannotConvertImageIntoData
+}

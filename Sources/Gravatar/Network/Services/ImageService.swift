@@ -27,8 +27,8 @@ public struct ImageService {
     public func fetchImage(
         with email: String,
         options: GravatarImageDownloadOptions = GravatarImageDownloadOptions()
-    ) async throws -> GravatarImageDownloadResult
-    {
+    ) async throws -> GravatarImageDownloadResult {
+
         let size = options.preferredSize ?? GravatarImageDownloadOptions.defaultSize
         let targetSize = await max(size.width, size.height) * UIScreen.main.scale
 
@@ -60,10 +60,15 @@ public struct ImageService {
 
     @discardableResult
     public func uploadImage(_ image: UIImage, accountEmail: String, accountToken: String) async throws -> URLResponse {
+        guard let data = image.pngData() else {
+            throw UploadError.cannotConvertImageIntoData
+        }
+
         let boundary = "Boundary-\(UUID().uuidString)"
         var request = URLRequest.imageUploadRequest(with: boundary)
         remote.authenticateRequest(&request, token: accountToken)
-        let body = imageUploadBody(with: image.pngData()!, account: accountEmail, boundary: boundary)
+
+        let body = imageUploadBody(with: data, account: accountEmail, boundary: boundary)
         let response = try await remote.uploadData(with: request, data: body)
         return response
     }
