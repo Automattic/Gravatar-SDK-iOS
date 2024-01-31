@@ -1,4 +1,4 @@
-import UIKit
+import Foundation
 
 private let baseUrl = "https://gravatar.com/"
 
