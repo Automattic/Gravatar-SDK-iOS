@@ -10,6 +10,7 @@ private var indicatorTypeKey: Void?
 private var placeholderKey: Void?
 private var imageTaskKey: Void?
 private var dataTaskKey: Void?
+private var imageDownloaderKey: Void?
 
 extension GravatarWrapper where Component: UIImageView {
     
@@ -107,6 +108,17 @@ extension GravatarWrapper where Component: UIImageView {
         }
     }
     
+    public private(set) var imageDownloader: GravatarImageRetrieverProtocol? {
+        get {
+            let box: Box<GravatarImageRetrieverProtocol>? = getAssociatedObject(component, &imageDownloaderKey)
+            return box?.value
+        }
+        set {
+            let box = newValue.map { Box($0) }
+            setRetainedAssociatedObject(component, &imageDownloaderKey, box)
+        }
+    }
+    
     private func setDownloadTask(_ newValue: CancellableDataTask?) {
         setRetainedAssociatedObject(component, &dataTaskKey, newValue)
     }
@@ -171,6 +183,7 @@ extension GravatarWrapper where Component: UIImageView {
         mutatingSelf.taskIdentifier = issuedIdentifier
         
         let networkManager = options.imageDownloader ?? GravatarImageRetriever(imageCache: options.imageCache)
+        mutatingSelf.imageDownloader = networkManager // Retain the network manager otherwise the completion tasks won't be done properly
         let task = networkManager.retrieveImage(with: source, forceRefresh: options.forceRefresh, processor: options.processor) { [weak component] result in
             DispatchQueue.main.async {
                 self.activityIndicator?.stopAnimatingView()
@@ -199,7 +212,7 @@ extension GravatarWrapper where Component: UIImageView {
                         completionHandler?(result.convert())
                         return
                     case .fade(let duration):
-                        self.transition(into: value.image, duration: duration) {
+                        self.transition(for: component, into: value.image, duration: duration) {
                             completionHandler?(result.convert())
                         }
                     }
@@ -232,12 +245,13 @@ extension GravatarWrapper where Component: UIImageView {
         return size
     }
     
-    private func transition(into image: UIImage, duration: Double, completion: @escaping ()->Void) {
+    private func transition(for component: Component?, into image: UIImage, duration: Double, completion: @escaping ()->Void) {
+        guard let component else { return }
         UIView.transition(
-            with: self.component,
+            with: component,
             duration: duration,
             options: [.transitionCrossDissolve],
-            animations: { self.component.image = image },
+            animations: { component.image = image },
             completion: { finished in
                 completion()
             }
