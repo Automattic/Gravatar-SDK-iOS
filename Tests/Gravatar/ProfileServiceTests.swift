@@ -15,7 +15,7 @@ final class ProfileServiceTests: XCTestCase {
         let service = ProfileService(urlSession: session)
 
         do {
-            let profile = try await service.fetchProfile(email: "some@email.com")
+            _ = try await service.fetchProfile(email: "some@email.com")
         } catch let error as NSError {
             XCTAssertEqual(error.code, 404)
             XCTAssertEqual(error.localizedDescription, "not found")
