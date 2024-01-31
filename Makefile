@@ -8,4 +8,4 @@ dev-demo:
 
 lint-pod:
 	bundle install
-	bundle exec pod lib lint Gravatar.podspec
+	bundle exec pod lib lint --verbose --fail-fast
