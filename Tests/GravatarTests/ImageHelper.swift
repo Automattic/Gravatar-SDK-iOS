@@ -22,8 +22,7 @@ class ImageHelper {
     }
     
     static func dataFromImage(named: String, type: String) -> Data? {
-        let bundle = Bundle(for: ImageHelper.self)
-        guard let url = bundle.url(forResource: named, withExtension: type, subdirectory: Self.testResourcesDir) else {
+        guard let url = Bundle.gravatarTestsBundle.url(forResource: named, withExtension: type) else {
             return nil
         }
         var data: Data? = nil
@@ -34,8 +33,7 @@ class ImageHelper {
     }
     
     static func image(named: String, type: String) -> UIImage? {
-        let bundle = Bundle(for: ImageHelper.self)
-        guard let path = bundle.path(forResource: named, ofType: type, inDirectory: Self.testResourcesDir) else {
+        guard let path = Bundle.gravatarTestsBundle.path(forResource: named, ofType: type) else {
             return nil
         }
         return UIImage(contentsOfFile: path)
