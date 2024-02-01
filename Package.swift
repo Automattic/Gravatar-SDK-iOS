@@ -4,7 +4,8 @@
 import PackageDescription
 
 let package = Package(
-    name: "Gravatar", 
+    name: "Gravatar",
+    
     platforms: [
         .iOS(.v15),
     ],
@@ -20,8 +21,9 @@ let package = Package(
         .target(
             name: "Gravatar"),
         .testTarget(
-            name: "Gravatar-Tests",
+            name: "GravatarTests",
             dependencies: ["Gravatar"],
-            resources: [.copy("ResourceFiles")])
+            resources: [.process("Resources")]
+        )
     ]
 )
