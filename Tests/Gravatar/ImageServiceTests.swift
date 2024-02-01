@@ -162,6 +162,18 @@ final class ImageServiceTests: XCTestCase {
         XCTAssertEqual(cache.setImageCallsCount, 1, "We should save once to the cache")
         XCTAssertEqual(sessionMock.callsCount, 1, "We should fetch from network only the first time")
     }
+
+    func testAlternativeImageProcessor() async throws {
+        let response = HTTPURLResponse.successResponse()
+        let sessionMock = URLSessionMock(returnData: ImageHelper.testImageData, response: response)
+        let service = imageService(with: sessionMock)
+        let testProcessor = TestImageProcessor()
+        let options = GravatarImageDownloadOptions(processor: testProcessor)
+
+        _ = try await service.fetchImage(with: "some@email.com", options: options)
+
+        XCTAssertTrue(testProcessor.processedData)
+    }
 }
 
 private func imageService(with session: URLSessionProtocol, cache: GravatarImageCaching = GravatarImageCache()) -> ImageService {

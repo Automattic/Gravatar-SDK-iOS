@@ -40,16 +40,16 @@ public struct ImageService {
             return GravatarImageDownloadResult(image: cachedImage, sourceURL: gravatarURL)
         }
 
-        return try await fetchImage(from: gravatarURL)
+        return try await fetchImage(from: gravatarURL, imageProcressor: options.processor)
     }
 
-    private func fetchImage(from url: URL, imageProcressor: ImageProcessing = ImageProcessor()) async throws -> GravatarImageDownloadResult {
+    private func fetchImage(from url: URL, imageProcressor: GravatarImageProcessor) async throws -> GravatarImageDownloadResult {
         let request = URLRequest.imageRequest(url: url)
         let (data, response) = try await client.fetchData(with: request)
 
         guard 
             let responseUrl = response.url,
-            let image = imageProcressor.process(data: data)
+            let image = imageProcressor.process(data)
         else {
             throw URLError(.badServerResponse)
         }
