@@ -1,5 +1,7 @@
 .PHONY: all clean run
 
+SWIFTFORMAT_CACHE = ~/Library/Caches/com.charcoaldesign.swiftformat
+
 dev:
 	xed .
 
@@ -12,7 +14,17 @@ test:
 		-destination 'platform=iOS Simulator,OS=17.2,name=iPhone SE (3rd generation)'
 
 swiftformat:
-	swift package plugin --allow-writing-to-package-directory --allow-writing-to-directory ~/Library/Caches/com.charcoaldesign.swiftformat swiftformat
+	swift package plugin \
+		--allow-writing-to-package-directory \
+		--allow-writing-to-directory "$(SWIFTFORMAT_CACHE)" \
+		swiftformat
+
+lint:
+	swift package plugin \
+		--allow-writing-to-package-directory \
+		--allow-writing-to-directory "$(SWIFTFORMAT_CACHE)" \
+		swiftformat \
+		--lint
 
 lint-pod:
 	bundle install
