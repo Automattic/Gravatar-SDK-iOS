@@ -32,7 +32,7 @@ Gravatar SDK provides a convient wrapper for accessing the Gravatar API
     ]
     swift_unit_tests.resource_bundles = {
         GravatarTestsResources: [
-            'Tests/GravatarTests/Resources/*.png'
+            'Tests/GravatarTests/Resources/**/*'
         ]
     }
     swift_unit_tests.requires_app_host = false
