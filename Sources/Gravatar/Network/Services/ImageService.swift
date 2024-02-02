@@ -2,7 +2,7 @@ import UIKit
 
 public struct ImageService {
     private let client: HTTPClient
-    let imageCache: GravatarImageCaching
+    private let imageCache: GravatarImageCaching
 
     public init(client: HTTPClient? = nil, cache: GravatarImageCaching = GravatarImageCache()) {
         self.client = client ?? URLSessionHTTPClient()
@@ -18,9 +18,11 @@ public struct ImageService {
             do {
                 let result = try await fetchImage(with: email, options: options)
                 completionHandler?(Result.success(result))
-            } catch {
+            } catch let error as GravatarImageDownloadError {
                 completionHandler?(Result.failure(error))
-            } 
+            } catch {
+                completionHandler?(Result.failure(GravatarImageDownloadError.responseError(reason: .URLSessionError(error: error))))
+            }
         }
     }
 
@@ -30,10 +32,10 @@ public struct ImageService {
     ) async throws -> GravatarImageDownloadResult {
 
         let size = options.preferredSize ?? GravatarImageDownloadOptions.defaultSize
-        let targetSize = await max(size.width, size.height) * UIScreen.main.scale
+        let targetSize = max(size.width, size.height) * options.scaleFactor
 
         guard let gravatarURL = GravatarURL.gravatarUrl(for: email, size: Int(targetSize), rating: options.gravatarRating) else {
-            throw URLError(.badURL)
+            throw GravatarImageDownloadError.requestError(reason: .urlInitializationFailed)
         }
 
         if !options.forceRefresh, let cachedImage = imageCache.getImage(forKey: gravatarURL.absoluteString) {
@@ -47,11 +49,12 @@ public struct ImageService {
         let request = URLRequest.imageRequest(url: url)
         let (data, response) = try await client.fetchData(with: request)
 
-        guard 
-            let responseUrl = response.url,
-            let image = imageProcressor.process(data)
-        else {
-            throw URLError(.badServerResponse)
+        guard let responseUrl = response.url else {
+            throw GravatarImageDownloadError.responseError(reason: .urlMissingInResponse)
+        }
+
+        guard let image = imageProcressor.process(data) else {
+            throw GravatarImageDownloadError.responseError(reason: .imageInitializationFailed)
         }
 
         imageCache.setImage(image, forKey: url.absoluteString)
@@ -71,6 +74,7 @@ public struct ImageService {
         return response
     }
 
+    // TODO: Return internal SDK error (or remove completion handler support)
     public func uploadImage(_ image: UIImage, accountEmail: String, accountToken: String, completion: ((_ error: NSError?) -> Void)?) {
         Task {
             do {

@@ -25,6 +25,8 @@ public enum GravatarImageDownloadError: Error {
         
         /// URL of response doesn't match with the request (request is outdated).
         case urlMismatch
+
+        case urlMissingInResponse
     }
     
     case requestError(reason: GravatarImageDownloadError.RequestErrorReason)

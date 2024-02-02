@@ -6,8 +6,9 @@ final class ImageServiceTests: XCTestCase {
         let response = HTTPURLResponse.successResponse()
         let sessionMock = URLSessionMock(returnData: ImageHelper.testImageData, response: response)
         let service = imageService(with: sessionMock)
+        let options = GravatarImageDownloadOptions(scaleFactor: 3)
 
-        let imageResponse = try await service.fetchImage(with: "some@email.com")
+        let imageResponse = try await service.fetchImage(with: "some@email.com", options: options)
 
         XCTAssertEqual(sessionMock.request?.url?.absoluteString, "https://gravatar.com/avatar/676212ff796c79a3c06261eb10e3f455aa93998ee6e45263da13679c74b1e674?d=404&s=240&r=g")
         XCTAssertNotNil(imageResponse.image)
@@ -20,8 +21,13 @@ final class ImageServiceTests: XCTestCase {
 
         do {
             _ = try await service.fetchImage(with: "")
-        } catch let error as NSError {
-            XCTAssertEqual(error.code, URLError.Code.badServerResponse.rawValue)
+        } catch let error as GravatarImageDownloadError {
+            switch error {
+            case .responseError(let reason):
+                XCTAssertEqual(reason, .urlMissingInResponse)
+            default:
+                XCTFail()
+            }
         }
     }
 
@@ -54,9 +60,18 @@ final class ImageServiceTests: XCTestCase {
             switch response {
             case .success:
                 XCTFail("Request should fail")
-            case .failure(let error as NSError):
-                XCTAssertEqual(error.code, 404)
-                XCTAssertEqual(error.localizedDescription, "not found")
+            case .failure(let error):
+                switch error {
+                case .requestError:
+                    XCTFail()
+                case .responseError(let reason):
+                    switch reason {
+                    case .URLSessionError(let urlError as NSError):
+                        XCTAssertEqual(urlError.code, 404)
+                    default:
+                        XCTFail()
+                    }
+                }
             }
             expectation.fulfill()
         }

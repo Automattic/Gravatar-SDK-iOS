@@ -89,6 +89,8 @@ extension GravatarImageDownloadError.ResponseErrorReason: Equatable {
             return true
         case (.urlMismatch, .urlMismatch):
             return true
+        case (.urlMissingInResponse, .urlMissingInResponse):
+            return true
         case (.URLSessionError(let error1), .URLSessionError(let error2)):
             let error1 = error1 as NSError
             let error2 = error2 as NSError

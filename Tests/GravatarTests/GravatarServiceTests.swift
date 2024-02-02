@@ -166,8 +166,8 @@ class GravatarServiceTests: XCTestCase {
         }
         
         switch capturedResults.first {
-        case .failure(let error as GravatarServiceError):
-            XCTAssertEqual(error, GravatarServiceError.invalidAccountInfo)
+        case .failure(let error):
+            XCTAssertEqual(error.debugDescription, GravatarServiceError.invalidAccountInfo.debugDescription)
         default:
             XCTFail()
         }

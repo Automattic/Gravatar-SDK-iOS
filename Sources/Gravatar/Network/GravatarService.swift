@@ -1,8 +1,9 @@
 import UIKit
 
-public enum GravatarServiceError: Int, Error {
+public enum GravatarServiceError: Error {
     case invalidAccountInfo
     case invalidURL
+    case unexpected(Error)
 }
 
 extension GravatarServiceError: CustomDebugStringConvertible {
@@ -12,6 +13,8 @@ extension GravatarServiceError: CustomDebugStringConvertible {
             return "Invalid account info"
         case .invalidURL:
             return "Invalid URL"
+        case .unexpected(let error):
+            return "An unexpected error has occoured: \(error)"
         }
     }
 }

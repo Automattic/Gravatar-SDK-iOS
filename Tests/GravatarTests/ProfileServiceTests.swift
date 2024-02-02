@@ -6,7 +6,7 @@ final class ProfileServiceTests: XCTestCase {
         let session = URLSessionMock(returnData: jsonData, response: .successResponse())
         let client = URLSessionHTTPClient(urlSession: session)
         let service = ProfileService(client: client)
-        let profile = try await service.fetchProfile(email: "some@email.com")
+        let profile = try await service.fetchProfile(for: "some@email.com")
 
         XCTAssertEqual(profile.displayName, "Beau Lebens")
     }
@@ -17,7 +17,7 @@ final class ProfileServiceTests: XCTestCase {
         let service = ProfileService(client: client)
 
         do {
-            _ = try await service.fetchProfile(email: "some@email.com")
+            _ = try await service.fetchProfile(for: "some@email.com")
         } catch let error as NSError {
             XCTAssertEqual(error.code, 404)
             XCTAssertEqual(error.localizedDescription, "not found")
@@ -30,7 +30,7 @@ final class ProfileServiceTests: XCTestCase {
         let service = ProfileService(client: client)
         let expectation = expectation(description: "request finishes")
 
-        service.fetchProfile(email: "some@email.com") { result in
+        service.fetchProfile(with: "some@email.com") { result in
             switch result {
             case .success(let profile):
                 XCTAssertEqual(profile.displayName, "Beau Lebens")
@@ -49,13 +49,18 @@ final class ProfileServiceTests: XCTestCase {
         let service = ProfileService(client: client)
         let expectation = expectation(description: "request finishes")
 
-        service.fetchProfile(email: "some@email.com") { result in
+        service.fetchProfile(with: "some@email.com") { result in
             switch result {
             case .success:
                 XCTFail("Should error")
-            case .failure(let error as NSError):
-                XCTAssertEqual(error.code, 404)
-                XCTAssertEqual(error.localizedDescription, "not found")
+            case .failure(let error):
+                switch error {
+                case .unexpected(let error as NSError):
+                    XCTAssertEqual(error.code, 404)
+                    XCTAssertEqual(error.localizedDescription, "not found")
+                default:
+                    XCTFail()
+                }
             }
             expectation.fulfill()
         }

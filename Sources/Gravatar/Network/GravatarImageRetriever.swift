@@ -1,7 +1,7 @@
 import Foundation
 import UIKit
 
-public typealias ImageDownloadCompletion = ((Result<GravatarImageDownloadResult, Error>) -> Void)
+public typealias ImageDownloadCompletion = ((Result<GravatarImageDownloadResult, GravatarImageDownloadError>) -> Void)
 
 public class GravatarImageRetriever {
     
