@@ -95,15 +95,11 @@ final class GravatarWrapper_UIImageViewTests: XCTestCase {
         imageView.gravatar.setImage(email: "hello@gmail.com",
                                     options: [.imageDownloader(imageRetriever)])
 
-        let task1 = try XCTUnwrap(imageView.gravatar.downloadTask as? TestDataTask)
+        let task = try XCTUnwrap(imageView.gravatar.downloadTask as? TestDataTask)
         
-        // We send another request before getting a response
-        imageView.gravatar.setImage(email: "hello@gmail.com",
-                                    options: [.imageDownloader(imageRetriever),
-                                              .cancelOngoingDownload])
-        
-        // First task is cancelled.
-        XCTAssertTrue(task1.cancelled)
+        imageView.gravatar.cancelImageDownload()
+                
+        XCTAssertTrue(task.cancelled)
     }
     
     func testRemoveCurrentImageWhileLoadingNoPlaceholder() throws {

@@ -13,7 +13,6 @@ final class GravatarOptionsTests: XCTestCase {
     func testInitWithOptionList() throws {
         let gravatarOptions: [GravatarImageSettingOption] =
         [
-            .cancelOngoingDownload,
             .forceRefresh,
             .removeCurrentImageWhileLoading,
             .scaleFactor(2.0),
@@ -24,7 +23,6 @@ final class GravatarOptionsTests: XCTestCase {
         ]
         
         let parsedOptions = GravatarImageSettingOptions(options: gravatarOptions)
-        XCTAssertEqual(parsedOptions.shouldCancelOngoingDownload, true)
         XCTAssertEqual(parsedOptions.forceRefresh, true)
         XCTAssertEqual(parsedOptions.removeCurrentImageWhileLoading, true)
         XCTAssertEqual(parsedOptions.scaleFactor, 2.0)
@@ -36,7 +34,6 @@ final class GravatarOptionsTests: XCTestCase {
     
     func testInitWithDefaultValues() throws {
         let parsedOptions = GravatarImageSettingOptions(options: nil)
-        XCTAssertEqual(parsedOptions.shouldCancelOngoingDownload, false)
         XCTAssertEqual(parsedOptions.forceRefresh, false)
         XCTAssertEqual(parsedOptions.removeCurrentImageWhileLoading, false)
         XCTAssertEqual(parsedOptions.scaleFactor, UIScreen.main.scale)
