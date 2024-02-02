@@ -19,6 +19,10 @@ class ImageHelper {
         return dataFromImage(named: "test", type: "png")!
     }
     
+    static var placeholderImage: UIImage {
+        return image(named: "placeholder", type: "png")!
+    }
+    
     static func dataFromImage(named: String, type: String) -> Data? {
         guard let url = Bundle.gravatarTestsBundle.url(forResource: named, withExtension: type) else {
             return nil

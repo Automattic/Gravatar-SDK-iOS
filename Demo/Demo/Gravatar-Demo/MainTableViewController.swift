@@ -12,6 +12,7 @@ class MainTableViewController: UITableViewController {
 
     enum Row: Int, CaseIterable {
         case imageDownloadNetworking
+        case uiImageViewExtension
         case fetchProfile
         case imageUpload
     }
@@ -35,6 +36,8 @@ class MainTableViewController: UITableViewController {
         switch row {
         case .imageDownloadNetworking:
             content.text = "Image download - Networking"
+        case .uiImageViewExtension:
+            content.text = "UIImageView Extension"
         case .fetchProfile:
             content.text = "Fetch Profile"
         case .imageUpload:
@@ -50,6 +53,9 @@ class MainTableViewController: UITableViewController {
         switch row {
         case .imageDownloadNetworking:
             let vc = DemoAvatarDownloadViewController()
+            navigationController?.pushViewController(vc, animated: true)
+        case .uiImageViewExtension:
+            let vc = DemoUIImageViewExtensionViewController()
             navigationController?.pushViewController(vc, animated: true)
         case .fetchProfile:
             let vc = DemoFetchProfileViewController()

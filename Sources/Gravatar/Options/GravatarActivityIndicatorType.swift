@@ -4,11 +4,11 @@ import UIKit
 public enum GravatarActivityIndicatorType {
     case none
     case activity
-    case custom(GravatarActivityIndicator)
+    case custom(ActivityIndicatorProvider)
 }
 
 /// An indicator type which can be used to show the download task is in progress.
-public protocol GravatarActivityIndicator {
+public protocol ActivityIndicatorProvider {
     
     /// Called when the indicator should start animating.
     func startAnimatingView()
@@ -30,7 +30,7 @@ public enum ActivityIndicatorSizeStrategy {
     case size(CGSize)
 }
 
-final class DefaultActivityIndicator: GravatarActivityIndicator {
+final class DefaultActivityIndicatorProvider: ActivityIndicatorProvider {
     
     private let activityIndicatorView: UIActivityIndicatorView
 
