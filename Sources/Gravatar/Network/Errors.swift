@@ -41,7 +41,7 @@ public enum GravatarImageDownload {
         ///           happens.
         /// - error: The `Error` if an issue happens. `nil` if the task finishes without problem.
         /// - source: The original source value of the task.
-        case notCurrentSourceTask(result: GravatarImageDownloadResult?, error: Error?, source: URL)
+        case outdatedTask(result: GravatarImageDownloadResult?, error: Error?, source: URL)
     }
     
     public enum NetworkingError: Error {

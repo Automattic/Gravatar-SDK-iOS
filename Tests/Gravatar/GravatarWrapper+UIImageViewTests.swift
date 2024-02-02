@@ -153,7 +153,7 @@ final class GravatarWrapper_UIImageViewTests: XCTestCase {
                     switch reason {
                     case .emptyURL:
                         XCTFail()
-                    case let .notCurrentSourceTask(result, _, source):
+                    case let .outdatedTask(result, _, source):
                         XCTAssertEqual(source.absoluteString, "https://first.com")
                         XCTAssertNotNil(result?.image) // We got the image for "http://first.com"
                         break
