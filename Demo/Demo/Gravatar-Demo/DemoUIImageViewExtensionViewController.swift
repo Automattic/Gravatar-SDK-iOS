@@ -27,12 +27,6 @@ class DemoUIImageViewExtensionViewController: UIViewController {
         return view
     }()
     
-    private lazy var cancelOngoingSwitchWithLabel: SwitchWithLabel = {
-        let view = SwitchWithLabel(labelText: "Cancel ongoing download upon starting a new one")
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
-    
     private lazy var removeCurrentImageSwitchWithLabel: SwitchWithLabel = {
         let view = SwitchWithLabel(labelText: "Remove current image while loading")
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -57,6 +51,14 @@ class DemoUIImageViewExtensionViewController: UIViewController {
         return view
     }()
     
+    private lazy var cancelOngoingButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setTitle("Cancel", for: .normal)
+        button.addTarget(self, action: #selector(cancelOngoingButtonHandler), for: .touchUpInside)
+        return button
+    }()
+    
     private lazy var fetchAvatarButton: UIButton = {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -75,7 +77,7 @@ class DemoUIImageViewExtensionViewController: UIViewController {
     }()
     
     private lazy var stackView: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [emailInputField, activityIndictorSwitchWithLabel, cancelOngoingSwitchWithLabel, removeCurrentImageSwitchWithLabel, showPlaceholderSwitchWithLabel, igonreCacheSwitchWithLabel, animatedFadeInSwitch, fetchAvatarButton, avatarImageView])
+        let stack = UIStackView(arrangedSubviews: [emailInputField, activityIndictorSwitchWithLabel, removeCurrentImageSwitchWithLabel, showPlaceholderSwitchWithLabel, igonreCacheSwitchWithLabel, animatedFadeInSwitch, fetchAvatarButton, cancelOngoingButton, avatarImageView])
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.axis = .vertical
         stack.spacing = 12
@@ -100,9 +102,6 @@ class DemoUIImageViewExtensionViewController: UIViewController {
     
     @objc private func fetchAvatarButtonHandler() {
         let options = setupOptions()
-        if cancelOngoingSwitchWithLabel.isOn {
-            avatarImageView.gravatar.cancelImageDownload()
-        }
         let placeholderImage: UIImage? = showPlaceholderSwitchWithLabel.isOn ? UIImage(named: "placeholder") : nil
         avatarImageView.gravatar.setImage(email: emailInputField.text ?? "",
                                           placeholder: placeholderImage,
@@ -114,6 +113,10 @@ class DemoUIImageViewExtensionViewController: UIViewController {
                 print(error)
             }
         }
+    }
+    
+    @objc private func cancelOngoingButtonHandler() {
+        avatarImageView.gravatar.cancelImageDownload()
     }
     
     private func setupOptions() -> [GravatarImageSettingOption] {
