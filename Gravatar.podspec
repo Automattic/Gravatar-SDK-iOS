@@ -17,23 +17,25 @@ Gravatar SDK provides a convient wrapper for accessing the Gravatar API
 
   s.swift_version     = '5.9'
 
-  ios_deployment_target = '12.0'
-  osx_deployment_target = '11.0'
+  ios_deployment_target = '15.0'
 
   s.ios.deployment_target = ios_deployment_target
-  s.osx.deployment_target = osx_deployment_target
 
   s.source_files = 'Sources/**/*.swift'
 
   s.test_spec 'Tests' do |swift_unit_tests|
-      swift_unit_tests.platforms = {
-          :ios => ios_deployment_target,
-          :osx => osx_deployment_target
-      }
-      swift_unit_tests.source_files = [
-          'Tests/**/*.swift'
-      ]
-      swift_unit_tests.requires_app_host = false
+    swift_unit_tests.platforms = {
+        :ios => ios_deployment_target,
+    }
+    swift_unit_tests.source_files = [
+        'Tests/**/*.swift'
+    ]
+    swift_unit_tests.resource_bundles = {
+        GravatarTestsResources: [
+            'Tests/GravatarTests/Resources/**/*'
+        ]
+    }
+    swift_unit_tests.requires_app_host = false
   end
 end
 

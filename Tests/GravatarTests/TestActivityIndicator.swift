@@ -1,10 +1,3 @@
-//
-//  File.swift
-//  
-//
-//  Created by Pinar Olguc on 26.01.2024.
-//
-
 import UIKit
 import Gravatar
 
