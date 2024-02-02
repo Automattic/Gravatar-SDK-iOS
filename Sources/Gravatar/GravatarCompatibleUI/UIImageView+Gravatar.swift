@@ -25,7 +25,7 @@ extension GravatarWrapper where Component: UIImageView {
             case .none:
                 activityIndicator = nil
             case .activity:
-                activityIndicator = DefaultActivityIndicator()
+                activityIndicator = DefaultActivityIndicatorProvider()
             case .custom(let indicator):
                 activityIndicator = indicator
             }
@@ -34,9 +34,9 @@ extension GravatarWrapper where Component: UIImageView {
     }
     
     /// The activityIndicator to show during network operations .
-    public private(set) var activityIndicator: GravatarActivityIndicator? {
+    public private(set) var activityIndicator: ActivityIndicatorProvider? {
         get {
-            let box: Box<GravatarActivityIndicator>? = getAssociatedObject(component, &indicatorKey)
+            let box: Box<ActivityIndicatorProvider>? = getAssociatedObject(component, &indicatorKey)
             return box?.value
         }
         

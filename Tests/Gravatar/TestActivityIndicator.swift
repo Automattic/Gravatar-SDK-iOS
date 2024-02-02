@@ -8,7 +8,7 @@
 import UIKit
 import Gravatar
 
-class TestActivityIndicator: GravatarActivityIndicator {
+class TestActivityIndicator: ActivityIndicatorProvider {
     var animating = false
     
     func startAnimatingView() {
