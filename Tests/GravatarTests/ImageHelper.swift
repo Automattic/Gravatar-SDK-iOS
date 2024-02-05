@@ -8,7 +8,9 @@
 import UIKit
 
 class ImageHelper {
-    
+
+    private init() {}
+
     static let testResourcesDir = "Gravatar_Gravatar-Tests.bundle/ResourceFiles/"
     
     static var testImage: UIImage {

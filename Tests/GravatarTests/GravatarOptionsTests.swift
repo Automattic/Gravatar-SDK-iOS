@@ -42,8 +42,10 @@ final class GravatarOptionsTests: XCTestCase {
     }
 }
 
-private struct TestImageProcessor: GravatarImageProcessor {
+class TestImageProcessor: GravatarImageProcessor {
+    var processedData = false
     func process(_ data: Data) -> UIImage? {
-        return nil
+        processedData = true
+        return UIImage()
     }
 }

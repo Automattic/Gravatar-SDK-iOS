@@ -28,6 +28,8 @@ public enum GravatarImageDownload {
         
         /// URL of response doesn't match with the request (request is outdated).
         case urlMismatch
+
+        case urlMissingInResponse
     }
     
     public enum ImageSettingErrorReason {
@@ -65,3 +67,6 @@ public enum GravatarImageDownload {
     }
 }
 
+public enum UploadError: Error {
+    case cannotConvertImageIntoData
+}

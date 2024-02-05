@@ -17,6 +17,16 @@ enum TestDataTaskFailReason: Equatable {
 }
 
 class TestURLSession: URLSessionProtocol {
+    func upload(for request: URLRequest, from bodyData: Data) async throws -> (Data, URLResponse) {
+        XCTFail("Not implemented")
+        fatalError() 
+    }
+    
+    func data(for request: URLRequest) async throws -> (Data, URLResponse) {
+        XCTFail("Not implemented")
+        fatalError()
+    }
+
     var failReason: TestDataTaskFailReason?
     private(set) var dataTaskCount: Int = 0
     static let error = NSError(domain: "test", code: 1234)
@@ -78,6 +88,8 @@ extension GravatarImageDownload.ResponseErrorReason: Equatable {
         case (.notFound, .notFound):
             return true
         case (.urlMismatch, .urlMismatch):
+            return true
+        case (.urlMissingInResponse, .urlMissingInResponse):
             return true
         case (.URLSessionError(let error1), .URLSessionError(let error2)):
             let error1 = error1 as NSError

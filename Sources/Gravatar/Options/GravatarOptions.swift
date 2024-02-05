@@ -79,7 +79,7 @@ public struct GravatarImageDownloadOptions {
     let preferredSize: CGSize?
     let forceRefresh: Bool
     let processor: GravatarImageProcessor
-    
+
     public init(scaleFactor: CGFloat = UIScreen.main.scale, gravatarRating: GravatarRating = .default, preferredSize: CGSize? = nil, forceRefresh: Bool = false, processor: GravatarImageProcessor = DefaultImageProcessor.common) {
         self.scaleFactor = scaleFactor
         self.gravatarRating = gravatarRating
