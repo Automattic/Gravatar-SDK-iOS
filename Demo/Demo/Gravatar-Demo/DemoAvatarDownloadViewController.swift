@@ -36,25 +36,10 @@ class DemoAvatarDownloadViewController: UIViewController {
         return textField
     }()
     
-    private lazy var ignoreCacheLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Ignore Cache"
-        return label
-    }()
-    
-    private lazy var ignoreCacheSwitch: UISwitch = {
-        let switchView = UISwitch()
-        switchView.translatesAutoresizingMaskIntoConstraints = false
-        return switchView
-    }()
-    
-    private lazy var cacheStackView: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [ignoreCacheSwitch, ignoreCacheLabel])
-        stack.translatesAutoresizingMaskIntoConstraints = false
-        stack.axis = .horizontal
-        stack.spacing = 6
-        return stack
+    private lazy var igonreCacheSwitchWithLabel: SwitchWithLabel = {
+        let view = SwitchWithLabel(labelText: "Ignore Cache")
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
     }()
     
     private lazy var fetchAvatarButton: UIButton = {
@@ -75,7 +60,7 @@ class DemoAvatarDownloadViewController: UIViewController {
     }()
     
     private lazy var stackView: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [emailInputField, preferredAvatarLengthInputField, gravatarRatingInputField, cacheStackView, fetchAvatarButton, avatarImageView])
+        let stack = UIStackView(arrangedSubviews: [emailInputField, preferredAvatarLengthInputField, gravatarRatingInputField, igonreCacheSwitchWithLabel, fetchAvatarButton, avatarImageView])
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.axis = .vertical
         stack.spacing = 12
@@ -122,7 +107,7 @@ class DemoAvatarDownloadViewController: UIViewController {
         
         let options: GravatarImageDownloadOptions = .init(gravatarRating: preferredRating ?? .default, 
                                                           preferredSize: preferredSize,
-                                                          forceRefresh: ignoreCacheSwitch.isOn)
+                                                          forceRefresh: igonreCacheSwitchWithLabel.isOn)
         
         avatarImageView.image = nil // Setting to nil to make the effect of `forceRefresh more visible
         

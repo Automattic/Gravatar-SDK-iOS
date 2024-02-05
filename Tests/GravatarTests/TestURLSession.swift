@@ -79,9 +79,9 @@ extension GravatarImageDownloadError: Equatable {
     }
 }
 
-extension GravatarImageDownloadError.ResponseErrorReason: Equatable {
+extension GravatarImageDownload.ResponseErrorReason: Equatable {
     
-    public static func == (lhs: GravatarImageDownloadError.ResponseErrorReason, rhs: GravatarImageDownloadError.ResponseErrorReason) -> Bool {
+    public static func == (lhs: GravatarImageDownload.ResponseErrorReason, rhs: GravatarImageDownload.ResponseErrorReason) -> Bool {
         switch (lhs, rhs) {
         case (.imageInitializationFailed, .imageInitializationFailed):
             return true
@@ -100,4 +100,3 @@ extension GravatarImageDownloadError.ResponseErrorReason: Equatable {
         }
     }
 }
-
