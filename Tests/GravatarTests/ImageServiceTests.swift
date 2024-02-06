@@ -189,6 +189,18 @@ final class ImageServiceTests: XCTestCase {
 
         XCTAssertTrue(testProcessor.processedData)
     }
+
+    func testFetchImageWithDefaultImageOption() async throws {
+        let response = HTTPURLResponse.successResponse()
+        let sessionMock = URLSessionMock(returnData: ImageHelper.testImageData, response: response)
+        let service = imageService(with: sessionMock)
+        let options = GravatarImageDownloadOptions(defaultImage: .misteryPerson)
+
+        let imageResponse = try await service.fetchImage(with: "some@email.com", options: options)
+
+        XCTAssertEqual(sessionMock.request?.url?.absoluteString.contains("d=mp"), true)
+        XCTAssertNotNil(imageResponse.image)
+    }
 }
 
 private func imageService(with session: URLSessionProtocol, cache: GravatarImageCaching = GravatarImageCache()) -> ImageService {

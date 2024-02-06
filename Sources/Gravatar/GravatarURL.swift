@@ -1,7 +1,7 @@
 import Foundation
 
 public struct GravatarURL {
-    fileprivate struct Defaults {
+    private enum Defaults {
         static let scheme = "https"
         static let host = "secure.gravatar.com"
         static let unknownHash = "ad516503a11cd5ca435acc9bb6523536"
@@ -11,7 +11,7 @@ public struct GravatarURL {
 
     let canonicalURL: URL
 
-    public func urlWithSize(_ size: Int, defaultImage: DefaultImageOption? = nil) -> URL {
+    public func url(with size: Int? = nil, defaultImage: DefaultImageOption = .defaultOption) -> URL {
         var components = URLComponents(url: canonicalURL, resolvingAgainstBaseURL: false)!
         components.query = "s=\(size)&d=\(defaultImage?.rawValue ?? DefaultImageOption.defaultOption.rawValue)"
         return components.url!
@@ -45,11 +45,11 @@ public struct GravatarURL {
         rating: GravatarRating = .default) -> URL?
     {
         let hash = gravatarHash(of: email)
-        let targetURL = String(format: "%@/%@?d=%@&s=%d&r=%@",
+        let targetURL = String(
+            format: "%@/%@?d=%@&s=%d&r=%@",
             Defaults.baseURL,
             hash,
-            defaultImage?.rawValue ?? DefaultImageOption.fileNotFound.rawValue,
-            size ?? Defaults.imageSize,
+            defaultImage?.rawValue ?? DefaultImageOption.defaultOption.rawValue,
             rating.stringValue()
         )
         return URL(string: targetURL)
@@ -103,25 +103,4 @@ public extension GravatarURL {
     }
 }
 
-/// Options to return a default image if the image requested does not exist.
-/// Most of these work by taking the requested email hash and using it to generate a themed image that is unique to that email address.
-///
-public enum DefaultImageOption: String {
-    public static let defaultOption: DefaultImageOption = .fileNotFound
-    /// Return an HTTP 404 (File Not Found) response error if the image is not found.
-    case fileNotFound = "404"
-    /// A simple, cartoon-style silhouetted outline of a person (does not vary by email hash).
-    case misteryPerson = "mp"
-    /// A geometric pattern based on an email hash.
-    case identicon
-    /// A generated ‘monster’ with different colors, faces, etc.
-    case monsterId = "monsterid"
-    /// Fenerated faces with differing features and backgrounds.
-    case wavatar
-    /// Awesome generated, 8-bit arcade-style pixelated faces
-    case retro
-    /// A generated robot with different colors, faces, etc
-    case roboHash = "robohash"
-    /// A transparent PNG image
-    case transparentPNG = "blank"
 }
