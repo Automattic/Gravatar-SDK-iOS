@@ -13,7 +13,10 @@ public struct GravatarURL {
 
     public func url(with size: Int? = nil, defaultImage: DefaultImageOption = .defaultOption) -> URL {
         var components = URLComponents(url: canonicalURL, resolvingAgainstBaseURL: false)!
-        components.query = "s=\(size)&d=\(defaultImage?.rawValue ?? DefaultImageOption.defaultOption.rawValue)"
+        if let size = size {
+            components.queryItems?.append(URLQueryItem(name: "s", value: "\(size.normalizedImageSize())"))
+        }
+        components.queryItems?.append(URLQueryItem(name: "d", value: defaultImage.rawValue))
         return components.url!
     }
 
@@ -50,6 +53,7 @@ public struct GravatarURL {
             Defaults.baseURL,
             hash,
             defaultImage?.rawValue ?? DefaultImageOption.defaultOption.rawValue,
+            size?.normalizedImageSize() ?? Defaults.imageSize,
             rating.stringValue()
         )
         return URL(string: targetURL)
@@ -103,4 +107,11 @@ public extension GravatarURL {
     }
 }
 
+private extension Int {
+    static let minimumImageSize = 1
+    static let maximumImageSize = 2024
+
+    func normalizedImageSize() -> Int {
+        Swift.min(.maximumImageSize, Swift.max(.minimumImageSize, self))
+    }
 }
