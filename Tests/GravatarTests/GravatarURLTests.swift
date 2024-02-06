@@ -9,15 +9,15 @@ import XCTest
 @testable import Gravatar
 
 final class GravatarURLTests: XCTestCase {
-
-    // TODO: This should work without `www.`, but currently the tests would break.
     let verifiedGravatarURL = URL(string: "https://0.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50")!
+    let verifiedGravatarURL2 = URL(string: "https://gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50")!
 
     let exampleEmail = "some@email.com"
     let exampleEmailSHA = "676212ff796c79a3c06261eb10e3f455aa93998ee6e45263da13679c74b1e674"
 
     func testIsGravatarUrl() throws {
         XCTAssertTrue(GravatarURL.isGravatarURL(verifiedGravatarURL))
+        XCTAssertTrue(GravatarURL.isGravatarURL(verifiedGravatarURL2))
         XCTAssertFalse(GravatarURL.isGravatarURL(URL(string: "https://wordpress.com/")!))
     }
 
