@@ -41,7 +41,15 @@ class DemoAvatarDownloadViewController: UIViewController {
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
-    
+
+    private lazy var imageDefaultButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setTitle("Default Image: default (\(preferredDefaultImage))", for: .normal)
+        button.addTarget(self, action: #selector(selectImageDefault), for: .touchUpInside)
+        return button
+    }()
+
     private lazy var fetchAvatarButton: UIButton = {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -60,7 +68,7 @@ class DemoAvatarDownloadViewController: UIViewController {
     }()
     
     private lazy var stackView: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [emailInputField, preferredAvatarLengthInputField, gravatarRatingInputField, igonreCacheSwitchWithLabel, fetchAvatarButton, avatarImageView])
+        let stack = UIStackView(arrangedSubviews: [emailInputField, preferredAvatarLengthInputField, gravatarRatingInputField, igonreCacheSwitchWithLabel, imageDefaultButton, fetchAvatarButton, avatarImageView])
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.axis = .vertical
         stack.spacing = 12
@@ -102,13 +110,33 @@ class DemoAvatarDownloadViewController: UIViewController {
         }
         return nil
     }
-    
+
+    private var preferredDefaultImage: DefaultImageOption = .defaultOption
+
+    @objc private func selectImageDefault() {
+        let controller = UIAlertController(title: "Default Image", message: nil, preferredStyle: .actionSheet)
+
+        DefaultImageOption.allCases.forEach { option in
+            controller.addAction(UIAlertAction(title: "\(option)", style: .default) { [weak self] action in
+                self?.preferredDefaultImage = option
+                self?.imageDefaultButton.setTitle("Default Image: \(option)", for: .normal)
+            })
+        }
+
+        controller.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+
+        present(controller, animated: true)
+    }
+
     @objc private func fetchAvatarButtonHandler() {
         
-        let options: GravatarImageDownloadOptions = .init(gravatarRating: preferredRating ?? .default, 
-                                                          preferredSize: preferredSize,
-                                                          forceRefresh: igonreCacheSwitchWithLabel.isOn)
-        
+        let options: GravatarImageDownloadOptions = .init(
+            gravatarRating: preferredRating ?? .default,
+            preferredSize: preferredSize,
+            forceRefresh: igonreCacheSwitchWithLabel.isOn,
+            defaultImage: preferredDefaultImage
+        )
+
         avatarImageView.image = nil // Setting to nil to make the effect of `forceRefresh more visible
         
         imageRetriever.retrieveImage(with: emailInputField.text ?? "",

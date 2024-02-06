@@ -20,3 +20,5 @@ public enum DefaultImageOption: String {
     /// A transparent PNG image
     case transparentPNG = "blank"
 }
+
+extension DefaultImageOption: CaseIterable {}
