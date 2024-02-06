@@ -78,13 +78,22 @@ public struct GravatarImageDownloadOptions {
     let gravatarRating: GravatarRating
     let preferredSize: CGSize?
     let forceRefresh: Bool
+    let defaultImage: DefaultImageOption
     let processor: GravatarImageProcessor
 
-    public init(scaleFactor: CGFloat = UIScreen.main.scale, gravatarRating: GravatarRating = .default, preferredSize: CGSize? = nil, forceRefresh: Bool = false, processor: GravatarImageProcessor = DefaultImageProcessor.common) {
+    public init(
+        scaleFactor: CGFloat = UIScreen.main.scale,
+        gravatarRating: GravatarRating = .default,
+        preferredSize: CGSize? = nil,
+        forceRefresh: Bool = false,
+        defaultImage: DefaultImageOption = DefaultImageOption.defaultOption,
+        processor: GravatarImageProcessor = DefaultImageProcessor.common)
+    {
         self.scaleFactor = scaleFactor
         self.gravatarRating = gravatarRating
         self.preferredSize = preferredSize
         self.forceRefresh = forceRefresh
         self.processor = processor
+        self.defaultImage = defaultImage
     }
 }

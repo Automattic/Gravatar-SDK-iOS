@@ -25,10 +25,10 @@ final class GravatarURLTests: XCTestCase {
         let url = GravatarURL(verifiedGravatarURL)
         XCTAssertNotNil(url)
 
-        let urlWithSize = url?.urlWithSize(24)
+        let urlWithSize = url?.urlWithSize(24, defaultImage: .defaultOption)
         XCTAssertTrue(urlWithSize?.absoluteString.hasSuffix("?s=24&d=404") ?? false)
 
-        let urlWithSizeAndMisteryPersonDefault = url?.urlWithSize(128, defaultImage: .mp)
+        let urlWithSizeAndMisteryPersonDefault = url?.urlWithSize(128, defaultImage: .misteryPerson)
         XCTAssertTrue(urlWithSizeAndMisteryPersonDefault?.absoluteString.hasSuffix("?s=128&d=mp") ?? false)
 
         let urlWithSizeAndIdenticonDefault = url?.urlWithSize(256, defaultImage: .identicon)
