@@ -30,9 +30,7 @@ public class GravatarImageRetriever: GravatarImageRetrieverProtocol {
         completionHandler: ImageDownloadCompletion? = nil
     ) -> CancellableDataTask? {
         let options = options ?? GravatarImageDownloadOptions()
-        let size = options.preferredSize ?? GravatarImageDownloadOptions.defaultSize
-        let targetSize = max(size.width, size.height) * UIScreen.main.scale
-        guard let gravatarURL = GravatarURL.gravatarUrl(for: email, size: Int(targetSize), rating: options.gravatarRating) else {
+        guard let gravatarURL = GravatarURL.gravatarUrl(with: email, options: options) else {
             completionHandler?(.failure(GravatarImageDownloadError.requestError(reason: .urlInitializationFailed)))
             return nil
         }

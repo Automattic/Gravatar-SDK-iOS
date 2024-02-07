@@ -59,7 +59,7 @@ public struct GravatarImageSettingOptions {
         }
     }
     
-    func deriveDownloadOptions(garavatarRating rating: GravatarRating, preferredSize size: CGSize) -> GravatarImageDownloadOptions {
+    func deriveDownloadOptions(garavatarRating rating: GravatarRating, preferredSize size: CGSize?) -> GravatarImageDownloadOptions {
         return GravatarImageDownloadOptions(
             scaleFactor: scaleFactor,
             gravatarRating: rating,
@@ -72,28 +72,57 @@ public struct GravatarImageSettingOptions {
 
 // Download options to use outside of `GravatarCompatible` UI components. Refer to `GravatarImageSettingOption`.
 public struct GravatarImageDownloadOptions {
-    static let defaultSize: CGSize = .init(width: 80, height: 80)
-    
     let scaleFactor: CGFloat
-    let gravatarRating: GravatarRating
-    let preferredSize: CGSize?
+    let gravatarRating: GravatarRating?
     let forceRefresh: Bool
-    let defaultImage: DefaultImageOption
+    let forceDefaultImage: Bool
+    let defaultImage: DefaultImageOption?
     let processor: GravatarImageProcessor
+
+    var preferredSize: Int? {
+        guard let size = userSelectedSize else {
+            return nil
+        }
+        return Int(max(size.width, size.height) * scaleFactor)
+    }
+
+    private let userSelectedSize: CGSize?
 
     public init(
         scaleFactor: CGFloat = UIScreen.main.scale,
-        gravatarRating: GravatarRating = .default,
+        gravatarRating: GravatarRating? = nil,
         preferredSize: CGSize? = nil,
         forceRefresh: Bool = false,
-        defaultImage: DefaultImageOption = DefaultImageOption.defaultOption,
-        processor: GravatarImageProcessor = DefaultImageProcessor.common)
-    {
+        forceDefaultImage: Bool = false,
+        defaultImage: DefaultImageOption? = nil,
+        processor: GravatarImageProcessor = DefaultImageProcessor.common
+    ) {
         self.scaleFactor = scaleFactor
         self.gravatarRating = gravatarRating
-        self.preferredSize = preferredSize
+        self.userSelectedSize = preferredSize
         self.forceRefresh = forceRefresh
+        self.forceDefaultImage = forceDefaultImage
         self.processor = processor
         self.defaultImage = defaultImage
+    }
+
+    func updating(
+        scaleFactor: CGFloat? = nil,
+        gravatarRating: GravatarRating? = nil,
+        preferredSize: CGSize? = nil,
+        forceRefresh: Bool? = nil,
+        forceDefaultImage: Bool? = nil,
+        defaultImage: DefaultImageOption? = nil,
+        processor: GravatarImageProcessor? = nil
+    ) -> Self {
+        GravatarImageDownloadOptions(
+            scaleFactor: scaleFactor ?? self.scaleFactor,
+            gravatarRating: gravatarRating ?? self.gravatarRating,
+            preferredSize: preferredSize ?? self.userSelectedSize,
+            forceRefresh: forceRefresh ?? self.forceRefresh,
+            forceDefaultImage: forceDefaultImage ?? self.forceDefaultImage,
+            defaultImage: defaultImage ?? self.defaultImage,
+            processor: processor ?? self.processor
+        )
     }
 }

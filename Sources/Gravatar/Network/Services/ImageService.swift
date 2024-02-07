@@ -31,10 +31,7 @@ public struct ImageService {
         options: GravatarImageDownloadOptions = GravatarImageDownloadOptions()
     ) async throws -> GravatarImageDownloadResult {
 
-        let size = options.preferredSize ?? GravatarImageDownloadOptions.defaultSize
-        let targetSize = max(size.width, size.height) * options.scaleFactor
-
-        guard let gravatarURL = GravatarURL.gravatarUrl(for: email, defaultImage: options.defaultImage, size: Int(targetSize), rating: options.gravatarRating) else {
+        guard let gravatarURL = GravatarURL.gravatarUrl(with: email, options: options) else {
             throw GravatarImageDownloadError.requestError(reason: .urlInitializationFailed)
         }
 

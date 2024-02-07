@@ -145,7 +145,9 @@ extension GravatarWrapper where Component: UIImageView {
                          options: [GravatarImageSettingOption]? = nil,
                          completionHandler: GravatarImageSetCompletion? = nil) -> CancellableDataTask?
     {
-        let gravatarURL = GravatarURL.gravatarUrl(for: email, size: calculatedLongerEdgeSize(preferredSize: preferredSize), rating: rating)
+        let downloadOptions = GravatarImageSettingOptions(options: options).deriveDownloadOptions(garavatarRating: rating, preferredSize: preferredSize)
+
+        let gravatarURL = GravatarURL.gravatarUrl(with: email, options: downloadOptions)
         return setImage(with: gravatarURL, placeholder: placeholder, options: options, completionHandler: completionHandler)
     }
     
@@ -224,25 +226,18 @@ extension GravatarWrapper where Component: UIImageView {
         mutatingSelf.downloadTask = task
         return task
     }
-    
-    private func calculatedLongerEdgeSize(preferredSize: CGSize?) -> Int {
-        let size = calculatedSize(preferredSize: preferredSize)
-        let targetSize = max(size.width, size.height) * UIScreen.main.scale
-        return Int(targetSize)
-    }
-    
-    private func calculatedSize(preferredSize: CGSize?) -> CGSize {
-        var size = GravatarImageDownloadOptions.defaultSize
+
+    private func calculatedSize(preferredSize: CGSize?) -> CGSize? {
         if let preferredSize {
-            size = preferredSize
+            return preferredSize
         }
         else {
             component.layoutIfNeeded()
             if component.bounds.size.equalTo(.zero) == false {
-                size = component.bounds.size
+                return component.bounds.size
             }
         }
-        return size
+        return nil
     }
     
     private func transition(for component: Component?, into image: UIImage, duration: Double, completion: @escaping ()->Void) {
