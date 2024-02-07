@@ -42,6 +42,12 @@ class DemoAvatarDownloadViewController: UIViewController {
         return view
     }()
 
+    private lazy var forceDefaultImageSwitchWithLabel: SwitchWithLabel = {
+        let view = SwitchWithLabel(labelText: "Force default image")
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+
     private lazy var imageDefaultButton: UIButton = {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -68,7 +74,16 @@ class DemoAvatarDownloadViewController: UIViewController {
     }()
     
     private lazy var stackView: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [emailInputField, preferredAvatarLengthInputField, gravatarRatingInputField, igonreCacheSwitchWithLabel, imageDefaultButton, fetchAvatarButton, avatarImageView])
+        let stack = UIStackView(arrangedSubviews: [
+            emailInputField,
+            preferredAvatarLengthInputField,
+            gravatarRatingInputField,
+            igonreCacheSwitchWithLabel,
+            forceDefaultImageSwitchWithLabel,
+            imageDefaultButton,
+            fetchAvatarButton,
+            avatarImageView
+        ])
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.axis = .vertical
         stack.spacing = 12
@@ -134,6 +149,7 @@ class DemoAvatarDownloadViewController: UIViewController {
             gravatarRating: preferredRating ?? .default,
             preferredSize: preferredSize,
             forceRefresh: igonreCacheSwitchWithLabel.isOn,
+            forceDefaultImage: forceDefaultImageSwitchWithLabel.isOn,
             defaultImage: preferredDefaultImage
         )
 
