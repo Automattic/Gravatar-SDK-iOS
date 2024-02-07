@@ -145,10 +145,7 @@ extension GravatarWrapper where Component: UIImageView {
                          options: [GravatarImageSettingOption]? = nil,
                          completionHandler: GravatarImageSetCompletion? = nil) -> CancellableDataTask?
     {
-        let size: Int? = {
-            guard let size = preferredSize else { return nil }
-            return max(Int(size.width), Int(size.height))
-        }()
+        let size: Int? = calculatedSize(preferredSize: preferredSize)
         let downloadOptions = GravatarImageSettingOptions(options: options).deriveDownloadOptions(garavatarRating: rating, preferredSize: size)
 
         let gravatarURL = GravatarURL.gravatarUrl(with: email, options: downloadOptions)
@@ -231,19 +228,21 @@ extension GravatarWrapper where Component: UIImageView {
         return task
     }
 
-    private func calculatedSize(preferredSize: CGSize?) -> CGSize? {
+    // TODO: Create unit test which checks for the correct automated size calculation based on the component size.
+    // TODO: At some point this was failing while all tests were passing, and the server was returning the default 80x80px image.
+    private func calculatedSize(preferredSize: CGSize?) -> Int? {
         if let preferredSize {
-            return preferredSize
+            return Int(preferredSize.biggestSide)
         }
         else {
             component.layoutIfNeeded()
             if component.bounds.size.equalTo(.zero) == false {
-                return component.bounds.size
+                return Int(component.bounds.size.biggestSide)
             }
         }
         return nil
     }
-    
+
     private func transition(for component: Component?, into image: UIImage, duration: Double, completion: @escaping ()->Void) {
         guard let component else { return }
         UIView.transition(
@@ -255,5 +254,11 @@ extension GravatarWrapper where Component: UIImageView {
                 completion()
             }
         )
+    }
+}
+
+private extension CGSize {
+    var biggestSide: CGFloat {
+        max(width, height)
     }
 }
