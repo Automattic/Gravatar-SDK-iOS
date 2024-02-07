@@ -70,3 +70,22 @@ public enum GravatarImageDownload {
 public enum UploadError: Error {
     case cannotConvertImageIntoData
 }
+
+public enum GravatarServiceError: Error {
+    case invalidAccountInfo
+    case invalidURL
+    case unexpected(Error)
+}
+
+extension GravatarServiceError: CustomDebugStringConvertible {
+    public var debugDescription: String {
+        switch self {
+        case .invalidAccountInfo:
+            return "Invalid account info"
+        case .invalidURL:
+            return "Invalid URL"
+        case .unexpected(let error):
+            return "An unexpected error has occoured: \(error)"
+        }
+    }
+}
