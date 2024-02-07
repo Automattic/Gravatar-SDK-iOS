@@ -45,7 +45,7 @@ class DemoAvatarDownloadViewController: UIViewController {
     private lazy var imageDefaultButton: UIButton = {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("Default Image: default (\(preferredDefaultImage))", for: .normal)
+        button.setTitle("Default Image: (Backend driven)", for: .normal)
         button.addTarget(self, action: #selector(selectImageDefault), for: .touchUpInside)
         return button
     }()
@@ -111,7 +111,7 @@ class DemoAvatarDownloadViewController: UIViewController {
         return nil
     }
 
-    private var preferredDefaultImage: DefaultImageOption = .defaultOption
+    private var preferredDefaultImage: DefaultImageOption? = nil
 
     @objc private func selectImageDefault() {
         let controller = UIAlertController(title: "Default Image", message: nil, preferredStyle: .actionSheet)
