@@ -16,9 +16,6 @@
 # Reposition `let` or `var` bindings within pattern.
 --patternlet inline
 
-# Insert explicit `self` where applicable.
---self insert
-
 # Mark unused function arguments with `_`.
 --stripunusedargs unnamed-only
 
@@ -39,4 +36,5 @@
 
 # Prefer `&&` over `,` comma in `if`, `guard` or `while` conditions.
 # Preserve `nil` default value (Optional `var`s are `nil` by default).
---disable andOperator,redundantNilInit 
+# Be unopinionated about explicit self
+--disable andOperator,redundantNilInit,redundantSelf
