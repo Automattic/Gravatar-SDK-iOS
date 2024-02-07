@@ -140,7 +140,7 @@ extension GravatarWrapper where Component: UIImageView {
     @discardableResult
     public func setImage(email: String,
                          placeholder: UIImage? = nil,
-                         rating: GravatarRating = GravatarRating.default,
+                         rating: GravatarRating? = nil,
                          preferredSize: CGSize? = nil,
                          options: [GravatarImageSettingOption]? = nil,
                          completionHandler: GravatarImageSetCompletion? = nil) -> CancellableDataTask?

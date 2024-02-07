@@ -59,7 +59,7 @@ public struct GravatarImageSettingOptions {
         }
     }
     
-    func deriveDownloadOptions(garavatarRating rating: GravatarRating, preferredSize size: Int?) -> GravatarImageDownloadOptions {
+    func deriveDownloadOptions(garavatarRating rating: GravatarRating? = nil, preferredSize size: Int? = nil) -> GravatarImageDownloadOptions {
         return GravatarImageDownloadOptions(
             scaleFactor: scaleFactor,
             gravatarRating: rating,

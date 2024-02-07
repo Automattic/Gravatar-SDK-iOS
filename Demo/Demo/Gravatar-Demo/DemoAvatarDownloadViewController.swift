@@ -146,7 +146,7 @@ class DemoAvatarDownloadViewController: UIViewController {
     @objc private func fetchAvatarButtonHandler() {
         
         let options: GravatarImageDownloadOptions = .init(
-            gravatarRating: preferredRating ?? .default,
+            gravatarRating: preferredRating,
             preferredSize: preferredSize,
             forceRefresh: igonreCacheSwitchWithLabel.isOn,
             forceDefaultImage: forceDefaultImageSwitchWithLabel.isOn,
@@ -161,6 +161,7 @@ class DemoAvatarDownloadViewController: UIViewController {
                 switch result {
                 case .success(let value):
                     self?.avatarImageView.image = value.image
+                    print("Source URL: \(value.sourceURL)")
                 case .failure(let error):
                     print(error)
                 }
