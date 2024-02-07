@@ -79,6 +79,57 @@ final class ImageServiceTests: XCTestCase {
         wait(for: [expectation], timeout: 0.2)
     }
 
+    func testFetchImageWithURL() async throws {
+        let imageURL = "https://gravatar.com/avatar/HASH"
+        let response = HTTPURLResponse.successResponse()
+        let sessionMock = URLSessionMock(returnData: ImageHelper.testImageData, response: response)
+        let service = imageService(with: sessionMock)
+
+        let imageResponse = try await service.fetchImage(with: URL(string: imageURL)!)
+
+        XCTAssertEqual(sessionMock.request?.url?.absoluteString, "https://gravatar.com/avatar/HASH")
+        XCTAssertNotNil(imageResponse.image)
+    }
+
+    func testFetchImageWithCompletionHandlerAndURL() {
+        let imageURL = "https://gravatar.com/avatar/HASH"
+        let response = HTTPURLResponse.successResponse(with: URL(string: imageURL))
+        let sessionMock = URLSessionMock(returnData: ImageHelper.testImageData, response: response)
+        let service = imageService(with: sessionMock)
+        let expectation = expectation(description: "Request finishes")
+
+        service.retrieveImage(with: URL(string: imageURL)!) { response in
+            switch response {
+            case .success(let result):
+                XCTAssertNotNil(result.image)
+                XCTAssertEqual(result.sourceURL.absoluteString, imageURL)
+            case .failure(let error):
+                XCTFail(error.localizedDescription)
+            }
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 0.2)
+    }
+
+    func testFetchCatchedImageWithURL() async throws {
+        let imageURL = "https://gravatar.com/avatar/HASH"
+        let response = HTTPURLResponse.successResponse()
+        let sessionMock = URLSessionMock(returnData: ImageHelper.testImageData, response: response)
+        let cache = TestImageCache()
+        let service = imageService(with: sessionMock, cache: cache)
+
+        _ = try await service.fetchImage(with: URL(string: imageURL)!)
+        _ = try await service.fetchImage(with: URL(string: imageURL)!)
+        let imageResponse = try await service.fetchImage(with: URL(string: imageURL)!)
+
+        XCTAssertEqual(cache.setImageCallsCount, 1)
+        XCTAssertEqual(cache.getImageCallCount, 3)
+        XCTAssertEqual(sessionMock.callsCount, 1)
+        XCTAssertEqual(sessionMock.request?.url?.absoluteString, "https://gravatar.com/avatar/HASH")
+        XCTAssertNotNil(imageResponse.image)
+    }
+
     func testUploadImage() async throws {
         let successResponse = HTTPURLResponse.successResponse()
         let sessionMock = URLSessionMock(returnData: "Success".data(using: .utf8)!, response: successResponse)

@@ -1,31 +1,5 @@
 import UIKit
 
-public protocol ImageServing {
-    func retrieveImage(
-        with email: String,
-        options: GravatarImageDownloadOptions,
-        completionHandler: ImageDownloadCompletion?
-    ) -> CancellableDataTask
-
-    func retrieveImage(
-        with url: URL,
-        forceRefresh: Bool,
-        processor: GravatarImageProcessor,
-        completionHandler: ImageDownloadCompletion?
-    ) -> CancellableDataTask?
-
-    func fetchImage(
-        with email: String,
-        options: GravatarImageDownloadOptions
-    ) async throws -> GravatarImageDownloadResult
-
-    func fetchImage(
-        with url: URL,
-        forceRefresh: Bool,
-        processor: GravatarImageProcessor
-    ) async throws -> GravatarImageDownloadResult
-}
-
 public struct ImageService: ImageServing {
     private let client: HTTPClient
     private let imageCache: GravatarImageCaching
@@ -35,6 +9,7 @@ public struct ImageService: ImageServing {
         self.imageCache = cache
     }
 
+    @discardableResult
     public func retrieveImage(
         with email: String,
         options: GravatarImageDownloadOptions = GravatarImageDownloadOptions(),
@@ -43,6 +18,25 @@ public struct ImageService: ImageServing {
         Task {
             do {
                 let result = try await fetchImage(with: email, options: options)
+                completionHandler?(Result.success(result))
+            } catch let error as GravatarImageDownloadError {
+                completionHandler?(Result.failure(error))
+            } catch {
+                completionHandler?(Result.failure(GravatarImageDownloadError.responseError(reason: .URLSessionError(error: error))))
+            }
+        }
+    }
+
+    @discardableResult
+    public func retrieveImage(
+        with url: URL,
+        forceRefresh: Bool = false,
+        processor: GravatarImageProcessor = DefaultImageProcessor.common,
+        completionHandler: ImageDownloadCompletion?
+    ) -> CancellableDataTask? {
+        Task {
+            do {
+                let result = try await fetchImage(with: url, forceRefresh: forceRefresh, processor: processor)
                 completionHandler?(Result.success(result))
             } catch let error as GravatarImageDownloadError {
                 completionHandler?(Result.failure(error))
@@ -73,31 +67,13 @@ public struct ImageService: ImageServing {
 
     public func fetchImage(
         with url: URL,
-        forceRefresh: Bool,
-        processor: GravatarImageProcessor
+        forceRefresh: Bool = false,
+        processor: GravatarImageProcessor = DefaultImageProcessor.common
     ) async throws -> GravatarImageDownloadResult {
         if !forceRefresh, let result = cachedImageResult(for: url) {
             return result
         }
         return try await fetchImage(from: url, imageProcressor: processor)
-    }
-
-    public func retrieveImage(
-        with url: URL,
-        forceRefresh: Bool,
-        processor: GravatarImageProcessor,
-        completionHandler: ImageDownloadCompletion?
-    ) -> CancellableDataTask? {
-        Task {
-            do {
-                let result = try await fetchImage(with: url, forceRefresh: forceRefresh, processor: processor)
-                completionHandler?(Result.success(result))
-            } catch let error as GravatarImageDownloadError {
-                completionHandler?(Result.failure(error))
-            } catch {
-                completionHandler?(Result.failure(GravatarImageDownloadError.responseError(reason: .URLSessionError(error: error))))
-            }
-        }
     }
 
     private func fetchImage(from url: URL, imageProcressor: GravatarImageProcessor) async throws -> GravatarImageDownloadResult {
@@ -200,11 +176,5 @@ private extension URLRequest {
         request.addValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
         request.httpMethod = "POST"
         return request
-    }
-}
-
-extension Task: CancellableDataTask {
-    public var taskIdentifier: Int {
-        "\(self)".hashValue
     }
 }

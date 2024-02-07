@@ -7,3 +7,9 @@ public protocol CancellableDataTask {
 }
 
 extension URLSessionTask: CancellableDataTask { }
+
+extension Task: CancellableDataTask {
+    public var taskIdentifier: Int {
+        "\(self)".hashValue
+    }
+}
