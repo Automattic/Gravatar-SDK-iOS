@@ -48,7 +48,7 @@ public struct GravatarURL {
         return baseURL.addQueryItems(from: options)
     }
 
-    /// Returnsw the gravatar hash of an email
+    /// Returns  the gravatar hash of an email
     ///
     /// - Parameter email: the email associated with the gravatar
     /// - Returns: hashed email

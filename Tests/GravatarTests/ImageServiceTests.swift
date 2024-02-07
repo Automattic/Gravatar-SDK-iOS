@@ -6,13 +6,13 @@ final class ImageServiceTests: XCTestCase {
         let response = HTTPURLResponse.successResponse()
         let sessionMock = URLSessionMock(returnData: ImageHelper.testImageData, response: response)
         let service = imageService(with: sessionMock)
-        let options = GravatarImageDownloadOptions(scaleFactor: 3, gravatarRating: .g, preferredSize: 80)
+        let options = GravatarImageDownloadOptions()
 
         let imageResponse = try await service.fetchImage(with: "some@email.com", options: options)
 
         XCTAssertEqual(
             sessionMock.request?.url?.absoluteString,
-            "https://gravatar.com/avatar/676212ff796c79a3c06261eb10e3f455aa93998ee6e45263da13679c74b1e674?s=240&r=g"
+            "https://gravatar.com/avatar/676212ff796c79a3c06261eb10e3f455aa93998ee6e45263da13679c74b1e674"
         )
         XCTAssertNotNil(imageResponse.image)
     }
