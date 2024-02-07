@@ -24,7 +24,7 @@ public enum GravatarImageSettingOption {
     case imageCache(GravatarImageCaching)
     
     // A custom image downloader. Defaults to `GravatarimageDownloader` if not set.
-    case imageDownloader(GravatarImageRetrieverProtocol)
+    case imageDownloader(ImageServing)
 }
 
 // Parsed options derived from [GravatarImageSettingOption]
@@ -35,7 +35,7 @@ public struct GravatarImageSettingOptions {
     var forceRefresh = false
     var processor: GravatarImageProcessor = DefaultImageProcessor.common
     var imageCache: GravatarImageCaching = GravatarImageCache.shared
-    var imageDownloader: GravatarImageRetrieverProtocol? = nil
+    var imageDownloader: ImageServing? = nil
 
     init(options: [GravatarImageSettingOption]?) {
         guard let options = options else { return }
