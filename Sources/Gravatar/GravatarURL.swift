@@ -98,7 +98,7 @@ public extension GravatarURL {
 
 private extension Int {
     static let minimumImageSize = 1
-    static let maximumImageSize = 2024
+    static let maximumImageSize = 2048
 
     func normalizedImageSize() -> Int {
         Swift.min(.maximumImageSize, Swift.max(.minimumImageSize, self))

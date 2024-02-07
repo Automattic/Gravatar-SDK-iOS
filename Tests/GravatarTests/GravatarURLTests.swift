@@ -30,7 +30,7 @@ final class GravatarURLTests: XCTestCase {
         XCTAssertEqual(url?.url(with: options.updating(preferredSize: 256)).query, "s=256")
         XCTAssertEqual(url?.url(with: options.updating(preferredSize: 0)).query, "s=1")
         XCTAssertEqual(url?.url(with: options.updating(preferredSize: (-10))).query, "s=1")
-        XCTAssertEqual(url?.url(with: options.updating(preferredSize: 5000)).query, "s=2024")
+        XCTAssertEqual(url?.url(with: options.updating(preferredSize: 5000)).query, "s=2048")
     }
 
     func testUrlWithDefaultImage() throws {
