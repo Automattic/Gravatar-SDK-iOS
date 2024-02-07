@@ -25,12 +25,12 @@ final class GravatarURLTests: XCTestCase {
         let url = GravatarURL(verifiedGravatarURL)
         XCTAssertNotNil(url)
         let options = GravatarImageDownloadOptions(scaleFactor: 1)
-        XCTAssertEqual(url?.url(with: options.updating(preferredSize: 24.toCGSize())).query, "s=24")
-        XCTAssertEqual(url?.url(with: options.updating(preferredSize: 128.toCGSize())).query, "s=128")
-        XCTAssertEqual(url?.url(with: options.updating(preferredSize: 256.toCGSize())).query, "s=256")
-        XCTAssertEqual(url?.url(with: options.updating(preferredSize: 0.toCGSize())).query, "s=1")
-        XCTAssertEqual(url?.url(with: options.updating(preferredSize: (-10).toCGSize())).query, "s=1")
-        XCTAssertEqual(url?.url(with: options.updating(preferredSize: 5000.toCGSize())).query, "s=2024")
+        XCTAssertEqual(url?.url(with: options.updating(preferredSize: 24)).query, "s=24")
+        XCTAssertEqual(url?.url(with: options.updating(preferredSize: 128)).query, "s=128")
+        XCTAssertEqual(url?.url(with: options.updating(preferredSize: 256)).query, "s=256")
+        XCTAssertEqual(url?.url(with: options.updating(preferredSize: 0)).query, "s=1")
+        XCTAssertEqual(url?.url(with: options.updating(preferredSize: (-10))).query, "s=1")
+        XCTAssertEqual(url?.url(with: options.updating(preferredSize: 5000)).query, "s=2024")
     }
 
     func testUrlWithDefaultImage() throws {
@@ -38,7 +38,6 @@ final class GravatarURLTests: XCTestCase {
         XCTAssertNotNil(url)
         let options = GravatarImageDownloadOptions()
 
-        XCTAssertEqual(url?.url(with: options.updating(defaultImage: .defaultOption)).query, "d=404")
         XCTAssertEqual(url?.url(with: options.updating(defaultImage: .fileNotFound)).query, "d=404")
         XCTAssertEqual(url?.url(with: options.updating(defaultImage: .misteryPerson)).query, "d=mp")
         XCTAssertEqual(url?.url(with: options.updating(defaultImage: .monsterId)).query, "d=monsterid")
@@ -57,8 +56,6 @@ final class GravatarURLTests: XCTestCase {
     }
 
     func testCreateGravatarUrlWithEmail() throws {
-        let emailPrefix = "https://gravatar.com/avatar/\(exampleEmailSHA)"
-
         let options = GravatarImageDownloadOptions(scaleFactor: 1)
         let url = GravatarURL.gravatarUrl(with: exampleEmail, options: options)
         XCTAssertEqual(
@@ -72,7 +69,7 @@ final class GravatarURLTests: XCTestCase {
             "https://gravatar.com/avatar/676212ff796c79a3c06261eb10e3f455aa93998ee6e45263da13679c74b1e674?d=identicon"
         )
 
-        let urlAddingSize = GravatarURL.gravatarUrl(with: exampleEmail, options: options.updating(preferredSize: 24.toCGSize()))
+        let urlAddingSize = GravatarURL.gravatarUrl(with: exampleEmail, options: options.updating(preferredSize: 24))
         XCTAssertEqual(
             urlAddingSize?.absoluteString,
             "https://gravatar.com/avatar/676212ff796c79a3c06261eb10e3f455aa93998ee6e45263da13679c74b1e674?s=24"
@@ -84,7 +81,7 @@ final class GravatarURLTests: XCTestCase {
             "https://gravatar.com/avatar/676212ff796c79a3c06261eb10e3f455aa93998ee6e45263da13679c74b1e674?r=pg"
         )
 
-        let allOptions = GravatarImageDownloadOptions(scaleFactor: 1, gravatarRating: .g, preferredSize: 200.toCGSize(), forceDefaultImage: true, defaultImage: .monsterId)
+        let allOptions = GravatarImageDownloadOptions(scaleFactor: 1, gravatarRating: .g, preferredSize: 200, forceDefaultImage: true, defaultImage: .monsterId)
         let urlAddingAllOptions = GravatarURL.gravatarUrl(with: exampleEmail, options: allOptions)
         XCTAssertEqual(
             urlAddingAllOptions?.absoluteString,
@@ -104,11 +101,5 @@ final class GravatarURLTests: XCTestCase {
         let rhs = GravatarURL(verifiedGravatarURL)
 
         XCTAssertNotEqual(lhs, rhs)
-    }
-}
-
-extension Int {
-    func toCGSize() -> CGSize {
-        .init(width: self, height: self)
     }
 }

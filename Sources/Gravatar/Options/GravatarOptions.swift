@@ -5,7 +5,7 @@ import UIKit
 public enum GravatarImageSettingOption {
     // The value is used when converting the retrieved data to an image.
     // Default value is: UIScreen.main.scale. You may set values as `1.0`, `2.0`, `3.0`.
-    case scaleFactor(CGFloat)
+    case scaleFactor(Int)
 
     // Transition style to use when setting the new image downloaded. Default: .none
     case transition(GravatarImageTransition)
@@ -29,7 +29,7 @@ public enum GravatarImageSettingOption {
 
 // Parsed options derived from [GravatarImageSettingOption]
 public struct GravatarImageSettingOptions {
-    var scaleFactor: CGFloat = UIScreen.main.scale
+    var scaleFactor: Int = Int(UIScreen.main.scale)
     var transition: GravatarImageTransition = .none
     var removeCurrentImageWhileLoading = false
     var forceRefresh = false
@@ -59,7 +59,7 @@ public struct GravatarImageSettingOptions {
         }
     }
     
-    func deriveDownloadOptions(garavatarRating rating: GravatarRating, preferredSize size: CGSize?) -> GravatarImageDownloadOptions {
+    func deriveDownloadOptions(garavatarRating rating: GravatarRating, preferredSize size: Int?) -> GravatarImageDownloadOptions {
         return GravatarImageDownloadOptions(
             scaleFactor: scaleFactor,
             gravatarRating: rating,
@@ -72,7 +72,7 @@ public struct GravatarImageSettingOptions {
 
 // Download options to use outside of `GravatarCompatible` UI components. Refer to `GravatarImageSettingOption`.
 public struct GravatarImageDownloadOptions {
-    let scaleFactor: CGFloat
+    let scaleFactor: Int
     let gravatarRating: GravatarRating?
     let forceRefresh: Bool
     let forceDefaultImage: Bool
@@ -83,15 +83,15 @@ public struct GravatarImageDownloadOptions {
         guard let size = userSelectedSize else {
             return nil
         }
-        return Int(max(size.width, size.height) * scaleFactor)
+        return size * scaleFactor
     }
 
-    private let userSelectedSize: CGSize?
+    private let userSelectedSize: Int?
 
     public init(
-        scaleFactor: CGFloat = UIScreen.main.scale,
+        scaleFactor: Int = Int(UIScreen.main.scale),
         gravatarRating: GravatarRating? = nil,
-        preferredSize: CGSize? = nil,
+        preferredSize: Int? = nil,
         forceRefresh: Bool = false,
         forceDefaultImage: Bool = false,
         defaultImage: DefaultImageOption? = nil,
@@ -107,9 +107,9 @@ public struct GravatarImageDownloadOptions {
     }
 
     func updating(
-        scaleFactor: CGFloat? = nil,
+        scaleFactor: Int? = nil,
         gravatarRating: GravatarRating? = nil,
-        preferredSize: CGSize? = nil,
+        preferredSize: Int? = nil,
         forceRefresh: Bool? = nil,
         forceDefaultImage: Bool? = nil,
         defaultImage: DefaultImageOption? = nil,

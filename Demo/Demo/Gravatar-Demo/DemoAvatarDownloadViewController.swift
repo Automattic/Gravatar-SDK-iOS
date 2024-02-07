@@ -9,8 +9,8 @@ import UIKit
 import Gravatar
 
 class DemoAvatarDownloadViewController: UIViewController {
-    static let imageViewSize: CGSize = .init(width: 300, height: 300)
-    
+    static let imageViewSize: Int = 300
+
     private lazy var emailInputField: UITextField = {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
@@ -61,8 +61,8 @@ class DemoAvatarDownloadViewController: UIViewController {
     private lazy var avatarImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.heightAnchor.constraint(equalToConstant: Self.imageViewSize.height).isActive = true
-        imageView.widthAnchor.constraint(equalToConstant: Self.imageViewSize.width).isActive = true
+        imageView.heightAnchor.constraint(equalToConstant: CGFloat(Self.imageViewSize)).isActive = true
+        imageView.widthAnchor.constraint(equalToConstant: CGFloat(Self.imageViewSize)).isActive = true
         imageView.backgroundColor = .lightGray
         return imageView
     }()
@@ -92,11 +92,11 @@ class DemoAvatarDownloadViewController: UIViewController {
         ])
     }
     
-    private var preferredSize: CGSize? {
+    private var preferredSize: Int? {
         if let preferredLenghtStr = preferredAvatarLengthInputField.text,
-           !preferredLenghtStr.isEmpty,
-           let preferredLength = Int(preferredLenghtStr) {
-            return CGSize(width: preferredLength, height: preferredLength)
+           !preferredLenghtStr.isEmpty 
+        {
+            return Int(preferredLenghtStr)
         }
         return Self.imageViewSize
     }

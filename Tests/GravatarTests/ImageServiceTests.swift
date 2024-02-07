@@ -6,7 +6,7 @@ final class ImageServiceTests: XCTestCase {
         let response = HTTPURLResponse.successResponse()
         let sessionMock = URLSessionMock(returnData: ImageHelper.testImageData, response: response)
         let service = imageService(with: sessionMock)
-        let options = GravatarImageDownloadOptions(scaleFactor: 3, gravatarRating: .g, preferredSize: 80.toCGSize())
+        let options = GravatarImageDownloadOptions(scaleFactor: 3, gravatarRating: .g, preferredSize: 80)
 
         let imageResponse = try await service.fetchImage(with: "some@email.com", options: options)
 
