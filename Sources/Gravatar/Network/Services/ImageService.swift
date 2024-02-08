@@ -88,6 +88,10 @@ public struct ImageService: ImageServing {
             throw GravatarImageDownloadError.responseError(reason: .imageInitializationFailed)
         }
 
+        guard url == response.url else {
+            throw GravatarImageDownloadError.responseError(reason: .urlMismatch)
+        }
+
         imageCache.setImage(image, forKey: url.absoluteString)
         return GravatarImageDownloadResult(image: image, sourceURL: responseUrl)
     }
