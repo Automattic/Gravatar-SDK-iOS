@@ -29,11 +29,11 @@ class TestImageRetriever: ImageServing {
     }
 
     func fetchImage(with url: URL, forceRefresh: Bool, processor: Gravatar.GravatarImageProcessor) async throws -> Gravatar.GravatarImageDownloadResult {
-        throw preconditionFailure("Not Implemented")
+        fatalError("Not Implemented")
     }
 
     func fetchImage(with email: String, options: Gravatar.GravatarImageDownloadOptions) async throws -> Gravatar.GravatarImageDownloadResult {
-        throw preconditionFailure("Not Implemented")
+        fatalError("Not Implemented")
     }
 
     func sendResponse(for url: String) {
