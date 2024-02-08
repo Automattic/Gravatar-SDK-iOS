@@ -10,7 +10,7 @@ public struct ImageService: ImageServing {
     }
 
     @discardableResult
-    public func retrieveImage(
+    public func fetchImage(
         with email: String,
         options: GravatarImageDownloadOptions = GravatarImageDownloadOptions(),
         completionHandler: ImageDownloadCompletion? = nil
@@ -28,7 +28,7 @@ public struct ImageService: ImageServing {
     }
 
     @discardableResult
-    public func retrieveImage(
+    public func fetchImage(
         with url: URL,
         forceRefresh: Bool = false,
         processor: GravatarImageProcessor = DefaultImageProcessor.common,

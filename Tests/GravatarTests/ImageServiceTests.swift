@@ -41,7 +41,7 @@ final class ImageServiceTests: XCTestCase {
         let service = imageService(with: sessionMock)
         let expectation = expectation(description: "Request finishes")
 
-        service.retrieveImage(with: TestData.email) { response in
+        service.fetchImage(with: TestData.email) { response in
             switch response {
             case .success(let result):
                 XCTAssertNotNil(result.image)
@@ -60,7 +60,7 @@ final class ImageServiceTests: XCTestCase {
         let service = imageService(with: sessionMock)
         let expectation = expectation(description: "Request finishes")
 
-        service.retrieveImage(with: TestData.urlFromEmail) { response in
+        service.fetchImage(with: TestData.urlFromEmail) { response in
             switch response {
             case .success:
                 XCTFail("Request should fail")
@@ -102,7 +102,7 @@ final class ImageServiceTests: XCTestCase {
         let service = imageService(with: sessionMock)
         let expectation = expectation(description: "Request finishes")
 
-        service.retrieveImage(with: URL(string: imageURL)!) { response in
+        service.fetchImage(with: URL(string: imageURL)!) { response in
             switch response {
             case .success(let result):
                 XCTAssertNotNil(result.image)

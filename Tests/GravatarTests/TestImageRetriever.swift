@@ -16,13 +16,13 @@ class TestImageRetriever: ImageServing {
         self.result = result
     }
     
-    func retrieveImage(with url: URL, forceRefresh: Bool, processor: Gravatar.GravatarImageProcessor, completionHandler: Gravatar.ImageDownloadCompletion?) -> Gravatar.CancellableDataTask? {
+    func fetchImage(with url: URL, forceRefresh: Bool, processor: Gravatar.GravatarImageProcessor, completionHandler: Gravatar.ImageDownloadCompletion?) -> Gravatar.CancellableDataTask? {
         completionQueue.append((url.absoluteString, completionHandler))
         taskIdentifier += 1
         return TestDataTask(taskIdentifier: taskIdentifier)
     }
 
-    func retrieveImage(with email: String, options: Gravatar.GravatarImageDownloadOptions, completionHandler: Gravatar.ImageDownloadCompletion?) -> Gravatar.CancellableDataTask {
+    func fetchImage(with email: String, options: Gravatar.GravatarImageDownloadOptions, completionHandler: Gravatar.ImageDownloadCompletion?) -> Gravatar.CancellableDataTask {
         completionQueue.append((email, completionHandler))
         taskIdentifier += 1
         return TestDataTask(taskIdentifier: taskIdentifier)

@@ -3,13 +3,13 @@ import Foundation
 public typealias ImageDownloadCompletion = ((Result<GravatarImageDownloadResult, GravatarImageDownloadError>) -> Void)
 
 public protocol ImageServing {
-    func retrieveImage(
+    func fetchImage(
         with email: String,
         options: GravatarImageDownloadOptions,
         completionHandler: ImageDownloadCompletion?
     ) -> CancellableDataTask
 
-    func retrieveImage(
+    func fetchImage(
         with url: URL,
         forceRefresh: Bool,
         processor: GravatarImageProcessor,
