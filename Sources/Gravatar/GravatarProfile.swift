@@ -7,7 +7,7 @@
 
 public enum GravatarProfileFetchResult {
     case success(GravatarProfile)
-    case failure(GravatarServiceError)
+    case failure(ProfileServiceError)
 }
 
 public struct GravatarProfile: Equatable {

@@ -7,7 +7,7 @@ enum GravatarImageSetMockResult {
     case success
 }
 
-class TestImageRetriever: GravatarImageRetrieverProtocol {
+class TestImageRetriever: ImageServing {
     var result: GravatarImageSetMockResult
     var taskIdentifier: Int = 0
     var completionQueue: [(url: String, handler: Gravatar.ImageDownloadCompletion?)] = []
@@ -16,12 +16,26 @@ class TestImageRetriever: GravatarImageRetrieverProtocol {
         self.result = result
     }
     
-    func retrieveImage(with url: URL, forceRefresh: Bool, processor: Gravatar.GravatarImageProcessor, completionHandler: Gravatar.ImageDownloadCompletion?) -> Gravatar.CancellableDataTask? {
+    func fetchImage(with url: URL, forceRefresh: Bool, processor: Gravatar.GravatarImageProcessor, completionHandler: Gravatar.ImageDownloadCompletion?) -> Gravatar.CancellableDataTask? {
         completionQueue.append((url.absoluteString, completionHandler))
         taskIdentifier += 1
         return TestDataTask(taskIdentifier: taskIdentifier)
     }
-    
+
+    func fetchImage(with email: String, options: Gravatar.GravatarImageDownloadOptions, completionHandler: Gravatar.ImageDownloadCompletion?) -> Gravatar.CancellableDataTask {
+        completionQueue.append((email, completionHandler))
+        taskIdentifier += 1
+        return TestDataTask(taskIdentifier: taskIdentifier)
+    }
+
+    func fetchImage(with url: URL, forceRefresh: Bool, processor: Gravatar.GravatarImageProcessor) async throws -> Gravatar.GravatarImageDownloadResult {
+        fatalError("Not Implemented")
+    }
+
+    func fetchImage(with email: String, options: Gravatar.GravatarImageDownloadOptions) async throws -> Gravatar.GravatarImageDownloadResult {
+        fatalError("Not Implemented")
+    }
+
     func sendResponse(for url: String) {
         switch result {
         case .fail:

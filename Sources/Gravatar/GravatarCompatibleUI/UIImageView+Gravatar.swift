@@ -108,9 +108,9 @@ extension GravatarWrapper where Component: UIImageView {
         }
     }
     
-    public private(set) var imageDownloader: GravatarImageRetrieverProtocol? {
+    public private(set) var imageDownloader: ImageServing? {
         get {
-            let box: Box<GravatarImageRetrieverProtocol>? = getAssociatedObject(component, &imageDownloaderKey)
+            let box: Box<ImageServing>? = getAssociatedObject(component, &imageDownloaderKey)
             return box?.value
         }
         set {
@@ -182,9 +182,9 @@ extension GravatarWrapper where Component: UIImageView {
         let issuedIdentifier = SimpleCounter.next()
         mutatingSelf.taskIdentifier = issuedIdentifier
         
-        let networkManager = options.imageDownloader ?? GravatarImageRetriever(imageCache: options.imageCache)
+        let networkManager = options.imageDownloader ?? ImageService(cache: options.imageCache)
         mutatingSelf.imageDownloader = networkManager // Retain the network manager otherwise the completion tasks won't be done properly
-        let task = networkManager.retrieveImage(with: source, forceRefresh: options.forceRefresh, processor: options.processor) { [weak component] result in
+        let task = networkManager.fetchImage(with: source, forceRefresh: options.forceRefresh, processor: options.processor) { [weak component] result in
             DispatchQueue.main.async {
                 maybeIndicator?.stopAnimatingView()
                 guard issuedIdentifier == self.taskIdentifier else {
