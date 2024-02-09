@@ -194,7 +194,7 @@ extension GravatarWrapper where Component: UIImageView {
                 guard issuedIdentifier == self.taskIdentifier else {
                     let reason: GravatarImageDownload.ImageSettingErrorReason
                     do {
-                        let value: GravatarImageDownloadResult = try result.get()
+                        let value = try result.get()
                         reason = .outdatedTask(result: value, error: nil, source: source)
                     } catch {
                         reason = .outdatedTask(result: nil, error: error, source: source)
