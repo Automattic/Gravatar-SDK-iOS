@@ -187,13 +187,14 @@ extension GravatarWrapper where Component: UIImageView {
         
         let networkManager = options.imageDownloader ?? ImageService(cache: options.imageCache)
         mutatingSelf.imageDownloader = networkManager // Retain the network manager otherwise the completion tasks won't be done properly
+
         let task = networkManager.fetchImage(with: source, forceRefresh: options.forceRefresh, processor: options.processor) { [weak component] result in
             DispatchQueue.main.async {
                 maybeIndicator?.stopAnimatingView()
                 guard issuedIdentifier == self.taskIdentifier else {
                     let reason: GravatarImageDownload.ImageSettingErrorReason
                     do {
-                        let value = try result.get()
+                        let value: GravatarImageDownloadResult = try result.get()
                         reason = .outdatedTask(result: value, error: nil, source: source)
                     } catch {
                         reason = .outdatedTask(result: nil, error: error, source: source)
@@ -229,10 +230,10 @@ extension GravatarWrapper where Component: UIImageView {
     }
 
     private func pointImageSize(from size: CGSize?) -> GravatarImageDownloadOptions.ImageSize? {
-        guard let preferredSize = size, let calculated = calculatedSize(preferredSize: preferredSize) else {
+        guard let calculatedSize = calculatedSize(preferredSize: size) else {
             return nil
         }
-        return .points(calculated)
+        return .points(calculatedSize)
     }
 
     // TODO: Create unit test which checks for the correct automated size calculation based on the component size.
