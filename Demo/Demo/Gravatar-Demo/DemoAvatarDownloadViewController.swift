@@ -9,7 +9,7 @@ import UIKit
 import Gravatar
 
 class DemoAvatarDownloadViewController: UIViewController {
-    static let imageViewSize: Int = 300
+    static let imageViewSize: CGFloat = 300
 
     private lazy var emailInputField: UITextField = {
         let textField = UITextField()
@@ -67,8 +67,8 @@ class DemoAvatarDownloadViewController: UIViewController {
     private lazy var avatarImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.heightAnchor.constraint(equalToConstant: CGFloat(Self.imageViewSize)).isActive = true
-        imageView.widthAnchor.constraint(equalToConstant: CGFloat(Self.imageViewSize)).isActive = true
+        imageView.heightAnchor.constraint(equalToConstant: Self.imageViewSize).isActive = true
+        imageView.widthAnchor.constraint(equalToConstant: Self.imageViewSize).isActive = true
         imageView.backgroundColor = .lightGray
         return imageView
     }()
@@ -107,11 +107,12 @@ class DemoAvatarDownloadViewController: UIViewController {
         ])
     }
     
-    private var preferredSize: Int? {
+    private var preferredSize: CGFloat {
         if let preferredLenghtStr = preferredAvatarLengthInputField.text,
-           !preferredLenghtStr.isEmpty 
+           !preferredLenghtStr.isEmpty,
+           let preferredSize = Float(preferredLenghtStr)
         {
-            return Int(preferredLenghtStr)
+            return CGFloat(preferredSize)
         }
         return Self.imageViewSize
     }
@@ -146,8 +147,8 @@ class DemoAvatarDownloadViewController: UIViewController {
     @objc private func fetchAvatarButtonHandler() {
         
         let options: GravatarImageDownloadOptions = .init(
+            preferredSize: .points(preferredSize),
             gravatarRating: preferredRating,
-            preferredSize: preferredSize,
             forceRefresh: igonreCacheSwitchWithLabel.isOn,
             forceDefaultImage: forceDefaultImageSwitchWithLabel.isOn,
             defaultImage: preferredDefaultImage

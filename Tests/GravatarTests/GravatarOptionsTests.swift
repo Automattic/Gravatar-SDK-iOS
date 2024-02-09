@@ -15,7 +15,6 @@ final class GravatarOptionsTests: XCTestCase {
         [
             .forceRefresh,
             .removeCurrentImageWhileLoading,
-            .scaleFactor(2),
             .transition(.fade(0.2)),
             .processor(TestImageProcessor()),
             .imageCache(TestImageCache()),
@@ -25,7 +24,6 @@ final class GravatarOptionsTests: XCTestCase {
         let parsedOptions = GravatarImageSettingOptions(options: gravatarOptions)
         XCTAssertEqual(parsedOptions.forceRefresh, true)
         XCTAssertEqual(parsedOptions.removeCurrentImageWhileLoading, true)
-        XCTAssertEqual(parsedOptions.scaleFactor, 2)
         XCTAssertEqual(parsedOptions.transition, GravatarImageTransition.fade(0.2))
         XCTAssertNotNil(parsedOptions.processor as? TestImageProcessor)
         XCTAssertNotNil(parsedOptions.imageCache as? TestImageCache)
@@ -36,7 +34,6 @@ final class GravatarOptionsTests: XCTestCase {
         let parsedOptions = GravatarImageSettingOptions(options: nil)
         XCTAssertEqual(parsedOptions.forceRefresh, false)
         XCTAssertEqual(parsedOptions.removeCurrentImageWhileLoading, false)
-        XCTAssertEqual(parsedOptions.scaleFactor, Int(UIScreen.main.scale))
         XCTAssertEqual(parsedOptions.transition, GravatarImageTransition.none)
         XCTAssertNotNil(parsedOptions.processor as? DefaultImageProcessor)
     }

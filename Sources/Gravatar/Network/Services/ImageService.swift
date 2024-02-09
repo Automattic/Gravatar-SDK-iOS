@@ -30,7 +30,6 @@ public struct ImageService {
         with email: String,
         options: GravatarImageDownloadOptions = GravatarImageDownloadOptions()
     ) async throws -> GravatarImageDownloadResult {
-
         guard let gravatarURL = GravatarURL.gravatarUrl(with: email, options: options) else {
             throw GravatarImageDownloadError.requestError(reason: .urlInitializationFailed)
         }

@@ -145,8 +145,8 @@ extension GravatarWrapper where Component: UIImageView {
                          options: [GravatarImageSettingOption]? = nil,
                          completionHandler: GravatarImageSetCompletion? = nil) -> CancellableDataTask?
     {
-        let size: Int? = calculatedSize(preferredSize: preferredSize)
-        let downloadOptions = GravatarImageSettingOptions(options: options).deriveDownloadOptions(garavatarRating: rating, preferredSize: size)
+        let pointsSize = pointImageSize(from: preferredSize)
+        let downloadOptions = GravatarImageSettingOptions(options: options).deriveDownloadOptions(garavatarRating: rating, preferredSize: pointsSize)
 
         let gravatarURL = GravatarURL.gravatarUrl(with: email, options: downloadOptions)
         return setImage(with: gravatarURL, placeholder: placeholder, options: options, completionHandler: completionHandler)
@@ -228,16 +228,23 @@ extension GravatarWrapper where Component: UIImageView {
         return task
     }
 
+    private func pointImageSize(from size: CGSize?) -> GravatarImageDownloadOptions.ImageSize? {
+        guard let preferredSize = size, let calculated = calculatedSize(preferredSize: preferredSize) else {
+            return nil
+        }
+        return .points(calculated)
+    }
+
     // TODO: Create unit test which checks for the correct automated size calculation based on the component size.
     // TODO: At some point this was failing while all tests were passing, and the server was returning the default 80x80px image.
-    private func calculatedSize(preferredSize: CGSize?) -> Int? {
+    private func calculatedSize(preferredSize: CGSize?) -> CGFloat? {
         if let preferredSize {
-            return Int(preferredSize.biggestSide)
+            return preferredSize.biggestSide
         }
         else {
             component.layoutIfNeeded()
             if component.bounds.size.equalTo(.zero) == false {
-                return Int(component.bounds.size.biggestSide)
+                return component.bounds.size.biggestSide
             }
         }
         return nil

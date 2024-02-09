@@ -114,7 +114,7 @@ private extension URL {
         if let defaultImage = options.defaultImage?.rawValue {
             components.queryItems?.append(URLQueryItem(name: "d", value: defaultImage))
         }
-        if let size = options.preferredSize?.normalizedImageSize() {
+        if let size = options.preferredPixelSize?.normalizedImageSize() {
             components.queryItems?.append(URLQueryItem(name: "s", value: "\(size)"))
         }
         if let rating = options.gravatarRating?.stringValue() {
