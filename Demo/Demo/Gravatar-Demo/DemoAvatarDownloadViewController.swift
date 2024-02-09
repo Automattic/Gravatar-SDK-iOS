@@ -156,7 +156,7 @@ class DemoAvatarDownloadViewController: UIViewController {
 
         avatarImageView.image = nil // Setting to nil to make the effect of `forceRefresh more visible
         
-        imageRetriever.retrieveImage(with: emailInputField.text ?? "",
+        imageRetriever.fetchImage(with: emailInputField.text ?? "",
                                       options: options) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {

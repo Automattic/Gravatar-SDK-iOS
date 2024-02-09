@@ -85,7 +85,7 @@ class DemoUIImageViewExtensionViewController: UIViewController {
         return stack
     }()
     
-    private let imageRetriever = GravatarImageRetriever()
+    private let imageRetriever = ImageService()
     
     override func viewDidLoad() {
         super.viewDidLoad()

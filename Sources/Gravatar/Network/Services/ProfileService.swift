@@ -12,7 +12,7 @@ public struct ProfileService {
             do {
                 let profile = try await fetchProfile(for: email)
                 onCompletion(.success(profile))
-            } catch let error as GravatarServiceError {
+            } catch let error as ProfileServiceError {
                 onCompletion(.failure(error))
             } catch {
                 onCompletion(.failure(.unexpected(error)))
