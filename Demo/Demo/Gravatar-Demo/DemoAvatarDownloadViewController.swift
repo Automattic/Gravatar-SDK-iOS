@@ -9,8 +9,8 @@ import UIKit
 import Gravatar
 
 class DemoAvatarDownloadViewController: UIViewController {
-    static let imageViewSize: CGSize = .init(width: 300, height: 300)
-    
+    static let imageViewSize: CGFloat = 300
+
     private lazy var emailInputField: UITextField = {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
@@ -41,7 +41,21 @@ class DemoAvatarDownloadViewController: UIViewController {
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
-    
+
+    private lazy var forceDefaultImageSwitchWithLabel: SwitchWithLabel = {
+        let view = SwitchWithLabel(labelText: "Force default image")
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+
+    private lazy var imageDefaultButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setTitle("Default Image: (Backend driven)", for: .normal)
+        button.addTarget(self, action: #selector(selectImageDefault), for: .touchUpInside)
+        return button
+    }()
+
     private lazy var fetchAvatarButton: UIButton = {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -53,14 +67,23 @@ class DemoAvatarDownloadViewController: UIViewController {
     private lazy var avatarImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.heightAnchor.constraint(equalToConstant: Self.imageViewSize.height).isActive = true
-        imageView.widthAnchor.constraint(equalToConstant: Self.imageViewSize.width).isActive = true
+        imageView.heightAnchor.constraint(equalToConstant: Self.imageViewSize).isActive = true
+        imageView.widthAnchor.constraint(equalToConstant: Self.imageViewSize).isActive = true
         imageView.backgroundColor = .lightGray
         return imageView
     }()
     
     private lazy var stackView: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [emailInputField, preferredAvatarLengthInputField, gravatarRatingInputField, igonreCacheSwitchWithLabel, fetchAvatarButton, avatarImageView])
+        let stack = UIStackView(arrangedSubviews: [
+            emailInputField,
+            preferredAvatarLengthInputField,
+            gravatarRatingInputField,
+            igonreCacheSwitchWithLabel,
+            forceDefaultImageSwitchWithLabel,
+            imageDefaultButton,
+            fetchAvatarButton,
+            avatarImageView
+        ])
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.axis = .vertical
         stack.spacing = 12
@@ -84,11 +107,12 @@ class DemoAvatarDownloadViewController: UIViewController {
         ])
     }
     
-    private var preferredSize: CGSize? {
+    private var preferredSize: CGFloat {
         if let preferredLenghtStr = preferredAvatarLengthInputField.text,
            !preferredLenghtStr.isEmpty,
-           let preferredLength = Int(preferredLenghtStr) {
-            return CGSize(width: preferredLength, height: preferredLength)
+           let preferredSize = Float(preferredLenghtStr)
+        {
+            return CGFloat(preferredSize)
         }
         return Self.imageViewSize
     }
@@ -102,13 +126,34 @@ class DemoAvatarDownloadViewController: UIViewController {
         }
         return nil
     }
-    
+
+    private var preferredDefaultImage: DefaultImageOption? = nil
+
+    @objc private func selectImageDefault() {
+        let controller = UIAlertController(title: "Default Image", message: nil, preferredStyle: .actionSheet)
+
+        DefaultImageOption.allCases.forEach { option in
+            controller.addAction(UIAlertAction(title: "\(option)", style: .default) { [weak self] action in
+                self?.preferredDefaultImage = option
+                self?.imageDefaultButton.setTitle("Default Image: \(option)", for: .normal)
+            })
+        }
+
+        controller.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+
+        present(controller, animated: true)
+    }
+
     @objc private func fetchAvatarButtonHandler() {
         
-        let options: GravatarImageDownloadOptions = .init(gravatarRating: preferredRating ?? .default, 
-                                                          preferredSize: preferredSize,
-                                                          forceRefresh: igonreCacheSwitchWithLabel.isOn)
-        
+        let options: GravatarImageDownloadOptions = .init(
+            preferredSize: .points(preferredSize),
+            gravatarRating: preferredRating,
+            forceRefresh: igonreCacheSwitchWithLabel.isOn,
+            forceDefaultImage: forceDefaultImageSwitchWithLabel.isOn,
+            defaultImage: preferredDefaultImage
+        )
+
         avatarImageView.image = nil // Setting to nil to make the effect of `forceRefresh more visible
         
         imageRetriever.fetchImage(with: emailInputField.text ?? "",
@@ -117,6 +162,7 @@ class DemoAvatarDownloadViewController: UIViewController {
                 switch result {
                 case .success(let value):
                     self?.avatarImageView.image = value.image
+                    print("Source URL: \(value.sourceURL)")
                 case .failure(let error):
                     print(error)
                 }

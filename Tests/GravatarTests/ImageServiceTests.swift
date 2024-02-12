@@ -1,16 +1,16 @@
-import XCTest
+ import XCTest
 @testable import Gravatar
 
 final class ImageServiceTests: XCTestCase {
     enum TestData {
         static let email = "some@email.com"
-        static let urlFromEmail = URL(string: "https://gravatar.com/avatar/676212ff796c79a3c06261eb10e3f455aa93998ee6e45263da13679c74b1e674?d=404&s=240&r=g")!
+        static let urlFromEmail = URL(string: "https://gravatar.com/avatar/676212ff796c79a3c06261eb10e3f455aa93998ee6e45263da13679c74b1e674")!
     }
     func testFetchImage() async throws {
         let response = HTTPURLResponse.successResponse(with: TestData.urlFromEmail)
         let sessionMock = URLSessionMock(returnData: ImageHelper.testImageData, response: response)
         let service = imageService(with: sessionMock)
-        let options = GravatarImageDownloadOptions(scaleFactor: 3)
+        let options = GravatarImageDownloadOptions()
 
         let imageResponse = try await service.fetchImage(with: TestData.email, options: options)
 
@@ -41,7 +41,7 @@ final class ImageServiceTests: XCTestCase {
         let service = imageService(with: sessionMock)
         let expectation = expectation(description: "Request finishes")
 
-        service.fetchImage(with: TestData.email, options: .init(scaleFactor: 3)) { response in
+        service.fetchImage(with: TestData.email) { response in
             switch response {
             case .success(let result):
                 XCTAssertNotNil(result.image)
@@ -207,7 +207,7 @@ final class ImageServiceTests: XCTestCase {
         let cache = TestImageCache()
         let sessionMock = URLSessionMock(returnData: ImageHelper.testImageData, response: HTTPURLResponse.successResponse(with: TestData.urlFromEmail))
         let service = imageService(with: sessionMock, cache: cache)
-        let options = GravatarImageDownloadOptions(scaleFactor: 3, forceRefresh: true)
+        let options = GravatarImageDownloadOptions(forceRefresh: true)
 
         _ = try await service.fetchImage(with: TestData.email, options: options)
         _ = try await service.fetchImage(with: TestData.email, options: options)
@@ -222,7 +222,7 @@ final class ImageServiceTests: XCTestCase {
         let cache = TestImageCache()
         let sessionMock = URLSessionMock(returnData: ImageHelper.testImageData, response: HTTPURLResponse.successResponse(with: TestData.urlFromEmail))
         let service = imageService(with: sessionMock, cache: cache)
-        let options = GravatarImageDownloadOptions(scaleFactor: 3, forceRefresh: false)
+        let options = GravatarImageDownloadOptions(forceRefresh: false)
 
         _ = try await service.fetchImage(with: TestData.email, options: options)
         _ = try await service.fetchImage(with: TestData.email, options: options)
@@ -238,7 +238,7 @@ final class ImageServiceTests: XCTestCase {
         let sessionMock = URLSessionMock(returnData: ImageHelper.testImageData, response: response)
         let service = imageService(with: sessionMock)
         let testProcessor = TestImageProcessor()
-        let options = GravatarImageDownloadOptions(scaleFactor: 3, processor: testProcessor)
+        let options = GravatarImageDownloadOptions(processor: testProcessor)
 
         _ = try await service.fetchImage(with: TestData.email, options: options)
 
@@ -263,6 +263,20 @@ final class ImageServiceTests: XCTestCase {
                 XCTFail("Should throw urlMismatch error")
             }
         }
+    }
+
+    func testFetchImageWithDefaultImageOption() async throws {
+        let expectedQuery = "d=mp"
+        let urlWithQuery = TestData.urlFromEmail.absoluteString + "?" + expectedQuery
+        let response = HTTPURLResponse.successResponse(with: URL(string: urlWithQuery)!)
+        let sessionMock = URLSessionMock(returnData: ImageHelper.testImageData, response: response)
+        let service = imageService(with: sessionMock)
+        let options = GravatarImageDownloadOptions(defaultImage: .misteryPerson)
+
+        let imageResponse = try await service.fetchImage(with: TestData.email, options: options)
+
+        XCTAssertEqual(sessionMock.request?.url?.query, expectedQuery)
+        XCTAssertNotNil(imageResponse.image)
     }
 }
 

@@ -107,8 +107,10 @@ class DemoUIImageViewExtensionViewController: UIViewController {
                                           placeholder: placeholderImage,
                                           options: options) { result in
             switch result {
-            case .success:
+            case .success(let result):
                 print("success!")
+                print("result url: \(result.sourceURL)")
+                print("retrived Image point size: \(result.image.size)")
             case .failure(let error):
                 print(error)
             }

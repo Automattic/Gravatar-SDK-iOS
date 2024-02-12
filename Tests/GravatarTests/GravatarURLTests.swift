@@ -21,34 +21,92 @@ final class GravatarURLTests: XCTestCase {
         XCTAssertFalse(GravatarURL.isGravatarURL(URL(string: "https://wordpress.com/")!))
     }
 
-    func testUrlWithSize() throws {
+    func testGravatarURLWithDifferentPixelSizes() throws {
         let url = GravatarURL(verifiedGravatarURL)
         XCTAssertNotNil(url)
-
-        let urlWithSize = url?.urlWithSize(24)
-        XCTAssertTrue(urlWithSize?.absoluteString.hasSuffix("?s=24&d=404") ?? false)
-
-        let urlWithSizeAndMisteryPersonDefault = url?.urlWithSize(128, defaultImage: .mp)
-        XCTAssertTrue(urlWithSizeAndMisteryPersonDefault?.absoluteString.hasSuffix("?s=128&d=mp") ?? false)
-
-        let urlWithSizeAndIdenticonDefault = url?.urlWithSize(256, defaultImage: .identicon)
-        XCTAssertTrue(urlWithSizeAndIdenticonDefault?.absoluteString.hasSuffix("?s=256&d=identicon") ?? false)
+        XCTAssertEqual(url?.url(with: GravatarImageDownloadOptions(preferredSize: .pixels(24))).query, "s=24")
+        XCTAssertEqual(url?.url(with: GravatarImageDownloadOptions(preferredSize: .pixels(128))).query, "s=128")
+        XCTAssertEqual(url?.url(with: GravatarImageDownloadOptions(preferredSize: .pixels(256))).query, "s=256")
+        XCTAssertEqual(url?.url(with: GravatarImageDownloadOptions(preferredSize: .pixels(0))).query, "s=0")
+        XCTAssertEqual(url?.url(with: GravatarImageDownloadOptions(preferredSize: .pixels(-10))).query, "s=-10")
     }
 
-    func testCreateGravatarUrl() throws {
-        let emailPrefix = "https://gravatar.com/avatar/\(exampleEmailSHA)"
+    func testGravatarUrlWithPointSize() throws {
+        let gavatarUrl = GravatarURL(verifiedGravatarURL)
+        let pointSize = CGFloat(200)
+        let expectedPixelSize = pointSize * UIScreen.main.scale
 
-        let url = GravatarURL.gravatarUrl(for: exampleEmail)
-        XCTAssertEqual(url?.absoluteString, "\(emailPrefix)?d=404&s=80&r=g")
+        let url = gavatarUrl?.url(with: GravatarImageDownloadOptions(preferredSize: .points(pointSize)))
 
-        let urlWithDefaultImage = GravatarURL.gravatarUrl(for: exampleEmail, defaultImage: .identicon)
-        XCTAssertEqual(urlWithDefaultImage?.absoluteString, "\(emailPrefix)?d=identicon&s=80&r=g")
+        XCTAssertNotNil(url)
+        XCTAssertEqual(url?.query, "s=\(Int(expectedPixelSize))")
+    }
 
-        let urlWithSize = GravatarURL.gravatarUrl(for: exampleEmail, size: 24)
-        XCTAssertEqual(urlWithSize?.absoluteString, "\(emailPrefix)?d=404&s=24&r=g")
+    func testUrlWithDefaultImage() throws {
+        let url = GravatarURL(verifiedGravatarURL)
+        XCTAssertNotNil(url)
+        let options = GravatarImageDownloadOptions()
 
-        let urlWithRating = GravatarURL.gravatarUrl(for: exampleEmail, rating: .pg)
-        XCTAssertEqual(urlWithRating?.absoluteString, "\(emailPrefix)?d=404&s=80&r=pg")
+        XCTAssertEqual(url?.url(with: options.updating(defaultImage: .fileNotFound)).query, "d=404")
+        XCTAssertEqual(url?.url(with: options.updating(defaultImage: .misteryPerson)).query, "d=mp")
+        XCTAssertEqual(url?.url(with: options.updating(defaultImage: .monsterId)).query, "d=monsterid")
+        XCTAssertEqual(url?.url(with: options.updating(defaultImage: .retro)).query, "d=retro")
+        XCTAssertEqual(url?.url(with: options.updating(defaultImage: .roboHash)).query, "d=robohash")
+        XCTAssertEqual(url?.url(with: options.updating(defaultImage: .transparentPNG)).query, "d=blank")
+        XCTAssertEqual(url?.url(with: options.updating(defaultImage: .wavatar)).query, "d=wavatar")
+    }
+
+    func testUrlWithForcedImageDefault() throws {
+        let url = GravatarURL(verifiedGravatarURL)
+        XCTAssertNotNil(url)
+        let options = GravatarImageDownloadOptions()
+        XCTAssertEqual(url?.url(with: options).query, nil)
+        XCTAssertEqual(url?.url(with: options.updating(forceDefaultImage: true)).query, "f=true")
+    }
+
+    func testCreateGravatarUrlWithEmail() throws {
+        let options = GravatarImageDownloadOptions()
+        let url = GravatarURL.gravatarUrl(with: exampleEmail, options: options)
+        XCTAssertEqual(
+            url?.absoluteString,
+            "https://gravatar.com/avatar/676212ff796c79a3c06261eb10e3f455aa93998ee6e45263da13679c74b1e674"
+        )
+
+        let urlAddingDefaultImage = GravatarURL.gravatarUrl(with: exampleEmail, options: options.updating(defaultImage: .identicon))
+        XCTAssertEqual(
+            urlAddingDefaultImage?.absoluteString,
+            "https://gravatar.com/avatar/676212ff796c79a3c06261eb10e3f455aa93998ee6e45263da13679c74b1e674?d=identicon"
+        )
+
+        let urlAddingSize = GravatarURL.gravatarUrl(with: exampleEmail, options: GravatarImageDownloadOptions(preferredSize: .pixels(24)))
+        XCTAssertEqual(
+            urlAddingSize?.absoluteString,
+            "https://gravatar.com/avatar/676212ff796c79a3c06261eb10e3f455aa93998ee6e45263da13679c74b1e674?s=24"
+        )
+
+        let urlAddingRating = GravatarURL.gravatarUrl(with: exampleEmail, options: options.updating(gravatarRating: .pg))
+        XCTAssertEqual(
+            urlAddingRating?.absoluteString,
+            "https://gravatar.com/avatar/676212ff796c79a3c06261eb10e3f455aa93998ee6e45263da13679c74b1e674?r=pg"
+        )
+
+        let urlAddingForceDefault = GravatarURL.gravatarUrl(with: exampleEmail, options: options.updating(forceDefaultImage: true))
+        XCTAssertEqual(
+            urlAddingForceDefault?.absoluteString,
+            "https://gravatar.com/avatar/676212ff796c79a3c06261eb10e3f455aa93998ee6e45263da13679c74b1e674?f=true"
+        )
+
+        let allOptions = GravatarImageDownloadOptions(
+            preferredSize: .pixels(200),
+            gravatarRating: .g,
+            forceDefaultImage: true,
+            defaultImage: .monsterId
+        )
+        let urlAddingAllOptions = GravatarURL.gravatarUrl(with: exampleEmail, options: allOptions)
+        XCTAssertEqual(
+            urlAddingAllOptions?.absoluteString,
+            "https://gravatar.com/avatar/676212ff796c79a3c06261eb10e3f455aa93998ee6e45263da13679c74b1e674?d=monsterid&s=200&r=g&f=true"
+        )
     }
 
     func testGravatarURLIsEquatable() throws {

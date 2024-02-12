@@ -140,12 +140,15 @@ extension GravatarWrapper where Component: UIImageView {
     @discardableResult
     public func setImage(email: String,
                          placeholder: UIImage? = nil,
-                         rating: GravatarRating = GravatarRating.default,
+                         rating: GravatarRating? = nil,
                          preferredSize: CGSize? = nil,
                          options: [GravatarImageSettingOption]? = nil,
                          completionHandler: GravatarImageSetCompletion? = nil) -> CancellableDataTask?
     {
-        let gravatarURL = GravatarURL.gravatarUrl(for: email, size: calculatedLongerEdgeSize(preferredSize: preferredSize), rating: rating)
+        let pointsSize = pointImageSize(from: preferredSize)
+        let downloadOptions = GravatarImageSettingOptions(options: options).deriveDownloadOptions(garavatarRating: rating, preferredSize: pointsSize)
+
+        let gravatarURL = GravatarURL.gravatarUrl(with: email, options: downloadOptions)
         return setImage(with: gravatarURL, placeholder: placeholder, options: options, completionHandler: completionHandler)
     }
     
@@ -184,6 +187,7 @@ extension GravatarWrapper where Component: UIImageView {
         
         let networkManager = options.imageDownloader ?? ImageService(cache: options.imageCache)
         mutatingSelf.imageDownloader = networkManager // Retain the network manager otherwise the completion tasks won't be done properly
+
         let task = networkManager.fetchImage(with: source, forceRefresh: options.forceRefresh, processor: options.processor) { [weak component] result in
             DispatchQueue.main.async {
                 maybeIndicator?.stopAnimatingView()
@@ -224,27 +228,29 @@ extension GravatarWrapper where Component: UIImageView {
         mutatingSelf.downloadTask = task
         return task
     }
-    
-    private func calculatedLongerEdgeSize(preferredSize: CGSize?) -> Int {
-        let size = calculatedSize(preferredSize: preferredSize)
-        let targetSize = max(size.width, size.height) * UIScreen.main.scale
-        return Int(targetSize)
+
+    private func pointImageSize(from size: CGSize?) -> ImageSize? {
+        guard let calculatedSize = calculatedSize(preferredSize: size) else {
+            return nil
+        }
+        return .points(calculatedSize)
     }
-    
-    private func calculatedSize(preferredSize: CGSize?) -> CGSize {
-        var size = GravatarImageDownloadOptions.defaultSize
+
+    // TODO: Create unit test which checks for the correct automated size calculation based on the component size.
+    // TODO: At some point this was failing while all tests were passing, and the server was returning the default 80x80px image.
+    private func calculatedSize(preferredSize: CGSize?) -> CGFloat? {
         if let preferredSize {
-            size = preferredSize
+            return preferredSize.biggestSide
         }
         else {
             component.layoutIfNeeded()
             if component.bounds.size.equalTo(.zero) == false {
-                size = component.bounds.size
+                return component.bounds.size.biggestSide
             }
         }
-        return size
+        return nil
     }
-    
+
     private func transition(for component: Component?, into image: UIImage, duration: Double, completion: @escaping ()->Void) {
         guard let component else { return }
         UIView.transition(
@@ -256,5 +262,11 @@ extension GravatarWrapper where Component: UIImageView {
                 completion()
             }
         )
+    }
+}
+
+private extension CGSize {
+    var biggestSide: CGFloat {
+        max(width, height)
     }
 }
