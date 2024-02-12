@@ -229,7 +229,7 @@ extension GravatarWrapper where Component: UIImageView {
         return task
     }
 
-    private func pointImageSize(from size: CGSize?) -> GravatarImageDownloadOptions.ImageSize? {
+    private func pointImageSize(from size: CGSize?) -> ImageSize? {
         guard let calculatedSize = calculatedSize(preferredSize: size) else {
             return nil
         }

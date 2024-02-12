@@ -52,7 +52,7 @@ public struct GravatarImageSettingOptions {
         }
     }
     
-    func deriveDownloadOptions(garavatarRating rating: GravatarRating? = nil, preferredSize size: GravatarImageDownloadOptions.ImageSize? = nil) -> GravatarImageDownloadOptions {
+    func deriveDownloadOptions(garavatarRating rating: GravatarRating? = nil, preferredSize size: ImageSize? = nil) -> GravatarImageDownloadOptions {
         return GravatarImageDownloadOptions(
             preferredSize: size,
             gravatarRating: rating,
@@ -64,11 +64,6 @@ public struct GravatarImageSettingOptions {
 
 // Download options to use outside of `GravatarCompatible` UI components. Refer to `GravatarImageSettingOption`.
 public struct GravatarImageDownloadOptions {
-    public enum ImageSize {
-        case pixels(Int)
-        case points(CGFloat)
-    }
-
     let gravatarRating: GravatarRating?
     let forceRefresh: Bool
     let forceDefaultImage: Bool

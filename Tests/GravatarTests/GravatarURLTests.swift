@@ -37,7 +37,7 @@ final class GravatarURLTests: XCTestCase {
         let pointSize = CGFloat(200)
         let expectedPixelSize = pointSize * UIScreen.main.scale
 
-        let url = gavatarUrl?.url(with: GravatarImageDownloadOptions(preferredSize: .points(200)))
+        let url = gavatarUrl?.url(with: GravatarImageDownloadOptions(preferredSize: 200.0))
 
         XCTAssertNotNil(url)
         XCTAssertEqual(url?.query, "s=\(Int(expectedPixelSize))")
