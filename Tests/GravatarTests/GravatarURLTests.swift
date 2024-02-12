@@ -27,9 +27,8 @@ final class GravatarURLTests: XCTestCase {
         XCTAssertEqual(url?.url(with: GravatarImageDownloadOptions(preferredSize: .pixels(24))).query, "s=24")
         XCTAssertEqual(url?.url(with: GravatarImageDownloadOptions(preferredSize: .pixels(128))).query, "s=128")
         XCTAssertEqual(url?.url(with: GravatarImageDownloadOptions(preferredSize: .pixels(256))).query, "s=256")
-        XCTAssertEqual(url?.url(with: GravatarImageDownloadOptions(preferredSize: .pixels(0))).query, "s=1")
-        XCTAssertEqual(url?.url(with: GravatarImageDownloadOptions(preferredSize: .pixels(-10))).query, "s=1")
-        XCTAssertEqual(url?.url(with: GravatarImageDownloadOptions(preferredSize: .pixels(5000))).query, "s=2048")
+        XCTAssertEqual(url?.url(with: GravatarImageDownloadOptions(preferredSize: .pixels(0))).query, "s=0")
+        XCTAssertEqual(url?.url(with: GravatarImageDownloadOptions(preferredSize: .pixels(-10))).query, "s=-10")
     }
 
     func testGravatarUrlWithPointSize() throws {
@@ -41,7 +40,6 @@ final class GravatarURLTests: XCTestCase {
 
         XCTAssertNotNil(url)
         XCTAssertEqual(url?.query, "s=\(Int(expectedPixelSize))")
-
     }
 
     func testUrlWithDefaultImage() throws {

@@ -96,15 +96,6 @@ public extension GravatarURL {
     }
 }
 
-private extension Int {
-    static let minimumImageSize = 1
-    static let maximumImageSize = 2048
-
-    func normalizedImageSize() -> Int {
-        Swift.min(.maximumImageSize, Swift.max(.minimumImageSize, self))
-    }
-}
-
 private extension URL {
     func addQueryItems(from options: GravatarImageDownloadOptions) -> URL? {
         guard var components = URLComponents(url: self, resolvingAgainstBaseURL: false) else {
@@ -114,7 +105,7 @@ private extension URL {
         if let defaultImage = options.defaultImage?.rawValue {
             components.queryItems?.append(URLQueryItem(name: "d", value: defaultImage))
         }
-        if let size = options.preferredPixelSize?.normalizedImageSize() {
+        if let size = options.preferredPixelSize {
             components.queryItems?.append(URLQueryItem(name: "s", value: "\(size)"))
         }
         if let rating = options.gravatarRating?.stringValue() {
