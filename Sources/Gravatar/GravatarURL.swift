@@ -12,6 +12,11 @@ public struct GravatarURL {
     let canonicalURL: URL
 
     public func url(with options: GravatarImageDownloadOptions) -> URL {
+        // TODO: Find a way to remove explicit unwrap.
+        // When `GravatarURL` is initialized successfully, the `canonicalURL` is a valid URL.
+        // Adding query items from the options sets, which is controlled by the SDK, should be a guaranteed success.
+        // Therefore returning an optional is not ideal, since makes little sence in this context.
+        // In the other hand, we get this explisit unwrap, because of how `URLComponents` works.
         return canonicalURL.addQueryItems(from: options)!
     }
 
