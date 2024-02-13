@@ -9,7 +9,7 @@ public struct GravatarURL {
         static let imageSize = 80
     }
 
-    let canonicalURL: URL
+    public let canonicalURL: URL
 
     public func url(with options: GravatarImageDownloadOptions) -> URL {
         // TODO: Find a way to remove explicit unwrap.
