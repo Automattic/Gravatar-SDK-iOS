@@ -17,7 +17,7 @@ public struct GravatarURL {
         // Adding query items from the options sets, which is controlled by the SDK, should be a guaranteed success.
         // Therefore returning an optional is not ideal, since makes little sence in this context.
         // In the other hand, we get this explisit unwrap, because of how `URLComponents` works.
-        canonicalURL.addQueryItems(from: options)!
+        canonicalURL.addQueryItems(from: options)
     }
 
     public static func isGravatarURL(_ url: URL) -> Bool {
@@ -102,16 +102,21 @@ extension GravatarURL {
 }
 
 extension URL {
-    fileprivate func addQueryItems(from options: GravatarImageDownloadOptions) -> URL? {
+    fileprivate func addQueryItems(from options: GravatarImageDownloadOptions) -> URL {
         guard var components = URLComponents(url: self, resolvingAgainstBaseURL: false) else {
-            return nil
+            fatalError("Internal error: invalid url")
         }
         components.queryItems = options.queryItems()
         
         if components.queryItems?.isEmpty == true {
             components.queryItems = nil
         }
-        return components.url
+        
+        guard let url = components.url else {
+            fatalError("Internal error: invalid url with query items")
+        }
+        
+        return url
     }
 }
 
