@@ -106,22 +106,57 @@ extension URL {
         guard var components = URLComponents(url: self, resolvingAgainstBaseURL: false) else {
             return nil
         }
-        components.queryItems = []
-        if let defaultImage = options.defaultImage?.rawValue {
-            components.queryItems?.append(URLQueryItem(name: "d", value: defaultImage))
-        }
-        if let size = options.preferredPixelSize {
-            components.queryItems?.append(URLQueryItem(name: "s", value: "\(size)"))
-        }
-        if let rating = options.gravatarRating?.stringValue() {
-            components.queryItems?.append(URLQueryItem(name: "r", value: rating))
-        }
-        if options.forceDefaultImage {
-            components.queryItems?.append(URLQueryItem(name: "f", value: "\(options.forceDefaultImage)"))
-        }
+        components.queryItems = options.queryItems()
+        
         if components.queryItems?.isEmpty == true {
             components.queryItems = nil
         }
         return components.url
+    }
+}
+
+private enum GravatarImageDownloadOptionQueryName: String, CaseIterable {
+    case defaultImage = "d"
+    case preferredPixelSize = "s"
+    case gravatarRating = "r"
+    case forceDefaultImage = "f"
+}
+
+private extension GravatarImageDownloadOptions {
+    func queryItems() -> [URLQueryItem] {
+        let allQueryItems = GravatarImageDownloadOptionQueryName.allCases
+            .map { self.queryItem(for: $0) }
+        
+        let defaultQueryItems = GravatarImageDownloadOptionQueryName.allCases
+            .map { GravatarImageDownloadOptions().queryItem(for: $0) }
+        
+        // Exclude any URLQueryItem whose value is either default or nil.
+        return allQueryItems
+            .filter { !defaultQueryItems.contains($0) }
+            .filter { $0.value != nil }
+    }
+    
+    func queryItem(for queryName: GravatarImageDownloadOptionQueryName) -> URLQueryItem {
+        let value: String?
+        
+        switch queryName {
+        case .defaultImage:
+            value = self.defaultImage?.rawValue
+        case .forceDefaultImage:
+            value = String(self.forceDefaultImage)
+        case .gravatarRating:
+            value = self.gravatarRating?.stringValue()
+        case .preferredPixelSize:
+            value = String(self.preferredPixelSize)
+        }
+        
+        return URLQueryItem(name: queryName.rawValue, value: value)
+    }
+}
+
+private extension String {
+    init?(_ int: Int?) {
+        guard let int = int else { return nil }
+        self.init(int)
     }
 }
