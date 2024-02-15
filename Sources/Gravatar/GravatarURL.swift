@@ -12,12 +12,14 @@ public struct GravatarURL {
     public let canonicalURL: URL
 
     public func url(with options: GravatarImageDownloadOptions) -> URL {
-        // TODO: Find a way to remove explicit unwrap.
         // When `GravatarURL` is initialized successfully, the `canonicalURL` is a valid URL.
-        // Adding query items from the options sets, which is controlled by the SDK, should be a guaranteed success.
-        // Therefore returning an optional is not ideal, since makes little sence in this context.
-        // In the other hand, we get this explisit unwrap, because of how `URLComponents` works.
-        canonicalURL.addQueryItems(from: options)
+        // Adding query items from the options, which is controlled by the SDK, should never
+        // result in an invalid URL. If it does, something terrible has happened.
+        guard let url = canonicalURL.addQueryItems(from: options) else {
+            fatalError("Internal error: invalid url with query items")
+        }
+        
+        return url
     }
 
     public static func isGravatarURL(_ url: URL) -> Bool {
@@ -102,9 +104,9 @@ extension GravatarURL {
 }
 
 extension URL {
-    fileprivate func addQueryItems(from options: GravatarImageDownloadOptions) -> URL {
+    fileprivate func addQueryItems(from options: GravatarImageDownloadOptions) -> URL? {
         guard var components = URLComponents(url: self, resolvingAgainstBaseURL: false) else {
-            fatalError("Internal error: invalid url")
+            return nil
         }
         components.queryItems = options.queryItems()
         
@@ -112,11 +114,7 @@ extension URL {
             components.queryItems = nil
         }
         
-        guard let url = components.url else {
-            fatalError("Internal error: invalid url with query items")
-        }
-        
-        return url
+        return components.url
     }
 }
 
