@@ -1,5 +1,5 @@
 //
-//  GravatarImageCaching.swift
+//  ImageCaching.swift
 //
 //
 //  Created by Pinar Olguc on 18.01.2024.
@@ -8,16 +8,16 @@
 import Foundation
 import UIKit
 
-public protocol GravatarImageCaching {
+public protocol ImageCaching {
     func setImage(_ image: UIImage, forKey key: String)
     func getImage(forKey key: String) -> UIImage?
 }
 
-class GravatarImageCache: GravatarImageCaching {
+class GravatarImageCache: ImageCaching {
     private let cache = NSCache<NSString, UIImage>()
 
     /// The default cache used by the image dowloader.
-    public static var shared: GravatarImageCaching = GravatarImageCache()
+    public static var shared: ImageCaching = GravatarImageCache()
 
     public init() {}
 

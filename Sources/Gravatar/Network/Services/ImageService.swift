@@ -2,9 +2,9 @@ import UIKit
 
 public struct ImageService: ImageServing {
     private let client: HTTPClient
-    private let imageCache: GravatarImageCaching
+    private let imageCache: ImageCaching
 
-    public init(client: HTTPClient? = nil, cache: GravatarImageCaching? = nil) {
+    public init(client: HTTPClient? = nil, cache: ImageCaching? = nil) {
         self.client = client ?? URLSessionHTTPClient()
         self.imageCache = cache ?? GravatarImageCache()
     }
