@@ -12,7 +12,7 @@ final class GravatarImageCacheTests: XCTestCase {
     private let key: String = "key"
 
     func testSetAndGet() throws {
-        let cache = GravatarImageCache()
+        let cache = ImageCache()
         cache.setImage(ImageHelper.testImage, forKey: key)
         XCTAssertNotNil(cache.getImage(forKey: key))
     }

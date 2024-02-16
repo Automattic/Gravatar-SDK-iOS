@@ -6,7 +6,7 @@ public struct ImageService: ImageServing {
 
     public init(client: HTTPClient? = nil, cache: ImageCaching? = nil) {
         self.client = client ?? URLSessionHTTPClient()
-        self.imageCache = cache ?? GravatarImageCache()
+        self.imageCache = cache ?? ImageCache()
     }
 
     @discardableResult

@@ -32,7 +32,7 @@ public struct GravatarImageSettingOptions {
     var removeCurrentImageWhileLoading = false
     var forceRefresh = false
     var processingMethod: ImageProcessingMethod = .common
-    var imageCache: ImageCaching = GravatarImageCache.shared
+    var imageCache: ImageCaching = ImageCache.shared
     var imageDownloader: ImageServing? = nil
 
     init(options: [GravatarImageSettingOption]?) {
