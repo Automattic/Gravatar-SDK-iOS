@@ -39,7 +39,7 @@ final class GravatarOptionsTests: XCTestCase {
     }
 }
 
-class TestImageProcessor: GravatarImageProcessor {
+class TestImageProcessor: ImageProcessor {
     var processedData = false
     func process(_ data: Data) -> UIImage? {
         processedData = true
