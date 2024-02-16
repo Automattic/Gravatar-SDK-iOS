@@ -127,15 +127,8 @@ private enum GravatarImageDownloadOptionQueryName: String, CaseIterable {
 
 private extension GravatarImageDownloadOptions {
     func queryItems() -> [URLQueryItem] {
-        let allQueryItems = GravatarImageDownloadOptionQueryName.allCases
+        return GravatarImageDownloadOptionQueryName.allCases
             .map { self.queryItem(for: $0) }
-        
-        let defaultQueryItems = GravatarImageDownloadOptionQueryName.allCases
-            .map { GravatarImageDownloadOptions().queryItem(for: $0) }
-        
-        // Exclude any URLQueryItem whose value is either default or nil.
-        return allQueryItems
-            .filter { !defaultQueryItems.contains($0) }
             .filter { $0.value != nil }
     }
     
@@ -157,9 +150,9 @@ private extension GravatarImageDownloadOptions {
     }
 }
 
-private extension String {
-    init?(_ int: Int?) {
-        guard let int = int else { return nil }
-        self.init(int)
+private extension String {   
+    init?<T>(_ optionalValue: T?) where T: LosslessStringConvertible {
+        guard let value = optionalValue else { return nil }
+        self.init(value)
     }
 }

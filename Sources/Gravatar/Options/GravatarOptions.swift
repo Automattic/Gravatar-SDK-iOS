@@ -69,19 +69,27 @@ public struct GravatarImageSettingOptions {
 public struct GravatarImageDownloadOptions {
     let gravatarRating: GravatarRating?
     let forceRefresh: Bool
-    let forceDefaultImage: Bool
+    let forceDefaultImage: Bool?
     let defaultImage: DefaultImageOption?
     let processingMethod: ImageProcessingMethod
     let preferredPixelSize: Int?
 
     private let preferredSize: ImageSize?
     private let scaleFactor: CGFloat
-
+    
+    /// GravatarImageDownloadOptions initializer
+    /// - Parameters:
+    ///   - preferredSize: preferred image size (set to `nil` for default size)
+    ///   - gravatarRating: maximum rating for image (set to `nil` for default rating)
+    ///   - forceRefresh: force the image to be downloaded, ignoring the cache
+    ///   - forceDefaultImage: force the default image to be used (set to `nil` for default value)
+    ///   - defaultImage: configure the default image (set to `nil` to use the default default image)
+    ///   - processor: processor for handling the downloaded `Data`
     public init(
         preferredSize: ImageSize? = nil,
         gravatarRating: GravatarRating? = nil,
         forceRefresh: Bool = false,
-        forceDefaultImage: Bool = false,
+        forceDefaultImage: Bool? = nil,
         defaultImage: DefaultImageOption? = nil,
         processingMethod: ImageProcessingMethod = .common
     ) {
@@ -101,7 +109,7 @@ public struct GravatarImageDownloadOptions {
         preferredSize: ImageSize? = nil,
         gravatarRating: GravatarRating? = nil,
         forceRefresh: Bool = false,
-        forceDefaultImage: Bool = false,
+        forceDefaultImage: Bool? = nil,
         defaultImage: DefaultImageOption? = nil,
         processingMethod: ImageProcessingMethod
     ) {
