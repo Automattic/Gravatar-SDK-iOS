@@ -6,7 +6,7 @@
 //
 
 import XCTest
-import Gravatar
+@testable import Gravatar
 
 final class GravatarImageCacheTests: XCTestCase {
 
