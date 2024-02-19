@@ -12,7 +12,7 @@ public protocol ImageServing {
     func fetchImage(
         with url: URL,
         forceRefresh: Bool,
-        processor: ImageProcessor,
+        processor: ImageProcessor?,
         completionHandler: ImageDownloadCompletion?
     ) -> CancellableDataTask?
 
@@ -24,6 +24,6 @@ public protocol ImageServing {
     func fetchImage(
         with url: URL,
         forceRefresh: Bool,
-        processor: ImageProcessor
+        processor: ImageProcessor?
     ) async throws -> GravatarImageDownloadResult
 }

@@ -31,7 +31,7 @@ public struct ImageService: ImageServing {
     public func fetchImage(
         with url: URL,
         forceRefresh: Bool = false,
-        processor: ImageProcessor = DefaultImageProcessor.common,
+        processor: ImageProcessor? = nil,
         completionHandler: ImageDownloadCompletion?
     ) -> CancellableDataTask? {
         Task {
@@ -64,12 +64,12 @@ public struct ImageService: ImageServing {
     public func fetchImage(
         with url: URL,
         forceRefresh: Bool = false,
-        processor: ImageProcessor = DefaultImageProcessor.common
+        processor: ImageProcessor? = nil
     ) async throws -> GravatarImageDownloadResult {
         if !forceRefresh, let result = cachedImageResult(for: url) {
             return result
         }
-        return try await fetchImage(from: url, imageProcressor: processor)
+        return try await fetchImage(from: url, imageProcressor: processor ?? DefaultImageProcessor.common)
     }
 
     private func fetchImage(from url: URL, imageProcressor: ImageProcessor) async throws -> GravatarImageDownloadResult {

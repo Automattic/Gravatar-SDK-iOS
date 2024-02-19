@@ -80,7 +80,7 @@ public struct GravatarImageDownloadOptions {
         forceRefresh: Bool = false,
         forceDefaultImage: Bool = false,
         defaultImage: DefaultImageOption? = nil,
-        processor: ImageProcessor = DefaultImageProcessor.common
+        processor: ImageProcessor? = nil
     ) {
         self.init(
             scaleFactor: UIScreen.main.scale,
@@ -89,7 +89,7 @@ public struct GravatarImageDownloadOptions {
             forceRefresh: forceRefresh,
             forceDefaultImage: forceDefaultImage,
             defaultImage: defaultImage,
-            processor: processor
+            processor: processor ?? DefaultImageProcessor.common
         )
     }
 
