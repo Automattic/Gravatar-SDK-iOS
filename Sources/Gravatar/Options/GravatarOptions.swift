@@ -19,7 +19,7 @@ public enum GravatarImageSettingOption {
 
     /// By setting this you can pass a cache of your preference to save the downloaded image.
     ///
-    ///If not set, an internal cache will be used. To force images to not be cached, set the `forceRefresh` flag.
+    /// If not set, an internal cache will be used. To force images to not be cached, set the `forceRefresh` flag.
     case imageCache(GravatarImageCaching)
 
     /// A custom image downloader. Defaults to `GravatarimageDownloader` if not set.
