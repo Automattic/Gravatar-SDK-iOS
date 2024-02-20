@@ -63,6 +63,14 @@ final class GravatarURLTests: XCTestCase {
         XCTAssertEqual(url?.url(with: options).query, nil)
         XCTAssertEqual(url?.url(with: options.updating(forceDefaultImage: true)).query, "f=y")
     }
+    
+    func testUrlWithForceImageDefaultFalse() {
+        let url = GravatarURL(verifiedGravatarURL)
+        XCTAssertNotNil(url)
+        let options = GravatarImageDownloadOptions()
+        XCTAssertEqual(url?.url(with: options).query, nil)
+        XCTAssertEqual(url?.url(with: options.updating(forceDefaultImage: false)).query, "f=n")
+    }
 
     func testCreateGravatarUrlWithEmail() throws {
         let options = GravatarImageDownloadOptions()
