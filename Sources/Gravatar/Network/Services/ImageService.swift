@@ -31,12 +31,12 @@ public struct ImageService: ImageServing {
     public func fetchImage(
         with url: URL,
         forceRefresh: Bool = false,
-        processor: ImageProcessor? = nil,
+        processingMethod: ImageProcessingMethod = .common,
         completionHandler: ImageDownloadCompletion?
     ) -> CancellableDataTask? {
         Task {
             do {
-                let result = try await fetchImage(with: url, forceRefresh: forceRefresh, processor: processor)
+                let result = try await fetchImage(with: url, forceRefresh: forceRefresh, processingMethod: processingMethod)
                 completionHandler?(Result.success(result))
             } catch let error as GravatarImageDownloadError {
                 completionHandler?(Result.failure(error))
@@ -58,21 +58,21 @@ public struct ImageService: ImageServing {
             return result
         }
 
-        return try await fetchImage(from: gravatarURL, imageProcressor: options.processor)
+        return try await fetchImage(from: gravatarURL, procressor: options.processingMethod.processor)
     }
 
     public func fetchImage(
         with url: URL,
         forceRefresh: Bool = false,
-        processor: ImageProcessor? = nil
+        processingMethod: ImageProcessingMethod = .common
     ) async throws -> GravatarImageDownloadResult {
         if !forceRefresh, let result = cachedImageResult(for: url) {
             return result
         }
-        return try await fetchImage(from: url, imageProcressor: processor ?? DefaultImageProcessor.common)
+        return try await fetchImage(from: url, procressor: processingMethod.processor)
     }
 
-    private func fetchImage(from url: URL, imageProcressor: ImageProcessor) async throws -> GravatarImageDownloadResult {
+    private func fetchImage(from url: URL, procressor: ImageProcessor) async throws -> GravatarImageDownloadResult {
         let request = URLRequest.imageRequest(url: url)
         let (data, response) = try await client.fetchData(with: request)
 
@@ -80,7 +80,7 @@ public struct ImageService: ImageServing {
             throw GravatarImageDownloadError.responseError(reason: .urlMissingInResponse)
         }
 
-        guard let image = imageProcressor.process(data) else {
+        guard let image = procressor.process(data) else {
             throw GravatarImageDownloadError.responseError(reason: .imageInitializationFailed)
         }
 

@@ -238,7 +238,7 @@ final class ImageServiceTests: XCTestCase {
         let sessionMock = URLSessionMock(returnData: ImageHelper.testImageData, response: response)
         let service = imageService(with: sessionMock)
         let testProcessor = TestImageProcessor()
-        let options = GravatarImageDownloadOptions(processor: testProcessor)
+        let options = GravatarImageDownloadOptions(processingMethod: .custom(processor: testProcessor))
 
         _ = try await service.fetchImage(with: TestData.email, options: options)
 
@@ -250,7 +250,7 @@ final class ImageServiceTests: XCTestCase {
         let sessionMock = URLSessionMock(returnData: ImageHelper.testImageData, response: response)
         let service = imageService(with: sessionMock)
         let testProcessor = TestImageProcessor()
-        let options = GravatarImageDownloadOptions(processor: testProcessor)
+        let options = GravatarImageDownloadOptions(processingMethod: .custom(processor: testProcessor))
         
         do {
             _ = try await service.fetchImage(with: TestData.email, options: options)
