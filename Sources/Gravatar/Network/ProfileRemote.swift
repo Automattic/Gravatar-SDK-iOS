@@ -14,7 +14,7 @@ struct ProfileRemote: Decodable {
     let name: ProfileName?
 }
 
-public struct ProfileName: Decodable {
+struct ProfileName: Decodable {
     let givenName: String
     let familyName: String
     let formatted: String

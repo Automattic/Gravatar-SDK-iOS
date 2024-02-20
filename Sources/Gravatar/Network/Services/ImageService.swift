@@ -4,9 +4,9 @@ public struct ImageService: ImageServing {
     private let client: HTTPClient
     private let imageCache: GravatarImageCaching
 
-    public init(client: HTTPClient? = nil, cache: GravatarImageCaching = GravatarImageCache()) {
+    public init(client: HTTPClient? = nil, cache: GravatarImageCaching? = nil) {
         self.client = client ?? URLSessionHTTPClient()
-        self.imageCache = cache
+        self.imageCache = cache ?? GravatarImageCache()
     }
 
     @discardableResult
