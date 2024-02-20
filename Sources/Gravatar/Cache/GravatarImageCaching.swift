@@ -13,7 +13,7 @@ public protocol GravatarImageCaching {
     func getImage(forKey key: String) -> UIImage?
 }
 
-public class GravatarImageCache: GravatarImageCaching {
+class GravatarImageCache: GravatarImageCaching {
     private let cache = NSCache<NSString, UIImage>()
 
     /// The default cache used by the image dowloader.

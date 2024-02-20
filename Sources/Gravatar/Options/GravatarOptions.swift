@@ -3,27 +3,30 @@ import UIKit
 
 /// Options to use when fetching a Gravatar profile image and setting it to a `GravatarCompatible` UI component.
 public enum GravatarImageSettingOption {
-    // Transition style to use when setting the new image downloaded. Default: .none
+    /// Transition style to use when setting the new image downloaded. Default: .none
     case transition(GravatarImageTransition)
 
-    // By setting this option, the current image will be removed and the placeholder will be shown while downloading the new image. Default: false
+    /// By setting this option, the current image will be removed and the placeholder will be shown while downloading the new image. Default: false
     case removeCurrentImageWhileLoading
 
-    // Ignore the cached value and re-download the image. Default: false
+    /// Ignore the cached value and re-download the image. Default: `false`
     case forceRefresh
-    
-    // Processor to run on the the downloaded data while converting it into an image.
-    // If not set `DefaultImageProcessor.common` will be used.
+
+    /// Processor to run on the the downloaded data while converting it into an image.
+    ///
+    /// If not set `DefaultImageProcessor.common` will be used.
     case processor(ImageProcessor)
-    
-    // By setting this you can pass a cache of your preference to save the downloaded image. Default: GravatarImageCache.shared
+
+    /// By setting this you can pass a cache of your preference to save the downloaded image.
+    ///
+    ///If not set, an internal cache will be used. To force images to not be cached, set the `forceRefresh` flag.
     case imageCache(GravatarImageCaching)
-    
-    // A custom image downloader. Defaults to `GravatarimageDownloader` if not set.
+
+    /// A custom image downloader. Defaults to `GravatarimageDownloader` if not set.
     case imageDownloader(ImageServing)
 }
 
-// Parsed options derived from [GravatarImageSettingOption]
+/// Parsed options derived from [GravatarImageSettingOption]
 public struct GravatarImageSettingOptions {
     var transition: GravatarImageTransition = .none
     var removeCurrentImageWhileLoading = false
@@ -62,7 +65,7 @@ public struct GravatarImageSettingOptions {
     }
 }
 
-// Download options to use outside of `GravatarCompatible` UI components. Refer to `GravatarImageSettingOption`.
+/// Download options to use outside of `GravatarCompatible` UI components. Refer to `GravatarImageSettingOption`.
 public struct GravatarImageDownloadOptions {
     let gravatarRating: GravatarRating?
     let forceRefresh: Bool
