@@ -139,7 +139,7 @@ private extension GravatarImageDownloadOptions {
         case .defaultImage:
             value = self.defaultImage?.rawValue
         case .forceDefaultImage:
-            value = String(self.forceDefaultImage)
+            value = self.forceDefaultImage.queryValue()
         case .gravatarRating:
             value = self.gravatarRating?.stringValue()
         case .preferredPixelSize:
@@ -154,5 +154,18 @@ private extension String {
     init?<T>(_ optionalValue: T?) where T: LosslessStringConvertible {
         guard let value = optionalValue else { return nil }
         self.init(value)
+    }
+}
+
+private extension Bool? {
+    func queryValue() -> String? {
+        guard let self = self else { return nil }
+        
+        switch self {
+        case true:
+            return "y"
+        case false:
+            return "n"
+        }
     }
 }
