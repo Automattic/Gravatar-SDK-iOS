@@ -58,7 +58,7 @@ public struct ImageService: ImageServing {
             return result
         }
 
-        return try await fetchImage(from: gravatarURL, imageProcressor: options.processor)
+        return try await fetchImage(from: gravatarURL, forceRefresh: options.forceRefresh, imageProcressor: options.processor)
     }
 
     public func fetchImage(
@@ -69,11 +69,11 @@ public struct ImageService: ImageServing {
         if !forceRefresh, let result = cachedImageResult(for: url) {
             return result
         }
-        return try await fetchImage(from: url, imageProcressor: processor)
+        return try await fetchImage(from: url, forceRefresh: forceRefresh, imageProcressor: processor)
     }
 
-    private func fetchImage(from url: URL, imageProcressor: ImageProcessor) async throws -> GravatarImageDownloadResult {
-        let request = URLRequest.imageRequest(url: url)
+    private func fetchImage(from url: URL, forceRefresh: Bool, imageProcressor: ImageProcessor) async throws -> GravatarImageDownloadResult {
+        let request = URLRequest.imageRequest(url: url, forceRefresh: forceRefresh)
         let (data, response) = try await client.fetchData(with: request)
 
         guard let responseUrl = response.url else {
@@ -163,8 +163,8 @@ private extension Data {
 }
 
 private extension URLRequest {
-    static func imageRequest(url: URL) -> URLRequest {
-        var request = URLRequest(url: url)
+    static func imageRequest(url: URL, forceRefresh: Bool) -> URLRequest {
+        var request = forceRefresh ? URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData) : URLRequest(url: url)
         request.httpShouldHandleCookies = false
         request.addValue("image/*", forHTTPHeaderField: "Accept")
         return request
