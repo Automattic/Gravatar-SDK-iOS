@@ -61,10 +61,10 @@ public struct GravatarURL {
     /// This really ought to be in a different place, like Gravatar.swift, but there's
     /// lots of duplication around gravatars -nh
     private static func gravatarHash(of email: String) -> String {
-        return (try? email
+        return email
             .lowercased()
             .trimmingCharacters(in: .whitespaces)
-            .sha256()) ?? ""
+            .sha256()
     }
 }
 

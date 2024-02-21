@@ -6,18 +6,11 @@
 //
 
 import CryptoKit
-
-enum StringError: Error {
-    case dataConvertionError
-}
+import Foundation
 
 extension String {
-    func sha256() throws -> String {
-        guard let data = self.data(using: .utf8) else {
-            throw StringError.dataConvertionError
-        }
-
-        let hashed = SHA256.hash(data: data)
+    func sha256() -> String {
+        let hashed = SHA256.hash(data: Data(self.utf8))
         let hashString = hashed.compactMap { String(format: "%02x", $0) }.joined()
         return hashString
     }
