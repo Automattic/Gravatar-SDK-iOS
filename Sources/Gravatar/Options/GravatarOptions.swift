@@ -3,32 +3,35 @@ import UIKit
 
 /// Options to use when fetching a Gravatar profile image and setting it to a `GravatarCompatible` UI component.
 public enum GravatarImageSettingOption {
-    // Transition style to use when setting the new image downloaded. Default: .none
+    /// Transition style to use when setting the new image downloaded. Default: .none
     case transition(GravatarImageTransition)
 
-    // By setting this option, the current image will be removed and the placeholder will be shown while downloading the new image. Default: false
+    /// By setting this option, the current image will be removed and the placeholder will be shown while downloading the new image. Default: false
     case removeCurrentImageWhileLoading
 
-    // Ignore the cached value and re-download the image. Default: false
+    /// Ignore the cached value and re-download the image. Default: `false`
     case forceRefresh
-    
-    // Processor to run on the the downloaded data while converting it into an image.
-    // If not set `DefaultImageProcessor.common` will be used.
-    case processor(GravatarImageProcessor)
-    
-    // By setting this you can pass a cache of your preference to save the downloaded image. Default: GravatarImageCache.shared
+
+    /// Processor to run on the the downloaded data while converting it into an image.
+    ///
+    /// If not set `DefaultImageProcessor.common` will be used.
+    case processor(ImageProcessor)
+
+    /// By setting this you can pass a cache of your preference to save the downloaded image.
+    ///
+    ///If not set, an internal cache will be used. To force images to not be cached, set the `forceRefresh` flag.
     case imageCache(GravatarImageCaching)
-    
-    // A custom image downloader. Defaults to `GravatarimageDownloader` if not set.
+
+    /// A custom image downloader. Defaults to `GravatarimageDownloader` if not set.
     case imageDownloader(ImageServing)
 }
 
-// Parsed options derived from [GravatarImageSettingOption]
+/// Parsed options derived from [GravatarImageSettingOption]
 public struct GravatarImageSettingOptions {
     var transition: GravatarImageTransition = .none
     var removeCurrentImageWhileLoading = false
     var forceRefresh = false
-    var processor: GravatarImageProcessor = DefaultImageProcessor.common
+    var processor: ImageProcessor = DefaultImageProcessor.common
     var imageCache: GravatarImageCaching = GravatarImageCache.shared
     var imageDownloader: ImageServing? = nil
 
@@ -62,13 +65,13 @@ public struct GravatarImageSettingOptions {
     }
 }
 
-// Download options to use outside of `GravatarCompatible` UI components. Refer to `GravatarImageSettingOption`.
+/// Download options to use outside of `GravatarCompatible` UI components. Refer to `GravatarImageSettingOption`.
 public struct GravatarImageDownloadOptions {
     let gravatarRating: GravatarRating?
     let forceRefresh: Bool
     let forceDefaultImage: Bool
     let defaultImage: DefaultImageOption?
-    let processor: GravatarImageProcessor
+    let processor: ImageProcessor
     let preferredPixelSize: Int?
 
     private let preferredSize: ImageSize?
@@ -80,7 +83,7 @@ public struct GravatarImageDownloadOptions {
         forceRefresh: Bool = false,
         forceDefaultImage: Bool = false,
         defaultImage: DefaultImageOption? = nil,
-        processor: GravatarImageProcessor = DefaultImageProcessor.common
+        processor: ImageProcessor = DefaultImageProcessor.common
     ) {
         self.init(
             scaleFactor: UIScreen.main.scale,
@@ -100,7 +103,7 @@ public struct GravatarImageDownloadOptions {
         forceRefresh: Bool = false,
         forceDefaultImage: Bool = false,
         defaultImage: DefaultImageOption? = nil,
-        processor: GravatarImageProcessor = DefaultImageProcessor.common
+        processor: ImageProcessor = DefaultImageProcessor.common
     ) {
         self.gravatarRating = gravatarRating
         self.forceRefresh = forceRefresh
@@ -127,7 +130,7 @@ public struct GravatarImageDownloadOptions {
         forceRefresh: Bool? = nil,
         forceDefaultImage: Bool? = nil,
         defaultImage: DefaultImageOption? = nil,
-        processor: GravatarImageProcessor? = nil
+        processor: ImageProcessor? = nil
     ) -> Self {
         GravatarImageDownloadOptions(
             scaleFactor: scaleFactor ?? self.scaleFactor,

@@ -16,7 +16,7 @@ class TestImageRetriever: ImageServing {
         self.result = result
     }
     
-    func fetchImage(with url: URL, forceRefresh: Bool, processor: Gravatar.GravatarImageProcessor, completionHandler: Gravatar.ImageDownloadCompletion?) -> Gravatar.CancellableDataTask? {
+    func fetchImage(with url: URL, forceRefresh: Bool, processor: Gravatar.ImageProcessor, completionHandler: Gravatar.ImageDownloadCompletion?) -> Gravatar.CancellableDataTask? {
         completionQueue.append((url.absoluteString, completionHandler))
         taskIdentifier += 1
         return TestDataTask(taskIdentifier: taskIdentifier)
@@ -28,7 +28,7 @@ class TestImageRetriever: ImageServing {
         return TestDataTask(taskIdentifier: taskIdentifier)
     }
 
-    func fetchImage(with url: URL, forceRefresh: Bool, processor: Gravatar.GravatarImageProcessor) async throws -> Gravatar.GravatarImageDownloadResult {
+    func fetchImage(with url: URL, forceRefresh: Bool, processor: Gravatar.ImageProcessor) async throws -> Gravatar.GravatarImageDownloadResult {
         fatalError("Not Implemented")
     }
 
