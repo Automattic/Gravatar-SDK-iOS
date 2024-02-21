@@ -12,14 +12,14 @@ public enum GravatarImageSettingOption {
     /// Ignore the cached value and re-download the image. Default: `false`
     case forceRefresh
 
-    /// Processor to run on the the downloaded data while converting it into an image.
+    /// Processing method to be used to transform the `Data` into a `UIImage` instance.
     ///
-    /// If not set `DefaultImageProcessor.common` will be used.
-    case processor(ImageProcessor)
+    /// If not set `ImageProcessingMethod.common` will be used.
+    case processingMethod(ImageProcessingMethod)
 
     /// By setting this you can pass a cache of your preference to save the downloaded image.
     ///
-    ///If not set, an internal cache will be used. To force images to not be cached, set the `forceRefresh` flag.
+    /// If not set, an internal cache will be used. 
     case imageCache(GravatarImageCaching)
 
     /// A custom image downloader. Defaults to `GravatarimageDownloader` if not set.
@@ -31,7 +31,7 @@ public struct GravatarImageSettingOptions {
     var transition: GravatarImageTransition = .none
     var removeCurrentImageWhileLoading = false
     var forceRefresh = false
-    var processor: ImageProcessor = DefaultImageProcessor.common
+    var processingMethod: ImageProcessingMethod = .common
     var imageCache: GravatarImageCaching = GravatarImageCache.shared
     var imageDownloader: ImageServing? = nil
 
@@ -45,8 +45,8 @@ public struct GravatarImageSettingOptions {
                 removeCurrentImageWhileLoading = true
             case .forceRefresh:
                 forceRefresh = true
-            case .processor(let imageProcessor):
-                processor = imageProcessor
+            case .processingMethod(let method):
+                processingMethod = method
             case .imageCache(let customCache):
                 imageCache = customCache
             case .imageDownloader(let retriever):
@@ -60,7 +60,7 @@ public struct GravatarImageSettingOptions {
             preferredSize: size,
             gravatarRating: rating,
             forceRefresh: forceRefresh,
-            processor: processor
+            processingMethod: processingMethod
         )
     }
 }
@@ -71,7 +71,7 @@ public struct GravatarImageDownloadOptions {
     let forceRefresh: Bool
     let forceDefaultImage: Bool
     let defaultImage: DefaultImageOption?
-    let processor: ImageProcessor
+    let processingMethod: ImageProcessingMethod
     let preferredPixelSize: Int?
 
     private let preferredSize: ImageSize?
@@ -83,7 +83,7 @@ public struct GravatarImageDownloadOptions {
         forceRefresh: Bool = false,
         forceDefaultImage: Bool = false,
         defaultImage: DefaultImageOption? = nil,
-        processor: ImageProcessor = DefaultImageProcessor.common
+        processingMethod: ImageProcessingMethod = .common
     ) {
         self.init(
             scaleFactor: UIScreen.main.scale,
@@ -92,7 +92,7 @@ public struct GravatarImageDownloadOptions {
             forceRefresh: forceRefresh,
             forceDefaultImage: forceDefaultImage,
             defaultImage: defaultImage,
-            processor: processor
+            processingMethod: processingMethod
         )
     }
 
@@ -103,12 +103,12 @@ public struct GravatarImageDownloadOptions {
         forceRefresh: Bool = false,
         forceDefaultImage: Bool = false,
         defaultImage: DefaultImageOption? = nil,
-        processor: ImageProcessor = DefaultImageProcessor.common
+        processingMethod: ImageProcessingMethod
     ) {
         self.gravatarRating = gravatarRating
         self.forceRefresh = forceRefresh
         self.forceDefaultImage = forceDefaultImage
-        self.processor = processor
+        self.processingMethod = processingMethod
         self.defaultImage = defaultImage
         self.scaleFactor = scaleFactor
         self.preferredSize = preferredSize
@@ -130,7 +130,7 @@ public struct GravatarImageDownloadOptions {
         forceRefresh: Bool? = nil,
         forceDefaultImage: Bool? = nil,
         defaultImage: DefaultImageOption? = nil,
-        processor: ImageProcessor? = nil
+        processingMethod: ImageProcessingMethod? = nil
     ) -> Self {
         GravatarImageDownloadOptions(
             scaleFactor: scaleFactor ?? self.scaleFactor,
@@ -139,7 +139,7 @@ public struct GravatarImageDownloadOptions {
             forceRefresh: forceRefresh ?? self.forceRefresh,
             forceDefaultImage: forceDefaultImage ?? self.forceDefaultImage,
             defaultImage: defaultImage ?? self.defaultImage,
-            processor: processor ?? self.processor
+            processingMethod: processingMethod ?? self.processingMethod
         )
     }
 }

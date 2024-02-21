@@ -188,7 +188,7 @@ extension GravatarWrapper where Component: UIImageView {
         let networkManager = options.imageDownloader ?? ImageService(cache: options.imageCache)
         mutatingSelf.imageDownloader = networkManager // Retain the network manager otherwise the completion tasks won't be done properly
 
-        let task = networkManager.fetchImage(with: source, forceRefresh: options.forceRefresh, processor: options.processor) { [weak component] result in
+        let task = networkManager.fetchImage(with: source, forceRefresh: options.forceRefresh, processingMethod: options.processingMethod) { [weak component] result in
             DispatchQueue.main.async {
                 maybeIndicator?.stopAnimatingView()
                 guard issuedIdentifier == self.taskIdentifier else {
