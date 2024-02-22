@@ -7,7 +7,7 @@ enum GravatarImageSetMockResult {
     case success
 }
 
-class TestImageRetriever: ImageServing {
+class TestImageRetriever: ImageDownloader {
     var result: GravatarImageSetMockResult
     var taskIdentifier: Int = 0
     var completionQueue: [(url: String, handler: Gravatar.ImageDownloadCompletion?)] = []
@@ -33,14 +33,6 @@ class TestImageRetriever: ImageServing {
     }
 
     func fetchImage(with email: String, options: Gravatar.GravatarImageDownloadOptions) async throws -> Gravatar.GravatarImageDownloadResult {
-        fatalError("Not Implemented")
-    }
-
-    func uploadImage(_ image: UIImage, accountEmail: String, accountToken: String) async throws -> URLResponse {
-        fatalError("Not Implemented")
-    }
-
-    func uploadImage(_ image: UIImage, accountEmail: String, accountToken: String, completion: ((NSError?) -> Void)?) {
         fatalError("Not Implemented")
     }
 
