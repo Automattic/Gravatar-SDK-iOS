@@ -36,6 +36,14 @@ class TestImageRetriever: ImageServing {
         fatalError("Not Implemented")
     }
 
+    func uploadImage(_ image: UIImage, accountEmail: String, accountToken: String) async throws -> URLResponse {
+        fatalError("Not Implemented")
+    }
+
+    func uploadImage(_ image: UIImage, accountEmail: String, accountToken: String, completion: ((NSError?) -> Void)?) {
+        fatalError("Not Implemented")
+    }
+
     func sendResponse(for url: String) {
         switch result {
         case .fail:
