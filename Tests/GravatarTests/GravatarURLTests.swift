@@ -1,12 +1,12 @@
 //
 //  GravatarURLTests.swift
-//  
+//
 //
 //  Created by eToledo on 23/1/24.
 //
 
-import XCTest
 @testable import Gravatar
+import XCTest
 
 final class GravatarURLTests: XCTestCase {
     let verifiedGravatarURL = URL(string: "https://0.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50")!

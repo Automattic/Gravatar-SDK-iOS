@@ -7,4 +7,4 @@ public enum GravatarImageTransition {
     case fade(TimeInterval)
 }
 
-extension GravatarImageTransition: Equatable { }
+extension GravatarImageTransition: Equatable {}

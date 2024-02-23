@@ -19,9 +19,9 @@ enum TestDataTaskFailReason: Equatable {
 class TestURLSession: URLSessionProtocol {
     func upload(for request: URLRequest, from bodyData: Data) async throws -> (Data, URLResponse) {
         XCTFail("Not implemented")
-        fatalError() 
+        fatalError()
     }
-    
+
     func data(for request: URLRequest) async throws -> (Data, URLResponse) {
         XCTFail("Not implemented")
         fatalError()
@@ -30,11 +30,11 @@ class TestURLSession: URLSessionProtocol {
     var failReason: TestDataTaskFailReason?
     private(set) var dataTaskCount: Int = 0
     static let error = NSError(domain: "test", code: 1234)
-    
+
     init(failReason: TestDataTaskFailReason? = nil) {
         self.failReason = failReason
     }
-    
+
     func dataTask(with request: URLRequest, completionHandler: @escaping @Sendable (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTask {
         dataTaskCount += 1
         guard let url = request.url else {
@@ -70,17 +70,16 @@ extension GravatarImageDownloadError: Equatable {
     public static func == (lhs: GravatarImageDownloadError, rhs: GravatarImageDownloadError) -> Bool {
         switch (lhs, rhs) {
         case (.requestError(let reason1), .requestError(let reason2)):
-            return reason1 == reason2
+            reason1 == reason2
         case (.responseError(let reason1), .responseError(let reason2)):
-            return reason1 == reason2
+            reason1 == reason2
         default:
-            return false
+            false
         }
     }
 }
 
 extension GravatarImageDownload.ResponseErrorReason: Equatable {
-    
     public static func == (lhs: GravatarImageDownload.ResponseErrorReason, rhs: GravatarImageDownload.ResponseErrorReason) -> Bool {
         switch (lhs, rhs) {
         case (.imageInitializationFailed, .imageInitializationFailed):

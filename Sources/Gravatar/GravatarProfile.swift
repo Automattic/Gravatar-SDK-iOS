@@ -11,7 +11,6 @@ public enum GravatarProfileFetchResult {
 }
 
 public struct GravatarProfile: Equatable {
-
     public internal(set) var profileID = ""
     public internal(set) var hash = ""
     public internal(set) var requestHash = ""
@@ -20,7 +19,6 @@ public struct GravatarProfile: Equatable {
     public internal(set) var thumbnailUrl = ""
     public internal(set) var name = ""
     public internal(set) var displayName = ""
-
 }
 
 extension GravatarProfile {

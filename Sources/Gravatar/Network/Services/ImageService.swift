@@ -40,10 +40,10 @@ public struct ImageService {
 
 private func imageUploadBody(with imageData: Data, account: String, boundary: String) -> Data {
     enum UploadParameters {
-        static let contentType          = "application/octet-stream"
-        static let filename             = "profile.png"
-        static let imageKey             = "filedata"
-        static let accountKey           = "account"
+        static let contentType = "application/octet-stream"
+        static let filename = "profile.png"
+        static let imageKey = "filedata"
+        static let accountKey = "account"
     }
 
     var body = Data()
@@ -67,23 +67,23 @@ private func imageUploadBody(with imageData: Data, account: String, boundary: St
     return body as Data
 }
 
-private extension Data {
-    mutating func append(_ string: String) {
+extension Data {
+    fileprivate mutating func append(_ string: String) {
         if let data = string.data(using: String.Encoding.utf8) {
             append(data)
         }
     }
 }
 
-private extension URLRequest {
-    static func imageRequest(url: URL) -> URLRequest {
+extension URLRequest {
+    fileprivate static func imageRequest(url: URL) -> URLRequest {
         var request = URLRequest(url: url)
         request.httpShouldHandleCookies = false
         request.addValue("image/*", forHTTPHeaderField: "Accept")
         return request
     }
 
-    static func imageUploadRequest(with boundary: String) -> URLRequest {
+    fileprivate static func imageUploadRequest(with boundary: String) -> URLRequest {
         let url = URL(string: "https://api.gravatar.com/v1/upload-image")!
         var request = URLRequest(url: url)
         request.addValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
