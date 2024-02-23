@@ -1,85 +1,106 @@
 import Foundation
 import UIKit
 
-public typealias GravatarImageDownloadError = GravatarImageDownload.NetworkingError
-public typealias GravatarImageSetError = GravatarImageDownload.NetworkingAndUIError
-
-public enum GravatarImageDownload {
+public enum ResponseErrorReason {
     
-    public enum RequestErrorReason {
-        
-        /// The gravatar URL could not be initialized.
-        case urlInitializationFailed
-        
-        /// URL in the given request is empty.
-        case emptyURL
-    }
+    /// An error occurred in the system URL session.
+    case URLSessionError(error: Error)
     
-    public enum ResponseErrorReason {
-
-        /// An error occurred in the system URL session.
-        case URLSessionError(error: Error)
-        
-        /// Could not initialize the image from the downloaded data.
-        case imageInitializationFailed
-        
-        /// Avatar not found (404).
-        case notFound
-        
-        /// URL of response doesn't match with the request (request is outdated).
-        case urlMismatch
-
-        case urlMissingInResponse
-    }
+    /// The response contains an invalid HTTP status code. By default, status code >= 400 is recognized as invalid.
+    case invalidHTTPStatusCode(response: HTTPURLResponse)
     
-    public enum ImageSettingErrorReason {
-        
-        /// The input url is empty or `nil`.
-        case emptyURL
-        
-        /// The resource task is finished, but it is not the one expected now. It's outdated because of new requests.
-        /// In any case the result of this original task is contained in the associated value. So if the task succeeded the image is available in the result, if failed the error is.
-        /// - result: The `GravatarImageDownloadResult` if the source task is finished without problem. `nil` if an error
-        ///           happens.
-        /// - error: The `Error` if an issue happens. `nil` if the task finishes without problem.
-        /// - source: The original source value of the task.
-        case outdatedTask(result: GravatarImageDownloadResult?, error: Error?, source: URL)
-    }
+    /// The response is not a `HTTPURLResponse`.
+    case invalidURLResponse(response: URLResponse)
     
-    public enum NetworkingError: Error {
-        case requestError(reason: RequestErrorReason)
-        case responseError(reason: ResponseErrorReason)
-        
-        func convert() -> NetworkingAndUIError {
-            switch self {
-            case .requestError(let reason):
-                return .requestError(reason: reason)
-            case .responseError(let reason):
-                return .responseError(reason: reason)
-            }
+    /// An unexpected error has ocurred.
+    case unexpected(Error)
+    
+    // `true` if self is a `.invalidHTTPStatusCode`.
+    public var isInvalidHTTPStatusCode: Bool {
+        if case .invalidHTTPStatusCode = self {
+            return true
         }
+        return false
     }
     
-    public enum NetworkingAndUIError: Error {
-        case requestError(reason: RequestErrorReason)
-        case responseError(reason: ResponseErrorReason)
-        case imageSettingError(reason: ImageSettingErrorReason)
+    // If self is a `.invalidHTTPStatusCode` returns the HTTP statusCode from the response. Otherwise returns `nil`.
+    public var httpStatusCode: Int? {
+        if case .invalidHTTPStatusCode(let response) = self {
+            return response.statusCode
+        }
+        return nil
     }
 }
 
-public enum UploadError: Error {
+public enum RequestErrorReason {
+    
+    /// The gravatar URL could not be initialized.
+    case urlInitializationFailed
+    
+    /// The input url is empty or `nil`.
+    case emptyURL
+}
+
+/// Errors thrown by `ImageService` when fetching an image.
+public enum ImageFetchingError: Error {
+    
+    case requestError(reason: RequestErrorReason)
+    case responseError(reason: ResponseErrorReason)
+    /// Could not initialize the image from the downloaded data.
+    case imageInitializationFailed
+
+    func convert() -> ImageFetchingComponentError {
+        switch self {
+        case .requestError(let reason):
+            return .requestError(reason: reason)
+        case .responseError(let reason):
+            return .responseError(reason: reason)
+        case .imageInitializationFailed:
+            return .imageInitializationFailed
+        }
+    }
+}
+
+/// Errors thrown by Gravatar compatible UI components(see: `GravatarCompatible`) when fetching an image.
+public enum ImageFetchingComponentError: Error {
+    case requestError(reason: RequestErrorReason)
+    case responseError(reason: ResponseErrorReason)
+    /// Could not initialize the image from the downloaded data.
+    case imageInitializationFailed
+    
+    /// The resource task is finished, but it is not the one expected now. It's outdated because of new requests.
+    /// In any case the result of this original task is contained in the associated value. So if the task succeeded the image is available in the result, if failed the error is.
+    /// - result: The Result enum. `GravatarImageDownloadResult` if the source task is finished without problem.  `Error` if an issue happens.
+    /// - source: The original source value of the task.
+    case outdatedTask(result: Result<GravatarImageDownloadResult, ImageFetchingError>, source: URL)
+    
+    // `true` if self is a `.outdatedTask`.
+    public var isOutdatedTask: Bool {
+        if case .outdatedTask = self {
+            return true
+        }
+        return false
+    }
+}
+
+public enum ImageUploadError: Error {
+    /// Conversion from UIImage to Data failed.
     case cannotConvertImageIntoData
+    case responseError(reason: ResponseErrorReason)
 }
 
 public enum ProfileServiceError: Error {
-    case unexpected(Error)
+    case requestError(reason: RequestErrorReason)
+    case responseError(reason: ResponseErrorReason)
 }
 
 extension ProfileServiceError: CustomDebugStringConvertible {
     public var debugDescription: String {
         switch self {
-        case .unexpected(let error):
-            return "An unexpected error has occoured: \(error)"
+        case .responseError(let reason):
+            return "A response error has occoured with reason: \(reason)"
+        case let .requestError(reason):
+            return "Something went wrong when creating the request. Reason: \(reason)."
         }
     }
 }

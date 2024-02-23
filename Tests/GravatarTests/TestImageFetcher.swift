@@ -1,5 +1,5 @@
 import Foundation
-import Gravatar
+@testable import Gravatar
 import XCTest
 
 enum GravatarImageSetMockResult {
@@ -7,7 +7,7 @@ enum GravatarImageSetMockResult {
     case success
 }
 
-class TestImageRetriever: ImageServing {
+class TestImageFetcher: ImageServing {
     var result: GravatarImageSetMockResult
     var taskIdentifier: Int = 0
     var completionQueue: [(url: String, handler: Gravatar.ImageDownloadCompletion?)] = []
@@ -36,15 +36,17 @@ class TestImageRetriever: ImageServing {
         fatalError("Not Implemented")
     }
 
-    func sendResponse(for url: String) {
+    func sendResponse(for urlString: String) {
         switch result {
         case .fail:
-            if let tuple = item(for: url) {
-                tuple.1?(.failure(.responseError(reason: .notFound)))
+            if let tuple = item(for: urlString),
+                let url = URL(string: urlString),
+                let response = HTTPURLResponse(url: url, statusCode: 404, httpVersion: nil, headerFields: nil) {
+                tuple.1?(.failure(.responseError(reason: .invalidHTTPStatusCode(response: response))))
             }
         case .success:
-            if let tuple = item(for: url) {
-                tuple.1?(.success(GravatarImageDownloadResult(image: ImageHelper.testImage, sourceURL: URL(string: url)!)))
+            if let tuple = item(for: urlString) {
+                tuple.1?(.success(GravatarImageDownloadResult(image: ImageHelper.testImage, sourceURL: URL(string: urlString)!)))
             }
         }
     }

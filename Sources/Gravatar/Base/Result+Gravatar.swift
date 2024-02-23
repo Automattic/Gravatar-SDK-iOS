@@ -7,9 +7,9 @@
 
 import Foundation
 
-extension Result<GravatarImageDownloadResult, GravatarImageDownloadError> {
+extension Result<GravatarImageDownloadResult, ImageFetchingError> {
     
-    func convert() -> Result<GravatarImageDownloadResult, GravatarImageSetError> {
+    func convert() -> Result<GravatarImageDownloadResult, ImageFetchingComponentError> {
         switch self {
         case .success(let value):
             return .success(value)
