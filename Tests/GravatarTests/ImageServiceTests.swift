@@ -134,7 +134,7 @@ final class ImageServiceTests: XCTestCase {
         } catch ImageUploadError.responseError(reason: let reason) where reason.httpStatusCode == responseCode {
             // Expected error has ocurred.
         } catch {
-            XCTFail("This should have thrown a URLSessionError with statusCode:\(responseCode)")
+            XCTFail("This should have thrown an invalidHTTPStatusCode with:\(responseCode)")
         }
     }
 
@@ -173,16 +173,11 @@ final class ImageServiceTests: XCTestCase {
         let expectation = expectation(description: "Should error")
 
         service.uploadImage(ImageHelper.testImage, accountEmail: "some@email.com", accountToken: "AccessToken") { error in
-            guard let error else {
-                XCTFail("This should have thrown a URLSessionError with statusCode:\(responseCode)")
-                expectation.fulfill()
-                return
-            }
             switch error {
-            case ImageUploadError.responseError(reason: let reason) where reason.httpStatusCode == responseCode:
+            case .some(ImageUploadError.responseError(reason: let reason)) where reason.httpStatusCode == responseCode:
                 break
             default:
-                XCTFail("This should have thrown a URLSessionError with statusCode:\(responseCode)")
+                XCTFail("This should have thrown an invalidHTTPStatusCode with:\(responseCode)")
             }
             expectation.fulfill()
         }

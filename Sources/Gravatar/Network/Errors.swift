@@ -32,7 +32,7 @@ public enum ResponseErrorReason {
 }
 
 public enum RequestErrorReason {
-    /// The gravatar URL could not be initialized.
+    /// The URL could not be initialized.
     case urlInitializationFailed
 
     /// The input url is empty or `nil`.
