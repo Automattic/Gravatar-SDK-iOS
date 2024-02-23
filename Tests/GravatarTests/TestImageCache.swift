@@ -1,6 +1,6 @@
 //
-//  File.swift
-//  
+//  TestImageCache.swift
+//
 //
 //  Created by Pinar Olguc on 24.01.2024.
 //
@@ -12,7 +12,7 @@ import UIKit
 class TestImageCache: GravatarImageCaching {
     var dict: [String: UIImage] = [:]
     var getImageCallCount = 0
-    var setImageCallsCount =  0
+    var setImageCallsCount = 0
 
     public func setImage(_ image: UIImage, forKey key: String) {
         setImageCallsCount += 1

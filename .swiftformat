@@ -11,7 +11,7 @@
 --ifdef no-indent
 
 # Wrap lines that exceed the specified maximum width.
---maxwidth 120
+--maxwidth 160
 
 # Reposition `let` or `var` bindings within pattern.
 --patternlet inline

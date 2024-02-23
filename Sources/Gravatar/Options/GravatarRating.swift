@@ -13,13 +13,13 @@ public enum GravatarRating: Int {
     func stringValue() -> String {
         switch self {
         case .g:
-            return "g"
+            "g"
         case .pg:
-            return "pg"
+            "pg"
         case .r:
-            return "r"
+            "r"
         case .x:
-            return "x"
+            "x"
         }
     }
 }

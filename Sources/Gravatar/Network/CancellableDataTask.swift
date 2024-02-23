@@ -5,6 +5,6 @@ public protocol CancellableDataTask {
     func cancel()
 }
 
-extension URLSessionTask: CancellableDataTask { }
+extension URLSessionTask: CancellableDataTask {}
 
-extension Task: CancellableDataTask { }
+extension Task: CancellableDataTask {}

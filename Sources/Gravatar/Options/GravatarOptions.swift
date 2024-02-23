@@ -19,7 +19,7 @@ public enum GravatarImageSettingOption {
 
     /// By setting this you can pass a cache of your preference to save the downloaded image.
     ///
-    /// If not set, an internal cache will be used. 
+    /// If not set, an internal cache will be used.
     case imageCache(GravatarImageCaching)
 
     /// A custom image downloader. Defaults to `GravatarimageDownloader` if not set.
@@ -36,7 +36,7 @@ public struct GravatarImageSettingOptions {
     var imageDownloader: ImageServing? = nil
 
     init(options: [GravatarImageSettingOption]?) {
-        guard let options = options else { return }
+        guard let options else { return }
         for option in options {
             switch option {
             case .transition(let imageTransition):
@@ -54,9 +54,9 @@ public struct GravatarImageSettingOptions {
             }
         }
     }
-    
+
     func deriveDownloadOptions(garavatarRating rating: GravatarRating? = nil, preferredSize size: ImageSize? = nil) -> GravatarImageDownloadOptions {
-        return GravatarImageDownloadOptions(
+        GravatarImageDownloadOptions(
             preferredSize: size,
             gravatarRating: rating,
             forceRefresh: forceRefresh,

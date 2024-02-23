@@ -1,5 +1,5 @@
-import XCTest
 @testable import Gravatar
+import XCTest
 
 final class ProfileServiceTests: XCTestCase {
     func testFetchGravatarProfile() async throws {
