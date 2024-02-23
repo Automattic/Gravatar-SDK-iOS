@@ -18,9 +18,9 @@ extension ImageProcessingMethod {
     var processor: ImageProcessor {
         switch self {
         case .common:
-            return DefaultImageProcessor.common
+            DefaultImageProcessor.common
         case .custom(let processor):
-            return processor
+            processor
         }
     }
 }

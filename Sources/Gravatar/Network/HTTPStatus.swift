@@ -1,6 +1,6 @@
 //
-//  File.swift
-//  
+//  HTTPStatus.swift
+//
 //
 //  Created by Pinar Olguc on 24.01.2024.
 //

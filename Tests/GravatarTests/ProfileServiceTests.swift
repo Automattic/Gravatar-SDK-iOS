@@ -1,5 +1,5 @@
-import XCTest
 @testable import Gravatar
+import XCTest
 
 final class ProfileServiceTests: XCTestCase {
     func testFetchGravatarProfile() async throws {
@@ -68,21 +68,6 @@ final class ProfileServiceTests: XCTestCase {
         wait(for: [expectation], timeout: 0.1)
     }
 }
-
-//struct HTTPCLientMock: HTTPClient {
-//    func fetchData(with request: URLRequest) async throws -> (Data, URLResponse) {
-//        <#code#>
-//    }
-//    
-//    func uploadData(with request: URLRequest, data: Data) async throws -> URLResponse {
-//        <#code#>
-//    }
-//    
-//    func fetchObject<T>(from path: String) async throws -> T where T : Decodable {
-//        <#code#>
-//    }
-//}
-
 
 private let jsonData = """
 {

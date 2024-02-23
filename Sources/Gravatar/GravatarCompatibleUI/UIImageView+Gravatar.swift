@@ -1,9 +1,10 @@
 import Foundation
 import UIKit
 
-public typealias GravatarImageSetCompletion = ((Result<GravatarImageDownloadResult, GravatarImageSetError>) -> Void)
+public typealias GravatarImageSetCompletion = (Result<GravatarImageDownloadResult, GravatarImageSetError>) -> Void
 
 // MARK: - Associated Object
+
 private var taskIdentifierKey: Void?
 private var indicatorKey: Void?
 private var indicatorTypeKey: Void?
@@ -13,13 +14,12 @@ private var dataTaskKey: Void?
 private var imageDownloaderKey: Void?
 
 extension GravatarWrapper where Component: UIImageView {
-    
     /// Describes which indicator type is going to be used. Default is `.none`, which means no activity indicator will be shown.
     public var activityIndicatorType: GravatarActivityIndicatorType {
         get {
-            return getAssociatedObject(component, &indicatorTypeKey) ?? .none
+            getAssociatedObject(component, &indicatorTypeKey) ?? .none
         }
-        
+
         set {
             switch newValue {
             case .none:
@@ -32,31 +32,32 @@ extension GravatarWrapper where Component: UIImageView {
             setRetainedAssociatedObject(component, &indicatorTypeKey, newValue)
         }
     }
-    
+
     /// The activityIndicator to show during network operations .
     public private(set) var activityIndicator: ActivityIndicatorProvider? {
         get {
             let box: Box<ActivityIndicatorProvider>? = getAssociatedObject(component, &indicatorKey)
             return box?.value
         }
-        
+
         set {
             // Remove previous
             if let previousIndicator = activityIndicator {
                 previousIndicator.view.removeFromSuperview()
             }
-            
+
             // Add new
             if let newIndicator = newValue {
-                
                 let newIndicatorView = newIndicator.view
                 component.addSubview(newIndicatorView)
                 newIndicatorView.translatesAutoresizingMaskIntoConstraints = false
                 newIndicatorView.centerXAnchor.constraint(
-                    equalTo: component.centerXAnchor).isActive = true
+                    equalTo: component.centerXAnchor
+                ).isActive = true
                 newIndicatorView.centerYAnchor.constraint(
-                    equalTo: component.centerYAnchor).isActive = true
-                
+                    equalTo: component.centerYAnchor
+                ).isActive = true
+
                 switch newIndicator.sizeStrategy(in: component) {
                 case .intrinsicSize:
                     break
@@ -67,17 +68,17 @@ extension GravatarWrapper where Component: UIImageView {
                     newIndicatorView.heightAnchor.constraint(equalToConstant: size.height).isActive = true
                     newIndicatorView.widthAnchor.constraint(equalToConstant: size.width).isActive = true
                 }
-                
+
                 newIndicator.view.isHidden = true
             }
-            
+
             setRetainedAssociatedObject(component, &indicatorKey, newValue.map(Box.init))
         }
     }
-    
+
     /// A `Placeholder` will be shown in the imageview until the download completes.
     public private(set) var placeholder: UIImage? {
-        get { return getAssociatedObject(component, &placeholderKey) }
+        get { getAssociatedObject(component, &placeholderKey) }
         set {
             if let newPlaceholder = newValue {
                 component.image = newPlaceholder
@@ -87,16 +88,16 @@ extension GravatarWrapper where Component: UIImageView {
             setRetainedAssociatedObject(component, &placeholderKey, newValue)
         }
     }
-    
+
     public private(set) var downloadTask: CancellableDataTask? {
         get {
-            return getAssociatedObject(component, &dataTaskKey)
+            getAssociatedObject(component, &dataTaskKey)
         }
         set {
             setDownloadTask(newValue)
         }
     }
-    
+
     public private(set) var taskIdentifier: UInt? {
         get {
             let box: Box<UInt>? = getAssociatedObject(component, &taskIdentifierKey)
@@ -107,7 +108,7 @@ extension GravatarWrapper where Component: UIImageView {
             setRetainedAssociatedObject(component, &taskIdentifierKey, box)
         }
     }
-    
+
     public private(set) var imageDownloader: ImageServing? {
         get {
             let box: Box<ImageServing>? = getAssociatedObject(component, &imageDownloaderKey)
@@ -118,40 +119,42 @@ extension GravatarWrapper where Component: UIImageView {
             setRetainedAssociatedObject(component, &imageDownloaderKey, box)
         }
     }
-    
+
     private func setDownloadTask(_ newValue: CancellableDataTask?) {
         setRetainedAssociatedObject(component, &dataTaskKey, newValue)
     }
-    
+
     public func cancelImageDownload() {
         downloadTask?.cancel()
         setDownloadTask(nil)
     }
-    
+
     /// Downloads the Gravatar profile image and sets it to this UIImageView.
     /// - Parameters:
     ///   - email: Gravatar account email.
     ///   - placeholder: A placeholder to show while downloading the image.
     ///   - rating: Gravatar image rating.
-    ///   - preferredSize: Preferred "point" size of the image that will be downloaded. If not provided, layoutIfNeeded() is called on this view to get its real bounds and those bounds are used.
+    ///   - preferredSize: Preferred "point" size of the image that will be downloaded. If not provided, layoutIfNeeded() is called on this view to get its real
+    /// bounds and those bounds are used.
     ///   You can get a performance benefit by setting this value since it will avoid the `layoutIfNeeded()` call.
     ///   - options: A set of options to define image setting behaviour. See `GravatarImageSettingOption` for more info.
     ///   - completionHandler: Completion block that's called when image downloading and setting completes.
     @discardableResult
-    public func setImage(email: String,
-                         placeholder: UIImage? = nil,
-                         rating: GravatarRating? = nil,
-                         preferredSize: CGSize? = nil,
-                         options: [GravatarImageSettingOption]? = nil,
-                         completionHandler: GravatarImageSetCompletion? = nil) -> CancellableDataTask?
-    {
+    public func setImage(
+        email: String,
+        placeholder: UIImage? = nil,
+        rating: GravatarRating? = nil,
+        preferredSize: CGSize? = nil,
+        options: [GravatarImageSettingOption]? = nil,
+        completionHandler: GravatarImageSetCompletion? = nil
+    ) -> CancellableDataTask? {
         let pointsSize = pointImageSize(from: preferredSize)
         let downloadOptions = GravatarImageSettingOptions(options: options).deriveDownloadOptions(garavatarRating: rating, preferredSize: pointsSize)
 
         let gravatarURL = GravatarURL.gravatarUrl(with: email, options: downloadOptions)
         return setImage(with: gravatarURL, placeholder: placeholder, options: options, completionHandler: completionHandler)
     }
-    
+
     /// Downloads the  image and sets it to this UIImageView.
     /// - Parameters:
     ///   - source: URL for the image.
@@ -159,21 +162,22 @@ extension GravatarWrapper where Component: UIImageView {
     ///   - options: A set of options to define image setting behaviour. See `GravatarImageSettingOption` for more info.
     ///   - completionHandler: Completion block that's called when image downloading and setting completes.
     @discardableResult
-    public func setImage(with source: URL?,
-                         placeholder: UIImage? = nil,
-                         options: [GravatarImageSettingOption]? = nil,
-                         completionHandler: GravatarImageSetCompletion? = nil) -> CancellableDataTask?
-    {
+    public func setImage(
+        with source: URL?,
+        placeholder: UIImage? = nil,
+        options: [GravatarImageSettingOption]? = nil,
+        completionHandler: GravatarImageSetCompletion? = nil
+    ) -> CancellableDataTask? {
         var mutatingSelf = self
-        guard let source = source else {
+        guard let source else {
             mutatingSelf.placeholder = placeholder
             mutatingSelf.taskIdentifier = nil
             completionHandler?(.failure(GravatarImageSetError.requestError(reason: .emptyURL)))
             return nil
         }
-        
+
         let options = GravatarImageSettingOptions(options: options)
-                
+
         let isEmptyImage = component.image == nil && self.placeholder == nil
         if options.removeCurrentImageWhileLoading || isEmptyImage {
             // Always set placeholder while there is no image/placeholder yet.
@@ -181,50 +185,51 @@ extension GravatarWrapper where Component: UIImageView {
         }
         let maybeIndicator = activityIndicator
         maybeIndicator?.startAnimatingView()
-        
+
         let issuedIdentifier = SimpleCounter.next()
         mutatingSelf.taskIdentifier = issuedIdentifier
-        
+
         let networkManager = options.imageDownloader ?? ImageService(cache: options.imageCache)
         mutatingSelf.imageDownloader = networkManager // Retain the network manager otherwise the completion tasks won't be done properly
 
-        let task = networkManager.fetchImage(with: source, forceRefresh: options.forceRefresh, processingMethod: options.processingMethod) { [weak component] result in
-            DispatchQueue.main.async {
-                maybeIndicator?.stopAnimatingView()
-                guard issuedIdentifier == self.taskIdentifier else {
-                    let reason: GravatarImageDownload.ImageSettingErrorReason
-                    do {
-                        let value = try result.get()
-                        reason = .outdatedTask(result: value, error: nil, source: source)
-                    } catch {
-                        reason = .outdatedTask(result: nil, error: error, source: source)
-                    }
-                    let error = GravatarImageSetError.imageSettingError(reason: reason)
-                    completionHandler?(.failure(error))
-                    return
-                }
-                
-                mutatingSelf.downloadTask = nil
-                mutatingSelf.taskIdentifier = nil
-                
-                switch result {
-                case .success(let value):
-                    mutatingSelf.placeholder = nil
-                    switch options.transition {
-                    case .none:
-                        component?.image = value.image
-                        completionHandler?(result.convert())
-                        return
-                    case .fade(let duration):
-                        self.transition(for: component, into: value.image, duration: duration) {
-                            completionHandler?(result.convert())
+        let task = networkManager
+            .fetchImage(with: source, forceRefresh: options.forceRefresh, processingMethod: options.processingMethod) { [weak component] result in
+                DispatchQueue.main.async {
+                    maybeIndicator?.stopAnimatingView()
+                    guard issuedIdentifier == self.taskIdentifier else {
+                        let reason: GravatarImageDownload.ImageSettingErrorReason
+                        do {
+                            let value = try result.get()
+                            reason = .outdatedTask(result: value, error: nil, source: source)
+                        } catch {
+                            reason = .outdatedTask(result: nil, error: error, source: source)
                         }
+                        let error = GravatarImageSetError.imageSettingError(reason: reason)
+                        completionHandler?(.failure(error))
+                        return
                     }
-                case .failure:
-                    completionHandler?(result.convert())
+
+                    mutatingSelf.downloadTask = nil
+                    mutatingSelf.taskIdentifier = nil
+
+                    switch result {
+                    case .success(let value):
+                        mutatingSelf.placeholder = nil
+                        switch options.transition {
+                        case .none:
+                            component?.image = value.image
+                            completionHandler?(result.convert())
+                            return
+                        case .fade(let duration):
+                            self.transition(for: component, into: value.image, duration: duration) {
+                                completionHandler?(result.convert())
+                            }
+                        }
+                    case .failure:
+                        completionHandler?(result.convert())
+                    }
                 }
             }
-        }
         mutatingSelf.downloadTask = task
         return task
     }
@@ -241,8 +246,7 @@ extension GravatarWrapper where Component: UIImageView {
     private func calculatedSize(preferredSize: CGSize?) -> CGFloat? {
         if let preferredSize {
             return preferredSize.biggestSide
-        }
-        else {
+        } else {
             component.layoutIfNeeded()
             if component.bounds.size.equalTo(.zero) == false {
                 return component.bounds.size.biggestSide
@@ -251,22 +255,22 @@ extension GravatarWrapper where Component: UIImageView {
         return nil
     }
 
-    private func transition(for component: Component?, into image: UIImage, duration: Double, completion: @escaping ()->Void) {
+    private func transition(for component: Component?, into image: UIImage, duration: Double, completion: @escaping () -> Void) {
         guard let component else { return }
         UIView.transition(
             with: component,
             duration: duration,
             options: [.transitionCrossDissolve],
             animations: { component.image = image },
-            completion: { finished in
+            completion: { _ in
                 completion()
             }
         )
     }
 }
 
-private extension CGSize {
-    var biggestSide: CGFloat {
+extension CGSize {
+    fileprivate var biggestSide: CGFloat {
         max(width, height)
     }
 }

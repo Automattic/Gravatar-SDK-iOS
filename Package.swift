@@ -5,7 +5,6 @@ import PackageDescription
 
 let package = Package(
     name: "Gravatar",
-    
     platforms: [
         .iOS(.v15),
     ],
@@ -14,6 +13,9 @@ let package = Package(
         .library(
             name: "Gravatar",
             targets: ["Gravatar"]),
+    ],
+    dependencies: [
+        .package(url: "https://github.com/nicklockwood/SwiftFormat", from: "0.53.0")
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.

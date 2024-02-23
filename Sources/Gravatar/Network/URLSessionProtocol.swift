@@ -7,9 +7,9 @@ public protocol URLSessionProtocol {
         completionHandler: @escaping @Sendable (Data?, URLResponse?, Error?) -> Void
     ) -> URLSessionDataTask
 
-    func data(for request: URLRequest)  async throws -> (Data, URLResponse)
+    func data(for request: URLRequest) async throws -> (Data, URLResponse)
 
     func upload(for request: URLRequest, from bodyData: Data) async throws -> (Data, URLResponse)
 }
 
-extension URLSession: URLSessionProtocol { }
+extension URLSession: URLSessionProtocol {}

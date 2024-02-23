@@ -8,7 +8,7 @@ Gravatar SDK provides a convient wrapper for accessing the Gravatar API
                        DESC
 
   s.homepage         = 'https://gravatar.com'
-  s.license          = { :type => 'MIT', :file => 'LICENSE' }
+  s.license          = { :type => 'Mozilla Public License v2', :file => 'LICENSE.md' }
   s.authors           = 'Automattic, Inc.'
   s.source           = {
       :git => 'https://github.com/gravatar/Gravatar-SDK-iOS.git',
