@@ -1,5 +1,5 @@
-import XCTest
 @testable import Gravatar
+import XCTest
 
 final class URLSessionHTTPClientTests: XCTestCase {
     func testFetchObject() async throws {
@@ -73,11 +73,11 @@ class URLSessionMock: URLSessionProtocol {
     func dataTask(with request: URLRequest, completionHandler: @escaping @Sendable (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTask {
         fatalError()
     }
-    
+
     func data(for request: URLRequest) async throws -> (Data, URLResponse) {
         callsCount += 1
         self.request = request
-        if let error = error {
+        if let error {
             throw error
         }
         return (returnData, response)
@@ -86,7 +86,7 @@ class URLSessionMock: URLSessionProtocol {
     func upload(for request: URLRequest, from bodyData: Data) async throws -> (Data, URLResponse) {
         self.request = request
         self.uploadData = bodyData
-        if let error = error {
+        if let error {
             throw error
         }
         return (returnData, response)

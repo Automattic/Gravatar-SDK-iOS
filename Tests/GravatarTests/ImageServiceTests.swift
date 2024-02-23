@@ -1,11 +1,12 @@
- import XCTest
 @testable import Gravatar
+import XCTest
 
 final class ImageServiceTests: XCTestCase {
     enum TestData {
         static let email = "some@email.com"
         static let urlFromEmail = URL(string: "https://gravatar.com/avatar/676212ff796c79a3c06261eb10e3f455aa93998ee6e45263da13679c74b1e674")!
     }
+
     func testFetchImage() async throws {
         let response = HTTPURLResponse.successResponse(with: TestData.urlFromEmail)
         let sessionMock = URLSessionMock(returnData: ImageHelper.testImageData, response: response)

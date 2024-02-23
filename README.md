@@ -1,5 +1,7 @@
 # Gravatar
 
+[![License: MPL 2.0](https://img.shields.io/badge/License-MPL_2.0-brightgreen.svg)](https://opensource.org/licenses/MPL-2.0)
+
 ## Example
 
 ## Requirements
@@ -20,4 +22,4 @@ Gravatar
 
 ## License
 
-Gravatar is available under the MIT license. See the LICENSE file for more info.
+Gravatar-SDK-iOS is an open source project covered by the [Mozilla Public License Version 2.0](LICENSE.md).

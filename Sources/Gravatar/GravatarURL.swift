@@ -17,11 +17,11 @@ public struct GravatarURL {
         // Adding query items from the options sets, which is controlled by the SDK, should be a guaranteed success.
         // Therefore returning an optional is not ideal, since makes little sence in this context.
         // In the other hand, we get this explisit unwrap, because of how `URLComponents` works.
-        return canonicalURL.addQueryItems(from: options)!
+        canonicalURL.addQueryItems(from: options)!
     }
 
     public static func isGravatarURL(_ url: URL) -> Bool {
-        guard 
+        guard
             let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
             let host = components.host
         else {
@@ -61,7 +61,7 @@ public struct GravatarURL {
     /// This really ought to be in a different place, like Gravatar.swift, but there's
     /// lots of duplication around gravatars -nh
     private static func gravatarHash(of email: String) -> String {
-        return email
+        email
             .lowercased()
             .trimmingCharacters(in: .whitespaces)
             .sha256()
@@ -70,12 +70,12 @@ public struct GravatarURL {
 
 extension GravatarURL: Equatable {}
 
-public func ==(lhs: GravatarURL, rhs: GravatarURL) -> Bool {
-    return lhs.canonicalURL == rhs.canonicalURL
+public func == (lhs: GravatarURL, rhs: GravatarURL) -> Bool {
+    lhs.canonicalURL == rhs.canonicalURL
 }
 
-public extension GravatarURL {
-    init?(_ url: URL) {
+extension GravatarURL {
+    public init?(_ url: URL) {
         guard GravatarURL.isGravatarURL(url) else {
             return nil
         }
@@ -101,8 +101,8 @@ public extension GravatarURL {
     }
 }
 
-private extension URL {
-    func addQueryItems(from options: GravatarImageDownloadOptions) -> URL? {
+extension URL {
+    fileprivate func addQueryItems(from options: GravatarImageDownloadOptions) -> URL? {
         guard var components = URLComponents(url: self, resolvingAgainstBaseURL: false) else {
             return nil
         }

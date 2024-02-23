@@ -10,6 +10,14 @@ env:
 
 steps:
   #################
+  # Lint Source files
+  #################
+  - label: "🧪 Lint"
+    command: |
+      echo "--- 🛠 Linting"
+      make lint
+
+  #################
   # Build and Test
   #################
   - label: "🧪 Build and Test"

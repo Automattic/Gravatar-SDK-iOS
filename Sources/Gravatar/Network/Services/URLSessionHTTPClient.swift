@@ -22,7 +22,7 @@ struct URLSessionHTTPClient: HTTPClient {
     init(urlSession: URLSessionProtocol = URLSession(configuration: .default)) {
         self.urlSession = urlSession
     }
-    
+
     func fetchData(with request: URLRequest) async throws -> (Data, URLResponse) {
         let result: (Data, URLResponse)
         do {
@@ -86,11 +86,11 @@ extension HTTPClientError {
     func convertToResponseErrorReason() -> ResponseErrorReason {
         switch self {
         case .URLSessionError(let error):
-            return .URLSessionError(error: error)
+            .URLSessionError(error: error)
         case .invalidHTTPStatusCodeError(let response):
-            return .invalidHTTPStatusCode(response: response)
+            .invalidHTTPStatusCode(response: response)
         case .invalidURLResponseError(let response):
-            return .invalidURLResponse(response: response)
+            .invalidURLResponse(response: response)
         }
     }
 }
