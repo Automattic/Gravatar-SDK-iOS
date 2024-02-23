@@ -45,7 +45,7 @@ class TestImageFetcher: ImageServing {
         fatalError("Not Implemented")
     }
 
-    func uploadImage(_ image: UIImage, accountEmail: String, accountToken: String, completion: ((NSError?) -> Void)?) {
+    func uploadImage(_ image: UIImage, accountEmail: String, accountToken: String, completion: ((ImageUploadError?) -> Void)?) {
         fatalError("Not Implemented")
     }
 
