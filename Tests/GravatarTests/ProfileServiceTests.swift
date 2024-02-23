@@ -18,9 +18,10 @@ final class ProfileServiceTests: XCTestCase {
 
         do {
             _ = try await service.fetchProfile(for: "some@email.com")
-        } catch let error as NSError {
-            XCTAssertEqual(error.code, 404)
-            XCTAssertEqual(error.localizedDescription, "not found")
+        } catch ProfileServiceError.responseError(reason: let reason) where reason.httpStatusCode == 404 {
+            // Success!
+        } catch {
+            XCTFail()
         }
     }
 
@@ -53,14 +54,10 @@ final class ProfileServiceTests: XCTestCase {
             switch result {
             case .success:
                 XCTFail("Should error")
-            case .failure(let error):
-                switch error {
-                case .unexpected(let error as NSError):
-                    XCTAssertEqual(error.code, 404)
-                    XCTAssertEqual(error.localizedDescription, "not found")
-                default:
-                    XCTFail()
-                }
+            case .failure(.responseError(let reason)) where reason.httpStatusCode == 404:
+                break
+            default:
+                XCTFail()
             }
             expectation.fulfill()
         }

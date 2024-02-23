@@ -20,8 +20,10 @@ final class URLSessionHTTPClientTests: XCTestCase {
         do {
             let _: TestObject = try await remote.fetchObject(from: "name")
             XCTFail("This should throw")
-        } catch {
+        } catch HTTPClientError.URLSessionError(let error) {
             XCTAssertEqual((error as NSError).code, 400)
+        } catch {
+            XCTFail()
         }
     }
 
@@ -33,9 +35,10 @@ final class URLSessionHTTPClientTests: XCTestCase {
         do {
             let _: TestObject = try await remote.fetchObject(from: "name")
             XCTFail("This should throw")
+        } catch HTTPClientError.invalidHTTPStatusCodeError(let response) {
+            XCTAssertEqual(response.statusCode, 404)
         } catch {
-            XCTAssertEqual((error as NSError).code, 404)
-            XCTAssertEqual((error as NSError).localizedDescription, "not found")
+            XCTFail()
         }
     }
 }

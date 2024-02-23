@@ -18,23 +18,6 @@ final class ImageServiceTests: XCTestCase {
         XCTAssertNotNil(imageResponse.image)
     }
 
-    func testFetchImageURLResponseError() async throws {
-        let response = HTTPURLResponse()
-        let sessionMock = URLSessionMock(returnData: ImageHelper.testImageData, response: response)
-        let service = imageService(with: sessionMock)
-
-        do {
-            _ = try await service.fetchImage(with: "")
-        } catch let error as GravatarImageDownloadError {
-            switch error {
-            case .responseError(let reason):
-                XCTAssertEqual(reason, .urlMissingInResponse)
-            default:
-                XCTFail()
-            }
-        }
-    }
-
     func testFetchImageWithCompletionHandler() {
         let response = HTTPURLResponse.successResponse(with: TestData.urlFromEmail)
         let sessionMock = URLSessionMock(returnData: ImageHelper.testImageData, response: response)
@@ -62,20 +45,10 @@ final class ImageServiceTests: XCTestCase {
 
         service.fetchImage(with: TestData.urlFromEmail) { response in
             switch response {
-            case .success:
+            case .failure(.responseError(reason: let reason)) where reason.httpStatusCode == 404:
+                break
+            default:
                 XCTFail("Request should fail")
-            case .failure(let error):
-                switch error {
-                case .requestError:
-                    XCTFail()
-                case .responseError(let reason):
-                    switch reason {
-                    case .URLSessionError(let urlError as NSError):
-                        XCTAssertEqual(urlError.code, 404)
-                    default:
-                        XCTFail()
-                    }
-                }
             }
             expectation.fulfill()
         }
@@ -149,15 +122,18 @@ final class ImageServiceTests: XCTestCase {
     }
 
     func testUploadImageError() async throws {
-        let successResponse = HTTPURLResponse.errorResponse(code: 408)
+        let responseCode = 408
+        let successResponse = HTTPURLResponse.errorResponse(code: responseCode)
         let sessionMock = URLSessionMock(returnData: "Error".data(using: .utf8)!, response: successResponse)
         let service = imageService(with: sessionMock)
 
         do {
             try await service.uploadImage(ImageHelper.testImage, accountEmail: "some@email.com", accountToken: "AccessToken")
             XCTFail("This should throw an error")
+        } catch ImageUploadError.responseError(reason: let reason) where reason.httpStatusCode == responseCode {
+            // Expected error has ocurred.
         } catch {
-            XCTAssertEqual(error.localizedDescription, "request timed out")
+            XCTFail("This should have thrown a URLSessionError with statusCode:\(responseCode)")
         }
     }
 
@@ -169,8 +145,8 @@ final class ImageServiceTests: XCTestCase {
         do {
             try await service.uploadImage(UIImage(), accountEmail: "some@email.com", accountToken: "AccessToken")
             XCTFail("This should throw an error")
-        } catch let error as UploadError {
-            XCTAssertEqual(error, UploadError.cannotConvertImageIntoData)
+        } catch let error as ImageUploadError {
+            XCTAssertEqual(error, ImageUploadError.cannotConvertImageIntoData)
         }
     }
 
@@ -189,14 +165,24 @@ final class ImageServiceTests: XCTestCase {
     }
 
     func testUploadImageWithCompletionHandlerError() {
-        let successResponse = HTTPURLResponse.errorResponse(with: URL(string: "http://gravatar.com"), code: 415)
+        let responseCode = 415
+        let successResponse = HTTPURLResponse.errorResponse(with: URL(string: "http://gravatar.com"), code: responseCode)
         let sessionMock = URLSessionMock(returnData: "Error".data(using: .utf8)!, response: successResponse)
         let service = imageService(with: sessionMock)
         let expectation = expectation(description: "Should error")
 
         service.uploadImage(ImageHelper.testImage, accountEmail: "some@email.com", accountToken: "AccessToken") { error in
-            XCTAssertNotNil(error)
-            XCTAssertEqual(error?.localizedDescription, "unsupported media type")
+            guard let error else {
+                XCTFail("This should have thrown a URLSessionError with statusCode:\(responseCode)")
+                expectation.fulfill()
+                return
+            }
+            switch error {
+            case ImageUploadError.responseError(reason: let reason) where reason.httpStatusCode == responseCode:
+                break
+            default:
+                XCTFail("This should have thrown a URLSessionError with statusCode:\(responseCode)")
+            }
             expectation.fulfill()
         }
 
@@ -243,26 +229,6 @@ final class ImageServiceTests: XCTestCase {
         _ = try await service.fetchImage(with: TestData.email, options: options)
 
         XCTAssertTrue(testProcessor.processedData)
-    }
-
-    func testURLMismatchErrorIsThrown() async throws {
-        let response = HTTPURLResponse.successResponse(with: URL(string: "https://gravatar.com/avatar/different_hash"))
-        let sessionMock = URLSessionMock(returnData: ImageHelper.testImageData, response: response)
-        let service = imageService(with: sessionMock)
-        let testProcessor = TestImageProcessor()
-        let options = GravatarImageDownloadOptions(processingMethod: .custom(processor: testProcessor))
-        
-        do {
-            _ = try await service.fetchImage(with: TestData.email, options: options)
-            XCTFail("Should throw urlMismatch error")
-        } catch let error as GravatarImageDownloadError {
-            switch error {
-            case .responseError(let reason):
-                XCTAssertEqual(reason, .urlMismatch)
-            default:
-                XCTFail("Should throw urlMismatch error")
-            }
-        }
     }
 
     func testFetchImageWithDefaultImageOption() async throws {
