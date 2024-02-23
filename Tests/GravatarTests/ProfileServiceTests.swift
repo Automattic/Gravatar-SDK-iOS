@@ -69,21 +69,6 @@ final class ProfileServiceTests: XCTestCase {
     }
 }
 
-//struct HTTPCLientMock: HTTPClient {
-//    func fetchData(with request: URLRequest) async throws -> (Data, URLResponse) {
-//        <#code#>
-//    }
-//    
-//    func uploadData(with request: URLRequest, data: Data) async throws -> URLResponse {
-//        <#code#>
-//    }
-//    
-//    func fetchObject<T>(from path: String) async throws -> T where T : Decodable {
-//        <#code#>
-//    }
-//}
-
-
 private let jsonData = """
 {
     "entry": [
