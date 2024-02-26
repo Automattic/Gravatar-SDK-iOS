@@ -118,7 +118,7 @@ extension URL {
     }
 }
 
-private enum GravatarImageDownloadOptionQueryName: String, CaseIterable {
+private enum ImageDownloadOptionQueryName: String, CaseIterable {
     case defaultImage = "d"
     case preferredPixelSize = "s"
     case gravatarRating = "r"
@@ -127,12 +127,12 @@ private enum GravatarImageDownloadOptionQueryName: String, CaseIterable {
 
 private extension GravatarImageDownloadOptions {
     func queryItems() -> [URLQueryItem] {
-        return GravatarImageDownloadOptionQueryName.allCases
+        return ImageDownloadOptionQueryName.allCases
             .map { self.queryItem(for: $0) }
             .filter { $0.value != nil }
     }
     
-    func queryItem(for queryName: GravatarImageDownloadOptionQueryName) -> URLQueryItem {
+    func queryItem(for queryName: ImageDownloadOptionQueryName) -> URLQueryItem {
         let value: String?
         
         switch queryName {
