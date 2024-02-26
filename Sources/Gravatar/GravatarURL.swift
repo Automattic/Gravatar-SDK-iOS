@@ -18,7 +18,7 @@ public struct GravatarURL {
         guard let url = canonicalURL.addQueryItems(from: options) else {
             fatalError("Internal error: invalid url with query items")
         }
-        
+
         return url
     }
 
@@ -109,11 +109,11 @@ extension URL {
             return nil
         }
         components.queryItems = options.queryItems()
-        
+
         if components.queryItems?.isEmpty == true {
             components.queryItems = nil
         }
-        
+
         return components.url
     }
 }
@@ -125,59 +125,57 @@ private enum ImageDownloadOptionQueryName: String, CaseIterable {
     case forceDefaultImage = "f"
 }
 
-private extension GravatarImageDownloadOptions {
-    func queryItems() -> [URLQueryItem] {
-        return ImageDownloadOptionQueryName.allCases
+extension GravatarImageDownloadOptions {
+    fileprivate func queryItems() -> [URLQueryItem] {
+        ImageDownloadOptionQueryName.allCases
             .map { self.queryItem(for: $0) }
             .filter { $0.value != nil }
     }
-    
-    func queryItem(for queryName: ImageDownloadOptionQueryName) -> URLQueryItem {
-        let value: String?
-        
-        switch queryName {
+
+    private func queryItem(for queryName: ImageDownloadOptionQueryName) -> URLQueryItem {
+        let value: String? = switch queryName {
         case .defaultImage:
-            value = self.defaultImage.queryValue()
+            self.defaultImage.queryValue()
         case .forceDefaultImage:
-            value = self.forceDefaultImage.queryValue()
+            self.forceDefaultImage.queryValue()
         case .gravatarRating:
-            value = self.gravatarRating.queryValue()
+            self.gravatarRating.queryValue()
         case .preferredPixelSize:
-            value = self.preferredPixelSize.queryValue()
+            self.preferredPixelSize.queryValue()
         }
-        
+
         return URLQueryItem(name: queryName.rawValue, value: value)
     }
 }
 
-private extension DefaultImageOption? {
-    func queryValue() -> String? {
-        guard let self = self else { return nil }
-        
+extension DefaultImageOption? {
+    fileprivate func queryValue() -> String? {
+        guard let self else { return nil }
+
         return self.rawValue
     }
 }
 
-private extension GravatarRating? {
-    func queryValue() -> String? {
-        guard let self = self else { return nil }
-        
+extension GravatarRating? {
+    fileprivate func queryValue() -> String? {
+        guard let self else { return nil }
+
         return self.stringValue()
     }
 }
 
-private extension Int? {
-    func queryValue() -> String? {
-        guard let self = self else { return nil }
-        
+extension Int? {
+    fileprivate func queryValue() -> String? {
+        guard let self else { return nil }
+
         return String(self)
     }
 }
 
-private extension Bool? {
-    func queryValue() -> String? {
-        guard let self = self else { return nil }
-        
+extension Bool? {
+    fileprivate func queryValue() -> String? {
+        guard let self else { return nil }
+
         switch self {
         case true:
             return "y"

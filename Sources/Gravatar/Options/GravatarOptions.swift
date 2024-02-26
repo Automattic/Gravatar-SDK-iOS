@@ -76,7 +76,7 @@ public struct GravatarImageDownloadOptions {
 
     private let preferredSize: ImageSize?
     private let scaleFactor: CGFloat
-    
+
     /// GravatarImageDownloadOptions initializer
     /// - Parameters:
     ///   - preferredSize: preferred image size (set to `nil` for default size)
