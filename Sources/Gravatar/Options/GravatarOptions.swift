@@ -20,7 +20,7 @@ public enum GravatarImageSettingOption {
     /// By setting this you can pass a cache of your preference to save the downloaded image.
     ///
     /// If not set, an internal cache will be used.
-    case imageCache(GravatarImageCaching)
+    case imageCache(ImageCaching)
 
     /// A custom image downloader. Defaults to `GravatarimageDownloader` if not set.
     case imageDownloader(ImageServing)
@@ -32,7 +32,7 @@ public struct GravatarImageSettingOptions {
     var removeCurrentImageWhileLoading = false
     var forceRefresh = false
     var processingMethod: ImageProcessingMethod = .common
-    var imageCache: GravatarImageCaching = GravatarImageCache.shared
+    var imageCache: ImageCaching = ImageCache.shared
     var imageDownloader: ImageServing? = nil
 
     init(options: [GravatarImageSettingOption]?) {
