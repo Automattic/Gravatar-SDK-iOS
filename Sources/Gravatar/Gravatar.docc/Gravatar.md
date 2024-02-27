@@ -20,7 +20,7 @@ This SDK will allow you to easily implement the Gravatar services in your projec
 
 ### Displaying a Gravatar Image
 
-The easiest way is to use the [UIImageView.gravatar](``GravatarWrapper``) extension.
+The easiest way is to use the `UIImageView.gravatar` extension.
 
 ```swift
 gravatarImageView.gravatar.setImage(email: "user@email.com")
