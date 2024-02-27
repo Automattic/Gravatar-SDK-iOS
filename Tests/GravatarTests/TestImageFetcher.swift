@@ -8,7 +8,6 @@ enum GravatarImageSetMockResult {
 }
 
 class TestImageFetcher: ImageServing {
-    
     typealias TestCompletionTuple = (url: String, handler: ImageDownloadCompletion?)
 
     var result: GravatarImageSetMockResult
