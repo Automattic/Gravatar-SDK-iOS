@@ -27,7 +27,7 @@ public struct ProfileService {
             let profile = result.entry[0]
             return GravatarProfile(with: profile)
         } catch let error as HTTPClientError {
-            throw ProfileServiceError.responseError(reason: error.convertToResponseErrorReason())
+            throw ProfileServiceError.responseError(reason: error.map())
         } catch _ as CannotCreateURLFromGivenPath {
             throw ProfileServiceError.requestError(reason: .urlInitializationFailed)
         } catch {

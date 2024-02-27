@@ -43,17 +43,17 @@ public enum RequestErrorReason {
 public enum ImageFetchingError: Error {
     case requestError(reason: RequestErrorReason)
     case responseError(reason: ResponseErrorReason)
-    /// Could not initialize the image from the downloaded data.
-    case imageInitializationFailed
+    /// The `ImageProcessor` has failed and the image could not be created from the downloaded data.
+    case imageProcessorFailed
 
-    func convert() -> ImageFetchingComponentError {
+    func map() -> ImageFetchingComponentError {
         switch self {
         case .requestError(let reason):
             .requestError(reason: reason)
         case .responseError(let reason):
             .responseError(reason: reason)
-        case .imageInitializationFailed:
-            .imageInitializationFailed
+        case .imageProcessorFailed:
+            .imageProcessorFailed
         }
     }
 }
@@ -63,7 +63,7 @@ public enum ImageFetchingComponentError: Error {
     case requestError(reason: RequestErrorReason)
     case responseError(reason: ResponseErrorReason)
     /// Could not initialize the image from the downloaded data.
-    case imageInitializationFailed
+    case imageProcessorFailed
 
     /// The resource task is finished, but it is not the one expected now. It's outdated because of new requests.
     /// In any case the result of this original task is contained in the associated value. So if the task succeeded the image is available in the result, if

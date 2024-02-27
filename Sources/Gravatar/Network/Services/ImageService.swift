@@ -77,12 +77,12 @@ public struct ImageService: ImageServing {
         do {
             let (data, _) = try await client.fetchData(with: request)
             guard let image = processor.process(data) else {
-                throw ImageFetchingError.imageInitializationFailed
+                throw ImageFetchingError.imageProcessorFailed
             }
             imageCache.setImage(image, forKey: url.absoluteString)
             return GravatarImageDownloadResult(image: image, sourceURL: url)
         } catch let error as HTTPClientError {
-            throw ImageFetchingError.responseError(reason: error.convertToResponseErrorReason())
+            throw ImageFetchingError.responseError(reason: error.map())
         } catch {
             throw ImageFetchingError.responseError(reason: .unexpected(error))
         }
@@ -101,7 +101,7 @@ public struct ImageService: ImageServing {
             let response = try await client.uploadData(with: request, data: body)
             return response
         } catch let error as HTTPClientError {
-            throw ImageUploadError.responseError(reason: error.convertToResponseErrorReason())
+            throw ImageUploadError.responseError(reason: error.map())
         } catch {
             throw ImageUploadError.responseError(reason: .unexpected(error))
         }

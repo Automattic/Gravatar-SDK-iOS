@@ -73,7 +73,7 @@ extension ImageFetchingError: Equatable {
             reason1 == reason2
         case (.responseError(let reason1), .responseError(let reason2)):
             reason1 == reason2
-        case (.imageInitializationFailed, .imageInitializationFailed):
+        case (.imageProcessorFailed, .imageProcessorFailed):
             true
         default:
             false

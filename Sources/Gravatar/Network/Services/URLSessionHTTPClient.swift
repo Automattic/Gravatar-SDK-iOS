@@ -23,26 +23,25 @@ struct URLSessionHTTPClient: HTTPClient {
         self.urlSession = urlSession
     }
 
-    func fetchData(with request: URLRequest) async throws -> (Data, URLResponse) {
-        let result: (Data, URLResponse)
+    func fetchData(with request: URLRequest) async throws -> (Data, HTTPURLResponse) {
+        let result: (data: Data, response: URLResponse)
         do {
             result = try await urlSession.data(for: request)
         } catch {
             throw HTTPClientError.URLSessionError(error)
         }
-        try validateResponse(result.1)
-        return result
+        let httpResponse = try validatedHTTPResponse(result.response)
+        return (result.data, httpResponse)
     }
 
-    func uploadData(with request: URLRequest, data: Data) async throws -> URLResponse {
-        let result: (Data, URLResponse)
+    func uploadData(with request: URLRequest, data: Data) async throws -> HTTPURLResponse {
+        let result: (data: Data, response: URLResponse)
         do {
             result = try await urlSession.upload(for: request, from: data)
         } catch {
             throw HTTPClientError.URLSessionError(error)
         }
-        try validateResponse(result.1)
-        return result.1
+        return try validatedHTTPResponse(result.response)
     }
 
     func fetchObject<T: Decodable>(from path: String) async throws -> T {
@@ -69,13 +68,14 @@ extension URLRequest {
     }
 }
 
-private func validateResponse(_ response: URLResponse) throws {
+private func validatedHTTPResponse(_ response: URLResponse) throws -> HTTPURLResponse {
     guard let httpResponse = response as? HTTPURLResponse else {
         throw HTTPClientError.invalidURLResponseError(response)
     }
     if isErrorResponse(httpResponse) {
         throw HTTPClientError.invalidHTTPStatusCodeError(httpResponse)
     }
+    return httpResponse
 }
 
 private func isErrorResponse(_ response: HTTPURLResponse) -> Bool {
@@ -83,7 +83,7 @@ private func isErrorResponse(_ response: HTTPURLResponse) -> Bool {
 }
 
 extension HTTPClientError {
-    func convertToResponseErrorReason() -> ResponseErrorReason {
+    func map() -> ResponseErrorReason {
         switch self {
         case .URLSessionError(let error):
             .URLSessionError(error: error)

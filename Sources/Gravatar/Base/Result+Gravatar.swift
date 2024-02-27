@@ -8,12 +8,12 @@
 import Foundation
 
 extension Result<GravatarImageDownloadResult, ImageFetchingError> {
-    func convert() -> Result<GravatarImageDownloadResult, ImageFetchingComponentError> {
+    func map() -> Result<GravatarImageDownloadResult, ImageFetchingComponentError> {
         switch self {
         case .success(let value):
             .success(value)
         case .failure(let error):
-            .failure(error.convert())
+            .failure(error.map())
         }
     }
 }

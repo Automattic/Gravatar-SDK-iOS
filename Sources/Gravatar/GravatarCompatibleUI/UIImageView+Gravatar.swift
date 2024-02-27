@@ -210,15 +210,15 @@ extension GravatarWrapper where Component: UIImageView {
                         switch options.transition {
                         case .none:
                             component?.image = value.image
-                            completionHandler?(result.convert())
+                            completionHandler?(result.map())
                             return
                         case .fade(let duration):
                             self.transition(for: component, into: value.image, duration: duration) {
-                                completionHandler?(result.convert())
+                                completionHandler?(result.map())
                             }
                         }
                     case .failure:
-                        completionHandler?(result.convert())
+                        completionHandler?(result.map())
                     }
                 }
             }

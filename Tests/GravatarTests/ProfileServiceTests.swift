@@ -18,8 +18,8 @@ final class ProfileServiceTests: XCTestCase {
 
         do {
             _ = try await service.fetchProfile(for: "some@email.com")
-        } catch ProfileServiceError.responseError(reason: let reason) where reason.httpStatusCode == 404 {
-            // Success!
+        } catch ProfileServiceError.responseError(reason: let reason) {
+            XCTAssertEqual(reason.httpStatusCode, 404)
         } catch {
             XCTFail()
         }
@@ -54,8 +54,8 @@ final class ProfileServiceTests: XCTestCase {
             switch result {
             case .success:
                 XCTFail("Should error")
-            case .failure(.responseError(let reason)) where reason.httpStatusCode == 404:
-                break
+            case .failure(.responseError(let reason)):
+                XCTAssertEqual(reason.httpStatusCode, 404)
             default:
                 XCTFail()
             }
