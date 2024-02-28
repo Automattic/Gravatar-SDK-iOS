@@ -32,6 +32,8 @@ public struct ProfileService {
             throw ProfileServiceError.responseError(reason: error.map())
         } catch _ as CannotCreateURLFromGivenPath {
             throw ProfileServiceError.requestError(reason: .urlInitializationFailed)
+        } catch let error as ProfileServiceError {
+            throw error
         } catch {
             throw ProfileServiceError.responseError(reason: .unexpected(error))
         }
