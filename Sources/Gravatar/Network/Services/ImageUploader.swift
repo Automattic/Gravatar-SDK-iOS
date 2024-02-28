@@ -11,6 +11,6 @@ public protocol ImageUploader {
         _ image: UIImage,
         accountEmail: String,
         accountToken: String,
-        completion: ((_ error: NSError?) -> Void)?
+        completion: ((_ error: ImageUploadError?) -> Void)?
     )
 }

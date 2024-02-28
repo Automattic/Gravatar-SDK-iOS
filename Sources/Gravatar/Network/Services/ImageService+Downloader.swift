@@ -11,10 +11,10 @@ extension ImageService: ImageDownloader {
             do {
                 let result = try await fetchImage(with: email, options: options)
                 completionHandler?(Result.success(result))
-            } catch let error as GravatarImageDownloadError {
+            } catch let error as ImageFetchingError {
                 completionHandler?(Result.failure(error))
             } catch {
-                completionHandler?(Result.failure(GravatarImageDownloadError.responseError(reason: .URLSessionError(error: error))))
+                completionHandler?(Result.failure(.responseError(reason: .unexpected(error))))
             }
         }
     }
@@ -30,10 +30,10 @@ extension ImageService: ImageDownloader {
             do {
                 let result = try await fetchImage(with: url, forceRefresh: forceRefresh, processingMethod: processingMethod)
                 completionHandler?(Result.success(result))
-            } catch let error as GravatarImageDownloadError {
+            } catch let error as ImageFetchingError {
                 completionHandler?(Result.failure(error))
             } catch {
-                completionHandler?(Result.failure(GravatarImageDownloadError.responseError(reason: .URLSessionError(error: error))))
+                completionHandler?(Result.failure(.responseError(reason: .unexpected(error))))
             }
         }
     }
@@ -43,15 +43,14 @@ extension ImageService: ImageDownloader {
         options: GravatarImageDownloadOptions = GravatarImageDownloadOptions()
     ) async throws -> GravatarImageDownloadResult {
         guard let gravatarURL = GravatarURL.gravatarUrl(with: email, options: options) else {
-            throw GravatarImageDownloadError.requestError(reason: .urlInitializationFailed)
+            throw ImageFetchingError.requestError(reason: .urlInitializationFailed)
         }
 
         if !options.forceRefresh, let result = cachedImageResult(for: gravatarURL) {
             return result
         }
 
-        let (image, url) = try await fetchImage(from: gravatarURL, procressor: options.processingMethod.processor)
-        return GravatarImageDownloadResult(image: image, sourceURL: url)
+        return try await fetchImage(from: gravatarURL, forceRefresh: options.forceRefresh, processor: options.processingMethod.processor)
     }
 
     public func fetchImage(
@@ -62,9 +61,7 @@ extension ImageService: ImageDownloader {
         if !forceRefresh, let result = cachedImageResult(for: url) {
             return result
         }
-
-        let (image, url) = try await fetchImage(from: url, procressor: processingMethod.processor)
-        return GravatarImageDownloadResult(image: image, sourceURL: url)
+        return try await fetchImage(from: url, forceRefresh: forceRefresh, processor: processingMethod.processor)
     }
 }
 
