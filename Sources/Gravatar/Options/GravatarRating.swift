@@ -3,7 +3,8 @@ import Foundation
 // TODO: Convert into a pure Swift String Enum. It's done this way to maintain ObjC Compatibility
 
 @objc
-/// Gravatar allows users to self-rate their images so that they can indicate if an image is appropriate for a certain audience. By default, only `G` rated images are displayed unless you indicate that you would like to see higher ratings.
+/// Gravatar allows users to self-rate their images so that they can indicate if an image is appropriate for a certain audience. By default, only `G` rated
+/// images are displayed unless you indicate that you would like to see higher ratings.
 ///
 /// If the requested email hash does not have an image meeting the requested rating level, then the default image is returned (See: ``DefaultImageOption``)
 public enum GravatarRating: Int {

@@ -135,7 +135,8 @@ extension GravatarWrapper where Component: UIImageView {
     ///   - email: Gravatar account email.
     ///   - placeholder: A placeholder to show while downloading the image.
     ///   - rating: Image rating accepted to be downloaded.
-    ///   - preferredSize: Preferred "point" size of the image that will be downloaded. If not provided, `layoutIfNeeded()` is called on this view to get its real bounds and those bounds are used.
+    ///   - preferredSize: Preferred "point" size of the image that will be downloaded. If not provided, `layoutIfNeeded()` is called on this view to get its
+    /// real bounds and those bounds are used.
     ///   You can get a performance benefit by setting this value since it will avoid the `layoutIfNeeded()` call.
     ///   - options: A set of options to define image setting behaviour. See ``GravatarImageSettingOption`` for more info.
     ///   - completionHandler: Completion block that's called when image downloading and setting completes.
