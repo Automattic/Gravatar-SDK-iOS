@@ -109,9 +109,9 @@ extension GravatarWrapper where Component: UIImageView {
         }
     }
 
-    public private(set) var imageDownloader: ImageServing? {
+    public private(set) var imageDownloader: ImageDownloader? {
         get {
-            let box: Box<ImageServing>? = getAssociatedObject(component, &imageDownloaderKey)
+            let box: Box<ImageDownloader>? = getAssociatedObject(component, &imageDownloaderKey)
             return box?.value
         }
         set {
