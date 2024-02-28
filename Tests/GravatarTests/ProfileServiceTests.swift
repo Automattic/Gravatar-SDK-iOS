@@ -25,6 +25,20 @@ final class ProfileServiceTests: XCTestCase {
         }
     }
 
+    func testFetchGravatarProfileEmptyError() async throws {
+        let session = URLSessionMock(returnData: emptyJsonData, response: .successResponse())
+        let client = URLSessionHTTPClient(urlSession: session)
+        let service = ProfileService(client: client)
+
+        do {
+            _ = try await service.fetchProfile(for: "some@email.com")
+        } catch let error as ProfileServiceError {
+            XCTAssertEqual(error.debugDescription, ProfileServiceError.noProfileInResponse.debugDescription)
+        } catch {
+            XCTFail()
+        }
+    }
+
     func testFetchGravatarProfileWithCompletionHandler() {
         let session = URLSessionMock(returnData: jsonData, response: .successResponse())
         let client = URLSessionHTTPClient(urlSession: session)
@@ -115,5 +129,11 @@ private let jsonData = """
             }
         }
     ]
+}
+""".data(using: .utf8)!
+
+private let emptyJsonData = """
+{
+    "entry": []
 }
 """.data(using: .utf8)!
