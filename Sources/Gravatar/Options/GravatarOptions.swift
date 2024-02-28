@@ -20,7 +20,7 @@ public enum GravatarImageSettingOption {
     /// By setting this you can pass a cache of your preference to save the downloaded image.
     ///
     /// If not set, an internal cache will be used.
-    case imageCache(GravatarImageCaching)
+    case imageCache(ImageCaching)
 
     /// A custom image downloader. Defaults to `GravatarimageDownloader` if not set.
     case imageDownloader(ImageServing)
@@ -32,7 +32,7 @@ public struct GravatarImageSettingOptions {
     var removeCurrentImageWhileLoading = false
     var forceRefresh = false
     var processingMethod: ImageProcessingMethod = .common
-    var imageCache: GravatarImageCaching = GravatarImageCache.shared
+    var imageCache: ImageCaching = ImageCache.shared
     var imageDownloader: ImageServing? = nil
 
     init(options: [GravatarImageSettingOption]?) {
@@ -69,7 +69,7 @@ public struct GravatarImageSettingOptions {
 public struct GravatarImageDownloadOptions {
     let gravatarRating: GravatarRating?
     let forceRefresh: Bool
-    let forceDefaultImage: Bool
+    let forceDefaultImage: Bool?
     let defaultImage: DefaultImageOption?
     let processingMethod: ImageProcessingMethod
     let preferredPixelSize: Int?
@@ -77,11 +77,19 @@ public struct GravatarImageDownloadOptions {
     private let preferredSize: ImageSize?
     private let scaleFactor: CGFloat
 
+    /// GravatarImageDownloadOptions initializer
+    /// - Parameters:
+    ///   - preferredSize: preferred image size (set to `nil` for default size)
+    ///   - gravatarRating: maximum rating for image (set to `nil` for default rating)
+    ///   - forceRefresh: force the image to be downloaded, ignoring the cache
+    ///   - forceDefaultImage: force the default image to be used (set to `nil` for default value)
+    ///   - defaultImage: configure the default image (set to `nil` to use the default default image)
+    ///   - processor: processor for handling the downloaded `Data`
     public init(
         preferredSize: ImageSize? = nil,
         gravatarRating: GravatarRating? = nil,
         forceRefresh: Bool = false,
-        forceDefaultImage: Bool = false,
+        forceDefaultImage: Bool? = nil,
         defaultImage: DefaultImageOption? = nil,
         processingMethod: ImageProcessingMethod = .common
     ) {
@@ -101,7 +109,7 @@ public struct GravatarImageDownloadOptions {
         preferredSize: ImageSize? = nil,
         gravatarRating: GravatarRating? = nil,
         forceRefresh: Bool = false,
-        forceDefaultImage: Bool = false,
+        forceDefaultImage: Bool? = nil,
         defaultImage: DefaultImageOption? = nil,
         processingMethod: ImageProcessingMethod
     ) {

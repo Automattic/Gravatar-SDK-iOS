@@ -242,7 +242,7 @@ final class ImageServiceTests: XCTestCase {
     }
 }
 
-private func imageService(with session: URLSessionProtocol, cache: GravatarImageCaching = GravatarImageCache()) -> ImageService {
+private func imageService(with session: URLSessionProtocol, cache: ImageCaching = ImageCache()) -> ImageService {
     let client = URLSessionHTTPClient(urlSession: session)
     let service = ImageService(client: client, cache: cache)
     return service
