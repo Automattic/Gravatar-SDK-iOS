@@ -24,7 +24,9 @@ public struct ProfileService {
         let path = email.sha256() + ".json"
         do {
             let result: FetchProfileResponse = try await client.fetchObject(from: path)
-            let profile = result.entry[0]
+            guard let profile = result.entry.first else {
+                throw ProfileServiceError.noProfileInResponse
+            }
             return GravatarProfile(with: profile)
         } catch let error as HTTPClientError {
             throw ProfileServiceError.responseError(reason: error.map())
