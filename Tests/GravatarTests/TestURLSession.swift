@@ -66,36 +66,47 @@ class TestURLSession: URLSessionProtocol {
     }
 }
 
-extension GravatarImageDownloadError: Equatable {
-    public static func == (lhs: GravatarImageDownloadError, rhs: GravatarImageDownloadError) -> Bool {
+extension ImageFetchingError: Equatable {
+    public static func == (lhs: ImageFetchingError, rhs: ImageFetchingError) -> Bool {
         switch (lhs, rhs) {
         case (.requestError(let reason1), .requestError(let reason2)):
             reason1 == reason2
         case (.responseError(let reason1), .responseError(let reason2)):
             reason1 == reason2
+        case (.imageProcessorFailed, .imageProcessorFailed):
+            true
         default:
             false
         }
     }
 }
 
-extension GravatarImageDownload.ResponseErrorReason: Equatable {
-    public static func == (lhs: GravatarImageDownload.ResponseErrorReason, rhs: GravatarImageDownload.ResponseErrorReason) -> Bool {
+extension ResponseErrorReason: Equatable {
+    public static func == (lhs: ResponseErrorReason, rhs: ResponseErrorReason) -> Bool {
         switch (lhs, rhs) {
-        case (.imageInitializationFailed, .imageInitializationFailed):
-            return true
-        case (.notFound, .notFound):
-            return true
-        case (.urlMismatch, .urlMismatch):
-            return true
-        case (.urlMissingInResponse, .urlMissingInResponse):
-            return true
-        case (.URLSessionError(let error1), .URLSessionError(let error2)):
-            let error1 = error1 as NSError
-            let error2 = error2 as NSError
-            return error1.domain == error2.domain && error1.code == error2.code
+        case (.invalidHTTPStatusCode(let response1), .invalidHTTPStatusCode(let response2)):
+            response1.statusCode == response2.statusCode
+        case (.URLSessionError, .URLSessionError):
+            true
+        case (.unexpected, .unexpected):
+            true
+        case (.invalidURLResponse, .invalidURLResponse):
+            true
         default:
-            return false
+            false
+        }
+    }
+}
+
+extension ImageUploadError: Equatable {
+    public static func == (lhs: ImageUploadError, rhs: ImageUploadError) -> Bool {
+        switch (lhs, rhs) {
+        case (.responseError(let reason1), .responseError(let reason2)):
+            reason1 == reason2
+        case (.cannotConvertImageIntoData, .cannotConvertImageIntoData):
+            true
+        default:
+            false
         }
     }
 }

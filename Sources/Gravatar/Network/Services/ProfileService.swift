@@ -15,15 +15,23 @@ public struct ProfileService {
             } catch let error as ProfileServiceError {
                 onCompletion(.failure(error))
             } catch {
-                onCompletion(.failure(.unexpected(error)))
+                onCompletion(.failure(.responseError(reason: .unexpected(error))))
             }
         }
     }
 
     public func fetchProfile(for email: String) async throws -> GravatarProfile {
         let path = email.sha256() + ".json"
-        let result: FetchProfileResponse = try await client.fetchObject(from: path)
-        let profile = result.entry[0]
-        return GravatarProfile(with: profile)
+        do {
+            let result: FetchProfileResponse = try await client.fetchObject(from: path)
+            let profile = result.entry[0]
+            return GravatarProfile(with: profile)
+        } catch let error as HTTPClientError {
+            throw ProfileServiceError.responseError(reason: error.map())
+        } catch _ as CannotCreateURLFromGivenPath {
+            throw ProfileServiceError.requestError(reason: .urlInitializationFailed)
+        } catch {
+            throw ProfileServiceError.responseError(reason: .unexpected(error))
+        }
     }
 }

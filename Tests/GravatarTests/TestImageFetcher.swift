@@ -7,10 +7,12 @@ enum GravatarImageSetMockResult {
     case success
 }
 
-class TestImageRetriever: ImageDownloader {
+class TestImageFetcher: ImageDownloader {
+    typealias TestCompletionTuple = (url: String, handler: ImageDownloadCompletion?)
+
     var result: GravatarImageSetMockResult
     var taskIdentifier: Int = 0
-    var completionQueue: [(url: String, handler: ImageDownloadCompletion?)] = []
+    var completionQueue: [TestCompletionTuple] = []
 
     init(result: GravatarImageSetMockResult) {
         self.result = result
@@ -41,15 +43,18 @@ class TestImageRetriever: ImageDownloader {
         fatalError("Not Implemented")
     }
 
-    func sendResponse(for url: String) {
+    func sendResponse(for urlString: String) {
         switch result {
         case .fail:
-            if let tuple = item(for: url) {
-                tuple.1?(.failure(.responseError(reason: .notFound)))
+            if let tuple = item(for: urlString),
+               let url = URL(string: urlString),
+               let response = HTTPURLResponse(url: url, statusCode: 404, httpVersion: nil, headerFields: nil)
+            {
+                tuple.handler?(.failure(.responseError(reason: .invalidHTTPStatusCode(response: response))))
             }
         case .success:
-            if let tuple = item(for: url) {
-                tuple.1?(.success(GravatarImageDownloadResult(image: ImageHelper.testImage, sourceURL: URL(string: url)!)))
+            if let tuple = item(for: urlString) {
+                tuple.handler?(.success(GravatarImageDownloadResult(image: ImageHelper.testImage, sourceURL: URL(string: urlString)!)))
             }
         }
     }
@@ -63,7 +68,7 @@ class TestImageRetriever: ImageDownloader {
         XCTFail("There's no queued response to send")
     }
 
-    func item(for url: String) -> (String, ImageDownloadCompletion?)? {
+    func item(for url: String) -> TestCompletionTuple? {
         completionQueue.first { $0.0 == url }
     }
 }

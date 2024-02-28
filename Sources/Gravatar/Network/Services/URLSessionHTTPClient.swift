@@ -3,8 +3,17 @@ import Foundation
 
 private let baseUrl = "https://gravatar.com/"
 
-public enum HTTPClientError: Error {
-    case cannotCreateURLFromGivenPath
+/// Common errors for all HTTP operations.
+enum HTTPClientError: Error {
+    case invalidHTTPStatusCodeError(HTTPURLResponse)
+    case invalidURLResponseError(URLResponse)
+    case URLSessionError(Error)
+}
+
+/// Error thrown when URL can not be created with the given baseURL and path.
+struct CannotCreateURLFromGivenPath: Error {
+    let baseURL: String
+    let path: String
 }
 
 struct URLSessionHTTPClient: HTTPClient {
@@ -14,20 +23,25 @@ struct URLSessionHTTPClient: HTTPClient {
         self.urlSession = urlSession
     }
 
-    func fetchData(with request: URLRequest) async throws -> (Data, URLResponse) {
-        let (data, urlResponse) = try await urlSession.data(for: request)
-        if let response = urlResponse as? HTTPURLResponse, isErrorResponse(response) {
-            throw error(from: response)
+    func fetchData(with request: URLRequest) async throws -> (Data, HTTPURLResponse) {
+        let result: (data: Data, response: URLResponse)
+        do {
+            result = try await urlSession.data(for: request)
+        } catch {
+            throw HTTPClientError.URLSessionError(error)
         }
-        return (data, urlResponse)
+        let httpResponse = try validatedHTTPResponse(result.response)
+        return (result.data, httpResponse)
     }
 
-    func uploadData(with request: URLRequest, data: Data) async throws -> URLResponse {
-        let (_, urlResponse) = try await urlSession.upload(for: request, from: data)
-        if let response = urlResponse as? HTTPURLResponse, isErrorResponse(response) {
-            throw error(from: response)
+    func uploadData(with request: URLRequest, data: Data) async throws -> HTTPURLResponse {
+        let result: (data: Data, response: URLResponse)
+        do {
+            result = try await urlSession.upload(for: request, from: data)
+        } catch {
+            throw HTTPClientError.URLSessionError(error)
         }
-        return urlResponse
+        return try validatedHTTPResponse(result.response)
     }
 
     func fetchObject<T: Decodable>(from path: String) async throws -> T {
@@ -40,7 +54,7 @@ struct URLSessionHTTPClient: HTTPClient {
 
     private func url(from path: String) throws -> URL {
         guard let url = URL(string: baseUrl + path) else {
-            throw HTTPClientError.cannotCreateURLFromGivenPath
+            throw CannotCreateURLFromGivenPath(baseURL: baseUrl, path: path)
         }
         return url
     }
@@ -54,14 +68,29 @@ extension URLRequest {
     }
 }
 
+private func validatedHTTPResponse(_ response: URLResponse) throws -> HTTPURLResponse {
+    guard let httpResponse = response as? HTTPURLResponse else {
+        throw HTTPClientError.invalidURLResponseError(response)
+    }
+    if isErrorResponse(httpResponse) {
+        throw HTTPClientError.invalidHTTPStatusCodeError(httpResponse)
+    }
+    return httpResponse
+}
+
 private func isErrorResponse(_ response: HTTPURLResponse) -> Bool {
     response.statusCode >= 400 && response.statusCode < 600
 }
 
-private func error(from response: HTTPURLResponse) -> NSError {
-    NSError(
-        domain: NSURLErrorDomain,
-        code: response.statusCode,
-        userInfo: [NSLocalizedDescriptionKey: HTTPURLResponse.localizedString(forStatusCode: response.statusCode)]
-    )
+extension HTTPClientError {
+    func map() -> ResponseErrorReason {
+        switch self {
+        case .URLSessionError(let error):
+            .URLSessionError(error: error)
+        case .invalidHTTPStatusCodeError(let response):
+            .invalidHTTPStatusCode(response: response)
+        case .invalidURLResponseError(let response):
+            .invalidURLResponse(response: response)
+        }
+    }
 }

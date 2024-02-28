@@ -12,12 +12,14 @@ public struct GravatarURL {
     public let canonicalURL: URL
 
     public func url(with options: GravatarImageDownloadOptions) -> URL {
-        // TODO: Find a way to remove explicit unwrap.
         // When `GravatarURL` is initialized successfully, the `canonicalURL` is a valid URL.
-        // Adding query items from the options sets, which is controlled by the SDK, should be a guaranteed success.
-        // Therefore returning an optional is not ideal, since makes little sence in this context.
-        // In the other hand, we get this explisit unwrap, because of how `URLComponents` works.
-        canonicalURL.addQueryItems(from: options)!
+        // Adding query items from the options, which is controlled by the SDK, should never
+        // result in an invalid URL. If it does, something terrible has happened.
+        guard let url = canonicalURL.addQueryItems(from: options) else {
+            fatalError("Internal error: invalid url with query items")
+        }
+
+        return url
     }
 
     public static func isGravatarURL(_ url: URL) -> Bool {
@@ -106,22 +108,79 @@ extension URL {
         guard var components = URLComponents(url: self, resolvingAgainstBaseURL: false) else {
             return nil
         }
-        components.queryItems = []
-        if let defaultImage = options.defaultImage?.rawValue {
-            components.queryItems?.append(URLQueryItem(name: "d", value: defaultImage))
-        }
-        if let size = options.preferredPixelSize {
-            components.queryItems?.append(URLQueryItem(name: "s", value: "\(size)"))
-        }
-        if let rating = options.gravatarRating?.stringValue() {
-            components.queryItems?.append(URLQueryItem(name: "r", value: rating))
-        }
-        if options.forceDefaultImage {
-            components.queryItems?.append(URLQueryItem(name: "f", value: "\(options.forceDefaultImage)"))
-        }
+        components.queryItems = options.queryItems()
+
         if components.queryItems?.isEmpty == true {
             components.queryItems = nil
         }
+
         return components.url
+    }
+}
+
+private enum ImageDownloadOptionQueryName: String, CaseIterable {
+    case defaultImage = "d"
+    case preferredPixelSize = "s"
+    case gravatarRating = "r"
+    case forceDefaultImage = "f"
+}
+
+extension GravatarImageDownloadOptions {
+    fileprivate func queryItems() -> [URLQueryItem] {
+        ImageDownloadOptionQueryName.allCases
+            .map { self.queryItem(for: $0) }
+            .filter { $0.value != nil }
+    }
+
+    private func queryItem(for queryName: ImageDownloadOptionQueryName) -> URLQueryItem {
+        let value: String? = switch queryName {
+        case .defaultImage:
+            self.defaultImage.queryValue()
+        case .forceDefaultImage:
+            self.forceDefaultImage.queryValue()
+        case .gravatarRating:
+            self.gravatarRating.queryValue()
+        case .preferredPixelSize:
+            self.preferredPixelSize.queryValue()
+        }
+
+        return URLQueryItem(name: queryName.rawValue, value: value)
+    }
+}
+
+extension DefaultImageOption? {
+    fileprivate func queryValue() -> String? {
+        guard let self else { return nil }
+
+        return self.rawValue
+    }
+}
+
+extension GravatarRating? {
+    fileprivate func queryValue() -> String? {
+        guard let self else { return nil }
+
+        return self.stringValue()
+    }
+}
+
+extension Int? {
+    fileprivate func queryValue() -> String? {
+        guard let self else { return nil }
+
+        return String(self)
+    }
+}
+
+extension Bool? {
+    fileprivate func queryValue() -> String? {
+        guard let self else { return nil }
+
+        switch self {
+        case true:
+            return "y"
+        case false:
+            return "n"
+        }
     }
 }

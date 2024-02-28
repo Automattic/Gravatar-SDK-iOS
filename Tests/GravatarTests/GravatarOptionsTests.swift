@@ -17,7 +17,7 @@ final class GravatarOptionsTests: XCTestCase {
                 .transition(.fade(0.2)),
                 .processingMethod(.custom(processor: TestImageProcessor())),
                 .imageCache(TestImageCache()),
-                .imageDownloader(TestImageRetriever(result: .success)),
+                .imageDownloader(TestImageFetcher(result: .success)),
             ]
 
         let parsedOptions = GravatarImageSettingOptions(options: gravatarOptions)
@@ -26,7 +26,7 @@ final class GravatarOptionsTests: XCTestCase {
         XCTAssertEqual(parsedOptions.transition, GravatarImageTransition.fade(0.2))
         XCTAssertNotNil(parsedOptions.processingMethod.processor as? TestImageProcessor)
         XCTAssertNotNil(parsedOptions.imageCache as? TestImageCache)
-        XCTAssertNotNil(parsedOptions.imageDownloader as? TestImageRetriever)
+        XCTAssertNotNil(parsedOptions.imageDownloader as? TestImageFetcher)
     }
 
     func testInitWithDefaultValues() throws {

@@ -9,7 +9,7 @@ import Foundation
 import Gravatar
 import UIKit
 
-class TestImageCache: GravatarImageCaching {
+class TestImageCache: ImageCaching {
     var dict: [String: UIImage] = [:]
     var getImageCallCount = 0
     var setImageCallsCount = 0

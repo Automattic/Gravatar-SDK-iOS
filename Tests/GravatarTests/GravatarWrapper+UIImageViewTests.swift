@@ -18,7 +18,7 @@ final class GravatarWrapper_UIImageViewTests: XCTestCase {
         imageView.gravatar.activityIndicatorType = .custom(activityIndicator)
         imageView.gravatar.setImage(
             email: "hello@gmail.com",
-            options: [.imageDownloader(TestImageRetriever(result: .success))]
+            options: [.imageDownloader(TestImageFetcher(result: .success))]
         )
         XCTAssertTrue(activityIndicator.animating)
     }
@@ -28,7 +28,7 @@ final class GravatarWrapper_UIImageViewTests: XCTestCase {
 
         let imageView = UIImageView(frame: frame)
         let activityIndicator = TestActivityIndicator()
-        let imageRetriever = TestImageRetriever(result: .success)
+        let imageRetriever = TestImageFetcher(result: .success)
 
         imageView.gravatar.activityIndicatorType = .custom(activityIndicator)
         imageView.gravatar.setImage(
@@ -47,7 +47,7 @@ final class GravatarWrapper_UIImageViewTests: XCTestCase {
 
         let imageView = UIImageView(frame: frame)
         let activityIndicator = TestActivityIndicator()
-        let imageRetriever = TestImageRetriever(result: .fail)
+        let imageRetriever = TestImageFetcher(result: .fail)
 
         imageView.gravatar.activityIndicatorType = .custom(activityIndicator)
         imageView.gravatar.setImage(
@@ -65,7 +65,7 @@ final class GravatarWrapper_UIImageViewTests: XCTestCase {
         let expectation = XCTestExpectation(description: "testIfPlaceholderIsSet")
 
         let imageView = UIImageView(frame: frame)
-        let imageRetriever = TestImageRetriever(result: .fail)
+        let imageRetriever = TestImageFetcher(result: .fail)
 
         imageView.gravatar.setImage(
             email: "hello@gmail.com",
@@ -83,7 +83,7 @@ final class GravatarWrapper_UIImageViewTests: XCTestCase {
         let expectation = XCTestExpectation(description: "testIfPlaceholderIsSetWithNilURL")
 
         let imageView = UIImageView(frame: frame)
-        let imageRetriever = TestImageRetriever(result: .fail)
+        let imageRetriever = TestImageFetcher(result: .fail)
 
         imageView.gravatar.setImage(
             with: nil,
@@ -99,7 +99,7 @@ final class GravatarWrapper_UIImageViewTests: XCTestCase {
 
     func testCancelOngoingDownload() throws {
         let imageView = UIImageView(frame: frame)
-        let imageRetriever = TestImageRetriever(result: .success)
+        let imageRetriever = TestImageFetcher(result: .success)
 
         imageView.gravatar.setImage(
             email: "hello@gmail.com",
@@ -116,7 +116,7 @@ final class GravatarWrapper_UIImageViewTests: XCTestCase {
     func testRemoveCurrentImageWhileLoadingNoPlaceholder() throws {
         let imageView = UIImageView(frame: frame)
         imageView.image = ImageHelper.testImage
-        let imageRetriever = TestImageRetriever(result: .success)
+        let imageRetriever = TestImageFetcher(result: .success)
 
         imageView.gravatar.setImage(
             email: "hello@gmail.com",
@@ -129,7 +129,7 @@ final class GravatarWrapper_UIImageViewTests: XCTestCase {
     func testRemoveCurrentImageWhileLoadingWithPlaceholder() throws {
         let imageView = UIImageView(frame: frame)
         imageView.image = ImageHelper.testImage
-        let imageRetriever = TestImageRetriever(result: .success)
+        let imageRetriever = TestImageFetcher(result: .success)
         let placeholder = ImageHelper.placeholderImage
 
         imageView.gravatar.setImage(
@@ -146,7 +146,7 @@ final class GravatarWrapper_UIImageViewTests: XCTestCase {
         let expectation = XCTestExpectation(description: "testNotCurrentSourceTaskResult")
 
         let imageView = UIImageView(frame: frame)
-        let imageRetriever = TestImageRetriever(result: .success)
+        let imageRetriever = TestImageFetcher(result: .success)
 
         let group = DispatchGroup()
 
@@ -157,21 +157,11 @@ final class GravatarWrapper_UIImageViewTests: XCTestCase {
             options: [.imageDownloader(imageRetriever)]
         ) { result in
             switch result {
-            case .success:
+            case .failure(.outdatedTask(.success(let value), let source)):
+                XCTAssertEqual(source.absoluteString, "https://first.com")
+                XCTAssertNotNil(value.image) // We got the image for "http://first.com"
+            default:
                 XCTFail()
-            case .failure(let error):
-                switch error {
-                case .imageSettingError(let reason):
-                    switch reason {
-                    case .emptyURL:
-                        XCTFail()
-                    case .outdatedTask(let result, _, let source):
-                        XCTAssertEqual(source.absoluteString, "https://first.com")
-                        XCTAssertNotNil(result?.image) // We got the image for "http://first.com"
-                    }
-                default:
-                    XCTFail()
-                }
             }
             group.leave()
         }

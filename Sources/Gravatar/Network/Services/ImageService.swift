@@ -2,39 +2,41 @@ import UIKit
 
 public struct ImageService {
     private let client: HTTPClient
-    let imageCache: GravatarImageCaching
+    let imageCache: ImageCaching
 
-    public init(client: HTTPClient? = nil, cache: GravatarImageCaching? = nil) {
+    public init(client: HTTPClient? = nil, cache: ImageCaching? = nil) {
         self.client = client ?? URLSessionHTTPClient()
-        self.imageCache = cache ?? GravatarImageCache()
+        self.imageCache = cache ?? ImageCache()
     }
 
-    func fetchImage(from url: URL, procressor: ImageProcessor) async throws -> (image: UIImage, url: URL) {
-        let request = URLRequest.imageRequest(url: url)
-        let (data, response) = try await client.fetchData(with: request)
-
-        guard let responseUrl = response.url else {
-            throw GravatarImageDownloadError.responseError(reason: .urlMissingInResponse)
+    func fetchImage(from url: URL, forceRefresh: Bool, processor: ImageProcessor) async throws -> GravatarImageDownloadResult {
+        let request = URLRequest.imageRequest(url: url, forceRefresh: forceRefresh)
+        do {
+            let (data, _) = try await client.fetchData(with: request)
+            guard let image = processor.process(data) else {
+                throw ImageFetchingError.imageProcessorFailed
+            }
+            imageCache.setImage(image, forKey: url.absoluteString)
+            return GravatarImageDownloadResult(image: image, sourceURL: url)
+        } catch let error as HTTPClientError {
+            throw ImageFetchingError.responseError(reason: error.map())
+        } catch {
+            throw ImageFetchingError.responseError(reason: .unexpected(error))
         }
-
-        guard let image = procressor.process(data) else {
-            throw GravatarImageDownloadError.responseError(reason: .imageInitializationFailed)
-        }
-
-        guard url == response.url else {
-            throw GravatarImageDownloadError.responseError(reason: .urlMismatch)
-        }
-
-        imageCache.setImage(image, forKey: url.absoluteString)
-        return (image, responseUrl)
     }
 
     func uploadImage(data: Data, accountEmail: String, accountToken: String) async throws -> URLResponse {
         let boundary = "Boundary-\(UUID().uuidString)"
         let request = URLRequest.imageUploadRequest(with: boundary).settingAuthorizationHeaderField(with: accountToken)
         let body = imageUploadBody(with: data, account: accountEmail, boundary: boundary)
-        let response = try await client.uploadData(with: request, data: body)
-        return response
+        do {
+            let response = try await client.uploadData(with: request, data: body)
+            return response
+        } catch let error as HTTPClientError {
+            throw ImageUploadError.responseError(reason: error.map())
+        } catch {
+            throw ImageUploadError.responseError(reason: .unexpected(error))
+        }
     }
 }
 
@@ -76,8 +78,8 @@ extension Data {
 }
 
 extension URLRequest {
-    fileprivate static func imageRequest(url: URL) -> URLRequest {
-        var request = URLRequest(url: url)
+    fileprivate static func imageRequest(url: URL, forceRefresh: Bool) -> URLRequest {
+        var request = forceRefresh ? URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData) : URLRequest(url: url)
         request.httpShouldHandleCookies = false
         request.addValue("image/*", forHTTPHeaderField: "Accept")
         return request
