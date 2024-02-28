@@ -1,7 +1,7 @@
 import Foundation
 import UIKit
 
-public typealias GravatarImageSetCompletion = (Result<GravatarImageDownloadResult, GravatarImageSetError>) -> Void
+public typealias GravatarImageSetCompletion = (Result<GravatarImageDownloadResult, ImageFetchingComponentError>) -> Void
 
 // MARK: - Associated Object
 
@@ -172,7 +172,7 @@ extension GravatarWrapper where Component: UIImageView {
         guard let source else {
             mutatingSelf.placeholder = placeholder
             mutatingSelf.taskIdentifier = nil
-            completionHandler?(.failure(GravatarImageSetError.requestError(reason: .emptyURL)))
+            completionHandler?(.failure(ImageFetchingComponentError.requestError(reason: .emptyURL)))
             return nil
         }
 
@@ -197,15 +197,7 @@ extension GravatarWrapper where Component: UIImageView {
                 DispatchQueue.main.async {
                     maybeIndicator?.stopAnimatingView()
                     guard issuedIdentifier == self.taskIdentifier else {
-                        let reason: GravatarImageDownload.ImageSettingErrorReason
-                        do {
-                            let value = try result.get()
-                            reason = .outdatedTask(result: value, error: nil, source: source)
-                        } catch {
-                            reason = .outdatedTask(result: nil, error: error, source: source)
-                        }
-                        let error = GravatarImageSetError.imageSettingError(reason: reason)
-                        completionHandler?(.failure(error))
+                        completionHandler?(.failure(.outdatedTask(result: result, source: source)))
                         return
                     }
 
@@ -218,15 +210,15 @@ extension GravatarWrapper where Component: UIImageView {
                         switch options.transition {
                         case .none:
                             component?.image = value.image
-                            completionHandler?(result.convert())
+                            completionHandler?(result.map())
                             return
                         case .fade(let duration):
                             self.transition(for: component, into: value.image, duration: duration) {
-                                completionHandler?(result.convert())
+                                completionHandler?(result.map())
                             }
                         }
                     case .failure:
-                        completionHandler?(result.convert())
+                        completionHandler?(result.map())
                     }
                 }
             }

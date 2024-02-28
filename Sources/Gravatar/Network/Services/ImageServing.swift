@@ -1,7 +1,7 @@
 import Foundation
 import UIKit
 
-public typealias ImageDownloadCompletion = (Result<GravatarImageDownloadResult, GravatarImageDownloadError>) -> Void
+public typealias ImageDownloadCompletion = (Result<GravatarImageDownloadResult, ImageFetchingError>) -> Void
 
 public protocol ImageServing {
     func fetchImage(
@@ -38,6 +38,6 @@ public protocol ImageServing {
         _ image: UIImage,
         accountEmail: String,
         accountToken: String,
-        completion: ((_ error: NSError?) -> Void)?
+        completion: ((_ error: ImageUploadError?) -> Void)?
     )
 }
