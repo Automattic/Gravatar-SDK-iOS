@@ -92,7 +92,7 @@ final class GravatarWrapper_UIImageViewTests: XCTestCase {
             email: "hello@gmail.com",
             defaultImage: .roboHash,
             options: [.imageDownloader(service)]
-        ) { response in
+        ) { _ in
             expectation.fulfill()
         }
 
@@ -101,7 +101,6 @@ final class GravatarWrapper_UIImageViewTests: XCTestCase {
         let query = session.request?.url?.query ?? ""
         let urlContainsDefaultImageOption = query.contains(expectedQueryItemString)
         XCTAssertTrue(urlContainsDefaultImageOption, "\(query) does not contains \(expectedQueryItemString)")
-
     }
 
     func testIfPlaceholderIsSetWithNilURL() throws {
