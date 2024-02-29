@@ -1,10 +1,3 @@
-//
-//  String+SHA256.swift
-//
-//
-//  Created by Andrew Montgomery on 1/11/24.
-//
-
 import CryptoKit
 import Foundation
 

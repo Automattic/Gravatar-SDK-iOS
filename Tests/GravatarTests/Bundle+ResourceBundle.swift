@@ -1,10 +1,3 @@
-//
-//  Bundle+ResourceBundle.swift
-//
-//
-//  Created by Andrew Montgomery on 1/30/24.
-//
-
 import Foundation
 
 #if !SWIFT_PACKAGE

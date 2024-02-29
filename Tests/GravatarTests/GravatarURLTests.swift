@@ -1,10 +1,3 @@
-//
-//  GravatarURLTests.swift
-//
-//
-//  Created by eToledo on 23/1/24.
-//
-
 @testable import Gravatar
 import XCTest
 
