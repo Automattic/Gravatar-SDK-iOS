@@ -20,6 +20,12 @@ pod 'Gravatar'
 
 Gravatar
 
+## Coding Style
+
+## Contributing
+
+Read our [Contributing Guide](CONTRIBUTING.md) to learn about reporting issues, contributing code, and more ways to contribute.
+
 ## License
 
 Gravatar-SDK-iOS is an open source project covered by the [Mozilla Public License Version 2.0](LICENSE.md).
