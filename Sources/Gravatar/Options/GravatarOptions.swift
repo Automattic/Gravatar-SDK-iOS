@@ -55,11 +55,16 @@ public struct GravatarImageSettingOptions {
         }
     }
 
-    func deriveDownloadOptions(garavatarRating rating: GravatarRating? = nil, preferredSize size: ImageSize? = nil) -> GravatarImageDownloadOptions {
+    func deriveDownloadOptions(
+        garavatarRating rating: GravatarRating? = nil,
+        preferredSize size: ImageSize? = nil,
+        defaultImage: DefaultImageOption? = nil
+    ) -> GravatarImageDownloadOptions {
         GravatarImageDownloadOptions(
             preferredSize: size,
             gravatarRating: rating,
             forceRefresh: forceRefresh,
+            defaultImage: defaultImage,
             processingMethod: processingMethod
         )
     }
