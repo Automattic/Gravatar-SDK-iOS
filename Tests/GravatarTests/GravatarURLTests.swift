@@ -101,8 +101,8 @@ final class GravatarURLTests: XCTestCase {
 
         let allOptions = ImageQueryOptions(
             preferredSize: .pixels(200),
-            defaultImage: .monsterId,
             gravatarRating: .g,
+            defaultImage: .monsterId,
             forceDefaultImage: true
         )
         let urlAddingAllOptions = GravatarURL.gravatarUrl(with: exampleEmail, options: allOptions)
