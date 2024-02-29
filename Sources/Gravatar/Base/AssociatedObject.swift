@@ -1,10 +1,3 @@
-//
-//  AssociatedObject.swift
-//
-//
-//  Created by Pinar Olguc on 18.01.2024.
-//
-
 import Foundation
 
 func getAssociatedObject<T>(_ object: Any, _ key: UnsafeRawPointer) -> T? {
