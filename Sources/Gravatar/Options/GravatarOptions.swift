@@ -67,15 +67,11 @@ public struct GravatarImageSettingOptions {
 
 /// Download options to use outside of `GravatarCompatible` UI components. Refer to `GravatarImageSettingOption`.
 public struct GravatarImageDownloadOptions {
-    let gravatarRating: GravatarRating?
     let forceRefresh: Bool
-    let forceDefaultImage: Bool?
-    let defaultImage: DefaultImageOption?
     let processingMethod: ImageProcessingMethod
-    let preferredPixelSize: Int?
+    let imageQueryOptions: ImageQueryOptions
 
     private let preferredSize: ImageSize?
-    private let scaleFactor: CGFloat
 
     /// GravatarImageDownloadOptions initializer
     /// - Parameters:
@@ -93,61 +89,15 @@ public struct GravatarImageDownloadOptions {
         defaultImage: DefaultImageOption? = nil,
         processingMethod: ImageProcessingMethod = .common
     ) {
-        self.init(
-            scaleFactor: UIScreen.main.scale,
-            preferredSize: preferredSize,
-            gravatarRating: gravatarRating,
-            forceRefresh: forceRefresh,
-            forceDefaultImage: forceDefaultImage,
-            defaultImage: defaultImage,
-            processingMethod: processingMethod
-        )
-    }
-
-    private init(
-        scaleFactor: CGFloat,
-        preferredSize: ImageSize? = nil,
-        gravatarRating: GravatarRating? = nil,
-        forceRefresh: Bool = false,
-        forceDefaultImage: Bool? = nil,
-        defaultImage: DefaultImageOption? = nil,
-        processingMethod: ImageProcessingMethod
-    ) {
-        self.gravatarRating = gravatarRating
         self.forceRefresh = forceRefresh
-        self.forceDefaultImage = forceDefaultImage
         self.processingMethod = processingMethod
-        self.defaultImage = defaultImage
-        self.scaleFactor = scaleFactor
         self.preferredSize = preferredSize
 
-        switch preferredSize {
-        case .pixels(let pixels):
-            preferredPixelSize = pixels
-        case .points(let points):
-            preferredPixelSize = Int(points * scaleFactor)
-        case .none:
-            preferredPixelSize = nil
-        }
-    }
-
-    func updating(
-        scaleFactor: CGFloat? = nil,
-        preferredSize: ImageSize? = nil,
-        gravatarRating: GravatarRating? = nil,
-        forceRefresh: Bool? = nil,
-        forceDefaultImage: Bool? = nil,
-        defaultImage: DefaultImageOption? = nil,
-        processingMethod: ImageProcessingMethod? = nil
-    ) -> Self {
-        GravatarImageDownloadOptions(
-            scaleFactor: scaleFactor ?? self.scaleFactor,
-            preferredSize: preferredSize ?? self.preferredSize,
-            gravatarRating: gravatarRating ?? self.gravatarRating,
-            forceRefresh: forceRefresh ?? self.forceRefresh,
-            forceDefaultImage: forceDefaultImage ?? self.forceDefaultImage,
-            defaultImage: defaultImage ?? self.defaultImage,
-            processingMethod: processingMethod ?? self.processingMethod
+        self.imageQueryOptions = ImageQueryOptions(
+            preferredSize: preferredSize,
+            gravatarRating: gravatarRating,
+            defaultImage: defaultImage,
+            forceDefaultImage: forceDefaultImage
         )
     }
 }

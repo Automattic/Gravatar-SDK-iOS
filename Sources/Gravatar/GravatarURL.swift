@@ -11,7 +11,7 @@ public struct GravatarURL {
 
     public let canonicalURL: URL
 
-    public func url(with options: GravatarImageDownloadOptions) -> URL {
+    public func url(with options: ImageQueryOptions) -> URL {
         // When `GravatarURL` is initialized successfully, the `canonicalURL` is a valid URL.
         // Adding query items from the options, which is controlled by the SDK, should never
         // result in an invalid URL. If it does, something terrible has happened.
@@ -45,7 +45,7 @@ public struct GravatarURL {
     ///
     public static func gravatarUrl(
         with email: String,
-        options: GravatarImageDownloadOptions = .init()
+        options: ImageQueryOptions = .init()
     ) -> URL? {
         let hash = gravatarHash(of: email)
         guard let baseURL = URL(string: Defaults.baseURL + hash) else {
@@ -104,7 +104,7 @@ extension GravatarURL {
 }
 
 extension URL {
-    fileprivate func addQueryItems(from options: GravatarImageDownloadOptions) -> URL? {
+    fileprivate func addQueryItems(from options: ImageQueryOptions) -> URL? {
         guard var components = URLComponents(url: self, resolvingAgainstBaseURL: false) else {
             return nil
         }
@@ -125,7 +125,7 @@ private enum ImageDownloadOptionQueryName: String, CaseIterable {
     case forceDefaultImage = "f"
 }
 
-extension GravatarImageDownloadOptions {
+extension ImageQueryOptions {
     fileprivate func queryItems() -> [URLQueryItem] {
         ImageDownloadOptionQueryName.allCases
             .map { self.queryItem(for: $0) }
@@ -139,7 +139,7 @@ extension GravatarImageDownloadOptions {
         case .forceDefaultImage:
             self.forceDefaultImage.queryValue()
         case .gravatarRating:
-            self.gravatarRating.queryValue()
+            self.rating.queryValue()
         case .preferredPixelSize:
             self.preferredPixelSize.queryValue()
         }
