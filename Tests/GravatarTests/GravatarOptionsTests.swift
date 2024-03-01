@@ -1,10 +1,3 @@
-//
-//  GravatarOptionsTests.swift
-//
-//
-//  Created by Pinar Olguc on 23.01.2024.
-//
-
 @testable import Gravatar
 import XCTest
 
