@@ -77,7 +77,7 @@ extension UserProfile {
         public var iconURL: URL? {
             URL(string: iconUrl)
         }
-        
+
         public var isVerified: Bool {
             verified == "true"
         }
