@@ -20,17 +20,17 @@ public struct UserProfile {
 
     let profileUrl: String
     let thumbnailUrl: String
-    let last_profile_edit: String?
+    let lastProfileEdit: String?
 }
 
 extension UserProfile {
-    public var lastProfileEdit: Date? {
-        guard let lastEditedDate = last_profile_edit else {
+    public var lastProfileEditDate: Date? {
+        guard let lastProfileEdit else {
             return nil
         }
         let formatter = ISO8601DateFormatter()
         formatter.formatOptions = [.withSpaceBetweenDateAndTime]
-        return formatter.date(from: lastEditedDate)
+        return formatter.date(from: lastProfileEdit)
     }
 
     public var profileURL: URL? {
@@ -85,15 +85,11 @@ extension UserProfile {
 
     public struct LinkURL: Decodable {
         public let title: String
+        public let linkSlug: String?
         let value: String
-        let link_slug: String?
 
         var url: URL? {
             URL(string: value)
-        }
-
-        var linkSlug: String? {
-            link_slug
         }
     }
 

@@ -86,7 +86,7 @@ Display name: \(profile.displayName)
 Name: \(profile.displayName)
 Preferred User Name: \(profile.preferredUsername)
 Thumbnail URL: \(profile.thumbnailURL?.absoluteString ?? "")
-Last edit: \(String(describing: profile.lastProfileEdit))
+Last edit: \(String(describing: profile.lastProfileEditDate))
 """
         }
     }

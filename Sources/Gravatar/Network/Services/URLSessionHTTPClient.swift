@@ -48,7 +48,9 @@ struct URLSessionHTTPClient: HTTPClient {
         let url = try url(from: path)
         let request = URLRequest(url: url)
         let (data, _) = try await fetchData(with: request)
-        let object = try JSONDecoder().decode(T.self, from: data)
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        let object = try decoder.decode(T.self, from: data)
         return object
     }
 

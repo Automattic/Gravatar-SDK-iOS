@@ -89,6 +89,16 @@ final class ProfileServiceTests: XCTestCase {
         XCTAssertNotNil(profile.lastProfileEdit)
     }
 
+    func testFetchGravatarProfileUrls() async throws {
+        let session = URLSessionMock(returnData: jsonData, response: .successResponse())
+        let client = URLSessionHTTPClient(urlSession: session)
+        let service = ProfileService(client: client)
+        let profile = try await service.fetchProfile(for: "some@email.com")
+
+        XCTAssertEqual(profile.urls.first?.linkSlug, "some_slug")
+        XCTAssertNotNil(profile.lastProfileEdit)
+    }
+
     func testFetchGravatarProfileJustCreated() async throws {
         let session = URLSessionMock(returnData: minimalJsonData, response: .successResponse())
         let client = URLSessionHTTPClient(urlSession: session)
@@ -145,7 +155,11 @@ private let jsonData = """
                 }
             ],
             "urls": [
-
+                {
+                    "title": "My site verified",
+                    "value": "http://test.com/",
+                    "link_slug": "some_slug"
+                }
             ],
             "share_flags": {
                 "search_engines": true
