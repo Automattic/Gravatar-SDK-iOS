@@ -31,6 +31,12 @@ public struct ImageSize {
     }
 }
 
+extension ImageSize: Equatable {
+    public static func == (lhs: ImageSize, rhs: ImageSize) -> Bool {
+        lhs.points == rhs.points && lhs.scaleFactor == rhs.scaleFactor
+    }
+}
+
 extension ImageSize {
     /// A struct representing the width of a square image
     /// - Parameters:
