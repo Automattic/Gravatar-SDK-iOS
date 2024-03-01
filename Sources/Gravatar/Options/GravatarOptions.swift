@@ -56,13 +56,13 @@ public struct GravatarImageSettingOptions {
     }
 
     func deriveDownloadOptions(
-        garavatarRating rating: GravatarRating? = nil,
+        garavatarRating rating: ImageRating? = nil,
         preferredSize size: ImageSize? = nil,
         defaultImage: DefaultImageOption? = nil
     ) -> GravatarImageDownloadOptions {
         GravatarImageDownloadOptions(
             preferredSize: size,
-            gravatarRating: rating,
+            rating: rating,
             forceRefresh: forceRefresh,
             defaultImage: defaultImage,
             processingMethod: processingMethod
@@ -72,7 +72,7 @@ public struct GravatarImageSettingOptions {
 
 /// Download options to use outside of `GravatarCompatible` UI components. Refer to `GravatarImageSettingOption`.
 public struct GravatarImageDownloadOptions {
-    let gravatarRating: GravatarRating?
+    let rating: ImageRating?
     let forceRefresh: Bool
     let forceDefaultImage: Bool?
     let defaultImage: DefaultImageOption?
@@ -92,7 +92,7 @@ public struct GravatarImageDownloadOptions {
     ///   - processor: processor for handling the downloaded `Data`
     public init(
         preferredSize: ImageSize? = nil,
-        gravatarRating: GravatarRating? = nil,
+        rating: ImageRating? = nil,
         forceRefresh: Bool = false,
         forceDefaultImage: Bool? = nil,
         defaultImage: DefaultImageOption? = nil,
@@ -101,7 +101,7 @@ public struct GravatarImageDownloadOptions {
         self.init(
             scaleFactor: UIScreen.main.scale,
             preferredSize: preferredSize,
-            gravatarRating: gravatarRating,
+            rating: rating,
             forceRefresh: forceRefresh,
             forceDefaultImage: forceDefaultImage,
             defaultImage: defaultImage,
@@ -112,13 +112,13 @@ public struct GravatarImageDownloadOptions {
     private init(
         scaleFactor: CGFloat,
         preferredSize: ImageSize? = nil,
-        gravatarRating: GravatarRating? = nil,
+        rating: ImageRating? = nil,
         forceRefresh: Bool = false,
         forceDefaultImage: Bool? = nil,
         defaultImage: DefaultImageOption? = nil,
         processingMethod: ImageProcessingMethod
     ) {
-        self.gravatarRating = gravatarRating
+        self.rating = rating
         self.forceRefresh = forceRefresh
         self.forceDefaultImage = forceDefaultImage
         self.processingMethod = processingMethod
@@ -139,7 +139,7 @@ public struct GravatarImageDownloadOptions {
     func updating(
         scaleFactor: CGFloat? = nil,
         preferredSize: ImageSize? = nil,
-        gravatarRating: GravatarRating? = nil,
+        rating: ImageRating? = nil,
         forceRefresh: Bool? = nil,
         forceDefaultImage: Bool? = nil,
         defaultImage: DefaultImageOption? = nil,
@@ -148,7 +148,7 @@ public struct GravatarImageDownloadOptions {
         GravatarImageDownloadOptions(
             scaleFactor: scaleFactor ?? self.scaleFactor,
             preferredSize: preferredSize ?? self.preferredSize,
-            gravatarRating: gravatarRating ?? self.gravatarRating,
+            rating: rating ?? self.rating,
             forceRefresh: forceRefresh ?? self.forceRefresh,
             forceDefaultImage: forceDefaultImage ?? self.forceDefaultImage,
             defaultImage: defaultImage ?? self.defaultImage,

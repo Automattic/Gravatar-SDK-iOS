@@ -1,10 +1,3 @@
-//
-//  GravatarWrapper+UIImageViewTests.swift
-//
-//
-//  Created by Pinar Olguc on 26.01.2024.
-//
-
 @testable import Gravatar
 import XCTest
 
