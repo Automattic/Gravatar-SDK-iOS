@@ -56,3 +56,75 @@ public struct ImageQueryOptions {
         }
     }
 }
+
+// MARK: - Converting Query options into URLQueryItems
+
+extension ImageQueryOptions {
+    private enum QueryName: String, CaseIterable {
+        case defaultImage = "d"
+        case preferredPixelSize = "s"
+        case rating = "r"
+        case forceDefaultImage = "f"
+    }
+
+    var queryItems: [URLQueryItem] {
+        QueryName.allCases.compactMap(queryItem)
+    }
+
+    private func queryItem(for queryName: QueryName) -> URLQueryItem? {
+        let value: String? = switch queryName {
+        case .defaultImage:
+            self.defaultImage.queryValue
+        case .forceDefaultImage:
+            self.forceDefaultImage.queryValue
+        case .rating:
+            self.rating.queryValue
+        case .preferredPixelSize:
+            self.preferredPixelSize.queryValue
+        }
+
+        guard let value else {
+            return nil
+        }
+
+        return URLQueryItem(name: queryName.rawValue, value: value)
+    }
+}
+
+extension DefaultImageOption? {
+    fileprivate var queryValue: String? {
+        guard let self else { return nil }
+
+        return self.rawValue
+    }
+}
+
+extension ImageRating? {
+    fileprivate var queryValue: String? {
+        guard let self else { return nil }
+
+        return self.rawValue
+    }
+}
+
+extension Int? {
+    fileprivate var queryValue: String? {
+        guard let self else { return nil }
+
+        return String(self)
+    }
+}
+
+extension Bool? {
+    fileprivate var queryValue: String? {
+        guard let self else { return nil }
+
+        switch self {
+        case true:
+            return "y"
+        case false:
+            return "n"
+        }
+    }
+}
+

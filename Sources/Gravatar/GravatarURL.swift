@@ -108,79 +108,12 @@ extension URL {
         guard var components = URLComponents(url: self, resolvingAgainstBaseURL: false) else {
             return nil
         }
-        components.queryItems = options.queryItems()
+        components.queryItems = options.queryItems
 
         if components.queryItems?.isEmpty == true {
             components.queryItems = nil
         }
 
         return components.url
-    }
-}
-
-private enum ImageDownloadOptionQueryName: String, CaseIterable {
-    case defaultImage = "d"
-    case preferredPixelSize = "s"
-    case rating = "r"
-    case forceDefaultImage = "f"
-}
-
-extension ImageQueryOptions {
-    fileprivate func queryItems() -> [URLQueryItem] {
-        ImageDownloadOptionQueryName.allCases
-            .map { self.queryItem(for: $0) }
-            .filter { $0.value != nil }
-    }
-
-    private func queryItem(for queryName: ImageDownloadOptionQueryName) -> URLQueryItem {
-        let value: String? = switch queryName {
-        case .defaultImage:
-            self.defaultImage.queryValue()
-        case .forceDefaultImage:
-            self.forceDefaultImage.queryValue()
-        case .rating:
-            self.rating.queryValue()
-        case .preferredPixelSize:
-            self.preferredPixelSize.queryValue()
-        }
-
-        return URLQueryItem(name: queryName.rawValue, value: value)
-    }
-}
-
-extension DefaultImageOption? {
-    fileprivate func queryValue() -> String? {
-        guard let self else { return nil }
-
-        return self.rawValue
-    }
-}
-
-extension ImageRating? {
-    fileprivate func queryValue() -> String? {
-        guard let self else { return nil }
-
-        return self.rawValue
-    }
-}
-
-extension Int? {
-    fileprivate func queryValue() -> String? {
-        guard let self else { return nil }
-
-        return String(self)
-    }
-}
-
-extension Bool? {
-    fileprivate func queryValue() -> String? {
-        guard let self else { return nil }
-
-        switch self {
-        case true:
-            return "y"
-        case false:
-            return "n"
-        }
     }
 }
