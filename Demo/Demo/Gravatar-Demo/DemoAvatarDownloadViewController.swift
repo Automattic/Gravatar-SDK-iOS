@@ -31,7 +31,7 @@ class DemoAvatarDownloadViewController: UIViewController {
     private lazy var gravatarRatingInputField: UITextField = {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
-        textField.placeholder = "Gravatar rating (optional). [0|1|2|3]"
+        textField.placeholder = "Gravatar rating (optional). [g|pg|r|x]"
         textField.keyboardType = .numberPad
         return textField
     }()
@@ -117,12 +117,11 @@ class DemoAvatarDownloadViewController: UIViewController {
         return Self.imageViewSize
     }
     
-    private var preferredRating: GravatarRating? {
+    private var preferredRating: ImageRating? {
         if let ratingStr = gravatarRatingInputField.text,
-           !ratingStr.isEmpty,
-           let ratingNo = Int(ratingStr)
+           !ratingStr.isEmpty
         {
-            return GravatarRating(rawValue: ratingNo)
+            return ImageRating(rawValue: ratingStr)
         }
         return nil
     }
@@ -148,7 +147,7 @@ class DemoAvatarDownloadViewController: UIViewController {
         
         let options: GravatarImageDownloadOptions = .init(
             preferredSize: .points(preferredSize),
-            gravatarRating: preferredRating,
+            rating: preferredRating,
             forceRefresh: igonreCacheSwitchWithLabel.isOn,
             forceDefaultImage: forceDefaultImageSwitchWithLabel.isOn,
             defaultImage: preferredDefaultImage
