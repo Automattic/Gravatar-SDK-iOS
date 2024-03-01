@@ -10,6 +10,9 @@
 # #if indenting
 --ifdef no-indent
 
+# Strip source file headers
+--header strip
+
 # Wrap lines that exceed the specified maximum width.
 --maxwidth 160
 

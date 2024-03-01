@@ -121,7 +121,7 @@ extension URL {
 private enum ImageDownloadOptionQueryName: String, CaseIterable {
     case defaultImage = "d"
     case preferredPixelSize = "s"
-    case gravatarRating = "r"
+    case rating = "r"
     case forceDefaultImage = "f"
 }
 
@@ -138,7 +138,7 @@ extension ImageQueryOptions {
             self.defaultImage.queryValue()
         case .forceDefaultImage:
             self.forceDefaultImage.queryValue()
-        case .gravatarRating:
+        case .rating:
             self.rating.queryValue()
         case .preferredPixelSize:
             self.preferredPixelSize.queryValue()
@@ -156,11 +156,11 @@ extension DefaultImageOption? {
     }
 }
 
-extension GravatarRating? {
+extension ImageRating? {
     fileprivate func queryValue() -> String? {
         guard let self else { return nil }
 
-        return self.stringValue()
+        return self.rawValue
     }
 }
 

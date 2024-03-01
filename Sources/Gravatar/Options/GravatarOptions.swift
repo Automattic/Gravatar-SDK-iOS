@@ -55,10 +55,10 @@ public struct GravatarImageSettingOptions {
         }
     }
 
-    func deriveDownloadOptions(garavatarRating rating: GravatarRating? = nil, preferredSize size: ImageSize? = nil) -> GravatarImageDownloadOptions {
+    func deriveDownloadOptions(garavatarRating rating: ImageRating? = nil, preferredSize size: ImageSize? = nil) -> GravatarImageDownloadOptions {
         GravatarImageDownloadOptions(
             preferredSize: size,
-            gravatarRating: rating,
+            rating: rating,
             forceRefresh: forceRefresh,
             processingMethod: processingMethod
         )
@@ -83,7 +83,7 @@ public struct GravatarImageDownloadOptions {
     ///   - processor: processor for handling the downloaded `Data`
     public init(
         preferredSize: ImageSize? = nil,
-        gravatarRating: GravatarRating? = nil,
+        rating: ImageRating? = nil,
         forceRefresh: Bool = false,
         forceDefaultImage: Bool? = nil,
         defaultImage: DefaultImageOption? = nil,
@@ -95,7 +95,7 @@ public struct GravatarImageDownloadOptions {
 
         self.imageQueryOptions = ImageQueryOptions(
             preferredSize: preferredSize,
-            gravatarRating: gravatarRating,
+            rating: rating,
             defaultImage: defaultImage,
             forceDefaultImage: forceDefaultImage
         )
