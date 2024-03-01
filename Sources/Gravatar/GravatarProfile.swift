@@ -1,10 +1,3 @@
-//
-//  GravatarProfile.swift
-//
-//
-//  Created by Andrew Montgomery on 1/10/24.
-//
-
 public enum GravatarProfileFetchResult {
     case success(GravatarProfile)
     case failure(ProfileServiceError)

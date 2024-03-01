@@ -1,10 +1,3 @@
-//
-//  TestImageCache.swift
-//
-//
-//  Created by Pinar Olguc on 24.01.2024.
-//
-
 import Foundation
 import Gravatar
 import UIKit

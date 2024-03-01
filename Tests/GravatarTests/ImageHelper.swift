@@ -1,10 +1,3 @@
-//
-//  ImageHelper.swift
-//
-//
-//  Created by Pinar Olguc on 24.01.2024.
-//
-
 import UIKit
 
 class ImageHelper {
