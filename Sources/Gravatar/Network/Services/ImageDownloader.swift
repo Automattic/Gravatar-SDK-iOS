@@ -1,9 +1,9 @@
 import Foundation
 import UIKit
 
-public typealias ImageDownloadCompletion = (Result<GravatarImageDownloadResult, GravatarImageDownloadError>) -> Void
+public typealias ImageDownloadCompletion = (Result<GravatarImageDownloadResult, ImageFetchingError>) -> Void
 
-public protocol ImageServing {
+public protocol ImageDownloader {
     func fetchImage(
         with email: String,
         options: GravatarImageDownloadOptions,
@@ -27,17 +27,4 @@ public protocol ImageServing {
         forceRefresh: Bool,
         processingMethod: ImageProcessingMethod
     ) async throws -> GravatarImageDownloadResult
-
-    func uploadImage(
-        _ image: UIImage,
-        accountEmail: String,
-        accountToken: String
-    ) async throws -> URLResponse
-
-    func uploadImage(
-        _ image: UIImage,
-        accountEmail: String,
-        accountToken: String,
-        completion: ((_ error: NSError?) -> Void)?
-    )
 }

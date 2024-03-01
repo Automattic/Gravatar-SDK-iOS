@@ -1,127 +1,42 @@
 import UIKit
 
-public struct ImageService: ImageServing {
+public struct ImageService {
     private let client: HTTPClient
-    private let imageCache: ImageCaching
+    let imageCache: ImageCaching
 
     public init(client: HTTPClient? = nil, cache: ImageCaching? = nil) {
         self.client = client ?? URLSessionHTTPClient()
         self.imageCache = cache ?? ImageCache()
     }
 
-    @discardableResult
-    public func fetchImage(
-        with email: String,
-        options: GravatarImageDownloadOptions = GravatarImageDownloadOptions(),
-        completionHandler: ImageDownloadCompletion? = nil
-    ) -> CancellableDataTask {
-        Task {
-            do {
-                let result = try await fetchImage(with: email, options: options)
-                completionHandler?(Result.success(result))
-            } catch let error as GravatarImageDownloadError {
-                completionHandler?(Result.failure(error))
-            } catch {
-                completionHandler?(Result.failure(GravatarImageDownloadError.responseError(reason: .URLSessionError(error: error))))
-            }
-        }
-    }
-
-    @discardableResult
-    public func fetchImage(
-        with url: URL,
-        forceRefresh: Bool = false,
-        processingMethod: ImageProcessingMethod = .common,
-        completionHandler: ImageDownloadCompletion?
-    ) -> CancellableDataTask? {
-        Task {
-            do {
-                let result = try await fetchImage(with: url, forceRefresh: forceRefresh, processingMethod: processingMethod)
-                completionHandler?(Result.success(result))
-            } catch let error as GravatarImageDownloadError {
-                completionHandler?(Result.failure(error))
-            } catch {
-                completionHandler?(Result.failure(GravatarImageDownloadError.responseError(reason: .URLSessionError(error: error))))
-            }
-        }
-    }
-
-    public func fetchImage(
-        with email: String,
-        options: GravatarImageDownloadOptions = GravatarImageDownloadOptions()
-    ) async throws -> GravatarImageDownloadResult {
-        guard let gravatarURL = GravatarURL.gravatarUrl(with: email, options: options) else {
-            throw GravatarImageDownloadError.requestError(reason: .urlInitializationFailed)
-        }
-
-        if !options.forceRefresh, let result = cachedImageResult(for: gravatarURL) {
-            return result
-        }
-
-        return try await fetchImage(from: gravatarURL, forceRefresh: options.forceRefresh, procressor: options.processingMethod.processor)
-    }
-
-    public func fetchImage(
-        with url: URL,
-        forceRefresh: Bool = false,
-        processingMethod: ImageProcessingMethod = .common
-    ) async throws -> GravatarImageDownloadResult {
-        if !forceRefresh, let result = cachedImageResult(for: url) {
-            return result
-        }
-        return try await fetchImage(from: url, forceRefresh: forceRefresh, procressor: processingMethod.processor)
-    }
-
-    private func fetchImage(from url: URL, forceRefresh: Bool, procressor: ImageProcessor) async throws -> GravatarImageDownloadResult {
+    func fetchImage(from url: URL, forceRefresh: Bool, processor: ImageProcessor) async throws -> GravatarImageDownloadResult {
         let request = URLRequest.imageRequest(url: url, forceRefresh: forceRefresh)
-        let (data, response) = try await client.fetchData(with: request)
-
-        guard let responseUrl = response.url else {
-            throw GravatarImageDownloadError.responseError(reason: .urlMissingInResponse)
+        do {
+            let (data, _) = try await client.fetchData(with: request)
+            guard let image = processor.process(data) else {
+                throw ImageFetchingError.imageProcessorFailed
+            }
+            imageCache.setImage(image, forKey: url.absoluteString)
+            return GravatarImageDownloadResult(image: image, sourceURL: url)
+        } catch let error as HTTPClientError {
+            throw ImageFetchingError.responseError(reason: error.map())
+        } catch {
+            throw ImageFetchingError.responseError(reason: .unexpected(error))
         }
-
-        guard let image = procressor.process(data) else {
-            throw GravatarImageDownloadError.responseError(reason: .imageInitializationFailed)
-        }
-
-        guard url == response.url else {
-            throw GravatarImageDownloadError.responseError(reason: .urlMismatch)
-        }
-
-        imageCache.setImage(image, forKey: url.absoluteString)
-        return GravatarImageDownloadResult(image: image, sourceURL: responseUrl)
     }
 
-    @discardableResult
-    public func uploadImage(_ image: UIImage, accountEmail: String, accountToken: String) async throws -> URLResponse {
-        guard let data = image.pngData() else {
-            throw UploadError.cannotConvertImageIntoData
-        }
-
+    func uploadImage(data: Data, accountEmail: String, accountToken: String) async throws -> URLResponse {
         let boundary = "Boundary-\(UUID().uuidString)"
         let request = URLRequest.imageUploadRequest(with: boundary).settingAuthorizationHeaderField(with: accountToken)
         let body = imageUploadBody(with: data, account: accountEmail, boundary: boundary)
-        let response = try await client.uploadData(with: request, data: body)
-        return response
-    }
-
-    // TODO: Return internal SDK error (or remove completion handler support)
-    public func uploadImage(_ image: UIImage, accountEmail: String, accountToken: String, completion: ((_ error: NSError?) -> Void)?) {
-        Task {
-            do {
-                try await uploadImage(image, accountEmail: accountEmail, accountToken: accountToken)
-                completion?(nil)
-            } catch {
-                completion?(error as NSError)
-            }
+        do {
+            let response = try await client.uploadData(with: request, data: body)
+            return response
+        } catch let error as HTTPClientError {
+            throw ImageUploadError.responseError(reason: error.map())
+        } catch {
+            throw ImageUploadError.responseError(reason: .unexpected(error))
         }
-    }
-
-    private func cachedImageResult(for url: URL) -> GravatarImageDownloadResult? {
-        guard let cachedImage = imageCache.getImage(forKey: url.absoluteString) else {
-            return nil
-        }
-        return GravatarImageDownloadResult(image: cachedImage, sourceURL: url)
     }
 }
 
