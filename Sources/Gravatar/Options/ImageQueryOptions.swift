@@ -45,14 +45,6 @@ public struct ImageQueryOptions {
         self.rating = gravatarRating
         self.forceDefaultImage = forceDefaultImage
         self.defaultImage = defaultImage
-
-        switch preferredSize {
-        case .pixels(let pixels):
-            preferredPixelSize = pixels
-        case .points(let points):
-            preferredPixelSize = Int(points * scaleFactor)
-        case .none:
-            preferredPixelSize = nil
-        }
+        self.preferredPixelSize = preferredSize?.pixels
     }
 }

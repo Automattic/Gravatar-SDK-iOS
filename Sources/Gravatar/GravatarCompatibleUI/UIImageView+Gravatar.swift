@@ -148,8 +148,8 @@ extension GravatarWrapper where Component: UIImageView {
         options: [GravatarImageSettingOption]? = nil,
         completionHandler: GravatarImageSetCompletion? = nil
     ) -> CancellableDataTask? {
-        let pointsSize = pointImageSize(from: preferredSize)
-        let downloadOptions = GravatarImageSettingOptions(options: options).deriveDownloadOptions(garavatarRating: rating, preferredSize: pointsSize)
+        let preferredImageSize = ImageSize(size: preferredSize)
+        let downloadOptions = GravatarImageSettingOptions(options: options).deriveDownloadOptions(garavatarRating: rating, preferredSize: preferredImageSize)
 
         let gravatarURL = GravatarURL.gravatarUrl(with: email, options: downloadOptions.imageQueryOptions)
         return setImage(with: gravatarURL, placeholder: placeholder, options: options, completionHandler: completionHandler)
@@ -224,13 +224,6 @@ extension GravatarWrapper where Component: UIImageView {
             }
         mutatingSelf.downloadTask = task
         return task
-    }
-
-    private func pointImageSize(from size: CGSize?) -> ImageSize? {
-        guard let calculatedSize = calculatedSize(preferredSize: size) else {
-            return nil
-        }
-        return .points(calculatedSize)
     }
 
     // TODO: Create unit test which checks for the correct automated size calculation based on the component size.
