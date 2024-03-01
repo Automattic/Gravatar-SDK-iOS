@@ -77,15 +77,16 @@ class DemoFetchProfileViewController: UIViewController {
         }
     }
 
-    func setProfile(with profile: GravatarProfile) {
+    func setProfile(with profile: UserProfile) {
         DispatchQueue.main.async { [weak self] in
             self?.activityIndicator.stopAnimating()
             self?.profileTextView.text = """
-Profile URL:\t\(profile.profileUrl)
-Display name:\t\(profile.displayName)
-Name:\t\(profile.name)
+Profile URL: \(profile.profileURL?.absoluteString ?? "")
+Display name: \(profile.displayName)
+Name: \(profile.displayName)
 Preferred User Name: \(profile.preferredUsername)
-Thumbnail URL: \(profile.thumbnailUrl)
+Thumbnail URL: \(profile.thumbnailURL?.absoluteString ?? "")
+Last edit: \(String(describing: profile.lastProfileEdit))
 """
         }
     }

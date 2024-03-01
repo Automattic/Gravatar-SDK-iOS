@@ -64,6 +64,29 @@ final class ProfileServiceTests: XCTestCase {
 
         wait(for: [expectation], timeout: 0.1)
     }
+
+    func testFetchGravatarProfileLastEditDate() async throws {
+        let session = URLSessionMock(returnData: jsonData, response: .successResponse())
+        let client = URLSessionHTTPClient(urlSession: session)
+        let service = ProfileService(client: client)
+        let profile = try await service.fetchProfile(for: "some@email.com")
+
+        XCTAssertEqual(profile.displayName, "Beau Lebens")
+        XCTAssertNotNil(profile.lastProfileEdit)
+    }
+
+    func testFetchGravatarProfileJustCreated() async throws {
+        let session = URLSessionMock(returnData: minimalJsonData, response: .successResponse())
+        let client = URLSessionHTTPClient(urlSession: session)
+        let service = ProfileService(client: client)
+
+        do {
+            let profile = try await service.fetchProfile(for: "some@email.com")
+            XCTAssertEqual(profile.displayName, "doxomi4985")
+        } catch {
+            XCTFail(error.localizedDescription)
+        }
+    }
 }
 
 private let jsonData = """
@@ -115,5 +138,44 @@ private let jsonData = """
             }
         }
     ]
+}
+""".data(using: .utf8)!
+
+// User just created. The minimum amount of info. (email: doxomi4985@aersm.com)
+let minimalJsonData: Data = """
+{
+  "entry": [
+    {
+      "hash": "2437c5959b925a1d574d1a2ca1a457ef",
+      "requestHash": "2437c5959b925a1d574d1a2ca1a457ef",
+      "profileUrl": "https://gravatar.com/doxomi4985",
+      "preferredUsername": "doxomi4985",
+      "thumbnailUrl": "https://1.gravatar.com/avatar/2437c5959b925a1d574d1a2ca1a457ef",
+      "photos": [
+        {
+          "value": "https://1.gravatar.com/avatar/2437c5959b925a1d574d1a2ca1a457ef",
+          "type": "thumbnail"
+        }
+      ],
+      "displayName": "doxomi4985",
+      "urls": [],
+      "score": {
+        "value": 1,
+        "full": {
+          "photos": 0,
+          "last_profile_edit": 0,
+          "displayName": 1,
+          "hidden_contact_info": 0,
+          "hidden_wallet": 0,
+          "urls": 0,
+          "hidden_avatar": 0,
+          "age": 0
+        },
+        "accountable": {
+          "displayName": 1
+        }
+      }
+    }
+  ]
 }
 """.data(using: .utf8)!
