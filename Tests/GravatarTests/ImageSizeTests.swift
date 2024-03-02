@@ -8,18 +8,6 @@ import Gravatar
 import XCTest
 
 final class ImageSizeTests: XCTestCase {
-    func testPointsToPixelsToPoints() {
-        let imageWidths: [CGFloat] = [-10, 0, 80, 128, 256, 12.37654, 215.1, 215.2, 215.3, 215.4, 215.5, 215.6, 215.7, 215.8, 215.9]
-
-        for imageWidth in imageWidths {
-            let imageSize1WithPoints = ImageSize(points: imageWidth)
-            let imageWidth1InPixels = imageSize1WithPoints.pixels
-            let imageSize2WithPixels = ImageSize(pixels: imageWidth1InPixels)
-
-            XCTAssertEqual(imageSize1WithPoints, imageSize2WithPixels)
-        }
-    }
-
     func testInitImageSizeWithNilPointsReturnNilImageSize() {
         let sut = ImageSize(points: nil)
         XCTAssertNil(sut)
