@@ -5,7 +5,7 @@ import UIKit
 /// For the options not specified, the backend defaults will be used.
 /// For more information, see the [Gravatar developer documentation](https://docs.gravatar.com/general/images/).
 public struct ImageQueryOptions {
-    let rating: GravatarRating?
+    let rating: ImageRating?
     let forceDefaultImage: Bool?
     let defaultImage: DefaultImageOption?
     let preferredPixelSize: Int?
@@ -22,7 +22,7 @@ public struct ImageQueryOptions {
     ///   - forceDefaultImage: If set to `true`, the requested image will always be the default.
     public init(
         preferredSize: ImageSize? = nil,
-        gravatarRating: GravatarRating? = nil,
+        gravatarRating: ImageRating? = nil,
         defaultImage: DefaultImageOption? = nil,
         forceDefaultImage: Bool? = nil
     ) {
@@ -37,7 +37,7 @@ public struct ImageQueryOptions {
 
     init(
         scaleFactor: CGFloat,
-        gravatarRating: GravatarRating? = nil,
+        gravatarRating: ImageRating? = nil,
         forceDefaultImage: Bool? = nil,
         defaultImage: DefaultImageOption? = nil,
         preferredSize: ImageSize? = nil
