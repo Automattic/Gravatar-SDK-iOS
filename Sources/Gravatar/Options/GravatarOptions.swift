@@ -55,10 +55,10 @@ public struct GravatarImageSettingOptions {
         }
     }
 
-    func deriveDownloadOptions(garavatarRating rating: GravatarRating? = nil, preferredSize size: ImageSize? = nil) -> GravatarImageDownloadOptions {
+    func deriveDownloadOptions(garavatarRating rating: ImageRating? = nil, preferredSize size: ImageSize? = nil) -> GravatarImageDownloadOptions {
         GravatarImageDownloadOptions(
             preferredSize: size,
-            gravatarRating: rating,
+            rating: rating,
             forceRefresh: forceRefresh,
             processingMethod: processingMethod
         )
@@ -67,6 +67,7 @@ public struct GravatarImageSettingOptions {
 
 /// Download options to use outside of `GravatarCompatible` UI components. Refer to `GravatarImageSettingOption`.
 public struct GravatarImageDownloadOptions {
+    let rating: ImageRating?
     let forceRefresh: Bool
     let processingMethod: ImageProcessingMethod
     let imageQueryOptions: ImageQueryOptions
@@ -83,19 +84,40 @@ public struct GravatarImageDownloadOptions {
     ///   - processor: processor for handling the downloaded `Data`
     public init(
         preferredSize: ImageSize? = nil,
-        gravatarRating: GravatarRating? = nil,
+        rating: ImageRating? = nil,
         forceRefresh: Bool = false,
         forceDefaultImage: Bool? = nil,
         defaultImage: DefaultImageOption? = nil,
         processingMethod: ImageProcessingMethod = .common
     ) {
+        self.init(
+            scaleFactor: UIScreen.main.scale,
+            preferredSize: preferredSize,
+            rating: rating,
+            forceRefresh: forceRefresh,
+            forceDefaultImage: forceDefaultImage,
+            defaultImage: defaultImage,
+            processingMethod: processingMethod
+        )
+    }
+
+    private init(
+        scaleFactor: CGFloat,
+        preferredSize: ImageSize? = nil,
+        rating: ImageRating? = nil,
+        forceRefresh: Bool = false,
+        forceDefaultImage: Bool? = nil,
+        defaultImage: DefaultImageOption? = nil,
+        processingMethod: ImageProcessingMethod
+    ) {
+        self.rating = rating
         self.forceRefresh = forceRefresh
         self.processingMethod = processingMethod
         self.preferredSize = preferredSize
 
         self.imageQueryOptions = ImageQueryOptions(
             preferredSize: preferredSize,
-            gravatarRating: gravatarRating,
+            gravatarRating: rating,
             defaultImage: defaultImage,
             forceDefaultImage: forceDefaultImage
         )

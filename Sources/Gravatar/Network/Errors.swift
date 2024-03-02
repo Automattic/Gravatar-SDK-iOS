@@ -90,6 +90,7 @@ public enum ImageUploadError: Error {
 public enum ProfileServiceError: Error {
     case requestError(reason: RequestErrorReason)
     case responseError(reason: ResponseErrorReason)
+    case noProfileInResponse
 }
 
 extension ProfileServiceError: CustomDebugStringConvertible {
@@ -99,6 +100,8 @@ extension ProfileServiceError: CustomDebugStringConvertible {
             "A response error has occoured with reason: \(reason)"
         case .requestError(let reason):
             "Something went wrong when creating the request. Reason: \(reason)."
+        case .noProfileInResponse:
+            "No profile information was found in the response."
         }
     }
 }

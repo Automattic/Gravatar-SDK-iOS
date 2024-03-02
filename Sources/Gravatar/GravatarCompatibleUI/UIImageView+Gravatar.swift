@@ -130,20 +130,22 @@ extension GravatarWrapper where Component: UIImageView {
     }
 
     /// Downloads the Gravatar profile image and sets it to this UIImageView.
+    ///
     /// - Parameters:
     ///   - email: Gravatar account email.
     ///   - placeholder: A placeholder to show while downloading the image.
-    ///   - rating: Gravatar image rating.
-    ///   - preferredSize: Preferred "point" size of the image that will be downloaded. If not provided, layoutIfNeeded() is called on this view to get its real
-    /// bounds and those bounds are used.
+    ///   - rating: Image rating accepted to be downloaded.
+    ///   - preferredSize: Preferred "point" size of the image that will be downloaded. If not provided, `layoutIfNeeded()` is called on this view to get its
+    /// real bounds and those bounds are used.
     ///   You can get a performance benefit by setting this value since it will avoid the `layoutIfNeeded()` call.
-    ///   - options: A set of options to define image setting behaviour. See `GravatarImageSettingOption` for more info.
+    ///   - options: A set of options to define image setting behaviour. See ``GravatarImageSettingOption`` for more info.
     ///   - completionHandler: Completion block that's called when image downloading and setting completes.
+    /// - Returns: The task performing the download operation which can be cancelled.
     @discardableResult
     public func setImage(
         email: String,
         placeholder: UIImage? = nil,
-        rating: GravatarRating? = nil,
+        rating: ImageRating? = nil,
         preferredSize: CGSize? = nil,
         options: [GravatarImageSettingOption]? = nil,
         completionHandler: GravatarImageSetCompletion? = nil
@@ -159,8 +161,9 @@ extension GravatarWrapper where Component: UIImageView {
     /// - Parameters:
     ///   - source: URL for the image.
     ///   - placeholder: A placeholder to show while downloading the image.
-    ///   - options: A set of options to define image setting behaviour. See `GravatarImageSettingOption` for more info.
+    ///   - options: A set of options to define image setting behaviour. See ``GravatarImageSettingOption`` for more info.
     ///   - completionHandler: Completion block that's called when image downloading and setting completes.
+    /// - Returns: The task performing the download operation which can be cancelled.
     @discardableResult
     public func setImage(
         with source: URL?,
