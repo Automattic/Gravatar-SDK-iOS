@@ -89,7 +89,6 @@ final class GravatarWrapper_UIImageViewTests: XCTestCase {
         XCTAssertTrue(urlContainsDefaultImageOption, "\(query) does not contains \(expectedQueryItemString)")
     }
 
-
     func testIfPlaceholderIsSetWithNilURL() throws {
         let expectation = XCTestExpectation(description: "testIfPlaceholderIsSetWithNilURL")
 
