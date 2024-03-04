@@ -42,7 +42,7 @@ extension ImageService: ImageDownloader {
         with email: String,
         options: GravatarImageDownloadOptions = GravatarImageDownloadOptions()
     ) async throws -> GravatarImageDownloadResult {
-        guard let gravatarURL = GravatarURL.gravatarUrl(with: email, options: options) else {
+        guard let gravatarURL = GravatarURL.gravatarUrl(with: email, options: options.imageQueryOptions) else {
             throw ImageFetchingError.requestError(reason: .urlInitializationFailed)
         }
 
