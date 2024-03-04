@@ -1,4 +1,4 @@
-@testable import Gravatar
+import Gravatar
 import XCTest
 
 final class GravatarWrapper_UIImageViewTests: XCTestCase {
@@ -73,28 +73,22 @@ final class GravatarWrapper_UIImageViewTests: XCTestCase {
     }
 
     func testDefaultImageOptionIsSet() throws {
-        let expectation = XCTestExpectation(description: "testDefaultImageOptionIsSet")
         let expectedQueryItemString = "d=robohash"
 
         let imageView = UIImageView(frame: frame)
-        let session = URLSessionMock(returnData: ImageHelper.testImageData, response: HTTPURLResponse.successResponse())
-        let client = URLSessionHTTPClient(urlSession: session)
-        let service = ImageService(client: client)
+        let imageDownloader = TestImageFetcher(result: .success)
 
         imageView.gravatar.setImage(
             email: "hello@gmail.com",
             defaultImage: .roboHash,
-            options: [.imageDownloader(service)]
-        ) { _ in
-            expectation.fulfill()
-        }
+            options: [.imageDownloader(imageDownloader)]
+        )
 
-        wait(for: [expectation], timeout: 0.2)
-
-        let query = session.request?.url?.query ?? ""
+        let query = URL(string: imageDownloader.completionQueue.first?.url ?? "")?.query ?? ""
         let urlContainsDefaultImageOption = query.contains(expectedQueryItemString)
         XCTAssertTrue(urlContainsDefaultImageOption, "\(query) does not contains \(expectedQueryItemString)")
     }
+
 
     func testIfPlaceholderIsSetWithNilURL() throws {
         let expectation = XCTestExpectation(description: "testIfPlaceholderIsSetWithNilURL")
