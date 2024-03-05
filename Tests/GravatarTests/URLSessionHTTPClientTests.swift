@@ -2,23 +2,27 @@
 import XCTest
 
 final class URLSessionHTTPClientTests: XCTestCase {
-    func testFetchObject() async throws {
+    func testFetchReturnsData() async throws {
         let sessionMock = URLSessionMock(returnData: jsonData, response: HTTPURLResponse())
-        let remote = URLSessionHTTPClient(urlSession: sessionMock)
-        let testObject: TestObject = try await remote.fetchObject(from: "name")
+        let client = URLSessionHTTPClient(urlSession: sessionMock)
+        let mockUrlRequest = URLRequest(url: URL(string: "https://a-host.com")!)
+        let result: (data: Data, response: HTTPURLResponse) = try await client.fetchData(with: mockUrlRequest)
 
-        XCTAssertEqual(sessionMock.request?.url?.absoluteString, "https://gravatar.com/name")
-        XCTAssertEqual(testObject.name, "John")
-        XCTAssertEqual(testObject.surname, "Appleseed")
+        XCTAssertEqual(result.data, jsonData)
     }
 
-    func testFetchObjectError() async throws {
+    func testFetchReturnsError() async throws {
         let anError = NSError(domain: NSURLErrorDomain, code: 400)
-        let sessionMock = URLSessionMock(returnData: "".data(using: .utf8)!, response: HTTPURLResponse(), error: anError)
-        let remote = URLSessionHTTPClient(urlSession: sessionMock)
+        let sessionMock = URLSessionMock(
+            returnData: "".data(using: .utf8)!,
+            response: HTTPURLResponse(),
+            error: anError
+        )
+        let client = URLSessionHTTPClient(urlSession: sessionMock)
+        let mockUrlRequest = URLRequest(url: URL(string: "https://a-host.com")!)
 
         do {
-            let _: TestObject = try await remote.fetchObject(from: "name")
+            let _ = try await client.fetchData(with: mockUrlRequest)
             XCTFail("This should throw")
         } catch HTTPClientError.URLSessionError(let error) {
             XCTAssertEqual((error as NSError).code, 400)
@@ -27,25 +31,45 @@ final class URLSessionHTTPClientTests: XCTestCase {
         }
     }
 
-    func testFetchObjectErrorWithoutErrorObject() async throws {
-        let response = HTTPURLResponse(url: URL(string: "https://gravatar.com")!, statusCode: 404, httpVersion: nil, headerFields: nil)!
-        let sessionMock = URLSessionMock(returnData: "Error happened".data(using: .utf8)!, response: response)
-        let remote = URLSessionHTTPClient(urlSession: sessionMock)
+    func testFetchWithInvalidStatusCodeError() async throws {
+        let invalidStatusCodes = [400, 401, 402, 403, 404, 500, 501, 502, 599]
 
-        do {
-            let _: TestObject = try await remote.fetchObject(from: "name")
-            XCTFail("This should throw")
-        } catch HTTPClientError.invalidHTTPStatusCodeError(let response) {
-            XCTAssertEqual(response.statusCode, 404)
-        } catch {
-            XCTFail()
+        for invalidStatusCode in invalidStatusCodes {
+            let response = HTTPURLResponse(url: URL(string: "https://a-host.com")!, statusCode: invalidStatusCode, httpVersion: nil, headerFields: nil)!
+            let sessionMock = URLSessionMock(returnData: "Error happened".data(using: .utf8)!, response: response)
+            let client = URLSessionHTTPClient(urlSession: sessionMock)
+            let mockUrlRequest = URLRequest(url: URL(string: "https://a-host.com")!)
+
+            do {
+                let _ = try await client.fetchData(with: mockUrlRequest)
+                XCTFail("This should throw")
+            } catch HTTPClientError.invalidHTTPStatusCodeError(let response) {
+                XCTAssertEqual(response.statusCode, invalidStatusCode)
+            } catch {
+                XCTFail()
+            }
         }
     }
-}
 
-private struct TestObject: Decodable {
-    let name: String
-    let surname: String
+    func testFetchWithValidStatusCode() async throws {
+        let validStatusCodes = [199, 200, 201, 304]
+        let url = URL(string: "https://a-host.com")!
+        for validStatusCode in validStatusCodes {
+            let response = HTTPURLResponse(
+                url: url,
+                statusCode: validStatusCode,
+                httpVersion: nil,
+                headerFields: nil
+            )!
+            let sessionMock = URLSessionMock(returnData: "Error happened".data(using: .utf8)!, response: response)
+            let client = URLSessionHTTPClient(urlSession: sessionMock)
+            let mockUrlRequest = URLRequest(url: url)
+
+            let result: (data: Data, response: HTTPURLResponse) = try await client.fetchData(with: mockUrlRequest)
+
+            XCTAssertEqual(result.response.statusCode, validStatusCode)
+        }
+    }
 }
 
 private let jsonData = """
