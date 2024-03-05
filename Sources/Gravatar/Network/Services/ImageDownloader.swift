@@ -5,7 +5,6 @@ public typealias ImageDownloadCompletion = (Result<GravatarImageDownloadResult, 
 
 /// Represents a type which can be used by Gravatar to fetch images.
 public protocol ImageDownloader {
-
     /// Fetches a Gravatar user profile image using the user account's email.
     /// - Parameters:
     ///   - email: The user account email
@@ -41,7 +40,7 @@ public protocol ImageDownloader {
         with email: String,
         options: GravatarImageDownloadOptions
     ) async throws -> GravatarImageDownloadResult
-    
+
     /// Fetches an image from the given `URL`, and delivers the image asynchronously.
     /// - Parameters:
     ///   - url: The URL from where to download the image.

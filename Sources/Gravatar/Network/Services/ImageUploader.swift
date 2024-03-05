@@ -2,7 +2,6 @@ import UIKit
 
 /// Represents a type which can be used by Gravatar to upload an  image to Gravatar.
 public protocol ImageUploader {
-
     /// Uploads an image to be used as the user's Gravatar profile image, and returns the `URLResponse` of the network tasks asynchronously.
     /// - Parameters:
     ///   - image: The image to be uploaded.
@@ -14,7 +13,7 @@ public protocol ImageUploader {
         accountEmail: String,
         accountToken: String
     ) async throws -> URLResponse
-    
+
     /// Uploads an image to be used as the user's Gravatar profile image.
     /// - Parameters:
     ///   - image: The image to be uploaded.

@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// A service to perform Profile related tasks.
 public struct ProfileService {
     private let client: HTTPClient
