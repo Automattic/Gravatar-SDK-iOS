@@ -80,12 +80,12 @@ public struct GravatarImageDownloadOptions {
 
     /// GravatarImageDownloadOptions initializer
     /// - Parameters:
-    ///   - preferredSize: preferred image size (set to `nil` for default size)
-    ///   - gravatarRating: maximum rating for image (set to `nil` for default rating)
-    ///   - forceRefresh: force the image to be downloaded, ignoring the cache
-    ///   - forceDefaultImage: force the default image to be used (set to `nil` for default value)
-    ///   - defaultImage: configure the default image (set to `nil` to use the default default image)
-    ///   - processor: processor for handling the downloaded `Data`
+    ///   - preferredSize: Preferred image size (set to `nil` for default size)
+    ///   - gravatarRating: Maximum rating for image (set to `nil` for default rating)
+    ///   - forceRefresh: Force the image to be downloaded, ignoring the cache
+    ///   - forceDefaultImage: Force the default image to be used (set to `nil` for default value)
+    ///   - defaultImage: Configure the default image (set to `nil` to use the default default image)
+    ///   - processingMethod: Method to use for processing the downloaded `Data`
     public init(
         preferredSize: ImageSize? = nil,
         rating: ImageRating? = nil,
