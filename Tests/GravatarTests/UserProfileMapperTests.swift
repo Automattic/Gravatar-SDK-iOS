@@ -5,7 +5,7 @@ final class UserProfileMapperTests: XCTestCase {
     private typealias ProfileName = [String: String]
     private typealias ProfileLinkURL = [String: String]
     private typealias ProfilePhoto = [String: String]
-    private typealias ProfileEmail = [String: String]
+    private typealias ProfileEmail = [String: Any]
     private typealias ProfileAccount = [String: String]
 
     private let url = URL(string: "http://a-url.com")!
@@ -17,6 +17,14 @@ final class UserProfileMapperTests: XCTestCase {
         static let displayName: String = "testdisplayname"
         static let profileUrl: String = "http://a-url.com/profile"
         static let thumbnailUrl: String = "http://a-url.com/thumb"
+        static let pronouns: String = "test/tester/testing"
+        static let aboutMe: String = "test bio"
+        static let lastProfileEdit: String = "2024-03-05 21:49:31"
+        static let name: ProfileName = profileName(
+            givenName: "testname",
+            familyName: "testfamilyname",
+            formatted: "testname testfamilyname"
+        )
         static let photos: [ProfilePhoto] = [
             profilePhoto(
                 value: "https://0.gravatar.com/avatar/22bd03ace6f176bfe0c593650bcf45d8",
@@ -30,6 +38,28 @@ final class UserProfileMapperTests: XCTestCase {
                 linkSlug: nil
             ),
         ]
+        static let emailsBool: [ProfileEmail] = [
+            profileEmail(primary: true, value: "test@example.com"),
+        ]
+        static let emailsString: [ProfileEmail] = [
+            profileEmail(primary: "true", value: "test@example.com"),
+        ]
+        static let accounts: [ProfileAccount] = [
+            profileAccount(
+                domain: "test.example.com",
+                display: "display.example.com",
+                url: "http://a-url.com",
+                iconUrl: "http://a-url.com/icon",
+                username: "testname",
+                verified: "true",
+                name: "testname",
+                shortname: "shortname"
+            ),
+        ]
+
+        static func profileName(name: UserProfile.Name) -> ProfileName {
+            profileName(givenName: name.givenName, familyName: name.familyName, formatted: name.formatted)
+        }
 
         static func profilePhoto(photo: UserProfile.Photo) -> ProfilePhoto {
             profilePhoto(value: photo.value, type: photo.type)
@@ -37,6 +67,31 @@ final class UserProfileMapperTests: XCTestCase {
 
         static func profileUrl(url: UserProfile.LinkURL) -> ProfileLinkURL {
             profileUrl(title: url.title, value: url.value, linkSlug: url.linkSlug)
+        }
+
+        static func profileEmail(email: UserProfile.Email) -> ProfileEmail {
+            profileEmail(primary: email.primary, value: email.value)
+        }
+
+        static func profileAccount(account: UserProfile.Account) -> ProfileAccount {
+            profileAccount(
+                domain: account.domain,
+                display: account.display,
+                url: account.url,
+                iconUrl: account.iconUrl,
+                username: account.username,
+                verified: account.verified,
+                name: account.name,
+                shortname: account.shortname
+            )
+        }
+
+        private static func profileName(givenName: String, familyName: String, formatted: String) -> ProfileName {
+            [
+                "givenName": givenName,
+                "familyName": familyName,
+                "formatted": formatted,
+            ]
         }
 
         private static func profilePhoto(value: String, type: String) -> ProfilePhoto {
@@ -52,6 +107,35 @@ final class UserProfileMapperTests: XCTestCase {
                 "value": value,
                 "link_slug": linkSlug,
             ].compactMapValues { $0 }
+        }
+
+        private static func profileEmail(primary: some Codable, value: String) -> ProfileEmail {
+            [
+                "primary": primary,
+                "value": value,
+            ]
+        }
+
+        private static func profileAccount(
+            domain: String,
+            display: String,
+            url: String,
+            iconUrl: String,
+            username: String,
+            verified: String,
+            name: String,
+            shortname: String
+        ) -> ProfileAccount {
+            [
+                "domain": domain,
+                "display": display,
+                "url": url,
+                "iconUrl": iconUrl,
+                "username": username,
+                "verified": verified,
+                "name": name,
+                "shortname": shortname,
+            ]
         }
     }
 
@@ -90,6 +174,61 @@ final class UserProfileMapperTests: XCTestCase {
         expect(profile: profile)
     }
 
+    func testComprehensiveUserProfile() async throws {
+        let json = makeProfile(
+            hash: TestProfile.hash,
+            requestHash: TestProfile.requestHash,
+            preferredUsername: TestProfile.preferredUsername,
+            displayName: TestProfile.displayName,
+            name: TestProfile.name,
+            pronouns: TestProfile.pronouns,
+            aboutMe: TestProfile.aboutMe,
+            urls: TestProfile.urls,
+            photos: TestProfile.photos,
+            emails: TestProfile.emailsString,
+            accounts: TestProfile.accounts,
+            profileUrl: TestProfile.profileUrl,
+            thumbnailUrl: TestProfile.thumbnailUrl,
+            lastProfileEdit: TestProfile.lastProfileEdit
+        )
+
+        let urlSession = URLSessionMock(returnData: makeProfileJSON([json]), response: HTTPURLResponse())
+        let client = HTTPClientMock(session: urlSession)
+        let profileService = ProfileService(client: client)
+
+        let profile = try await profileService.fetchProfile(with: URLRequest(url: url))
+        expect(profile: profile)
+    }
+
+    func testComprehensiveUserProfileWithEmailBoolValue() async throws {
+        let json = makeProfile(
+            hash: TestProfile.hash,
+            requestHash: TestProfile.requestHash,
+            preferredUsername: TestProfile.preferredUsername,
+            displayName: TestProfile.displayName,
+            name: TestProfile.name,
+            pronouns: TestProfile.pronouns,
+            aboutMe: TestProfile.aboutMe,
+            urls: TestProfile.urls,
+            photos: TestProfile.photos,
+            emails: TestProfile.emailsBool,
+            accounts: TestProfile.accounts,
+            profileUrl: TestProfile.profileUrl,
+            thumbnailUrl: TestProfile.thumbnailUrl,
+            lastProfileEdit: TestProfile.lastProfileEdit
+        )
+        let urlSession = URLSessionMock(returnData: makeProfileJSON([json]), response: HTTPURLResponse())
+        let client = HTTPClientMock(session: urlSession)
+        let profileService = ProfileService(client: client)
+
+        do {
+            let profile = try await profileService.fetchProfile(with: URLRequest(url: url))
+            expect(profile: profile)
+        } catch {
+            XCTFail()
+        }
+    }
+
     private func makeProfileJSON(_ entry: [[String: Any]]) -> Data {
         let json = ["entry": entry]
         return try! JSONSerialization.data(withJSONObject: json)
@@ -100,7 +239,7 @@ final class UserProfileMapperTests: XCTestCase {
         requestHash: String,
         preferredUsername: String,
         displayName: String,
-        name: [ProfileName]? = nil,
+        name: ProfileName? = nil,
         pronouns: String? = nil,
         aboutMe: String? = nil,
         urls: [ProfileLinkURL] = [],
@@ -132,9 +271,13 @@ final class UserProfileMapperTests: XCTestCase {
         return json.compactMapValues { $0 }
     }
 
-    private func expect(profile: UserProfile) {
-        XCTAssertEqual(profile.hash, "22bd03ace6f176bfe0c593650bcf45d8")
-        XCTAssertEqual(profile.requestHash, "205e460b479e2e5b48aec07710c08d50")
+    private func expect(
+        profile: UserProfile,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
+        XCTAssertEqual(profile.hash, TestProfile.hash)
+        XCTAssertEqual(profile.requestHash, TestProfile.requestHash)
         XCTAssertEqual(profile.photos.count, TestProfile.photos.count)
 
         for (index, photo) in profile.photos.enumerated() {
