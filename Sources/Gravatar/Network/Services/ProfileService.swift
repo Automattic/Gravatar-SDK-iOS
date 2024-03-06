@@ -35,7 +35,7 @@ public struct ProfileService {
     public func fetchProfile(with request: URLRequest) async throws -> UserProfile {
         do {
             let result: (data: Data, response: HTTPURLResponse) = try await client.fetchData(with: request)
-            let fetchProfileResult = map(result.data, result.response)
+            let fetchProfileResult = UserProfileMapper.map(result.data, result.response)
             switch fetchProfileResult {
             case .success(let profile):
                 return profile
