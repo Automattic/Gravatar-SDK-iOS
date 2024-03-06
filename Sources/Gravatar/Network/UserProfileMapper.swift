@@ -79,9 +79,9 @@ struct UserProfileMapper {
             init(from decoder: Decoder) throws {
                 let container: KeyedDecodingContainer<Profile.Email.CodingKeys> = try decoder.container(keyedBy: Profile.Email.CodingKeys.self)
 
-                if let primaryString = try container.decodeIfPresent(String.self, forKey: Profile.Email.CodingKeys.primary) {
+                if let primaryString = try? container.decodeIfPresent(String.self, forKey: Profile.Email.CodingKeys.primary) {
                     self.primary = primaryString == "true"
-                } else if let primaryBool = try container.decodeIfPresent(Bool.self, forKey: Profile.Email.CodingKeys.primary) {
+                } else if let primaryBool = try? container.decodeIfPresent(Bool.self, forKey: Profile.Email.CodingKeys.primary) {
                     self.primary = primaryBool
                 } else {
                     self.primary = false
