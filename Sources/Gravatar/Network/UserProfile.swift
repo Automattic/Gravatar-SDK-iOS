@@ -47,7 +47,7 @@ extension UserProfile {
 
     public struct Email {
         public let value: String
-        let primary: String
+        public let primary: String
         public var isPrimary: Bool {
             primary == "true"
         }
@@ -60,9 +60,9 @@ extension UserProfile {
         public let name: String
         public let shortname: String
 
-        let url: String
-        let iconUrl: String
-        let verified: String
+        public let url: String
+        public let iconUrl: String
+        public let verified: String
 
         public var accountURL: URL? {
             URL(string: url)
@@ -80,7 +80,7 @@ extension UserProfile {
     public struct LinkURL {
         public let title: String
         public let linkSlug: String?
-        let value: String
+        public let value: String
 
         var url: URL? {
             URL(string: value)
@@ -89,7 +89,7 @@ extension UserProfile {
 
     public struct Photo {
         public let type: String
-        let value: String
+        public let value: String
 
         public var url: URL? {
             URL(string: value)
