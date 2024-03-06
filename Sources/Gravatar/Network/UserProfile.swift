@@ -38,16 +38,14 @@ extension UserProfile {
     }
 }
 
-extension UserProfile: Decodable {}
-
 extension UserProfile {
-    public struct Name: Decodable {
+    public struct Name {
         public let givenName: String
         public let familyName: String
         public let formatted: String
     }
 
-    public struct Email: Decodable {
+    public struct Email {
         public let value: String
         let primary: String
         public var isPrimary: Bool {
@@ -55,7 +53,7 @@ extension UserProfile {
         }
     }
 
-    public struct Account: Decodable {
+    public struct Account {
         public let domain: String
         public let display: String
         public let username: String
@@ -79,7 +77,7 @@ extension UserProfile {
         }
     }
 
-    public struct LinkURL: Decodable {
+    public struct LinkURL {
         public let title: String
         public let linkSlug: String?
         let value: String
@@ -89,7 +87,7 @@ extension UserProfile {
         }
     }
 
-    public struct Photo: Decodable {
+    public struct Photo {
         public let type: String
         let value: String
 
