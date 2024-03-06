@@ -11,7 +11,7 @@ final class ImageServiceTests: XCTestCase {
         let response = HTTPURLResponse.successResponse(with: TestData.urlFromEmail)
         let sessionMock = URLSessionMock(returnData: ImageHelper.testImageData, response: response)
         let service = imageService(with: sessionMock)
-        let options = GravatarImageDownloadOptions()
+        let options = ImageDownloadOptions()
 
         let imageResponse = try await service.fetchImage(with: TestData.email, options: options)
 
@@ -189,7 +189,7 @@ final class ImageServiceTests: XCTestCase {
         let cache = TestImageCache()
         let sessionMock = URLSessionMock(returnData: ImageHelper.testImageData, response: HTTPURLResponse.successResponse(with: TestData.urlFromEmail))
         let service = imageService(with: sessionMock, cache: cache)
-        let options = GravatarImageDownloadOptions(forceRefresh: true)
+        let options = ImageDownloadOptions(forceRefresh: true)
 
         _ = try await service.fetchImage(with: TestData.email, options: options)
         _ = try await service.fetchImage(with: TestData.email, options: options)
@@ -204,7 +204,7 @@ final class ImageServiceTests: XCTestCase {
         let cache = TestImageCache()
         let sessionMock = URLSessionMock(returnData: ImageHelper.testImageData, response: HTTPURLResponse.successResponse(with: TestData.urlFromEmail))
         let service = imageService(with: sessionMock, cache: cache)
-        let options = GravatarImageDownloadOptions(forceRefresh: false)
+        let options = ImageDownloadOptions(forceRefresh: false)
 
         _ = try await service.fetchImage(with: TestData.email, options: options)
         _ = try await service.fetchImage(with: TestData.email, options: options)
@@ -220,7 +220,7 @@ final class ImageServiceTests: XCTestCase {
         let sessionMock = URLSessionMock(returnData: ImageHelper.testImageData, response: response)
         let service = imageService(with: sessionMock)
         let testProcessor = TestImageProcessor()
-        let options = GravatarImageDownloadOptions(processingMethod: .custom(processor: testProcessor))
+        let options = ImageDownloadOptions(processingMethod: .custom(processor: testProcessor))
 
         _ = try await service.fetchImage(with: TestData.email, options: options)
 
@@ -233,7 +233,7 @@ final class ImageServiceTests: XCTestCase {
         let response = HTTPURLResponse.successResponse(with: URL(string: urlWithQuery)!)
         let sessionMock = URLSessionMock(returnData: ImageHelper.testImageData, response: response)
         let service = imageService(with: sessionMock)
-        let options = GravatarImageDownloadOptions(defaultImage: .misteryPerson)
+        let options = ImageDownloadOptions(defaultImage: .misteryPerson)
 
         let imageResponse = try await service.fetchImage(with: TestData.email, options: options)
 

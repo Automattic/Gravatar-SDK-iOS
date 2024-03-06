@@ -1,7 +1,7 @@
 import Foundation
 
-extension Result<GravatarImageDownloadResult, ImageFetchingError> {
-    func map() -> Result<GravatarImageDownloadResult, ImageFetchingComponentError> {
+extension Result<ImageDownloadResult, ImageFetchingError> {
+    func map() -> Result<ImageDownloadResult, ImageFetchingComponentError> {
         switch self {
         case .success(let value):
             .success(value)
