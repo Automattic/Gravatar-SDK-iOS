@@ -156,6 +156,8 @@ struct UserProfileMapper {
             return .failure(.requestError(reason: .urlInitializationFailed))
         } catch let error as ProfileServiceError {
             return .failure(error)
+        } catch let error as DecodingError {
+            return .failure(.noProfileInResponse)
         } catch {
             return .failure(.responseError(reason: .unexpected(error)))
         }
