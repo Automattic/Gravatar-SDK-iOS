@@ -2,6 +2,12 @@ import Gravatar
 import XCTest
 
 final class UserProfileMapperTests: XCTestCase {
+    private typealias ProfileName = [String: String]
+    private typealias ProfileLinkURL = [String: String]
+    private typealias ProfilePhoto = [String: String]
+    private typealias ProfileEmail = [String: String]
+    private typealias ProfileAccount = [String: String]
+
     private let url = URL(string: "http://a-url.com")!
 
     private enum TestProfile {
@@ -49,22 +55,18 @@ final class UserProfileMapperTests: XCTestCase {
         }
     }
 
-    private func expect(profile: UserProfile) {
-        XCTAssertEqual(profile.hash, "22bd03ace6f176bfe0c593650bcf45d8")
-        XCTAssertEqual(profile.requestHash, "205e460b479e2e5b48aec07710c08d50")
-        XCTAssertEqual(profile.photos.count, TestProfile.photos.count)
+    func testInvalidUserProfile() async {
+        let data = makeProfileJSON([[:]])
+        let urlSession = URLSessionMock(returnData: data, response: HTTPURLResponse())
+        let client = HTTPClientMock(session: urlSession)
+        let profileService = ProfileService(client: client)
 
-        for (index, photo) in profile.photos.enumerated() {
-            XCTAssertEqual(TestProfile.profilePhoto(photo: photo), TestProfile.photos[index])
-        }
-
-        XCTAssertEqual(profile.preferredUsername, TestProfile.preferredUsername)
-        XCTAssertEqual(profile.displayName, TestProfile.displayName)
-        XCTAssertEqual(profile.profileURL, URL(string: TestProfile.profileUrl))
-        XCTAssertEqual(profile.thumbnailURL, URL(string: TestProfile.thumbnailUrl))
-
-        for (index, url) in profile.urls.enumerated() {
-            XCTAssertEqual(TestProfile.profileUrl(url: url), TestProfile.urls[index])
+        do {
+            let _ = try await profileService.fetchProfile(with: URLRequest(url: url))
+        } catch let error as ProfileServiceError {
+            XCTAssertEqual(error.debugDescription, ProfileServiceError.noProfileInResponse.debugDescription)
+        } catch {
+            XCTFail("Should have thrown a ProfileServiceError")
         }
     }
 
@@ -79,8 +81,7 @@ final class UserProfileMapperTests: XCTestCase {
             profileUrl: TestProfile.profileUrl,
             thumbnailUrl: TestProfile.thumbnailUrl
         )
-        let data = makeProfileJSON([json])
-        let urlSession = URLSessionMock(returnData: data, response: HTTPURLResponse())
+        let urlSession = URLSessionMock(returnData: makeProfileJSON([json]), response: HTTPURLResponse())
         let client = HTTPClientMock(session: urlSession)
         let profileService = ProfileService(client: client)
 
@@ -88,12 +89,6 @@ final class UserProfileMapperTests: XCTestCase {
 
         expect(profile: profile)
     }
-
-    private typealias ProfileName = [String: String]
-    private typealias ProfileLinkURL = [String: String]
-    private typealias ProfilePhoto = [String: String]
-    private typealias ProfileEmail = [String: String]
-    private typealias ProfileAccount = [String: String]
 
     private func makeProfileJSON(_ entry: [[String: Any]]) -> Data {
         let json = ["entry": entry]
@@ -135,6 +130,25 @@ final class UserProfileMapperTests: XCTestCase {
         ]
 
         return json.compactMapValues { $0 }
+    }
+
+    private func expect(profile: UserProfile) {
+        XCTAssertEqual(profile.hash, "22bd03ace6f176bfe0c593650bcf45d8")
+        XCTAssertEqual(profile.requestHash, "205e460b479e2e5b48aec07710c08d50")
+        XCTAssertEqual(profile.photos.count, TestProfile.photos.count)
+
+        for (index, photo) in profile.photos.enumerated() {
+            XCTAssertEqual(TestProfile.profilePhoto(photo: photo), TestProfile.photos[index])
+        }
+
+        XCTAssertEqual(profile.preferredUsername, TestProfile.preferredUsername)
+        XCTAssertEqual(profile.displayName, TestProfile.displayName)
+        XCTAssertEqual(profile.profileURL, URL(string: TestProfile.profileUrl))
+        XCTAssertEqual(profile.thumbnailURL, URL(string: TestProfile.thumbnailUrl))
+
+        for (index, url) in profile.urls.enumerated() {
+            XCTAssertEqual(TestProfile.profileUrl(url: url), TestProfile.urls[index])
+        }
     }
 }
 
