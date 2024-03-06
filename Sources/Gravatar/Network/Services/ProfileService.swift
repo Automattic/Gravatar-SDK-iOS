@@ -53,26 +53,6 @@ public struct ProfileService {
         let path: String
     }
 
-    private func map(_ data: Data, _: HTTPURLResponse) -> Result<UserProfile, ProfileServiceError> {
-        do {
-            let decoder = JSONDecoder()
-            decoder.keyDecodingStrategy = .convertFromSnakeCase
-            let profileResponse = try decoder.decode(FetchProfileResponse.self, from: data)
-            guard let profile = profileResponse.entry.first else {
-                throw ProfileServiceError.noProfileInResponse
-            }
-            return .success(profile)
-        } catch let error as HTTPClientError {
-            return .failure(.responseError(reason: error.map()))
-        } catch _ as CannotCreateURLFromGivenPath {
-            return .failure(.requestError(reason: .urlInitializationFailed))
-        } catch let error as ProfileServiceError {
-            return .failure(error)
-        } catch {
-            return .failure(.responseError(reason: .unexpected(error)))
-        }
-    }
-
     private func url(from path: String) throws -> URL {
         guard let url = URL(string: baseUrl + path) else {
             throw CannotCreateURLFromGivenPath(baseURL: baseUrl, path: path)

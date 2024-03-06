@@ -1,9 +1,5 @@
 import Foundation
 
-struct FetchProfileResponse: Decodable {
-    let entry: [UserProfile]
-}
-
 public struct UserProfile {
     public let hash: String
     public let requestHash: String
