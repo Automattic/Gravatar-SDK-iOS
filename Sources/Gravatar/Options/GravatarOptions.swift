@@ -58,13 +58,13 @@ public struct GravatarImageSettingOptions {
     func deriveDownloadOptions(
         garavatarRating rating: ImageRating? = nil,
         preferredSize size: ImageSize? = nil,
-        defaultImage: DefaultImageOption? = nil
+        defaultImageOption: DefaultImageOption? = nil
     ) -> GravatarImageDownloadOptions {
         GravatarImageDownloadOptions(
             preferredSize: size,
             rating: rating,
             forceRefresh: forceRefresh,
-            defaultImage: defaultImage,
+            defaultImageOption: defaultImageOption,
             processingMethod: processingMethod
         )
     }
@@ -84,14 +84,14 @@ public struct GravatarImageDownloadOptions {
     ///   - gravatarRating: maximum rating for image (set to `nil` for default rating)
     ///   - forceRefresh: force the image to be downloaded, ignoring the cache
     ///   - forceDefaultImage: force the default image to be used (set to `nil` for default value)
-    ///   - defaultImage: configure the default image (set to `nil` to use the default default image)
+    ///   - defaultImageOption: configure the default image (set to `nil` to use the default default image)
     ///   - processor: processor for handling the downloaded `Data`
     public init(
         preferredSize: ImageSize? = nil,
         rating: ImageRating? = nil,
         forceRefresh: Bool = false,
         forceDefaultImage: Bool? = nil,
-        defaultImage: DefaultImageOption? = nil,
+        defaultImageOption: DefaultImageOption? = nil,
         processingMethod: ImageProcessingMethod = .common
     ) {
         self.forceRefresh = forceRefresh
@@ -101,7 +101,7 @@ public struct GravatarImageDownloadOptions {
         self.imageQueryOptions = ImageQueryOptions(
             preferredSize: preferredSize,
             rating: rating,
-            defaultImage: defaultImage,
+            defaultImageOption: defaultImageOption,
             forceDefaultImage: forceDefaultImage
         )
     }
