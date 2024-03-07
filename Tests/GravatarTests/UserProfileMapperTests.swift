@@ -441,35 +441,3 @@ private struct HTTPClientMock: HTTPClient {
         session.response
     }
 }
-
-private let emptyJsonData = """
-{
-    "entry": []
-}
-""".data(using: .utf8)!
-
-// private let basicProfile = [
-//    "hash":
-// ]
-
-private let basicProfileJsonData = """
-{
-    "entry": [
-        {
-            "hash": "2abc869bdcc50e92d61dc7fb897fa492",
-            "requestHash": "admtest14b1fe874a0",
-            "profileUrl": "https://gravatar.com/admtest14b1fe874a0",
-            "preferredUsername": "admtest14b1fe874a0",
-            "thumbnailUrl": "https://0.gravatar.com/avatar/2abc869bdcc50e92d61dc7fb897fa492",
-            "photos": [
-                {
-                    "value": "https://0.gravatar.com/avatar/2abc869bdcc50e92d61dc7fb897fa492",
-                    "type": "thumbnail"
-                }
-            ],
-            "displayName": "admtest14b1fe874a0",
-            "urls": []
-        }
-    ]
-}
-""".data(using: .utf8)!
