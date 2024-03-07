@@ -1,7 +1,7 @@
 import Foundation
 import UIKit
 
-public typealias GravatarImageSetCompletion = (Result<ImageDownloadResult, ImageFetchingComponentError>) -> Void
+public typealias ImageSetCompletion = (Result<ImageDownloadResult, ImageFetchingComponentError>) -> Void
 
 // MARK: - Associated Object
 
@@ -149,7 +149,7 @@ extension GravatarWrapper where Component: UIImageView {
         preferredSize: CGSize? = nil,
         defaultImage: DefaultImageOption? = nil,
         options: [ImageSettingOption]? = nil,
-        completionHandler: GravatarImageSetCompletion? = nil
+        completionHandler: ImageSetCompletion? = nil
     ) -> CancellableDataTask? {
         let pointsSize = pointImageSize(from: preferredSize)
         let downloadOptions = ImageSettingOptions(options: options).deriveDownloadOptions(
@@ -174,7 +174,7 @@ extension GravatarWrapper where Component: UIImageView {
         with source: URL?,
         placeholder: UIImage? = nil,
         options: [ImageSettingOption]? = nil,
-        completionHandler: GravatarImageSetCompletion? = nil
+        completionHandler: ImageSetCompletion? = nil
     ) -> CancellableDataTask? {
         var mutatingSelf = self
         guard let source else {
