@@ -105,6 +105,16 @@ final class UserProfileMapperTests: XCTestCase {
             )
         }
 
+        private static func profileName(givenName: String?, familyName: String?, formatted: String?) -> ProfileName? {
+            let profileName = [
+                "givenName": givenName,
+                "familyName": familyName,
+                "formatted": formatted,
+            ].compactMapValues { $0 }
+
+            return profileName.isEmpty ? nil : profileName
+        }
+
         private static func profileName(givenName: String, familyName: String, formatted: String) -> ProfileName {
             [
                 "givenName": givenName,
@@ -113,11 +123,11 @@ final class UserProfileMapperTests: XCTestCase {
             ]
         }
 
-        private static func profilePhoto(value: String, type: String) -> ProfilePhoto {
+        private static func profilePhoto(value: String, type: String?) -> ProfilePhoto {
             [
                 "value": value,
                 "type": type,
-            ]
+            ].compactMapValues { $0 }
         }
 
         private static func profileUrl(title: String, value: String, linkSlug: String?) -> ProfileLinkURL {
@@ -139,7 +149,7 @@ final class UserProfileMapperTests: XCTestCase {
             domain: String,
             display: String,
             url: String,
-            iconUrl: String,
+            iconUrl: String?,
             username: String,
             verified: some Codable,
             name: String,
@@ -149,12 +159,12 @@ final class UserProfileMapperTests: XCTestCase {
                 "domain": domain,
                 "display": display,
                 "url": url,
-                "iconUrl": iconUrl,
-                "username": username,
+                "iconUrl": iconUrl as Any,
                 "verified": verified,
+                "username": username,
                 "name": name,
                 "shortname": shortname,
-            ]
+            ].compactMapValues { $0 as? any Codable }
         }
     }
 

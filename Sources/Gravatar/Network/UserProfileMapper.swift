@@ -13,7 +13,7 @@ struct UserProfileMapper {
         let hash: String
         let requestHash: String
         let preferredUsername: String
-        let displayName: String
+        let displayName: String?
         let name: Name?
         let pronouns: String?
         let aboutMe: String?
@@ -47,9 +47,9 @@ struct UserProfileMapper {
         }
 
         struct Name: Decodable {
-            let givenName: String
-            let familyName: String
-            let formatted: String
+            let givenName: String?
+            let familyName: String?
+            let formatted: String?
 
             var name: UserProfile.Name {
                 UserProfile.Name(
@@ -99,7 +99,7 @@ struct UserProfileMapper {
             let shortname: String
 
             let url: String
-            let iconUrl: String
+            let iconUrl: String?
             let verified: Bool
 
             var account: UserProfile.Account {
@@ -162,7 +162,7 @@ struct UserProfileMapper {
         }
 
         struct Photo: Decodable {
-            let type: String
+            let type: String?
             let value: String
 
             var photo: UserProfile.Photo {

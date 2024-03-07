@@ -4,7 +4,7 @@ public struct UserProfile {
     public let hash: String
     public let requestHash: String
     public let preferredUsername: String
-    public let displayName: String
+    public let displayName: String?
     public let name: Name?
     public let pronouns: String?
     public let aboutMe: String?
@@ -40,9 +40,9 @@ extension UserProfile {
 
 extension UserProfile {
     public struct Name {
-        public let givenName: String
-        public let familyName: String
-        public let formatted: String
+        public let givenName: String?
+        public let familyName: String?
+        public let formatted: String?
     }
 
     public struct Email {
@@ -58,7 +58,7 @@ extension UserProfile {
         public let shortname: String
 
         public let url: String
-        public let iconUrl: String
+        public let iconUrl: String?
         public let isVerified: Bool
 
         public var accountURL: URL? {
@@ -66,7 +66,8 @@ extension UserProfile {
         }
 
         public var iconURL: URL? {
-            URL(string: iconUrl)
+            guard let iconUrl else { return nil }
+            return URL(string: iconUrl)
         }
     }
 
@@ -81,7 +82,7 @@ extension UserProfile {
     }
 
     public struct Photo {
-        public let type: String
+        public let type: String?
         public let value: String
 
         public var url: URL? {
