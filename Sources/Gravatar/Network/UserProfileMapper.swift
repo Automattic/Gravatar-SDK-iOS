@@ -100,7 +100,7 @@ struct UserProfileMapper {
 
             let url: String
             let iconUrl: String
-            let verified: String
+            let verified: Bool
 
             var account: UserProfile.Account {
                 UserProfile.Account(
@@ -111,8 +111,39 @@ struct UserProfileMapper {
                     shortname: shortname,
                     url: url,
                     iconUrl: iconUrl,
-                    verified: verified
+                    isVerified: verified
                 )
+            }
+
+            enum CodingKeys: CodingKey {
+                case domain
+                case display
+                case username
+                case name
+                case shortname
+                case url
+                case iconUrl
+                case verified
+            }
+
+            init(from decoder: Decoder) throws {
+                let container: KeyedDecodingContainer<UserProfileMapper.Profile.Account.CodingKeys> = try decoder
+                    .container(keyedBy: UserProfileMapper.Profile.Account.CodingKeys.self)
+                self.domain = try container.decode(String.self, forKey: UserProfileMapper.Profile.Account.CodingKeys.domain)
+                self.display = try container.decode(String.self, forKey: UserProfileMapper.Profile.Account.CodingKeys.display)
+                self.username = try container.decode(String.self, forKey: UserProfileMapper.Profile.Account.CodingKeys.username)
+                self.name = try container.decode(String.self, forKey: UserProfileMapper.Profile.Account.CodingKeys.name)
+                self.shortname = try container.decode(String.self, forKey: UserProfileMapper.Profile.Account.CodingKeys.shortname)
+                self.url = try container.decode(String.self, forKey: UserProfileMapper.Profile.Account.CodingKeys.url)
+                self.iconUrl = try container.decode(String.self, forKey: UserProfileMapper.Profile.Account.CodingKeys.iconUrl)
+
+                if let verifiedString = try? container.decodeIfPresent(String.self, forKey: Profile.Account.CodingKeys.verified) {
+                    self.verified = verifiedString == "true"
+                } else if let verifiedBool = try? container.decodeIfPresent(Bool.self, forKey: Profile.Account.CodingKeys.verified) {
+                    self.verified = verifiedBool
+                } else {
+                    self.verified = false
+                }
             }
         }
 

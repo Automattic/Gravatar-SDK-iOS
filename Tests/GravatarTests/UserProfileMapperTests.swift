@@ -6,7 +6,7 @@ final class UserProfileMapperTests: XCTestCase {
     private typealias ProfileLinkURL = [String: String]
     private typealias ProfilePhoto = [String: String]
     private typealias ProfileEmail = [String: any Codable]
-    private typealias ProfileAccount = [String: String]
+    private typealias ProfileAccount = [String: any Codable]
 
     private let url = URL(string: "http://a-url.com")!
 
@@ -50,7 +50,19 @@ final class UserProfileMapperTests: XCTestCase {
         static let emailsString: [ProfileEmail] = [
             profileEmail(primary: "true", value: "test@example.com"),
         ]
-        static let accounts: [ProfileAccount] = [
+        static let accountsBool: [ProfileAccount] = [
+            profileAccount(
+                domain: "test.example.com",
+                display: "display.example.com",
+                url: "http://a-url.com",
+                iconUrl: "http://a-url.com/icon",
+                username: "testname",
+                verified: true,
+                name: "testname",
+                shortname: "shortname"
+            ),
+        ]
+        static let accountsString: [ProfileAccount] = [
             profileAccount(
                 domain: "test.example.com",
                 display: "display.example.com",
@@ -87,7 +99,7 @@ final class UserProfileMapperTests: XCTestCase {
                 url: account.url,
                 iconUrl: account.iconUrl,
                 username: account.username,
-                verified: account.verified,
+                verified: account.isVerified,
                 name: account.name,
                 shortname: account.shortname
             )
@@ -129,7 +141,7 @@ final class UserProfileMapperTests: XCTestCase {
             url: String,
             iconUrl: String,
             username: String,
-            verified: String,
+            verified: some Codable,
             name: String,
             shortname: String
         ) -> ProfileAccount {
@@ -189,13 +201,11 @@ final class UserProfileMapperTests: XCTestCase {
         let photos = profile.photos.map { TestProfile.profilePhoto(photo: $0) }
         expectEqual(output: photos, assertion: TestProfile.photos)
 
-        expect(emails: profile.emails)
-
         expectEqual(output: profile.profileURL, assertion: URL(string: TestProfile.profileUrl)!)
         expectEqual(output: profile.thumbnailURL, assertion: URL(string: TestProfile.thumbnailUrl)!)
     }
 
-    func testComprehensiveUserProfileWithEmailStringValue() async throws {
+    func testComprehensiveUserProfileWithStringBools() async throws {
         let json = makeProfile(
             hash: TestProfile.hash,
             requestHash: TestProfile.requestHash,
@@ -207,7 +217,7 @@ final class UserProfileMapperTests: XCTestCase {
             urls: TestProfile.urls,
             photos: TestProfile.photos,
             emails: TestProfile.emailsString,
-            accounts: TestProfile.accounts,
+            accounts: TestProfile.accountsString,
             profileUrl: TestProfile.profileUrl,
             thumbnailUrl: TestProfile.thumbnailUrl,
             lastProfileEdit: TestProfile.lastProfileEdit
@@ -232,10 +242,9 @@ final class UserProfileMapperTests: XCTestCase {
         let photos = profile.photos.map { TestProfile.profilePhoto(photo: $0) }
         expectEqual(output: photos, assertion: TestProfile.photos)
 
-        expect(emails: profile.emails)
+        expect(emails: profile.emails, assertions: TestProfile.emailsString)
 
-        let accounts = profile.accounts?.map { TestProfile.profileAccount(account: $0) }
-        expectEqual(output: accounts, assertion: TestProfile.accounts)
+        expect(accounts: profile.accounts, assertions: TestProfile.accountsString)
 
         expectEqual(output: profile.profileURL, assertion: URL(string: TestProfile.profileUrl)!)
         expectEqual(output: profile.thumbnailURL, assertion: URL(string: TestProfile.thumbnailUrl)!)
@@ -243,7 +252,7 @@ final class UserProfileMapperTests: XCTestCase {
         expectEqual(output: profile.lastProfileEditDate, assertion: TestProfile.lastProfileEditDate)
     }
 
-    func testComprehensiveUserProfileWithEmailBoolValue() async throws {
+    func testComprehensiveUserProfileWithNativeBools() async throws {
         let json = makeProfile(
             hash: TestProfile.hash,
             requestHash: TestProfile.requestHash,
@@ -255,7 +264,7 @@ final class UserProfileMapperTests: XCTestCase {
             urls: TestProfile.urls,
             photos: TestProfile.photos,
             emails: TestProfile.emailsBool,
-            accounts: TestProfile.accounts,
+            accounts: TestProfile.accountsBool,
             profileUrl: TestProfile.profileUrl,
             thumbnailUrl: TestProfile.thumbnailUrl,
             lastProfileEdit: TestProfile.lastProfileEdit
@@ -280,10 +289,9 @@ final class UserProfileMapperTests: XCTestCase {
             let photos = profile.photos.map { TestProfile.profilePhoto(photo: $0) }
             expectEqual(output: photos, assertion: TestProfile.photos)
 
-            expect(emails: profile.emails)
+            expect(emails: profile.emails, assertions: TestProfile.emailsBool)
 
-            let accounts = profile.accounts?.map { TestProfile.profileAccount(account: $0) }
-            expectEqual(output: accounts, assertion: TestProfile.accounts)
+            expect(accounts: profile.accounts, assertions: TestProfile.accountsBool)
 
             expectEqual(output: profile.profileURL, assertion: URL(string: TestProfile.profileUrl)!)
             expectEqual(output: profile.thumbnailURL, assertion: URL(string: TestProfile.thumbnailUrl)!)
@@ -361,14 +369,59 @@ final class UserProfileMapperTests: XCTestCase {
 
     private func expect(
         emails: [UserProfile.Email]?,
+        assertions: [ProfileEmail],
         file: StaticString = #filePath,
         line: UInt = #line
     ) {
         if let emails {
             for (index, email) in emails.enumerated() {
-                XCTAssertEqual(email.isPrimary, TestProfile.emailsBool[index]["primary"] as? Bool, file: file, line: line)
-                XCTAssertEqual(email.value, TestProfile.emailsBool[index]["value"] as? String, file: file, line: line)
+                XCTAssertEqual(email.isPrimary, boolValue(assertions[index]["primary"]), file: file, line: line)
+                XCTAssertEqual(email.value, assertions[index]["value"] as? String, file: file, line: line)
             }
+        }
+
+        let test = Bool(true)
+    }
+
+    private func boolValue(_ value: (any Codable)?) -> Bool {
+        if let boolValue = value as? Bool {
+            boolValue
+        } else if let stringValue = value as? String {
+            stringValue == "true"
+        } else {
+            false
+        }
+    }
+
+    private func expect(
+        accounts: [UserProfile.Account]?,
+        assertions: [ProfileAccount],
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
+        if let accounts {
+            for (index, account) in accounts.enumerated() {
+                XCTAssertEqual(account.domain, assertions[index]["domain"] as? String, file: file, line: line)
+                XCTAssertEqual(account.display, assertions[index]["display"] as? String, file: file, line: line)
+                XCTAssertEqual(account.username, assertions[index]["username"] as? String, file: file, line: line)
+                XCTAssertEqual(account.name, assertions[index]["name"] as? String, file: file, line: line)
+                XCTAssertEqual(account.shortname, assertions[index]["shortname"] as? String, file: file, line: line)
+                XCTAssertEqual(account.url, assertions[index]["url"] as? String, file: file, line: line)
+                XCTAssertEqual(account.iconUrl, assertions[index]["iconUrl"] as? String, file: file, line: line)
+                XCTAssertEqual(account.isVerified, boolValue(assertions[index]["verified"]), file: file, line: line)
+            }
+        }
+    }
+}
+
+extension Bool {
+    init?(_ value: (some Codable)?) {
+        if let value = value as? String {
+            self.init(value)
+        } else if let value = value as? Bool {
+            self.init(value)
+        } else {
+            return nil
         }
     }
 }

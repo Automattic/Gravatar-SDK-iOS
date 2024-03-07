@@ -59,7 +59,7 @@ extension UserProfile {
 
         public let url: String
         public let iconUrl: String
-        public let verified: String
+        public let isVerified: Bool
 
         public var accountURL: URL? {
             URL(string: url)
@@ -67,10 +67,6 @@ extension UserProfile {
 
         public var iconURL: URL? {
             URL(string: iconUrl)
-        }
-
-        public var isVerified: Bool {
-            verified == "true"
         }
     }
 
