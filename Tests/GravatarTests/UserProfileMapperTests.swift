@@ -379,8 +379,6 @@ final class UserProfileMapperTests: XCTestCase {
                 XCTAssertEqual(email.value, assertions[index]["value"] as? String, file: file, line: line)
             }
         }
-
-        let test = Bool(true)
     }
 
     private func boolValue(_ value: (any Codable)?) -> Bool {
