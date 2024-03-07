@@ -20,6 +20,12 @@ final class UserProfileMapperTests: XCTestCase {
         static let pronouns: String = "test/tester/testing"
         static let aboutMe: String = "test bio"
         static let lastProfileEdit: String = "2024-03-05 21:49:31"
+        static var lastProfileEditDate: Date? {
+            let formatter = ISO8601DateFormatter()
+            formatter.formatOptions = [.withSpaceBetweenDateAndTime]
+            return formatter.date(from: lastProfileEdit)
+        }
+
         static let name: ProfileName = profileName(
             givenName: "testname",
             familyName: "testfamilyname",
@@ -57,8 +63,9 @@ final class UserProfileMapperTests: XCTestCase {
             ),
         ]
 
-        static func profileName(name: UserProfile.Name) -> ProfileName {
-            profileName(givenName: name.givenName, familyName: name.familyName, formatted: name.formatted)
+        static func profileName(name: UserProfile.Name?) -> ProfileName? {
+            guard let name else { return nil }
+            return profileName(givenName: name.givenName, familyName: name.familyName, formatted: name.formatted)
         }
 
         static func profilePhoto(photo: UserProfile.Photo) -> ProfilePhoto {
@@ -171,7 +178,21 @@ final class UserProfileMapperTests: XCTestCase {
 
         let profile = try await profileService.fetchProfile(with: URLRequest(url: url))
 
-        expect(profile: profile)
+        expectEqual(output: profile.hash, assertion: TestProfile.hash)
+        expectEqual(output: profile.requestHash, assertion: TestProfile.requestHash)
+        expectEqual(output: profile.preferredUsername, assertion: TestProfile.preferredUsername)
+        expectEqual(output: profile.displayName, assertion: TestProfile.displayName)
+
+        let profileURLs = profile.urls.map { TestProfile.profileUrl(url: $0) }
+        expectEqual(output: profileURLs, assertion: [])
+
+        let photos = profile.photos.map { TestProfile.profilePhoto(photo: $0) }
+        expectEqual(output: photos, assertion: TestProfile.photos)
+
+        expect(emails: profile.emails)
+
+        expectEqual(output: profile.profileURL, assertion: URL(string: TestProfile.profileUrl)!)
+        expectEqual(output: profile.thumbnailURL, assertion: URL(string: TestProfile.thumbnailUrl)!)
     }
 
     func testComprehensiveUserProfile() async throws {
@@ -197,7 +218,29 @@ final class UserProfileMapperTests: XCTestCase {
         let profileService = ProfileService(client: client)
 
         let profile = try await profileService.fetchProfile(with: URLRequest(url: url))
-        expect(profile: profile)
+        expectEqual(output: profile.hash, assertion: TestProfile.hash)
+        expectEqual(output: profile.requestHash, assertion: TestProfile.requestHash)
+        expectEqual(output: profile.preferredUsername, assertion: TestProfile.preferredUsername)
+        expectEqual(output: profile.displayName, assertion: TestProfile.displayName)
+        expectEqual(output: TestProfile.profileName(name: profile.name), assertion: TestProfile.name)
+        expectEqual(output: profile.pronouns, assertion: TestProfile.pronouns)
+        expectEqual(output: profile.aboutMe, assertion: TestProfile.aboutMe)
+
+        let profileURLs = profile.urls.map { TestProfile.profileUrl(url: $0) }
+        expectEqual(output: profileURLs, assertion: TestProfile.urls)
+
+        let photos = profile.photos.map { TestProfile.profilePhoto(photo: $0) }
+        expectEqual(output: photos, assertion: TestProfile.photos)
+
+        expect(emails: profile.emails)
+
+        let accounts = profile.accounts?.map { TestProfile.profileAccount(account: $0) }
+        expectEqual(output: accounts, assertion: TestProfile.accounts)
+
+        expectEqual(output: profile.profileURL, assertion: URL(string: TestProfile.profileUrl)!)
+        expectEqual(output: profile.thumbnailURL, assertion: URL(string: TestProfile.thumbnailUrl)!)
+
+        expectEqual(output: profile.lastProfileEditDate, assertion: TestProfile.lastProfileEditDate)
     }
 
     func testComprehensiveUserProfileWithEmailBoolValue() async throws {
@@ -223,7 +266,30 @@ final class UserProfileMapperTests: XCTestCase {
 
         do {
             let profile = try await profileService.fetchProfile(with: URLRequest(url: url))
-            expect(profile: profile)
+            expectEqual(output: profile.hash, assertion: TestProfile.hash)
+            expectEqual(output: profile.requestHash, assertion: TestProfile.requestHash)
+            expectEqual(output: profile.preferredUsername, assertion: TestProfile.preferredUsername)
+            expectEqual(output: profile.displayName, assertion: TestProfile.displayName)
+            expectEqual(output: TestProfile.profileName(name: profile.name), assertion: TestProfile.name)
+            expectEqual(output: profile.pronouns, assertion: TestProfile.pronouns)
+            expectEqual(output: profile.aboutMe, assertion: TestProfile.aboutMe)
+
+            let profileURLs = profile.urls.map { TestProfile.profileUrl(url: $0) }
+            expectEqual(output: profileURLs, assertion: TestProfile.urls)
+
+            let photos = profile.photos.map { TestProfile.profilePhoto(photo: $0) }
+            expectEqual(output: photos, assertion: TestProfile.photos)
+
+            expect(emails: profile.emails)
+
+            let accounts = profile.accounts?.map { TestProfile.profileAccount(account: $0) }
+            expectEqual(output: accounts, assertion: TestProfile.accounts)
+
+            expectEqual(output: profile.profileURL, assertion: URL(string: TestProfile.profileUrl)!)
+            expectEqual(output: profile.thumbnailURL, assertion: URL(string: TestProfile.thumbnailUrl)!)
+
+            expectEqual(output: profile.lastProfileEditDate, assertion: TestProfile.lastProfileEditDate)
+
         } catch {
             XCTFail()
         }
@@ -271,26 +337,47 @@ final class UserProfileMapperTests: XCTestCase {
         return json.compactMapValues { $0 }
     }
 
-    private func expect(
-        profile: UserProfile,
+    private func expectEqual<T: Equatable>(
+        output: T,
+        assertion: T,
         file: StaticString = #filePath,
         line: UInt = #line
     ) {
-        XCTAssertEqual(profile.hash, TestProfile.hash)
-        XCTAssertEqual(profile.requestHash, TestProfile.requestHash)
-        XCTAssertEqual(profile.photos.count, TestProfile.photos.count)
+        XCTAssertEqual(output, assertion, file: file, line: line)
+    }
 
-        for (index, photo) in profile.photos.enumerated() {
-            XCTAssertEqual(TestProfile.profilePhoto(photo: photo), TestProfile.photos[index])
+    private func expectEqual<T: Equatable>(
+        output: [T],
+        assertion: [T],
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
+        XCTAssertEqual(output.count, assertion.count, file: file, line: line)
+
+        for (index, entity) in output.enumerated() {
+            expectEqual(output: entity, assertion: assertion[index], file: file, line: line)
         }
+    }
 
-        XCTAssertEqual(profile.preferredUsername, TestProfile.preferredUsername)
-        XCTAssertEqual(profile.displayName, TestProfile.displayName)
-        XCTAssertEqual(profile.profileURL, URL(string: TestProfile.profileUrl))
-        XCTAssertEqual(profile.thumbnailURL, URL(string: TestProfile.thumbnailUrl))
-
-        for (index, url) in profile.urls.enumerated() {
-            XCTAssertEqual(TestProfile.profileUrl(url: url), TestProfile.urls[index])
+    private func expect(
+        emails: [UserProfile.Email]?,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
+        if let emails {
+            for (index, email) in emails.enumerated() {
+                if let boolProfile = TestProfile.profileEmail(email: email) as? [String: Bool],
+                   let boolTestProfile = TestProfile.emailsBool[index] as? [String: Bool]
+                {
+                    XCTAssertEqual(boolProfile, boolTestProfile, file: file, line: line)
+                } else if let stringProfile = TestProfile.profileEmail(email: email) as? [String: String],
+                          let stringTestProfile = TestProfile.emailsString[index] as? [String: String]
+                {
+                    XCTAssertEqual(stringProfile, stringTestProfile, file: file, line: line)
+                } else {
+                    XCTFail("UserProfile.Email should deserialize", file: file, line: line)
+                }
+            }
         }
     }
 }
