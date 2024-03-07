@@ -67,7 +67,7 @@ struct UserProfileMapper {
             var email: UserProfile.Email {
                 UserProfile.Email(
                     value: value,
-                    isPrimary: String(primary)
+                    isPrimary: primary
                 )
             }
 

@@ -47,7 +47,7 @@ extension UserProfile {
 
     public struct Email {
         public let value: String
-        public let isPrimary: String
+        public let isPrimary: Bool
     }
 
     public struct Account {

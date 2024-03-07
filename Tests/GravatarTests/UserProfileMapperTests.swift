@@ -5,7 +5,7 @@ final class UserProfileMapperTests: XCTestCase {
     private typealias ProfileName = [String: String]
     private typealias ProfileLinkURL = [String: String]
     private typealias ProfilePhoto = [String: String]
-    private typealias ProfileEmail = [String: Any]
+    private typealias ProfileEmail = [String: any Codable]
     private typealias ProfileAccount = [String: String]
 
     private let url = URL(string: "http://a-url.com")!
@@ -195,7 +195,7 @@ final class UserProfileMapperTests: XCTestCase {
         expectEqual(output: profile.thumbnailURL, assertion: URL(string: TestProfile.thumbnailUrl)!)
     }
 
-    func testComprehensiveUserProfile() async throws {
+    func testComprehensiveUserProfileWithEmailStringValue() async throws {
         let json = makeProfile(
             hash: TestProfile.hash,
             requestHash: TestProfile.requestHash,
@@ -366,17 +366,8 @@ final class UserProfileMapperTests: XCTestCase {
     ) {
         if let emails {
             for (index, email) in emails.enumerated() {
-                if let boolProfile = TestProfile.profileEmail(email: email) as? [String: Bool],
-                   let boolTestProfile = TestProfile.emailsBool[index] as? [String: Bool]
-                {
-                    XCTAssertEqual(boolProfile, boolTestProfile, file: file, line: line)
-                } else if let stringProfile = TestProfile.profileEmail(email: email) as? [String: String],
-                          let stringTestProfile = TestProfile.emailsString[index] as? [String: String]
-                {
-                    XCTAssertEqual(stringProfile, stringTestProfile, file: file, line: line)
-                } else {
-                    XCTFail("UserProfile.Email should deserialize", file: file, line: line)
-                }
+                XCTAssertEqual(email.isPrimary, TestProfile.emailsBool[index]["primary"] as? Bool, file: file, line: line)
+                XCTAssertEqual(email.value, TestProfile.emailsBool[index]["value"] as? String, file: file, line: line)
             }
         }
     }
