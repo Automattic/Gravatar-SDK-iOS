@@ -233,7 +233,7 @@ final class ImageServiceTests: XCTestCase {
         let response = HTTPURLResponse.successResponse(with: URL(string: urlWithQuery)!)
         let sessionMock = URLSessionMock(returnData: ImageHelper.testImageData, response: response)
         let service = imageService(with: sessionMock)
-        let options = ImageDownloadOptions(defaultImage: .misteryPerson)
+        let options = ImageDownloadOptions(defaultImageOption: .misteryPerson)
 
         let imageResponse = try await service.fetchImage(with: TestData.email, options: options)
 

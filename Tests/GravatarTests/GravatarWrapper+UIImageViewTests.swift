@@ -80,7 +80,7 @@ final class GravatarWrapper_UIImageViewTests: XCTestCase {
 
         imageView.gravatar.setImage(
             email: "hello@gmail.com",
-            defaultImage: .roboHash,
+            defaultImageOption: .roboHash,
             options: [.imageDownloader(imageDownloader)]
         )
 
