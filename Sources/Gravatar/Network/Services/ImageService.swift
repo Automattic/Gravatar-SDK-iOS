@@ -20,7 +20,7 @@ public struct ImageService {
         self.imageCache = cache ?? ImageCache()
     }
 
-    func fetchImage(from url: URL, forceRefresh: Bool, processor: ImageProcessor) async throws -> GravatarImageDownloadResult {
+    func fetchImage(from url: URL, forceRefresh: Bool, processor: ImageProcessor) async throws -> ImageDownloadResult {
         let request = URLRequest.imageRequest(url: url, forceRefresh: forceRefresh)
         do {
             let (data, _) = try await client.fetchData(with: request)
@@ -28,7 +28,7 @@ public struct ImageService {
                 throw ImageFetchingError.imageProcessorFailed
             }
             imageCache.setImage(image, forKey: url.absoluteString)
-            return GravatarImageDownloadResult(image: image, sourceURL: url)
+            return ImageDownloadResult(image: image, sourceURL: url)
         } catch let error as HTTPClientError {
             throw ImageFetchingError.responseError(reason: error.map())
         } catch {

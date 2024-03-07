@@ -141,7 +141,7 @@ class DemoUIImageViewExtensionViewController: UIViewController {
         let placeholderImage: UIImage? = showPlaceholderSwitchWithLabel.isOn ? UIImage(named: "placeholder") : nil
         avatarImageView.gravatar.setImage(email: emailInputField.text ?? "",
                                           placeholder: placeholderImage,
-                                          defaultImage: preferredDefaultImage,
+                                          defaultImageOption: preferredDefaultImage,
                                           options: options) { result in
             switch result {
             case .success(let result):
@@ -158,8 +158,8 @@ class DemoUIImageViewExtensionViewController: UIViewController {
         avatarImageView.gravatar.cancelImageDownload()
     }
     
-    private func setupOptions() -> [GravatarImageSettingOption] {
-        var options: [GravatarImageSettingOption] = []
+    private func setupOptions() -> [ImageSettingOption] {
+        var options: [ImageSettingOption] = []
         
         if animatedFadeInSwitch.isOn {
             options.append(.transition(.fade(0.3)))
