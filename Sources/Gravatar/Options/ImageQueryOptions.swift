@@ -19,7 +19,7 @@ public struct ImageQueryOptions {
     ///   - gravatarRating: The lowest rating allowed to be displayed. If the requested email hash does not have an image meeting the requested rating level,
     ///   - defaultImageOption: Choose what will happen if no Gravatar image is found. See ``DefaultImageOption`` for more info.
     /// then the default image is returned.
-    ///   - forceDefaultImage: If set to `true`, the requested image will always be the default.
+    ///   - forceDefaultImage: If set to `true`, the returned image will always be the default image, determined by the `defaultImageOption` parameter.
     public init(
         preferredSize: ImageSize? = nil,
         rating: ImageRating? = nil,

@@ -78,14 +78,17 @@ public struct ImageDownloadOptions {
 
     private let preferredSize: ImageSize?
 
-    /// ImageDownloadOptions initializer
+    /// Creates a new `GravatarImageDownloadOptions` with the given options.
+    ///
+    /// When passing `nil` to the optional parameters, the backend defaults are going to be used.
+    /// For more info about backend defaults, see https://docs.gravatar.com/general/images/
     /// - Parameters:
-    ///   - preferredSize: preferred image size (set to `nil` for default size)
-    ///   - gravatarRating: maximum rating for image (set to `nil` for default rating)
-    ///   - forceRefresh: force the image to be downloaded, ignoring the cache
-    ///   - forceDefaultImage: force the default image to be used (set to `nil` for default value)
-    ///   - defaultImageOption: configure the default image (set to `nil` to use the default default image)
-    ///   - processor: processor for handling the downloaded `Data`
+    ///   - preferredSize: Preferred image size (set to `nil` for default size)
+    ///   - gravatarRating: Maximum rating for image (set to `nil` for default rating)
+    ///   - forceRefresh: Force the image to be downloaded, ignoring the cache
+    ///   - forceDefaultImage: If `true`, the returned image will always be the default image, determined by the `defaultImageOption` parameter.
+    ///   - defaultImageOption: Configure the default image (set to `nil` to use the default default image)
+    ///   - processingMethod: Method to use for processing the downloaded `Data`
     public init(
         preferredSize: ImageSize? = nil,
         rating: ImageRating? = nil,
