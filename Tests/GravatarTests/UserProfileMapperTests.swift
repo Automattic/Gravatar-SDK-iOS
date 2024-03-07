@@ -77,7 +77,7 @@ final class UserProfileMapperTests: XCTestCase {
         }
 
         static func profileEmail(email: UserProfile.Email) -> ProfileEmail {
-            profileEmail(primary: email.primary, value: email.value)
+            profileEmail(primary: email.isPrimary, value: email.value)
         }
 
         static func profileAccount(account: UserProfile.Account) -> ProfileAccount {

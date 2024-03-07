@@ -47,10 +47,7 @@ extension UserProfile {
 
     public struct Email {
         public let value: String
-        public let primary: String
-        public var isPrimary: Bool {
-            primary == "true"
-        }
+        public let isPrimary: String
     }
 
     public struct Account {
