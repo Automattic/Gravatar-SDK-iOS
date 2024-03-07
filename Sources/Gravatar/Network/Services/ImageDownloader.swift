@@ -1,12 +1,12 @@
 import Foundation
 import UIKit
 
-public typealias ImageDownloadCompletion = (Result<GravatarImageDownloadResult, ImageFetchingError>) -> Void
+public typealias ImageDownloadCompletion = (Result<ImageDownloadResult, ImageFetchingError>) -> Void
 
 public protocol ImageDownloader {
     func fetchImage(
         with email: String,
-        options: GravatarImageDownloadOptions,
+        options: ImageDownloadOptions,
         completionHandler: ImageDownloadCompletion?
     ) -> CancellableDataTask
 
@@ -19,12 +19,12 @@ public protocol ImageDownloader {
 
     func fetchImage(
         with email: String,
-        options: GravatarImageDownloadOptions
-    ) async throws -> GravatarImageDownloadResult
+        options: ImageDownloadOptions
+    ) async throws -> ImageDownloadResult
 
     func fetchImage(
         with url: URL,
         forceRefresh: Bool,
         processingMethod: ImageProcessingMethod
-    ) async throws -> GravatarImageDownloadResult
+    ) async throws -> ImageDownloadResult
 }

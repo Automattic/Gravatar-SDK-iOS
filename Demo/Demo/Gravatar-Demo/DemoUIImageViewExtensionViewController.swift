@@ -158,8 +158,8 @@ class DemoUIImageViewExtensionViewController: UIViewController {
         avatarImageView.gravatar.cancelImageDownload()
     }
     
-    private func setupOptions() -> [GravatarImageSettingOption] {
-        var options: [GravatarImageSettingOption] = []
+    private func setupOptions() -> [ImageSettingOption] {
+        var options: [ImageSettingOption] = []
         
         if animatedFadeInSwitch.isOn {
             options.append(.transition(.fade(0.3)))

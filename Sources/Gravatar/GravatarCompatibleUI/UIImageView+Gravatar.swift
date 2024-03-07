@@ -1,7 +1,7 @@
 import Foundation
 import UIKit
 
-public typealias GravatarImageSetCompletion = (Result<GravatarImageDownloadResult, ImageFetchingComponentError>) -> Void
+public typealias ImageSetCompletion = (Result<ImageDownloadResult, ImageFetchingComponentError>) -> Void
 
 // MARK: - Associated Object
 
@@ -15,7 +15,7 @@ private var imageDownloaderKey: Void?
 
 extension GravatarWrapper where Component: UIImageView {
     /// Describes which indicator type is going to be used. Default is `.none`, which means no activity indicator will be shown.
-    public var activityIndicatorType: GravatarActivityIndicatorType {
+    public var activityIndicatorType: ActivityIndicatorType {
         get {
             getAssociatedObject(component, &indicatorTypeKey) ?? .none
         }
@@ -138,7 +138,7 @@ extension GravatarWrapper where Component: UIImageView {
     ///   - preferredSize: Preferred "point" size of the image that will be downloaded. If not provided, `layoutIfNeeded()` is called on this view to get its
     /// real bounds and those bounds are used.
     ///   You can get a performance benefit by setting this value since it will avoid the `layoutIfNeeded()` call.
-    ///   - options: A set of options to define image setting behaviour. See ``GravatarImageSettingOption`` for more info.
+    ///   - options: A set of options to define image setting behaviour. See ``ImageSettingOption`` for more info.
     ///   - completionHandler: Completion block that's called when image downloading and setting completes.
     /// - Returns: The task performing the download operation which can be cancelled.
     @discardableResult
@@ -148,11 +148,11 @@ extension GravatarWrapper where Component: UIImageView {
         rating: ImageRating? = nil,
         preferredSize: CGSize? = nil,
         defaultImageOption: DefaultImageOption? = nil,
-        options: [GravatarImageSettingOption]? = nil,
-        completionHandler: GravatarImageSetCompletion? = nil
+        options: [ImageSettingOption]? = nil,
+        completionHandler: ImageSetCompletion? = nil
     ) -> CancellableDataTask? {
         let pointsSize = pointImageSize(from: preferredSize)
-        let downloadOptions = GravatarImageSettingOptions(options: options).deriveDownloadOptions(
+        let downloadOptions = ImageSettingOptions(options: options).deriveDownloadOptions(
             garavatarRating: rating,
             preferredSize: pointsSize,
             defaultImageOption: defaultImageOption
@@ -166,15 +166,15 @@ extension GravatarWrapper where Component: UIImageView {
     /// - Parameters:
     ///   - source: URL for the image.
     ///   - placeholder: A placeholder to show while downloading the image.
-    ///   - options: A set of options to define image setting behaviour. See ``GravatarImageSettingOption`` for more info.
+    ///   - options: A set of options to define image setting behaviour. See ``ImageSettingOption`` for more info.
     ///   - completionHandler: Completion block that's called when image downloading and setting completes.
     /// - Returns: The task performing the download operation which can be cancelled.
     @discardableResult
     public func setImage(
         with source: URL?,
         placeholder: UIImage? = nil,
-        options: [GravatarImageSettingOption]? = nil,
-        completionHandler: GravatarImageSetCompletion? = nil
+        options: [ImageSettingOption]? = nil,
+        completionHandler: ImageSetCompletion? = nil
     ) -> CancellableDataTask? {
         var mutatingSelf = self
         guard let source else {
@@ -184,7 +184,7 @@ extension GravatarWrapper where Component: UIImageView {
             return nil
         }
 
-        let options = GravatarImageSettingOptions(options: options)
+        let options = ImageSettingOptions(options: options)
 
         let isEmptyImage = component.image == nil && self.placeholder == nil
         if options.removeCurrentImageWhileLoading || isEmptyImage {

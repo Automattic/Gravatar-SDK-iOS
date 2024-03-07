@@ -145,7 +145,7 @@ class DemoAvatarDownloadViewController: UIViewController {
 
     @objc private func fetchAvatarButtonHandler() {
         
-        let options: GravatarImageDownloadOptions = .init(
+        let options: ImageDownloadOptions = .init(
             preferredSize: .points(preferredSize),
             rating: preferredRating,
             forceRefresh: igonreCacheSwitchWithLabel.isOn,

@@ -1,7 +1,7 @@
 import Foundation
 import UIKit
 
-public enum GravatarActivityIndicatorType {
+public enum ActivityIndicatorType {
     case none
     case activity
     case custom(ActivityIndicatorProvider)
