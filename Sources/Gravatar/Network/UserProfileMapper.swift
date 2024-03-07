@@ -99,7 +99,7 @@ struct UserProfileMapper {
             let shortname: String
 
             let url: String
-            let iconUrl: String?
+            let iconUrl: String
             let verified: Bool
 
             var account: UserProfile.Account {

@@ -58,7 +58,7 @@ extension UserProfile {
         public let shortname: String
 
         public let url: String
-        public let iconUrl: String?
+        public let iconUrl: String
         public let isVerified: Bool
 
         public var accountURL: URL? {
@@ -66,8 +66,7 @@ extension UserProfile {
         }
 
         public var iconURL: URL? {
-            guard let iconUrl else { return nil }
-            return URL(string: iconUrl)
+            URL(string: iconUrl)
         }
     }
 

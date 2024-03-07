@@ -149,7 +149,7 @@ final class UserProfileMapperTests: XCTestCase {
             domain: String,
             display: String,
             url: String,
-            iconUrl: String?,
+            iconUrl: String,
             username: String,
             verified: some Codable,
             name: String,
@@ -159,12 +159,12 @@ final class UserProfileMapperTests: XCTestCase {
                 "domain": domain,
                 "display": display,
                 "url": url,
-                "iconUrl": iconUrl as Any,
+                "iconUrl": iconUrl,
                 "verified": verified,
                 "username": username,
                 "name": name,
                 "shortname": shortname,
-            ].compactMapValues { $0 as? any Codable }
+            ]
         }
     }
 
