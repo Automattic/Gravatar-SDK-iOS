@@ -37,14 +37,14 @@ let package = Package(
 ```
 ### CocoaPods
 
-Add `pod 'Gravatar', '~> 0.1.0'` to your target in your `PODFILE`. 
+Add `pod 'Gravatar'` to your target in your `PODFILE`. 
 
 ```ruby
 source 'https://github.com/CocoaPods/Specs.git'
 use_frameworks!
 
 target 'MyApp' do
-    pod 'Gravatar', '~> 0.1.0'
+    pod 'Gravatar'
 end
 ```
 
