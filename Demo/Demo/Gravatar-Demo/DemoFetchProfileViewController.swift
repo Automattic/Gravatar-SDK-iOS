@@ -81,11 +81,11 @@ class DemoFetchProfileViewController: UIViewController {
         DispatchQueue.main.async { [weak self] in
             self?.activityIndicator.stopAnimating()
             self?.profileTextView.text = """
-Profile URL: \(profile.profileURL?.absoluteString ?? "")
+Profile URL: \(profile.profileUrl)
 Display name: \(profile.displayName)
 Name: \(profile.displayName)
 Preferred User Name: \(profile.preferredUsername)
-Thumbnail URL: \(profile.thumbnailURL?.absoluteString ?? "")
+Thumbnail URL: \(profile.thumbnailUrl)
 Last edit: \(String(describing: profile.lastProfileEditDate))
 """
         }
