@@ -96,7 +96,6 @@ extension UserProfileTests {
     }
 
     private func profile(for profile: Profile) async throws -> UserProfile {
-        let url = URL(string: "http://a-url.com")!
         let json = try json(for: profile)
 
         let urlSession = URLSessionMock(returnData: json, response: HTTPURLResponse())
