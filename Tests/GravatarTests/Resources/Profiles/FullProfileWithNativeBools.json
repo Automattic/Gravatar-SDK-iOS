@@ -1,0 +1,139 @@
+{
+    "entry": [
+        {
+          "id": "fake_id",
+          "hash": "fake_hash",
+          "requestHash": "fake_requestHash",
+          "profileUrl": "https://fake_profileUrl.com",
+          "preferredUsername": "fake_preferredUsername",
+          "thumbnailUrl": "https://1.gravatar.com/avatar/ca38d22ece4e8f592db7cd75764e5a52",
+          "photos": [
+            {
+              "value": "https://1.gravatar.com/avatar/ca38d22ece4e8f592db7cd75764e5a52",
+              "type": "thumbnail"
+            },
+            {
+              "value": "https://1.gravatar.com/userimage/12108442/e453d707d347ff4e0b475f15d2df99ef"
+            }
+          ],
+          "last_profile_edit": "2023-12-01 20:25:10",
+          "hidden_avatar": false,
+          "hidden_contact_info": false,
+          "hidden_wallet": false,
+          "profileBackground": {
+            "color": "#4b5e72"
+          },
+          "displayName": "fake_displayName",
+          "pronunciation": "fake_pronunciation",
+          "pronouns": "they/them/their",
+          "aboutMe": "fake biography",
+          "currentLocation": "fake location",
+          "phoneNumbers": [
+            {
+              "type": "home",
+              "value": "555-1212"
+            },
+            {
+              "type": "work",
+              "value": "867-5309"
+            },
+            {
+              "type": "mobile",
+              "value": "555-1212"
+            }
+          ],
+          "contactInfo": [
+            {
+              "type": "contactform",
+              "value": "https://contact.form"
+            },
+            {
+              "type": "calendar",
+              "value": "https://calendar.com"
+            }
+          ],
+          "emails": [
+            {
+              "primary": true,
+              "value": "email@example.com"
+            }
+          ],
+          "accounts": [
+            {
+              "domain": "fake_domain.com",
+              "display": "fake_domain.com",
+              "url": "https://fake_domain.com",
+              "iconUrl": "https://fake_domain.com/icon.jpg",
+              "username": "fake_username",
+              "verified": true,
+              "name": "WordPress",
+              "shortname": "wordpress"
+            },
+            {
+              "domain": "twitter.com",
+              "display": "@fakeuser",
+              "url": "https://twitter.com/noone",
+              "iconUrl": "https://secure.gravatar.com/icons/twitter-alt.svg",
+              "username": "fakeuser",
+              "verified": true,
+              "name": "Twitter",
+              "shortname": "twitter"
+            },
+            {
+              "domain": "mastodon.social",
+              "display": "@fakeuser@https://mastodon.social",
+              "url": "https://mastodon.social/@fakeuser",
+              "iconUrl": "https://secure.gravatar.com/icons/mastodonsocial.svg",
+              "username": "fakeuser",
+              "verified": true,
+              "name": "Mastodon",
+              "shortname": "mastodonsocial"
+            }
+          ],
+          "currency": [
+            {
+              "type": "bitcoin",
+              "value": "BTC"
+            },
+            {
+              "type": "userdefcurrency_currency",
+              "value": "wallets"
+            }
+          ],
+          "payments": {
+            "paypalme": "https://fake_paypalme.com",
+            "patreon": "https://fake_patreon.com",
+            "payment": "https://fake_payment.com"
+          },
+          "backups": {
+            "mastodonsocial": {
+              "status": "finished",
+              "message": "Backup finished: 2 contacts.",
+              "backedup_contacts": 2,
+              "timestamp": 1703754947,
+              "params": {
+                "user_id": 61108442,
+                "service_name": "mastodonsocial",
+                "types": [
+                  "followers",
+                  "following"
+                ],
+                "identifier": "gravatar_backup_contacts_mastodonsocial",
+                "timestamp": 1703754947,
+                "service_user_identifier": "https://mastodon.social/@fakeuser"
+              },
+              "download_token": "LDRrRk9vc0MwUkNsdDNMLy9IQVo5TituODRGV2Y5TFBXTUVkQTJVeFluV2RzOTFWTkhsZXErekhaUW1KNXJiMk5nME9XV2x1dkRpc1poSW5aRmVvbGoyTWtmT0VDVzJnbHlYZkZVdGN0aE09"
+            }
+          },
+          "urls": [
+            {
+              "value": "https://fake_url.com",
+              "title": "fake_title"
+            }
+          ],
+          "share_flags": {
+            "search_engines": false
+          }
+        }
+    ]
+}

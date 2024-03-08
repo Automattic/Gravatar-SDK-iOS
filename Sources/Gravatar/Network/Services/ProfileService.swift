@@ -35,7 +35,7 @@ public struct ProfileService {
     public func fetchProfile(with request: URLRequest) async throws -> UserProfile {
         do {
             let result: (data: Data, response: HTTPURLResponse) = try await client.fetchData(with: request)
-            let fetchProfileResult = UserProfileMapper.map(result.data, result.response)
+            let fetchProfileResult = map(result.data, result.response)
             switch fetchProfileResult {
             case .success(let profile):
                 return profile
@@ -58,5 +58,33 @@ public struct ProfileService {
             throw CannotCreateURLFromGivenPath(baseURL: baseUrl, path: path)
         }
         return url
+    }
+
+    private func map(_ data: Data, _: HTTPURLResponse) -> Result<UserProfile, ProfileServiceError> {
+        do {
+            let decoder = JSONDecoder()
+            decoder.keyDecodingStrategy = .convertFromSnakeCase
+            let root = try decoder.decode(Root.self, from: data)
+            let profile = try profile(from: root.entry)
+            return .success(profile)
+        } catch let error as HTTPClientError {
+            return .failure(.responseError(reason: error.map()))
+        } catch _ as ProfileService.CannotCreateURLFromGivenPath {
+            return .failure(.requestError(reason: .urlInitializationFailed))
+        } catch let error as ProfileServiceError {
+            return .failure(error)
+        } catch _ as DecodingError {
+            return .failure(.noProfileInResponse)
+        } catch {
+            return .failure(.responseError(reason: .unexpected(error)))
+        }
+    }
+
+    private func profile(from profiles: [UserProfile]) throws -> UserProfile {
+        guard let profile = profiles.first else {
+            throw ProfileServiceError.noProfileInResponse
+        }
+
+        return profile
     }
 }

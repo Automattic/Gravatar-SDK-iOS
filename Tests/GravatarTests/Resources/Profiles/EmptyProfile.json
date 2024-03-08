@@ -1,0 +1,48 @@
+{
+    "entry": [
+        {
+          "id": "fake_id",
+          "hash": "fake_hash",
+          "requestHash": "fake_requestHash",
+          "profileUrl": "https://fake_profileUrl.com",
+          "preferredUsername": "fake_preferredUsername",
+          "thumbnailUrl": "https://1.gravatar.com/avatar/ca38d22ece4e8f592db7cd75764e5a52",
+          "photos": [
+            {
+              "value": "https://1.gravatar.com/avatar/ca38d22ece4e8f592db7cd75764e5a52",
+              "type": "thumbnail"
+            }
+          ],
+          "last_profile_edit": "2023-12-01 20:25:10",
+          "hidden_avatar": false,
+          "hidden_contact_info": "1",
+          "hidden_wallet": "1",
+          "displayName": "fake_displayName",
+          "backups": {
+            "mastodonsocial": {
+              "status": "finished",
+              "message": "Backup finished: 2 contacts.",
+              "backedup_contacts": 2,
+              "timestamp": 1703754947,
+              "params": {
+                "user_id": 61108442,
+                "service_name": "mastodonsocial",
+                "types": [
+                  "followers",
+                  "following"
+                ],
+                "identifier": "gravatar_backup_contacts_mastodonsocial",
+                "timestamp": 1703754947,
+                "service_user_identifier": "https://mastodon.social/@fakeuser"
+              },
+              "download_token": "LDRrRk9vc0MwUkNsdDNMLy9IQVo5TituODRGV2Y5TFBXTUVkQTJVeFluV2RzOTFWTkhsZXErekhaUW1KNXJiMk5nME9XV2x1dkRpc1poSW5aRmVvbGoyTWtmT0VDVzJnbHlYZkZVdGN0aE09"
+            }
+          },
+          "urls": [
+          ],
+          "share_flags": {
+            "search_engines": true
+          }
+        }
+    ]
+}
