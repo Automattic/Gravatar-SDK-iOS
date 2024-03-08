@@ -1,7 +1,6 @@
 {
     "entry": [
         {
-          "id": "fake_id",
           "hash": "fake_hash",
           "requestHash": "fake_requestHash",
           "profileUrl": "https://fake_profileUrl.com",
