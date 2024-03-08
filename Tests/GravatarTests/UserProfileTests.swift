@@ -74,7 +74,7 @@ final class UserProfileTests: XCTestCase {
         expectEqual(output: profile.hash, assertion: TestProfile.NewlyCreatedProfile.hash)
         expectEqual(output: profile.requestHash, assertion: TestProfile.NewlyCreatedProfile.requestHash)
         expectEqual(output: profile.profileUrl, assertion: TestProfile.NewlyCreatedProfile.profileUrl)
-        expectEqual(output: profile.preferredUsername, assertion: TestProfile.PartialProfile.preferredUsername)
+        expectEqual(output: profile.preferredUsername, assertion: TestProfile.NewlyCreatedProfile.preferredUsername)
         expectEqual(output: profile.thumbnailUrl, assertion: TestProfile.NewlyCreatedProfile.thumbnailUrl)
         XCTAssertNil(profile.lastProfileEditDate)
         expectEqual(output: profile.lastProfileEditDate, assertion: TestProfile.NewlyCreatedProfile.lastProfileEditDate)
