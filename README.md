@@ -2,19 +2,11 @@
 
 [![License: MPL 2.0](https://img.shields.io/badge/License-MPL_2.0-brightgreen.svg)](https://opensource.org/licenses/MPL-2.0)
 
-## Example
-
 ## Requirements
 
 ## Installation
 
-### CocoaPods
-Gravatar is available through [CocoaPods](https://cocoapods.org). To install
-it, simply add the following line to your Podfile:
-
-```ruby
-pod 'Gravatar'
-```
+For installation instructions and examples, see out [getting started](Sources/Gravatar/Gravatar.docc/GettingStarted.md) guide.
 
 ## Author
 
