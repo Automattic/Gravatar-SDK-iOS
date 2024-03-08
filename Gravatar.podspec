@@ -1,20 +1,17 @@
 Pod::Spec.new do |s|
   s.name             = 'Gravatar'
   s.version          = '0.1.0'
-  s.summary          = 'Gravatar SDK'
-
-  s.description      = <<-DESC
-Gravatar SDK provides a convient wrapper for accessing the Gravatar API
-                       DESC
+  s.summary          = 'A convient library for accessing the Gravatar API'
 
   s.homepage         = 'https://gravatar.com'
   s.license          = { :type => 'Mozilla Public License v2', :file => 'LICENSE.md' }
   s.authors           = 'Automattic, Inc.'
   s.source           = {
       :git => 'https://github.com/Automattic/Gravatar-SDK-iOS.git',
-      :tag => 'CocoaPods-' + s.version.to_s
+      :tag => s.version.to_s
   }
-
+  s.documentation_url = 'https://automattic.github.io/Gravatar-SDK-iOS/'
+    
   s.swift_version     = '5.9'
 
   ios_deployment_target = '15.0'
