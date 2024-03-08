@@ -13,3 +13,14 @@ public enum ImageSize {
     /// The returned image's size in pixels will be of the exact value passed here.
     case pixels(Int)
 }
+
+extension ImageSize {
+    func pixels(scaleFactor: CGFloat) -> Int {
+        switch self {
+        case .pixels(let pixels):
+            pixels
+        case .points(let points):
+            Int(points * scaleFactor)
+        }
+    }
+}

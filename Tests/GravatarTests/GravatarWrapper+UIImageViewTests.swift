@@ -72,6 +72,23 @@ final class GravatarWrapper_UIImageViewTests: XCTestCase {
         wait(for: [expectation], timeout: 2.0)
     }
 
+    func testDefaultImageOptionIsSet() throws {
+        let expectedQueryItemString = "d=robohash"
+
+        let imageView = UIImageView(frame: frame)
+        let imageDownloader = TestImageFetcher(result: .success)
+
+        imageView.gravatar.setImage(
+            email: "hello@gmail.com",
+            defaultImageOption: .roboHash,
+            options: [.imageDownloader(imageDownloader)]
+        )
+
+        let query = URL(string: imageDownloader.completionQueue.first?.url ?? "")?.query ?? ""
+        let urlContainsDefaultImageOption = query.contains(expectedQueryItemString)
+        XCTAssertTrue(urlContainsDefaultImageOption, "\(query) does not contains \(expectedQueryItemString)")
+    }
+
     func testIfPlaceholderIsSetWithNilURL() throws {
         let expectation = XCTestExpectation(description: "testIfPlaceholderIsSetWithNilURL")
 

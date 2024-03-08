@@ -1,15 +1,26 @@
 import UIKit
 
+/// A service to perform image-related tasks, such as fetching images by email and uploading images to Gravatar.
+///
+/// This is the default type which implements ``ImageDownloader`` and ``ImageUploader``.
+/// Unless specified otherwise, `ImageService` will use a `URLSession` based `HTTPClient`, and a in-memory image cache.
 public struct ImageService {
     private let client: HTTPClient
     let imageCache: ImageCaching
 
+    /// Creates a new `ImageService`
+    ///
+    /// Optionally, you can pass a custom type conforming to ``HTTPClient`` to gain control over networking tasks.
+    /// Similarly, you can pass a custom type conforming to ``ImageCaching`` to use your custom caching system.
+    /// - Parameters:
+    ///   - client: A type which will perform basic networking operations.
+    ///   - cache: A type which will perform image caching operations.
     public init(client: HTTPClient? = nil, cache: ImageCaching? = nil) {
         self.client = client ?? URLSessionHTTPClient()
         self.imageCache = cache ?? ImageCache()
     }
 
-    func fetchImage(from url: URL, forceRefresh: Bool, processor: ImageProcessor) async throws -> GravatarImageDownloadResult {
+    func fetchImage(from url: URL, forceRefresh: Bool, processor: ImageProcessor) async throws -> ImageDownloadResult {
         let request = URLRequest.imageRequest(url: url, forceRefresh: forceRefresh)
         do {
             let (data, _) = try await client.fetchData(with: request)
@@ -17,7 +28,7 @@ public struct ImageService {
                 throw ImageFetchingError.imageProcessorFailed
             }
             imageCache.setImage(image, forKey: url.absoluteString)
-            return GravatarImageDownloadResult(image: image, sourceURL: url)
+            return ImageDownloadResult(image: image, sourceURL: url)
         } catch let error as HTTPClientError {
             throw ImageFetchingError.responseError(reason: error.map())
         } catch {

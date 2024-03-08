@@ -29,17 +29,17 @@ class TestImageFetcher: ImageDownloader {
         return TestDataTask(taskIdentifier: taskIdentifier)
     }
 
-    func fetchImage(with email: String, options: GravatarImageDownloadOptions, completionHandler: ImageDownloadCompletion?) -> CancellableDataTask {
+    func fetchImage(with email: String, options: ImageDownloadOptions, completionHandler: ImageDownloadCompletion?) -> CancellableDataTask {
         completionQueue.append((email, completionHandler))
         taskIdentifier += 1
         return TestDataTask(taskIdentifier: taskIdentifier)
     }
 
-    func fetchImage(with url: URL, forceRefresh: Bool, processingMethod: ImageProcessingMethod) async throws -> GravatarImageDownloadResult {
+    func fetchImage(with url: URL, forceRefresh: Bool, processingMethod: ImageProcessingMethod) async throws -> ImageDownloadResult {
         fatalError("Not Implemented")
     }
 
-    func fetchImage(with email: String, options: GravatarImageDownloadOptions) async throws -> GravatarImageDownloadResult {
+    func fetchImage(with email: String, options: ImageDownloadOptions) async throws -> ImageDownloadResult {
         fatalError("Not Implemented")
     }
 
@@ -54,7 +54,7 @@ class TestImageFetcher: ImageDownloader {
             }
         case .success:
             if let tuple = item(for: urlString) {
-                tuple.handler?(.success(GravatarImageDownloadResult(image: ImageHelper.testImage, sourceURL: URL(string: urlString)!)))
+                tuple.handler?(.success(ImageDownloadResult(image: ImageHelper.testImage, sourceURL: URL(string: urlString)!)))
             }
         }
     }

@@ -7,7 +7,7 @@ import UIKit
 public struct ImageQueryOptions {
     let rating: ImageRating?
     let forceDefaultImage: Bool?
-    let defaultImage: DefaultImageOption?
+    let defaultImageOption: DefaultImageOption?
     let preferredPixelSize: Int?
 
     /// Creating an instance of `ImageQueryOptions`.
@@ -17,20 +17,20 @@ public struct ImageQueryOptions {
     ///   - preferredSize: The preferred image size. Note that many users have lower resolution images, so requesting larger sizes may result in
     /// pixelation/low-quality images.
     ///   - gravatarRating: The lowest rating allowed to be displayed. If the requested email hash does not have an image meeting the requested rating level,
-    ///   - defaultImage: Choose what will happen if no Gravatar image is found. See ``DefaultImageOption`` for more info.
+    ///   - defaultImageOption: Choose what will happen if no Gravatar image is found. See ``DefaultImageOption`` for more info.
     /// then the default image is returned.
-    ///   - forceDefaultImage: If set to `true`, the requested image will always be the default.
+    ///   - forceDefaultImage: If set to `true`, the returned image will always be the default image, determined by the `defaultImageOption` parameter.
     public init(
         preferredSize: ImageSize? = nil,
         rating: ImageRating? = nil,
-        defaultImage: DefaultImageOption? = nil,
+        defaultImageOption: DefaultImageOption? = nil,
         forceDefaultImage: Bool? = nil
     ) {
         self.init(
             scaleFactor: UIScreen.main.scale,
             rating: rating,
             forceDefaultImage: forceDefaultImage,
-            defaultImage: defaultImage,
+            defaultImageOption: defaultImageOption,
             preferredSize: preferredSize
         )
     }
@@ -39,21 +39,13 @@ public struct ImageQueryOptions {
         scaleFactor: CGFloat,
         rating: ImageRating? = nil,
         forceDefaultImage: Bool? = nil,
-        defaultImage: DefaultImageOption? = nil,
+        defaultImageOption: DefaultImageOption? = nil,
         preferredSize: ImageSize? = nil
     ) {
         self.rating = rating
         self.forceDefaultImage = forceDefaultImage
-        self.defaultImage = defaultImage
-
-        switch preferredSize {
-        case .pixels(let pixels):
-            preferredPixelSize = pixels
-        case .points(let points):
-            preferredPixelSize = Int(points * scaleFactor)
-        case .none:
-            preferredPixelSize = nil
-        }
+        self.defaultImageOption = defaultImageOption
+        self.preferredPixelSize = preferredSize?.pixels(scaleFactor: scaleFactor)
     }
 }
 
@@ -61,7 +53,7 @@ public struct ImageQueryOptions {
 
 extension ImageQueryOptions {
     private enum QueryName: String, CaseIterable {
-        case defaultImage = "d"
+        case defaultImageOption = "d"
         case preferredPixelSize = "s"
         case rating = "r"
         case forceDefaultImage = "f"
@@ -73,8 +65,8 @@ extension ImageQueryOptions {
 
     private func queryItem(for queryName: QueryName) -> URLQueryItem? {
         let value: String? = switch queryName {
-        case .defaultImage:
-            self.defaultImage.queryValue
+        case .defaultImageOption:
+            self.defaultImageOption.queryValue
         case .forceDefaultImage:
             self.forceDefaultImage.queryValue
         case .rating:
