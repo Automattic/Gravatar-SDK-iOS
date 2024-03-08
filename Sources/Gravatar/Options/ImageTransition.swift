@@ -1,10 +1,10 @@
 import Foundation
 
-public enum GravatarImageTransition {
+public enum ImageTransition {
     /// No animation transition.
     case none
     /// Fade in the loaded image in a given duration.
     case fade(TimeInterval)
 }
 
-extension GravatarImageTransition: Equatable {}
+extension ImageTransition: Equatable {}

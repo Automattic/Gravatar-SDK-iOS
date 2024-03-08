@@ -3,7 +3,7 @@ import XCTest
 
 final class GravatarOptionsTests: XCTestCase {
     func testInitWithOptionList() throws {
-        let gravatarOptions: [GravatarImageSettingOption] =
+        let gravatarOptions: [ImageSettingOption] =
             [
                 .forceRefresh,
                 .removeCurrentImageWhileLoading,
@@ -13,20 +13,20 @@ final class GravatarOptionsTests: XCTestCase {
                 .imageDownloader(TestImageFetcher(result: .success)),
             ]
 
-        let parsedOptions = GravatarImageSettingOptions(options: gravatarOptions)
+        let parsedOptions = ImageSettingOptions(options: gravatarOptions)
         XCTAssertEqual(parsedOptions.forceRefresh, true)
         XCTAssertEqual(parsedOptions.removeCurrentImageWhileLoading, true)
-        XCTAssertEqual(parsedOptions.transition, GravatarImageTransition.fade(0.2))
+        XCTAssertEqual(parsedOptions.transition, ImageTransition.fade(0.2))
         XCTAssertNotNil(parsedOptions.processingMethod.processor as? TestImageProcessor)
         XCTAssertNotNil(parsedOptions.imageCache as? TestImageCache)
         XCTAssertNotNil(parsedOptions.imageDownloader as? TestImageFetcher)
     }
 
     func testInitWithDefaultValues() throws {
-        let parsedOptions = GravatarImageSettingOptions(options: nil)
+        let parsedOptions = ImageSettingOptions(options: nil)
         XCTAssertEqual(parsedOptions.forceRefresh, false)
         XCTAssertEqual(parsedOptions.removeCurrentImageWhileLoading, false)
-        XCTAssertEqual(parsedOptions.transition, GravatarImageTransition.none)
+        XCTAssertEqual(parsedOptions.transition, ImageTransition.none)
         XCTAssertNotNil(parsedOptions.processingMethod.processor as? DefaultImageProcessor)
     }
 }

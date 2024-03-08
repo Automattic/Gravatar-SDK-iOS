@@ -51,7 +51,7 @@ class DemoAvatarDownloadViewController: UIViewController {
     private lazy var imageDefaultButton: UIButton = {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("Default Image: (Backend driven)", for: .normal)
+        button.setTitle("Default Image Option: (Backend driven)", for: .normal)
         button.addTarget(self, action: #selector(selectImageDefault), for: .touchUpInside)
         return button
     }()
@@ -129,12 +129,12 @@ class DemoAvatarDownloadViewController: UIViewController {
     private var preferredDefaultImage: DefaultImageOption? = nil
 
     @objc private func selectImageDefault() {
-        let controller = UIAlertController(title: "Default Image", message: nil, preferredStyle: .actionSheet)
+        let controller = UIAlertController(title: "Default Image Option", message: nil, preferredStyle: .actionSheet)
 
         DefaultImageOption.allCases.forEach { option in
             controller.addAction(UIAlertAction(title: "\(option)", style: .default) { [weak self] action in
                 self?.preferredDefaultImage = option
-                self?.imageDefaultButton.setTitle("Default Image: \(option)", for: .normal)
+                self?.imageDefaultButton.setTitle("Default Image Option: \(option)", for: .normal)
             })
         }
 
@@ -145,12 +145,12 @@ class DemoAvatarDownloadViewController: UIViewController {
 
     @objc private func fetchAvatarButtonHandler() {
         
-        let options: GravatarImageDownloadOptions = .init(
+        let options: ImageDownloadOptions = .init(
             preferredSize: .points(preferredSize),
             rating: preferredRating,
             forceRefresh: igonreCacheSwitchWithLabel.isOn,
             forceDefaultImage: forceDefaultImageSwitchWithLabel.isOn,
-            defaultImage: preferredDefaultImage
+            defaultImageOption: preferredDefaultImage
         )
 
         avatarImageView.image = nil // Setting to nil to make the effect of `forceRefresh more visible

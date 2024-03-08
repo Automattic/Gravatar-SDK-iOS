@@ -4,7 +4,7 @@ extension ImageService: ImageDownloader {
     @discardableResult
     public func fetchImage(
         with email: String,
-        options: GravatarImageDownloadOptions = GravatarImageDownloadOptions(),
+        options: ImageDownloadOptions = ImageDownloadOptions(),
         completionHandler: ImageDownloadCompletion? = nil
     ) -> CancellableDataTask {
         Task {
@@ -40,8 +40,8 @@ extension ImageService: ImageDownloader {
 
     public func fetchImage(
         with email: String,
-        options: GravatarImageDownloadOptions = GravatarImageDownloadOptions()
-    ) async throws -> GravatarImageDownloadResult {
+        options: ImageDownloadOptions = ImageDownloadOptions()
+    ) async throws -> ImageDownloadResult {
         guard let gravatarURL = GravatarURL.gravatarUrl(with: email, options: options.imageQueryOptions) else {
             throw ImageFetchingError.requestError(reason: .urlInitializationFailed)
         }
@@ -57,7 +57,7 @@ extension ImageService: ImageDownloader {
         with url: URL,
         forceRefresh: Bool = false,
         processingMethod: ImageProcessingMethod = .common
-    ) async throws -> GravatarImageDownloadResult {
+    ) async throws -> ImageDownloadResult {
         if !forceRefresh, let result = cachedImageResult(for: url) {
             return result
         }
@@ -66,10 +66,10 @@ extension ImageService: ImageDownloader {
 }
 
 extension ImageService {
-    private func cachedImageResult(for url: URL) -> GravatarImageDownloadResult? {
+    private func cachedImageResult(for url: URL) -> ImageDownloadResult? {
         guard let cachedImage = imageCache.getImage(forKey: url.absoluteString) else {
             return nil
         }
-        return GravatarImageDownloadResult(image: cachedImage, sourceURL: url)
+        return ImageDownloadResult(image: cachedImage, sourceURL: url)
     }
 }

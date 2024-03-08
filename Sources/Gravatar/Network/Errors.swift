@@ -68,9 +68,9 @@ public enum ImageFetchingComponentError: Error {
     /// The resource task is finished, but it is not the one expected now. It's outdated because of new requests.
     /// In any case the result of this original task is contained in the associated value. So if the task succeeded the image is available in the result, if
     /// failed the error is.
-    /// - result: The Result enum. `GravatarImageDownloadResult` if the source task is finished without problem.  `Error` if an issue happens.
+    /// - result: The Result enum. `ImageDownloadResult` if the source task is finished without problem.  `Error` if an issue happens.
     /// - source: The original source value of the task.
-    case outdatedTask(result: Result<GravatarImageDownloadResult, ImageFetchingError>, source: URL)
+    case outdatedTask(result: Result<ImageDownloadResult, ImageFetchingError>, source: URL)
 
     // `true` if self is a `.outdatedTask`.
     public var isOutdatedTask: Bool {
