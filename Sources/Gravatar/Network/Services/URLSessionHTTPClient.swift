@@ -1,19 +1,10 @@
-
 import Foundation
-
-private let baseUrl = "https://gravatar.com/"
 
 /// Common errors for all HTTP operations.
 enum HTTPClientError: Error {
     case invalidHTTPStatusCodeError(HTTPURLResponse)
     case invalidURLResponseError(URLResponse)
     case URLSessionError(Error)
-}
-
-/// Error thrown when URL can not be created with the given baseURL and path.
-struct CannotCreateURLFromGivenPath: Error {
-    let baseURL: String
-    let path: String
 }
 
 struct URLSessionHTTPClient: HTTPClient {
@@ -42,21 +33,6 @@ struct URLSessionHTTPClient: HTTPClient {
             throw HTTPClientError.URLSessionError(error)
         }
         return try validatedHTTPResponse(result.response)
-    }
-
-    func fetchObject<T: Decodable>(from path: String) async throws -> T {
-        let url = try url(from: path)
-        let request = URLRequest(url: url)
-        let (data, _) = try await fetchData(with: request)
-        let object = try JSONDecoder().decode(T.self, from: data)
-        return object
-    }
-
-    private func url(from path: String) throws -> URL {
-        guard let url = URL(string: baseUrl + path) else {
-            throw CannotCreateURLFromGivenPath(baseURL: baseUrl, path: path)
-        }
-        return url
     }
 }
 

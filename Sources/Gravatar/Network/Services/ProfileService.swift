@@ -1,5 +1,12 @@
 import Foundation
 
+private let baseUrl = "https://gravatar.com/"
+
+public enum GravatarProfileFetchResult {
+    case success(UserProfile)
+    case failure(ProfileServiceError)
+}
+
 /// A service to perform Profile related tasks.
 public struct ProfileService {
     private let client: HTTPClient
@@ -32,22 +39,66 @@ public struct ProfileService {
     /// Fetches a Gravatar user's profile information, and delivers the user profile asynchronously.
     /// - Parameter email: The user account email.
     /// - Returns: An asynchronously-delivered user profile.
-    public func fetchProfile(for email: String) async throws -> GravatarProfile {
-        let path = email.sha256() + ".json"
+    public func fetchProfile(for email: String) async throws -> UserProfile {
+        let url = try url(from: email.sha256() + ".json")
+        return try await fetchProfile(with: URLRequest(url: url))
+    }
+}
+
+extension ProfileService {
+    /// Error thrown when URL can not be created with the given baseURL and path.
+    struct CannotCreateURLFromGivenPath: Error {
+        let baseURL: String
+        let path: String
+    }
+
+    private func url(from path: String) throws -> URL {
+        guard let url = URL(string: baseUrl + path) else {
+            throw CannotCreateURLFromGivenPath(baseURL: baseUrl, path: path)
+        }
+        return url
+    }
+
+    private func fetchProfile(with request: URLRequest) async throws -> UserProfile {
         do {
-            let result: FetchProfileResponse = try await client.fetchObject(from: path)
-            guard let profile = result.entry.first else {
-                throw ProfileServiceError.noProfileInResponse
+            let (data, response) = try await client.fetchData(with: request)
+            let fetchProfileResult = map(data, response)
+            switch fetchProfileResult {
+            case .success(let profile):
+                return profile
+            case .failure(let error):
+                throw error
             }
-            return GravatarProfile(with: profile)
         } catch let error as HTTPClientError {
             throw ProfileServiceError.responseError(reason: error.map())
-        } catch _ as CannotCreateURLFromGivenPath {
-            throw ProfileServiceError.requestError(reason: .urlInitializationFailed)
-        } catch let error as ProfileServiceError {
-            throw error
-        } catch {
-            throw ProfileServiceError.responseError(reason: .unexpected(error))
         }
+    }
+
+    private func map(_ data: Data, _: HTTPURLResponse) -> Result<UserProfile, ProfileServiceError> {
+        do {
+            let decoder = JSONDecoder()
+            decoder.keyDecodingStrategy = .convertFromSnakeCase
+            let root = try decoder.decode(Root.self, from: data)
+            let profile = try profile(from: root.entry)
+            return .success(profile)
+        } catch let error as HTTPClientError {
+            return .failure(.responseError(reason: error.map()))
+        } catch _ as ProfileService.CannotCreateURLFromGivenPath {
+            return .failure(.requestError(reason: .urlInitializationFailed))
+        } catch let error as ProfileServiceError {
+            return .failure(error)
+        } catch _ as DecodingError {
+            return .failure(.noProfileInResponse)
+        } catch {
+            return .failure(.responseError(reason: .unexpected(error)))
+        }
+    }
+
+    private func profile(from profiles: [UserProfile]) throws -> UserProfile {
+        guard let profile = profiles.first else {
+            throw ProfileServiceError.noProfileInResponse
+        }
+
+        return profile
     }
 }

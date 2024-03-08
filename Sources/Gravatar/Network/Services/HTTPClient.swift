@@ -16,7 +16,4 @@ public protocol HTTPClient {
     ///   - data: The data to be uploaded.
     /// - Returns: An asynchronously-delivered instance of the returned HTTPURLResponse.
     func uploadData(with request: URLRequest, data: Data) async throws -> HTTPURLResponse
-
-    // TODO: document after change.
-    func fetchObject<T: Decodable>(from path: String) async throws -> T
 }
