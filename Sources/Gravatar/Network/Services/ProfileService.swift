@@ -46,7 +46,9 @@ public struct ProfileService {
             throw ProfileServiceError.responseError(reason: error.map())
         }
     }
+}
 
+extension ProfileService {
     /// Error thrown when URL can not be created with the given baseURL and path.
     struct CannotCreateURLFromGivenPath: Error {
         let baseURL: String

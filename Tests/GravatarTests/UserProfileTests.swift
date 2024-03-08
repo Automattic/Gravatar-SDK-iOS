@@ -10,18 +10,6 @@ final class UserProfileTests: XCTestCase {
         case emptyProfile = "EmptyProfile"
     }
 
-    private enum UserProfileTestError: Error {
-        case profileNotFound
-    }
-
-    private func json(for profile: Profile) throws -> Data {
-        guard let url = Bundle.gravatarTestsBundle.url(forResource: profile.rawValue, withExtension: "json") else {
-            throw UserProfileTestError.profileNotFound
-        }
-
-        return try Data(contentsOf: url)
-    }
-
     func testComprehensiveUserProfileWithBoolsAsStrings() async throws {
         let json = try json(for: .fullProfileWithBoolsAsStrings)
 
@@ -92,6 +80,22 @@ final class UserProfileTests: XCTestCase {
         expectEqual(output: profile.displayName, assertion: TestProfile.EmptyProfile.displayName)
         expectEqual(output: profile.photos, assertion: TestProfile.EmptyProfile.photos)
         expectEqual(output: profile.urls, assertion: TestProfile.EmptyProfile.linkUrls)
+    }
+}
+
+// MARK: - Helpers
+
+extension UserProfileTests {
+    private enum UserProfileTestError: Error {
+        case profileNotFound
+    }
+
+    private func json(for profile: Profile) throws -> Data {
+        guard let url = Bundle.gravatarTestsBundle.url(forResource: profile.rawValue, withExtension: "json") else {
+            throw UserProfileTestError.profileNotFound
+        }
+
+        return try Data(contentsOf: url)
     }
 
     private func expectEqual<T: Equatable>(
@@ -195,6 +199,8 @@ final class UserProfileTests: XCTestCase {
     }
 }
 
+// MARK: - HTTPClient
+
 private struct HTTPClientMock: HTTPClient {
     private let session: URLSessionMock
 
@@ -210,6 +216,8 @@ private struct HTTPClientMock: HTTPClient {
         session.response
     }
 }
+
+// MARK: - TestProfile
 
 private enum TestProfile {
     typealias ProfileName = [String: String]
