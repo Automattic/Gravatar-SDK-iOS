@@ -11,7 +11,7 @@ Gravatar SDK provides a convient wrapper for accessing the Gravatar API
   s.license          = { :type => 'Mozilla Public License v2', :file => 'LICENSE.md' }
   s.authors           = 'Automattic, Inc.'
   s.source           = {
-      :git => 'https://github.com/gravatar/Gravatar-SDK-iOS.git',
+      :git => 'https://github.com/Automattic/Gravatar-SDK-iOS.git',
       :tag => 'CocoaPods-' + s.version.to_s
   }
 

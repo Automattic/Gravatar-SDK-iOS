@@ -2,6 +2,7 @@
 
 [![License: MPL 2.0](https://img.shields.io/badge/License-MPL_2.0-brightgreen.svg)](https://opensource.org/licenses/MPL-2.0)
 
+
 Gravatar SDK is a Swift library that allows you to integrate [Gravatar](https://gravatar.com/) features into your own iOS applications.
 
 ## Features
@@ -13,19 +14,9 @@ Gravatar SDK is a Swift library that allows you to integrate [Gravatar](https://
 - Avatar uploading to a [Gravatar](https://gravatar.com/) account.
 - Gravatar profile fetching based on email.
 
-## Example
-
-## Requirements
-
 ## Installation
 
-### CocoaPods
-Gravatar is available through [CocoaPods](https://cocoapods.org). To install
-it, simply add the following line to your Podfile:
-
-```ruby
-pod 'Gravatar'
-```
+For installation instructions and examples, see out [getting started](Sources/Gravatar/Gravatar.docc/GettingStarted.md) guide.
 
 ## Author
 
