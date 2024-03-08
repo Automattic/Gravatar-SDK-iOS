@@ -14,7 +14,7 @@ For more info, check the [Apple Docs](https://developer.apple.com/documentation/
 
 ##### Adding Gravatar to a SPM project:
 
-1. Add the `Gravatar-SDK-iOS` as a dependency of your project.
+1. Add the `Gravatar-SDK-iOS` as a dependency of your project. Recommended to use the [latest tagged version](https://github.com/Automattic/Gravatar-SDK-iOS/tags).
 2. Add the `Gravatar` product as a dependency of your target.
 
 ```swift
@@ -22,7 +22,7 @@ let package = Package(
     name: "Package Name",
     dependencies: [
         // 1.
-        .package(url: "https://github.com/Automattic/Gravatar-SDK-iOS.git", from: "0.1.0")
+        .package(url: "https://github.com/Automattic/Gravatar-SDK-iOS.git", from: "x.y.z")
     ],
     targets: [
         .executableTarget(
