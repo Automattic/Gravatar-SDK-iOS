@@ -61,8 +61,8 @@ extension ProfileService {
 
     private func fetchProfile(with request: URLRequest) async throws -> UserProfile {
         do {
-            let result: (data: Data, response: HTTPURLResponse) = try await client.fetchData(with: request)
-            let fetchProfileResult = map(result.data, result.response)
+            let (data, response) = try await client.fetchData(with: request)
+            let fetchProfileResult = map(data, response)
             switch fetchProfileResult {
             case .success(let profile):
                 return profile
