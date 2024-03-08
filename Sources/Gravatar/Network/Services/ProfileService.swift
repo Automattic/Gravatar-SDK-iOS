@@ -43,21 +43,6 @@ public struct ProfileService {
         let url = try url(from: email.sha256() + ".json")
         return try await fetchProfile(with: URLRequest(url: url))
     }
-
-    public func fetchProfile(with request: URLRequest) async throws -> UserProfile {
-        do {
-            let result: (data: Data, response: HTTPURLResponse) = try await client.fetchData(with: request)
-            let fetchProfileResult = map(result.data, result.response)
-            switch fetchProfileResult {
-            case .success(let profile):
-                return profile
-            case .failure(let error):
-                throw error
-            }
-        } catch let error as HTTPClientError {
-            throw ProfileServiceError.responseError(reason: error.map())
-        }
-    }
 }
 
 extension ProfileService {
@@ -72,6 +57,21 @@ extension ProfileService {
             throw CannotCreateURLFromGivenPath(baseURL: baseUrl, path: path)
         }
         return url
+    }
+
+    private func fetchProfile(with request: URLRequest) async throws -> UserProfile {
+        do {
+            let result: (data: Data, response: HTTPURLResponse) = try await client.fetchData(with: request)
+            let fetchProfileResult = map(result.data, result.response)
+            switch fetchProfileResult {
+            case .success(let profile):
+                return profile
+            case .failure(let error):
+                throw error
+            }
+        } catch let error as HTTPClientError {
+            throw ProfileServiceError.responseError(reason: error.map())
+        }
     }
 
     private func map(_ data: Data, _: HTTPURLResponse) -> Result<UserProfile, ProfileServiceError> {
