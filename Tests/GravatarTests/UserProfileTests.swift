@@ -11,13 +11,7 @@ final class UserProfileTests: XCTestCase {
     }
 
     func testComprehensiveUserProfileWithBoolsAsStrings() async throws {
-        let json = try json(for: .fullProfileWithBoolsAsStrings)
-
-        let urlSession = URLSessionMock(returnData: json, response: HTTPURLResponse())
-        let client = HTTPClientMock(session: urlSession)
-        let profileService = ProfileService(client: client)
-
-        let profile = try await profileService.fetchProfile(with: URLRequest(url: url))
+        let profile = try await profile(for: .fullProfileWithBoolsAsStrings)
         XCTAssertNotNil(profile)
         expectEqual(output: profile.hash, assertion: TestProfile.FullProfile.hash)
         expectEqual(output: profile.requestHash, assertion: TestProfile.FullProfile.requestHash)
@@ -36,13 +30,7 @@ final class UserProfileTests: XCTestCase {
     }
 
     func testComprehensiveUserProfileWithNativeBools() async throws {
-        let json = try json(for: .fullProfileWithNativeBools)
-
-        let urlSession = URLSessionMock(returnData: json, response: HTTPURLResponse())
-        let client = HTTPClientMock(session: urlSession)
-        let profileService = ProfileService(client: client)
-
-        let profile = try await profileService.fetchProfile(with: URLRequest(url: url))
+        let profile = try await profile(for: .fullProfileWithNativeBools)
         XCTAssertNotNil(profile)
         expectEqual(output: profile.hash, assertion: TestProfile.FullProfile.hash)
         expectEqual(output: profile.requestHash, assertion: TestProfile.FullProfile.requestHash)
@@ -61,15 +49,8 @@ final class UserProfileTests: XCTestCase {
     }
 
     func testEmptyProfile() async throws {
-        let json = try json(for: .emptyProfile)
-
-        let urlSession = URLSessionMock(returnData: json, response: HTTPURLResponse())
-        let client = HTTPClientMock(session: urlSession)
-        let profileService = ProfileService(client: client)
-
-        let profile = try await profileService.fetchProfile(with: URLRequest(url: url))
+        let profile = try await profile(for: .emptyProfile)
         XCTAssertNotNil(profile)
-
         expectEqual(output: profile.hash, assertion: TestProfile.EmptyProfile.hash)
         expectEqual(output: profile.requestHash, assertion: TestProfile.EmptyProfile.requestHash)
         expectEqual(output: profile.profileUrl, assertion: TestProfile.EmptyProfile.profileUrl)
@@ -88,6 +69,17 @@ final class UserProfileTests: XCTestCase {
 extension UserProfileTests {
     private enum UserProfileTestError: Error {
         case profileNotFound
+    }
+
+    private func profile(for profile: Profile) async throws -> UserProfile {
+        let url = URL(string: "http://a-url.com")!
+        let json = try json(for: profile)
+
+        let urlSession = URLSessionMock(returnData: json, response: HTTPURLResponse())
+        let client = HTTPClientMock(session: urlSession)
+        let profileService = ProfileService(client: client)
+
+        return try await profileService.fetchProfile(with: URLRequest(url: url))
     }
 
     private func json(for profile: Profile) throws -> Data {
