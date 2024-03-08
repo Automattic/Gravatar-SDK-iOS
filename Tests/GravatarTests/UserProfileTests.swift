@@ -7,7 +7,7 @@ final class UserProfileTests: XCTestCase {
     private enum Profile: String {
         case fullProfileWithBoolsAsStrings = "FullProfileWithBoolsAsStrings"
         case fullProfileWithNativeBools = "FullProfileWithNativeBools"
-        case emptyProfile = "EmptyProfile"
+        case partialProfile = "PartialProfile"
     }
 
     func testComprehensiveUserProfileWithBoolsAsStrings() async throws {
@@ -49,18 +49,18 @@ final class UserProfileTests: XCTestCase {
     }
 
     func testEmptyProfile() async throws {
-        let profile = try await profile(for: .emptyProfile)
+        let profile = try await profile(for: .partialProfile)
         XCTAssertNotNil(profile)
-        expectEqual(output: profile.hash, assertion: TestProfile.EmptyProfile.hash)
-        expectEqual(output: profile.requestHash, assertion: TestProfile.EmptyProfile.requestHash)
-        expectEqual(output: profile.profileUrl, assertion: TestProfile.EmptyProfile.profileUrl)
-        expectEqual(output: profile.preferredUsername, assertion: TestProfile.EmptyProfile.preferredUsername)
-        expectEqual(output: profile.thumbnailUrl, assertion: TestProfile.EmptyProfile.thumbnailUrl)
+        expectEqual(output: profile.hash, assertion: TestProfile.PartialProfile.hash)
+        expectEqual(output: profile.requestHash, assertion: TestProfile.PartialProfile.requestHash)
+        expectEqual(output: profile.profileUrl, assertion: TestProfile.PartialProfile.profileUrl)
+        expectEqual(output: profile.preferredUsername, assertion: TestProfile.PartialProfile.preferredUsername)
+        expectEqual(output: profile.thumbnailUrl, assertion: TestProfile.PartialProfile.thumbnailUrl)
         XCTAssertNotNil(profile.lastProfileEditDate)
-        expectEqual(output: profile.lastProfileEditDate, assertion: TestProfile.EmptyProfile.lastProfileEditDate)
-        expectEqual(output: profile.displayName, assertion: TestProfile.EmptyProfile.displayName)
-        expectEqual(output: profile.photos, assertion: TestProfile.EmptyProfile.photos)
-        expectEqual(output: profile.urls, assertion: TestProfile.EmptyProfile.linkUrls)
+        expectEqual(output: profile.lastProfileEditDate, assertion: TestProfile.PartialProfile.lastProfileEditDate)
+        expectEqual(output: profile.displayName, assertion: TestProfile.PartialProfile.displayName)
+        expectEqual(output: profile.photos, assertion: TestProfile.PartialProfile.photos)
+        expectEqual(output: profile.urls, assertion: TestProfile.PartialProfile.linkUrls)
     }
 }
 
@@ -332,7 +332,7 @@ private enum TestProfile {
         ]
     }
 
-    enum EmptyProfile {
+    enum PartialProfile {
         static let hash: String = "fake_hash"
         static let requestHash: String = "fake_requestHash"
         static let preferredUsername: String = "fake_preferredUsername"
