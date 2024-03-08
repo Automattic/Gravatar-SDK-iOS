@@ -252,11 +252,10 @@ private enum TestProfile {
         static let thumbnailUrl: String = "https://1.gravatar.com/avatar/ca38d22ece4e8f592db7cd75764e5a52"
         static let pronouns: String = "they/them/their"
         static let aboutMe: String = "fake biography"
-        static let lastProfileEdit: String = "2023-12-01 20:25:10"
+        static let lastProfileEdit: String? = "2023-12-01 20:25:10"
         static var lastProfileEditDate: Date? {
-            let formatter = DateFormatter()
-            formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-            return formatter.date(from: lastProfileEdit)
+            guard let lastEditDate = self.lastProfileEdit else { return nil }
+            return lastProfileEditDateFormatter.date(from: lastEditDate)
         }
 
         static let photos: [ProfilePhoto] = [
@@ -366,11 +365,10 @@ private enum TestProfile {
         static let thumbnailUrl: String = "https://1.gravatar.com/avatar/ca38d22ece4e8f592db7cd75764e5a52"
         static let pronouns: String? = nil
         static let aboutMe: String? = nil
-        static let lastProfileEdit: String = "2023-12-01 20:25:10"
+        static let lastProfileEdit: String? = "2023-12-01 20:25:10"
         static var lastProfileEditDate: Date? {
-            let formatter = DateFormatter()
-            formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-            return formatter.date(from: lastProfileEdit)
+            guard let lastEditDate = self.lastProfileEdit else { return nil }
+            return lastProfileEditDateFormatter.date(from: lastEditDate)
         }
 
         static let photos: [ProfilePhoto] = [
@@ -393,7 +391,12 @@ private enum TestProfile {
         static let thumbnailUrl: String = "https://1.gravatar.com/avatar/ca38d22ece4e8f592db7cd75764e5a52"
         static let pronouns: String? = nil
         static let aboutMe: String? = nil
-        static var lastProfileEditDate: Date? = nil
+        static let lastProfileEdit: String? = nil
+        static var lastProfileEditDate: Date? {
+            guard let lastEditDate = self.lastProfileEdit else { return nil }
+            return lastProfileEditDateFormatter.date(from: lastEditDate)
+        }
+
         static let photos: [ProfilePhoto] = [
             [
                 "value": "https://1.gravatar.com/avatar/ca38d22ece4e8f592db7cd75764e5a52",
@@ -403,5 +406,12 @@ private enum TestProfile {
         static let emailsNativeBool: [ProfileEmail]? = nil
         static let accountsNativeBool: [ProfileAccount]? = nil
         static let linkUrls: [ProfileLinkURL] = []
+    }
+
+    private static var lastProfileEditDateFormatter: DateFormatter {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        formatter.timeZone = TimeZone(secondsFromGMT: 0)
+        return formatter
     }
 }
