@@ -8,6 +8,7 @@ final class UserProfileTests: XCTestCase {
         case fullProfileWithBoolsAsStrings = "FullProfileWithBoolsAsStrings"
         case fullProfileWithNativeBools = "FullProfileWithNativeBools"
         case partialProfile = "PartialProfile"
+        case newlyCreatedProfile = "NewlyCreatedProfile"
     }
 
     func testComprehensiveUserProfileWithBoolsAsStrings() async throws {
@@ -48,7 +49,7 @@ final class UserProfileTests: XCTestCase {
         expectEqual(output: profile.urls, assertion: TestProfile.FullProfile.linkUrls)
     }
 
-    func testEmptyProfile() async throws {
+    func testPartialProfile() async throws {
         let profile = try await profile(for: .partialProfile)
         XCTAssertNotNil(profile)
         expectEqual(output: profile.hash, assertion: TestProfile.PartialProfile.hash)
@@ -59,8 +60,31 @@ final class UserProfileTests: XCTestCase {
         XCTAssertNotNil(profile.lastProfileEditDate)
         expectEqual(output: profile.lastProfileEditDate, assertion: TestProfile.PartialProfile.lastProfileEditDate)
         expectEqual(output: profile.displayName, assertion: TestProfile.PartialProfile.displayName)
+        expectEqual(output: profile.pronouns, assertion: TestProfile.PartialProfile.pronouns)
+        expectEqual(output: profile.aboutMe, assertion: TestProfile.PartialProfile.aboutMe)
         expectEqual(output: profile.photos, assertion: TestProfile.PartialProfile.photos)
+        expectEqual(output: profile.emails, assertion: TestProfile.PartialProfile.emailsNativeBool, asBool: true)
+        expectEqual(output: profile.accounts, assertion: TestProfile.PartialProfile.accountsNativeBool, asBool: true)
         expectEqual(output: profile.urls, assertion: TestProfile.PartialProfile.linkUrls)
+    }
+
+    func testNewlyCreatedProfile() async throws {
+        let profile = try await profile(for: .newlyCreatedProfile)
+        XCTAssertNotNil(profile)
+        expectEqual(output: profile.hash, assertion: TestProfile.NewlyCreatedProfile.hash)
+        expectEqual(output: profile.requestHash, assertion: TestProfile.NewlyCreatedProfile.requestHash)
+        expectEqual(output: profile.profileUrl, assertion: TestProfile.NewlyCreatedProfile.profileUrl)
+        expectEqual(output: profile.preferredUsername, assertion: TestProfile.PartialProfile.preferredUsername)
+        expectEqual(output: profile.thumbnailUrl, assertion: TestProfile.NewlyCreatedProfile.thumbnailUrl)
+        XCTAssertNil(profile.lastProfileEditDate)
+        expectEqual(output: profile.lastProfileEditDate, assertion: TestProfile.NewlyCreatedProfile.lastProfileEditDate)
+        expectEqual(output: profile.displayName, assertion: TestProfile.NewlyCreatedProfile.displayName)
+        expectEqual(output: profile.pronouns, assertion: TestProfile.NewlyCreatedProfile.pronouns)
+        expectEqual(output: profile.aboutMe, assertion: TestProfile.NewlyCreatedProfile.aboutMe)
+        expectEqual(output: profile.photos, assertion: TestProfile.NewlyCreatedProfile.photos)
+        expectEqual(output: profile.emails, assertion: TestProfile.NewlyCreatedProfile.emailsNativeBool, asBool: true)
+        expectEqual(output: profile.accounts, assertion: TestProfile.NewlyCreatedProfile.accountsNativeBool, asBool: true)
+        expectEqual(output: profile.urls, assertion: TestProfile.NewlyCreatedProfile.linkUrls)
     }
 }
 
@@ -114,13 +138,14 @@ extension UserProfileTests {
 
     private func expectEqual(
         output: [UserProfile.Email]?,
-        assertion: [TestProfile.ProfileEmail],
+        assertion: [TestProfile.ProfileEmail]?,
         asBool: Bool = true,
         file: StaticString = #filePath,
         line: UInt = #line
     ) {
-        guard let output else {
-            XCTFail("UserProfile.Email should not be nil", file: file, line: line)
+        guard let output, let assertion else {
+            XCTAssertNil(output, "Both the output and the assertion should be nil", file: file, line: line)
+            XCTAssertNil(assertion, "Both the output and the assertion should be nil", file: file, line: line)
             return
         }
 
@@ -137,13 +162,14 @@ extension UserProfileTests {
 
     private func expectEqual(
         output: [UserProfile.Account]?,
-        assertion: [TestProfile.ProfileAccount],
+        assertion: [TestProfile.ProfileAccount]?,
         asBool: Bool = true,
         file: StaticString = #filePath,
         line: UInt = #line
     ) {
-        guard let output else {
-            XCTFail("UserProfile.Account should not be nil")
+        guard let output, let assertion else {
+            XCTAssertNil(output, "Both the output and the assertion should be nil", file: file, line: line)
+            XCTAssertNil(assertion, "Both the output and the assertion should be nil", file: file, line: line)
             return
         }
 
@@ -339,6 +365,8 @@ private enum TestProfile {
         static let displayName: String = "fake_displayName"
         static let profileUrl: String = "https://fake_profileUrl.com"
         static let thumbnailUrl: String = "https://1.gravatar.com/avatar/ca38d22ece4e8f592db7cd75764e5a52"
+        static let pronouns: String? = nil
+        static let aboutMe: String? = nil
         static let lastProfileEdit: String = "2023-12-01 20:25:10"
         static var lastProfileEditDate: Date? {
             let formatter = DateFormatter()
@@ -352,7 +380,29 @@ private enum TestProfile {
                 "type": "thumbnail",
             ],
         ]
+        static let emailsNativeBool: [ProfileEmail]? = nil
+        static let accountsNativeBool: [ProfileAccount]? = nil
+        static let linkUrls: [ProfileLinkURL] = []
+    }
 
+    enum NewlyCreatedProfile {
+        static let hash: String = "fake_hash"
+        static let requestHash: String = "fake_requestHash"
+        static let preferredUsername: String = "fake_preferredUsername"
+        static let displayName: String = "fake_displayName"
+        static let profileUrl: String = "https://fake_profileUrl.com"
+        static let thumbnailUrl: String = "https://1.gravatar.com/avatar/ca38d22ece4e8f592db7cd75764e5a52"
+        static let pronouns: String? = nil
+        static let aboutMe: String? = nil
+        static var lastProfileEditDate: Date? = nil
+        static let photos: [ProfilePhoto] = [
+            [
+                "value": "https://1.gravatar.com/avatar/ca38d22ece4e8f592db7cd75764e5a52",
+                "type": "thumbnail",
+            ],
+        ]
+        static let emailsNativeBool: [ProfileEmail]? = nil
+        static let accountsNativeBool: [ProfileAccount]? = nil
         static let linkUrls: [ProfileLinkURL] = []
     }
 }
