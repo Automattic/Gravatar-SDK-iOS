@@ -36,12 +36,24 @@ public struct ProfileService {
         }
     }
 
+    public func fetchProfile(withHash hash: String, onCompletion: @escaping ((_ result: GravatarProfileFetchResult) -> Void)) {
+        Task {
+            do {
+                let profile = try await fetchProfile(withHash: hash)
+                onCompletion(.success(profile))
+            } catch let error as ProfileServiceError {
+                onCompletion(.failure(error))
+            } catch {
+                onCompletion(.failure(.responseError(reason: .unexpected(error))))
+            }
+        }
+    }
+
     /// Fetches a Gravatar user's profile information, and delivers the user profile asynchronously.
     /// - Parameter email: The user account email.
     /// - Returns: An asynchronously-delivered user profile.
     public func fetchProfile(for email: String) async throws -> UserProfile {
-        let url = try url(from: email.sha256() + ".json")
-        return try await fetchProfile(with: URLRequest(url: url))
+        try await fetchProfile(withHash: email.sha256())
     }
 
     public func fetchProfile(withHash hash: String) async throws -> UserProfile {
