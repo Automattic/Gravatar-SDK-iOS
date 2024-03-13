@@ -41,6 +41,7 @@ public class MinimalUserView: UIView, UIContentView {
         imageView.backgroundColor = .systemGray6
         imageView.setContentHuggingPriority(.required, for: .horizontal)
         imageView.setContentHuggingPriority(.required, for: .vertical)
+        imageView.setContentCompressionResistancePriority(.required, for: .horizontal)
         return imageView
     }()
 
@@ -48,7 +49,7 @@ public class MinimalUserView: UIView, UIContentView {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = .preferredFont(forTextStyle: .title2)
-        label.setContentHuggingPriority(.defaultLow, for: .horizontal)
+//        label.setContentHuggingPriority(.defaultLow, for: .horizontal)
         return label
     }()
 
@@ -56,19 +57,18 @@ public class MinimalUserView: UIView, UIContentView {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textColor = .secondaryLabel
-        label.setContentHuggingPriority(.defaultLow, for: .horizontal)
+//        label.setContentHuggingPriority(.defaultLow, for: .horizontal)
         return label
     }()
 
     lazy var rootStackView: UIStackView = {
-        let stackView = UIStackView(arrangedSubviews: [imageView, textStackView, makeSpacer()])
+        let stackView = UIStackView(arrangedSubviews: [imageView, textStackView])
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .horizontal
         stackView.alignment = .center
-        stackView.distribution = .equalCentering
         stackView.layoutMargins = UIEdgeInsets(top: 12, left: 20, bottom: 12, right: 20)
         stackView.isLayoutMarginsRelativeArrangement = true
-        stackView.spacing = 0
+        stackView.spacing = 12
         return stackView
     }()
 
@@ -76,6 +76,8 @@ public class MinimalUserView: UIView, UIContentView {
         let stackView = UIStackView(arrangedSubviews: [nameLabel, detailLabel])
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical
+        stackView.alignment = .leading
+        stackView.distribution = .fillProportionally
         return stackView
     }()
 
@@ -121,7 +123,11 @@ public class MinimalUserView: UIView, UIContentView {
         guard let configuration = configuration as? MinimalUserConfiguration else {
             return
         }
-        imageView.setImage(email: configuration.email ?? "", preferredSize: CGSize(width: 60, height: 60))
+        imageView.setImage(
+            email: configuration.email ?? "",
+            placeholder: configuration.placeholderImage,
+            preferredSize: CGSize(width: 60, height: 60)
+        )
         nameLabel.text = configuration.userName
         detailLabel.text = configuration.detail
     }
@@ -131,15 +137,17 @@ public struct MinimalUserConfiguration: UIContentConfiguration {
     public var email: String?
     public var userName: String
     public var detail: String
+    public var placeholderImage: UIImage?
 
     public static var empty: MinimalUserConfiguration {
-        MinimalUserConfiguration(email: "", userName: "", detail: "")
+        MinimalUserConfiguration(email: "", userName: "", detail: "", placeholderImage: nil)
     }
 
-    init(email: String?, userName: String, detail: String) {
+    init(email: String?, userName: String, detail: String, placeholderImage: UIImage?) {
         self.email = email
         self.userName = userName
         self.detail = detail
+        self.placeholderImage = placeholderImage
     }
 
     public func makeContentView() -> UIView & UIContentView {
