@@ -123,11 +123,10 @@ public class MinimalUserView: UIView, UIContentView {
         guard let configuration = configuration as? MinimalUserConfiguration else {
             return
         }
-        imageView.setImage(
-            email: configuration.email ?? "",
-            placeholder: configuration.placeholderImage,
-            preferredSize: CGSize(width: 60, height: 60)
-        )
+        if let url = configuration.imageUrl, let gravatarUrl = GravatarURL(url) {
+            let sizedUrl = gravatarUrl.url(with: ImageQueryOptions(preferredSize: .points(60)))
+            imageView.setImage(with: sizedUrl)
+        }
         nameLabel.text = configuration.userName
         detailLabel.text = configuration.detail
     }
@@ -137,6 +136,7 @@ public struct MinimalUserConfiguration: UIContentConfiguration {
     public var email: String?
     public var userName: String
     public var detail: String
+    public var imageUrl: URL?
     public var placeholderImage: UIImage?
 
     public static var empty: MinimalUserConfiguration {

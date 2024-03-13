@@ -36,6 +36,21 @@ public class UserImageView: UIView {
         )
     }
 
+    @discardableResult
+    public func setImage(
+        with source: URL?,
+        placeholder: UIImage? = nil,
+        options: [ImageSettingOption]? = nil,
+        completionHandler: ImageSetCompletion? = nil
+    ) -> CancellableDataTask? {
+        imageView.gravatar.setImage(
+            with: source,
+            placeholder: placeholder,
+            options: options,
+            completionHandler: completionHandler
+        )
+    }
+
     override public func layoutSubviews() {
         super.layoutSubviews()
         layer.cornerRadius = frame.height / 2
