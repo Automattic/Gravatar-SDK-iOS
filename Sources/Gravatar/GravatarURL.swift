@@ -22,6 +22,17 @@ public struct GravatarURL {
         return url
     }
 
+    public static func isGravatarImageURL(_ url: URL) -> Bool {
+        guard
+            let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
+            let host = components.host
+        else {
+            return false
+        }
+
+        return isGravatarURL(url) && components.path.hasPrefix("/avatar/")
+    }
+
     public static func isGravatarURL(_ url: URL) -> Bool {
         guard
             let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
@@ -30,8 +41,7 @@ public struct GravatarURL {
             return false
         }
 
-        return (host.hasSuffix(".gravatar.com") || host == "gravatar.com")
-            && components.path.hasPrefix("/avatar/")
+        return host.hasSuffix(".gravatar.com") || host == "gravatar.com"
     }
 
     /// Returns the Gravatar URL, for a given email, with the specified size + rating.
