@@ -1,7 +1,7 @@
 import UIKit
 
 public class MinimalUserView: UIView, UIContentView {
-    public var layoutConfiguration:  NSLayoutConstraint.Axis = .horizontal {
+    public var layoutConfiguration: NSLayoutConstraint.Axis = .horizontal {
         didSet {
             switch layoutConfiguration {
             case .horizontal:
@@ -21,7 +21,6 @@ public class MinimalUserView: UIView, UIContentView {
         rootStackView.distribution = .equalCentering
         textStackView.alignment = .center
         rootStackView.layoutMargins = UIEdgeInsets(top: 12, left: 20, bottom: 0, right: 20)
-
     }
 
     public var configuration: UIContentConfiguration = MinimalUserConfiguration.empty {
@@ -95,7 +94,8 @@ public class MinimalUserView: UIView, UIContentView {
         super.init(frame: .zero)
         configureUI()
     }
-    
+
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -113,7 +113,7 @@ public class MinimalUserView: UIView, UIContentView {
             rootStackView.topAnchor.constraint(equalTo: topAnchor),
             rootStackView.bottomAnchor.constraint(equalTo: bottomAnchor),
             rootStackView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            rootStackView.trailingAnchor.constraint(equalTo: trailingAnchor)
+            rootStackView.trailingAnchor.constraint(equalTo: trailingAnchor),
         ])
     }
 
@@ -121,14 +121,14 @@ public class MinimalUserView: UIView, UIContentView {
         guard let configuration = configuration as? MinimalUserConfiguration else {
             return
         }
-        imageView.setImage(email: configuration.email, preferredSize: CGSize(width: 60, height: 60))
+        imageView.setImage(email: configuration.email ?? "", preferredSize: CGSize(width: 60, height: 60))
         nameLabel.text = configuration.userName
         detailLabel.text = configuration.detail
     }
 }
 
 public struct MinimalUserConfiguration: UIContentConfiguration {
-    public var email: String
+    public var email: String?
     public var userName: String
     public var detail: String
 
@@ -136,7 +136,7 @@ public struct MinimalUserConfiguration: UIContentConfiguration {
         MinimalUserConfiguration(email: "", userName: "", detail: "")
     }
 
-    init(email: String, userName: String, detail: String) {
+    init(email: String?, userName: String, detail: String) {
         self.email = email
         self.userName = userName
         self.detail = detail
@@ -147,7 +147,7 @@ public struct MinimalUserConfiguration: UIContentConfiguration {
         userView.configuration = self
         return userView
     }
-    
+
     public func updated(for state: UIConfigurationState) -> MinimalUserConfiguration {
         self
     }
