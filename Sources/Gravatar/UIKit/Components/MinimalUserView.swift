@@ -85,7 +85,7 @@ public class MinimalUserView: UIView, UIContentView {
         return spacer
     }
 
-    public override init(frame: CGRect) {
+    override public init(frame: CGRect) {
         super.init(frame: frame)
         configureUI()
     }
