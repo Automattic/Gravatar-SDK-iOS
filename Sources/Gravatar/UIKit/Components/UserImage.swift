@@ -7,6 +7,10 @@ public class UserImageView: UIView {
         return imageView
     }()
 
+    public var image: UIImage? {
+        imageView.image
+    }
+
     override public init(frame: CGRect) {
         super.init(frame: frame)
         configureUI()

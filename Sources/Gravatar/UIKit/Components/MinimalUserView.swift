@@ -33,7 +33,7 @@ public class MinimalUserView: UIView, UIContentView {
         .empty
     }
 
-    let imageView: UserImageView = {
+    public let imageView: UserImageView = {
         let imageView = UserImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.heightAnchor.constraint(equalToConstant: 60).isActive = true
