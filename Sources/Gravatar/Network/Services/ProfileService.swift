@@ -43,6 +43,11 @@ public struct ProfileService {
         let url = try url(from: email.sha256() + ".json")
         return try await fetchProfile(with: URLRequest(url: url))
     }
+
+    public func fetchProfile(withHash hash: String) async throws -> UserProfile {
+        let url = try url(from: hash + ".json")
+        return try await fetchProfile(with: URLRequest(url: url))
+    }
 }
 
 extension ProfileService {
