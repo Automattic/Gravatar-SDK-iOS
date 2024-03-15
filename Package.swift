@@ -13,6 +13,10 @@ let package = Package(
         .library(
             name: "Gravatar",
             targets: ["Gravatar"]),
+        .library(
+            name: "GravatarCore",
+            targets: ["GravatarCore"]
+        ),
     ],
     dependencies: [
         .package(url: "https://github.com/nicklockwood/SwiftFormat", from: "0.53.0")
@@ -21,11 +25,21 @@ let package = Package(
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
-            name: "Gravatar"),
+            name: "Gravatar",
+            dependencies: [
+                "GravatarCore",
+            ]
+        ),
         .testTarget(
             name: "GravatarTests",
             dependencies: ["Gravatar"],
             resources: [.process("Resources")]
-        )
+        ),
+        .target(name: "GravatarCore"),
+        .testTarget(
+            name: "GravatarCoreTests",
+            dependencies: ["GravatarCore"],
+            resources: [.process("Resources")]
+        ),
     ]
 )
