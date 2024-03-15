@@ -17,6 +17,10 @@ let package = Package(
             name: "GravatarCore",
             targets: ["GravatarCore"]
         ),
+        .library(
+            name: "GravatarUIComponents",
+            targets: ["GravatarUIComponents"]
+        ),
     ],
     dependencies: [
         .package(url: "https://github.com/nicklockwood/SwiftFormat", from: "0.53.0")
@@ -28,6 +32,7 @@ let package = Package(
             name: "Gravatar",
             dependencies: [
                 "GravatarCore",
+                .byName(name: "GravatarUIComponents", condition: .when(platforms: [.iOS]))
             ]
         ),
         .testTarget(
@@ -39,6 +44,15 @@ let package = Package(
         .testTarget(
             name: "GravatarCoreTests",
             dependencies: ["GravatarCore"],
+            resources: [.process("Resources")]
+        ),
+        .target(
+            name: "GravatarUIComponents",
+            dependencies: ["GravatarCore"]
+        ),
+        .testTarget(
+            name: "GravatarUIComponentsTests",
+            dependencies: ["GravatarUIComponents"],
             resources: [.process("Resources")]
         ),
     ]
