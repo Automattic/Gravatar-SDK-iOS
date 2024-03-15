@@ -32,4 +32,6 @@ lint:
 
 lint-pod:
 	bundle install
-	bundle exec pod lib lint --verbose --fail-fast
+	bundle exec pod lib lint \
+		--include-podspecs="*.podspec" \
+		--verbose --fail-fast
