@@ -19,6 +19,7 @@ Pod::Spec.new do |s|
     ios_deployment_target = '15.0'
     
     s.ios.deployment_target = ios_deployment_target
+    s.ios.framework = 'UIKit'
     s.source_files = 'Sources/GravatarUIComponents/**/*.swift'
     
     s.test_spec 'GravatarUIComponents' do |swift_unit_tests|
