@@ -1,4 +1,4 @@
-@testable import Gravatar
+@testable import GravatarCore
 import XCTest
 
 final class GravatarURLTests: XCTestCase {
