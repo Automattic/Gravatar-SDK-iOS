@@ -21,6 +21,7 @@ Pod::Spec.new do |s|
   s.ios.deployment_target = ios_deployment_target
   s.source_files = 'Sources/Gravatar/**/*.swift'
   s.dependency 'GravatarCore', s.version.to_s
+  s.dependency 'GravatarUIComponents', s.version.to_s
 
   s.test_spec 'Tests' do |swift_unit_tests|
     swift_unit_tests.platforms = {
