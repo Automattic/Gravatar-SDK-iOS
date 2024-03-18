@@ -6,7 +6,7 @@ final class ProfileServiceTests: XCTestCase {
         let session = URLSessionMock(returnData: jsonData, response: .successResponse())
         let client = URLSessionHTTPClient(urlSession: session)
         let service = ProfileService(client: client)
-        let profile = try await service.fetchProfile(for: "some@email.com")
+        let profile = try await service.fetch(withEmail: "some@email.com")
 
         XCTAssertEqual(profile.displayName, "Beau Lebens")
     }
@@ -17,7 +17,7 @@ final class ProfileServiceTests: XCTestCase {
         let service = ProfileService(client: client)
 
         do {
-            _ = try await service.fetchProfile(for: "some@email.com")
+            _ = try await service.fetch(withEmail: "some@email.com")
         } catch ProfileServiceError.responseError(reason: let reason) {
             XCTAssertEqual(reason.httpStatusCode, 404)
         } catch {
@@ -31,7 +31,7 @@ final class ProfileServiceTests: XCTestCase {
         let service = ProfileService(client: client)
 
         do {
-            _ = try await service.fetchProfile(for: "some@email.com")
+            _ = try await service.fetch(withEmail: "some@email.com")
         } catch let error as ProfileServiceError {
             XCTAssertEqual(error.debugDescription, ProfileServiceError.noProfileInResponse.debugDescription)
         } catch {
@@ -83,7 +83,7 @@ final class ProfileServiceTests: XCTestCase {
         let session = URLSessionMock(returnData: jsonData, response: .successResponse())
         let client = URLSessionHTTPClient(urlSession: session)
         let service = ProfileService(client: client)
-        let profile = try await service.fetchProfile(for: "some@email.com")
+        let profile = try await service.fetch(withEmail: "some@email.com")
 
         XCTAssertEqual(profile.displayName, "Beau Lebens")
         XCTAssertNotNil(profile.lastProfileEdit)
@@ -93,7 +93,7 @@ final class ProfileServiceTests: XCTestCase {
         let session = URLSessionMock(returnData: jsonData, response: .successResponse())
         let client = URLSessionHTTPClient(urlSession: session)
         let service = ProfileService(client: client)
-        let profile = try await service.fetchProfile(for: "some@email.com")
+        let profile = try await service.fetch(withEmail: "some@email.com")
 
         XCTAssertEqual(profile.urls.first?.linkSlug, "some_slug")
         XCTAssertNotNil(profile.lastProfileEdit)
@@ -105,11 +105,41 @@ final class ProfileServiceTests: XCTestCase {
         let service = ProfileService(client: client)
 
         do {
-            let profile = try await service.fetchProfile(for: "some@email.com")
+            let profile = try await service.fetch(withEmail: "some@email.com")
             XCTAssertEqual(profile.displayName, "doxomi4985")
         } catch {
             XCTFail(error.localizedDescription)
         }
+    }
+
+    func testFetchWithEmail() async throws {
+        let session = URLSessionMock(returnData: jsonData, response: .successResponse())
+        let client = HTTPClientMock(session: session)
+        let service = ProfileService(client: client)
+        _ = try await service.fetch(withEmail: "some@email.com")
+
+        XCTAssertEqual(
+            session.request?.url?.absoluteString,
+            "https://gravatar.com/676212ff796c79a3c06261eb10e3f455aa93998ee6e45263da13679c74b1e674.json"
+        )
+    }
+
+    func testFetchWithHash() async throws {
+        let session = URLSessionMock(returnData: jsonData, response: .successResponse())
+        let client = HTTPClientMock(session: session)
+        let service = ProfileService(client: client)
+        _ = try await service.fetch(withHash: "HASH")
+
+        XCTAssertEqual(session.request?.url?.absoluteString, "https://gravatar.com/HASH.json")
+    }
+
+    func testFetchWithUserName() async throws {
+        let session = URLSessionMock(returnData: jsonData, response: .successResponse())
+        let client = HTTPClientMock(session: session)
+        let service = ProfileService(client: client)
+        _ = try await service.fetch(withUserName: "user")
+
+        XCTAssertEqual(session.request?.url?.absoluteString, "https://gravatar.com/user.json")
     }
 }
 
