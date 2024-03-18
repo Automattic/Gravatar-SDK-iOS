@@ -1,5 +1,5 @@
 Pod::Spec.new do |s|
-    s.name             = 'GravatarUIComponents'
+    s.name             = 'GravatarComponentsUIKit'
     s.version          = '0.1.1'
     s.summary          = 'A convient library for accessing the Gravatar API'
   
@@ -14,24 +14,23 @@ Pod::Spec.new do |s|
       
     s.swift_version     = '5.9'
     
-    s.platform = :ios
-    
     ios_deployment_target = '15.0'
-    
     s.ios.deployment_target = ios_deployment_target
+
+    s.source_files = 'Sources/GravatarComponentsUIKit/**/*.swift'
+    s.dependency 'GravatarCore', s.version.to_s
     s.ios.framework = 'UIKit'
-    s.source_files = 'Sources/GravatarUIComponents/**/*.swift'
     
-    s.test_spec 'GravatarUIComponents' do |swift_unit_tests|
+    s.test_spec 'GravatarComponentsUIKitTests' do |swift_unit_tests|
       swift_unit_tests.platforms = {
           :ios => ios_deployment_target,
       }
       swift_unit_tests.source_files = [
-          'Tests/GravatarUIComponentsTests/**/*.swift'
+          'Tests/GravatarComponentsUIKitTests/**/*.swift'
       ]
       swift_unit_tests.resource_bundles = {
-          GravatarTestsResources: [
-              'Tests/GravatarUIComponentsTests/Resources/**/*'
+          GravatarComponentsUIKitTestsResources: [
+              'Tests/GravatarComponentsUIKitTests/Resources/**/*'
           ]
       }
       swift_unit_tests.requires_app_host = false

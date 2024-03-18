@@ -29,7 +29,7 @@ Pod::Spec.new do |s|
         'Tests/GravatarCoreTests/**/*.swift'
     ]
     swift_unit_tests.resource_bundles = {
-        GravatarTestsResources: [
+        GravatarCoreTestsResources: [
             'Tests/GravatarCoreTests/Resources/**/*'
         ]
     }
