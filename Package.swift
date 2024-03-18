@@ -11,15 +11,12 @@ let package = Package(
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
-            name: "Gravatar",
-            targets: ["Gravatar"]),
-        .library(
             name: "GravatarCore",
             targets: ["GravatarCore"]
         ),
         .library(
-            name: "GravatarUIComponents",
-            targets: ["GravatarUIComponents"]
+            name: "GravatarComponents",
+            targets: ["GravatarComponents"]
         ),
     ],
     dependencies: [
@@ -29,30 +26,28 @@ let package = Package(
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
-            name: "Gravatar",
-            dependencies: [
-                "GravatarCore",
-                .byName(name: "GravatarUIComponents", condition: .when(platforms: [.iOS]))
-            ]
+            name: "GravatarCore",
+            linkerSettings: [.linkedFramework("UIKit", .when(platforms: [.iOS]))]
         ),
-        .testTarget(
-            name: "GravatarTests",
-            dependencies: ["Gravatar"],
-            resources: [.process("Resources")]
-        ),
-        .target(name: "GravatarCore"),
         .testTarget(
             name: "GravatarCoreTests",
             dependencies: ["GravatarCore"],
             resources: [.process("Resources")]
         ),
         .target(
-            name: "GravatarUIComponents",
-            dependencies: ["GravatarCore"]
+            name: "GravatarComponents",
+            dependencies: [
+                .byName(name: "GravatarComponentsUIKit", condition: .when(platforms: [.iOS]))
+            ]
+        ),
+        .target(
+            name: "GravatarComponentsUIKit",
+            dependencies: ["GravatarCore"],
+            resources: [.process("Resources")]
         ),
         .testTarget(
-            name: "GravatarUIComponentsTests",
-            dependencies: ["GravatarUIComponents"],
+            name: "GravatarComponentsUIKitTests",
+            dependencies: ["GravatarComponentsUIKit"],
             resources: [.process("Resources")]
         ),
     ]
