@@ -42,8 +42,7 @@ let package = Package(
         ),
         .target(
             name: "GravatarComponentsUIKit",
-            dependencies: ["GravatarCore"],
-            resources: [.process("Resources")]
+            dependencies: ["GravatarCore"]
         ),
         .testTarget(
             name: "GravatarComponentsUIKitTests",
