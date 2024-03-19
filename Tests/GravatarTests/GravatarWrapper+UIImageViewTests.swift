@@ -194,6 +194,6 @@ final class GravatarWrapper_UIImageViewTests: XCTestCase {
         }
 
         group.notify(queue: .main, execute: expectation.fulfill)
-        wait(for: [expectation], timeout: 20.0)
+        wait(for: [expectation], timeout: 2.0)
     }
 }
