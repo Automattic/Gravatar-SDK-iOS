@@ -14,7 +14,7 @@ dev-demo:
 
 test:
 	xcodebuild test \
-		-scheme Gravatar \
+		-scheme Gravatar-Package \
 		-destination 'platform=$(PLATFORM),OS=$(OS),name=$(DEVICE)'
 
 swiftformat:
