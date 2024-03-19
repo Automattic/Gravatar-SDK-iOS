@@ -56,7 +56,7 @@ public struct ImageSettingOptions {
     }
 
     func deriveDownloadOptions(
-        garavatarRating rating: ImageRating? = nil,
+        garavatarRating rating: Rating? = nil,
         preferredSize size: ImageSize? = nil,
         defaultImageOption: DefaultImageOption? = nil
     ) -> ImageDownloadOptions {
@@ -91,7 +91,7 @@ public struct ImageDownloadOptions {
     ///   - processingMethod: Method to use for processing the downloaded `Data`
     public init(
         preferredSize: ImageSize? = nil,
-        rating: ImageRating? = nil,
+        rating: Rating? = nil,
         forceRefresh: Bool = false,
         forceDefaultImage: Bool? = nil,
         defaultImageOption: DefaultImageOption? = nil,
