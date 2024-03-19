@@ -197,7 +197,7 @@ extension GravatarWrapper where Component: UIImageView {
         let issuedIdentifier = SimpleCounter.next()
         mutatingSelf.taskIdentifier = issuedIdentifier
 
-        let networkManager = options.imageDownloader ?? ImageService(cache: options.imageCache)
+        let networkManager = options.imageDownloader ?? ImageDownloadService(cache: options.imageCache)
         mutatingSelf.imageDownloader = networkManager // Retain the network manager otherwise the completion tasks won't be done properly
 
         let task = networkManager

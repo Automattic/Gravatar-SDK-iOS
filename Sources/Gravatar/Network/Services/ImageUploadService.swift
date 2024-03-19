@@ -1,42 +1,27 @@
+import Foundation
 import UIKit
 
-/// A service to perform image-related tasks, such as fetching images by email and uploading images to Gravatar.
+/// A service to perform uploading images to Gravatar.
 ///
-/// This is the default type which implements ``ImageDownloader`` and ``ImageUploader``.
-/// Unless specified otherwise, `ImageService` will use a `URLSession` based `HTTPClient`, and a in-memory image cache.
-public struct ImageService {
+/// This is the default type which implements ``ImageUploader``..
+/// Unless specified otherwise, `ImageUploadService` will use a `URLSession` based `HTTPClient`.
+struct ImageUploadService: ImageUploader {
     private let client: HTTPClient
-    let imageCache: ImageCaching
 
-    /// Creates a new `ImageService`
-    ///
-    /// Optionally, you can pass a custom type conforming to ``HTTPClient`` to gain control over networking tasks.
-    /// Similarly, you can pass a custom type conforming to ``ImageCaching`` to use your custom caching system.
-    /// - Parameters:
-    ///   - client: A type which will perform basic networking operations.
-    ///   - cache: A type which will perform image caching operations.
-    public init(client: HTTPClient? = nil, cache: ImageCaching? = nil) {
+    init(client: HTTPClient? = nil) {
         self.client = client ?? URLSessionHTTPClient()
-        self.imageCache = cache ?? ImageCache()
     }
 
-    func fetchImage(from url: URL, forceRefresh: Bool, processor: ImageProcessor) async throws -> ImageDownloadResult {
-        let request = URLRequest.imageRequest(url: url, forceRefresh: forceRefresh)
-        do {
-            let (data, _) = try await client.fetchData(with: request)
-            guard let image = processor.process(data) else {
-                throw ImageFetchingError.imageProcessorFailed
-            }
-            imageCache.setImage(image, forKey: url.absoluteString)
-            return ImageDownloadResult(image: image, sourceURL: url)
-        } catch let error as HTTPClientError {
-            throw ImageFetchingError.responseError(reason: error.map())
-        } catch {
-            throw ImageFetchingError.responseError(reason: .unexpected(error))
+    @discardableResult
+    func uploadImage(_ image: UIImage, accountEmail: String, accountToken: String) async throws -> URLResponse {
+        guard let data = image.pngData() else {
+            throw ImageUploadError.cannotConvertImageIntoData
         }
+
+        return try await uploadImage(data: data, accountEmail: accountEmail, accountToken: accountToken)
     }
 
-    func uploadImage(data: Data, accountEmail: String, accountToken: String) async throws -> URLResponse {
+    private func uploadImage(data: Data, accountEmail: String, accountToken: String) async throws -> URLResponse {
         let boundary = "Boundary-\(UUID().uuidString)"
         let request = URLRequest.imageUploadRequest(with: boundary).settingAuthorizationHeaderField(with: accountToken)
         let body = imageUploadBody(with: data, account: accountEmail, boundary: boundary)
@@ -89,13 +74,6 @@ extension Data {
 }
 
 extension URLRequest {
-    fileprivate static func imageRequest(url: URL, forceRefresh: Bool) -> URLRequest {
-        var request = forceRefresh ? URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData) : URLRequest(url: url)
-        request.httpShouldHandleCookies = false
-        request.addValue("image/*", forHTTPHeaderField: "Accept")
-        return request
-    }
-
     fileprivate static func imageUploadRequest(with boundary: String) -> URLRequest {
         let url = URL(string: "https://api.gravatar.com/v1/upload-image")!
         var request = URLRequest(url: url)

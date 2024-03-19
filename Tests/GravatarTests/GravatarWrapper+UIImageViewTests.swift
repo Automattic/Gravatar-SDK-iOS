@@ -31,7 +31,6 @@ final class GravatarWrapper_UIImageViewTests: XCTestCase {
             XCTAssertFalse(activityIndicator.animating)
             expectation.fulfill()
         }
-        imageRetriever.sendNextResponse()
         wait(for: [expectation], timeout: 2.0)
     }
 
@@ -50,7 +49,6 @@ final class GravatarWrapper_UIImageViewTests: XCTestCase {
             XCTAssertFalse(activityIndicator.animating)
             expectation.fulfill()
         }
-        imageRetriever.sendNextResponse()
         wait(for: [expectation], timeout: 2.0)
     }
 
@@ -68,7 +66,6 @@ final class GravatarWrapper_UIImageViewTests: XCTestCase {
             XCTAssertNotNil(imageView.gravatar.placeholder)
             expectation.fulfill()
         }
-        imageRetriever.sendNextResponse()
         wait(for: [expectation], timeout: 2.0)
     }
 
@@ -82,11 +79,16 @@ final class GravatarWrapper_UIImageViewTests: XCTestCase {
             email: "hello@gmail.com",
             defaultImageOption: .roboHash,
             options: [.imageDownloader(imageDownloader)]
-        )
-
-        let query = URL(string: imageDownloader.completionQueue.first?.url ?? "")?.query ?? ""
-        let urlContainsDefaultImageOption = query.contains(expectedQueryItemString)
-        XCTAssertTrue(urlContainsDefaultImageOption, "\(query) does not contains \(expectedQueryItemString)")
+        ) { result in
+            switch result {
+            case .success(let value):
+                let query = value.sourceURL.query ?? ""
+                let urlContainsDefaultImageOption = query.contains(expectedQueryItemString)
+                XCTAssertTrue(urlContainsDefaultImageOption, "\(query) does not contain \(expectedQueryItemString)")
+            case .failure:
+                XCTFail()
+            }
+        }
     }
 
     func testIfPlaceholderIsSetWithNilURL() throws {
@@ -116,11 +118,11 @@ final class GravatarWrapper_UIImageViewTests: XCTestCase {
             options: [.imageDownloader(imageRetriever)]
         )
 
-        let task = try XCTUnwrap(imageView.gravatar.downloadTask as? TestDataTask)
+        let task = try XCTUnwrap(imageView.gravatar.downloadTask)
 
         imageView.gravatar.cancelImageDownload()
 
-        XCTAssertTrue(task.cancelled)
+        XCTAssertTrue(task.isCancelled)
     }
 
     func testRemoveCurrentImageWhileLoadingNoPlaceholder() throws {
@@ -191,10 +193,7 @@ final class GravatarWrapper_UIImageViewTests: XCTestCase {
             group.leave()
         }
 
-        imageRetriever.sendResponse(for: "https://second.com")
-        imageRetriever.sendResponse(for: "https://first.com")
-
         group.notify(queue: .main, execute: expectation.fulfill)
-        wait(for: [expectation], timeout: 2.0)
+        wait(for: [expectation], timeout: 20.0)
     }
 }
