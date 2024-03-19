@@ -36,17 +36,11 @@ let package = Package(
         ),
         .target(
             name: "GravatarComponents",
-            dependencies: [
-                .byName(name: "GravatarComponentsUIKit", condition: .when(platforms: [.iOS]))
-            ]
-        ),
-        .target(
-            name: "GravatarComponentsUIKit",
             dependencies: ["GravatarCore"]
         ),
         .testTarget(
-            name: "GravatarComponentsUIKitTests",
-            dependencies: ["GravatarComponentsUIKit"],
+            name: "GravatarComponentsTests",
+            dependencies: ["GravatarComponents"],
             resources: [.process("Resources")]
         ),
     ]
