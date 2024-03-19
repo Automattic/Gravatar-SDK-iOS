@@ -1,4 +1,4 @@
-import GravatarCore
+import Gravatar
 import XCTest
 
 final class GravatarWrapper_UIImageViewTests: XCTestCase {

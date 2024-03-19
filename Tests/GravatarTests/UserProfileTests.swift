@@ -1,4 +1,4 @@
-import GravatarCore
+import Gravatar
 import XCTest
 
 final class UserProfileTests: XCTestCase {

@@ -1,5 +1,5 @@
 import Foundation
-import GravatarCore
+import Gravatar
 import UIKit
 
 class TestImageCache: ImageCaching {

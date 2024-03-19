@@ -11,12 +11,12 @@ let package = Package(
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
-            name: "GravatarCore",
-            targets: ["GravatarCore"]
+            name: "Gravatar",
+            targets: ["Gravatar"]
         ),
         .library(
-            name: "GravatarComponents",
-            targets: ["GravatarComponents"]
+            name: "GravatarUI",
+            targets: ["GravatarUI"]
         ),
     ],
     dependencies: [
@@ -26,21 +26,20 @@ let package = Package(
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
-            name: "GravatarCore",
-            linkerSettings: [.linkedFramework("UIKit", .when(platforms: [.iOS]))]
+            name: "Gravatar"
         ),
         .testTarget(
-            name: "GravatarCoreTests",
-            dependencies: ["GravatarCore"],
+            name: "GravatarTests",
+            dependencies: ["Gravatar"],
             resources: [.process("Resources")]
         ),
         .target(
-            name: "GravatarComponents",
-            dependencies: ["GravatarCore"]
+            name: "GravatarUI",
+            dependencies: ["Gravatar"]
         ),
         .testTarget(
-            name: "GravatarComponentsTests",
-            dependencies: ["GravatarComponents"],
+            name: "GravatarUITests",
+            dependencies: ["GravatarUI"],
             resources: [.process("Resources")]
         ),
     ]
