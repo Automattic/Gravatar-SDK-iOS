@@ -19,7 +19,6 @@ public struct ProfileService: ProfileFetching {
         self.client = client ?? URLSessionHTTPClient()
     }
 
-    @available(*, deprecated, renamed: "fetch(withEmail:)")
     /// Fetches a Gravatar user's profile information.
     /// - Parameters:
     ///   - email: The user account email.
@@ -37,15 +36,15 @@ public struct ProfileService: ProfileFetching {
         }
     }
 
-    public func fetch(withEmail email: Email) async throws -> UserProfile {
+    public func fetch(withEmail email: String) async throws -> UserProfile {
         try await fetch(withPath: email.sha256())
     }
 
-    public func fetch(withHash hash: Hash) async throws -> UserProfile {
+    public func fetch(withHash hash: String) async throws -> UserProfile {
         try await fetch(withPath: hash)
     }
 
-    public func fetch(withUserName userName: UserName) async throws -> UserProfile {
+    public func fetch(withUserName userName: String) async throws -> UserProfile {
         try await fetch(withPath: userName)
     }
 }
