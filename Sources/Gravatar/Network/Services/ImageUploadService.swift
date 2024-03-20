@@ -13,18 +13,18 @@ struct ImageUploadService: ImageUploader {
     }
 
     @discardableResult
-    func uploadImage(_ image: UIImage, accountEmail: String, accountToken: String) async throws -> URLResponse {
+    func uploadImage(_ image: UIImage, email: String, accessToken: String) async throws -> URLResponse {
         guard let data = image.pngData() else {
             throw ImageUploadError.cannotConvertImageIntoData
         }
 
-        return try await uploadImage(data: data, accountEmail: accountEmail, accountToken: accountToken)
+        return try await uploadImage(data: data, email: email, accessToken: accessToken)
     }
 
-    private func uploadImage(data: Data, accountEmail: String, accountToken: String) async throws -> URLResponse {
+    private func uploadImage(data: Data, email: String, accessToken: String) async throws -> URLResponse {
         let boundary = "Boundary-\(UUID().uuidString)"
-        let request = URLRequest.imageUploadRequest(with: boundary).settingAuthorizationHeaderField(with: accountToken)
-        let body = imageUploadBody(with: data, account: accountEmail, boundary: boundary)
+        let request = URLRequest.imageUploadRequest(with: boundary).settingAuthorizationHeaderField(with: accessToken)
+        let body = imageUploadBody(with: data, account: email, boundary: boundary)
         do {
             let response = try await client.uploadData(with: request, data: body)
             return response
