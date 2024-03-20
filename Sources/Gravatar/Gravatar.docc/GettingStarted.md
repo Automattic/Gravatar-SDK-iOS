@@ -69,7 +69,7 @@ avatarImageView.gravatar.setImage(email: "some@email.com") { result in
 }
 ```
 
-You can also download the Gravatar image using the `ImageService` to download an image:
+You can also download the Gravatar image using the `AvatarService` to download an image:
 
 ```swift
 import Gravatar
@@ -81,7 +81,7 @@ Task {
 }
 
 func fetchAvatar(with email: String) async {
-    let service = ImageService()
+    let service = AvatarService()
 
     do {
         let result = try await service.fetchImage(with: email)

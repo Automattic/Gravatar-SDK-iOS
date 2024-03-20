@@ -3,12 +3,12 @@ import UIKit
 /// A service to perform image downloading.
 ///
 /// This is the default type which implements ``ImageDownloader``..
-/// Unless specified otherwise, `ImageService` will use a `URLSession` based `HTTPClient`, and a in-memory image cache.
+/// Unless specified otherwise, `ImageDownloadService` will use a `URLSession` based `HTTPClient`, and a in-memory image cache.
 public struct ImageDownloadService: ImageDownloader {
     private let client: HTTPClient
     let imageCache: ImageCaching
 
-    /// Creates a new `ImageService`
+    /// Creates a new `ImageDownloadService`
     ///
     /// Optionally, you can pass a custom type conforming to ``HTTPClient`` to gain control over networking tasks.
     /// Similarly, you can pass a custom type conforming to ``ImageCaching`` to use your custom caching system.

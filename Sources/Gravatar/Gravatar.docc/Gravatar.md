@@ -39,7 +39,8 @@ For more info check:
 
 ### Downloading images
 
-- ``ImageService``
+- ``ImageDownloadService``
+- ``AvatarService``
 
 
 ### Get user Profile
