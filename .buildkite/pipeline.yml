@@ -24,15 +24,23 @@ steps:
   - label: "🧪 Build and Test"
     key: "test"
     command: |
-      validate_swift_package
-    plugins: [$CI_TOOLKIT]
+      echo "--- 🛠 Building + Testing"
+      make test
   
   #################
   # Build Demo
   #################
   - label: "🧪 Build Demo Project"
     key: "test_demo"
-    command: .buildkite/commands/build-demos.sh
+    command: |
+      echo "--- :rubygems: Setting up Gems"
+      make bundle-install
+
+      echo "--- 🛠 Building Demo (Swift)"
+      make build-demo-swift
+
+      echo "--- 🛠 Building Demo (SwiftUI)"
+      make build-demo-swiftui 
 
   ###################
   # Validate Podspec
