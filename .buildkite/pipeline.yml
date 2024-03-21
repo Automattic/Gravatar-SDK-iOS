@@ -25,7 +25,6 @@ steps:
     key: "test"
     command: |
       validate_swift_package
-    env: *common_env
     plugins: [$CI_TOOLKIT]
   
   #################
@@ -56,7 +55,6 @@ steps:
     command: |
       .buildkite/publish-pod.sh "Gravatar.podspec"
       .buildkite/publish-pod.sh "GravatarUI.podspec"
-    env: *common_env
     plugins: [$CI_TOOLKIT]
     depends_on:
       - "test"
