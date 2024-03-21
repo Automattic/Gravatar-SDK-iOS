@@ -1,7 +1,9 @@
 import Foundation
 import UIKit
 
-/// AvatarService helps with uploading and downloading avatars.
+/// A service to perform uploading and downloading of avatars.
+///
+/// An avatar is a profile image of a Gravatar user. See [the avatar docs](https://support.gravatar.com/profiles/avatars/) for more info.
 public struct AvatarService {
     private let imageDownloader: ImageDownloader
     private let imageUploader: ImageUploader
@@ -18,7 +20,7 @@ public struct AvatarService {
         self.imageUploader = ImageUploadService(client: client)
     }
 
-    /// Fetches a Gravatar user profile image using the user account's email, and delivers the image asynchronously. See also: `ImageDownloadService` to
+    /// Fetches a Gravatar user profile image using the user account's email, and delivers the image asynchronously. See also: ``ImageDownloadService`` to
     /// download the avatar via URL.
     /// - Parameters:
     ///   - email: The user account email
@@ -36,7 +38,7 @@ public struct AvatarService {
     }
 
     /// Uploads an image to be used as the user's Gravatar profile image, and returns the `URLResponse` of the network tasks asynchronously. Throws
-    /// `ImageUploadError`.
+    /// ``ImageUploadError``.
     /// - Parameters:
     ///   - image: The image to be uploaded.
     ///   - email: The user email account.
