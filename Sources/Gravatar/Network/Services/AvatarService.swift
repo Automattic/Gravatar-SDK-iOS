@@ -1,7 +1,9 @@
 import Foundation
 import UIKit
 
-/// AvatarService helps with uploading and downloading avatars.
+/// A service to perform uploading and downloading of avatars.
+///
+/// An avatar is a profile image of a Gravatar user. See [the avatar docs](https://support.gravatar.com/profiles/avatars/) for more info.
 public struct AvatarService {
     private let imageDownloader: ImageDownloader
     private let imageUploader: ImageUploader
