@@ -51,8 +51,7 @@ steps:
   - label: "⬆️ Publish Podspec"
     key: "publish"
     command: |
-      .buildkite/commands/publish-pod.sh "Gravatar.podspec"
-      .buildkite/commands/publish-pod.sh "GravatarUI.podspec"
+      .buildkite/commands/publish-pods.sh "Gravatar.podspec" "GravatarUI.podspec"
     plugins: [$CI_TOOLKIT]
     depends_on:
       - "test"
