@@ -1,9 +1,5 @@
 .PHONY: all clean run
 
-PLATFORM = iOS Simulator
-OS = 17.2
-DEVICE = iPhone SE (3rd generation)
-
 SWIFTFORMAT_CACHE = ~/Library/Caches/com.charcoaldesign.swiftformat
 
 dev:
@@ -14,6 +10,10 @@ dev-demo:
 
 test:
 	bundle exec fastlane test
+
+build-demo:
+	bundle exec fastlane build_demo scheme:Gravatar-Demo
+	bundle exec fastlane build_demo scheme:Gravatar-SwiftUI-Demo
 
 swiftformat:
 	swift package plugin \

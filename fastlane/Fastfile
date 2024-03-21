@@ -3,6 +3,7 @@
 default_platform(:ios)
 
 SWIFTLINT_PLUGIN_VALIDATION_BYPASS_XCARGS = ''
+OS = '17.2'
 IPHONE_DEVICE = 'iPhone SE (3rd generation)'
 
 platform :ios do
@@ -17,6 +18,26 @@ platform :ios do
       buildlog_path: File.join(__dir__, '.build', 'logs'),
       derived_data_path: File.join(__dir__, '.build', 'derived-data'),
       xcargs: SWIFTLINT_PLUGIN_VALIDATION_BYPASS_XCARGS
+    )
+  end
+
+  lane :build_demo do |options|
+    scheme = options.fetch(:scheme, 'Gravatar-Demo')
+
+    build_ios_app(
+      project: 'Demo/Gravatar-Demo.xcodeproj',
+      scheme: scheme,
+      configuration: 'Debug',
+      destination: "platform=iOS Simulator,OS=#{OS},name=#{IPHONE_DEVICE}",
+      disable_package_automatic_updates: true,
+      export_method: 'development',
+      export_options: {
+        provisioningProfiles: {
+          "com.automattic.gravatar-sdk-demo" => "Gravatar Demo App Development",
+          "com.automattic.gravatar-sdk-demo-swiftui" => "Gravatar Demo App Development"
+        }
+      },
+      output_directory: 'build'
     )
   end
 end
