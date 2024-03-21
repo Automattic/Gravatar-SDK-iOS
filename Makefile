@@ -31,12 +31,6 @@ lint:
 		--lint
 
 validate-pod:
-	bundle install
-	bundle exec pod lib lint \
-		--include-podspecs="*.podspec" \
-		--verbose --fail-fast
-
-validate-pod-ci:
 	# For some reason this fixes a failure in `lib lint`
 	# https://github.com/Automattic/buildkite-ci/issues/7
 	xcrun simctl list >> /dev/null

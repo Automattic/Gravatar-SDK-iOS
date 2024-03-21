@@ -34,7 +34,7 @@ steps:
     key: "validate"
     command: |
       echo "--- :microscope: Validate Podspec"
-      make validate-pod-ci
+      make validate-pod
 
   #################
   # Publish the Podspec (if we're building a tag)
