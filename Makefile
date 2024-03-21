@@ -13,9 +13,7 @@ dev-demo:
 	xed Demo/
 
 test:
-	xcodebuild test \
-		-scheme Gravatar-Package \
-		-destination 'platform=$(PLATFORM),OS=$(OS),name=$(DEVICE)'
+	bundle exec fastlane test
 
 swiftformat:
 	swift package plugin \

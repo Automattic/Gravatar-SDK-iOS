@@ -1,0 +1,22 @@
+# frozen_string_literal: true
+
+default_platform(:ios)
+
+SWIFTLINT_PLUGIN_VALIDATION_BYPASS_XCARGS = ''
+IPHONE_DEVICE = 'iPhone SE (3rd generation)'
+
+platform :ios do
+  desc 'Builds the project and runs tests'
+  lane :test do
+    run_tests(
+      package_path: '.',
+      scheme: 'Gravatar-Package',
+      device: IPHONE_DEVICE,
+      prelaunch_simulator: true,
+      clean: true,
+      buildlog_path: File.join(__dir__, '.build', 'logs'),
+      derived_data_path: File.join(__dir__, '.build', 'derived-data'),
+      xcargs: SWIFTLINT_PLUGIN_VALIDATION_BYPASS_XCARGS
+    )
+  end
+end
