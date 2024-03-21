@@ -116,11 +116,11 @@ class DemoAvatarDownloadViewController: UIViewController {
         return Self.imageViewSize
     }
     
-    private var preferredRating: ImageRating? {
+    private var preferredRating: Rating? {
         if let ratingStr = gravatarRatingInputField.text,
            !ratingStr.isEmpty
         {
-            return ImageRating(rawValue: ratingStr)
+            return Rating(rawValue: ratingStr)
         }
         return nil
     }

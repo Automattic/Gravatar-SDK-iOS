@@ -145,7 +145,7 @@ extension GravatarWrapper where Component: UIImageView {
     public func setImage(
         email: String,
         placeholder: UIImage? = nil,
-        rating: ImageRating? = nil,
+        rating: Rating? = nil,
         preferredSize: CGSize? = nil,
         defaultImageOption: DefaultImageOption? = nil,
         options: [ImageSettingOption]? = nil,

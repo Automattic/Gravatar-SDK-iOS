@@ -80,7 +80,7 @@ final class GravatarURLTests: XCTestCase {
             "https://gravatar.com/avatar/676212ff796c79a3c06261eb10e3f455aa93998ee6e45263da13679c74b1e674?s=24"
         )
 
-        let urlAddingRating = GravatarURL.gravatarUrl(with: exampleEmail, options: ImageQueryOptions(rating: .pg))
+        let urlAddingRating = GravatarURL.gravatarUrl(with: exampleEmail, options: ImageQueryOptions(rating: .parentalGuidance))
         XCTAssertEqual(
             urlAddingRating?.absoluteString,
             "https://gravatar.com/avatar/676212ff796c79a3c06261eb10e3f455aa93998ee6e45263da13679c74b1e674?r=pg"
@@ -94,7 +94,7 @@ final class GravatarURLTests: XCTestCase {
 
         let allOptions = ImageQueryOptions(
             preferredSize: .pixels(200),
-            rating: .g,
+            rating: .general,
             defaultImageOption: .monsterId,
             forceDefaultImage: true
         )

@@ -8,7 +8,7 @@ public enum GravatarProfileFetchResult {
 }
 
 /// A service to perform Profile related tasks.
-public struct ProfileService {
+public struct ProfileService: ProfileFetching {
     private let client: HTTPClient
 
     /// Creates a new `ProfileService`.
@@ -26,7 +26,7 @@ public struct ProfileService {
     public func fetchProfile(with email: String, onCompletion: @escaping ((_ result: GravatarProfileFetchResult) -> Void)) {
         Task {
             do {
-                let profile = try await fetchProfile(for: email)
+                let profile = try await fetch(withEmail: email)
                 onCompletion(.success(profile))
             } catch let error as ProfileServiceError {
                 onCompletion(.failure(error))
@@ -36,12 +36,16 @@ public struct ProfileService {
         }
     }
 
-    /// Fetches a Gravatar user's profile information, and delivers the user profile asynchronously.
-    /// - Parameter email: The user account email.
-    /// - Returns: An asynchronously-delivered user profile.
-    public func fetchProfile(for email: String) async throws -> UserProfile {
-        let url = try url(from: email.sha256() + ".json")
-        return try await fetchProfile(with: URLRequest(url: url))
+    public func fetch(withEmail email: String) async throws -> UserProfile {
+        try await fetch(withPath: email.sha256())
+    }
+
+    public func fetch(withHash hash: String) async throws -> UserProfile {
+        try await fetch(withPath: hash)
+    }
+
+    public func fetch(withUserName userName: String) async throws -> UserProfile {
+        try await fetch(withPath: userName)
     }
 }
 
@@ -59,7 +63,12 @@ extension ProfileService {
         return url
     }
 
-    private func fetchProfile(with request: URLRequest) async throws -> UserProfile {
+    private func fetch(withPath path: String) async throws -> UserProfile {
+        let url = try url(from: path + ".json")
+        return try await fetch(with: URLRequest(url: url))
+    }
+
+    private func fetch(with request: URLRequest) async throws -> UserProfile {
         do {
             let (data, response) = try await client.fetchData(with: request)
             let fetchProfileResult = map(data, response)
