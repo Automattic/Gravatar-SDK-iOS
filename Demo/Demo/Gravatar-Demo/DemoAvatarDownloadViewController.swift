@@ -125,12 +125,12 @@ class DemoAvatarDownloadViewController: UIViewController {
         return nil
     }
 
-    private var preferredDefaultImage: DefaultImageOption? = nil
+    private var preferredDefaultImage: DefaultAvatarOption? = nil
 
     @objc private func selectImageDefault() {
         let controller = UIAlertController(title: "Default Image Option", message: nil, preferredStyle: .actionSheet)
 
-        DefaultImageOption.allCases.forEach { option in
+        DefaultAvatarOption.allCases.forEach { option in
             controller.addAction(UIAlertAction(title: "\(option)", style: .default) { [weak self] action in
                 self?.preferredDefaultImage = option
                 self?.imageDefaultButton.setTitle("Default Image Option: \(option)", for: .normal)
@@ -149,7 +149,7 @@ class DemoAvatarDownloadViewController: UIViewController {
             rating: preferredRating,
             forceRefresh: igonreCacheSwitchWithLabel.isOn,
             forceDefaultImage: forceDefaultImageSwitchWithLabel.isOn,
-            defaultImageOption: preferredDefaultImage
+            defaultAvatarOption: preferredDefaultImage
         )
 
         avatarImageView.image = nil // Setting to nil to make the effect of `forceRefresh more visible

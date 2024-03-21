@@ -119,12 +119,12 @@ class DemoUIImageViewExtensionViewController: UIViewController {
         ])
     }
 
-    private var preferredDefaultImage: DefaultImageOption? = nil
+    private var preferredDefaultImage: DefaultAvatarOption? = nil
 
     @objc private func selectImageDefault() {
         let controller = UIAlertController(title: "Default Image", message: nil, preferredStyle: .actionSheet)
 
-        DefaultImageOption.allCases.forEach { option in
+        DefaultAvatarOption.allCases.forEach { option in
             controller.addAction(UIAlertAction(title: "\(option)", style: .default) { [weak self] action in
                 self?.preferredDefaultImage = option
                 self?.imageDefaultButton.setTitle("Default Image: \(option)", for: .normal)
@@ -141,7 +141,7 @@ class DemoUIImageViewExtensionViewController: UIViewController {
         let placeholderImage: UIImage? = showPlaceholderSwitchWithLabel.isOn ? UIImage(named: "placeholder") : nil
         avatarImageView.gravatar.setImage(email: emailInputField.text ?? "",
                                           placeholder: placeholderImage,
-                                          defaultImageOption: preferredDefaultImage,
+                                          defaultAvatarOption: preferredDefaultImage,
                                           options: options) { result in
             switch result {
             case .success(let result):

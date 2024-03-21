@@ -77,7 +77,7 @@ final class GravatarWrapper_UIImageViewTests: XCTestCase {
 
         imageView.gravatar.setImage(
             email: "hello@gmail.com",
-            defaultImageOption: .roboHash,
+            defaultAvatarOption: .roboHash,
             options: [.imageDownloader(imageDownloader)]
         ) { result in
             switch result {
