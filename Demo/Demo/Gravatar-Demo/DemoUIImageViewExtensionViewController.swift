@@ -104,7 +104,7 @@ class DemoUIImageViewExtensionViewController: UIViewController {
         return stack
     }()
     
-    private let imageRetriever = ImageService()
+    private let imageRetriever = ImageDownloadService()
     
     override func viewDidLoad() {
         super.viewDidLoad()

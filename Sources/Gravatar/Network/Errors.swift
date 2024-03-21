@@ -39,7 +39,7 @@ public enum RequestErrorReason {
     case emptyURL
 }
 
-/// Errors thrown by `ImageService` when fetching an image.
+/// Errors thrown by `ImageDownloadService` when fetching an image.
 public enum ImageFetchingError: Error {
     case requestError(reason: RequestErrorReason)
     case responseError(reason: ResponseErrorReason)
