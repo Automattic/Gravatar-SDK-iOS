@@ -32,11 +32,7 @@ steps:
   #################
   - label: "🧪 Build Demo Project"
     key: "test_demo"
-    command: |
-      echo "--- 🛠 Building Demo (Swift)"
-      bundle exec fastlane build_demo scheme:Gravatar-Demo
-      echo "--- 🛠 Building Demo (SwiftUI)"
-      bundle exec fastlane build_demo scheme:Gravatar-SwiftUI-Demo
+    command: .buildkite/commands/build-demos.sh
 
   ###################
   # Validate Podspec
@@ -53,8 +49,8 @@ steps:
   - label: "⬆️ Publish Podspec"
     key: "publish"
     command: |
-      .buildkite/publish-pod.sh "Gravatar.podspec"
-      .buildkite/publish-pod.sh "GravatarUI.podspec"
+      .buildkite/commands/publish-pod.sh "Gravatar.podspec"
+      .buildkite/commands/publish-pod.sh "GravatarUI.podspec"
     plugins: [$CI_TOOLKIT]
     depends_on:
       - "test"
