@@ -18,7 +18,7 @@ public struct AvatarService {
         self.imageUploader = ImageUploadService(client: client)
     }
 
-    /// Fetches a Gravatar user profile image using the user account's email, and delivers the image asynchronously. See also: `ImageDownloadService` to
+    /// Fetches a Gravatar user profile image using the user account's email, and delivers the image asynchronously. See also: ``ImageDownloadService`` to
     /// download the avatar via URL.
     /// - Parameters:
     ///   - email: The user account email
