@@ -102,15 +102,16 @@ class DemoUploadImageViewController: UIViewController {
         else {
             return
         }
-
+        
         activityIndicator.startAnimating()
         resultLabel.text = nil
 
-//        let service = GravatarService()
-        let service = Gravatar.ImageService()
-        service.uploadImage(image, accountEmail: email, accountToken: token) { [weak self] error in
-            DispatchQueue.main.async {
-                self?.uploadResult(with: error)
+        let service = Gravatar.AvatarService()
+        Task {
+            do {
+               try await service.upload(image, email: email, accessToken: token)
+            } catch {
+                uploadResult(with: error)
             }
         }
     }

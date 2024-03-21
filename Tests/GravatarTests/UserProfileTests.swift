@@ -102,7 +102,7 @@ extension UserProfileTests {
         let client = HTTPClientMock(session: urlSession)
         let profileService = ProfileService(client: client)
 
-        return try await profileService.fetchProfile(for: "test@example.com")
+        return try await profileService.fetch(withEmail: "test@example.com")
     }
 
     private func json(for profile: Profile) throws -> Data {
@@ -218,7 +218,7 @@ extension UserProfileTests {
 
 // MARK: - HTTPClient
 
-private struct HTTPClientMock: HTTPClient {
+struct HTTPClientMock: HTTPClient {
     private let session: URLSessionMock
 
     init(session: URLSessionMock) {
@@ -226,7 +226,8 @@ private struct HTTPClientMock: HTTPClient {
     }
 
     func fetchData(with request: URLRequest) async throws -> (Data, HTTPURLResponse) {
-        (session.returnData, session.response)
+        session.request = request
+        return (session.returnData, session.response)
     }
 
     func uploadData(with request: URLRequest, data: Data) async throws -> HTTPURLResponse {

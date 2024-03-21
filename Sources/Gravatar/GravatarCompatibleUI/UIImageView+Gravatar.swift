@@ -145,7 +145,7 @@ extension GravatarWrapper where Component: UIImageView {
     public func setImage(
         email: String,
         placeholder: UIImage? = nil,
-        rating: ImageRating? = nil,
+        rating: Rating? = nil,
         preferredSize: CGSize? = nil,
         defaultImageOption: DefaultImageOption? = nil,
         options: [ImageSettingOption]? = nil,
@@ -197,7 +197,7 @@ extension GravatarWrapper where Component: UIImageView {
         let issuedIdentifier = SimpleCounter.next()
         mutatingSelf.taskIdentifier = issuedIdentifier
 
-        let networkManager = options.imageDownloader ?? ImageService(cache: options.imageCache)
+        let networkManager = options.imageDownloader ?? ImageDownloadService(cache: options.imageCache)
         mutatingSelf.imageDownloader = networkManager // Retain the network manager otherwise the completion tasks won't be done properly
 
         let task = networkManager
