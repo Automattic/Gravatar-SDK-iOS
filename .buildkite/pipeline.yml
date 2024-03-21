@@ -24,11 +24,11 @@ steps:
     command: |
       echo "--- 🛠 Building + Testing"
       make test
-    plugins: [$CI_TOOLKIT]
 
   ###################
   # Validate Podspec
   ###################
   - label: "🧪 Validate Podspec"
-    command: validate_podspec
-    plugins: [$CI_TOOLKIT]
+    command: |
+      echo "--- :microscope: Validate Podspec"
+      make validate-pod-ci

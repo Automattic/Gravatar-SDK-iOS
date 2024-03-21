@@ -14,7 +14,7 @@ dev-demo:
 
 test:
 	xcodebuild test \
-		-scheme Gravatar \
+		-scheme Gravatar-Package \
 		-destination 'platform=$(PLATFORM),OS=$(OS),name=$(DEVICE)'
 
 swiftformat:
@@ -30,6 +30,17 @@ lint:
 		swiftformat \
 		--lint
 
-lint-pod:
+validate-pod:
 	bundle install
-	bundle exec pod lib lint --verbose --fail-fast
+	bundle exec pod lib lint \
+		--include-podspecs="*.podspec" \
+		--verbose --fail-fast
+
+validate-pod-ci:
+	# For some reason this fixes a failure in `lib lint`
+	# https://github.com/Automattic/buildkite-ci/issues/7
+	xcrun simctl list >> /dev/null
+	bundle install
+	bundle exec pod lib lint \
+		--include-podspecs="*.podspec" \
+		--verbose --fail-fast
