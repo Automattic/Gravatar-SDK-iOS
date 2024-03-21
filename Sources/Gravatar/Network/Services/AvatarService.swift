@@ -36,7 +36,7 @@ public struct AvatarService {
     }
 
     /// Uploads an image to be used as the user's Gravatar profile image, and returns the `URLResponse` of the network tasks asynchronously. Throws
-    /// `ImageUploadError`.
+    /// ``ImageUploadError``.
     /// - Parameters:
     ///   - image: The image to be uploaded.
     ///   - email: The user email account.
