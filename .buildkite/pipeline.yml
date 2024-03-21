@@ -13,6 +13,7 @@ steps:
   # Lint Source files
   #################
   - label: "🧪 Lint"
+    key: "lint"
     command: |
       echo "--- 🛠 Linting"
       make lint
@@ -21,6 +22,7 @@ steps:
   # Build and Test
   #################
   - label: "🧪 Build and Test"
+    key: "test"
     command: |
       echo "--- 🛠 Building + Testing"
       make test
@@ -29,6 +31,25 @@ steps:
   # Validate Podspec
   ###################
   - label: "🧪 Validate Podspec"
+    key: "validate"
     command: |
       echo "--- :microscope: Validate Podspec"
       make validate-pod-ci
+
+  #################
+  # Publish the Podspec (if we're building a tag)
+  #################
+  - label: "⬆️ Publish Podspec"
+    key: "publish"
+    command: |
+      .buildkite/publish-pod.sh "Gravatar.podspec"
+      .buildkite/publish-pod.sh "GravatarUI.podspec"
+    env: *common_env
+    plugins: [$CI_TOOLKIT]
+    depends_on:
+      - "test"
+      - "validate"
+      - "lint"
+    if: build.tag != null
+    agents:
+      queue: "mac"
