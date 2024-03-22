@@ -27,10 +27,10 @@ public struct AvatarService {
     ///   - options: The options needed to perform the download.
     /// - Returns: An asynchronously-delivered Result type containing the image and its URL.
     public func fetch(
-        with email: String,
+        with avatarId: AvatarIdentifier,
         options: ImageDownloadOptions = ImageDownloadOptions()
     ) async throws -> ImageDownloadResult {
-        guard let gravatarURL = GravatarURL.gravatarUrl(with: email, options: options.imageQueryOptions) else {
+        guard let gravatarURL = GravatarURL.gravatarUrl(with: avatarId, options: options.imageQueryOptions) else {
             throw ImageFetchingError.requestError(reason: .urlInitializationFailed)
         }
 

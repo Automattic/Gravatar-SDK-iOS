@@ -13,7 +13,7 @@ final class AvatarServiceTests: XCTestCase {
         let service = avatarService(with: sessionMock)
         let options = ImageDownloadOptions()
 
-        let imageResponse = try await service.fetch(with: TestData.email, options: options)
+        let imageResponse = try await service.fetch(with: .email(TestData.email), options: options)
 
         XCTAssertEqual(sessionMock.request?.url, TestData.urlFromEmail)
         XCTAssertNotNil(imageResponse.image)
@@ -68,9 +68,9 @@ final class AvatarServiceTests: XCTestCase {
         let service = avatarService(with: sessionMock, cache: cache)
         let options = ImageDownloadOptions(forceRefresh: true)
 
-        _ = try await service.fetch(with: TestData.email, options: options)
-        _ = try await service.fetch(with: TestData.email, options: options)
-        _ = try await service.fetch(with: TestData.email, options: options)
+        _ = try await service.fetch(with: .email(TestData.email), options: options)
+        _ = try await service.fetch(with: .email(TestData.email), options: options)
+        _ = try await service.fetch(with: .email(TestData.email), options: options)
 
         XCTAssertEqual(cache.getImageCallCount, 0, "We should not hit the cache")
         XCTAssertEqual(cache.setImageCallsCount, 3, "We should have cached the image on every forced refresh")
@@ -83,9 +83,9 @@ final class AvatarServiceTests: XCTestCase {
         let service = avatarService(with: sessionMock, cache: cache)
         let options = ImageDownloadOptions(forceRefresh: false)
 
-        _ = try await service.fetch(with: TestData.email, options: options)
-        _ = try await service.fetch(with: TestData.email, options: options)
-        _ = try await service.fetch(with: TestData.email, options: options)
+        _ = try await service.fetch(with: .email(TestData.email), options: options)
+        _ = try await service.fetch(with: .email(TestData.email), options: options)
+        _ = try await service.fetch(with: .email(TestData.email), options: options)
 
         XCTAssertEqual(cache.getImageCallCount, 3, "We should hit the cache")
         XCTAssertEqual(cache.setImageCallsCount, 1, "We should save once to the cache")
@@ -99,7 +99,7 @@ final class AvatarServiceTests: XCTestCase {
         let testProcessor = TestImageProcessor()
         let options = ImageDownloadOptions(processingMethod: .custom(processor: testProcessor))
 
-        _ = try await service.fetch(with: TestData.email, options: options)
+        _ = try await service.fetch(with: .email(TestData.email), options: options)
 
         XCTAssertTrue(testProcessor.processedData)
     }
@@ -112,7 +112,7 @@ final class AvatarServiceTests: XCTestCase {
         let service = avatarService(with: sessionMock)
         let options = ImageDownloadOptions(defaultAvatarOption: .mysteryPerson)
 
-        let imageResponse = try await service.fetch(with: TestData.email, options: options)
+        let imageResponse = try await service.fetch(with: .email(TestData.email), options: options)
 
         XCTAssertEqual(sessionMock.request?.url?.query, expectedQuery)
         XCTAssertNotNil(imageResponse.image)

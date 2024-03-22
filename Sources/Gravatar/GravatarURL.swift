@@ -44,11 +44,10 @@ public struct GravatarURL {
     /// - Returns: Gravatar's URL
     ///
     public static func gravatarUrl(
-        with email: String,
+        with avatarId: AvatarIdentifier,
         options: ImageQueryOptions = .init()
     ) -> URL? {
-        let hash = email.hashId()
-        guard let baseURL = URL(string: Defaults.baseURL + hash) else {
+        guard let baseURL = URL(string: Defaults.baseURL + avatarId.identifier) else {
             return nil
         }
 

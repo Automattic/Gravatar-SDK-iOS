@@ -143,7 +143,7 @@ extension GravatarWrapper where Component: UIImageView {
     /// - Returns: The task performing the download operation which can be cancelled.
     @discardableResult
     public func setImage(
-        email: String,
+        avatarId: AvatarIdentifier,
         placeholder: UIImage? = nil,
         rating: Rating? = nil,
         preferredSize: CGSize? = nil,
@@ -158,7 +158,7 @@ extension GravatarWrapper where Component: UIImageView {
             defaultAvatarOption: defaultAvatarOption
         )
 
-        let gravatarURL = GravatarURL.gravatarUrl(with: email, options: downloadOptions.imageQueryOptions)
+        let gravatarURL = GravatarURL.gravatarUrl(with: avatarId, options: downloadOptions.imageQueryOptions)
         return setImage(with: gravatarURL, placeholder: placeholder, options: options, completionHandler: completionHandler)
     }
 
