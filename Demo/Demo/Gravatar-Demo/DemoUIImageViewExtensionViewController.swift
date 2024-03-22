@@ -54,7 +54,7 @@ class DemoUIImageViewExtensionViewController: UIViewController {
     private lazy var imageDefaultButton: UIButton = {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("Default Image: (Backend driven)", for: .normal)
+        button.setTitle("Default Avatar: (Backend driven)", for: .normal)
         button.addTarget(self, action: #selector(selectImageDefault), for: .touchUpInside)
         return button
     }()
@@ -122,12 +122,12 @@ class DemoUIImageViewExtensionViewController: UIViewController {
     private var preferredDefaultImage: DefaultAvatarOption? = nil
 
     @objc private func selectImageDefault() {
-        let controller = UIAlertController(title: "Default Image", message: nil, preferredStyle: .actionSheet)
+        let controller = UIAlertController(title: "Default Avatar", message: nil, preferredStyle: .actionSheet)
 
         DefaultAvatarOption.allCases.forEach { option in
             controller.addAction(UIAlertAction(title: "\(option)", style: .default) { [weak self] action in
                 self?.preferredDefaultImage = option
-                self?.imageDefaultButton.setTitle("Default Image: \(option)", for: .normal)
+                self?.imageDefaultButton.setTitle("Default Avatar: \(option)", for: .normal)
             })
         }
 
