@@ -43,7 +43,7 @@ class DemoAvatarDownloadViewController: UIViewController {
     }()
 
     private lazy var forceDefaultImageSwitchWithLabel: SwitchWithLabel = {
-        let view = SwitchWithLabel(labelText: "Force default image")
+        let view = SwitchWithLabel(labelText: "Force default avatar")
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()

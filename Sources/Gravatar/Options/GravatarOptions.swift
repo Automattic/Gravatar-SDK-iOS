@@ -86,8 +86,8 @@ public struct ImageDownloadOptions {
     ///   - preferredSize: Preferred image size (set to `nil` for default size)
     ///   - gravatarRating: Maximum rating for image (set to `nil` for default rating)
     ///   - forceRefresh: Force the image to be downloaded, ignoring the cache
-    ///   - forceDefaultImage: If `true`, the returned image will always be the default image, determined by the `defaultAvatarOption` parameter.
-    ///   - defaultAvatarOption: Configure the default image (set to `nil` to use the default default image)
+    ///   - forceDefaultImage: If `true`, the returned image will always be the default avatar, determined by the `defaultAvatarOption` parameter.
+    ///   - defaultAvatarOption: Configure the default avatar (set to `nil` to use the default default avatar)
     ///   - processingMethod: Method to use for processing the downloaded `Data`
     public init(
         preferredSize: ImageSize? = nil,
