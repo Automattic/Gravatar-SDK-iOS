@@ -47,26 +47,12 @@ public struct GravatarURL {
         with email: String,
         options: ImageQueryOptions = .init()
     ) -> URL? {
-        let hash = gravatarHash(of: email)
+        let hash = email.hashId()
         guard let baseURL = URL(string: Defaults.baseURL + hash) else {
             return nil
         }
 
         return baseURL.addQueryItems(from: options)
-    }
-
-    /// Returns the gravatar hash of an email
-    ///
-    /// - Parameter email: the email associated with the gravatar
-    /// - Returns: hashed email
-    ///
-    /// This really ought to be in a different place, like Gravatar.swift, but there's
-    /// lots of duplication around gravatars -nh
-    private static func gravatarHash(of email: String) -> String {
-        email
-            .lowercased()
-            .trimmingCharacters(in: .whitespaces)
-            .sha256()
     }
 }
 
