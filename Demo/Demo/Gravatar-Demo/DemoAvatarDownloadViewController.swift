@@ -42,7 +42,7 @@ class DemoAvatarDownloadViewController: UIViewController {
         return view
     }()
 
-    private lazy var forceDefaultImageSwitchWithLabel: SwitchWithLabel = {
+    private lazy var forceDefaultAvatarSwitchWithLabel: SwitchWithLabel = {
         let view = SwitchWithLabel(labelText: "Force default avatar")
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
@@ -79,7 +79,7 @@ class DemoAvatarDownloadViewController: UIViewController {
             preferredAvatarLengthInputField,
             gravatarRatingInputField,
             igonreCacheSwitchWithLabel,
-            forceDefaultImageSwitchWithLabel,
+            forceDefaultAvatarSwitchWithLabel,
             imageDefaultButton,
             fetchAvatarButton,
             avatarImageView
@@ -148,7 +148,7 @@ class DemoAvatarDownloadViewController: UIViewController {
             preferredSize: .points(preferredSize),
             rating: preferredRating,
             forceRefresh: igonreCacheSwitchWithLabel.isOn,
-            forceDefaultAvatar: forceDefaultImageSwitchWithLabel.isOn,
+            forceDefaultAvatar: forceDefaultAvatarSwitchWithLabel.isOn,
             defaultAvatarOption: preferredDefaultImage
         )
 
