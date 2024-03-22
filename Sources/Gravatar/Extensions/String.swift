@@ -8,3 +8,10 @@ extension String {
         return hashString
     }
 }
+
+extension String {
+    var sanitized: String {
+        self.lowercased()
+            .trimmingCharacters(in: .whitespaces)
+    }
+}

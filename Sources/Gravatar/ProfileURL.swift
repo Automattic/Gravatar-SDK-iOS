@@ -7,26 +7,30 @@ public struct ProfileURL {
         AvatarURL(hash: hash)
     }
 
-    public init(email: String) {
-        self.init(hash: email.sanitized.sha256())
-    }
-
-    public init(hash: String) {
+    static let baseUrl: URL = {
         guard
             let baseUrl = URL(string: .baseURL),
-            let components = URLComponents(url: baseUrl, resolvingAgainstBaseURL: false)?.sanitizedComponents(),
-            let sanizitedUrl = components.url
+            let components = URLComponents(url: baseUrl, resolvingAgainstBaseURL: false)?.sanitizingComponents(),
+            let url = components.url
         else {
             fatalError("A url created from a correct literal string should never fail")
         }
+        return url
+    }()
 
-        self.url = sanizitedUrl.appending(pathComponent: hash)
+    public init(email: String) {
+        let hash = email.sanitized.sha256()
+        self.init(hash: hash)
+    }
+
+    public init(hash: String) {
+        self.url = Self.baseUrl.appending(pathComponent: hash)
         self.hash = hash
     }
 }
 
 extension URLComponents {
-    func sanitizedComponents() -> URLComponents {
+    func sanitizingComponents() -> URLComponents {
         var copy = self
         copy.scheme = .scheme
         copy.query = nil
@@ -34,18 +38,7 @@ extension URLComponents {
     }
 }
 
-private extension String {
-    static let scheme = "https"
-    static let baseURL = "https://gravatar.com/"
-}
-
-extension URL {
-    @available(swift, deprecated: 16.0, message: "Use URL.appending(path:) instead")
-    func appending(pathComponent path: String) -> URL {
-        if #available(iOS 16.0, *) {
-            return self.appending(path: path)
-        } else {
-            return self.appendingPathComponent(path)
-        }
-    }
+extension String {
+    fileprivate static let scheme = "https"
+    fileprivate static let baseURL = "https://gravatar.com/"
 }

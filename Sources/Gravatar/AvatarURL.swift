@@ -21,7 +21,7 @@ public struct AvatarURL {
     public init?(url: URL, options: ImageQueryOptions = ImageQueryOptions()) {
         guard
             Self.isAvatarUrl(url),
-            let components = URLComponents(url: url, resolvingAgainstBaseURL: false)?.sanitizedComponents(),
+            let components = URLComponents(url: url, resolvingAgainstBaseURL: false)?.sanitizingComponents(),
             let sanitizedURL = components.url
         else {
             return nil
@@ -34,10 +34,10 @@ public struct AvatarURL {
     }
 
     public init?(email: String, options: ImageQueryOptions = ImageQueryOptions()) {
-        self.init(hash:  email.sanitized.sha256(), options: options)
+        self.init(hash: email.sanitized.sha256(), options: options)
     }
 
-    public init?(hash: String, options: ImageQueryOptions = ImageQueryOptions()){
+    public init?(hash: String, options: ImageQueryOptions = ImageQueryOptions()) {
         guard let url = URL(string: .baseURL + hash) else { return nil }
         self.init(url: url, options: options)
     }
@@ -51,17 +51,11 @@ public struct AvatarURL {
         }
 
         return (host.hasSuffix(".gravatar.com") || host == "gravatar.com")
-        && components.path.hasPrefix("/avatar/")
+            && components.path.hasPrefix("/avatar/")
     }
 
-    public func updating(options: ImageQueryOptions) -> AvatarURL {
-        guard let avatarUrl = AvatarURL(hash: hash, options: options) else {
-            // When `AavatarURL` is initialized successfully, is guaranteed to be a valid URL.
-            // Adding query items from the options, which is controlled by the SDK, should never
-            // result in an invalid URL. If it does, something terrible has happened.
-            fatalError("Internal error: invalid url with query items")
-        }
-        return avatarUrl
+    public func replacing(options: ImageQueryOptions) -> AvatarURL? {
+        AvatarURL(hash: hash, options: options)
     }
 }
 
@@ -71,15 +65,8 @@ extension AvatarURL: Equatable {
     }
 }
 
-private extension String {
-    static let baseURL = "https://gravatar.com/avatar/"
-}
-
 extension String {
-    var sanitized: String {
-        self.lowercased()
-            .trimmingCharacters(in: .whitespaces)
-    }
+    fileprivate static let baseURL = "https://gravatar.com/avatar/"
 }
 
 extension URL {
