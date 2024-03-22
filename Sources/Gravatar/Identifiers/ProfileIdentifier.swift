@@ -1,9 +1,5 @@
 import Foundation
 
-public protocol IdentifierProvider {
-    var identifier: String { get }
-}
-
 public enum ProfileIdentifier: IdentifierProvider {
     case username(Username)
     case email(Email)
