@@ -2,7 +2,6 @@
 
 default_platform(:ios)
 
-SWIFTLINT_PLUGIN_VALIDATION_BYPASS_XCARGS = ''
 OS = '17.2'
 IPHONE_DEVICE = "iPhone SE (3rd generation) (#{OS})"
 
@@ -16,8 +15,7 @@ platform :ios do
       prelaunch_simulator: true,
       clean: true,
       buildlog_path: File.join(__dir__, '.build', 'logs'),
-      derived_data_path: File.join(__dir__, '.build', 'derived-data'),
-      xcargs: SWIFTLINT_PLUGIN_VALIDATION_BYPASS_XCARGS
+      derived_data_path: File.join(__dir__, '.build', 'derived-data')
     )
   end
 
