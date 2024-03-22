@@ -8,7 +8,7 @@ public struct Username {
     }
 }
 
-extension Username: ProfileIdentifierProvider {
+extension Username: IdentifierProvider {
     public var identifier: String {
         self.string
     }

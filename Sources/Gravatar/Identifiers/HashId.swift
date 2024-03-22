@@ -12,7 +12,7 @@ public struct HashId {
     }
 }
 
-extension HashId: ProfileIdentifierProvider {
+extension HashId: IdentifierProvider {
     public var identifier: String {
         self.string
     }

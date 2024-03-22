@@ -1,10 +1,10 @@
 import Foundation
 
-public protocol ProfileIdentifierProvider {
+public protocol IdentifierProvider {
     var identifier: String { get }
 }
 
-public enum ProfileIdentifier: ProfileIdentifierProvider {
+public enum ProfileIdentifier: IdentifierProvider {
     case username(Username)
     case email(Email)
     case hashId(HashId)

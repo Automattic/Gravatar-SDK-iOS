@@ -12,7 +12,7 @@ public struct Email {
     }
 }
 
-extension Email: ProfileIdentifierProvider {
+extension Email: IdentifierProvider {
     public var identifier: String {
         self.hashId.identifier
     }
