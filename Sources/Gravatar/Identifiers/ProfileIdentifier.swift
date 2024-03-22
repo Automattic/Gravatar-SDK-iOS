@@ -4,6 +4,10 @@ public enum ProfileIdentifier {
     case username(Username)
     case email(Email)
     case hashId(HashId)
+}
+
+extension ProfileIdentifier {
+    // MARK: - Convience factories
 
     public static func username(_ username: String) -> ProfileIdentifier {
         .username(.init(username))
@@ -19,6 +23,8 @@ public enum ProfileIdentifier {
 }
 
 extension ProfileIdentifier: IdentifierProvider {
+    // MARK: - IdentifierProvider
+
     public var identifier: String {
         switch self {
         case .username(let username):
