@@ -102,7 +102,7 @@ extension UserProfileTests {
         let client = HTTPClientMock(session: urlSession)
         let profileService = ProfileService(client: client)
 
-        return try await profileService.fetch(withEmail: "test@example.com")
+        return try await profileService.fetch(with: .email("test@example"))
     }
 
     private func json(for profile: Profile) throws -> Data {

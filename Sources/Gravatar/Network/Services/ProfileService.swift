@@ -21,12 +21,12 @@ public struct ProfileService: ProfileFetching {
 
     /// Fetches a Gravatar user's profile information.
     /// - Parameters:
-    ///   - email: The user account email.
+    ///   - profileId: A ProfileIdentifier for the Gravatar profile
     ///   - onCompletion: The completion handler to call when the fetch request is complete.
-    public func fetchProfile(with email: String, onCompletion: @escaping ((_ result: GravatarProfileFetchResult) -> Void)) {
+    public func fetchProfile(with profileId: ProfileIdentifier, onCompletion: @escaping ((_ result: GravatarProfileFetchResult) -> Void)) {
         Task {
             do {
-                let profile = try await fetch(withEmail: email)
+                let profile = try await fetch(with: profileId)
                 onCompletion(.success(profile))
             } catch let error as ProfileServiceError {
                 onCompletion(.failure(error))
@@ -36,16 +36,8 @@ public struct ProfileService: ProfileFetching {
         }
     }
 
-    public func fetch(withEmail email: String) async throws -> UserProfile {
-        try await fetch(withPath: email.sha256())
-    }
-
-    public func fetch(withHash hash: String) async throws -> UserProfile {
-        try await fetch(withPath: hash)
-    }
-
-    public func fetch(withUserName userName: String) async throws -> UserProfile {
-        try await fetch(withPath: userName)
+    public func fetch(with profileID: ProfileIdentifier) async throws -> UserProfile {
+        try await fetch(withPath: profileID.identifier)
     }
 }
 

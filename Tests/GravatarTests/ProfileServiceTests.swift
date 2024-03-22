@@ -6,7 +6,7 @@ final class ProfileServiceTests: XCTestCase {
         let session = URLSessionMock(returnData: jsonData, response: .successResponse())
         let client = URLSessionHTTPClient(urlSession: session)
         let service = ProfileService(client: client)
-        let profile = try await service.fetch(withEmail: "some@email.com")
+        let profile = try await service.fetch(with: .email("some@email.com"))
 
         XCTAssertEqual(profile.displayName, "Beau Lebens")
     }
@@ -17,7 +17,7 @@ final class ProfileServiceTests: XCTestCase {
         let service = ProfileService(client: client)
 
         do {
-            _ = try await service.fetch(withEmail: "some@email.com")
+            _ = try await service.fetch(with: .email("some@email.com"))
         } catch ProfileServiceError.responseError(reason: let reason) {
             XCTAssertEqual(reason.httpStatusCode, 404)
         } catch {
@@ -31,7 +31,7 @@ final class ProfileServiceTests: XCTestCase {
         let service = ProfileService(client: client)
 
         do {
-            _ = try await service.fetch(withEmail: "some@email.com")
+            _ = try await service.fetch(with: .email("some@email.com"))
         } catch let error as ProfileServiceError {
             XCTAssertEqual(error.debugDescription, ProfileServiceError.noProfileInResponse.debugDescription)
         } catch {
@@ -45,7 +45,7 @@ final class ProfileServiceTests: XCTestCase {
         let service = ProfileService(client: client)
         let expectation = expectation(description: "request finishes")
 
-        service.fetchProfile(with: "some@email.com") { result in
+        service.fetchProfile(with: .email("some@email.com")) { result in
             switch result {
             case .success(let profile):
                 XCTAssertEqual(profile.displayName, "Beau Lebens")
@@ -64,7 +64,7 @@ final class ProfileServiceTests: XCTestCase {
         let service = ProfileService(client: client)
         let expectation = expectation(description: "request finishes")
 
-        service.fetchProfile(with: "some@email.com") { result in
+        service.fetchProfile(with: .email("some@email.com")) { result in
             switch result {
             case .success:
                 XCTFail("Should error")
@@ -83,7 +83,7 @@ final class ProfileServiceTests: XCTestCase {
         let session = URLSessionMock(returnData: jsonData, response: .successResponse())
         let client = URLSessionHTTPClient(urlSession: session)
         let service = ProfileService(client: client)
-        let profile = try await service.fetch(withEmail: "some@email.com")
+        let profile = try await service.fetch(with: .email("some@email.com"))
 
         XCTAssertEqual(profile.displayName, "Beau Lebens")
         XCTAssertNotNil(profile.lastProfileEdit)
@@ -93,7 +93,7 @@ final class ProfileServiceTests: XCTestCase {
         let session = URLSessionMock(returnData: jsonData, response: .successResponse())
         let client = URLSessionHTTPClient(urlSession: session)
         let service = ProfileService(client: client)
-        let profile = try await service.fetch(withEmail: "some@email.com")
+        let profile = try await service.fetch(with: .email("some@email.com"))
 
         XCTAssertEqual(profile.urls.first?.linkSlug, "some_slug")
         XCTAssertNotNil(profile.lastProfileEdit)
@@ -105,7 +105,7 @@ final class ProfileServiceTests: XCTestCase {
         let service = ProfileService(client: client)
 
         do {
-            let profile = try await service.fetch(withEmail: "some@email.com")
+            let profile = try await service.fetch(with: .email("some@email.com"))
             XCTAssertEqual(profile.displayName, "doxomi4985")
         } catch {
             XCTFail(error.localizedDescription)
@@ -116,7 +116,7 @@ final class ProfileServiceTests: XCTestCase {
         let session = URLSessionMock(returnData: jsonData, response: .successResponse())
         let client = HTTPClientMock(session: session)
         let service = ProfileService(client: client)
-        _ = try await service.fetch(withEmail: "some@email.com")
+        _ = try await service.fetch(with: .email("some@email.com"))
 
         XCTAssertEqual(
             session.request?.url?.absoluteString,
@@ -128,7 +128,7 @@ final class ProfileServiceTests: XCTestCase {
         let session = URLSessionMock(returnData: jsonData, response: .successResponse())
         let client = HTTPClientMock(session: session)
         let service = ProfileService(client: client)
-        _ = try await service.fetch(withHash: "HASH")
+        _ = try await service.fetch(with: .hashId("HASH"))
 
         XCTAssertEqual(session.request?.url?.absoluteString, "https://gravatar.com/HASH.json")
     }
@@ -137,7 +137,7 @@ final class ProfileServiceTests: XCTestCase {
         let session = URLSessionMock(returnData: jsonData, response: .successResponse())
         let client = HTTPClientMock(session: session)
         let service = ProfileService(client: client)
-        _ = try await service.fetch(withUserName: "user")
+        _ = try await service.fetch(with: .username("user"))
 
         XCTAssertEqual(session.request?.url?.absoluteString, "https://gravatar.com/user.json")
     }
