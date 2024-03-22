@@ -6,7 +6,7 @@ import UIKit
 /// For more information, see the [Gravatar developer documentation](https://docs.gravatar.com/general/images/).
 public struct AvatarQueryOptions {
     let rating: Rating?
-    let forceDefaultImage: Bool?
+    let forceDefaultAvatar: Bool?
     let defaultAvatarOption: DefaultAvatarOption?
     let preferredPixelSize: Int?
 
@@ -19,17 +19,17 @@ public struct AvatarQueryOptions {
     ///   - gravatarRating: The lowest rating allowed to be displayed. If the requested email hash does not have an image meeting the requested rating level,
     ///   - defaultAvatarOption: Choose what will happen if no Gravatar image is found. See ``DefaultAvatarOption`` for more info.
     /// then the default avatar is returned.
-    ///   - forceDefaultImage: If set to `true`, the returned image will always be the default avatar, determined by the `defaultAvatarOption` parameter.
+    ///   - forceDefaultAvatar: If set to `true`, the returned image will always be the default avatar, determined by the `defaultAvatarOption` parameter.
     public init(
         preferredSize: ImageSize? = nil,
         rating: Rating? = nil,
         defaultAvatarOption: DefaultAvatarOption? = nil,
-        forceDefaultImage: Bool? = nil
+        forceDefaultAvatar: Bool? = nil
     ) {
         self.init(
             scaleFactor: UIScreen.main.scale,
             rating: rating,
-            forceDefaultImage: forceDefaultImage,
+            forceDefaultAvatar: forceDefaultAvatar,
             defaultAvatarOption: defaultAvatarOption,
             preferredSize: preferredSize
         )
@@ -38,12 +38,12 @@ public struct AvatarQueryOptions {
     init(
         scaleFactor: CGFloat,
         rating: Rating? = nil,
-        forceDefaultImage: Bool? = nil,
+        forceDefaultAvatar: Bool? = nil,
         defaultAvatarOption: DefaultAvatarOption? = nil,
         preferredSize: ImageSize? = nil
     ) {
         self.rating = rating
-        self.forceDefaultImage = forceDefaultImage
+        self.forceDefaultAvatar = forceDefaultAvatar
         self.defaultAvatarOption = defaultAvatarOption
         self.preferredPixelSize = preferredSize?.pixels(scaleFactor: scaleFactor)
     }
@@ -56,7 +56,7 @@ extension AvatarQueryOptions {
         case defaultAvatarOption = "d"
         case preferredPixelSize = "s"
         case rating = "r"
-        case forceDefaultImage = "f"
+        case forceDefaultAvatar = "f"
     }
 
     var queryItems: [URLQueryItem] {
@@ -67,8 +67,8 @@ extension AvatarQueryOptions {
         let value: String? = switch queryName {
         case .defaultAvatarOption:
             self.defaultAvatarOption.queryValue
-        case .forceDefaultImage:
-            self.forceDefaultImage.queryValue
+        case .forceDefaultAvatar:
+            self.forceDefaultAvatar.queryValue
         case .rating:
             self.rating.queryValue
         case .preferredPixelSize:

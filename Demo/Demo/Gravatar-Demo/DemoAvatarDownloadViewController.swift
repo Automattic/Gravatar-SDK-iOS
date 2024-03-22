@@ -148,7 +148,7 @@ class DemoAvatarDownloadViewController: UIViewController {
             preferredSize: .points(preferredSize),
             rating: preferredRating,
             forceRefresh: igonreCacheSwitchWithLabel.isOn,
-            forceDefaultImage: forceDefaultImageSwitchWithLabel.isOn,
+            forceDefaultAvatar: forceDefaultImageSwitchWithLabel.isOn,
             defaultAvatarOption: preferredDefaultImage
         )
 

@@ -86,14 +86,14 @@ public struct ImageDownloadOptions {
     ///   - preferredSize: Preferred image size (set to `nil` for default size)
     ///   - gravatarRating: Maximum rating for image (set to `nil` for default rating)
     ///   - forceRefresh: Force the image to be downloaded, ignoring the cache
-    ///   - forceDefaultImage: If `true`, the returned image will always be the default avatar, determined by the `defaultAvatarOption` parameter.
+    ///   - forceDefaultAvatar: If `true`, the returned image will always be the default avatar, determined by the `defaultAvatarOption` parameter.
     ///   - defaultAvatarOption: Configure the default avatar (set to `nil` to use the default default avatar)
     ///   - processingMethod: Method to use for processing the downloaded `Data`
     public init(
         preferredSize: ImageSize? = nil,
         rating: Rating? = nil,
         forceRefresh: Bool = false,
-        forceDefaultImage: Bool? = nil,
+        forceDefaultAvatar: Bool? = nil,
         defaultAvatarOption: DefaultAvatarOption? = nil,
         processingMethod: ImageProcessingMethod = .common
     ) {
@@ -105,7 +105,7 @@ public struct ImageDownloadOptions {
             preferredSize: preferredSize,
             rating: rating,
             defaultAvatarOption: defaultAvatarOption,
-            forceDefaultImage: forceDefaultImage
+            forceDefaultAvatar: forceDefaultAvatar
         )
     }
 }
