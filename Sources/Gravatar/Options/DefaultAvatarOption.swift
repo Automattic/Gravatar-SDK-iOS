@@ -1,11 +1,11 @@
-/// Options to return a default image if the image requested does not exist.
+/// Options to return a default avatar if the avatar requested does not exist.
 /// Most of these work by taking the requested email hash and using it to generate a themed image that is unique to that email address.
 ///
-public enum DefaultImageOption: String {
-    /// Return an HTTP 404 (File Not Found) response error if the image is not found.
-    case fileNotFound = "404"
+public enum DefaultAvatarOption: String {
+    /// Return an HTTP 404 (File Not Found) response error if the avatar is not found.
+    case status404 = "404"
     /// A simple, cartoon-style silhouetted outline of a person (does not vary by email hash).
-    case misteryPerson = "mp"
+    case mysteryPerson = "mp"
     /// A geometric pattern based on an email hash.
     case identicon
     /// A generated ‘monster’ with different colors, faces, etc.
@@ -20,4 +20,4 @@ public enum DefaultImageOption: String {
     case transparentPNG = "blank"
 }
 
-extension DefaultImageOption: CaseIterable {}
+extension DefaultAvatarOption: CaseIterable {}
