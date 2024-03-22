@@ -5,8 +5,8 @@ private class BundleFinder: NSObject {}
 #endif
 
 extension Bundle {
-    /// Returns the GravatarTests Bundle
-    /// If installed via CocoaPods, this will be GravatarTestsResources.bundle,
+    /// Returns the GravatarUITests Bundle
+    /// If installed via CocoaPods, this will be GravatarUITestsResources.bundle,
     /// otherwise it will be the module bundle.
     ///
     public class var testsBundle: Bundle {
@@ -14,9 +14,9 @@ extension Bundle {
         return Bundle.module
         #else
         let defaultBundle = Bundle(for: BundleFinder.self)
-        // If installed with CocoaPods, resources will be in GravatarTestsResources.bundle
+        // If installed with CocoaPods, resources will be in GravatarUITestsResources.bundle
         if let bundleURL = defaultBundle.resourceURL,
-           let resourceBundle = Bundle(url: bundleURL.appendingPathComponent("GravatarTestsResources.bundle"))
+           let resourceBundle = Bundle(url: bundleURL.appendingPathComponent("GravatarUITestsResources.bundle"))
         {
             return resourceBundle
         }

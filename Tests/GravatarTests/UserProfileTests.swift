@@ -106,7 +106,7 @@ extension UserProfileTests {
     }
 
     private func json(for profile: Profile) throws -> Data {
-        guard let url = Bundle.gravatarTestsBundle.url(forResource: profile.rawValue, withExtension: "json") else {
+        guard let url = Bundle.testsBundle.url(forResource: profile.rawValue, withExtension: "json") else {
             throw UserProfileTestError.profileNotFound
         }
 

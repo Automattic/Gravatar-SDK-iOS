@@ -15,6 +15,8 @@
 		495775E42B5B34970082812A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 495775E32B5B34970082812A /* SceneDelegate.swift */; };
 		495775EB2B5B34980082812A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 495775EA2B5B34980082812A /* Assets.xcassets */; };
 		495775EE2B5B34980082812A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 495775EC2B5B34980082812A /* LaunchScreen.storyboard */; };
+		497783312BAC8A99008C29F7 /* GravatarUI in Frameworks */ = {isa = PBXBuildFile; productRef = 497783302BAC8A99008C29F7 /* GravatarUI */; };
+		497783332BAC8AA9008C29F7 /* GravatarUI in Frameworks */ = {isa = PBXBuildFile; productRef = 497783322BAC8AA9008C29F7 /* GravatarUI */; };
 		49C5D60E2B5B33E20067C2A8 /* DemoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49C5D60D2B5B33E20067C2A8 /* DemoApp.swift */; };
 		49C5D6102B5B33E20067C2A8 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49C5D60F2B5B33E20067C2A8 /* ContentView.swift */; };
 		49C5D6122B5B33E20067C2A8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 49C5D6112B5B33E20067C2A8 /* Assets.xcassets */; };
@@ -53,6 +55,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				497783312BAC8A99008C29F7 /* GravatarUI in Frameworks */,
 				4948C4EC2B61C41100AC4875 /* Gravatar in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -61,6 +64,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				497783332BAC8AA9008C29F7 /* GravatarUI in Frameworks */,
 				4948C4EE2B61C41800AC4875 /* Gravatar in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -167,6 +171,7 @@
 			name = "Gravatar-Demo";
 			packageProductDependencies = (
 				4948C4EB2B61C41100AC4875 /* Gravatar */,
+				497783302BAC8A99008C29F7 /* GravatarUI */,
 			);
 			productName = "Gravatar-Demo";
 			productReference = 495775DF2B5B34970082812A /* Gravatar-Demo.app */;
@@ -187,6 +192,7 @@
 			name = "Gravatar-SwiftUI-Demo";
 			packageProductDependencies = (
 				4948C4ED2B61C41800AC4875 /* Gravatar */,
+				497783322BAC8AA9008C29F7 /* GravatarUI */,
 			);
 			productName = Demo;
 			productReference = 49C5D60A2B5B33E20067C2A8 /* Gravatar-SwiftUI-Demo.app */;
@@ -581,6 +587,14 @@
 		4948C4ED2B61C41800AC4875 /* Gravatar */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Gravatar;
+		};
+		497783302BAC8A99008C29F7 /* GravatarUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = GravatarUI;
+		};
+		497783322BAC8AA9008C29F7 /* GravatarUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = GravatarUI;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
