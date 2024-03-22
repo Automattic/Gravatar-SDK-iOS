@@ -36,5 +36,3 @@ Pod::Spec.new do |s|
       swift_unit_tests.requires_app_host = false
     end
   end
-  
-  
