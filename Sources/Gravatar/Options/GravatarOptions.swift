@@ -74,7 +74,7 @@ public struct ImageSettingOptions {
 public struct ImageDownloadOptions {
     let forceRefresh: Bool
     let processingMethod: ImageProcessingMethod
-    let imageQueryOptions: ImageQueryOptions
+    let avatarQueryOptions: AvatarQueryOptions
 
     private let preferredSize: ImageSize?
 
@@ -101,7 +101,7 @@ public struct ImageDownloadOptions {
         self.processingMethod = processingMethod
         self.preferredSize = preferredSize
 
-        self.imageQueryOptions = ImageQueryOptions(
+        self.avatarQueryOptions = AvatarQueryOptions(
             preferredSize: preferredSize,
             rating: rating,
             defaultAvatarOption: defaultAvatarOption,

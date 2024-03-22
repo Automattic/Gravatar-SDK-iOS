@@ -11,7 +11,7 @@ public struct GravatarURL {
 
     public let canonicalURL: URL
 
-    public func url(with options: ImageQueryOptions) -> URL {
+    public func url(with options: AvatarQueryOptions) -> URL {
         // When `GravatarURL` is initialized successfully, the `canonicalURL` is a valid URL.
         // Adding query items from the options, which is controlled by the SDK, should never
         // result in an invalid URL. If it does, something terrible has happened.
@@ -45,7 +45,7 @@ public struct GravatarURL {
     ///
     public static func gravatarUrl(
         with email: String,
-        options: ImageQueryOptions = .init()
+        options: AvatarQueryOptions = .init()
     ) -> URL? {
         let hash = gravatarHash(of: email)
         guard let baseURL = URL(string: Defaults.baseURL + hash) else {
@@ -104,7 +104,7 @@ extension GravatarURL {
 }
 
 extension URL {
-    fileprivate func addQueryItems(from options: ImageQueryOptions) -> URL? {
+    fileprivate func addQueryItems(from options: AvatarQueryOptions) -> URL? {
         guard var components = URLComponents(url: self, resolvingAgainstBaseURL: false) else {
             return nil
         }

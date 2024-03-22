@@ -1,16 +1,16 @@
 import UIKit
 
-/// Set of options which will be used to request the image to the Gravatar backend.
+/// Set of options which will be used to request the avatar from the Gravatar backend.
 ///
 /// For the options not specified, the backend defaults will be used.
 /// For more information, see the [Gravatar developer documentation](https://docs.gravatar.com/general/images/).
-public struct ImageQueryOptions {
+public struct AvatarQueryOptions {
     let rating: Rating?
     let forceDefaultImage: Bool?
     let defaultAvatarOption: DefaultAvatarOption?
     let preferredPixelSize: Int?
 
-    /// Creating an instance of `ImageQueryOptions`.
+    /// Creating an instance of `AvatarQueryOptions`.
     ///
     /// For the options not specified, the backend defaults will be used.
     /// - Parameters:
@@ -51,7 +51,7 @@ public struct ImageQueryOptions {
 
 // MARK: - Converting Query options into URLQueryItems
 
-extension ImageQueryOptions {
+extension AvatarQueryOptions {
     private enum QueryName: String, CaseIterable {
         case defaultAvatarOption = "d"
         case preferredPixelSize = "s"
