@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'Gravatar'
-  s.version          = '0.1.0'
+  s.version          = '0.1.1'
   s.summary          = 'A convient library for accessing the Gravatar API'
 
   s.homepage         = 'https://gravatar.com'
@@ -18,14 +18,14 @@ Pod::Spec.new do |s|
 
   s.ios.deployment_target = ios_deployment_target
 
-  s.source_files = 'Sources/**/*.swift'
+  s.source_files = 'Sources/Gravatar/**/*.swift'
 
-  s.test_spec 'Tests' do |swift_unit_tests|
+  s.test_spec 'GravatarTests' do |swift_unit_tests|
     swift_unit_tests.platforms = {
         :ios => ios_deployment_target,
     }
     swift_unit_tests.source_files = [
-        'Tests/**/*.swift'
+        'Tests/GravatarTests/**/*.swift'
     ]
     swift_unit_tests.resource_bundles = {
         GravatarTestsResources: [
