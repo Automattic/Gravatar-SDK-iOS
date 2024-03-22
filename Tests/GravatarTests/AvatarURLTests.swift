@@ -12,6 +12,7 @@ final class AvatarURLTests: XCTestCase {
         XCTAssertTrue(AvatarURL.isAvatarUrl(verifiedAvatarURL))
         XCTAssertTrue(AvatarURL.isAvatarUrl(verifiedAvatarURL2))
         XCTAssertFalse(AvatarURL.isAvatarUrl(URL(string: "https://gravatar.com/")!))
+        XCTAssertFalse(AvatarURL.isAvatarUrl(URL(string: "https:/")!))
     }
 
     func testAvatarURLWithDifferentPixelSizes() throws {
