@@ -1,9 +1,5 @@
 .PHONY: all clean run
 
-PLATFORM = iOS Simulator
-OS = 17.2
-DEVICE = iPhone SE (3rd generation)
-
 SWIFTFORMAT_CACHE = ~/Library/Caches/com.charcoaldesign.swiftformat
 
 dev:
@@ -12,10 +8,19 @@ dev:
 dev-demo:
 	xed Demo/
 
-test:
-	xcodebuild test \
-		-scheme Gravatar-Package \
-		-destination 'platform=$(PLATFORM),OS=$(OS),name=$(DEVICE)'
+test: bundle-install
+	bundle exec fastlane test
+
+build-demo: build-demo-swift build-demo-swiftui
+	
+build-demo-swift: bundle-install
+	bundle exec fastlane build_demo scheme:Gravatar-Demo
+
+build-demo-swiftui: bundle-install
+	bundle exec fastlane build_demo scheme:Gravatar-SwiftUI-Demo
+
+bundle-install:
+	bundle install
 
 swiftformat:
 	swift package plugin \
@@ -30,17 +35,10 @@ lint:
 		swiftformat \
 		--lint
 
-validate-pod:
-	bundle install
-	bundle exec pod lib lint \
-		--include-podspecs="*.podspec" \
-		--verbose --fail-fast
-
-validate-pod-ci:
+validate-pod: bundle-install
 	# For some reason this fixes a failure in `lib lint`
 	# https://github.com/Automattic/buildkite-ci/issues/7
 	xcrun simctl list >> /dev/null
-	bundle install
 	bundle exec pod lib lint \
 		--include-podspecs="*.podspec" \
 		--verbose --fail-fast
