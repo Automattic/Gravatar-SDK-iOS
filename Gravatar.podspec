@@ -1,6 +1,8 @@
+require_relative 'version'
+
 Pod::Spec.new do |s|
   s.name             = 'Gravatar'
-  s.version          = '0.1.1'
+  s.version          = Gravatar::VERSION
   s.summary          = 'A convient library for accessing the Gravatar API'
 
   s.homepage         = 'https://gravatar.com'
