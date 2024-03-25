@@ -24,13 +24,7 @@ final class AvatarServiceTests: XCTestCase {
         let sessionMock = URLSessionMock(returnData: "Success".data(using: .utf8)!, response: successResponse)
         let service = avatarService(with: sessionMock)
 
-        try await service.upload(
-            ImageHelper.testImage,
-            accountId: AccountIdentifier(
-                email: "some@email.com",
-                accessToken: "AccessToken"
-            )
-        )
+        try await service.upload(ImageHelper.testImage, email: Email("some@email.com"), accessToken: "AccessToken")
 
         XCTAssertEqual(sessionMock.request?.url?.absoluteString, "https://api.gravatar.com/v1/upload-image")
         XCTAssertNotNil(sessionMock.request?.value(forHTTPHeaderField: "Authorization"))
@@ -46,13 +40,7 @@ final class AvatarServiceTests: XCTestCase {
         let service = avatarService(with: sessionMock)
 
         do {
-            try await service.upload(
-                ImageHelper.testImage,
-                accountId: AccountIdentifier(
-                    email: "some@email.com",
-                    accessToken: "AccessToken"
-                )
-            )
+            try await service.upload(ImageHelper.testImage, email: Email("some@email.com"), accessToken: "AccessToken")
             XCTFail("This should throw an error")
         } catch ImageUploadError.responseError(reason: let reason) where reason.httpStatusCode == responseCode {
             // Expected error has ocurred.
@@ -67,13 +55,7 @@ final class AvatarServiceTests: XCTestCase {
         let service = avatarService(with: sessionMock)
 
         do {
-            try await service.upload(
-                UIImage(),
-                accountId: AccountIdentifier(
-                    email: "some@email.com",
-                    accessToken: "AccessToken"
-                )
-            )
+            try await service.upload(UIImage(), email: Email("some@email.com"), accessToken: "AccessToken")
             XCTFail("This should throw an error")
         } catch let error as ImageUploadError {
             XCTAssertEqual(error, ImageUploadError.cannotConvertImageIntoData)

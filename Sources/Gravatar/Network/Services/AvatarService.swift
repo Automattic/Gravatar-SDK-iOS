@@ -41,11 +41,11 @@ public struct AvatarService {
     /// ``ImageUploadError``.
     /// - Parameters:
     ///   - image: The image to be uploaded.
-    ///   - accountId: An `AccountIdentifier`
+    ///   - email: An`Email` object
     ///   - accessToken: The authentication token for the user. This is a WordPress.com OAuth2 access token.
     /// - Returns: An asynchronously-delivered `URLResponse` instance, containing the response of the upload network task.
     @discardableResult
-    public func upload(_ image: UIImage, accountId: AccountIdentifier) async throws -> URLResponse {
-        try await imageUploader.uploadImage(image, accountId: accountId)
+    public func upload(_ image: UIImage, email: Email, accessToken: String) async throws -> URLResponse {
+        try await imageUploader.uploadImage(image, email: email, accessToken: accessToken)
     }
 }
