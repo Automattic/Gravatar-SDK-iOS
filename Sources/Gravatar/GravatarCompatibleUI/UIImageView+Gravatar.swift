@@ -132,7 +132,7 @@ extension GravatarWrapper where Component: UIImageView {
     /// Downloads the Gravatar profile image and sets it to this UIImageView.
     ///
     /// - Parameters:
-    ///   - email: Gravatar account email.
+    ///   - avatarId: an AvatarId
     ///   - placeholder: A placeholder to show while downloading the image.
     ///   - rating: Image rating accepted to be downloaded.
     ///   - preferredSize: Preferred "point" size of the image that will be downloaded. If not provided, `layoutIfNeeded()` is called on this view to get its

@@ -20,10 +20,10 @@ public struct AvatarService {
         self.imageUploader = ImageUploadService(client: client)
     }
 
-    /// Fetches a Gravatar user profile image using the user account's email, and delivers the image asynchronously. See also: ``ImageDownloadService`` to
+    /// Fetches a Gravatar user profile image using an `AvatarId`, and delivers the image asynchronously. See also: ``ImageDownloadService`` to
     /// download the avatar via URL.
     /// - Parameters:
-    ///   - email: The user account email
+    ///   - avatarId: An `AvatarId` for the gravatar account
     ///   - options: The options needed to perform the download.
     /// - Returns: An asynchronously-delivered Result type containing the image and its URL.
     public func fetch(
@@ -41,11 +41,11 @@ public struct AvatarService {
     /// ``ImageUploadError``.
     /// - Parameters:
     ///   - image: The image to be uploaded.
-    ///   - email: The user email account.
+    ///   - accountId: An `AccountIdentifier`
     ///   - accessToken: The authentication token for the user. This is a WordPress.com OAuth2 access token.
     /// - Returns: An asynchronously-delivered `URLResponse` instance, containing the response of the upload network task.
     @discardableResult
-    public func upload(_ image: UIImage, email: String, accessToken: String) async throws -> URLResponse {
-        try await imageUploader.uploadImage(image, email: email, accessToken: accessToken)
+    public func upload(_ image: UIImage, accountId: AccountIdentifier) async throws -> URLResponse {
+        try await imageUploader.uploadImage(image, accountId: accountId)
     }
 }

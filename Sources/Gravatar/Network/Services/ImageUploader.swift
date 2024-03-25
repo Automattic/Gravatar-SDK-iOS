@@ -6,13 +6,11 @@ protocol ImageUploader {
     /// `ImageUploadError`.
     /// - Parameters:
     ///   - image: The image to be uploaded.
-    ///   - email: The user email account.
-    ///   - accessToken: The authentication token for the user.
+    ///   - acountId: An `AccountIdentifier` object for the account
     /// - Returns: An asynchronously-delivered `URLResponse` instance, containing the response of the upload network task.
     @discardableResult
     func uploadImage(
         _ image: UIImage,
-        email: String,
-        accessToken: String
+        accountId: AccountIdentifier
     ) async throws -> URLResponse
 }
