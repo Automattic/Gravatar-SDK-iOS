@@ -45,10 +45,10 @@ steps:
       .buildkite/commands/validate-pods.sh
     plugins: [$CI_TOOLKIT]
 
-  #################
-  # Publish the Podspec (if we're building a tag)
-  #################
-  - label: "⬆️ Publish Podspec"
+  #######################
+  # Publish the Podspecs (if we're building a tag)
+  #######################
+  - label: "⬆️ Publish Podspecs"
     key: "publish"
     command: |
       .buildkite/commands/publish-pod.sh "Gravatar.podspec"
