@@ -35,7 +35,7 @@ final class GravatarURLTests: XCTestCase {
         XCTAssertEqual(url?.query, "s=\(Int(expectedPixelSize))")
     }
 
-    func testUrlWithDefaultImage() throws {
+    func testUrlWithDefaultAvatar() throws {
         let url = GravatarURL(verifiedGravatarURL)
         XCTAssertNotNil(url)
         XCTAssertEqual(url?.url(with: AvatarQueryOptions(defaultAvatarOption: .status404)).query, "d=404")
@@ -68,9 +68,9 @@ final class GravatarURLTests: XCTestCase {
             "https://gravatar.com/avatar/676212ff796c79a3c06261eb10e3f455aa93998ee6e45263da13679c74b1e674"
         )
 
-        let urlAddingDefaultImage = GravatarURL.gravatarUrl(with: exampleEmail, options: AvatarQueryOptions(defaultAvatarOption: .identicon))
+        let urlAddingDefaultAvatar = GravatarURL.gravatarUrl(with: exampleEmail, options: AvatarQueryOptions(defaultAvatarOption: .identicon))
         XCTAssertEqual(
-            urlAddingDefaultImage?.absoluteString,
+            urlAddingDefaultAvatar?.absoluteString,
             "https://gravatar.com/avatar/676212ff796c79a3c06261eb10e3f455aa93998ee6e45263da13679c74b1e674?d=identicon"
         )
 
