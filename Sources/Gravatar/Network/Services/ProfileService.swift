@@ -19,23 +19,6 @@ public struct ProfileService: ProfileFetching {
         self.client = client ?? URLSessionHTTPClient()
     }
 
-    /// Fetches a Gravatar user's profile information.
-    /// - Parameters:
-    ///   - email: The user account email.
-    ///   - onCompletion: The completion handler to call when the fetch request is complete.
-    public func fetchProfile(with email: String, onCompletion: @escaping ((_ result: GravatarProfileFetchResult) -> Void)) {
-        Task {
-            do {
-                let profile = try await fetch(withEmail: email)
-                onCompletion(.success(profile))
-            } catch let error as ProfileServiceError {
-                onCompletion(.failure(error))
-            } catch {
-                onCompletion(.failure(.responseError(reason: .unexpected(error))))
-            }
-        }
-    }
-
     public func fetch(withEmail email: String) async throws -> UserProfile {
         try await fetch(withPath: email.sha256())
     }
