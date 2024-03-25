@@ -66,29 +66,32 @@ class DemoFetchProfileViewController: UIViewController {
         }
         profileTextView.text = nil
         activityIndicator.startAnimating()
+        Task {
+            await fetchProfile(with: email)
+        }
+    }
+
+    nonisolated
+    func fetchProfile(with email: String) async {
         let service = Gravatar.ProfileService()
-        service.fetchProfile(with: email) { [weak self] result in
-            switch result {
-            case .success(let profile):
-                self?.setProfile(with: profile)
-            case .failure(let error):
-                self?.showError(error)
-            }
+        do {
+            let profile = try await service.fetch(withEmail: email)
+            await setProfile(with: profile)
+        } catch {
+            await showError(error)
         }
     }
 
     func setProfile(with profile: UserProfile) {
-        DispatchQueue.main.async { [weak self] in
-            self?.activityIndicator.stopAnimating()
-            self?.profileTextView.text = """
+        activityIndicator.stopAnimating()
+        profileTextView.text = """
 Profile URL: \(profile.profileUrl)
-Display name: \(profile.displayName)
-Name: \(profile.displayName)
+Display name: \(profile.displayName ?? "")
+Name: \(profile.displayName ?? "")
 Preferred User Name: \(profile.preferredUsername)
 Thumbnail URL: \(profile.thumbnailUrl)
 Last edit: \(String(describing: profile.lastProfileEditDate))
 """
-        }
     }
 
     func showError(_ error: Error) {
