@@ -7,10 +7,10 @@ public struct ProfileURL {
         AvatarURL(hash: hash)
     }
 
-    static let baseUrl: URL = {
+    static let baseURL: URL = {
         guard
-            let baseUrl = URL(string: .baseURL),
-            let components = URLComponents(url: baseUrl, resolvingAgainstBaseURL: false)?.sanitizingComponents(),
+            let baseURL = URL(string: .baseURL),
+            let components = URLComponents(url: baseURL, resolvingAgainstBaseURL: false),
             let url = components.url
         else {
             fatalError("A url created from a correct literal string should never fail")
@@ -24,7 +24,7 @@ public struct ProfileURL {
     }
 
     public init(hash: String) {
-        self.url = Self.baseUrl.appending(pathComponent: hash)
+        self.url = Self.baseURL.appending(pathComponent: hash)
         self.hash = hash
     }
 }
