@@ -71,14 +71,13 @@ class DemoFetchProfileViewController: UIViewController {
         }
     }
 
-    nonisolated
     func fetchProfile(with email: String) async {
-        let service = Gravatar.ProfileService()
+        let service = ProfileService()
         do {
             let profile = try await service.fetch(withEmail: email)
-            await setProfile(with: profile)
+            setProfile(with: profile)
         } catch {
-            await showError(error)
+            showError(error)
         }
     }
 
