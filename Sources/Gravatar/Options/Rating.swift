@@ -4,7 +4,7 @@ import Foundation
 /// rated
 /// images are displayed unless you indicate that you would like to see higher ratings.
 ///
-/// If the requested email hash does not have an image meeting the requested rating level, then the default image is returned (See: ``DefaultImageOption``)
+/// If the requested email hash does not have an image meeting the requested rating level, then the default avatar is returned (See: ``DefaultAvatarOption``)
 public enum Rating: String {
     /// Suitable for display on all websites with any audience type.
     case general = "g"

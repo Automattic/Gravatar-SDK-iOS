@@ -104,13 +104,13 @@ final class AvatarServiceTests: XCTestCase {
         XCTAssertTrue(testProcessor.processedData)
     }
 
-    func testFetchImageWithDefaultImageOption() async throws {
+    func testFetchAvatarWithDefaultAvatarOption() async throws {
         let expectedQuery = "d=mp"
         let urlWithQuery = TestData.urlFromEmail.absoluteString + "?" + expectedQuery
         let response = HTTPURLResponse.successResponse(with: URL(string: urlWithQuery)!)
         let sessionMock = URLSessionMock(returnData: ImageHelper.testImageData, response: response)
         let service = avatarService(with: sessionMock)
-        let options = ImageDownloadOptions(defaultImageOption: .misteryPerson)
+        let options = ImageDownloadOptions(defaultAvatarOption: .mysteryPerson)
 
         let imageResponse = try await service.fetch(with: TestData.email, options: options)
 

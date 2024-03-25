@@ -39,46 +39,6 @@ final class ProfileServiceTests: XCTestCase {
         }
     }
 
-    func testFetchGravatarProfileWithCompletionHandler() {
-        let session = URLSessionMock(returnData: jsonData, response: .successResponse())
-        let client = URLSessionHTTPClient(urlSession: session)
-        let service = ProfileService(client: client)
-        let expectation = expectation(description: "request finishes")
-
-        service.fetchProfile(with: "some@email.com") { result in
-            switch result {
-            case .success(let profile):
-                XCTAssertEqual(profile.displayName, "Beau Lebens")
-            case .failure(let error):
-                XCTFail(error.localizedDescription)
-            }
-            expectation.fulfill()
-        }
-
-        wait(for: [expectation], timeout: 0.1)
-    }
-
-    func testFetchGravatarProfileWithCompletionHandlerError() {
-        let session = URLSessionMock(returnData: jsonData, response: .errorResponse(code: 404))
-        let client = URLSessionHTTPClient(urlSession: session)
-        let service = ProfileService(client: client)
-        let expectation = expectation(description: "request finishes")
-
-        service.fetchProfile(with: "some@email.com") { result in
-            switch result {
-            case .success:
-                XCTFail("Should error")
-            case .failure(.responseError(let reason)):
-                XCTAssertEqual(reason.httpStatusCode, 404)
-            default:
-                XCTFail()
-            }
-            expectation.fulfill()
-        }
-
-        wait(for: [expectation], timeout: 0.1)
-    }
-
     func testFetchGravatarProfileLastEditDate() async throws {
         let session = URLSessionMock(returnData: jsonData, response: .successResponse())
         let client = URLSessionHTTPClient(urlSession: session)

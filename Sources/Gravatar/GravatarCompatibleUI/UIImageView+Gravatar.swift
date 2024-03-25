@@ -147,7 +147,7 @@ extension GravatarWrapper where Component: UIImageView {
         placeholder: UIImage? = nil,
         rating: Rating? = nil,
         preferredSize: CGSize? = nil,
-        defaultImageOption: DefaultImageOption? = nil,
+        defaultAvatarOption: DefaultAvatarOption? = nil,
         options: [ImageSettingOption]? = nil,
         completionHandler: ImageSetCompletion? = nil
     ) -> CancellableDataTask? {
@@ -155,10 +155,10 @@ extension GravatarWrapper where Component: UIImageView {
         let downloadOptions = ImageSettingOptions(options: options).deriveDownloadOptions(
             garavatarRating: rating,
             preferredSize: pointsSize,
-            defaultImageOption: defaultImageOption
+            defaultAvatarOption: defaultAvatarOption
         )
 
-        let gravatarURL = GravatarURL.gravatarUrl(with: email, options: downloadOptions.imageQueryOptions)
+        let gravatarURL = GravatarURL.gravatarUrl(with: email, options: downloadOptions.avatarQueryOptions)
         return setImage(with: gravatarURL, placeholder: placeholder, options: options, completionHandler: completionHandler)
     }
 

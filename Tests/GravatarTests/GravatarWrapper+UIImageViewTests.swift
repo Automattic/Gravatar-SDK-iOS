@@ -69,7 +69,7 @@ final class GravatarWrapper_UIImageViewTests: XCTestCase {
         wait(for: [expectation], timeout: 2.0)
     }
 
-    func testDefaultImageOptionIsSet() throws {
+    func testDefaultAvatarOptionIsSet() throws {
         let expectedQueryItemString = "d=robohash"
 
         let imageView = UIImageView(frame: frame)
@@ -77,7 +77,7 @@ final class GravatarWrapper_UIImageViewTests: XCTestCase {
 
         imageView.gravatar.setImage(
             email: "hello@gmail.com",
-            defaultImageOption: .roboHash,
+            defaultAvatarOption: .roboHash,
             options: [.imageDownloader(imageDownloader)]
         ) { result in
             switch result {
