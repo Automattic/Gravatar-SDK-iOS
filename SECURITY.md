@@ -1,11 +1,5 @@
 # Security Policy
 
-## Supported Versions
-
-| Version | Supported          |
-| ------- | ------------------ |
-| 0.1.0   | :x:                |
-
 ## Reporting a Vulnerability
 
 The Gravatar team takes security bugs in Gravatar seriously. We appreciate your efforts to responsibly disclose your findings.
