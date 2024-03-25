@@ -16,41 +16,41 @@ final class AvatarURLTests: XCTestCase {
     }
 
     func testAvatarURLWithDifferentPixelSizes() throws {
-        XCTAssertEqual(verifiedAvatarURL(options: ImageQueryOptions(preferredSize: .pixels(24))).url.query, "s=24")
-        XCTAssertEqual(verifiedAvatarURL(options: ImageQueryOptions(preferredSize: .pixels(128))).url.query, "s=128")
-        XCTAssertEqual(verifiedAvatarURL(options: ImageQueryOptions(preferredSize: .pixels(256))).url.query, "s=256")
-        XCTAssertEqual(verifiedAvatarURL(options: ImageQueryOptions(preferredSize: .pixels(0))).url.query, "s=0")
-        XCTAssertEqual(verifiedAvatarURL(options: ImageQueryOptions(preferredSize: .pixels(-10))).url.query, "s=-10")
+        XCTAssertEqual(verifiedAvatarURL(options: AvatarQueryOptions(preferredSize: .pixels(24))).url.query, "s=24")
+        XCTAssertEqual(verifiedAvatarURL(options: AvatarQueryOptions(preferredSize: .pixels(128))).url.query, "s=128")
+        XCTAssertEqual(verifiedAvatarURL(options: AvatarQueryOptions(preferredSize: .pixels(256))).url.query, "s=256")
+        XCTAssertEqual(verifiedAvatarURL(options: AvatarQueryOptions(preferredSize: .pixels(0))).url.query, "s=0")
+        XCTAssertEqual(verifiedAvatarURL(options: AvatarQueryOptions(preferredSize: .pixels(-10))).url.query, "s=-10")
     }
 
     func testAvatarURLWithPointSize() throws {
         let pointSize = CGFloat(200)
         let expectedPixelSize = pointSize * UIScreen.main.scale
 
-        let url = AvatarURL(url: verifiedAvatarURL, options: ImageQueryOptions(preferredSize: .points(pointSize)))?.url
+        let url = AvatarURL(url: verifiedAvatarURL, options: AvatarQueryOptions(preferredSize: .points(pointSize)))?.url
 
         XCTAssertNotNil(url)
         XCTAssertEqual(url?.query, "s=\(Int(expectedPixelSize))")
     }
 
     func testUrlWithDefaultImage() throws {
-        XCTAssertEqual(verifiedAvatarURL(options: ImageQueryOptions(defaultImageOption: .fileNotFound)).url.query, "d=404")
-        XCTAssertEqual(verifiedAvatarURL(options: ImageQueryOptions(defaultImageOption: .misteryPerson)).url.query, "d=mp")
-        XCTAssertEqual(verifiedAvatarURL(options: ImageQueryOptions(defaultImageOption: .monsterId)).url.query, "d=monsterid")
-        XCTAssertEqual(verifiedAvatarURL(options: ImageQueryOptions(defaultImageOption: .retro)).url.query, "d=retro")
-        XCTAssertEqual(verifiedAvatarURL(options: ImageQueryOptions(defaultImageOption: .roboHash)).url.query, "d=robohash")
-        XCTAssertEqual(verifiedAvatarURL(options: ImageQueryOptions(defaultImageOption: .transparentPNG)).url.query, "d=blank")
-        XCTAssertEqual(verifiedAvatarURL(options: ImageQueryOptions(defaultImageOption: .wavatar)).url.query, "d=wavatar")
+        XCTAssertEqual(verifiedAvatarURL(options: AvatarQueryOptions(defaultAvatarOption: .status404)).url.query, "d=404")
+        XCTAssertEqual(verifiedAvatarURL(options: AvatarQueryOptions(defaultAvatarOption: .mysteryPerson)).url.query, "d=mp")
+        XCTAssertEqual(verifiedAvatarURL(options: AvatarQueryOptions(defaultAvatarOption: .monsterId)).url.query, "d=monsterid")
+        XCTAssertEqual(verifiedAvatarURL(options: AvatarQueryOptions(defaultAvatarOption: .retro)).url.query, "d=retro")
+        XCTAssertEqual(verifiedAvatarURL(options: AvatarQueryOptions(defaultAvatarOption: .roboHash)).url.query, "d=robohash")
+        XCTAssertEqual(verifiedAvatarURL(options: AvatarQueryOptions(defaultAvatarOption: .transparentPNG)).url.query, "d=blank")
+        XCTAssertEqual(verifiedAvatarURL(options: AvatarQueryOptions(defaultAvatarOption: .wavatar)).url.query, "d=wavatar")
     }
 
     func testUrlWithForcedImageDefault() throws {
-        let avatarUrl = verifiedAvatarURL(options: ImageQueryOptions())
+        let avatarUrl = verifiedAvatarURL(options: AvatarQueryOptions())
         XCTAssertEqual(avatarUrl.url.query, nil)
-        XCTAssertEqual(verifiedAvatarURL(options: ImageQueryOptions(forceDefaultImage: true)).url.query, "f=y")
+        XCTAssertEqual(verifiedAvatarURL(options: AvatarQueryOptions(forceDefaultAvatar: true)).url.query, "f=y")
     }
 
     func testUrlWithForceImageDefaultFalse() {
-        XCTAssertEqual(verifiedAvatarURL(options: ImageQueryOptions(forceDefaultImage: false)).url.query, "f=n")
+        XCTAssertEqual(verifiedAvatarURL(options: AvatarQueryOptions(forceDefaultAvatar: false)).url.query, "f=n")
     }
 
     func testCreateAvatarURLWithEmail() throws {
@@ -60,35 +60,35 @@ final class AvatarURLTests: XCTestCase {
             "https://gravatar.com/avatar/676212ff796c79a3c06261eb10e3f455aa93998ee6e45263da13679c74b1e674"
         )
 
-        let urlReplacingDefaultImage = avatarUrl.replacing(options: ImageQueryOptions(defaultImageOption: .identicon))
+        let urlReplacingDefaultImage = avatarUrl.replacing(options: AvatarQueryOptions(defaultAvatarOption: .identicon))
         XCTAssertEqual(
             urlReplacingDefaultImage?.url.absoluteString,
             "https://gravatar.com/avatar/676212ff796c79a3c06261eb10e3f455aa93998ee6e45263da13679c74b1e674?d=identicon"
         )
 
-        let urlReplacingSize = avatarUrl.replacing(options: ImageQueryOptions(preferredSize: .pixels(24)))
+        let urlReplacingSize = avatarUrl.replacing(options: AvatarQueryOptions(preferredSize: .pixels(24)))
         XCTAssertEqual(
             urlReplacingSize?.url.absoluteString,
             "https://gravatar.com/avatar/676212ff796c79a3c06261eb10e3f455aa93998ee6e45263da13679c74b1e674?s=24"
         )
 
-        let urlReplacingRating = avatarUrl.replacing(options: ImageQueryOptions(rating: .parentalGuidance))
+        let urlReplacingRating = avatarUrl.replacing(options: AvatarQueryOptions(rating: .parentalGuidance))
         XCTAssertEqual(
             urlReplacingRating?.url.absoluteString,
             "https://gravatar.com/avatar/676212ff796c79a3c06261eb10e3f455aa93998ee6e45263da13679c74b1e674?r=pg"
         )
 
-        let urlReplacingForceDefault = avatarUrl.replacing(options: ImageQueryOptions(forceDefaultImage: true))
+        let urlReplacingForceDefault = avatarUrl.replacing(options: AvatarQueryOptions(forceDefaultAvatar: true))
         XCTAssertEqual(
             urlReplacingForceDefault?.url.absoluteString,
             "https://gravatar.com/avatar/676212ff796c79a3c06261eb10e3f455aa93998ee6e45263da13679c74b1e674?f=y"
         )
 
-        let allOptions = ImageQueryOptions(
+        let allOptions = AvatarQueryOptions(
             preferredSize: .pixels(200),
             rating: .general,
-            defaultImageOption: .monsterId,
-            forceDefaultImage: true
+            defaultAvatarOption: .monsterId,
+            forceDefaultAvatar: true
         )
         let urlReplacingAllOptions = avatarUrl.replacing(options: allOptions)
         XCTAssertEqual(
@@ -103,9 +103,9 @@ final class AvatarURLTests: XCTestCase {
     }
 
     func testCreateAvatarByUpdatingOptions() {
-        let avatarUrl = AvatarURL(hash: "HASH", options: ImageQueryOptions(defaultImageOption: .fileNotFound))
+        let avatarUrl = AvatarURL(hash: "HASH", options: AvatarQueryOptions(defaultAvatarOption: .status404))
         XCTAssertEqual(avatarUrl?.url.absoluteString, "https://gravatar.com/avatar/HASH?d=404")
-        let updatedAvatarUrl = avatarUrl?.replacing(options: ImageQueryOptions(rating: .parentalGuidance))
+        let updatedAvatarUrl = avatarUrl?.replacing(options: AvatarQueryOptions(rating: .parentalGuidance))
         XCTAssertEqual(updatedAvatarUrl?.url.absoluteString, "https://gravatar.com/avatar/HASH?r=pg")
     }
 
@@ -131,7 +131,7 @@ final class AvatarURLTests: XCTestCase {
         XCTAssertNotEqual(lhs, rhs)
     }
 
-    func verifiedAvatarURL(options: ImageQueryOptions = ImageQueryOptions()) -> AvatarURL {
+    func verifiedAvatarURL(options: AvatarQueryOptions = AvatarQueryOptions()) -> AvatarURL {
         AvatarURL(url: verifiedAvatarURL, options: options)!
     }
 }

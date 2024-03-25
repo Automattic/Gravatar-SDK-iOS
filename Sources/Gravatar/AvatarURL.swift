@@ -5,10 +5,10 @@ public struct AvatarURL {
     public let hash: String
     public let url: URL
 
-    let options: ImageQueryOptions
+    let options: AvatarQueryOptions
     let components: URLComponents
 
-    public init?(url: URL, options: ImageQueryOptions = ImageQueryOptions()) {
+    public init?(url: URL, options: AvatarQueryOptions = AvatarQueryOptions()) {
         guard
             Self.isAvatarUrl(url),
             let components = URLComponents(url: url, resolvingAgainstBaseURL: false)?.sanitizingComponents(),
@@ -25,11 +25,11 @@ public struct AvatarURL {
         self.url = url
     }
 
-    public init?(email: String, options: ImageQueryOptions = ImageQueryOptions()) {
+    public init?(email: String, options: AvatarQueryOptions = AvatarQueryOptions()) {
         self.init(hash: email.sanitized.sha256(), options: options)
     }
 
-    public init?(hash: String, options: ImageQueryOptions = ImageQueryOptions()) {
+    public init?(hash: String, options: AvatarQueryOptions = AvatarQueryOptions()) {
         guard let url = URL(string: .baseURL + hash) else { return nil }
         self.init(url: url, options: options)
     }
@@ -46,7 +46,7 @@ public struct AvatarURL {
             && components.path.hasPrefix("/avatar/")
     }
 
-    public func replacing(options: ImageQueryOptions) -> AvatarURL? {
+    public func replacing(options: AvatarQueryOptions) -> AvatarURL? {
         AvatarURL(hash: hash, options: options)
     }
 }
@@ -62,7 +62,7 @@ extension String {
 }
 
 extension URL {
-    fileprivate func addQueryItems(from options: ImageQueryOptions) -> URL? {
+    fileprivate func addQueryItems(from options: AvatarQueryOptions) -> URL? {
         guard var components = URLComponents(url: self, resolvingAgainstBaseURL: false) else {
             return nil
         }
