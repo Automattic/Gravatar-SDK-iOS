@@ -3,26 +3,17 @@ import Foundation
 public struct AvatarURL {
     public let canonicalUrl: URL
     public let hash: String
+    public let url: URL
 
     let options: ImageQueryOptions
-    var components: URLComponents
-
-    public var url: URL {
-        // When `AavatarURL` is initialized successfully, the `canonicalUrl` field is a valid URL.
-        // Adding query items from the options, which is controlled by the SDK, should never
-        // result in an invalid URL. If it does, something terrible has happened.
-        guard let url = canonicalUrl.addQueryItems(from: options) else {
-            fatalError("Internal error: invalid url with query items")
-        }
-
-        return url
-    }
+    let components: URLComponents
 
     public init?(url: URL, options: ImageQueryOptions = ImageQueryOptions()) {
         guard
             Self.isAvatarUrl(url),
             let components = URLComponents(url: url, resolvingAgainstBaseURL: false)?.sanitizingComponents(),
-            let sanitizedURL = components.url
+            let sanitizedURL = components.url,
+            let url = sanitizedURL.addQueryItems(from: options)
         else {
             return nil
         }
@@ -31,6 +22,7 @@ public struct AvatarURL {
         self.components = components
         self.hash = sanitizedURL.lastPathComponent
         self.options = options
+        self.url = url
     }
 
     public init?(email: String, options: ImageQueryOptions = ImageQueryOptions()) {
