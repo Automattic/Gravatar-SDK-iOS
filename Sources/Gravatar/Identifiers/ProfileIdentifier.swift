@@ -2,7 +2,7 @@ import Foundation
 
 public enum ProfileIdentifier {
     case email(Email)
-    case hashId(HashID)
+    case hashID(HashID)
 }
 
 extension ProfileIdentifier {
@@ -12,8 +12,8 @@ extension ProfileIdentifier {
         .email(.init(email))
     }
 
-    public static func hashId(_ hashId: String) -> ProfileIdentifier {
-        .hashId(.init(hashId))
+    public static func hashID(_ hashID: String) -> ProfileIdentifier {
+        .hashID(.init(hashID))
     }
 }
 
@@ -24,8 +24,8 @@ extension ProfileIdentifier: IdentifierProvider {
         switch self {
         case .email(let email):
             email.identifier
-        case .hashId(let hashId):
-            hashId.identifier
+        case .hashID(let hashID):
+            hashID.identifier
         }
     }
 }

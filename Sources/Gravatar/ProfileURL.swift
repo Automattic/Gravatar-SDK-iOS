@@ -4,7 +4,7 @@ public struct ProfileURL {
     public let url: URL
     public let hash: String
     public var avatarURL: AvatarURL? {
-        AvatarURL(with: .hashId(self.hash))
+        AvatarURL(with: .hashID(self.hash))
     }
 
     static let baseURL: URL? = {

@@ -128,7 +128,7 @@ final class ProfileServiceTests: XCTestCase {
         let session = URLSessionMock(returnData: jsonData, response: .successResponse())
         let client = HTTPClientMock(session: session)
         let service = ProfileService(client: client)
-        _ = try await service.fetch(with: .hashId("HASH"))
+        _ = try await service.fetch(with: .hashID("HASH"))
 
         XCTAssertEqual(session.request?.url?.absoluteString, "https://gravatar.com/HASH.json")
     }

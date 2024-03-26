@@ -43,7 +43,7 @@ public struct AvatarURL {
     }
 
     public func replacing(options: AvatarQueryOptions) -> AvatarURL? {
-        AvatarURL(with: .hashId(self.hash), options: options)
+        AvatarURL(with: .hashID(self.hash), options: options)
     }
 }
 
