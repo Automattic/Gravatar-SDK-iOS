@@ -30,7 +30,7 @@ public struct AvatarService {
         with avatarId: AvatarIdentifier,
         options: ImageDownloadOptions = ImageDownloadOptions()
     ) async throws -> ImageDownloadResult {
-        guard let gravatarURL = GravatarURL.gravatarUrl(with: avatarId, options: options.imageQueryOptions) else {
+        guard let gravatarURL = AvatarURL(email: email, options: options.avatarQueryOptions)?.url else {
             throw ImageFetchingError.requestError(reason: .urlInitializationFailed)
         }
 

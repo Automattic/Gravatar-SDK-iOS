@@ -158,7 +158,7 @@ extension GravatarWrapper where Component: UIImageView {
             defaultAvatarOption: defaultAvatarOption
         )
 
-        let gravatarURL = GravatarURL.gravatarUrl(with: avatarId, options: downloadOptions.imageQueryOptions)
+        let gravatarURL = AvatarURL(email: email, options: downloadOptions.avatarQueryOptions)?.url
         return setImage(with: gravatarURL, placeholder: placeholder, options: options, completionHandler: completionHandler)
     }
 

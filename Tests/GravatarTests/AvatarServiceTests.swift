@@ -104,7 +104,7 @@ final class AvatarServiceTests: XCTestCase {
         XCTAssertTrue(testProcessor.processedData)
     }
 
-    func testFetchImageWithDefaultImageOption() async throws {
+    func testFetchAvatarWithDefaultAvatarOption() async throws {
         let expectedQuery = "d=mp"
         let urlWithQuery = TestData.urlFromEmail.absoluteString + "?" + expectedQuery
         let response = HTTPURLResponse.successResponse(with: URL(string: urlWithQuery)!)

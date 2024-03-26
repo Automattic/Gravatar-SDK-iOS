@@ -42,7 +42,7 @@ class DemoAvatarDownloadViewController: UIViewController {
         return view
     }()
 
-    private lazy var forceDefaultImageSwitchWithLabel: SwitchWithLabel = {
+    private lazy var forceDefaultAvatarSwitchWithLabel: SwitchWithLabel = {
         let view = SwitchWithLabel(labelText: "Force default avatar")
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
@@ -79,7 +79,7 @@ class DemoAvatarDownloadViewController: UIViewController {
             preferredAvatarLengthInputField,
             gravatarRatingInputField,
             igonreCacheSwitchWithLabel,
-            forceDefaultImageSwitchWithLabel,
+            forceDefaultAvatarSwitchWithLabel,
             imageDefaultButton,
             fetchAvatarButton,
             avatarImageView
@@ -125,14 +125,14 @@ class DemoAvatarDownloadViewController: UIViewController {
         return nil
     }
 
-    private var preferredDefaultImage: DefaultAvatarOption? = nil
+    private var preferredDefaultAvatar: DefaultAvatarOption? = nil
 
     @objc private func selectImageDefault() {
         let controller = UIAlertController(title: "Default Avatar Option", message: nil, preferredStyle: .actionSheet)
 
         DefaultAvatarOption.allCases.forEach { option in
             controller.addAction(UIAlertAction(title: "\(option)", style: .default) { [weak self] action in
-                self?.preferredDefaultImage = option
+                self?.preferredDefaultAvatar = option
                 self?.imageDefaultButton.setTitle("Default Avatar Option: \(option)", for: .normal)
             })
         }
@@ -148,8 +148,8 @@ class DemoAvatarDownloadViewController: UIViewController {
             preferredSize: .points(preferredSize),
             rating: preferredRating,
             forceRefresh: igonreCacheSwitchWithLabel.isOn,
-            forceDefaultImage: forceDefaultImageSwitchWithLabel.isOn,
-            defaultAvatarOption: preferredDefaultImage
+            forceDefaultAvatar: forceDefaultAvatarSwitchWithLabel.isOn,
+            defaultAvatarOption: preferredDefaultAvatar
         )
 
         avatarImageView.image = nil // Setting to nil to make the effect of `forceRefresh more visible
