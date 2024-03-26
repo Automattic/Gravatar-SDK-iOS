@@ -1,13 +1,16 @@
 import UIKit
 
 /// The default processor. It applies the scale factor on the given image data and converts it into an image.
-struct DefaultImageProcessor: ImageProcessor {
-    public static let common = DefaultImageProcessor(scaleFactor: UIScreen.main.scale)
+actor DefaultImageProcessor: ImageProcessor {
     public static let common = DefaultImageProcessor(scaleFactor: UI.scaleFactor)
 
     public let scaleFactor: CGFloat
+    
+    init(scaleFactor: CGFloat) {
+        self.scaleFactor = scaleFactor
+    }
 
-    public func process(_ data: Data) -> UIImage? {
+    nonisolated public func process(_ data: Data) -> UIImage? {
         UIImage(data: data, scale: scaleFactor)
     }
 }
