@@ -48,5 +48,9 @@ For more info check:
 - ``ProfileService``
 
 ### Identifiers
+
 - ``AvatarIdentifier``
 - ``ProfileIdentifier``
+- ``IdentifierProvider``
+- ``Email``
+- ``HashID``
