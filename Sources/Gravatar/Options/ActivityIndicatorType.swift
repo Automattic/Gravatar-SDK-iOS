@@ -1,14 +1,15 @@
 import Foundation
 import UIKit
 
-public enum ActivityIndicatorType {
+public enum ActivityIndicatorType: Sendable {
     case none
     case activity
     case custom(ActivityIndicatorProvider)
 }
 
 /// An indicator type which can be used to show the download task is in progress.
-public protocol ActivityIndicatorProvider {
+@MainActor
+public protocol ActivityIndicatorProvider: Sendable {
     /// Called when the indicator should start animating.
     func startAnimatingView()
 
@@ -29,6 +30,7 @@ public enum ActivityIndicatorSizeStrategy {
     case size(CGSize)
 }
 
+@MainActor
 final class DefaultActivityIndicatorProvider: ActivityIndicatorProvider {
     private let activityIndicatorView: UIActivityIndicatorView
 
@@ -46,11 +48,11 @@ final class DefaultActivityIndicatorProvider: ActivityIndicatorProvider {
         activityIndicatorView.isHidden = true
     }
 
-    var view: UIView {
+    nonisolated var view: UIView {
         activityIndicatorView
     }
 
-    func sizeStrategy(in view: UIView) -> ActivityIndicatorSizeStrategy {
+    nonisolated func sizeStrategy(in view: UIView) -> ActivityIndicatorSizeStrategy {
         .intrinsicSize
     }
 }
