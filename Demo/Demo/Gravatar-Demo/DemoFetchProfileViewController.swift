@@ -13,6 +13,13 @@ class DemoFetchProfileViewController: UIViewController {
         return stack
     }()
 
+    let segmentedControl: UISegmentedControl = {
+        let control = UISegmentedControl(items: ["Email", "Hash"])
+        control.addTarget(self, action: #selector(chooseFetchType(_:)), for: .valueChanged)
+        control.selectedSegmentIndex = 0
+        return control
+    }()
+    
     let emailField: UITextField = {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
@@ -20,6 +27,16 @@ class DemoFetchProfileViewController: UIViewController {
         textField.keyboardType = .emailAddress
         textField.autocapitalizationType = .none
         textField.textContentType = .emailAddress
+        textField.textAlignment = .center
+        return textField
+    }()
+    
+    let hashField: UITextField = {
+        let textField = UITextField()
+        textField.translatesAutoresizingMaskIntoConstraints = false
+        textField.placeholder = "Hash"
+        textField.keyboardType = .asciiCapable
+        textField.autocapitalizationType = .none
         textField.textAlignment = .center
         return textField
     }()
@@ -47,7 +64,7 @@ class DemoFetchProfileViewController: UIViewController {
         title = "Fetch Profile"
         view.backgroundColor = .white
 
-        [emailField, fetchProfileButton, activityIndicator, profileTextView].forEach(rootStackView.addArrangedSubview)
+        [segmentedControl, emailField, fetchProfileButton, activityIndicator, profileTextView].forEach(rootStackView.addArrangedSubview)
         view.addSubview(rootStackView)
 
         NSLayoutConstraint.activate([
@@ -61,20 +78,29 @@ class DemoFetchProfileViewController: UIViewController {
     }
 
     @objc func fetchProfileButtonHandler() {
-        guard activityIndicator.isAnimating == false, let email = emailField.text, email.isEmpty == false else {
-            return
+        var identifier: ProfileIdentifier
+        
+        guard activityIndicator.isAnimating == false else { return }
+        
+        if segmentedControl.selectedSegmentIndex == 0 {
+            guard let email = emailField.text, email.isEmpty == false else { return }
+            identifier = .email(email)
+        } else {
+            guard let hash = hashField.text, hash.isEmpty == false else { return }
+            identifier = .hashID(hash)
         }
+        
         profileTextView.text = nil
         activityIndicator.startAnimating()
         Task {
-            await fetchProfile(with: email)
+            await fetchProfile(with: identifier)
         }
     }
 
-    func fetchProfile(with email: String) async {
+    func fetchProfile(with profileID: ProfileIdentifier) async {
         let service = ProfileService()
         do {
-            let profile = try await service.fetch(with: .email(email))
+            let profile = try await service.fetch(with: profileID)
             setProfile(with: profile)
         } catch {
             showError(error)
@@ -97,6 +123,39 @@ Last edit: \(String(describing: profile.lastProfileEditDate))
         DispatchQueue.main.async { [weak self] in
             self?.activityIndicator.stopAnimating()
             self?.profileTextView.text = String(describing: error)
+        }
+    }
+    
+    private enum FetchType: Int {
+        case email = 0
+        case hash
+    }
+    
+    @objc private func chooseFetchType(_ sender: UISegmentedControl) {
+        switch sender.selectedSegmentIndex {
+        case 0:
+            setFetchType(.email)
+        case 1:
+            setFetchType(.hash)
+        default:
+            setFetchType(.email)
+        }
+    }
+    
+    private func setFetchType(_ type: FetchType) {
+        switch type {
+        case .email:
+            if let index = rootStackView.arrangedSubviews.firstIndex(of: hashField) {
+                rootStackView.removeArrangedSubview(hashField)
+                hashField.removeFromSuperview()
+                rootStackView.insertArrangedSubview(emailField, at: index)
+            }
+        case .hash:
+            if let index = rootStackView.arrangedSubviews.firstIndex(of: emailField) {
+                rootStackView.removeArrangedSubview(emailField)
+                emailField.removeFromSuperview()
+                rootStackView.insertArrangedSubview(hashField, at: index)
+            }
         }
     }
 }
