@@ -5,19 +5,20 @@ public typealias ImageSetCompletion = (Result<ImageDownloadResult, ImageFetching
 
 // MARK: - Associated Object
 
-private var taskIdentifierKey: Void?
-private var indicatorKey: Void?
-private var indicatorTypeKey: Void?
-private var placeholderKey: Void?
-private var imageTaskKey: Void?
-private var dataTaskKey: Void?
-private var imageDownloaderKey: Void?
+private let taskIdentifierKey: UnsafeMutableRawPointer = UnsafeMutableRawPointer.allocate(byteCount: 1, alignment: MemoryLayout<UInt8>.alignment)
+private let indicatorKey: UnsafeMutableRawPointer = UnsafeMutableRawPointer.allocate(byteCount: 1, alignment: MemoryLayout<UInt8>.alignment)
+private let indicatorTypeKey: UnsafeMutableRawPointer = UnsafeMutableRawPointer.allocate(byteCount: 1, alignment: MemoryLayout<UInt8>.alignment)
+private let placeholderKey: UnsafeMutableRawPointer = UnsafeMutableRawPointer.allocate(byteCount: 1, alignment: MemoryLayout<UInt8>.alignment)
+private let imageTaskKey: UnsafeMutableRawPointer = UnsafeMutableRawPointer.allocate(byteCount: 1, alignment: MemoryLayout<UInt8>.alignment)
+private let dataTaskKey: UnsafeMutableRawPointer = UnsafeMutableRawPointer.allocate(byteCount: 1, alignment: MemoryLayout<UInt8>.alignment)
+private let imageDownloaderKey: UnsafeMutableRawPointer = UnsafeMutableRawPointer.allocate(byteCount: 1, alignment: MemoryLayout<UInt8>.alignment)
 
+@MainActor
 extension GravatarWrapper where Component: UIImageView {
     /// Describes which indicator type is going to be used. Default is `.none`, which means no activity indicator will be shown.
     public var activityIndicatorType: ActivityIndicatorType {
         get {
-            getAssociatedObject(component, &indicatorTypeKey) ?? .none
+            return getAssociatedObject(component, indicatorTypeKey) ?? .none
         }
 
         set {
@@ -29,14 +30,14 @@ extension GravatarWrapper where Component: UIImageView {
             case .custom(let indicator):
                 activityIndicator = indicator
             }
-            setRetainedAssociatedObject(component, &indicatorTypeKey, newValue)
+            setRetainedAssociatedObject(component, indicatorTypeKey, newValue)
         }
     }
 
     /// The activityIndicator to show during network operations .
     public private(set) var activityIndicator: ActivityIndicatorProvider? {
         get {
-            let box: Box<ActivityIndicatorProvider>? = getAssociatedObject(component, &indicatorKey)
+            let box: Box<ActivityIndicatorProvider>? = getAssociatedObject(component, indicatorKey)
             return box?.value
         }
 
@@ -72,63 +73,45 @@ extension GravatarWrapper where Component: UIImageView {
                 newIndicator.view.isHidden = true
             }
 
-            setRetainedAssociatedObject(component, &indicatorKey, newValue.map(Box.init))
+            setRetainedAssociatedObject(component, indicatorKey, newValue.map(Box.init))
         }
     }
 
     /// A `Placeholder` will be shown in the imageview until the download completes.
     public private(set) var placeholder: UIImage? {
-        get { getAssociatedObject(component, &placeholderKey) }
+        get { getAssociatedObject(component, placeholderKey) }
         set {
             if let newPlaceholder = newValue {
                 component.image = newPlaceholder
             } else {
                 component.image = nil
             }
-            setRetainedAssociatedObject(component, &placeholderKey, newValue)
-        }
-    }
-
-    public private(set) var downloadTask: CancellableDataTask? {
-        get {
-            getAssociatedObject(component, &dataTaskKey)
-        }
-        set {
-            setDownloadTask(newValue)
+            setRetainedAssociatedObject(component, placeholderKey, newValue)
         }
     }
 
     public private(set) var taskIdentifier: UInt? {
         get {
-            let box: Box<UInt>? = getAssociatedObject(component, &taskIdentifierKey)
+            let box: Box<UInt>? = getAssociatedObject(component, taskIdentifierKey)
             return box?.value
         }
         set {
             let box = newValue.map { Box($0) }
-            setRetainedAssociatedObject(component, &taskIdentifierKey, box)
+            setRetainedAssociatedObject(component, taskIdentifierKey, box)
         }
     }
 
     public private(set) var imageDownloader: ImageDownloader? {
         get {
-            let box: Box<ImageDownloader>? = getAssociatedObject(component, &imageDownloaderKey)
+            let box: Box<ImageDownloader>? = getAssociatedObject(component, imageDownloaderKey)
             return box?.value
         }
         set {
             let box = newValue.map { Box($0) }
-            setRetainedAssociatedObject(component, &imageDownloaderKey, box)
+            setRetainedAssociatedObject(component, imageDownloaderKey, box)
         }
     }
-
-    private func setDownloadTask(_ newValue: CancellableDataTask?) {
-        setRetainedAssociatedObject(component, &dataTaskKey, newValue)
-    }
-
-    public func cancelImageDownload() {
-        downloadTask?.cancel()
-        setDownloadTask(nil)
-    }
-
+    
     /// Downloads the Gravatar profile image and sets it to this UIImageView.
     ///
     /// - Parameters:
