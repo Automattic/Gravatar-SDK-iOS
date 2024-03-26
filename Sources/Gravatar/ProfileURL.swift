@@ -7,24 +7,26 @@ public struct ProfileURL {
         AvatarURL(hash: hash)
     }
 
-    static let baseURL: URL = {
+    static let baseURL: URL? = {
         guard
             let baseURL = URL(string: .baseURL),
-            let components = URLComponents(url: baseURL, resolvingAgainstBaseURL: false),
-            let url = components.url
+            let components = URLComponents(url: baseURL, resolvingAgainstBaseURL: false)
         else {
-            fatalError("A url created from a correct literal string should never fail")
+            return nil
         }
-        return url
+        return components.url
     }()
 
-    public init(email: String) {
+    public init?(email: String) {
         let hash = email.sanitized.sha256()
         self.init(hash: hash)
     }
 
-    public init(hash: String) {
-        self.url = Self.baseURL.appending(pathComponent: hash)
+    public init?(hash: String) {
+        guard let url = Self.baseURL?.appending(pathComponent: hash) else {
+            return nil
+        }
+        self.url = url
         self.hash = hash
     }
 }

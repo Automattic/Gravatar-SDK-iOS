@@ -8,33 +8,33 @@ final class ProfileURLTests: XCTestCase {
 
     func testProfileUrlWithEmail() {
         let profileUrl = ProfileURL(email: email)
-        XCTAssertEqual(profileUrl.url.absoluteString, urlFromEmail.absoluteString)
+        XCTAssertEqual(profileUrl?.url.absoluteString, urlFromEmail.absoluteString)
     }
 
     func testProfileUrlHashWithEmail() {
         let profileUrl = ProfileURL(email: email)
-        XCTAssertEqual(profileUrl.hash, hashFromEmail)
+        XCTAssertEqual(profileUrl?.hash, hashFromEmail)
     }
 
     func testProfileUrlWithHash() {
         let profileUrl = ProfileURL(hash: hashFromEmail)
-        XCTAssertEqual(profileUrl.url.absoluteString, urlFromEmail.absoluteString)
+        XCTAssertEqual(profileUrl?.url.absoluteString, urlFromEmail.absoluteString)
     }
 
     func testAvatarURLFromProfileUrl() {
         let profileUrl = ProfileURL(email: email)
-        XCTAssertEqual(profileUrl.avatarURL, AvatarURL(email: email))
+        XCTAssertEqual(profileUrl?.avatarURL, AvatarURL(email: email))
     }
 
     func testProfileUrlWithEmailWithInvalidCharactersWontCrash() {
         let profileUrl = ProfileURL(email: "😉⇶❖₧ℸℏ⎜♘§@…./+_ =-\\][|}{~`23🥡")
-        XCTAssertEqual(profileUrl.hash, "d8bf26df33ebe638f5ad553aedc6df15e67e7e64f3f21e21c03223877a9290c9")
+        XCTAssertEqual(profileUrl?.hash, "d8bf26df33ebe638f5ad553aedc6df15e67e7e64f3f21e21c03223877a9290c9")
     }
 
     func testProfileUrlWithHashWithInvalidCharactersWontCrash() {
         let profileUrl = ProfileURL(hash: "😉⇶❖₧ℸℏ⎜♘§@…./+_ =-\\][|}{~`23🥡")
         XCTAssertEqual(
-            profileUrl.url.absoluteString,
+            profileUrl?.url.absoluteString,
             "https://gravatar.com/%F0%9F%98%89%E2%87%B6%E2%9D%96%E2%82%A7%E2%84%B8%E2%84%8F%E2%8E%9C%E2%99%98%C2%A7@%E2%80%A6./+_%20=-%5C%5D%5B%7C%7D%7B~%6023%F0%9F%A5%A1"
         )
     }
