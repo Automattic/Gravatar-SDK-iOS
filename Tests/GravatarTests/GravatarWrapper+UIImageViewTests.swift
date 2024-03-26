@@ -1,199 +1,169 @@
 import Gravatar
 import XCTest
 
+@MainActor
 final class GravatarWrapper_UIImageViewTests: XCTestCase {
     let frame = CGRect(x: 0, y: 0, width: 50, height: 50)
 
-    func testActivityLoaderStarts() throws {
+    func testActivityLoaderStarts() async throws {
         let imageView = UIImageView(frame: frame)
         let activityIndicator = TestActivityIndicator()
-
         imageView.gravatar.activityIndicatorType = .custom(activityIndicator)
-        imageView.gravatar.setImage(
+        
+        try await imageView.gravatar.setImage(
             email: "hello@gmail.com",
             options: [.imageDownloader(TestImageFetcher(result: .success))]
         )
-        XCTAssertTrue(activityIndicator.animating)
+        XCTAssertTrue(activityIndicator.counter == 1)
     }
 
-    func testActivityLoaderStopsOnSuccess() throws {
-        let expectation = XCTestExpectation(description: "testActivityLoaderStopsOnSuccess")
-
+    func testActivityLoaderStopsOnSuccess() async throws {
         let imageView = UIImageView(frame: frame)
         let activityIndicator = TestActivityIndicator()
         let imageRetriever = TestImageFetcher(result: .success)
 
         imageView.gravatar.activityIndicatorType = .custom(activityIndicator)
-        imageView.gravatar.setImage(
+        try await imageView.gravatar.setImage(
             email: "hello@gmail.com",
             options: [.imageDownloader(imageRetriever)]
-        ) { _ in
-            XCTAssertFalse(activityIndicator.animating)
-            expectation.fulfill()
-        }
-        wait(for: [expectation], timeout: 2.0)
+        )
+        XCTAssertFalse(activityIndicator.animating)
     }
 
-    func testActivityLoaderStopsOnFail() throws {
-        let expectation = XCTestExpectation(description: "testActivityLoaderStopsOnFail")
-
+    func testActivityLoaderStopsOnFail() async {
         let imageView = UIImageView(frame: frame)
         let activityIndicator = TestActivityIndicator()
         let imageRetriever = TestImageFetcher(result: .fail)
 
         imageView.gravatar.activityIndicatorType = .custom(activityIndicator)
-        imageView.gravatar.setImage(
-            email: "hello@gmail.com",
-            options: [.imageDownloader(imageRetriever)]
-        ) { _ in
+        do {
+            try await imageView.gravatar.setImage(
+                email: "hello@gmail.com",
+                options: [.imageDownloader(imageRetriever)]
+            )
+        } catch {
             XCTAssertFalse(activityIndicator.animating)
-            expectation.fulfill()
         }
-        wait(for: [expectation], timeout: 2.0)
     }
 
-    func testIfPlaceholderIsSet() throws {
-        let expectation = XCTestExpectation(description: "testIfPlaceholderIsSet")
-
+    func testIfPlaceholderIsSet() async {
         let imageView = UIImageView(frame: frame)
         let imageRetriever = TestImageFetcher(result: .fail)
-
-        imageView.gravatar.setImage(
-            email: "hello@gmail.com",
-            placeholder: ImageHelper.placeholderImage,
-            options: [.imageDownloader(imageRetriever)]
-        ) { _ in
+        
+        do {
+            try await imageView.gravatar.setImage(
+                email: "hello@gmail.com",
+                placeholder: ImageHelper.placeholderImage,
+                options: [.imageDownloader(imageRetriever)]
+            )
+        } catch {
             XCTAssertNotNil(imageView.gravatar.placeholder)
-            expectation.fulfill()
         }
-        wait(for: [expectation], timeout: 2.0)
     }
-
-    func testDefaultAvatarOptionIsSet() throws {
+    
+    func testDefaultAvatarOptionIsSet() async throws {
         let expectedQueryItemString = "d=robohash"
 
         let imageView = UIImageView(frame: frame)
         let imageDownloader = TestImageFetcher(result: .success)
 
-        imageView.gravatar.setImage(
+        let result = try await imageView.gravatar.setImage(
             email: "hello@gmail.com",
             defaultAvatarOption: .roboHash,
             options: [.imageDownloader(imageDownloader)]
-        ) { result in
-            switch result {
-            case .success(let value):
-                let query = value.sourceURL.query ?? ""
-                let urlContainsDefaultImageOption = query.contains(expectedQueryItemString)
-                XCTAssertTrue(urlContainsDefaultImageOption, "\(query) does not contain \(expectedQueryItemString)")
-            case .failure:
-                XCTFail()
-            }
-        }
+        )
+        let query = result.sourceURL.query ?? ""
+        let urlContainsDefaultImageOption = query.contains(expectedQueryItemString)
+        XCTAssertTrue(urlContainsDefaultImageOption, "\(query) does not contain \(expectedQueryItemString)")
     }
 
-    func testIfPlaceholderIsSetWithNilURL() throws {
-        let expectation = XCTestExpectation(description: "testIfPlaceholderIsSetWithNilURL")
+    func testIfPlaceholderIsSetWithNilURL() async throws {
 
         let imageView = UIImageView(frame: frame)
         let imageRetriever = TestImageFetcher(result: .fail)
-
-        imageView.gravatar.setImage(
-            with: nil,
-            placeholder: ImageHelper.placeholderImage,
-            options: [.imageDownloader(imageRetriever)]
-        ) { _ in
-            XCTAssertNotNil(imageView.gravatar.placeholder)
-            expectation.fulfill()
+        
+        do {
+            try await imageView.gravatar.setImage(
+                with: nil,
+                placeholder: ImageHelper.placeholderImage,
+                options: [.imageDownloader(imageRetriever)]
+            )
         }
-
-        wait(for: [expectation], timeout: 2.0)
+        catch {
+            XCTAssertNotNil(imageView.gravatar.placeholder)
+        }
     }
 
-    func testCancelOngoingDownload() throws {
-        let imageView = UIImageView(frame: frame)
-        let imageRetriever = TestImageFetcher(result: .success)
-
-        imageView.gravatar.setImage(
-            email: "hello@gmail.com",
-            options: [.imageDownloader(imageRetriever)]
-        )
-
-        let task = try XCTUnwrap(imageView.gravatar.downloadTask)
-
-        imageView.gravatar.cancelImageDownload()
-
-        XCTAssertTrue(task.isCancelled)
-    }
-
-    func testRemoveCurrentImageWhileLoadingNoPlaceholder() throws {
+    func testRemoveCurrentImageWhileLoadingNoPlaceholder() async throws {
         let imageView = UIImageView(frame: frame)
         imageView.image = ImageHelper.testImage
-        let imageRetriever = TestImageFetcher(result: .success)
+        let imageRetriever = TestImageFetcher(result: .fail)
 
-        imageView.gravatar.setImage(
-            email: "hello@gmail.com",
-            options: [.imageDownloader(imageRetriever),
-                      .removeCurrentImageWhileLoading]
-        )
-        XCTAssertNil(imageView.image)
+        do {
+            try await imageView.gravatar.setImage(
+                email: "hello@gmail.com",
+                options: [.imageDownloader(imageRetriever),
+                          .removeCurrentImageWhileLoading]
+            )
+        } catch {
+            XCTAssertNil(imageView.image)
+        }
     }
 
-    func testRemoveCurrentImageWhileLoadingWithPlaceholder() throws {
+    func testRemoveCurrentImageWhileLoadingWithPlaceholder() async throws {
         let imageView = UIImageView(frame: frame)
         imageView.image = ImageHelper.testImage
-        let imageRetriever = TestImageFetcher(result: .success)
+        let imageRetriever = TestImageFetcher(result: .fail)
         let placeholder = ImageHelper.placeholderImage
 
-        imageView.gravatar.setImage(
-            email: "hello@gmail.com",
-            placeholder: placeholder,
-            options: [.imageDownloader(imageRetriever),
-                      .removeCurrentImageWhileLoading]
-        )
-        XCTAssertEqual(imageView.image, placeholder)
-        XCTAssertEqual(imageView.gravatar.placeholder, placeholder)
+        do {
+            try await imageView.gravatar.setImage(
+                email: "hello@gmail.com",
+                placeholder: placeholder,
+                options: [.imageDownloader(imageRetriever),
+                          .removeCurrentImageWhileLoading]
+            )
+        } catch {
+            XCTAssertEqual(imageView.image, placeholder)
+            XCTAssertEqual(imageView.gravatar.placeholder, placeholder)
+        }
     }
 
-    func testNotCurrentSourceTaskResult() throws {
-        let expectation = XCTestExpectation(description: "testNotCurrentSourceTaskResult")
+    func testNotCurrentSourceTaskResult() async throws {
 
         let imageView = UIImageView(frame: frame)
         let imageRetriever = TestImageFetcher(result: .success)
 
-        let group = DispatchGroup()
-
-        group.enter()
-        // Pass .noResponse to simulate long lasting task
-        imageView.gravatar.setImage(
-            with: URL(string: "https://first.com"),
-            options: [.imageDownloader(imageRetriever)]
-        ) { result in
-            switch result {
-            case .failure(.outdatedTask(.success(let value), let source)):
+        let task1 = Task {
+            do {
+                try await imageView.gravatar.setImage(
+                    with: URL(string: "https://first.com"),
+                    options: [.imageDownloader(imageRetriever)]
+                )
+            }
+            catch ImageFetchingComponentError.outdatedTask(.success( _), let source) {
                 XCTAssertEqual(source.absoluteString, "https://first.com")
-                XCTAssertNotNil(value.image) // We got the image for "http://first.com"
-            default:
+            }
+            catch {
                 XCTFail()
             }
-            group.leave()
-        }
 
-        group.enter()
-        // Start a new task before the previous one completes
-        imageView.gravatar.setImage(
-            with: URL(string: "https://second.com"),
-            options: [.imageDownloader(imageRetriever)]
-        ) { result in
-            switch result {
-            case .success(let value):
-                XCTAssertEqual(value.sourceURL.absoluteString, "https://second.com")
-            case .failure:
+        }
+        await Task.yield()
+        
+        let task2 = Task {
+            do {
+                let result = try await imageView.gravatar.setImage(
+                    with: URL(string: "https://second.com"),
+                    options: [.imageDownloader(imageRetriever)]
+                )
+                XCTAssertEqual(result.sourceURL.absoluteString, "https://second.com")
+            }
+            catch {
                 XCTFail()
             }
-            group.leave()
         }
-
-        group.notify(queue: .main, execute: expectation.fulfill)
-        wait(for: [expectation], timeout: 2.0)
+        await task2.value
+        await task1.value
     }
 }

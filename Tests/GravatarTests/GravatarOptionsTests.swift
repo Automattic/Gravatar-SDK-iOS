@@ -31,10 +31,14 @@ final class GravatarOptionsTests: XCTestCase {
     }
 }
 
-class TestImageProcessor: ImageProcessor {
-    var processedData = false
-    func process(_: Data) -> UIImage? {
+actor TestImageProcessor: ImageProcessor {
+    private var processedData = false
+    func process(_: Data) async -> UIImage? {
         processedData = true
         return UIImage()
+    }
+    
+    func isProcessedData() async -> Bool {
+        return processedData
     }
 }

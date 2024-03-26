@@ -3,9 +3,10 @@ import UIKit
 
 class TestActivityIndicator: ActivityIndicatorProvider {
     var animating = false
-
+    var counter: Int = 0
     func startAnimatingView() {
         animating = true
+        counter += 1
     }
 
     func stopAnimatingView() {
