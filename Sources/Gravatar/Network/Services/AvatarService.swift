@@ -23,14 +23,14 @@ public struct AvatarService {
     /// Fetches a Gravatar user profile image using an `AvatarId`, and delivers the image asynchronously. See also: ``ImageDownloadService`` to
     /// download the avatar via URL.
     /// - Parameters:
-    ///   - avatarId: An `AvatarId` for the gravatar account
+    ///   - avatarID: An `AvatarIdentifier` for the gravatar account
     ///   - options: The options needed to perform the download.
     /// - Returns: An asynchronously-delivered Result type containing the image and its URL.
     public func fetch(
-        with avatarId: AvatarIdentifier,
+        with avatarID: AvatarIdentifier,
         options: ImageDownloadOptions = ImageDownloadOptions()
     ) async throws -> ImageDownloadResult {
-        guard let gravatarURL = AvatarURL(with: avatarId, options: options.avatarQueryOptions)?.url else {
+        guard let gravatarURL = AvatarURL(with: avatarID, options: options.avatarQueryOptions)?.url else {
             throw ImageFetchingError.requestError(reason: .urlInitializationFailed)
         }
 

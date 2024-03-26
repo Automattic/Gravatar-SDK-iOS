@@ -10,7 +10,7 @@ final class GravatarWrapper_UIImageViewTests: XCTestCase {
 
         imageView.gravatar.activityIndicatorType = .custom(activityIndicator)
         imageView.gravatar.setImage(
-            avatarId: .email("hello@gmail.com"),
+            avatarID: .email("hello@gmail.com"),
             options: [.imageDownloader(TestImageFetcher(result: .success))]
         )
         XCTAssertTrue(activityIndicator.animating)
@@ -25,7 +25,7 @@ final class GravatarWrapper_UIImageViewTests: XCTestCase {
 
         imageView.gravatar.activityIndicatorType = .custom(activityIndicator)
         imageView.gravatar.setImage(
-            avatarId: .email("hello@gmail.com"),
+            avatarID: .email("hello@gmail.com"),
             options: [.imageDownloader(imageRetriever)]
         ) { _ in
             XCTAssertFalse(activityIndicator.animating)
@@ -43,7 +43,7 @@ final class GravatarWrapper_UIImageViewTests: XCTestCase {
 
         imageView.gravatar.activityIndicatorType = .custom(activityIndicator)
         imageView.gravatar.setImage(
-            avatarId: .email("hello@gmail.com"),
+            avatarID: .email("hello@gmail.com"),
             options: [.imageDownloader(imageRetriever)]
         ) { _ in
             XCTAssertFalse(activityIndicator.animating)
@@ -59,7 +59,7 @@ final class GravatarWrapper_UIImageViewTests: XCTestCase {
         let imageRetriever = TestImageFetcher(result: .fail)
 
         imageView.gravatar.setImage(
-            avatarId: .email("hello@gmail.com"),
+            avatarID: .email("hello@gmail.com"),
             placeholder: ImageHelper.placeholderImage,
             options: [.imageDownloader(imageRetriever)]
         ) { _ in
@@ -76,7 +76,7 @@ final class GravatarWrapper_UIImageViewTests: XCTestCase {
         let imageDownloader = TestImageFetcher(result: .success)
 
         imageView.gravatar.setImage(
-            avatarId: .email("hello@gmail.com"),
+            avatarID: .email("hello@gmail.com"),
             defaultAvatarOption: .roboHash,
             options: [.imageDownloader(imageDownloader)]
         ) { result in
@@ -114,7 +114,7 @@ final class GravatarWrapper_UIImageViewTests: XCTestCase {
         let imageRetriever = TestImageFetcher(result: .success)
 
         imageView.gravatar.setImage(
-            avatarId: .email("hello@gmail.com"),
+            avatarID: .email("hello@gmail.com"),
             options: [.imageDownloader(imageRetriever)]
         )
 
@@ -131,7 +131,7 @@ final class GravatarWrapper_UIImageViewTests: XCTestCase {
         let imageRetriever = TestImageFetcher(result: .success)
 
         imageView.gravatar.setImage(
-            avatarId: .email("hello@gmail.com"),
+            avatarID: .email("hello@gmail.com"),
             options: [.imageDownloader(imageRetriever),
                       .removeCurrentImageWhileLoading]
         )
@@ -145,7 +145,7 @@ final class GravatarWrapper_UIImageViewTests: XCTestCase {
         let placeholder = ImageHelper.placeholderImage
 
         imageView.gravatar.setImage(
-            avatarId: .email("hello@gmail.com"),
+            avatarID: .email("hello@gmail.com"),
             placeholder: placeholder,
             options: [.imageDownloader(imageRetriever),
                       .removeCurrentImageWhileLoading]

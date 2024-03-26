@@ -25,8 +25,8 @@ public struct AvatarURL {
         self.url = url
     }
 
-    public init?(with avatarId: AvatarIdentifier, options: AvatarQueryOptions = AvatarQueryOptions()) {
-        guard let url = URL(string: .baseURL + avatarId.identifier) else { return nil }
+    public init?(with avatarID: AvatarIdentifier, options: AvatarQueryOptions = AvatarQueryOptions()) {
+        guard let url = URL(string: .baseURL + avatarID.identifier) else { return nil }
         self.init(url: url, options: options)
     }
 
