@@ -1,0 +1,8 @@
+only_rules: # Rules to run
+  - force_unwrapping
+
+included:
+  - Sources
+
+# If true, SwiftLint will treat all warnings as errors.
+strict: true
