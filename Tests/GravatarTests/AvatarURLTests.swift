@@ -54,7 +54,7 @@ final class AvatarURLTests: XCTestCase {
     }
 
     func testCreateAvatarURLWithEmail() throws {
-        let avatarUrl = AvatarURL(email: exampleEmail)!
+        let avatarUrl = AvatarURL(with: .email(exampleEmail))!
         XCTAssertEqual(
             avatarUrl.url.absoluteString,
             "https://gravatar.com/avatar/676212ff796c79a3c06261eb10e3f455aa93998ee6e45263da13679c74b1e674"
@@ -98,19 +98,19 @@ final class AvatarURLTests: XCTestCase {
     }
 
     func testCreateAvatarWithHash() {
-        let avatarUrl = AvatarURL(hash: "HASH")
+        let avatarUrl = AvatarURL(with: .hashId("HASH"))
         XCTAssertEqual(avatarUrl?.url.absoluteString, "https://gravatar.com/avatar/HASH")
     }
 
     func testCreateAvatarByUpdatingOptions() {
-        let avatarUrl = AvatarURL(hash: "HASH", options: AvatarQueryOptions(defaultAvatarOption: .status404))
+        let avatarUrl = AvatarURL(with: .hashId("HASH"), options: AvatarQueryOptions(defaultAvatarOption: .status404))
         XCTAssertEqual(avatarUrl?.url.absoluteString, "https://gravatar.com/avatar/HASH?d=404")
         let updatedAvatarUrl = avatarUrl?.replacing(options: AvatarQueryOptions(rating: .parentalGuidance))
         XCTAssertEqual(updatedAvatarUrl?.url.absoluteString, "https://gravatar.com/avatar/HASH?r=pg")
     }
 
     func testCreateAvatarWithHashWithInvalidCharacters() {
-        let avatarUrl = AvatarURL(hash: "😉⇶❖₧ℸℏ⎜♘§@…./+_ =-\\][|}{~`23🥡")
+        let avatarUrl = AvatarURL(with: .hashId("😉⇶❖₧ℸℏ⎜♘§@…./+_ =-\\][|}{~`23🥡"))
         XCTAssertEqual(
             avatarUrl?.url.absoluteString,
             "https://gravatar.com/avatar/%F0%9F%98%89%E2%87%B6%E2%9D%96%E2%82%A7%E2%84%B8%E2%84%8F%E2%8E%9C%E2%99%98%C2%A7@%E2%80%A6./+_%20=-%5C%5D%5B%7C%7D%7B~%6023%F0%9F%A5%A1"

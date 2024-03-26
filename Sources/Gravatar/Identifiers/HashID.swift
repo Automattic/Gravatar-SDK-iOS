@@ -8,7 +8,7 @@ public struct HashID {
     }
 
     public init(email: Email) {
-        self.init(email.string.hashId())
+        self.init(email.string.hashed())
     }
 }
 

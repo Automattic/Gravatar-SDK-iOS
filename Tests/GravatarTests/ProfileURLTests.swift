@@ -23,7 +23,7 @@ final class ProfileURLTests: XCTestCase {
 
     func testAvatarURLFromProfileUrl() {
         let profileUrl = ProfileURL(email: email)
-        XCTAssertEqual(profileUrl?.avatarURL, AvatarURL(email: email))
+        XCTAssertEqual(profileUrl?.avatarURL, AvatarURL(with: .email(email)))
     }
 
     func testProfileUrlWithEmailWithInvalidCharactersWontCrash() {

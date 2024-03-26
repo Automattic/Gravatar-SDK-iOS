@@ -11,7 +11,7 @@ public struct Email {
     /// Initializes a new Email object, representing a Gravatar account email address
     /// - Parameter string: The Gravatar account email address`
     public init(_ string: String) {
-        self.string = string.normalized()
+        self.string = string.sanitized
     }
 }
 
