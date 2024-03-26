@@ -1,6 +1,8 @@
+require_relative 'version'
+
 Pod::Spec.new do |s|
     s.name             = 'GravatarUI'
-    s.version          = '0.1.1'
+    s.version          = Gravatar::VERSION
     s.summary          = 'A convient library of Gravatar UI components'
   
     s.homepage         = 'https://gravatar.com'
@@ -36,5 +38,3 @@ Pod::Spec.new do |s|
       swift_unit_tests.requires_app_host = false
     end
   end
-  
-  
