@@ -2,7 +2,7 @@ import Foundation
 
 public enum AvatarIdentifier {
     case email(Email)
-    case hashId(HashId)
+    case hashId(HashID)
 }
 
 extension AvatarIdentifier {

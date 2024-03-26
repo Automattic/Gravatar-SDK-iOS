@@ -2,7 +2,7 @@ import Foundation
 
 public enum ProfileIdentifier {
     case email(Email)
-    case hashId(HashId)
+    case hashId(HashID)
 }
 
 extension ProfileIdentifier {

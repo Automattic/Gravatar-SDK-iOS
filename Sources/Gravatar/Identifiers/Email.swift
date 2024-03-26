@@ -4,8 +4,8 @@ import Foundation
 public struct Email {
     let string: String
 
-    var hashId: HashId {
-        HashId(email: self)
+    var hashID: HashID {
+        HashID(email: self)
     }
 
     /// Initializes a new Email object, representing a Gravatar account email address
@@ -17,6 +17,6 @@ public struct Email {
 
 extension Email: IdentifierProvider {
     public var identifier: String {
-        self.hashId.identifier
+        self.hashID.identifier
     }
 }

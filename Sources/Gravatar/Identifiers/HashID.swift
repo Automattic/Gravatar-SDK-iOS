@@ -1,6 +1,6 @@
 import Foundation
 
-public struct HashId {
+public struct HashID {
     let string: String
 
     public init(_ string: String) {
@@ -12,7 +12,7 @@ public struct HashId {
     }
 }
 
-extension HashId: IdentifierProvider {
+extension HashID: IdentifierProvider {
     public var identifier: String {
         self.string
     }
