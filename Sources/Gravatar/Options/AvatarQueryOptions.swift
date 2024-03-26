@@ -27,7 +27,7 @@ public struct AvatarQueryOptions {
         forceDefaultAvatar: Bool? = nil
     ) {
         self.init(
-            scaleFactor: UIScreen.main.scale,
+            scaleFactor: UI.scaleFactor,
             rating: rating,
             forceDefaultAvatar: forceDefaultAvatar,
             defaultAvatarOption: defaultAvatarOption,
