@@ -17,17 +17,13 @@ public struct ProfileURL {
         return components.url
     }()
 
-    public init?(email: String) {
-        let hash = email.hashed()
-        self.init(hash: hash)
-    }
-
-    public init?(hash: String) {
-        guard let url = Self.baseURL?.appending(pathComponent: hash) else {
+    public init?(with profileID: ProfileIdentifier) {
+        guard let url = Self.baseURL?.appending(pathComponent: profileID.identifier) else {
             return nil
         }
+
         self.url = url
-        self.hash = hash
+        self.hash = profileID.identifier
     }
 }
 
