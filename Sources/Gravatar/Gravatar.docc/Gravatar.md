@@ -46,3 +46,7 @@ For more info check:
 ### Get user Profile
 
 - ``ProfileService``
+
+### Identifiers
+- ``AvatarIdentifier``
+- ``ProfileIdentifier``
