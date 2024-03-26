@@ -1,17 +1,12 @@
 import Foundation
 
 public enum ProfileIdentifier {
-    case username(Username)
     case email(Email)
     case hashId(HashId)
 }
 
 extension ProfileIdentifier {
     // MARK: - Convience factories
-
-    public static func username(_ username: String) -> ProfileIdentifier {
-        .username(.init(username))
-    }
 
     public static func email(_ email: String) -> ProfileIdentifier {
         .email(.init(email))
@@ -27,8 +22,6 @@ extension ProfileIdentifier: IdentifierProvider {
 
     public var identifier: String {
         switch self {
-        case .username(let username):
-            username.identifier
         case .email(let email):
             email.identifier
         case .hashId(let hashId):

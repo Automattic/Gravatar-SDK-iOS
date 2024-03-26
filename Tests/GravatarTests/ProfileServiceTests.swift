@@ -132,15 +132,6 @@ final class ProfileServiceTests: XCTestCase {
 
         XCTAssertEqual(session.request?.url?.absoluteString, "https://gravatar.com/HASH.json")
     }
-
-    func testFetchWithUserName() async throws {
-        let session = URLSessionMock(returnData: jsonData, response: .successResponse())
-        let client = HTTPClientMock(session: session)
-        let service = ProfileService(client: client)
-        _ = try await service.fetch(with: .username("user"))
-
-        XCTAssertEqual(session.request?.url?.absoluteString, "https://gravatar.com/user.json")
-    }
 }
 
 private let jsonData = """
