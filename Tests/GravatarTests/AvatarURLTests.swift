@@ -8,7 +8,7 @@ final class AvatarURLTests: XCTestCase {
     let exampleEmail = "some@email.com"
     let exampleEmailSHA = "676212ff796c79a3c06261eb10e3f455aa93998ee6e45263da13679c74b1e674"
 
-    func testisAvatarUrl() throws {
+    func testIsAvatarUrl() throws {
         XCTAssertTrue(AvatarURL.isAvatarUrl(verifiedAvatarURL))
         XCTAssertTrue(AvatarURL.isAvatarUrl(verifiedAvatarURL2))
         XCTAssertFalse(AvatarURL.isAvatarUrl(URL(string: "https://gravatar.com/")!))
