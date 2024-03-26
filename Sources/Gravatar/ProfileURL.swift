@@ -31,16 +31,6 @@ public struct ProfileURL {
     }
 }
 
-extension URLComponents {
-    func sanitizingComponents() -> URLComponents {
-        var copy = self
-        copy.scheme = .scheme
-        copy.query = nil
-        return copy
-    }
-}
-
 extension String {
-    fileprivate static let scheme = "https"
     fileprivate static let baseURL = "https://gravatar.com/"
 }

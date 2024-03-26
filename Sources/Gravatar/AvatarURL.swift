@@ -58,6 +58,7 @@ extension AvatarURL: Equatable {
 }
 
 extension String {
+    fileprivate static let scheme = "https"
     fileprivate static let baseURL = "https://gravatar.com/avatar/"
 }
 
@@ -73,5 +74,14 @@ extension URL {
         }
 
         return components.url
+    }
+}
+
+extension URLComponents {
+    fileprivate func sanitizingComponents() -> URLComponents {
+        var copy = self
+        copy.scheme = .scheme
+        copy.query = nil
+        return copy
     }
 }
