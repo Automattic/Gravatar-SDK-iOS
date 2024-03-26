@@ -109,7 +109,7 @@ class DemoUploadImageViewController: UIViewController {
         let service = Gravatar.AvatarService()
         Task {
             do {
-               try await service.upload(image, email: email, accessToken: token)
+               try await service.upload(image, email: Email(email), accessToken: token)
             } catch {
                 uploadResult(with: error)
             }

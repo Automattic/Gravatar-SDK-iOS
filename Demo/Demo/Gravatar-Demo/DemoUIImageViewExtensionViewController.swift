@@ -139,7 +139,7 @@ class DemoUIImageViewExtensionViewController: UIViewController {
     @objc private func fetchAvatarButtonHandler() {
         let options = setupOptions()
         let placeholderImage: UIImage? = showPlaceholderSwitchWithLabel.isOn ? UIImage(named: "placeholder") : nil
-        avatarImageView.gravatar.setImage(email: emailInputField.text ?? "",
+        avatarImageView.gravatar.setImage(avatarID: .email(emailInputField.text ?? ""),
                                           placeholder: placeholderImage,
                                           defaultAvatarOption: preferredDefaultAvatar,
                                           options: options) { result in

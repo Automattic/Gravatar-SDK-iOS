@@ -156,7 +156,7 @@ class DemoAvatarDownloadViewController: UIViewController {
         
         Task {
             do {
-                let result = try await imageRetriever.fetch(with: emailInputField.text ?? "", options: options)
+                let result = try await imageRetriever.fetch(with: .email(emailInputField.text ?? ""), options: options)
                 avatarImageView.image = result.image
             } catch {
                 print(error)

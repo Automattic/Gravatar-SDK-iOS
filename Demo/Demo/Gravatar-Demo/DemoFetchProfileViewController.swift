@@ -74,7 +74,7 @@ class DemoFetchProfileViewController: UIViewController {
     func fetchProfile(with email: String) async {
         let service = ProfileService()
         do {
-            let profile = try await service.fetch(withEmail: email)
+            let profile = try await service.fetch(with: .email(email))
             setProfile(with: profile)
         } catch {
             showError(error)
