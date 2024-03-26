@@ -5,20 +5,20 @@ public typealias ImageSetCompletion = (Result<ImageDownloadResult, ImageFetching
 
 // MARK: - Associated Object
 
-private let taskIdentifierKey: UnsafeMutableRawPointer = UnsafeMutableRawPointer.allocate(byteCount: 1, alignment: MemoryLayout<UInt8>.alignment)
-private let indicatorKey: UnsafeMutableRawPointer = UnsafeMutableRawPointer.allocate(byteCount: 1, alignment: MemoryLayout<UInt8>.alignment)
-private let indicatorTypeKey: UnsafeMutableRawPointer = UnsafeMutableRawPointer.allocate(byteCount: 1, alignment: MemoryLayout<UInt8>.alignment)
-private let placeholderKey: UnsafeMutableRawPointer = UnsafeMutableRawPointer.allocate(byteCount: 1, alignment: MemoryLayout<UInt8>.alignment)
-private let imageTaskKey: UnsafeMutableRawPointer = UnsafeMutableRawPointer.allocate(byteCount: 1, alignment: MemoryLayout<UInt8>.alignment)
-private let dataTaskKey: UnsafeMutableRawPointer = UnsafeMutableRawPointer.allocate(byteCount: 1, alignment: MemoryLayout<UInt8>.alignment)
-private let imageDownloaderKey: UnsafeMutableRawPointer = UnsafeMutableRawPointer.allocate(byteCount: 1, alignment: MemoryLayout<UInt8>.alignment)
+private let taskIdentifierKey: UnsafeMutableRawPointer = .allocate(byteCount: 1, alignment: MemoryLayout<UInt8>.alignment)
+private let indicatorKey: UnsafeMutableRawPointer = .allocate(byteCount: 1, alignment: MemoryLayout<UInt8>.alignment)
+private let indicatorTypeKey: UnsafeMutableRawPointer = .allocate(byteCount: 1, alignment: MemoryLayout<UInt8>.alignment)
+private let placeholderKey: UnsafeMutableRawPointer = .allocate(byteCount: 1, alignment: MemoryLayout<UInt8>.alignment)
+private let imageTaskKey: UnsafeMutableRawPointer = .allocate(byteCount: 1, alignment: MemoryLayout<UInt8>.alignment)
+private let dataTaskKey: UnsafeMutableRawPointer = .allocate(byteCount: 1, alignment: MemoryLayout<UInt8>.alignment)
+private let imageDownloaderKey: UnsafeMutableRawPointer = .allocate(byteCount: 1, alignment: MemoryLayout<UInt8>.alignment)
 
 @MainActor
 extension GravatarWrapper where Component: UIImageView {
     /// Describes which indicator type is going to be used. Default is `.none`, which means no activity indicator will be shown.
     public var activityIndicatorType: ActivityIndicatorType {
         get {
-            return getAssociatedObject(component, indicatorTypeKey) ?? .none
+            getAssociatedObject(component, indicatorTypeKey) ?? .none
         }
 
         set {
@@ -111,7 +111,7 @@ extension GravatarWrapper where Component: UIImageView {
             setRetainedAssociatedObject(component, imageDownloaderKey, box)
         }
     }
-    
+
     /// Downloads the Gravatar profile image and sets it to this UIImageView.
     ///
     /// - Parameters:
@@ -143,7 +143,7 @@ extension GravatarWrapper where Component: UIImageView {
         let gravatarURL = AvatarURL(email: email, options: downloadOptions.avatarQueryOptions)?.url
         return try await setImage(with: gravatarURL, placeholder: placeholder, options: options)
     }
-    
+
     @discardableResult
     public func setImage(
         with source: URL?,
@@ -156,9 +156,9 @@ extension GravatarWrapper where Component: UIImageView {
             mutatingSelf.taskIdentifier = nil
             throw ImageFetchingComponentError.requestError(reason: .emptyURL)
         }
-        
+
         let options = ImageSettingOptions(options: options)
-        
+
         let isEmptyImage = component.image == nil && self.placeholder == nil
         if options.removeCurrentImageWhileLoading || isEmptyImage {
             // Always set placeholder while there is no image/placeholder yet.
@@ -166,10 +166,10 @@ extension GravatarWrapper where Component: UIImageView {
         }
         let maybeIndicator = activityIndicator
         maybeIndicator?.startAnimatingView()
-        
+
         let issuedIdentifier = SimpleCounter.next()
         mutatingSelf.taskIdentifier = issuedIdentifier
-        
+
         let networkManager = options.imageDownloader ?? ImageDownloadService(cache: options.imageCache)
         mutatingSelf.imageDownloader = networkManager // Retain the network manager
         do {
@@ -195,8 +195,7 @@ extension GravatarWrapper where Component: UIImageView {
         } catch ImageFetchingComponentError.outdatedTask(let result, let source) {
             maybeIndicator?.stopAnimatingView()
             throw ImageFetchingComponentError.outdatedTask(result: result, source: source)
-        }
-        catch let error {
+        } catch {
             maybeIndicator?.stopAnimatingView()
             let imageFetchingError = error as? ImageFetchingError ?? ImageFetchingError.responseError(reason: .unexpected(error))
             guard issuedIdentifier == self.taskIdentifier else {

@@ -5,12 +5,12 @@ actor DefaultImageProcessor: ImageProcessor {
     public static let common = DefaultImageProcessor(scaleFactor: UI.scaleFactor)
 
     public let scaleFactor: CGFloat
-    
+
     init(scaleFactor: CGFloat) {
         self.scaleFactor = scaleFactor
     }
 
-    nonisolated public func process(_ data: Data) -> UIImage? {
+    public nonisolated func process(_ data: Data) -> UIImage? {
         UIImage(data: data, scale: scaleFactor)
     }
 }

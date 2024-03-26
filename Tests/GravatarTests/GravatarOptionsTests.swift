@@ -37,8 +37,8 @@ actor TestImageProcessor: ImageProcessor {
         processedData = true
         return UIImage()
     }
-    
+
     func isProcessedData() async -> Bool {
-        return processedData
+        processedData
     }
 }

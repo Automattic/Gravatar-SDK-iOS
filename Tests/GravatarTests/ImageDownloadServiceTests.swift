@@ -13,7 +13,7 @@ final class ImageDownloadServiceTests: XCTestCase {
         XCTAssertEqual(sessionMock.request?.url?.absoluteString, "https://gravatar.com/avatar/HASH")
         XCTAssertNotNil(imageResponse.image)
     }
-    
+
     func testFetchCatchedImageWithURL() async throws {
         let imageURL = "https://gravatar.com/avatar/HASH"
         let response = HTTPURLResponse.successResponse(with: URL(string: imageURL)!)

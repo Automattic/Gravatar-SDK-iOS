@@ -9,7 +9,7 @@ final class GravatarWrapper_UIImageViewTests: XCTestCase {
         let imageView = UIImageView(frame: frame)
         let activityIndicator = TestActivityIndicator()
         imageView.gravatar.activityIndicatorType = .custom(activityIndicator)
-        
+
         try await imageView.gravatar.setImage(
             email: "hello@gmail.com",
             options: [.imageDownloader(TestImageFetcher(result: .success))]
@@ -49,7 +49,7 @@ final class GravatarWrapper_UIImageViewTests: XCTestCase {
     func testIfPlaceholderIsSet() async {
         let imageView = UIImageView(frame: frame)
         let imageRetriever = TestImageFetcher(result: .fail)
-        
+
         do {
             try await imageView.gravatar.setImage(
                 email: "hello@gmail.com",
@@ -60,7 +60,7 @@ final class GravatarWrapper_UIImageViewTests: XCTestCase {
             XCTAssertNotNil(imageView.gravatar.placeholder)
         }
     }
-    
+
     func testDefaultAvatarOptionIsSet() async throws {
         let expectedQueryItemString = "d=robohash"
 
@@ -78,18 +78,16 @@ final class GravatarWrapper_UIImageViewTests: XCTestCase {
     }
 
     func testIfPlaceholderIsSetWithNilURL() async throws {
-
         let imageView = UIImageView(frame: frame)
         let imageRetriever = TestImageFetcher(result: .fail)
-        
+
         do {
             try await imageView.gravatar.setImage(
                 with: nil,
                 placeholder: ImageHelper.placeholderImage,
                 options: [.imageDownloader(imageRetriever)]
             )
-        }
-        catch {
+        } catch {
             XCTAssertNotNil(imageView.gravatar.placeholder)
         }
     }
@@ -130,7 +128,6 @@ final class GravatarWrapper_UIImageViewTests: XCTestCase {
     }
 
     func testNotCurrentSourceTaskResult() async throws {
-
         let imageView = UIImageView(frame: frame)
         let imageRetriever = TestImageFetcher(result: .success)
 
@@ -140,17 +137,14 @@ final class GravatarWrapper_UIImageViewTests: XCTestCase {
                     with: URL(string: "https://first.com"),
                     options: [.imageDownloader(imageRetriever)]
                 )
-            }
-            catch ImageFetchingComponentError.outdatedTask(.success( _), let source) {
+            } catch ImageFetchingComponentError.outdatedTask(.success(_), let source) {
                 XCTAssertEqual(source.absoluteString, "https://first.com")
-            }
-            catch {
+            } catch {
                 XCTFail()
             }
-
         }
         await Task.yield()
-        
+
         let task2 = Task {
             do {
                 let result = try await imageView.gravatar.setImage(
@@ -158,8 +152,7 @@ final class GravatarWrapper_UIImageViewTests: XCTestCase {
                     options: [.imageDownloader(imageRetriever)]
                 )
                 XCTAssertEqual(result.sourceURL.absoluteString, "https://second.com")
-            }
-            catch {
+            } catch {
                 XCTFail()
             }
         }
