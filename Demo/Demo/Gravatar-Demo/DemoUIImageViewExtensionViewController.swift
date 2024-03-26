@@ -136,26 +136,30 @@ class DemoUIImageViewExtensionViewController: UIViewController {
         present(controller, animated: true)
     }
 
+    var task: Task<ImageDownloadResult, Error>?
+    
     @objc private func fetchAvatarButtonHandler() {
         let options = setupOptions()
         let placeholderImage: UIImage? = showPlaceholderSwitchWithLabel.isOn ? UIImage(named: "placeholder") : nil
-        avatarImageView.gravatar.setImage(email: emailInputField.text ?? "",
-                                          placeholder: placeholderImage,
-                                          defaultAvatarOption: preferredDefaultAvatar,
-                                          options: options) { result in
-            switch result {
-            case .success(let result):
+        task = Task<ImageDownloadResult, Error> {
+            do {
+                let result = try await avatarImageView.gravatar.setImage(email: emailInputField.text ?? "",
+                                                                         placeholder: placeholderImage,
+                                                                         defaultAvatarOption: preferredDefaultAvatar,
+                                                                         options: options)
                 print("success!")
                 print("result url: \(result.sourceURL)")
                 print("retrived Image point size: \(result.image.size)")
-            case .failure(let error):
+                return result
+            } catch {
                 print(error)
+                throw error
             }
         }
     }
     
     @objc private func cancelOngoingButtonHandler() {
-        avatarImageView.gravatar.cancelImageDownload()
+        task?.cancel()
     }
     
     private func setupOptions() -> [ImageSettingOption] {
