@@ -18,12 +18,12 @@ public struct ProfileURL {
     }()
 
     public init?(with profileID: ProfileIdentifier) {
-        guard let url = Self.baseURL?.appending(pathComponent: profileID.identifier) else {
+        guard let url = Self.baseURL?.appending(pathComponent: profileID.id) else {
             return nil
         }
 
         self.url = url
-        self.hash = profileID.identifier
+        self.hash = profileID.id
     }
 }
 

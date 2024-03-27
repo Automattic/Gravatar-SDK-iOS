@@ -26,16 +26,14 @@ extension AvatarIdentifier {
     }
 }
 
-extension AvatarIdentifier: IdentifierProvider {
-    // MARK: - IdentifierProvider
-
+extension AvatarIdentifier: Identifiable {
     /// The string that the API expects for specifying an avatar.
-    public var identifier: String {
+    public var id: String {
         switch self {
         case .email(let email):
-            email.identifier
+            email.id
         case .hashID(let hashID):
-            hashID.identifier
+            hashID.id
         }
     }
 }

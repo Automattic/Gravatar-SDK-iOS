@@ -17,8 +17,9 @@ public struct HashID {
     }
 }
 
-extension HashID: IdentifierProvider {
-    public var identifier: String {
-        self.string
+extension HashID: Identifiable {
+    /// The string that the API expects when specifying a Gravatar type, such as an avatar or profile
+    public var id: String {
+        string
     }
 }
