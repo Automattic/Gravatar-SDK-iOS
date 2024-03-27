@@ -10,12 +10,11 @@ CI will fail if it finds any format issue.
 
 You can run `SwiftFormat` locally with `make lint` to get warnings, or `make swiftformat` to implement the changes automatically.
 
-### URL, ID, API and other initialisms
+### URL, ID, API and other technical acronyms and initialisms.
 
-- Use UPPERCASE everytime we would normally use Capitalized CamelCase.
-- Prefix UPPERCASED if it's a type.
-- Prefix lowercase everytime the word is a prefix.
-- Use lowercase if it's the word alone (and it's not a type).
+- Always UPPERCASED when it is part of a Type name.
+- Use lowercase everytime it is a prefix, and is not a type name.
+- Use lowercase if it is writen alone, and it's not a type.
 
 For example:
 
@@ -32,5 +31,4 @@ struct URLType {
 
 let urlSomething = URLType(url)
 let someURL = URLType(someURL)
-
 ```
