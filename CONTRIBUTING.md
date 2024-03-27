@@ -6,6 +6,8 @@ The following is a set of guidelines for the many ways you can join our collecti
 
 Before anything else, please take a moment to read our [Code of Conduct](CODE-OF-CONDUCT.md). We expect all participants, from full-timers to occasional tinkerers, to uphold it.
 
+Check out our [Coding Style guide](CODINGSTYLE.md)
+
 ## Security
 
 If you happen to find a security vulnerability, we would appreciate you letting us know at https://hackerone.com/automattic and allowing us to respond before disclosing the issue publicly.
