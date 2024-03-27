@@ -24,7 +24,7 @@ Gravatar
 
 ## Coding Style
 
-Check out our [Coding Style guide](CODINGSTYLE.md)
+Check out our [Coding Style guide](CODINGSTYLE.md).
 
 ## Contributing
 
