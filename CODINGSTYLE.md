@@ -12,9 +12,9 @@ You can run `SwiftFormat` locally with `make lint` to get warnings, or `make swi
 
 ### URL, ID, API and other technical acronyms and initialisms.
 
-- Always UPPERCASED when it is part of a Type name.
-- Use lowercase everytime it is a prefix, and is not a type name.
-- Use lowercase if it is writen alone, and it's not a type.
+- Always UPPERCASED when it's part of a Type name.
+- Use lowercase everytime it's a prefix, and is not a type name.
+- Use lowercase if it's writen alone, and it's not a type name.
 
 For example:
 
