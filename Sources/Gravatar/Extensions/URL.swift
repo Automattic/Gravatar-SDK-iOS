@@ -10,7 +10,7 @@ extension URL {
         }
     }
 
-    /// Wether this URL instance corresponds to a valid Gravatar URL.
+    /// Whether this URL instance corresponds to a valid Gravatar URL.
     var isGravatarURL: Bool {
         guard
             let components = URLComponents(url: self, resolvingAgainstBaseURL: false),
