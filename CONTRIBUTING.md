@@ -8,7 +8,7 @@ Before anything else, please take a moment to read our [Code of Conduct](CODE-OF
 
 ## Security
 
-If you happen to find a security vulnerability, we would appreciate you letting us know at https://hackerone.com/automattic and allowing us to respond before disclosing the issue publicly.
+We take security bugs seriously.  Please see our [Security](SECURITY.md) documentation for details.
 
 ## Reporting Bugs, Asking Questions, and Suggesting Features
 
