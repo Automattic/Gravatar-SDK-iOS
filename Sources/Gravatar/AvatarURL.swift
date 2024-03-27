@@ -35,15 +35,7 @@ public struct AvatarURL {
     }
 
     public static func isAvatarURL(_ url: URL) -> Bool {
-        guard
-            let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
-            let host = components.host
-        else {
-            return false
-        }
-
-        return (host.hasSuffix(".gravatar.com") || host == "gravatar.com")
-            && components.path.hasPrefix("/avatar/")
+        url.isGravatarURL && url.path.hasPrefix("/avatar/")
     }
 
     public func replacing(options: AvatarQueryOptions) -> AvatarURL? {
