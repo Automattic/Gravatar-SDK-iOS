@@ -75,7 +75,7 @@ extension Data {
 
 extension URLRequest {
     fileprivate static func imageUploadRequest(with boundary: String) -> URLRequest {
-        let url = URL(string: "https://api.gravatar.com/v1/upload-image")!
+        let url = URL(string: "https://api.gravatar.com/v1/upload-image")! // swiftlint:disable:this force_unwrapping
         var request = URLRequest(url: url)
         request.addValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
         request.httpMethod = "POST"

@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
     name: "Gravatar",
     platforms: [
-        .iOS(.v15),
+        .iOS(.v15)
     ],
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
@@ -20,13 +20,15 @@ let package = Package(
         ),
     ],
     dependencies: [
-        .package(url: "https://github.com/nicklockwood/SwiftFormat", from: "0.53.0")
+        .package(url: "https://github.com/nicklockwood/SwiftFormat", from: "0.53.0"),
+        .package(url: "https://github.com/realm/SwiftLint", exact: "0.54.0"),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
-            name: "Gravatar"
+            name: "Gravatar",
+            plugins: [.plugin(name: "SwiftLintPlugin", package: "SwiftLint")]
         ),
         .testTarget(
             name: "GravatarTests",
@@ -35,7 +37,8 @@ let package = Package(
         ),
         .target(
             name: "GravatarUI",
-            dependencies: ["Gravatar"]
+            dependencies: ["Gravatar"],
+            plugins: [.plugin(name: "SwiftLintPlugin", package: "SwiftLint")]
         ),
         .testTarget(
             name: "GravatarUITests",
