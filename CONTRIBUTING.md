@@ -6,7 +6,7 @@ The following is a set of guidelines for the many ways you can join our collecti
 
 Before anything else, please take a moment to read our [Code of Conduct](CODE-OF-CONDUCT.md). We expect all participants, from full-timers to occasional tinkerers, to uphold it.
 
-Check out our [Coding Style guide](CODINGSTYLE.md)
+Check out our [Coding Style guide](CODINGSTYLE.md).
 
 ## Security
 
