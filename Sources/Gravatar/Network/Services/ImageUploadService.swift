@@ -24,7 +24,9 @@ struct ImageUploadService: ImageUploader {
     private func uploadImage(data: Data, email: Email, accessToken: String) async throws -> URLResponse {
         let boundary = "Boundary-\(UUID().uuidString)"
         let request = URLRequest.imageUploadRequest(with: boundary).settingAuthorizationHeaderField(with: accessToken)
-        let body = imageUploadBody(with: data, account: email.id, boundary: boundary)
+        // For the Multipart form/data, we need to send the email address, not the id of the emai address
+        // TODO: Unit test Multipart form creation
+        let body = imageUploadBody(with: data, account: email.string, boundary: boundary) // TODO:
         do {
             let response = try await client.uploadData(with: request, data: body)
             return response
