@@ -24,6 +24,8 @@ Gravatar
 
 ## Coding Style
 
+Check out our [Coding Style guide](CODINGSTYLE.md).
+
 ## Contributing
 
 Read our [Contributing Guide](CONTRIBUTING.md) to learn about reporting issues, contributing code, and more ways to contribute.
