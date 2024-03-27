@@ -21,3 +21,13 @@ extension Email: Identifiable {
         self.hashID.id
     }
 }
+
+extension Email: RawRepresentable {
+    public init?(rawValue: String) {
+        self.init(rawValue)
+    }
+
+    public var rawValue: String {
+        string
+    }
+}
