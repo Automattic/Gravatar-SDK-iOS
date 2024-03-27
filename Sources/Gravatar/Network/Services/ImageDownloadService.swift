@@ -24,7 +24,7 @@ public struct ImageDownloadService: ImageDownloader {
         let request = URLRequest.imageRequest(url: url, forceRefresh: forceRefresh)
         do {
             let (data, _) = try await client.fetchData(with: request)
-            guard let image = processor.process(data) else {
+            guard let image = await processor.process(data) else {
                 throw ImageFetchingError.imageProcessorFailed
             }
             imageCache.setImage(image, forKey: url.absoluteString)

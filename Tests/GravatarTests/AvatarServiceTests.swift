@@ -101,7 +101,8 @@ final class AvatarServiceTests: XCTestCase {
 
         _ = try await service.fetch(with: TestData.email, options: options)
 
-        XCTAssertTrue(testProcessor.processedData)
+        let isProcessed = await testProcessor.isProcessedData()
+        XCTAssertTrue(isProcessed)
     }
 
     func testFetchAvatarWithDefaultAvatarOption() async throws {
