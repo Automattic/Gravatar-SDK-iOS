@@ -22,6 +22,7 @@ public struct UserProfile: Decodable {
     public var profileURLString: String {
         profileUrl
     }
+
     public var profileURL: URL? {
         URL(string: profileURLString)
     }
@@ -30,6 +31,7 @@ public struct UserProfile: Decodable {
     public var thumbnailURLString: String {
         thumbnailUrl
     }
+
     public var thumbnailURL: URL? {
         URL(string: thumbnailURLString)
     }
