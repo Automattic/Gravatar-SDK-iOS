@@ -15,8 +15,9 @@ public struct Email {
     }
 }
 
-extension Email: IdentifierProvider {
-    public var identifier: String {
-        self.hashID.identifier
+extension Email: Identifiable {
+    /// The string that the API expects when specifying a Gravatar type, such as an avatar or profile
+    public var id: String {
+        self.hashID.id
     }
 }

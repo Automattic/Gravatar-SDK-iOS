@@ -27,16 +27,14 @@ extension ProfileIdentifier {
     }
 }
 
-extension ProfileIdentifier: IdentifierProvider {
-    // MARK: - IdentifierProvider
-
+extension ProfileIdentifier: Identifiable {
     /// The string that the API expects for specifying a profile.
-    public var identifier: String {
+    public var id: String {
         switch self {
         case .email(let email):
-            email.identifier
+            email.id
         case .hashID(let hashID):
-            hashID.identifier
+            hashID.id
         }
     }
 }

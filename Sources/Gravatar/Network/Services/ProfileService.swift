@@ -37,7 +37,7 @@ public struct ProfileService: ProfileFetching {
     }
 
     public func fetch(with profileID: ProfileIdentifier) async throws -> UserProfile {
-        try await fetch(withPath: profileID.identifier)
+        try await fetch(withPath: profileID.id)
     }
 }
 

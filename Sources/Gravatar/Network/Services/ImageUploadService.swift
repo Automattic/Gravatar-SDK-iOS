@@ -24,7 +24,7 @@ struct ImageUploadService: ImageUploader {
     private func uploadImage(data: Data, email: Email, accessToken: String) async throws -> URLResponse {
         let boundary = "Boundary-\(UUID().uuidString)"
         let request = URLRequest.imageUploadRequest(with: boundary).settingAuthorizationHeaderField(with: accessToken)
-        let body = imageUploadBody(with: data, account: email.identifier, boundary: boundary)
+        let body = imageUploadBody(with: data, account: email.id, boundary: boundary)
         do {
             let response = try await client.uploadData(with: request, data: body)
             return response
