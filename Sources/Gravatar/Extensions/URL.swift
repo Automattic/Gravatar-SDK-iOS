@@ -9,4 +9,17 @@ extension URL {
             self.appendingPathComponent(path)
         }
     }
+
+    /// Wether this URL instance corresponds to a valid Gravatar URL.
+    var isGravatarURL: Bool {
+        guard
+            let components = URLComponents(url: self, resolvingAgainstBaseURL: false),
+            let host = components.host
+        else {
+            return false
+        }
+
+        return (host.hasSuffix(".gravatar.com") || host == "gravatar.com")
+            && components.scheme == "https"
+    }
 }
