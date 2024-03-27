@@ -18,8 +18,22 @@ public struct UserProfile: Decodable {
     public let emails: [Email]?
     public let accounts: [Account]?
 
-    public let profileUrl: String
-    public let thumbnailUrl: String
+    private let profileUrl: String
+    public var profileURLString: String {
+        profileUrl
+    }
+    public var profileURL: URL? {
+        URL(string: profileURLString)
+    }
+
+    private let thumbnailUrl: String
+    public var thumbnailURLString: String {
+        thumbnailUrl
+    }
+    public var thumbnailURL: URL? {
+        URL(string: thumbnailURLString)
+    }
+
     let lastProfileEdit: String?
 }
 
@@ -74,7 +88,7 @@ extension UserProfile {
         public let shortname: String
 
         public let url: String
-        public let iconUrl: String
+        public let iconURLString: String
         public let isVerified: Bool
 
         public var accountURL: URL? {
@@ -82,7 +96,7 @@ extension UserProfile {
         }
 
         public var iconURL: URL? {
-            URL(string: iconUrl)
+            URL(string: iconURLString)
         }
 
         enum CodingKeys: String, CodingKey {
@@ -104,7 +118,7 @@ extension UserProfile {
             self.name = try container.decode(String.self, forKey: UserProfile.Account.CodingKeys.name)
             self.shortname = try container.decode(String.self, forKey: UserProfile.Account.CodingKeys.shortname)
             self.url = try container.decode(String.self, forKey: UserProfile.Account.CodingKeys.url)
-            self.iconUrl = try container.decode(String.self, forKey: UserProfile.Account.CodingKeys.iconUrl)
+            self.iconURLString = try container.decode(String.self, forKey: UserProfile.Account.CodingKeys.iconUrl)
 
             if let verifiedString = try? container.decodeIfPresent(String.self, forKey: CodingKeys.isVerified) {
                 self.isVerified = verifiedString == "true"
