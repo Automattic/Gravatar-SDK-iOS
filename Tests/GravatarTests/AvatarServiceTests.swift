@@ -26,6 +26,10 @@ final class AvatarServiceTests: XCTestCase {
 
         try await service.upload(ImageHelper.testImage, email: Email("some@email.com"), accessToken: "AccessToken")
 
+        XCTAssertTrue(
+            String(data: sessionMock.uploadData!, encoding: .isoLatin1)!.contains("some@email.com"),
+            "Multipart form data should use the raw email address instead of its hash"
+        )
         XCTAssertEqual(sessionMock.request?.url?.absoluteString, "https://api.gravatar.com/v1/upload-image")
         XCTAssertNotNil(sessionMock.request?.value(forHTTPHeaderField: "Authorization"))
         XCTAssertTrue(sessionMock.request?.value(forHTTPHeaderField: "Authorization")?.hasPrefix("Bearer ") ?? false)
