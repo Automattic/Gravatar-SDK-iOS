@@ -110,11 +110,11 @@ class DemoFetchProfileViewController: UIViewController {
     func setProfile(with profile: UserProfile) {
         activityIndicator.stopAnimating()
         profileTextView.text = """
-Profile URL: \(profile.profileUrl)
+Profile URL: \(profile.profileURLString)
 Display name: \(profile.displayName ?? "")
 Name: \(profile.displayName ?? "")
 Preferred User Name: \(profile.preferredUsername)
-Thumbnail URL: \(profile.thumbnailUrl)
+Thumbnail URL: \(profile.thumbnailURLString)
 Last edit: \(String(describing: profile.lastProfileEditDate))
 """
     }

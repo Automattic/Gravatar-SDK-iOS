@@ -1,6 +1,6 @@
 import Foundation
 
-private let baseUrl = "https://gravatar.com/"
+private let baseURL = "https://gravatar.com/"
 
 public enum GravatarProfileFetchResult {
     case success(UserProfile)
@@ -49,8 +49,8 @@ extension ProfileService {
     }
 
     private func url(from path: String) throws -> URL {
-        guard let url = URL(string: baseUrl + path) else {
-            throw CannotCreateURLFromGivenPath(baseURL: baseUrl, path: path)
+        guard let url = URL(string: baseURL + path) else {
+            throw CannotCreateURLFromGivenPath(baseURL: baseURL, path: path)
         }
         return url
     }

@@ -1,7 +1,7 @@
 import Foundation
 
 public struct AvatarURL {
-    public let canonicalUrl: URL
+    public let canonicalURL: URL
     public let hash: String
     public let url: URL
 
@@ -10,7 +10,7 @@ public struct AvatarURL {
 
     public init?(url: URL, options: AvatarQueryOptions = AvatarQueryOptions()) {
         guard
-            Self.isAvatarUrl(url),
+            Self.isAvatarURL(url),
             let components = URLComponents(url: url, resolvingAgainstBaseURL: false)?.sanitizingComponents(),
             let sanitizedURL = components.url,
             let url = sanitizedURL.addQueryItems(from: options)
@@ -18,7 +18,7 @@ public struct AvatarURL {
             return nil
         }
 
-        self.canonicalUrl = sanitizedURL
+        self.canonicalURL = sanitizedURL
         self.components = components
         self.hash = sanitizedURL.lastPathComponent
         self.options = options
@@ -30,16 +30,8 @@ public struct AvatarURL {
         self.init(url: url, options: options)
     }
 
-    public static func isAvatarUrl(_ url: URL) -> Bool {
-        guard
-            let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
-            let host = components.host
-        else {
-            return false
-        }
-
-        return (host.hasSuffix(".gravatar.com") || host == "gravatar.com")
-            && components.path.hasPrefix("/avatar/")
+    public static func isAvatarURL(_ url: URL) -> Bool {
+        url.isGravatarURL && url.path.hasPrefix("/avatar/")
     }
 
     public func replacing(options: AvatarQueryOptions) -> AvatarURL? {

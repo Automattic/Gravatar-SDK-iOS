@@ -89,7 +89,7 @@ final class ProfileServiceTests: XCTestCase {
         XCTAssertNotNil(profile.lastProfileEdit)
     }
 
-    func testFetchGravatarProfileUrls() async throws {
+    func testFetchGravatarProfileURLs() async throws {
         let session = URLSessionMock(returnData: jsonData, response: .successResponse())
         let client = URLSessionHTTPClient(urlSession: session)
         let service = ProfileService(client: client)
