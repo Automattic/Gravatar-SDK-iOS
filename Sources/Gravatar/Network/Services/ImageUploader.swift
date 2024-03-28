@@ -12,7 +12,7 @@ protocol ImageUploader {
     @discardableResult
     func uploadImage(
         _ image: UIImage,
-        email: String,
+        email: Email,
         accessToken: String
     ) async throws -> URLResponse
 }

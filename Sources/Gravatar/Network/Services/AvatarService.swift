@@ -20,17 +20,17 @@ public struct AvatarService {
         self.imageUploader = ImageUploadService(client: client)
     }
 
-    /// Fetches a Gravatar user profile image using the user account's email, and delivers the image asynchronously. See also: ``ImageDownloadService`` to
+    /// Fetches a Gravatar user profile image using an `AvatarId`, and delivers the image asynchronously. See also: ``ImageDownloadService`` to
     /// download the avatar via URL.
     /// - Parameters:
-    ///   - email: The user account email
+    ///   - avatarID: An `AvatarIdentifier` for the gravatar account
     ///   - options: The options needed to perform the download.
     /// - Returns: An asynchronously-delivered Result type containing the image and its URL.
     public func fetch(
-        with email: String,
+        with avatarID: AvatarIdentifier,
         options: ImageDownloadOptions = ImageDownloadOptions()
     ) async throws -> ImageDownloadResult {
-        guard let gravatarURL = AvatarURL(email: email, options: options.avatarQueryOptions)?.url else {
+        guard let gravatarURL = AvatarURL(with: avatarID, options: options.avatarQueryOptions)?.url else {
             throw ImageFetchingError.requestError(reason: .urlInitializationFailed)
         }
 
@@ -41,11 +41,11 @@ public struct AvatarService {
     /// ``ImageUploadError``.
     /// - Parameters:
     ///   - image: The image to be uploaded.
-    ///   - email: The user email account.
+    ///   - email: An`Email` object
     ///   - accessToken: The authentication token for the user. This is a WordPress.com OAuth2 access token.
     /// - Returns: An asynchronously-delivered `URLResponse` instance, containing the response of the upload network task.
     @discardableResult
-    public func upload(_ image: UIImage, email: String, accessToken: String) async throws -> URLResponse {
+    public func upload(_ image: UIImage, email: Email, accessToken: String) async throws -> URLResponse {
         try await imageUploader.uploadImage(image, email: email, accessToken: accessToken)
     }
 }

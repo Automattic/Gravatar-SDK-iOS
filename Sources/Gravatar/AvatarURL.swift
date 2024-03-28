@@ -25,12 +25,8 @@ public struct AvatarURL {
         self.url = url
     }
 
-    public init?(email: String, options: AvatarQueryOptions = AvatarQueryOptions()) {
-        self.init(hash: email.sanitized.sha256(), options: options)
-    }
-
-    public init?(hash: String, options: AvatarQueryOptions = AvatarQueryOptions()) {
-        guard let url = URL(string: .baseURL + hash) else { return nil }
+    public init?(with avatarID: AvatarIdentifier, options: AvatarQueryOptions = AvatarQueryOptions()) {
+        guard let url = URL(string: .baseURL + avatarID.id) else { return nil }
         self.init(url: url, options: options)
     }
 
@@ -39,7 +35,7 @@ public struct AvatarURL {
     }
 
     public func replacing(options: AvatarQueryOptions) -> AvatarURL? {
-        AvatarURL(hash: hash, options: options)
+        AvatarURL(with: .hashID(self.hash), options: options)
     }
 }
 

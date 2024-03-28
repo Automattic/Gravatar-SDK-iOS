@@ -4,7 +4,7 @@ public struct ProfileURL {
     public let url: URL
     public let hash: String
     public var avatarURL: AvatarURL? {
-        AvatarURL(hash: hash)
+        AvatarURL(with: .hashID(self.hash))
     }
 
     static let baseURL: URL? = {
@@ -17,17 +17,13 @@ public struct ProfileURL {
         return components.url
     }()
 
-    public init?(email: String) {
-        let hash = email.sanitized.sha256()
-        self.init(hash: hash)
-    }
-
-    public init?(hash: String) {
-        guard let url = Self.baseURL?.appending(pathComponent: hash) else {
+    public init?(with profileID: ProfileIdentifier) {
+        guard let url = Self.baseURL?.appending(pathComponent: profileID.id) else {
             return nil
         }
+
         self.url = url
-        self.hash = hash
+        self.hash = profileID.id
     }
 }
 

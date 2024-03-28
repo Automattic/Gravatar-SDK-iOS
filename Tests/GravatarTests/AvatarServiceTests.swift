@@ -13,7 +13,7 @@ final class AvatarServiceTests: XCTestCase {
         let service = avatarService(with: sessionMock)
         let options = ImageDownloadOptions()
 
-        let imageResponse = try await service.fetch(with: TestData.email, options: options)
+        let imageResponse = try await service.fetch(with: .email(TestData.email), options: options)
 
         XCTAssertEqual(sessionMock.request?.url, TestData.urlFromEmail)
         XCTAssertNotNil(imageResponse.image)
@@ -24,8 +24,12 @@ final class AvatarServiceTests: XCTestCase {
         let sessionMock = URLSessionMock(returnData: "Success".data(using: .utf8)!, response: successResponse)
         let service = avatarService(with: sessionMock)
 
-        try await service.upload(ImageHelper.testImage, email: "some@email.com", accessToken: "AccessToken")
+        try await service.upload(ImageHelper.testImage, email: Email("some@email.com"), accessToken: "AccessToken")
 
+        XCTAssertTrue(
+            String(data: sessionMock.uploadData!, encoding: .isoLatin1)!.contains("some@email.com"),
+            "Multipart form data should use the raw email address instead of its hash"
+        )
         XCTAssertEqual(sessionMock.request?.url?.absoluteString, "https://api.gravatar.com/v1/upload-image")
         XCTAssertNotNil(sessionMock.request?.value(forHTTPHeaderField: "Authorization"))
         XCTAssertTrue(sessionMock.request?.value(forHTTPHeaderField: "Authorization")?.hasPrefix("Bearer ") ?? false)
@@ -40,7 +44,7 @@ final class AvatarServiceTests: XCTestCase {
         let service = avatarService(with: sessionMock)
 
         do {
-            try await service.upload(ImageHelper.testImage, email: "some@email.com", accessToken: "AccessToken")
+            try await service.upload(ImageHelper.testImage, email: Email("some@email.com"), accessToken: "AccessToken")
             XCTFail("This should throw an error")
         } catch ImageUploadError.responseError(reason: let reason) where reason.httpStatusCode == responseCode {
             // Expected error has ocurred.
@@ -55,7 +59,7 @@ final class AvatarServiceTests: XCTestCase {
         let service = avatarService(with: sessionMock)
 
         do {
-            try await service.upload(UIImage(), email: "some@email.com", accessToken: "AccessToken")
+            try await service.upload(UIImage(), email: Email("some@email.com"), accessToken: "AccessToken")
             XCTFail("This should throw an error")
         } catch let error as ImageUploadError {
             XCTAssertEqual(error, ImageUploadError.cannotConvertImageIntoData)
@@ -68,9 +72,9 @@ final class AvatarServiceTests: XCTestCase {
         let service = avatarService(with: sessionMock, cache: cache)
         let options = ImageDownloadOptions(forceRefresh: true)
 
-        _ = try await service.fetch(with: TestData.email, options: options)
-        _ = try await service.fetch(with: TestData.email, options: options)
-        _ = try await service.fetch(with: TestData.email, options: options)
+        _ = try await service.fetch(with: .email(TestData.email), options: options)
+        _ = try await service.fetch(with: .email(TestData.email), options: options)
+        _ = try await service.fetch(with: .email(TestData.email), options: options)
 
         XCTAssertEqual(cache.getImageCallCount, 0, "We should not hit the cache")
         XCTAssertEqual(cache.setImageCallsCount, 3, "We should have cached the image on every forced refresh")
@@ -83,9 +87,9 @@ final class AvatarServiceTests: XCTestCase {
         let service = avatarService(with: sessionMock, cache: cache)
         let options = ImageDownloadOptions(forceRefresh: false)
 
-        _ = try await service.fetch(with: TestData.email, options: options)
-        _ = try await service.fetch(with: TestData.email, options: options)
-        _ = try await service.fetch(with: TestData.email, options: options)
+        _ = try await service.fetch(with: .email(TestData.email), options: options)
+        _ = try await service.fetch(with: .email(TestData.email), options: options)
+        _ = try await service.fetch(with: .email(TestData.email), options: options)
 
         XCTAssertEqual(cache.getImageCallCount, 3, "We should hit the cache")
         XCTAssertEqual(cache.setImageCallsCount, 1, "We should save once to the cache")
@@ -99,7 +103,7 @@ final class AvatarServiceTests: XCTestCase {
         let testProcessor = TestImageProcessor()
         let options = ImageDownloadOptions(processingMethod: .custom(processor: testProcessor))
 
-        _ = try await service.fetch(with: TestData.email, options: options)
+        _ = try await service.fetch(with: .email(TestData.email), options: options)
 
         XCTAssertTrue(testProcessor.processedData)
     }
@@ -112,7 +116,7 @@ final class AvatarServiceTests: XCTestCase {
         let service = avatarService(with: sessionMock)
         let options = ImageDownloadOptions(defaultAvatarOption: .mysteryPerson)
 
-        let imageResponse = try await service.fetch(with: TestData.email, options: options)
+        let imageResponse = try await service.fetch(with: .email(TestData.email), options: options)
 
         XCTAssertEqual(sessionMock.request?.url?.query, expectedQuery)
         XCTAssertNotNil(imageResponse.image)

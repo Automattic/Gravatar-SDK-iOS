@@ -132,7 +132,7 @@ extension GravatarWrapper where Component: UIImageView {
     /// Downloads the Gravatar profile image and sets it to this UIImageView.
     ///
     /// - Parameters:
-    ///   - email: Gravatar account email.
+    ///   - avatarID: an `AvatarIdentifier`
     ///   - placeholder: A placeholder to show while downloading the image.
     ///   - rating: Image rating accepted to be downloaded.
     ///   - preferredSize: Preferred "point" size of the image that will be downloaded. If not provided, `layoutIfNeeded()` is called on this view to get its
@@ -143,7 +143,7 @@ extension GravatarWrapper where Component: UIImageView {
     /// - Returns: The task performing the download operation which can be cancelled.
     @discardableResult
     public func setImage(
-        email: String,
+        avatarID: AvatarIdentifier,
         placeholder: UIImage? = nil,
         rating: Rating? = nil,
         preferredSize: CGSize? = nil,
@@ -158,7 +158,7 @@ extension GravatarWrapper where Component: UIImageView {
             defaultAvatarOption: defaultAvatarOption
         )
 
-        let gravatarURL = AvatarURL(email: email, options: downloadOptions.avatarQueryOptions)?.url
+        let gravatarURL = AvatarURL(with: avatarID, options: downloadOptions.avatarQueryOptions)?.url
         return setImage(with: gravatarURL, placeholder: placeholder, options: options, completionHandler: completionHandler)
     }
 

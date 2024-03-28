@@ -11,12 +11,29 @@ import Gravatar
 class DemoAvatarDownloadViewController: UIViewController {
     static let imageViewSize: CGFloat = 300
 
+    private let segmentedControl: UISegmentedControl = {
+        let control = UISegmentedControl(items: ["Email", "Hash"])
+        control.addTarget(self, action: #selector(chooseFetchType(_:)), for: .valueChanged)
+        control.selectedSegmentIndex = 0
+        return control
+    }()
+    
     private lazy var emailInputField: UITextField = {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.placeholder = "Enter Gravatar email"
         textField.autocapitalizationType = .none
         textField.keyboardType = .emailAddress
+        return textField
+    }()
+    
+    private let hashInputField: UITextField = {
+        let textField = UITextField()
+        textField.translatesAutoresizingMaskIntoConstraints = false
+        textField.placeholder = "Enter a valid Gravatar hash"
+        textField.keyboardType = .asciiCapable
+        textField.autocapitalizationType = .none
+        textField.textAlignment = .center
         return textField
     }()
     
@@ -75,6 +92,7 @@ class DemoAvatarDownloadViewController: UIViewController {
     
     private lazy var stackView: UIStackView = {
         let stack = UIStackView(arrangedSubviews: [
+            segmentedControl,
             emailInputField,
             preferredAvatarLengthInputField,
             gravatarRatingInputField,
@@ -154,12 +172,54 @@ class DemoAvatarDownloadViewController: UIViewController {
 
         avatarImageView.image = nil // Setting to nil to make the effect of `forceRefresh more visible
         
+        let identifier: AvatarIdentifier
+        if segmentedControl.selectedSegmentIndex == 0 {
+            guard let email = emailInputField.text, email.isEmpty == false else { return }
+            identifier = .email(email)
+        } else {
+            guard let hash = hashInputField.text, hash.isEmpty == false else { return }
+            identifier = .hashID(hash)
+        }
+        
         Task {
             do {
-                let result = try await imageRetriever.fetch(with: emailInputField.text ?? "", options: options)
+                let result = try await imageRetriever.fetch(with: identifier, options: options)
                 avatarImageView.image = result.image
             } catch {
                 print(error)
+            }
+        }
+    }
+    
+    private enum FetchType: Int {
+        case email = 0
+        case hash
+    }
+    
+    @objc private func chooseFetchType(_ sender: UISegmentedControl) {
+        switch sender.selectedSegmentIndex {
+        case 0:
+            setFetchType(.email)
+        case 1:
+            setFetchType(.hash)
+        default:
+            setFetchType(.email)
+        }
+    }
+    
+    private func setFetchType(_ type: FetchType) {
+        switch type {
+        case .email:
+            if let index = stackView.arrangedSubviews.firstIndex(of: hashInputField) {
+                stackView.removeArrangedSubview(hashInputField)
+                hashInputField.removeFromSuperview()
+                stackView.insertArrangedSubview(emailInputField, at: index)
+            }
+        case .hash:
+            if let index = stackView.arrangedSubviews.firstIndex(of: emailInputField) {
+                stackView.removeArrangedSubview(emailInputField)
+                emailInputField.removeFromSuperview()
+                stackView.insertArrangedSubview(hashInputField, at: index)
             }
         }
     }
