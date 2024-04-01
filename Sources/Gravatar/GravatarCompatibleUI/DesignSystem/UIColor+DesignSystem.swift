@@ -2,7 +2,7 @@ import UIKit
 
 extension UIColor {
     // A way to create dynamic colors
-    public convenience init(light: UIColor, dark: UIColor) {
+    convenience init(light: UIColor, dark: UIColor) {
         self.init { traitCollection in
             if traitCollection.userInterfaceStyle == .dark {
                 dark
