@@ -17,6 +17,7 @@ extension UIColor {
     // Generated names are from https://colornamer.robertcooper.me/
     static let gravatarBlack: UIColor = .rgba(16, 21, 23)
     static let snowflake: UIColor = .rgba(240, 240, 240)
+    static let porpoise: UIColor = .rgba(218, 218, 218)
     static let snowflake60: UIColor = snowflake.withAlphaComponent(0.6)
     static let dugong: UIColor = .rgba(112, 112, 112)
 

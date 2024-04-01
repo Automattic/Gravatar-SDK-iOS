@@ -15,6 +15,7 @@ public struct Palette {
     public let name: String
     public let foreground: ForegroundColors
     public let background: BackgroundColors
+    public let avatarBorder: UIColor
 }
 
 public enum PaletteType {
@@ -60,7 +61,8 @@ public enum PaletteType {
             background: .init(primary: UIColor(
                 light: lightPalette.background.primary,
                 dark: darkPalette.background.primary
-            ))
+            )), 
+            avatarBorder: .porpoise
         )
     }
 
@@ -72,7 +74,8 @@ public enum PaletteType {
                 primarySlightlyDimmed: .gravatarBlack,
                 secondary: .dugong
             ),
-            background: .init(primary: .white)
+            background: .init(primary: .white),
+            avatarBorder: .porpoise
         )
     }
 
@@ -84,7 +87,8 @@ public enum PaletteType {
                 primarySlightlyDimmed: .white,
                 secondary: .snowflake60
             ),
-            background: .init(primary: .gravatarBlack)
+            background: .init(primary: .gravatarBlack),
+            avatarBorder: .porpoise
         )
     }
 }
