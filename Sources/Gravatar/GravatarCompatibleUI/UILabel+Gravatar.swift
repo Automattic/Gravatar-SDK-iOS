@@ -2,19 +2,53 @@ import Foundation
 import UIKit
 
 extension GravatarWrapper where Component: UILabel {
+    public var displayName: DisplayNameField {
+        DisplayNameField(label: component)
+    }
+
+    public var personalInfo: PersonalInfoField {
+        PersonalInfoField(label: component)
+    }
+
+    public var aboutMe: AboutMeField {
+        AboutMeField(label: component)
+    }
+}
+
+public protocol PaletteRefreshable {
+    func refreshColor(paletteType: PaletteType)
+}
+
+public struct DisplayNameField: PaletteRefreshable {
+    var label: UILabel
+    init(label: UILabel) {
+        self.label = label
+    }
+
+    public func update(with model: DisplayNameModel, paletteType: PaletteType) {
+        label.text = model.displayName ?? model.fullName ?? model.userName
+        label.font = UIFont.DS.title1
+        label.numberOfLines = 0
+        refreshColor(paletteType: paletteType)
+    }
+
+    public func refreshColor(paletteType: PaletteType) {
+        label.textColor = paletteType.palette.foreground.primary
+    }
+}
+
+public struct PersonalInfoField: PaletteRefreshable {
     public static var defaultPersonalInfo: [PersonalInfoLine] {
         [.init([.jobTitle]),
          .init([.namePronunciation, .separator("・"), .pronouns, .separator("・"), .location])]
     }
 
-    public func buildDisplayName(with model: DisplayNameModel, paletteType: PaletteType = .system) {
-        component.text = model.displayName ?? model.fullName ?? model.userName
-        component.font = UIFont.DS.title1
-        component.textColor = paletteType.palette.foreground.primary
-        component.numberOfLines = 0
+    var label: UILabel
+    init(label: UILabel) {
+        self.label = label
     }
 
-    public func buildPersonalInfo(
+    public func update(
         with model: PersonalInfoModel,
         lines: [PersonalInfoLine] = Self.defaultPersonalInfo,
         paletteType: PaletteType = .system
@@ -27,16 +61,31 @@ extension GravatarWrapper where Component: UILabel {
             }
             resultText.append(text)
         }
-        component.text = resultText
-        component.font = UIFont.DS.Body.small
-        component.textColor = paletteType.palette.foreground.secondary
-        component.numberOfLines = lines.count
+        label.text = resultText
+        label.font = UIFont.DS.Body.small
+        label.numberOfLines = lines.count
+        refreshColor(paletteType: paletteType)
     }
 
-    public func buildAboutMe(with model: AboutMeModel, paletteType: PaletteType = .system) {
-        component.text = model.aboutMe
-        component.font = UIFont.DS.Body.small
-        component.textColor = paletteType.palette.foreground.primarySlightlyDimmed
-        component.numberOfLines = 2
+    public func refreshColor(paletteType: PaletteType) {
+        label.textColor = paletteType.palette.foreground.secondary
+    }
+}
+
+public struct AboutMeField: PaletteRefreshable {
+    var label: UILabel
+    init(label: UILabel) {
+        self.label = label
+    }
+
+    public func update(with model: AboutMeModel, paletteType: PaletteType) {
+        label.text = model.aboutMe
+        label.font = UIFont.DS.Body.small
+        label.numberOfLines = 2
+        refreshColor(paletteType: paletteType)
+    }
+
+    public func refreshColor(paletteType: PaletteType) {
+        label.textColor = paletteType.palette.foreground.primarySlightlyDimmed
     }
 }

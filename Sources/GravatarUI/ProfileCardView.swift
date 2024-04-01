@@ -26,6 +26,8 @@ public class ProfileCardView: UIView {
         imageView.widthAnchor.constraint(equalToConstant: Constants.avatarLength).isActive = true
         imageView.heightAnchor.constraint(equalToConstant: Constants.avatarLength).isActive = true
         imageView.layer.cornerRadius = Constants.avatarLength / 2
+        imageView.layer.borderColor = paletteType.palette.avatarBorder.cgColor
+        imageView.layer.borderWidth = 1
         imageView.clipsToBounds = true
         return imageView
     }()
@@ -51,7 +53,14 @@ public class ProfileCardView: UIView {
         return label
     }()
 
+    public var paletteType: PaletteType {
+        didSet {
+            update(with: paletteType)
+        }
+    }
+
     override public init(frame: CGRect) {
+        self.paletteType = .system
         super.init(frame: frame)
         addSubview(rootStackView)
 
@@ -63,16 +72,20 @@ public class ProfileCardView: UIView {
         ])
     }
 
+    public convenience init(frame: CGRect, paletteType: PaletteType) {
+        self.init(frame: frame)
+        self.paletteType = paletteType
+    }
+
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    public func update(with model: ProfileCardModel, paletteType: PaletteType = .system) {
-        aboutMeLabel.gravatar.buildAboutMe(with: model, paletteType: paletteType)
-        displayNameLabel.gravatar.buildDisplayName(with: model, paletteType: paletteType)
-        personalInfoLabel.gravatar.buildPersonalInfo(with: model, paletteType: paletteType)
-        backgroundColor = paletteType.palette.background.primary
+    public func update(with model: ProfileCardModel) {
+        aboutMeLabel.gravatar.aboutMe.update(with: model, paletteType: paletteType)
+        displayNameLabel.gravatar.displayName.update(with: model, paletteType: paletteType)
+        personalInfoLabel.gravatar.personalInfo.update(with: model, paletteType: paletteType)
     }
 
     public func loadAvatar(
@@ -93,5 +106,13 @@ public class ProfileCardView: UIView {
             options: options,
             completionHandler: completionHandler
         )
+    }
+
+    func update(with paletteType: PaletteType) {
+        avatarImageView.layer.borderColor = paletteType.palette.avatarBorder.cgColor
+        backgroundColor = paletteType.palette.background.primary
+        aboutMeLabel.gravatar.aboutMe.refreshColor(paletteType: paletteType)
+        displayNameLabel.gravatar.displayName.refreshColor(paletteType: paletteType)
+        personalInfoLabel.gravatar.personalInfo.refreshColor(paletteType: paletteType)
     }
 }

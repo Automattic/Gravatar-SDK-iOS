@@ -61,7 +61,7 @@ public enum PaletteType {
             background: .init(primary: UIColor(
                 light: lightPalette.background.primary,
                 dark: darkPalette.background.primary
-            )), 
+            )),
             avatarBorder: .porpoise
         )
     }

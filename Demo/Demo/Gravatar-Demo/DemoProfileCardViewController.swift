@@ -27,7 +27,7 @@ class DemoProfileCardViewController: UIViewController {
     let activityIndicator = UIActivityIndicatorView(style: .large)
 
     lazy var profileCardView: ProfileCardView = {
-        let view = ProfileCardView()
+        let view = ProfileCardView(frame: .zero, paletteType: preferredPaletteType)
         view.translatesAutoresizingMaskIntoConstraints = false
         view.avatarImageView.gravatar.activityIndicatorType = .activity
         return view
@@ -55,7 +55,11 @@ class DemoProfileCardViewController: UIViewController {
     
     let paletteTypes: [PaletteType] = [.system, .light, .dark]
     
-    var preferredPaletteType: PaletteType = .system
+    var preferredPaletteType: PaletteType = .system {
+        didSet {
+            profileCardView.paletteType = preferredPaletteType
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -110,7 +114,7 @@ class DemoProfileCardViewController: UIViewController {
             do {
                 let profile = try await service.fetch(with: identifier)
                 activityIndicator.stopAnimating()
-                profileCardView.update(with: profile, paletteType: preferredPaletteType)
+                profileCardView.update(with: profile)
                 profileCardView.loadAvatar(with: profile, options: [.transition(.fade(0.2))])
             } catch {
                 activityIndicator.stopAnimating()
