@@ -13,7 +13,9 @@ public class ProfileCardView: UIView {
         let stack = UIStackView(arrangedSubviews: [avatarImageView, displayNameLabel, personalInfoLabel, aboutMeLabel])
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.axis = .vertical
-        stack.spacing = 10
+        stack.spacing = .DS.Padding.single
+        stack.setCustomSpacing(.DS.Padding.double, after: avatarImageView)
+        stack.setCustomSpacing(0, after: displayNameLabel)
         stack.alignment = .leading
         return stack
     }()

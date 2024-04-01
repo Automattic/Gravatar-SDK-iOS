@@ -29,6 +29,7 @@ class DemoProfileCardViewController: UIViewController {
     lazy var profileCardView: ProfileCardView = {
         let view = ProfileCardView()
         view.translatesAutoresizingMaskIntoConstraints = false
+        view.avatarImageView.gravatar.activityIndicatorType = .activity
         return view
     }()
     
