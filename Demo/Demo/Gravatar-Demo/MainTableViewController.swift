@@ -15,6 +15,7 @@ class MainTableViewController: UITableViewController {
         case uiImageViewExtension
         case fetchProfile
         case imageUpload
+        case profileCard
     }
     
     private static let reuseID =  "DefaultCell"
@@ -42,6 +43,8 @@ class MainTableViewController: UITableViewController {
             content.text = "Fetch Profile"
         case .imageUpload:
             content.text = "Image Upload"
+        case .profileCard:
+            content.text = "Profile Card"
         }
         cell.contentConfiguration = content
         return cell
@@ -62,6 +65,8 @@ class MainTableViewController: UITableViewController {
             navigationController?.pushViewController(vc, animated: true)
         case .imageUpload:
             navigationController?.pushViewController(DemoUploadImageViewController(), animated: true)
+        case .profileCard:
+            navigationController?.pushViewController(DemoProfileCardViewController(), animated: true)
         }
     }
 }

@@ -21,3 +21,4 @@ extension GravatarCompatible {
 }
 
 extension UIImageView: GravatarCompatible {}
+extension UILabel: GravatarCompatible {}
