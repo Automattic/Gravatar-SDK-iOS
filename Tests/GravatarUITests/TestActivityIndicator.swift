@@ -1,5 +1,6 @@
 import Gravatar
 import UIKit
+import GravatarUI
 
 class TestActivityIndicator: ActivityIndicatorProvider {
     var animating = false

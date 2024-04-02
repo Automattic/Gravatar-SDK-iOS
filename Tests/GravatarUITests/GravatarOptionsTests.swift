@@ -1,4 +1,6 @@
+@testable import GravatarUI
 @testable import Gravatar
+import TestHelpers
 import XCTest
 
 final class GravatarOptionsTests: XCTestCase {
@@ -28,13 +30,5 @@ final class GravatarOptionsTests: XCTestCase {
         XCTAssertEqual(parsedOptions.removeCurrentImageWhileLoading, false)
         XCTAssertEqual(parsedOptions.transition, ImageTransition.none)
         XCTAssertNotNil(parsedOptions.processingMethod.processor as? DefaultImageProcessor)
-    }
-}
-
-class TestImageProcessor: ImageProcessor {
-    var processedData = false
-    func process(_: Data) -> UIImage? {
-        processedData = true
-        return UIImage()
     }
 }

@@ -1,4 +1,6 @@
 @testable import Gravatar
+@testable import GravatarUI
+import TestHelpers
 import XCTest
 
 final class ImageDownloadServiceTests: XCTestCase {
