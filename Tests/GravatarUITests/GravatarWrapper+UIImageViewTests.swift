@@ -12,7 +12,7 @@ final class GravatarWrapper_UIImageViewTests: XCTestCase {
         imageView.gravatar.activityIndicatorType = .custom(activityIndicator)
         imageView.gravatar.setImage(
             avatarID: .email("hello@gmail.com"),
-            options: [.imageDownloader(TestImageFetcher(result: GravatarImageSetMockResult.success))]
+            options: [.imageDownloader(TestImageFetcher(result: .success))]
         )
         XCTAssertTrue(activityIndicator.animating)
     }
