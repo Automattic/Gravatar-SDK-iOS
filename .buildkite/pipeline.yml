@@ -42,7 +42,7 @@ steps:
   - label: "🧪 Validate Gravatar Podspec"
     key: "validate"
     command: |
-      .buildkite/commands/validate-pod.sh "Gravatar.podspec"
+      .buildkite/commands/validate-pods.sh "Gravatar.podspec"
     plugins: [$CI_TOOLKIT]
 
   #######################
@@ -68,7 +68,7 @@ steps:
   - label: "🧪 Validate Gravatar UI Podspec"
     key: "validate"
     command: |
-      .buildkite/commands/validate-pod.sh "GravatarUI.podspec"
+      .buildkite/commands/validate-pods.sh "GravatarUI.podspec"
     plugins: [$CI_TOOLKIT]
 
 
