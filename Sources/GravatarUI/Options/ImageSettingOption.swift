@@ -1,6 +1,6 @@
 import Foundation
-import UIKit
 import Gravatar
+import UIKit
 
 /// Options to use when fetching a Gravatar profile image and setting it to a `GravatarCompatible` UI component.
 public enum ImageSettingOption {

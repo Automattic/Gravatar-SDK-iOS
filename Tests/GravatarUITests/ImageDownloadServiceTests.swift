@@ -3,9 +3,7 @@
 import TestHelpers
 import XCTest
 
-
 final class ImageDownloadServiceTests: XCTestCase {
-    
     func testFetchImageWithCompletionHandlerAndURL() {
         let imageURL = "https://gravatar.com/avatar/HASH"
         let response = HTTPURLResponse.successResponse(with: URL(string: imageURL))
@@ -27,7 +25,6 @@ final class ImageDownloadServiceTests: XCTestCase {
         wait(for: [expectation], timeout: 0.2)
     }
 
-    
     func testFetchImageWithCompletionHandlerError() throws {
         let imageURL = try XCTUnwrap(URL(string: "https://gravatar.com/avatar/HASH"))
         let response = HTTPURLResponse.errorResponse(code: 404)

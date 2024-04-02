@@ -1,5 +1,5 @@
-@testable import GravatarUI
 @testable import Gravatar
+@testable import GravatarUI
 import TestHelpers
 import XCTest
 

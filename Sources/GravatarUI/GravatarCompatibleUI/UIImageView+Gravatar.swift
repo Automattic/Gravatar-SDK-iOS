@@ -1,6 +1,6 @@
 import Foundation
-import UIKit
 import Gravatar
+import UIKit
 
 public typealias ImageSetCompletion = (Result<ImageDownloadResult, ImageFetchingComponentError>) -> Void
 
