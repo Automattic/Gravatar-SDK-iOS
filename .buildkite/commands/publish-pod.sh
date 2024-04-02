@@ -16,4 +16,3 @@ publish_pod "$PODSPEC_PATH"
 
 echo "--- :slack: Notifying Slack"
 slack_notify_pod_published "$PODSPEC_PATH" "$SLACK_WEBHOOK"
-
