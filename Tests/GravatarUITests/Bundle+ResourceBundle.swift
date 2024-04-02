@@ -9,7 +9,7 @@ extension Bundle {
     /// If installed via CocoaPods, this will be GravatarUITestsResources.bundle,
     /// otherwise it will be the module bundle.
     ///
-    public class var testsBundle: Bundle {
+    class var testsBundle: Bundle {
         #if SWIFT_PACKAGE
         return Bundle.module
         #else

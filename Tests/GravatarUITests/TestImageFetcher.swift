@@ -3,19 +3,19 @@ import Gravatar
 import GravatarUI
 import XCTest
 
-public enum GravatarImageSetMockResult {
+enum GravatarImageSetMockResult {
     case fail
     case success
 }
 
-public class TestImageFetcher: ImageDownloader {
-    public var result: GravatarImageSetMockResult
+class TestImageFetcher: ImageDownloader {
+    var result: GravatarImageSetMockResult
 
-    public init(result: GravatarImageSetMockResult) {
+    init(result: GravatarImageSetMockResult) {
         self.result = result
     }
 
-    public func fetchImage(with url: URL, forceRefresh: Bool, processingMethod: ImageProcessingMethod) async throws -> ImageDownloadResult {
+    func fetchImage(with url: URL, forceRefresh: Bool, processingMethod: ImageProcessingMethod) async throws -> ImageDownloadResult {
         let task = Task<ImageDownloadResult, Error> {
             switch result {
             case .fail:

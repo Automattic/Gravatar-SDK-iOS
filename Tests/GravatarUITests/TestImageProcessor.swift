@@ -2,11 +2,11 @@ import Foundation
 import Gravatar
 import UIKit
 
-public class TestImageProcessor: ImageProcessor {
-    public init() {}
+class TestImageProcessor: ImageProcessor {
+    init() {}
 
-    public var processedData = false
-    public func process(_: Data) -> UIImage? {
+    var processedData = false
+    func process(_: Data) -> UIImage? {
         processedData = true
         return UIImage()
     }

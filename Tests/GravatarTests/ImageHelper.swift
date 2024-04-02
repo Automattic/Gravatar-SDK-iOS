@@ -1,23 +1,23 @@
 import UIKit
 
-public class ImageHelper {
+class ImageHelper {
     private init() {}
 
     static let testResourcesDir = "Gravatar_Gravatar-Tests.bundle/ResourceFiles/"
 
-    public static var testImage: UIImage {
+    static var testImage: UIImage {
         image(named: "test", type: "png")!
     }
 
-    public static var testImageData: Data {
+    static var testImageData: Data {
         dataFromImage(named: "test", type: "png")!
     }
 
-    public static var placeholderImage: UIImage {
+    static var placeholderImage: UIImage {
         image(named: "placeholder", type: "png")!
     }
 
-    public static func dataFromImage(named: String, type: String) -> Data? {
+    static func dataFromImage(named: String, type: String) -> Data? {
         guard let url = Bundle.testsBundle.url(forResource: named, withExtension: type) else {
             return nil
         }
@@ -28,7 +28,7 @@ public class ImageHelper {
         return data
     }
 
-    public static func image(named: String, type: String) -> UIImage? {
+    static func image(named: String, type: String) -> UIImage? {
         guard let path = Bundle.testsBundle.path(forResource: named, ofType: type) else {
             return nil
         }
