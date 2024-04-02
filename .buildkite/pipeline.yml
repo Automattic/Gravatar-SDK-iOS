@@ -71,7 +71,6 @@ steps:
       .buildkite/commands/validate-pods.sh "GravatarUI.podspec"
     plugins: [$CI_TOOLKIT]
 
-
   #######################
   # Publish Gravatar UI Podspec (if we're building a tag)
   #######################
