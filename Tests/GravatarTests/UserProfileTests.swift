@@ -1,4 +1,5 @@
 import Gravatar
+import TestHelpers
 import XCTest
 
 final class UserProfileTests: XCTestCase {
