@@ -30,7 +30,7 @@ let package = Package(
         ),
         .testTarget(
             name: "GravatarTests",
-            dependencies: ["Gravatar", "TestHelpers"],
+            dependencies: ["Gravatar"],
             resources: [.process("Resources")]
         ),
         .target(
@@ -39,12 +39,7 @@ let package = Package(
         ),
         .testTarget(
             name: "GravatarUITests",
-            dependencies: ["GravatarUI", "TestHelpers"],
-            resources: [.process("Resources")]
-        ),
-        .target(
-            name: "TestHelpers",
-            dependencies: ["Gravatar"],
+            dependencies: ["GravatarUI"],
             resources: [.process("Resources")]
         )
     ]

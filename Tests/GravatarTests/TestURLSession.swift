@@ -1,6 +1,5 @@
 import Foundation
 import Gravatar
-import TestHelpers
 import XCTest
 
 enum TestDataTaskFailReason: Equatable {

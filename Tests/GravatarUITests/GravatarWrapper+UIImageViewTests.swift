@@ -1,6 +1,5 @@
 import Gravatar
 import GravatarUI
-import TestHelpers
 import XCTest
 
 final class GravatarWrapper_UIImageViewTests: XCTestCase {

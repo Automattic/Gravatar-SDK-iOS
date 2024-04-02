@@ -1,7 +1,6 @@
 import Foundation
 import Gravatar
 import GravatarUI
-import TestHelpers
 import XCTest
 
 public enum GravatarImageSetMockResult {
