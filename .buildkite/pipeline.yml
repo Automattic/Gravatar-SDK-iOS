@@ -37,21 +37,47 @@ steps:
     plugins: [$CI_TOOLKIT]
 
   ###################
-  # Validate Podspec
+  # Validate Gravatar Podspec
   ###################
-  - label: "🧪 Validate Podspec"
+  - label: "🧪 Validate Gravatar Podspec"
     key: "validate"
     command: |
-      .buildkite/commands/validate-pods.sh
+      .buildkite/commands/validate-pod.sh "Gravatar.podspec"
     plugins: [$CI_TOOLKIT]
 
   #######################
-  # Publish the Podspecs (if we're building a tag)
+  # Publish the Gravatar Podspecs (if we're building a tag)
   #######################
-  - label: "⬆️ Publish Podspecs"
+  - label: "⬆️ Publish Gravatar Podspecs"
     key: "publish"
     command: |
       .buildkite/commands/publish-pod.sh "Gravatar.podspec"
+    plugins: [$CI_TOOLKIT]
+    depends_on:
+      - "test"
+      - "test_demo"
+      - "validate"
+      - "lint"
+    if: build.tag != null
+    agents:
+      queue: "mac"
+
+  ###################
+  # Validate Gravatar UI Podspec
+  ###################
+  - label: "🧪 Validate Gravatar UI Podspec"
+    key: "validate"
+    command: |
+      .buildkite/commands/validate-pod.sh "GravatarUI.podspec"
+    plugins: [$CI_TOOLKIT]
+
+
+  #######################
+  # Publish Gravatar UI Podspec (if we're building a tag)
+  #######################
+  - label: "⬆️ Publish Gravatar UI Podspecs"
+    key: "publish"
+    command: |
       .buildkite/commands/publish-pod.sh "GravatarUI.podspec"
     plugins: [$CI_TOOLKIT]
     depends_on:
