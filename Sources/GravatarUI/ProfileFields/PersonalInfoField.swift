@@ -34,4 +34,3 @@ public struct PersonalInfoField: PaletteRefreshable {
         label.textColor = paletteType.palette.foreground.secondary
     }
 }
-
