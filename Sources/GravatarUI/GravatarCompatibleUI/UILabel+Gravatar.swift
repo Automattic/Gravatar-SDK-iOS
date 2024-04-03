@@ -14,7 +14,3 @@ extension GravatarWrapper where Component: UILabel {
         AboutMeField(label: component)
     }
 }
-
-public protocol PaletteRefreshable {
-    func refresh(with paletteType: PaletteType)
-}
