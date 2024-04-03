@@ -56,16 +56,22 @@ public class ProfileCardView: UIView {
             refresh(with: paletteType)
         }
     }
+    
+    public let containerLayoutGuide = UILayoutGuide()
 
     override public init(frame: CGRect) {
         self.paletteType = .system
         super.init(frame: frame)
         addSubview(rootStackView)
-
+        addLayoutGuide(containerLayoutGuide)
         NSLayoutConstraint.activate([
+            topAnchor.constraint(equalTo: containerLayoutGuide.topAnchor),
+            leadingAnchor.constraint(equalTo: containerLayoutGuide.leadingAnchor),
+            trailingAnchor.constraint(equalTo: containerLayoutGuide.trailingAnchor),
+            bottomAnchor.constraint(equalTo: containerLayoutGuide.bottomAnchor),
             topAnchor.constraint(equalTo: rootStackView.topAnchor),
-            leftAnchor.constraint(equalTo: rootStackView.leftAnchor),
-            rightAnchor.constraint(equalTo: rootStackView.rightAnchor),
+            leadingAnchor.constraint(equalTo: rootStackView.leadingAnchor),
+            trailingAnchor.constraint(equalTo: rootStackView.trailingAnchor),
             bottomAnchor.constraint(equalTo: rootStackView.bottomAnchor),
         ])
     }

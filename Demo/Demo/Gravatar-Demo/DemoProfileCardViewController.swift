@@ -12,6 +12,7 @@ class DemoProfileCardViewController: UIViewController {
         textField.autocapitalizationType = .none
         textField.textContentType = .emailAddress
         textField.textAlignment = .center
+        textField.text = "pinarolguc@gmail.com"
         return textField
     }()
     
@@ -34,7 +35,7 @@ class DemoProfileCardViewController: UIViewController {
     }()
     
     lazy var rootStackView: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [emailField, paletteButton, fetchProfileButton, activityIndicator, profileCardView])
+        let stack = UIStackView(arrangedSubviews: [emailField, paletteButton, fetchProfileButton, activityIndicator])
         
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.axis = .vertical
@@ -67,11 +68,15 @@ class DemoProfileCardViewController: UIViewController {
         self.edgesForExtendedLayout = []
         view.backgroundColor = .white
         view.addSubview(rootStackView)
+        view.addSubview(profileCardView)
         
         NSLayoutConstraint.activate([
             view.topAnchor.constraint(equalTo: rootStackView.topAnchor, constant: -20),
-            view.leftAnchor.constraint(equalTo: rootStackView.leftAnchor, constant: -20),
-            view.rightAnchor.constraint(equalTo: rootStackView.rightAnchor, constant: 20)
+            view.leadingAnchor.constraint(equalTo: rootStackView.leadingAnchor),
+            view.trailingAnchor.constraint(equalTo: rootStackView.trailingAnchor),
+            profileCardView.containerLayoutGuide.leadingAnchor.constraint(equalTo: rootStackView.leadingAnchor, constant: 30),
+            profileCardView.containerLayoutGuide.trailingAnchor.constraint(equalTo: rootStackView.trailingAnchor, constant: -30),
+            profileCardView.containerLayoutGuide.topAnchor.constraint(equalTo: rootStackView.bottomAnchor),
         ])
     }
     
