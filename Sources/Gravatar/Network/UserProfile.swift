@@ -18,6 +18,10 @@ public struct UserProfile: Decodable {
     public let emails: [Email]?
     public let accounts: [Account]?
 
+    public let jobTitle: String?
+    public let currentLocation: String?
+    public let pronunciation: String?
+
     private let profileUrl: String
     public var profileURLString: String {
         profileUrl
