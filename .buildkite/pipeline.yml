@@ -39,7 +39,7 @@ steps:
   ###################
   # Validate Podspec
   ###################
-  - label: "🧪 Validate Podspec"
+  - label: "🧪 Validate Podspecs"
     key: "validate"
     command: |
       .buildkite/commands/validate-pods.sh
