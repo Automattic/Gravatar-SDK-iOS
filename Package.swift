@@ -41,6 +41,6 @@ let package = Package(
             name: "GravatarUITests",
             dependencies: ["GravatarUI"],
             resources: [.process("Resources")]
-        ),
+        )
     ]
 )

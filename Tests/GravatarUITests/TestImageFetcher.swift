@@ -1,5 +1,6 @@
 import Foundation
 import Gravatar
+import GravatarUI
 import XCTest
 
 enum GravatarImageSetMockResult {
