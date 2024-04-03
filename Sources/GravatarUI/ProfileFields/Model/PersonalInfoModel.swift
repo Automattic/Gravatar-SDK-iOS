@@ -37,7 +37,7 @@ public enum PersonalInfoBuildingBlock {
             string
         }
     }
-    
+
     static var defaultSeparator: PersonalInfoBuildingBlock {
         .separator("・")
     }
