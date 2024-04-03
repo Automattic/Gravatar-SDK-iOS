@@ -42,7 +42,8 @@ let package = Package(
             name: "GravatarUITests",
             dependencies: ["GravatarUI",
                            .product(name: "SnapshotTesting", package: "swift-snapshot-testing")],
-            resources: [.process("Resources")]
+            resources: [.process("Resources"),
+                        .process("__Snapshots__")]
         )
     ]
 )
