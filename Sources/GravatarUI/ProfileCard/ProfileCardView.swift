@@ -56,7 +56,7 @@ public class ProfileCardView: UIView {
             refresh(with: paletteType)
         }
     }
-    
+
     public let containerLayoutGuide = UILayoutGuide()
 
     override public init(frame: CGRect) {
@@ -79,6 +79,7 @@ public class ProfileCardView: UIView {
     public convenience init(frame: CGRect, paletteType: PaletteType) {
         self.init(frame: frame)
         self.paletteType = paletteType
+        refresh(with: paletteType)
     }
 
     @available(*, unavailable)
@@ -107,16 +108,17 @@ public class ProfileCardView: UIView {
             rating: rating,
             preferredSize: preferredSize ?? CGSize(width: Constants.avatarLength, height: Constants.avatarLength),
             defaultAvatarOption: defaultAvatarOption,
-            options: options) { [weak self] result in
-                switch result {
-                case .success(_):
-                    self?.avatarImageView.layer.borderColor = self?.paletteType.palette.avatarBorder.cgColor
-                    self?.avatarImageView.layer.borderWidth = 1
-                default:
-                    self?.avatarImageView.layer.borderColor = UIColor.clear.cgColor
-                }
-                completionHandler?(result)
+            options: options
+        ) { [weak self] result in
+            switch result {
+            case .success:
+                self?.avatarImageView.layer.borderColor = self?.paletteType.palette.avatarBorder.cgColor
+                self?.avatarImageView.layer.borderWidth = 1
+            default:
+                self?.avatarImageView.layer.borderColor = UIColor.clear.cgColor
             }
+            completionHandler?(result)
+        }
     }
 
     func refresh(with paletteType: PaletteType) {
