@@ -3,7 +3,7 @@ import UIKit
 public struct PersonalInfoField: PaletteRefreshable {
     public static var defaultPersonalInfo: [PersonalInfoLine] {
         [.init([.jobTitle]),
-         .init([.namePronunciation, .separator("・"), .pronouns, .separator("・"), .location])]
+         .init([.namePronunciation, .defaultSeparator, .pronouns, .defaultSeparator, .location])]
     }
 
     var label: UILabel
