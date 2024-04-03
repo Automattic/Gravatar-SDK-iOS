@@ -36,6 +36,5 @@ Pod::Spec.new do |s|
           ]
       }
       swift_unit_tests.requires_app_host = false
-      swift_unit_tests.dependency 'SnapshotTesting', '1.8.1'
     end
   end
