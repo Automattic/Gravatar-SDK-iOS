@@ -27,7 +27,7 @@ gravatarImageView.gravatar.setImage(email: "user@email.com")
 ```
 
 For more info check:
-- ``GravatarWrapper/setImage(email:placeholder:rating:preferredSize:defaultAvatarOption:options:completionHandler:)``
+- `GravatarWrapper/setImage(email:placeholder:rating:preferredSize:defaultAvatarOption:options:completionHandler:)`
 
 ## Featured
 
@@ -51,6 +51,5 @@ For more info check:
 
 - ``AvatarIdentifier``
 - ``ProfileIdentifier``
-- ``IdentifierProvider``
 - ``Email``
 - ``HashID``
