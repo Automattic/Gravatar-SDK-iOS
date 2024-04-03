@@ -27,11 +27,11 @@ public enum PaletteType {
     public var palette: Palette {
         switch self {
         case .light:
-            Self.lightPalette
+            Palette.light
         case .dark:
-            Self.darkPalette
+            Palette.dark
         case .system:
-            Self.systemPalette
+            Palette.system
         case .custom(let paletteProvider):
             paletteProvider()
         }
@@ -40,55 +40,57 @@ public enum PaletteType {
     public var name: String {
         palette.name
     }
+}
 
-    static var systemPalette: Palette {
+extension Palette {
+    static var system: Palette {
         .init(
             name: "System Default",
             foreground: .init(
                 primary: UIColor(
-                    light: lightPalette.foreground.primary,
-                    dark: darkPalette.foreground.primary
+                    light: light.foreground.primary,
+                    dark: dark.foreground.primary
                 ),
                 primarySlightlyDimmed: UIColor(
-                    light: lightPalette.foreground.primarySlightlyDimmed,
-                    dark: darkPalette.foreground.primarySlightlyDimmed
+                    light: light.foreground.primarySlightlyDimmed,
+                    dark: dark.foreground.primarySlightlyDimmed
                 ),
                 secondary: UIColor(
-                    light: lightPalette.foreground.secondary,
-                    dark: darkPalette.foreground.secondary
+                    light: light.foreground.secondary,
+                    dark: dark.foreground.secondary
                 )
             ),
             background: .init(primary: UIColor(
-                light: lightPalette.background.primary,
-                dark: darkPalette.background.primary
+                light: light.background.primary,
+                dark: dark.background.primary
             )),
-            avatarBorder: .porpoise
+            avatarBorder: .porpoiseGray
         )
     }
 
-    public static var lightPalette: Palette {
+    public static var light: Palette {
         .init(
             name: "Light",
             foreground: .init(
                 primary: .black,
                 primarySlightlyDimmed: .gravatarBlack,
-                secondary: .dugong
+                secondary: .dugongGray
             ),
             background: .init(primary: .white),
-            avatarBorder: .porpoise
+            avatarBorder: .porpoiseGray
         )
     }
 
-    static var darkPalette: Palette {
+    static var dark: Palette {
         .init(
             name: "Dark",
             foreground: .init(
                 primary: .white,
                 primarySlightlyDimmed: .white,
-                secondary: .snowflake60
+                secondary: .snowflakeWhite60
             ),
             background: .init(primary: .gravatarBlack),
-            avatarBorder: .porpoise
+            avatarBorder: .porpoiseGray
         )
     }
 }
