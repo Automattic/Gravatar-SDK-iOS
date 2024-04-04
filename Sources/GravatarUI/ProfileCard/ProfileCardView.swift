@@ -88,9 +88,9 @@ public class ProfileCardView: UIView {
     }
 
     public func update(with model: ProfileCardModel) {
-        aboutMeLabel.gravatar.aboutMe.update(with: model, paletteType: paletteType)
-        displayNameLabel.gravatar.displayName.update(with: model, paletteType: paletteType)
-        personalInfoLabel.gravatar.personalInfo.update(with: model, paletteType: paletteType)
+        Configure(aboutMeLabel).asAboutMe().content(model).palette(paletteType)
+        Configure(displayNameLabel).asDisplayName().content(model).palette(paletteType)
+        Configure(personalInfoLabel).asPersonalInfo().content(model).palette(paletteType)
     }
 
     public func loadAvatar(
@@ -124,8 +124,8 @@ public class ProfileCardView: UIView {
     func refresh(with paletteType: PaletteType) {
         avatarImageView.layer.borderColor = paletteType.palette.avatarBorder.cgColor
         backgroundColor = paletteType.palette.background.primary
-        aboutMeLabel.gravatar.aboutMe.refresh(with: paletteType)
-        displayNameLabel.gravatar.displayName.refresh(with: paletteType)
-        personalInfoLabel.gravatar.personalInfo.refresh(with: paletteType)
+        Configure(aboutMeLabel).asAboutMe().palette(paletteType)
+        Configure(displayNameLabel).asDisplayName().palette(paletteType)
+        Configure(personalInfoLabel).asPersonalInfo().palette(paletteType)
     }
 }
