@@ -1,7 +1,7 @@
 import UIKit
 
 public struct AboutMeBuilder {
-    var label: UILabel
+    let label: UILabel
     init(label: UILabel) {
         self.label = label
     }
