@@ -1,19 +1,22 @@
 import UIKit
 
-public struct AboutMeField: PaletteRefreshable {
+public struct AboutMeBuilder {
     var label: UILabel
     init(label: UILabel) {
         self.label = label
     }
 
-    public func update(with model: AboutMeModel, paletteType: PaletteType) {
+    @discardableResult
+    public func content(_ model: AboutMeModel) -> AboutMeBuilder {
         label.text = model.aboutMe
         label.font = .DS.Body.small
         label.numberOfLines = 2
-        refresh(with: paletteType)
+        return self
     }
 
-    public func refresh(with paletteType: PaletteType) {
+    @discardableResult
+    public func palette(_ paletteType: PaletteType) -> AboutMeBuilder {
         label.textColor = paletteType.palette.foreground.primarySlightlyDimmed
+        return self
     }
 }

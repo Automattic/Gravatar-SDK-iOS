@@ -1,6 +1,6 @@
 import UIKit
 
-public struct PersonalInfoField: PaletteRefreshable {
+public struct PersonalInfoBuilder {
     public static var defaultPersonalInfo: [PersonalInfoLine] {
         [.init([.jobTitle]),
          .init([.namePronunciation, .defaultSeparator, .pronouns, .defaultSeparator, .location])]
@@ -11,11 +11,10 @@ public struct PersonalInfoField: PaletteRefreshable {
         self.label = label
     }
 
-    public func update(
-        with model: PersonalInfoModel,
-        lines: [PersonalInfoLine] = Self.defaultPersonalInfo,
-        paletteType: PaletteType = .system
-    ) {
+    public func content(
+        _ model: PersonalInfoModel,
+        lines: [PersonalInfoLine] = Self.defaultPersonalInfo
+    ) -> PersonalInfoBuilder {
         var resultText = ""
         for line in lines {
             let text = line.text(from: model)
@@ -27,10 +26,12 @@ public struct PersonalInfoField: PaletteRefreshable {
         label.text = resultText
         label.font = .DS.Body.small
         label.numberOfLines = lines.count
-        refresh(with: paletteType)
+        return self
     }
 
-    public func refresh(with paletteType: PaletteType) {
+    @discardableResult
+    public func palette(_ paletteType: PaletteType) -> PersonalInfoBuilder {
         label.textColor = paletteType.palette.foreground.secondary
+        return self
     }
 }

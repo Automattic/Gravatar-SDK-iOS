@@ -1,19 +1,22 @@
 import UIKit
 
-public struct DisplayNameField: PaletteRefreshable {
+public struct DisplayNameBuilder {
     var label: UILabel
     init(label: UILabel) {
         self.label = label
     }
 
-    public func update(with model: DisplayNameModel, paletteType: PaletteType) {
+    @discardableResult
+    public func content(_ model: DisplayNameModel) -> DisplayNameBuilder {
         label.text = model.displayName ?? model.fullName ?? model.userName
         label.font = .DS.title1
         label.numberOfLines = 0
-        refresh(with: paletteType)
+        return self
     }
 
-    public func refresh(with paletteType: PaletteType) {
+    @discardableResult
+    public func palette(_ paletteType: PaletteType) -> DisplayNameBuilder {
         label.textColor = paletteType.palette.foreground.primary
+        return self
     }
 }
