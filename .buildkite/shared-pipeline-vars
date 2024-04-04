@@ -5,4 +5,4 @@
 
 export IMAGE_ID=$(echo "xcode-$(cat .xcode-version)")
 
-export CI_TOOLKIT="automattic/a8c-ci-toolkit#3.2.0"
+export CI_TOOLKIT="automattic/a8c-ci-toolkit#fix-publish-pod-2"
