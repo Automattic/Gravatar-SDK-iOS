@@ -3,12 +3,12 @@ import XCTest
 
 final class URLSessionHTTPClientTests: XCTestCase {
     func testFetchReturnsData() async throws {
-        let sessionMock = URLSessionMock(returnData: jsonData, response: HTTPURLResponse())
+        let sessionMock = URLSessionMock(returnData: URLSessionMock.jsonData, response: HTTPURLResponse())
         let client = URLSessionHTTPClient(urlSession: sessionMock)
         let mockURLRequest = URLRequest(url: URL(string: "https://a-host.com")!)
         let result: (data: Data, response: HTTPURLResponse) = try await client.fetchData(with: mockURLRequest)
 
-        XCTAssertEqual(result.data, jsonData)
+        XCTAssertEqual(result.data, URLSessionMock.jsonData)
     }
 
     func testFetchReturnsError() async throws {
@@ -69,50 +69,5 @@ final class URLSessionHTTPClientTests: XCTestCase {
 
             XCTAssertEqual(result.response.statusCode, validStatusCode)
         }
-    }
-}
-
-private let jsonData = """
-{
-    "name": "John",
-    "surname": "Appleseed"
-}
-""".data(using: .utf8)!
-
-class URLSessionMock: URLSessionProtocol {
-    let returnData: Data
-    let response: HTTPURLResponse
-    let error: NSError?
-    var callsCount = 0
-
-    var request: URLRequest? = nil
-    var uploadData: Data? = nil
-
-    init(returnData: Data, response: HTTPURLResponse, error: NSError? = nil) {
-        self.returnData = returnData
-        self.response = response
-        self.error = error
-    }
-
-    func dataTask(with request: URLRequest, completionHandler: @escaping @Sendable (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTask {
-        fatalError()
-    }
-
-    func data(for request: URLRequest) async throws -> (Data, URLResponse) {
-        callsCount += 1
-        self.request = request
-        if let error {
-            throw error
-        }
-        return (returnData, response)
-    }
-
-    func upload(for request: URLRequest, from bodyData: Data) async throws -> (Data, URLResponse) {
-        self.request = request
-        self.uploadData = bodyData
-        if let error {
-            throw error
-        }
-        return (returnData, response)
     }
 }

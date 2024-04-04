@@ -6,7 +6,7 @@ public protocol ImageCaching {
     func getImage(forKey key: String) -> UIImage?
 }
 
-class ImageCache: ImageCaching {
+public class ImageCache: ImageCaching {
     private let cache = NSCache<NSString, UIImage>()
 
     /// The default cache used by the image dowloader.

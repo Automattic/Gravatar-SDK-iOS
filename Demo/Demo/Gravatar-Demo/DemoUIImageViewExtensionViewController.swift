@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 import Gravatar
+import GravatarUI
 
 class DemoUIImageViewExtensionViewController: UIViewController {
     static let imageViewSize: CGSize = .init(width: 300, height: 300)
