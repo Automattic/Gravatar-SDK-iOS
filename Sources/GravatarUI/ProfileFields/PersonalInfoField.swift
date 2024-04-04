@@ -6,7 +6,7 @@ public struct PersonalInfoBuilder {
          .init([.namePronunciation, .defaultSeparator, .pronouns, .defaultSeparator, .location])]
     }
 
-    var label: UILabel
+    let label: UILabel
     init(label: UILabel) {
         self.label = label
     }
