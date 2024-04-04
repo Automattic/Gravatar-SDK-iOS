@@ -11,6 +11,7 @@ public struct PersonalInfoBuilder {
         self.label = label
     }
 
+    @discardableResult
     public func content(
         _ model: PersonalInfoModel,
         lines: [PersonalInfoLine] = Self.defaultPersonalInfo
