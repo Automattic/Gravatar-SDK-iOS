@@ -1,3 +1,3 @@
 module Gravatar
-    VERSION = '1.0.1'.freeze
+    VERSION = '1.0.1-alpha'.freeze
 end
