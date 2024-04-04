@@ -20,11 +20,13 @@ public enum DefaultAvatarOption {
     case roboHash
     /// A transparent PNG image
     case transparentPNG
-    /// If you prefer to use your own default image (perhaps your logo, a funny face, whatever), then you can easily do so by using the CustomUrl option and supplying the URL to an image.
+    /// If you prefer to use your own default image (perhaps your logo, a funny face, whatever), then you can easily do so by using the CustomUrl option and
+    /// supplying the URL to an image.
     ///
     /// - Rating and size parameters are ignored when the custom default is set.
     /// - There are a few conditions which must be met for default image URL:
-    ///   * **MUST** be publicly available (e.g. cannot be on an intranet, on a local development machine, behind HTTP Auth or some other firewall etc). Default images are passed through a security scan to avoid malicious content.
+    ///   * **MUST** be publicly available (e.g. cannot be on an intranet, on a local development machine, behind HTTP Auth or some other firewall etc). Default
+    /// images are passed through a security scan to avoid malicious content.
     ///   * **MUST** be accessible via HTTP or HTTPS on the standard ports, 80 and 443, respectively.
     ///   * **MUST** have a recognizable image extension (jpg, jpeg, gif, png, heic)
     ///   * **MUST NOT** include a querystring (if it does, it will be ignored)
