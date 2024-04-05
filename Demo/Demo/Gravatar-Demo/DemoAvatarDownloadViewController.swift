@@ -73,6 +73,15 @@ class DemoAvatarDownloadViewController: UIViewController {
         return button
     }()
 
+    private lazy var customAvatarDefaultInputField: UITextField = {
+        let textField = UITextField()
+        textField.translatesAutoresizingMaskIntoConstraints = false
+        textField.placeholder = "Set custom avatar default URL"
+        textField.keyboardType = .URL
+        textField.delegate = self
+        return textField
+    }()
+
     private lazy var fetchAvatarButton: UIButton = {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -99,6 +108,7 @@ class DemoAvatarDownloadViewController: UIViewController {
             igonreCacheSwitchWithLabel,
             forceDefaultAvatarSwitchWithLabel,
             imageDefaultButton,
+            customAvatarDefaultInputField,
             fetchAvatarButton,
             avatarImageView
         ])
@@ -152,6 +162,7 @@ class DemoAvatarDownloadViewController: UIViewController {
             controller.addAction(UIAlertAction(title: "\(option)", style: .default) { [weak self] action in
                 self?.preferredDefaultAvatar = option
                 self?.imageDefaultButton.setTitle("Default Avatar Option: \(option)", for: .normal)
+                self?.customAvatarDefaultInputField.text = ""
             })
         }
 
@@ -161,7 +172,6 @@ class DemoAvatarDownloadViewController: UIViewController {
     }
 
     @objc private func fetchAvatarButtonHandler() {
-        
         let options: ImageDownloadOptions = .init(
             preferredSize: .points(preferredSize),
             rating: preferredRating,
@@ -222,5 +232,22 @@ class DemoAvatarDownloadViewController: UIViewController {
                 stackView.insertArrangedSubview(hashInputField, at: index)
             }
         }
+    }
+}
+
+extension DemoAvatarDownloadViewController: UITextFieldDelegate {
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        guard let url = URL(string: textField.text ?? "") else {
+            textField.text = nil
+            return
+        }
+
+        imageDefaultButton.setTitle("Default Avatar Option: Custom URL", for: .normal)
+        preferredDefaultAvatar = .customURL(url)
+    }
+
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
     }
 }

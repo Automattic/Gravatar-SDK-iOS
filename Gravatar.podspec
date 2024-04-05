@@ -21,19 +21,4 @@ Pod::Spec.new do |s|
   s.ios.deployment_target = ios_deployment_target
 
   s.source_files = 'Sources/Gravatar/**/*.swift'
-
-  s.test_spec 'GravatarTests' do |swift_unit_tests|
-    swift_unit_tests.platforms = {
-        :ios => ios_deployment_target,
-    }
-    swift_unit_tests.source_files = [
-        'Tests/GravatarTests/**/*.swift'
-    ]
-    swift_unit_tests.resource_bundles = {
-        GravatarTestsResources: [
-            'Tests/GravatarTests/Resources/**/*'
-        ]
-    }
-    swift_unit_tests.requires_app_host = false
-  end
 end

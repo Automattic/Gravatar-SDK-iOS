@@ -1,4 +1,5 @@
 import Gravatar
+import GravatarUI
 import UIKit
 
 class TestActivityIndicator: ActivityIndicatorProvider {
