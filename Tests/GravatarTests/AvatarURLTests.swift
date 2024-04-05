@@ -8,6 +8,8 @@ final class AvatarURLTests: XCTestCase {
     let exampleEmail = "some@email.com"
     let exampleEmailSHA = "676212ff796c79a3c06261eb10e3f455aa93998ee6e45263da13679c74b1e674"
 
+    let customAvatarDefaultURL = URL(string: "https://domain.com/image.jpg")!
+
     func testIsAvatarURL() throws {
         XCTAssertTrue(AvatarURL.isAvatarURL(verifiedAvatarURL))
         XCTAssertTrue(AvatarURL.isAvatarURL(verifiedAvatarURL2))
@@ -41,6 +43,10 @@ final class AvatarURLTests: XCTestCase {
         XCTAssertEqual(verifiedAvatarURL(options: AvatarQueryOptions(defaultAvatarOption: .roboHash)).url.query, "d=robohash")
         XCTAssertEqual(verifiedAvatarURL(options: AvatarQueryOptions(defaultAvatarOption: .transparentPNG)).url.query, "d=blank")
         XCTAssertEqual(verifiedAvatarURL(options: AvatarQueryOptions(defaultAvatarOption: .wavatar)).url.query, "d=wavatar")
+        XCTAssertEqual(
+            verifiedAvatarURL(options: AvatarQueryOptions(defaultAvatarOption: .customURL(customAvatarDefaultURL))).url.query,
+            "d=https://domain.com/image.jpg"
+        )
     }
 
     func testURLWithForcedImageDefault() throws {
