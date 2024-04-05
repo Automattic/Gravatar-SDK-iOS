@@ -4,7 +4,7 @@ import UIKit
 public protocol ProfileCardModel: AboutMeModel, DisplayNameModel, PersonalInfoModel, AvatarIdentifierProvider {}
 extension UserProfile: ProfileCardModel {}
 
-public class ProfileCardView: UIView {
+public class LargeProfileView: UIView {
     private enum Constants {
         static let avatarLength: CGFloat = 132.0
     }

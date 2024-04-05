@@ -3,7 +3,7 @@ import GravatarUI
 import SnapshotTesting
 import XCTest
 
-final class ProfileCardViewTests: XCTestCase {
+final class LargeProfileViewTests: XCTestCase {
     enum Constants {
         static let width: CGFloat = 320
         static let containerHeight: CGFloat = 350
@@ -16,17 +16,17 @@ final class ProfileCardViewTests: XCTestCase {
         // isRecording = true
     }
 
-    func testProfileCardView() throws {
+    func testLargeProfileView() throws {
         for paletteType in palettesToTest {
             let (cardView, containerView) = createViews(paletteType: paletteType)
             cardView.update(with: TestProfileCardModel.fullCard())
             cardView.avatarImageView.backgroundColor = .blue
-            assertSnapshot(of: containerView, as: .image, named: "testProfileCardView-\(paletteType.name)")
+            assertSnapshot(of: containerView, as: .image, named: "testLargeProfileView-\(paletteType.name)")
         }
     }
 
-    private func createViews(paletteType: PaletteType) -> (ProfileCardView, UIView) {
-        let cardView = ProfileCardView(frame: .zero, paletteType: paletteType)
+    private func createViews(paletteType: PaletteType) -> (LargeProfileView, UIView) {
+        let cardView = LargeProfileView(frame: .zero, paletteType: paletteType)
         cardView.translatesAutoresizingMaskIntoConstraints = false
         cardView.widthAnchor.constraint(equalToConstant: Constants.width).isActive = true
         let containerView = UIView()

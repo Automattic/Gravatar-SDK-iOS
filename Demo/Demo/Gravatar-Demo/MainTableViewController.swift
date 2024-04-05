@@ -66,7 +66,7 @@ class MainTableViewController: UITableViewController {
         case .imageUpload:
             navigationController?.pushViewController(DemoUploadImageViewController(), animated: true)
         case .profileCard:
-            navigationController?.pushViewController(DemoProfileCardViewController(), animated: true)
+            navigationController?.pushViewController(DemoLargeProfileViewController(), animated: true)
         }
     }
 }

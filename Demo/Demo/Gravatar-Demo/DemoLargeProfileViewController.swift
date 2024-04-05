@@ -2,7 +2,7 @@ import UIKit
 import Gravatar
 import GravatarUI
 
-class DemoProfileCardViewController: UIViewController {
+class DemoLargeProfileViewController: UIViewController {
     
     lazy var emailField: UITextField = {
         let textField = UITextField()
@@ -26,8 +26,8 @@ class DemoProfileCardViewController: UIViewController {
 
     let activityIndicator = UIActivityIndicatorView(style: .large)
 
-    lazy var profileCardView: ProfileCardView = {
-        let view = ProfileCardView(frame: .zero, paletteType: preferredPaletteType)
+    lazy var largeProfileView: LargeProfileView = {
+        let view = LargeProfileView(frame: .zero, paletteType: preferredPaletteType)
         view.translatesAutoresizingMaskIntoConstraints = false
         view.avatarImageView.gravatar.activityIndicatorType = .activity
         return view
@@ -57,7 +57,7 @@ class DemoProfileCardViewController: UIViewController {
     
     var preferredPaletteType: PaletteType = .system {
         didSet {
-            profileCardView.paletteType = preferredPaletteType
+            largeProfileView.paletteType = preferredPaletteType
         }
     }
     
@@ -67,15 +67,15 @@ class DemoProfileCardViewController: UIViewController {
         self.edgesForExtendedLayout = []
         view.backgroundColor = .white
         view.addSubview(rootStackView)
-        view.addSubview(profileCardView)
+        view.addSubview(largeProfileView)
         
         NSLayoutConstraint.activate([
             view.topAnchor.constraint(equalTo: rootStackView.topAnchor, constant: -20),
             view.leadingAnchor.constraint(equalTo: rootStackView.leadingAnchor),
             view.trailingAnchor.constraint(equalTo: rootStackView.trailingAnchor),
-            profileCardView.containerLayoutGuide.leadingAnchor.constraint(equalTo: rootStackView.leadingAnchor, constant: 30),
-            profileCardView.containerLayoutGuide.trailingAnchor.constraint(equalTo: rootStackView.trailingAnchor, constant: -30),
-            profileCardView.containerLayoutGuide.topAnchor.constraint(equalTo: rootStackView.bottomAnchor),
+            largeProfileView.containerLayoutGuide.leadingAnchor.constraint(equalTo: rootStackView.leadingAnchor, constant: 30),
+            largeProfileView.containerLayoutGuide.trailingAnchor.constraint(equalTo: rootStackView.trailingAnchor, constant: -30),
+            largeProfileView.containerLayoutGuide.topAnchor.constraint(equalTo: rootStackView.bottomAnchor),
         ])
     }
     
@@ -118,8 +118,8 @@ class DemoProfileCardViewController: UIViewController {
             do {
                 let profile = try await service.fetch(with: identifier)
                 activityIndicator.stopAnimating()
-                profileCardView.update(with: profile)
-                profileCardView.loadAvatar(with: profile.avatarIdentifier, options: [.transition(.fade(0.2))])
+                largeProfileView.update(with: profile)
+                largeProfileView.loadAvatar(with: profile.avatarIdentifier, options: [.transition(.fade(0.2))])
             } catch {
                 activityIndicator.stopAnimating()
                 print(error)
