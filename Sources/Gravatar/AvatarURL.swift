@@ -55,10 +55,10 @@ extension URL {
         guard var components = URLComponents(url: self, resolvingAgainstBaseURL: false) else {
             return nil
         }
-        components.percentEncodedQueryItems = options.queryItems
+        components.queryItems = options.queryItems
 
-        if components.percentEncodedQueryItems?.isEmpty == true {
-            components.percentEncodedQueryItems = nil
+        if components.queryItems?.isEmpty == true {
+            components.queryItems = nil
         }
 
         return components.url

@@ -87,7 +87,7 @@ extension DefaultAvatarOption? {
     fileprivate var queryValue: String? {
         guard let self else { return nil }
 
-        return self.rawValue.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)
+        return self.rawValue
     }
 }
 

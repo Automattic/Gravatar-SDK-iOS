@@ -45,7 +45,7 @@ final class AvatarURLTests: XCTestCase {
         XCTAssertEqual(verifiedAvatarURL(options: AvatarQueryOptions(defaultAvatarOption: .wavatar)).url.query, "d=wavatar")
         XCTAssertEqual(
             verifiedAvatarURL(options: AvatarQueryOptions(defaultAvatarOption: .customURL(customAvatarDefaultURL))).url.query,
-            "d=https%3A%2F%2Fdomain.com%2Fimage.jpg"
+            "d=https://domain.com/image.jpg"
         )
     }
 
