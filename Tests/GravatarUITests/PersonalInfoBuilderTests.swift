@@ -13,6 +13,14 @@ final class PersonalInfoBuilderTests: XCTestCase {
         // isRecording = true
     }
 
+    func testPersonalInfoEmpty() {
+        let label = UILabel(frame: frame)
+        Configure(label)
+            .asPersonalInfo()
+            .content(TestPersonalInfo.empty())
+        XCTAssertEqual(label.text, "")
+    }
+
     func testPersonalInfoFull() {
         let label = UILabel(frame: frame)
         for palette in palettesToTest {
@@ -56,5 +64,9 @@ struct TestPersonalInfo: PersonalInfoModel {
 
     static func fullInfo() -> TestPersonalInfo {
         TestPersonalInfo(jobTitle: "Carpenter", pronunciation: "Car-N", pronouns: "she/her", currentLocation: "Connecticut")
+    }
+    
+    static func empty() -> TestPersonalInfo {
+        TestPersonalInfo()
     }
 }
