@@ -46,6 +46,6 @@ public struct AvatarService {
     /// - Returns: An asynchronously-delivered `URLResponse` instance, containing the response of the upload network task.
     @discardableResult
     public func upload(_ image: UIImage, email: Email, accessToken: String) async throws -> URLResponse {
-        try await imageUploader.uploadImage(image, email: email, accessToken: accessToken)
+        try await imageUploader.uploadImage(image, email: email, accessToken: accessToken, additionalHTTPHeaders: [(name: "Client-Type", value: "ios")])
     }
 }
