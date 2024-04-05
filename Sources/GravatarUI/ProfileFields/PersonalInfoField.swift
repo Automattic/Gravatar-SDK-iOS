@@ -17,12 +17,14 @@ public struct PersonalInfoBuilder {
         lines: [PersonalInfoLine] = Self.defaultPersonalInfo
     ) -> PersonalInfoBuilder {
         var resultText = ""
+        var previousLine = ""
         for line in lines {
             let text = line.text(from: model)
-            if !resultText.isEmpty && !resultText.hasSuffix("\n") {
+            if !previousLine.isEmpty && !text.isEmpty {
                 resultText.append("\n")
             }
             resultText.append(text)
+            previousLine = text
         }
         label.text = resultText
         label.font = .DS.Body.small
