@@ -13,17 +13,18 @@ struct ImageUploadService: ImageUploader {
     }
 
     @discardableResult
-    func uploadImage(_ image: UIImage, email: Email, accessToken: String) async throws -> URLResponse {
+    func uploadImage(_ image: UIImage, email: Email, accessToken: String, additionalHTTPHeaders: [HTTPHeaderField]?) async throws -> URLResponse {
         guard let data = image.pngData() else {
             throw ImageUploadError.cannotConvertImageIntoData
         }
 
-        return try await uploadImage(data: data, email: email, accessToken: accessToken)
+        return try await uploadImage(data: data, email: email, accessToken: accessToken, additionalHTTPHeaders: additionalHTTPHeaders)
     }
 
-    private func uploadImage(data: Data, email: Email, accessToken: String) async throws -> URLResponse {
+    private func uploadImage(data: Data, email: Email, accessToken: String, additionalHTTPHeaders: [HTTPHeaderField]?) async throws -> URLResponse {
         let boundary = "Boundary-\(UUID().uuidString)"
-        let request = URLRequest.imageUploadRequest(with: boundary).settingAuthorizationHeaderField(with: accessToken)
+        let request = URLRequest.imageUploadRequest(with: boundary, additionalHTTPHeaders: additionalHTTPHeaders)
+            .settingAuthorizationHeaderField(with: accessToken)
         // For the Multipart form/data, we need to send the email address, not the id of the emai address
         let body = imageUploadBody(with: data, account: email.rawValue, boundary: boundary) // TODO:
         do {
@@ -75,11 +76,14 @@ extension Data {
 }
 
 extension URLRequest {
-    fileprivate static func imageUploadRequest(with boundary: String) -> URLRequest {
+    fileprivate static func imageUploadRequest(with boundary: String, additionalHTTPHeaders: [HTTPHeaderField]?) -> URLRequest {
         let url = URL(string: "https://api.gravatar.com/v1/upload-image")!
         var request = URLRequest(url: url)
         request.addValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
         request.httpMethod = "POST"
+        additionalHTTPHeaders?.forEach { headerTuple in
+            request.addValue(headerTuple.value, forHTTPHeaderField: headerTuple.name)
+        }
         return request
     }
 }
