@@ -21,6 +21,21 @@ final class PersonalInfoBuilderTests: XCTestCase {
         XCTAssertEqual(label.text, "")
     }
 
+    func testPersonalInfoSkipsSeparatorAndNewLine() {
+        let label = UILabel(frame: frame)
+        let testData = TestPersonalInfo(jobTitle: "Engineer", pronunciation: nil)
+        Configure(label)
+            .asPersonalInfo()
+            .content(
+                testData,
+                lines: [
+                    .init([.namePronunciation, .separator(" - "), .jobTitle]),
+                    .init([.location]),
+                ]
+            )
+        XCTAssertEqual(label.text, "Engineer", "Do not put unnecessary separator or new line.")
+    }
+
     func testPersonalInfoFull() {
         let label = UILabel(frame: frame)
         for palette in palettesToTest {
@@ -65,7 +80,7 @@ struct TestPersonalInfo: PersonalInfoModel {
     static func fullInfo() -> TestPersonalInfo {
         TestPersonalInfo(jobTitle: "Carpenter", pronunciation: "Car-N", pronouns: "she/her", currentLocation: "Connecticut")
     }
-    
+
     static func empty() -> TestPersonalInfo {
         TestPersonalInfo()
     }

@@ -9,7 +9,7 @@ public struct PersonalInfoLine {
 
     func text(from model: PersonalInfoModel) -> String {
         var string = ""
-        var previousBlockText: String = ""
+        var previousBlockText = ""
         for block in buildingBlocks {
             let textToAdd = block.text(from: model) ?? ""
             // Do not add separator if the previous block is empty
@@ -47,13 +47,13 @@ public enum PersonalInfoBuildingBlock {
     static var defaultSeparator: PersonalInfoBuildingBlock {
         .separator("・")
     }
-    
+
     var isSeparator: Bool {
         switch self {
-        case .separator(_):
-            return true
+        case .separator:
+            true
         default:
-            return false
+            false
         }
     }
 }
