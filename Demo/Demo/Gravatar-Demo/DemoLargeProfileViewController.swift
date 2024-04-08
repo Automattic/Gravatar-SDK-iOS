@@ -4,7 +4,7 @@ import GravatarUI
 
 class DemoLargeProfileViewController: UIViewController {
     
-    lazy var emailField: UITextField = {
+    let emailField: UITextField = {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.placeholder = "Email"
@@ -14,7 +14,7 @@ class DemoLargeProfileViewController: UIViewController {
         textField.textAlignment = .center
         return textField
     }()
-    
+
     lazy var fetchProfileButton: UIButton = {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -32,10 +32,16 @@ class DemoLargeProfileViewController: UIViewController {
         view.avatarImageView.gravatar.activityIndicatorType = .activity
         return view
     }()
-    
+
+    lazy var largeProfileSummaryView: LargeProfileSummaryView = {
+        let view = LargeProfileSummaryView(frame: .zero, paletteType: preferredPaletteType)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.avatarImageView.gravatar.activityIndicatorType = .activity
+        return view
+    }()
+//
     lazy var rootStackView: UIStackView = {
         let stack = UIStackView(arrangedSubviews: [emailField, paletteButton, fetchProfileButton, activityIndicator])
-        
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.axis = .vertical
         stack.spacing = 12
@@ -44,7 +50,7 @@ class DemoLargeProfileViewController: UIViewController {
 
         return stack
     }()
-
+//
     private lazy var paletteButton: UIButton = {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -58,24 +64,34 @@ class DemoLargeProfileViewController: UIViewController {
     var preferredPaletteType: PaletteType = .system {
         didSet {
             largeProfileView.paletteType = preferredPaletteType
+            largeProfileSummaryView.paletteType = preferredPaletteType
         }
     }
-    
+
+    let scrollView = UIScrollView()
+
+    override func loadView() {
+        scrollView.contentInset = UIEdgeInsets(top: 20, left: 20, bottom: 20, right: -20)
+        view = scrollView
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "Fetch Profile"
-        self.edgesForExtendedLayout = []
-        view.backgroundColor = .white
+
+        view.backgroundColor = .secondarySystemBackground
+
         view.addSubview(rootStackView)
-        view.addSubview(largeProfileView)
-        
+        rootStackView.addArrangedSubview(largeProfileView)
+        rootStackView.addArrangedSubview(largeProfileSummaryView)
         NSLayoutConstraint.activate([
-            view.topAnchor.constraint(equalTo: rootStackView.topAnchor, constant: -20),
-            view.leadingAnchor.constraint(equalTo: rootStackView.leadingAnchor),
-            view.trailingAnchor.constraint(equalTo: rootStackView.trailingAnchor),
-            largeProfileView.containerLayoutGuide.leadingAnchor.constraint(equalTo: rootStackView.leadingAnchor, constant: 30),
-            largeProfileView.containerLayoutGuide.trailingAnchor.constraint(equalTo: rootStackView.trailingAnchor, constant: -30),
-            largeProfileView.containerLayoutGuide.topAnchor.constraint(equalTo: rootStackView.bottomAnchor),
+            scrollView.contentLayoutGuide.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
+
+            rootStackView.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
+            rootStackView.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
+            rootStackView.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
+            rootStackView.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor),
+            rootStackView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -40),
         ])
     }
     
@@ -104,7 +120,6 @@ class DemoLargeProfileViewController: UIViewController {
         present(controller, animated: true)
     }
 
-    
     @objc func fetchProfileButtonHandler() {
         var identifier: ProfileIdentifier
         guard let email = emailField.text, email.isEmpty == false else { return }
@@ -115,13 +130,14 @@ class DemoLargeProfileViewController: UIViewController {
         activityIndicator.startAnimating()
         let service = ProfileService()
         Task {
+            defer { activityIndicator.stopAnimating() }
             do {
                 let profile = try await service.fetch(with: identifier)
-                activityIndicator.stopAnimating()
                 largeProfileView.update(with: profile)
                 largeProfileView.loadAvatar(with: profile.avatarIdentifier, options: [.transition(.fade(0.2))])
+                largeProfileSummaryView.update(with: profile)
+                largeProfileSummaryView.loadAvatar(with: profile.avatarIdentifier, options: [.transition(.fade(0.2))])
             } catch {
-                activityIndicator.stopAnimating()
                 print(error)
             }
         }
