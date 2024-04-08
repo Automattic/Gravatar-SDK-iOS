@@ -115,6 +115,6 @@ public class LargeProfileSummaryView: UIView {
     }
 }
 
-private extension CGFloat {
-    static let margin: CGFloat = 24
+extension CGFloat {
+    fileprivate static let margin: CGFloat = 24
 }

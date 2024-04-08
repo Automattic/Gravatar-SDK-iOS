@@ -4,7 +4,7 @@ public struct PersonalInfoBuilder {
     public static var defaultPersonalInfo: [PersonalInfoLine] {
         [
             .init([.jobTitle]),
-            .init([.namePronunciation, .defaultSeparator, .pronouns, .defaultSeparator, .location])
+            .init([.namePronunciation, .defaultSeparator, .pronouns, .defaultSeparator, .location]),
         ]
     }
 
