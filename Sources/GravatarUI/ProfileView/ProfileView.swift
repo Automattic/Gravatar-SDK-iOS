@@ -34,7 +34,6 @@ public class ProfileView: UIView {
         return stack
     }()
 
-
     public private(set) lazy var avatarImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
