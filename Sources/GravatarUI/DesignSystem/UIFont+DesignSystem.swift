@@ -10,11 +10,14 @@ extension UIFont {
     // Note: These are dynamic sized fonts so the real size will vary.
     enum DS {
         static var largeTitle: UIFont { DynamicFontHelper.font(forTextStyle: .largeTitle, weight: .bold) } // 34pt
+        static var mediumTitle: UIFont { DynamicFontHelper.font(forTextStyle: .title1, weight: .bold, size: 24) } // 24pt
+        static var smallTitle: UIFont { DynamicFontHelper.font(forTextStyle: .title1, weight: .bold, size: 18) } // 18pt
         static var title1: UIFont { DynamicFontHelper.font(forTextStyle: .title1, weight: .bold) } // 28pt
         static var title2: UIFont { DynamicFontHelper.font(forTextStyle: .title2, weight: .bold) } // 22pt
         static var title3: UIFont { DynamicFontHelper.font(forTextStyle: .title3, weight: .semibold) } // 20pt
 
         enum Body {
+            static var xSmall: UIFont { DynamicFontHelper.font(forTextStyle: .subheadline, weight: .regular, size: 14) } // 14pt
             static var small: UIFont { DynamicFontHelper.font(forTextStyle: .subheadline, weight: .regular) } // 15pt
             static var medium: UIFont { DynamicFontHelper.font(forTextStyle: .callout, weight: .regular) } // 16pt
             static var large: UIFont { DynamicFontHelper.font(forTextStyle: .body, weight: .regular) } // 17pt
@@ -32,11 +35,11 @@ extension UIFont {
 }
 
 private enum DynamicFontHelper {
-    static func font(forTextStyle style: UIFont.TextStyle, weight: UIFont.Weight) -> UIFont {
+    static func font(forTextStyle style: UIFont.TextStyle, weight: UIFont.Weight, size: CGFloat = CGFloat(0)) -> UIFont {
         var fontDescriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: style)
         let traits = [UIFontDescriptor.TraitKey.weight: weight]
         fontDescriptor = fontDescriptor.addingAttributes([.traits: traits])
-        let font = UIFont(descriptor: fontDescriptor, size: CGFloat(0.0))
+        let font = UIFont(descriptor: fontDescriptor, size: size)
 
         if UIFont.isGravatarDynamicFontSizeEnabled {
             return UIFontMetrics.default.scaledFont(for: font)

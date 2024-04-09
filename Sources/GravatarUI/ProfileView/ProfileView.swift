@@ -1,24 +1,39 @@
 import Gravatar
 import UIKit
 
-public protocol ProfileCardSummaryModel: DisplayNameModel, PersonalInfoModel, AvatarIdentifierProvider {}
-extension UserProfile: ProfileCardSummaryModel {}
-
-public class LargeProfileSummaryView: UIView {
+public class ProfileView: UIView {
     private enum Constants {
-        static let avatarLength: CGFloat = 132.0
+        static let avatarLength: CGFloat = 72
     }
 
     public private(set) lazy var rootStackView: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [avatarImageView, displayNameLabel, personalInfoLabel])
+        let stack = UIStackView(arrangedSubviews: [topStackView, aboutMeLabel])
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.axis = .vertical
         stack.spacing = .DS.Padding.single
         stack.setCustomSpacing(.DS.Padding.double, after: avatarImageView)
         stack.setCustomSpacing(0, after: displayNameLabel)
-        stack.alignment = .center
+        stack.alignment = .leading
         return stack
     }()
+
+    private lazy var topStackView: UIStackView = {
+        let stack = UIStackView(arrangedSubviews: [avatarImageView, basicInfoStackView])
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        stack.axis = .horizontal
+        stack.spacing = .DS.Padding.split
+        return stack
+    }()
+
+    private lazy var basicInfoStackView: UIStackView = {
+        let stack = UIStackView(arrangedSubviews: [displayNameLabel, personalInfoLabel])
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        stack.axis = .vertical
+        stack.alignment = .leading
+        stack.distribution = .fillProportionally
+        return stack
+    }()
+
 
     public private(set) lazy var avatarImageView: UIImageView = {
         let imageView = UIImageView()
@@ -28,6 +43,13 @@ public class LargeProfileSummaryView: UIView {
         imageView.layer.cornerRadius = Constants.avatarLength / 2
         imageView.clipsToBounds = true
         return imageView
+    }()
+
+    public private(set) lazy var aboutMeLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.adjustsFontForContentSizeCategory = true
+        return label
     }()
 
     public private(set) lazy var displayNameLabel: UILabel = {
@@ -41,6 +63,7 @@ public class LargeProfileSummaryView: UIView {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.adjustsFontForContentSizeCategory = true
+        label.contentMode = .top
         return label
     }()
 
@@ -79,9 +102,10 @@ public class LargeProfileSummaryView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    public func update(with model: ProfileCardSummaryModel) {
-        Configure(displayNameLabel).asDisplayName().content(model).palette(paletteType)
-        Configure(personalInfoLabel).asPersonalInfo().content(model).palette(paletteType).alignment(.center)
+    public func update(with model: ProfileCardModel) {
+        Configure(aboutMeLabel).asAboutMe().content(model).palette(paletteType)
+        Configure(displayNameLabel).asDisplayName().content(model).palette(paletteType).font(.DS.smallTitle)
+        Configure(personalInfoLabel).asPersonalInfo().content(model).palette(paletteType)
     }
 
     public func loadAvatar(
@@ -115,6 +139,7 @@ public class LargeProfileSummaryView: UIView {
     func refresh(with paletteType: PaletteType) {
         avatarImageView.layer.borderColor = paletteType.palette.avatarBorder.cgColor
         backgroundColor = paletteType.palette.background.primary
+        Configure(aboutMeLabel).asAboutMe().palette(paletteType)
         Configure(displayNameLabel).asDisplayName().palette(paletteType)
         Configure(personalInfoLabel).asPersonalInfo().palette(paletteType)
     }
