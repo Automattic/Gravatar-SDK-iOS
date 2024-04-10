@@ -6,15 +6,14 @@ public struct AccountButtonBuilder {
     let button: UIButton
     init(button: UIButton) {
         self.button = button
-        button.configuration = .accountButton()
-        button.setContentHuggingPriority(.required, for: .horizontal)
     }
 
     @discardableResult
     public func content(_ model: AccountModel) -> AccountButtonBuilder {
-        var config = button.configuration
-        config?.image = image(with: model)
+        var config = UIButton.Configuration.accountButton()
+        config.image = image(with: model)
         button.configuration = config
+        button.setContentHuggingPriority(.required, for: .horizontal)
         return self
     }
 

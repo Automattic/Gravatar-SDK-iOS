@@ -17,18 +17,17 @@ public struct ProfileButtonBuilder {
     let button: UIButton
     init(button: UIButton) {
         self.button = button
-        button.configuration = .profileButton()
-        button.contentHorizontalAlignment = .leading
     }
 
     @discardableResult
     public func style(_ style: ProfileButtonStyle) -> ProfileButtonBuilder {
-        var config = button.configuration
-        config?.attributedTitle = AttributedString(
+        var config = UIButton.Configuration.profileButton()
+        config.attributedTitle = AttributedString(
             style.localizedTitle,
             attributes: AttributeContainer([NSAttributedString.Key.font: UIFont.DS.Body.xSmall])
         )
         button.configuration = config
+        button.contentHorizontalAlignment = .leading
         return self
     }
 

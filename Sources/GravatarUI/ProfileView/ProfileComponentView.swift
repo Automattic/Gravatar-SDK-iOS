@@ -134,9 +134,11 @@ open class ProfileComponentView: UIView {
         Configure(displayNameLabel).asDisplayName().palette(paletteType)
         Configure(personalInfoLabel).asPersonalInfo().palette(paletteType)
 
-        var config = profileButton.configuration
-        config?.baseForegroundColor = paletteType.palette.foreground.primary
-        profileButton.configuration = config
+        Configure(profileButton).asProfileButton().palette(paletteType)
+
+        accountButtonsStackView.arrangedSubviews.compactMap { $0 as? UIButton }.forEach { button in
+            Configure(button).asAccountButton().palette(paletteType)
+        }
     }
 
     func updateAccountButtons(with model: AccountListModel) {
