@@ -21,6 +21,13 @@ public class ProfileSummaryView: ProfileComponentView {
 
         [avatarImageView, basicInfoStackView].forEach(rootStackView.addArrangedSubview)
 
+        layoutMargins = UIEdgeInsets(
+            top: .DS.Padding.split,
+            left: .DS.Padding.medium,
+            bottom: .DS.Padding.split,
+            right: .DS.Padding.medium
+        )
+
         self.paletteType = palette
         refresh(with: palette)
     }
