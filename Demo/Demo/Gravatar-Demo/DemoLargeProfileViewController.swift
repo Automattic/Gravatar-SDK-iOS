@@ -47,6 +47,13 @@ class DemoLargeProfileViewController: UIViewController {
         return view
     }()
 
+    lazy var profileSummaryView: ProfileSummaryView = {
+        let view = ProfileSummaryView(frame: .zero, paletteType: preferredPaletteType)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.avatarImageView.gravatar.activityIndicatorType = .activity
+        return view
+    }()
+
     lazy var rootStackView: UIStackView = {
         let stack = UIStackView(arrangedSubviews: [emailField, paletteButton, fetchProfileButton, activityIndicator])
         stack.translatesAutoresizingMaskIntoConstraints = false
@@ -73,6 +80,7 @@ class DemoLargeProfileViewController: UIViewController {
             largeProfileView.paletteType = preferredPaletteType
             largeProfileSummaryView.paletteType = preferredPaletteType
             profileView.paletteType = preferredPaletteType
+            profileSummaryView.paletteType = preferredPaletteType
         }
     }
 
@@ -93,6 +101,7 @@ class DemoLargeProfileViewController: UIViewController {
         rootStackView.addArrangedSubview(largeProfileView)
         rootStackView.addArrangedSubview(largeProfileSummaryView)
         rootStackView.addArrangedSubview(profileView)
+        rootStackView.addArrangedSubview(profileSummaryView)
 
         NSLayoutConstraint.activate([
             scrollView.contentLayoutGuide.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
@@ -149,6 +158,8 @@ class DemoLargeProfileViewController: UIViewController {
                 largeProfileSummaryView.loadAvatar(with: profile.avatarIdentifier, options: [.transition(.fade(0.2))])
                 profileView.update(with: profile)
                 profileView.loadAvatar(with: profile.avatarIdentifier, options: [.transition(.fade(0.2))])
+                profileSummaryView.update(with: profile)
+                profileSummaryView.loadAvatar(with: profile.avatarIdentifier, options: [.transition(.fade(0.2))])
             } catch {
                 print(error)
             }
