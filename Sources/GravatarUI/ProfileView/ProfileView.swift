@@ -20,7 +20,10 @@ public class ProfileView: ProfileComponentView {
     }()
 
     private lazy var basicInfoStackView: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [displayNameLabel, personalInfoLabel])
+        let spacer = UIView()
+        spacer.translatesAutoresizingMaskIntoConstraints = false
+        spacer.setContentHuggingPriority(.defaultLow, for: .vertical)
+        let stack = UIStackView(arrangedSubviews: [displayNameLabel, personalInfoLabel, spacer])
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.axis = .vertical
         stack.alignment = .leading
@@ -39,7 +42,7 @@ public class ProfileView: ProfileComponentView {
         layoutMargins = UIEdgeInsets(
             top: .DS.Padding.medium,
             left: .DS.Padding.medium,
-            bottom: .DS.Padding.double,
+            bottom: .DS.Padding.single,
             right: .DS.Padding.medium
         )
     }
