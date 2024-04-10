@@ -2,10 +2,6 @@ import Gravatar
 import UIKit
 
 public class ProfileSummaryView: ProfileComponentView {
-    private enum Constants {
-        static let avatarLength: CGFloat = 72
-    }
-
     private lazy var basicInfoStackView: UIStackView = {
         let stack = UIStackView(arrangedSubviews: [displayNameLabel, personalInfoLabel, profileButton])
         stack.translatesAutoresizingMaskIntoConstraints = false

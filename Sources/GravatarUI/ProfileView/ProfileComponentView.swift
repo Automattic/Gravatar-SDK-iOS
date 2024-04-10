@@ -4,7 +4,10 @@ import UIKit
 open class ProfileComponentView: UIView {
     private enum Constants {
         static let avatarLength: CGFloat = 72
+        static let maximumAccountsDisplay = 3
     }
+
+    var maximumAccountsDisplay = Constants.maximumAccountsDisplay
 
     public lazy var rootStackView: UIStackView = {
         let stack = UIStackView()
@@ -51,6 +54,14 @@ open class ProfileComponentView: UIView {
         let button = UIButton(configuration: config)
 
         return button
+    }()
+
+    public let accountButtonsStackView: UIStackView = {
+        let stack = UIStackView()
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        stack.axis = .horizontal
+        stack.spacing = .DS.Padding.half
+        return stack
     }()
 
     public var paletteType: PaletteType {
@@ -126,5 +137,21 @@ open class ProfileComponentView: UIView {
         var config = profileButton.configuration
         config?.baseForegroundColor = paletteType.palette.foreground.primary
         profileButton.configuration = config
+    }
+
+    func updateAccountButtons(with model: AccountListModel) {
+        let buttons = model.accountsList?.prefix(maximumAccountsDisplay).map(createAccountButton)
+        for view in accountButtonsStackView.arrangedSubviews {
+            accountButtonsStackView.removeArrangedSubview(view)
+            view.removeFromSuperview()
+        }
+        accountButtonsStackView.addArrangedSubview(createAccountButton(with: model.gravatarAccount))
+        buttons?.forEach(accountButtonsStackView.addArrangedSubview)
+    }
+
+    func createAccountButton(with model: AccountModel) -> UIButton {
+        let button = UIButton()
+        Configure(button).asAccountButton().content(model).palette(paletteType)
+        return button
     }
 }

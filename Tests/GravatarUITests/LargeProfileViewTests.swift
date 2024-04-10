@@ -42,6 +42,10 @@ final class LargeProfileViewTests: XCTestCase {
 }
 
 struct TestProfileCardModel: ProfileCardModel {
+    var gravatarAccount: GravatarUI.AccountModel
+
+    var accountsList: [GravatarUI.AccountModel]?
+
     var aboutMe: String?
     var displayName: String?
     var fullName: String?
@@ -54,6 +58,13 @@ struct TestProfileCardModel: ProfileCardModel {
 
     static func fullCard() -> TestProfileCardModel {
         TestProfileCardModel(
+            gravatarAccount: TestAccountModel(display: "Gravatar", shortname: "gravatar"),
+            accountsList: [
+                TestAccountModel(display: "WordPress", shortname: "wordpress"),
+                TestAccountModel(display: "Tumblr", shortname: "tumblr"),
+                TestAccountModel(display: "Unknown", shortname: "unknown"),
+                TestAccountModel(display: "hidden", shortname: "hidden"),
+            ],
             aboutMe: "Hello, this is something about me.",
             displayName: "Display Name",
             fullName: "Name Surname",
@@ -65,4 +76,11 @@ struct TestProfileCardModel: ProfileCardModel {
             avatarIdentifier: .email("email@domain.com")
         )
     }
+}
+
+struct TestAccountModel: AccountModel {
+    var accountURL: URL?
+    var display: String
+    var shortname: String
+    var iconURL: URL?
 }
