@@ -20,6 +20,9 @@ Pod::Spec.new do |s|
     s.ios.deployment_target = ios_deployment_target
 
     s.source_files = 'Sources/GravatarUI/**/*.swift'
+    s.resource_bundles = {
+      'GravatarUI' => ['Sources/GravatarUI/Resources/*.xcassets']
+    }
     s.dependency 'Gravatar', s.version.to_s
     s.ios.framework = 'UIKit'
   end
