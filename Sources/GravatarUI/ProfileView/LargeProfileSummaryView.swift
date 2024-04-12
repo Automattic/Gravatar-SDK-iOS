@@ -1,8 +1,7 @@
 import Gravatar
 import UIKit
 
-public protocol ProfileCardSummaryModel: DisplayNameModel, PersonalInfoModel, AvatarIdentifierProvider {}
-extension UserProfile: ProfileCardSummaryModel {}
+public typealias ProfileCardSummaryModel = AvatarIdentifierProvider & DisplayNameModel & PersonalInfoModel
 
 public class LargeProfileSummaryView: UIView {
     private enum Constants {

@@ -2,6 +2,8 @@ import Gravatar
 import UIKit
 
 public class ProfileView: ProfileComponentView {
+    var model: ProfileCardModel?
+
     private lazy var topStackView: UIStackView = {
         let stack = UIStackView(arrangedSubviews: [avatarImageView, basicInfoStackView])
         stack.translatesAutoresizingMaskIntoConstraints = false
@@ -48,6 +50,7 @@ public class ProfileView: ProfileComponentView {
     }
 
     public func update(with model: ProfileCardModel) {
+        self.model = model
         Configure(aboutMeLabel).asAboutMe().content(model).palette(paletteType)
         Configure(displayNameLabel).asDisplayName().content(model).palette(paletteType).font(.DS.smallTitle)
         Configure(personalInfoLabel).asPersonalInfo().content(model).palette(paletteType)

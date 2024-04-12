@@ -4,7 +4,7 @@ struct Root: Decodable {
     let entry: [UserProfile]
 }
 
-public struct UserProfile: Decodable {
+public struct UserProfile: Decodable, Hashable {
     public let hash: String
     public let requestHash: String
     public let preferredUsername: String
@@ -56,13 +56,13 @@ extension UserProfile {
 }
 
 extension UserProfile {
-    public struct Name: Decodable {
+    public struct Name: Decodable, Hashable {
         public let givenName: String?
         public let familyName: String?
         public let formatted: String?
     }
 
-    public struct Email: Decodable {
+    public struct Email: Decodable, Hashable {
         public let value: String
         public let isPrimary: Bool
 
@@ -86,7 +86,7 @@ extension UserProfile {
         }
     }
 
-    public struct Account: Decodable {
+    public struct Account: Decodable, Hashable {
         public let domain: String
         public let display: String
         public let username: String
@@ -136,7 +136,7 @@ extension UserProfile {
         }
     }
 
-    public struct LinkURL: Decodable {
+    public struct LinkURL: Decodable, Hashable {
         public let title: String
         public let linkSlug: String?
         public let value: String
@@ -146,7 +146,7 @@ extension UserProfile {
         }
     }
 
-    public struct Photo: Decodable {
+    public struct Photo: Decodable, Hashable {
         public let type: String?
         public let value: String
 
