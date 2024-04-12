@@ -3,7 +3,7 @@ import SwiftUI
 public struct Profile: UIViewRepresentable {
     public typealias UIViewType = ProfileView
 
-    @Binding 
+    @Binding
     var model: ProfileCardModel?
 
     var palette: PaletteType = .system
@@ -19,7 +19,7 @@ public struct Profile: UIViewRepresentable {
 
         return profileView
     }
-    
+
     public func updateUIView(_ profileView: ProfileView, context: Context) {
         if let model {
             profileView.update(with: model)
