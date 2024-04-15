@@ -1,7 +1,7 @@
 import Gravatar
 import UIKit
 
-public typealias ProfileCardModel = AboutMeModel & AccountListModel & AvatarIdentifierProvider & DisplayNameModel & PersonalInfoModel
+public typealias ProfileModel = AboutMeModel & AccountListModel & AvatarIdentifierProvider & DisplayNameModel & PersonalInfoModel
 
 public class LargeProfileView: UIView {
     private enum Constants {
@@ -86,7 +86,7 @@ public class LargeProfileView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    public func update(with model: ProfileCardModel) {
+    public func update(with model: ProfileModel) {
         Configure(aboutMeLabel).asAboutMe().content(model).palette(paletteType)
         Configure(displayNameLabel).asDisplayName().content(model).palette(paletteType)
         Configure(personalInfoLabel).asPersonalInfo().content(model).palette(paletteType)

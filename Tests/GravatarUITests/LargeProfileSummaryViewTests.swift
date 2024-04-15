@@ -21,7 +21,7 @@ final class LargeProfileSummaryViewTests: XCTestCase {
         }
     }
 
-    private func createViews(model: ProfileCardSummaryModel) -> UIView {
+    private func createViews(model: ProfileSummaryModel) -> UIView {
         let cardView = LargeProfileSummaryView(frame: .zero, paletteType: .system)
         cardView.avatarImageView.backgroundColor = .systemBlue
         cardView.update(with: model)

@@ -21,7 +21,7 @@ final class ProfileViewTests: XCTestCase {
         }
     }
 
-    private func createViews(model: ProfileCardModel) -> UIView {
+    private func createViews(model: ProfileModel) -> UIView {
         let cardView = ProfileView(frame: .zero, paletteType: .system)
         cardView.avatarImageView.backgroundColor = .systemBlue
         cardView.update(with: model)

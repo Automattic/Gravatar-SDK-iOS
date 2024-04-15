@@ -1,20 +1,20 @@
 import UIKit
 
 public struct ProfileViewConfiguration: UIContentConfiguration {
-    let model: ProfileCardModel?
-    let summaryModel: ProfileCardSummaryModel?
+    let model: ProfileModel?
+    let summaryModel: ProfileSummaryModel?
 
     let palette: PaletteType
     let profileStyle: ProfileViewStyle
 
-    init(model: ProfileCardModel?, palette: PaletteType, profileStyle: ProfileViewStyle) {
+    init(model: ProfileModel?, palette: PaletteType, profileStyle: ProfileViewStyle) {
         self.model = model
         self.summaryModel = nil
         self.palette = palette
         self.profileStyle = profileStyle
     }
 
-    init(model: ProfileCardSummaryModel?, palette: PaletteType, profileStyle: ProfileViewStyle) {
+    init(model: ProfileSummaryModel?, palette: PaletteType, profileStyle: ProfileViewStyle) {
         self.model = nil
         self.summaryModel = model
         self.palette = palette
@@ -48,11 +48,11 @@ extension ProfileViewConfiguration {
 }
 
 extension ProfileViewConfiguration {
-    public static func standard(model: ProfileCardModel? = nil, palette: PaletteType = .system) -> ProfileViewConfiguration {
+    public static func standard(model: ProfileModel? = nil, palette: PaletteType = .system) -> ProfileViewConfiguration {
         self.init(model: model, palette: palette, profileStyle: .standard)
     }
 
-    public static func summary(model: ProfileCardSummaryModel? = nil, palette: PaletteType = .system) -> ProfileViewConfiguration {
+    public static func summary(model: ProfileSummaryModel? = nil, palette: PaletteType = .system) -> ProfileViewConfiguration {
         self.init(model: model, palette: palette, profileStyle: .summary)
     }
 }
