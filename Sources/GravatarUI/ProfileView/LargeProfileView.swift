@@ -1,8 +1,6 @@
 import Gravatar
 import UIKit
 
-public typealias ProfileModel = AboutMeModel & AccountListModel & AvatarIdentifierProvider & DisplayNameModel & PersonalInfoModel
-
 public class LargeProfileView: UIView {
     private enum Constants {
         static let avatarLength: CGFloat = 132.0
