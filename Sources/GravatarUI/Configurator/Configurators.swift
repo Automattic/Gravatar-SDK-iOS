@@ -21,6 +21,7 @@ public struct LabelConfigurator {
     }
 }
 
+@MainActor
 public struct ButtonConfigurator {
     let button: UIButton
 
@@ -31,6 +32,10 @@ public struct ButtonConfigurator {
     public func asProfileButton() -> ProfileButtonBuilder {
         ProfileButtonBuilder(button: button)
     }
+
+    public func asAccountButton() -> AccountButtonBuilder {
+        AccountButtonBuilder(button: button)
+    }
 }
 
 /// Returns the LabelConfigurator created with the given UILabel
@@ -38,6 +43,7 @@ public func Configure(_ label: UILabel) -> LabelConfigurator {
     LabelConfigurator(label: label)
 }
 
+@MainActor
 public func Configure(_ button: UIButton) -> ButtonConfigurator {
     ButtonConfigurator(button: button)
 }

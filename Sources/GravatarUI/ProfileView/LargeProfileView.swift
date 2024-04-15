@@ -1,7 +1,7 @@
 import Gravatar
 import UIKit
 
-public protocol ProfileCardModel: AboutMeModel, DisplayNameModel, PersonalInfoModel, AvatarIdentifierProvider {}
+public protocol ProfileCardModel: AboutMeModel, DisplayNameModel, PersonalInfoModel, AvatarIdentifierProvider, AccountListModel {}
 extension UserProfile: ProfileCardModel {}
 
 public class LargeProfileView: UIView {
