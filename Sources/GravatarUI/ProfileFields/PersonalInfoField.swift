@@ -2,8 +2,10 @@ import UIKit
 
 public struct PersonalInfoBuilder {
     public static var defaultPersonalInfo: [PersonalInfoLine] {
-        [.init([.jobTitle]),
-         .init([.namePronunciation, .defaultSeparator, .pronouns, .defaultSeparator, .location])]
+        [
+            .init([.jobTitle]),
+            .init([.namePronunciation, .defaultSeparator, .pronouns, .defaultSeparator, .location]),
+        ]
     }
 
     let label: UILabel
@@ -35,6 +37,12 @@ public struct PersonalInfoBuilder {
     @discardableResult
     public func palette(_ paletteType: PaletteType) -> PersonalInfoBuilder {
         label.textColor = paletteType.palette.foreground.secondary
+        return self
+    }
+
+    @discardableResult
+    public func alignment(_ alignment: NSTextAlignment) -> PersonalInfoBuilder {
+        label.textAlignment = alignment
         return self
     }
 }
