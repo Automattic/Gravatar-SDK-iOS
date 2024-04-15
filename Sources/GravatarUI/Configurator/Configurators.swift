@@ -21,7 +21,23 @@ public struct LabelConfigurator {
     }
 }
 
+public struct ButtonConfigurator {
+    let button: UIButton
+
+    init(button: UIButton) {
+        self.button = button
+    }
+
+    public func asProfileButton() -> ProfileButtonBuilder {
+        ProfileButtonBuilder(button: button)
+    }
+}
+
 /// Returns the LabelConfigurator created with the given UILabel
 public func Configure(_ label: UILabel) -> LabelConfigurator {
     LabelConfigurator(label: label)
+}
+
+public func Configure(_ button: UIButton) -> ButtonConfigurator {
+    ButtonConfigurator(button: button)
 }
