@@ -14,6 +14,7 @@ open class ProfileComponentView: UIView {
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.axis = .vertical
         stack.spacing = .DS.Padding.single
+        stack.setContentHuggingPriority(.defaultLow, for: .horizontal)
         return stack
     }()
 
