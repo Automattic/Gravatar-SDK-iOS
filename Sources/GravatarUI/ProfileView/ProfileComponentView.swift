@@ -163,7 +163,7 @@ open class ProfileComponentView: UIView {
                 button.widthAnchor.constraint(equalToConstant: Constants.accountIconLength),
                 button.heightAnchor.constraint(equalToConstant: Constants.accountIconLength),
                 imageView.widthAnchor.constraint(equalTo: button.widthAnchor),
-                imageView.heightAnchor.constraint(equalTo: button.heightAnchor)
+                imageView.heightAnchor.constraint(equalTo: button.heightAnchor),
             ])
         }
         return button
