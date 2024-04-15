@@ -32,7 +32,7 @@ final class LargeProfileSummaryViewTests: XCTestCase {
     }
 }
 
-extension TestProfileCardModel: ProfileCardSummaryModel {
+extension TestProfileCardModel {
     static func summaryCard() -> TestProfileCardModel {
         .fullCard()
     }

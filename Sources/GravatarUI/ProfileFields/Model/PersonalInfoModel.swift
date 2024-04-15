@@ -64,3 +64,5 @@ public protocol PersonalInfoModel {
     var pronouns: String? { get }
     var currentLocation: String? { get }
 }
+
+extension UserProfile: PersonalInfoModel {}
