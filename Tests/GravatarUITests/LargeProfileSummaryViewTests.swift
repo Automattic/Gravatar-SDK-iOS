@@ -6,10 +6,7 @@ import XCTest
 final class LargeProfileSummaryViewTests: XCTestCase {
     enum Constants {
         static let width: CGFloat = 320
-        static let containerHeight: CGFloat = 350
     }
-
-    let palettesToTest: [PaletteType] = [.light, .dark]
 
     override func setUp() async throws {
         try await super.setUp()
@@ -17,27 +14,21 @@ final class LargeProfileSummaryViewTests: XCTestCase {
     }
 
     func testLargeProfileSummaryView() throws {
-        for paletteType in palettesToTest {
-            let (cardView, containerView) = createViews(paletteType: paletteType)
-            cardView.update(with: TestProfileCardModel.summaryCard())
-            cardView.avatarImageView.backgroundColor = .blue
-            assertSnapshot(of: containerView, as: .image, named: "\(paletteType.name)")
+        for interfaceStyle in UIUserInterfaceStyle.allCases {
+            let containerView = createViews(model: TestProfileCardModel.summaryCard())
+            containerView.overrideUserInterfaceStyle = interfaceStyle
+            assertSnapshot(of: containerView, as: .image, named: "\(interfaceStyle.name)")
         }
     }
 
-    private func createViews(paletteType: PaletteType) -> (LargeProfileSummaryView, UIView) {
-        let cardView = LargeProfileSummaryView(frame: .zero, paletteType: paletteType)
+    private func createViews(model: ProfileCardSummaryModel) -> UIView {
+        let cardView = LargeProfileSummaryView(frame: .zero, paletteType: .system)
+        cardView.avatarImageView.backgroundColor = .systemBlue
+        cardView.update(with: model)
         cardView.translatesAutoresizingMaskIntoConstraints = false
         cardView.widthAnchor.constraint(equalToConstant: Constants.width).isActive = true
-        let containerView = UIView()
-        containerView.backgroundColor = .purple
-        containerView.translatesAutoresizingMaskIntoConstraints = false
-        containerView.widthAnchor.constraint(equalToConstant: Constants.width + 20).isActive = true
-        containerView.heightAnchor.constraint(equalToConstant: Constants.containerHeight).isActive = true
-        containerView.addSubview(cardView)
-        cardView.topAnchor.constraint(equalTo: containerView.topAnchor).isActive = true
-        cardView.centerXAnchor.constraint(equalTo: containerView.centerXAnchor).isActive = true
-        return (cardView, containerView)
+
+        return cardView.wrapInSuperView(with: Constants.width)
     }
 }
 

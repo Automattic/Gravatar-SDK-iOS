@@ -39,7 +39,14 @@ class DemoLargeProfileViewController: UIViewController {
         view.avatarImageView.gravatar.activityIndicatorType = .activity
         return view
     }()
-//
+
+    lazy var profileView: ProfileView = {
+        let view = ProfileView(frame: .zero, paletteType: preferredPaletteType)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.avatarImageView.gravatar.activityIndicatorType = .activity
+        return view
+    }()
+
     lazy var rootStackView: UIStackView = {
         let stack = UIStackView(arrangedSubviews: [emailField, paletteButton, fetchProfileButton, activityIndicator])
         stack.translatesAutoresizingMaskIntoConstraints = false
@@ -50,7 +57,7 @@ class DemoLargeProfileViewController: UIViewController {
 
         return stack
     }()
-//
+
     private lazy var paletteButton: UIButton = {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -65,6 +72,7 @@ class DemoLargeProfileViewController: UIViewController {
         didSet {
             largeProfileView.paletteType = preferredPaletteType
             largeProfileSummaryView.paletteType = preferredPaletteType
+            profileView.paletteType = preferredPaletteType
         }
     }
 
@@ -84,6 +92,8 @@ class DemoLargeProfileViewController: UIViewController {
         view.addSubview(rootStackView)
         rootStackView.addArrangedSubview(largeProfileView)
         rootStackView.addArrangedSubview(largeProfileSummaryView)
+        rootStackView.addArrangedSubview(profileView)
+
         NSLayoutConstraint.activate([
             scrollView.contentLayoutGuide.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
 
@@ -137,6 +147,8 @@ class DemoLargeProfileViewController: UIViewController {
                 largeProfileView.loadAvatar(with: profile.avatarIdentifier, options: [.transition(.fade(0.2))])
                 largeProfileSummaryView.update(with: profile)
                 largeProfileSummaryView.loadAvatar(with: profile.avatarIdentifier, options: [.transition(.fade(0.2))])
+                profileView.update(with: profile)
+                profileView.loadAvatar(with: profile.avatarIdentifier, options: [.transition(.fade(0.2))])
             } catch {
                 print(error)
             }

@@ -29,7 +29,7 @@ public struct PersonalInfoBuilder {
             previousLine = text
         }
         label.text = resultText
-        label.font = .DS.Body.small
+        label.font = .DS.Body.xSmall
         label.numberOfLines = lines.count
         return self
     }
