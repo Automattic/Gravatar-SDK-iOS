@@ -162,8 +162,8 @@ open class ProfileComponentView: UIView {
             NSLayoutConstraint.activate([
                 button.widthAnchor.constraint(equalToConstant: Constants.accountIconLength),
                 button.heightAnchor.constraint(equalToConstant: Constants.accountIconLength),
-                imageView.widthAnchor.constraint(equalTo: button.widthAnchor),
-                imageView.heightAnchor.constraint(equalTo: button.heightAnchor),
+                imageView.widthAnchor.constraint(equalToConstant: Constants.accountIconLength),
+                imageView.heightAnchor.constraint(equalToConstant: Constants.accountIconLength),
             ])
         }
         return button
