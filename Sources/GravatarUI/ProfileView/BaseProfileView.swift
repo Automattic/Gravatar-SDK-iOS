@@ -9,7 +9,11 @@ open class BaseProfileView: UIView {
     }
 
     var maximumAccountsDisplay = Constants.maximumAccountsDisplay
-
+    
+    open var avatarLength: CGFloat {
+        Constants.avatarLength
+    }
+    
     public lazy var rootStackView: UIStackView = {
         let stack = UIStackView()
         stack.translatesAutoresizingMaskIntoConstraints = false
@@ -21,9 +25,9 @@ open class BaseProfileView: UIView {
     public private(set) lazy var avatarImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.widthAnchor.constraint(equalToConstant: Constants.avatarLength).isActive = true
-        imageView.heightAnchor.constraint(equalToConstant: Constants.avatarLength).isActive = true
-        imageView.layer.cornerRadius = Constants.avatarLength / 2
+        imageView.widthAnchor.constraint(equalToConstant: avatarLength).isActive = true
+        imageView.heightAnchor.constraint(equalToConstant: avatarLength).isActive = true
+        imageView.layer.cornerRadius = avatarLength / 2
         imageView.clipsToBounds = true
         return imageView
     }()
@@ -51,9 +55,7 @@ open class BaseProfileView: UIView {
 
     public lazy var profileButton: UIButton = {
         var config = UIButton.Configuration.borderless()
-
         let button = UIButton(configuration: config)
-
         return button
     }()
 
@@ -87,6 +89,7 @@ open class BaseProfileView: UIView {
             layoutMarginsGuide.trailingAnchor.constraint(equalTo: rootStackView.trailingAnchor),
             layoutMarginsGuide.bottomAnchor.constraint(equalTo: rootStackView.bottomAnchor),
         ])
+        refresh(with: paletteType)
     }
 
     public convenience init(frame: CGRect, paletteType: PaletteType) {
@@ -104,7 +107,6 @@ open class BaseProfileView: UIView {
         with avatarIdentifier: AvatarIdentifier,
         placeholder: UIImage? = nil,
         rating: Rating? = nil,
-        preferredSize: CGSize? = nil,
         defaultAvatarOption: DefaultAvatarOption? = nil,
         options: [ImageSettingOption]? = nil,
         completionHandler: ImageSetCompletion? = nil
@@ -113,7 +115,7 @@ open class BaseProfileView: UIView {
             avatarID: avatarIdentifier,
             placeholder: placeholder,
             rating: rating,
-            preferredSize: preferredSize ?? CGSize(width: Constants.avatarLength, height: Constants.avatarLength),
+            preferredSize: CGSize(width: avatarLength, height: avatarLength),
             defaultAvatarOption: defaultAvatarOption,
             options: options
         ) { [weak self] result in
@@ -134,7 +136,6 @@ open class BaseProfileView: UIView {
         Configure(aboutMeLabel).asAboutMe().palette(paletteType)
         Configure(displayNameLabel).asDisplayName().palette(paletteType)
         Configure(personalInfoLabel).asPersonalInfo().palette(paletteType)
-
         Configure(profileButton).asProfileButton().palette(paletteType)
 
         accountButtonsStackView.arrangedSubviews.compactMap { $0 as? UIButton }.forEach { button in
