@@ -1,7 +1,7 @@
 import Gravatar
 import UIKit
 
-public class ProfileView: ProfileComponentView {
+public class ProfileView: BaseProfileView {
     var model: ProfileModel?
 
     private lazy var topStackView: UIStackView = {

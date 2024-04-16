@@ -1,7 +1,7 @@
 import Gravatar
 import UIKit
 
-open class ProfileComponentView: UIView {
+open class BaseProfileView: UIView {
     private enum Constants {
         static let avatarLength: CGFloat = 72
         static let maximumAccountsDisplay = 3
