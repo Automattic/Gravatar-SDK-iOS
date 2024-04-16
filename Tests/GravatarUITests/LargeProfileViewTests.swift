@@ -41,7 +41,7 @@ final class LargeProfileViewTests: XCTestCase {
     }
 }
 
-struct TestProfileCardModel: ProfileCardModel {
+struct TestProfileCardModel: ProfileModel {
     var gravatarAccount: GravatarUI.AccountModel
 
     var accountsList: [GravatarUI.AccountModel]?

@@ -1,8 +1,6 @@
 import Gravatar
 import UIKit
 
-public typealias ProfileCardSummaryModel = AvatarIdentifierProvider & DisplayNameModel & PersonalInfoModel
-
 public class LargeProfileSummaryView: UIView {
     private enum Constants {
         static let avatarLength: CGFloat = 132.0
@@ -78,7 +76,7 @@ public class LargeProfileSummaryView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    public func update(with model: ProfileCardSummaryModel) {
+    public func update(with model: ProfileSummaryModel) {
         Configure(displayNameLabel).asDisplayName().content(model).palette(paletteType)
         Configure(personalInfoLabel).asPersonalInfo().content(model).palette(paletteType).alignment(.center)
     }

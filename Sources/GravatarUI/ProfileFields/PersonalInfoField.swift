@@ -41,7 +41,7 @@ public struct PersonalInfoBuilder {
     }
 
     @discardableResult
-    public func alignment(_ alignment: NSTextAlignment) -> PersonalInfoBuilder {
+    func alignment(_ alignment: NSTextAlignment) -> PersonalInfoBuilder {
         label.textAlignment = alignment
         return self
     }
