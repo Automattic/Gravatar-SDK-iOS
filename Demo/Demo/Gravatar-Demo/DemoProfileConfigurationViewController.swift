@@ -52,7 +52,6 @@ class DemoProfileConfigurationViewController: UITableViewController {
         alert.addTextField { alertTextField in
             textField = alertTextField
         }
-        textField?.text = "etoledom2@icloud.com"
 
         alert.addAction(UIAlertAction(title: "Add", style: .destructive, handler: { action in
             Task {
