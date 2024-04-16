@@ -2,8 +2,6 @@ import Gravatar
 import UIKit
 
 public class ProfileView: ProfileComponentView {
-    var model: ProfileModel?
-
     private lazy var topStackView: UIStackView = {
         let stack = UIStackView(arrangedSubviews: [avatarImageView, basicInfoStackView])
         stack.translatesAutoresizingMaskIntoConstraints = false
@@ -33,29 +31,25 @@ public class ProfileView: ProfileComponentView {
         return stack
     }()
 
-    public init(frame: CGRect, paletteType palette: PaletteType) {
-        super.init(frame: frame)
+    override public init(frame: CGRect, paletteType palette: PaletteType, padding: UIEdgeInsets? = nil) {
+        super.init(frame: frame, paletteType: palette, padding: padding)
 
         [topStackView, aboutMeLabel, bottomStackView].forEach(rootStackView.addArrangedSubview)
         rootStackView.setCustomSpacing(.DS.Padding.double, after: aboutMeLabel)
-        self.paletteType = palette
-        refresh(with: palette)
-
-        layoutMargins = UIEdgeInsets(
-            top: .DS.Padding.medium,
-            left: .DS.Padding.medium,
-            bottom: .DS.Padding.single,
-            right: .DS.Padding.medium
-        )
     }
 
     public func update(with model: ProfileModel) {
-        self.model = model
         Configure(aboutMeLabel).asAboutMe().content(model).palette(paletteType)
         Configure(displayNameLabel).asDisplayName().content(model).palette(paletteType).font(.DS.smallTitle)
         Configure(personalInfoLabel).asPersonalInfo().content(model).palette(paletteType)
         Configure(profileButton).asProfileButton().style(.view).alignment(.trailing).palette(paletteType)
 
         updateAccountButtons(with: model)
+    }
+
+    override public func update(with config: ProfileViewConfiguration) {
+        super.update(with: config)
+        guard let model = config.model else { return }
+        update(with: model)
     }
 }

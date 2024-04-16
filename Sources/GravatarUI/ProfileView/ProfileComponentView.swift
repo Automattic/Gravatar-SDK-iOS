@@ -1,14 +1,46 @@
 import Gravatar
 import UIKit
 
-open class ProfileComponentView: UIView {
+open class ProfileComponentView: UIView, UIContentView {
     private enum Constants {
         static let avatarLength: CGFloat = 72
         static let maximumAccountsDisplay = 3
         static let accountIconLength: CGFloat = 32
     }
 
+    static let defaultPadding = UIEdgeInsets(
+        top: .DS.Padding.split,
+        left: .DS.Padding.medium,
+        bottom: .DS.Padding.split,
+        right: .DS.Padding.medium
+    )
+
+    public var configuration: UIContentConfiguration = ProfileViewConfiguration(model: nil, palette: .system, profileStyle: .standard) {
+        didSet {
+            guard let config = configuration as? ProfileViewConfiguration else {
+                return
+            }
+            update(with: config)
+        }
+    }
+
     var maximumAccountsDisplay = Constants.maximumAccountsDisplay
+
+    var padding: UIEdgeInsets {
+        get {
+            // layoutMargins is automatically synced with directionalLayoutMargins
+            layoutMargins
+        }
+        set {
+            directionalLayoutMargins = NSDirectionalEdgeInsets(
+                top: newValue.top,
+                leading: newValue.left,
+                bottom: newValue.bottom,
+                trailing: newValue.right
+            )
+            layoutMarginsDidChange()
+        }
+    }
 
     public lazy var rootStackView: UIStackView = {
         let stack = UIStackView()
@@ -74,24 +106,23 @@ open class ProfileComponentView: UIView {
     override public init(frame: CGRect) {
         self.paletteType = .system
         super.init(frame: frame)
+    }
+
+    public init(frame: CGRect, paletteType: PaletteType, padding: UIEdgeInsets?) {
+        self.paletteType = paletteType
+        super.init(frame: frame)
+        commonInit()
+        self.padding = padding ?? Self.defaultPadding
+    }
+
+    func commonInit() {
         addSubview(rootStackView)
-        layoutMargins = UIEdgeInsets(
-            top: .DS.Padding.medium,
-            left: .DS.Padding.medium,
-            bottom: .DS.Padding.medium,
-            right: .DS.Padding.medium
-        )
         NSLayoutConstraint.activate([
             layoutMarginsGuide.topAnchor.constraint(equalTo: rootStackView.topAnchor),
             layoutMarginsGuide.leadingAnchor.constraint(equalTo: rootStackView.leadingAnchor),
             layoutMarginsGuide.trailingAnchor.constraint(equalTo: rootStackView.trailingAnchor),
             layoutMarginsGuide.bottomAnchor.constraint(equalTo: rootStackView.bottomAnchor),
         ])
-    }
-
-    public convenience init(frame: CGRect, paletteType: PaletteType) {
-        self.init(frame: frame)
-        self.paletteType = paletteType
         refresh(with: paletteType)
     }
 
@@ -167,5 +198,13 @@ open class ProfileComponentView: UIView {
             ])
         }
         return button
+    }
+
+    open func update(with config: ProfileViewConfiguration) {
+        paletteType = config.palette
+        padding = config.padding
+        if let avatarID = config.avatarID {
+            loadAvatar(with: avatarID)
+        }
     }
 }
