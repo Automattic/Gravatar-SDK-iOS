@@ -5,16 +5,17 @@ public class LargeProfileSummaryView: BaseProfileView {
     private enum Constants {
         static let avatarLength: CGFloat = 132.0
     }
+
     public static var personalInfoLines: [PersonalInfoLine] {
         [
             .init([.namePronunciation, .defaultSeparator, .pronouns, .defaultSeparator, .location]),
         ]
     }
-    
-    public override var avatarLength: CGFloat {
-        return Constants.avatarLength
+
+    override public var avatarLength: CGFloat {
+        Constants.avatarLength
     }
-    
+
     override public init(frame: CGRect) {
         super.init(frame: frame)
         [avatarImageView, displayNameLabel, personalInfoLabel, profileButton].forEach(rootStackView.addArrangedSubview)

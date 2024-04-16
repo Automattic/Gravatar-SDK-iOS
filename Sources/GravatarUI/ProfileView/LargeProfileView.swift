@@ -5,9 +5,9 @@ public class LargeProfileView: BaseProfileView {
     private enum Constants {
         static let avatarLength: CGFloat = 132.0
     }
-    
-    public override var avatarLength: CGFloat {
-        return Constants.avatarLength
+
+    override public var avatarLength: CGFloat {
+        Constants.avatarLength
     }
 
     private lazy var topStackView: UIStackView = {
@@ -19,7 +19,7 @@ public class LargeProfileView: BaseProfileView {
         stack.axis = .horizontal
         return stack
     }()
-    
+
     private lazy var bottomStackView: UIStackView = {
         let stack = UIStackView(arrangedSubviews: [accountButtonsStackView, profileButton])
         stack.translatesAutoresizingMaskIntoConstraints = false
@@ -28,7 +28,7 @@ public class LargeProfileView: BaseProfileView {
         stack.spacing = .DS.Padding.split
         return stack
     }()
-    
+
     override public init(frame: CGRect) {
         super.init(frame: frame)
         [topStackView, displayNameLabel, personalInfoLabel, aboutMeLabel, bottomStackView].forEach(rootStackView.addArrangedSubview)

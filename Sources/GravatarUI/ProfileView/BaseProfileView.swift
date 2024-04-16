@@ -9,7 +9,7 @@ open class BaseProfileView: UIView, UIContentView {
     }
 
     open var avatarLength: CGFloat {
-        return Constants.avatarLength
+        Constants.avatarLength
     }
 
     static let defaultPadding = UIEdgeInsets(
@@ -104,7 +104,7 @@ open class BaseProfileView: UIView, UIContentView {
             refresh(with: paletteType)
         }
     }
-    
+
     override public init(frame: CGRect) {
         self.paletteType = .system
         super.init(frame: frame)
