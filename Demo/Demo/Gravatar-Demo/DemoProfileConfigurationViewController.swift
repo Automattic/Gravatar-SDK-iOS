@@ -7,12 +7,7 @@ class DemoProfileConfigurationViewController: UITableViewController {
         let cellID = "ProfileCell"
         let cell = tableView.dequeueReusableCell(withIdentifier: cellID) ?? UITableViewCell(style: .default, reuseIdentifier: cellID)
         let model = self?.models[itemIdentifier]
-        // Comment / uncomment for testing purposes
-        var config = ProfileViewConfiguration.summary(model: model)
-//         var config = ProfileViewConfiguration.standard(model: model)
-//         config.padding = UIEdgeInsets(top: 30, left: 0, bottom: 30, right: 0)
-//         config.palette = .dark
-        cell.contentConfiguration = config
+        cell.contentConfiguration = ProfileViewConfiguration.summary(model: model)
         return cell
     }
 
