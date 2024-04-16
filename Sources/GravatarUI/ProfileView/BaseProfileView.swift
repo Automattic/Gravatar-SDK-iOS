@@ -8,6 +8,10 @@ open class BaseProfileView: UIView, UIContentView {
         static let accountIconLength: CGFloat = 32
     }
 
+    open var avatarLength: CGFloat {
+        return Constants.avatarLength
+    }
+
     static let defaultPadding = UIEdgeInsets(
         top: .DS.Padding.split,
         left: .DS.Padding.medium,
@@ -53,9 +57,9 @@ open class BaseProfileView: UIView, UIContentView {
     public private(set) lazy var avatarImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.widthAnchor.constraint(equalToConstant: Constants.avatarLength).isActive = true
-        imageView.heightAnchor.constraint(equalToConstant: Constants.avatarLength).isActive = true
-        imageView.layer.cornerRadius = Constants.avatarLength / 2
+        imageView.widthAnchor.constraint(equalToConstant: avatarLength).isActive = true
+        imageView.heightAnchor.constraint(equalToConstant: avatarLength).isActive = true
+        imageView.layer.cornerRadius = avatarLength / 2
         imageView.clipsToBounds = true
         return imageView
     }()
@@ -83,9 +87,7 @@ open class BaseProfileView: UIView, UIContentView {
 
     public lazy var profileButton: UIButton = {
         var config = UIButton.Configuration.borderless()
-
         let button = UIButton(configuration: config)
-
         return button
     }()
 
@@ -102,17 +104,19 @@ open class BaseProfileView: UIView, UIContentView {
             refresh(with: paletteType)
         }
     }
-
+    
     override public init(frame: CGRect) {
         self.paletteType = .system
         super.init(frame: frame)
+        self.padding = Self.defaultPadding
+        commonInit()
     }
 
-    public init(frame: CGRect, paletteType: PaletteType, padding: UIEdgeInsets?) {
+    public convenience init(frame: CGRect, paletteType: PaletteType, padding: UIEdgeInsets? = nil) {
+        self.init(frame: frame)
         self.paletteType = paletteType
-        super.init(frame: frame)
-        commonInit()
         self.padding = padding ?? Self.defaultPadding
+        refresh(with: paletteType)
     }
 
     func commonInit() {
@@ -144,7 +148,7 @@ open class BaseProfileView: UIView, UIContentView {
             avatarID: avatarIdentifier,
             placeholder: placeholder,
             rating: rating,
-            preferredSize: preferredSize ?? CGSize(width: Constants.avatarLength, height: Constants.avatarLength),
+            preferredSize: preferredSize ?? CGSize(width: avatarLength, height: avatarLength),
             defaultAvatarOption: defaultAvatarOption,
             options: options
         ) { [weak self] result in
