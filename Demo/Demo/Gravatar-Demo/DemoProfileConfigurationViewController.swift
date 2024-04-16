@@ -7,7 +7,12 @@ class DemoProfileConfigurationViewController: UITableViewController {
         let cellID = "ProfileCell"
         let cell = tableView.dequeueReusableCell(withIdentifier: cellID) ?? UITableViewCell(style: .default, reuseIdentifier: cellID)
         let model = self?.models[itemIdentifier]
-        cell.contentConfiguration = ProfileViewConfiguration.summary(model: model)
+        // Comment / uncomment for testing purposes
+        var config = ProfileViewConfiguration.summary(model: model)
+//         var config = ProfileViewConfiguration.standard(model: model)
+//         config.padding = UIEdgeInsets(top: 30, left: 0, bottom: 30, right: 0)
+//         config.palette = .dark
+        cell.contentConfiguration = config
         return cell
     }
 
@@ -47,6 +52,7 @@ class DemoProfileConfigurationViewController: UITableViewController {
         alert.addTextField { alertTextField in
             textField = alertTextField
         }
+        textField?.text = "etoledom2@icloud.com"
 
         alert.addAction(UIAlertAction(title: "Add", style: .destructive, handler: { action in
             Task {

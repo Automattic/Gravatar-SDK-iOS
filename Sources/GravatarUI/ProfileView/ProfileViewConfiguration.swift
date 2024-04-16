@@ -1,24 +1,31 @@
 import UIKit
+import Gravatar
 
 public struct ProfileViewConfiguration: UIContentConfiguration {
     let model: ProfileModel?
     let summaryModel: ProfileSummaryModel?
+    let profileStyle: Style
+    var avatarID: AvatarIdentifier? {
+        model?.avatarIdentifier ?? summaryModel?.avatarIdentifier
+    }
 
-    let palette: PaletteType
-    let profileStyle: ProfileViewStyle
+    public var palette: PaletteType
+    public var padding: UIEdgeInsets
 
-    init(model: ProfileModel?, palette: PaletteType, profileStyle: ProfileViewStyle) {
+    init(model: ProfileModel?, palette: PaletteType, profileStyle: Style) {
         self.model = model
         self.summaryModel = nil
         self.palette = palette
         self.profileStyle = profileStyle
+        self.padding = profileStyle.defaultPadding
     }
 
-    init(model: ProfileSummaryModel?, palette: PaletteType, profileStyle: ProfileViewStyle) {
+    init(model: ProfileSummaryModel?, palette: PaletteType, profileStyle: Style) {
         self.model = nil
         self.summaryModel = model
         self.palette = palette
         self.profileStyle = profileStyle
+        self.padding = profileStyle.defaultPadding
     }
 
     public func makeContentView() -> UIView & UIContentView {
@@ -39,11 +46,22 @@ public struct ProfileViewConfiguration: UIContentConfiguration {
 }
 
 extension ProfileViewConfiguration {
-    public enum ProfileViewStyle {
+    public enum Style {
         case standard
         case summary
         // case large
         // case largeSummary
+    }
+}
+
+extension ProfileViewConfiguration.Style {
+    var defaultPadding: UIEdgeInsets {
+        switch self {
+        case .standard:
+            ProfileView.defaultPadding
+        case .summary:
+            ProfileSummaryView.defaultPadding
+        }
     }
 }
 
@@ -54,37 +72,5 @@ extension ProfileViewConfiguration {
 
     public static func summary(model: ProfileSummaryModel? = nil, palette: PaletteType = .system) -> ProfileViewConfiguration {
         self.init(model: model, palette: palette, profileStyle: .summary)
-    }
-}
-
-extension ProfileView: UIContentView {
-    public var configuration: UIContentConfiguration {
-        get {
-            ProfileViewConfiguration.standard(model: model, palette: paletteType)
-        }
-        set(newValue) {
-            guard let config = newValue as? ProfileViewConfiguration else { return }
-            if let model = config.model {
-                update(with: model)
-                avatarImageView.gravatar.setImage(avatarID: model.avatarIdentifier)
-            }
-            paletteType = config.palette
-        }
-    }
-}
-
-extension ProfileSummaryView: UIContentView {
-    public var configuration: UIContentConfiguration {
-        get {
-            ProfileViewConfiguration.summary(model: model, palette: paletteType)
-        }
-        set(newValue) {
-            guard let config = newValue as? ProfileViewConfiguration else { return }
-            if let model = config.summaryModel {
-                update(with: model)
-                avatarImageView.gravatar.setImage(avatarID: model.avatarIdentifier)
-            }
-            paletteType = config.palette
-        }
     }
 }

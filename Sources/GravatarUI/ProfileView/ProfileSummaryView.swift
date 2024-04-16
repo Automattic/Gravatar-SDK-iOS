@@ -2,7 +2,12 @@ import Gravatar
 import UIKit
 
 public class ProfileSummaryView: ProfileComponentView {
-    var model: ProfileSummaryModel?
+    static let defaultPadding = UIEdgeInsets(
+        top: .DS.Padding.split,
+        left: .DS.Padding.medium,
+        bottom: .DS.Padding.split,
+        right: .DS.Padding.medium
+    )
 
     private lazy var basicInfoStackView: UIStackView = {
         let stack = UIStackView(arrangedSubviews: [displayNameLabel, personalInfoLabel, profileButton])
@@ -12,28 +17,23 @@ public class ProfileSummaryView: ProfileComponentView {
     }()
 
     public init(frame: CGRect, paletteType palette: PaletteType) {
-        super.init(frame: frame)
+        super.init(frame: frame, paletteType: palette, padding: Self.defaultPadding)
 
         rootStackView.axis = .horizontal
         rootStackView.alignment = .top
 
         [avatarImageView, basicInfoStackView].forEach(rootStackView.addArrangedSubview)
-
-        layoutMargins = UIEdgeInsets(
-            top: .DS.Padding.split,
-            left: .DS.Padding.medium,
-            bottom: .DS.Padding.split,
-            right: .DS.Padding.medium
-        )
-
-        self.paletteType = palette
-        refresh(with: palette)
     }
 
     public func update(with model: ProfileSummaryModel) {
-        self.model = model
         Configure(displayNameLabel).asDisplayName().content(model).palette(paletteType).font(.DS.smallTitle)
         Configure(personalInfoLabel).asPersonalInfo().content(model, lines: [.init([.location])]).palette(paletteType)
         Configure(profileButton).asProfileButton().style(.view).palette(paletteType)
+    }
+
+    public override func update(with config: ProfileViewConfiguration) {
+        super.update(with: config)
+        guard let model = config.summaryModel else { return }
+        update(with: model)
     }
 }
