@@ -139,7 +139,6 @@ open class BaseProfileView: UIView, UIContentView {
         with avatarIdentifier: AvatarIdentifier,
         placeholder: UIImage? = nil,
         rating: Rating? = nil,
-        preferredSize: CGSize? = nil,
         defaultAvatarOption: DefaultAvatarOption? = nil,
         options: [ImageSettingOption]? = nil,
         completionHandler: ImageSetCompletion? = nil
@@ -148,7 +147,7 @@ open class BaseProfileView: UIView, UIContentView {
             avatarID: avatarIdentifier,
             placeholder: placeholder,
             rating: rating,
-            preferredSize: preferredSize ?? CGSize(width: avatarLength, height: avatarLength),
+            preferredSize: CGSize(width: avatarLength, height: avatarLength),
             defaultAvatarOption: defaultAvatarOption,
             options: options
         ) { [weak self] result in
