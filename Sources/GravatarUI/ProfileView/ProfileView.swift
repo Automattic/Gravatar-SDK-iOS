@@ -37,7 +37,7 @@ public class ProfileView: ProfileComponentView {
         super.init(frame: frame)
 
         [topStackView, aboutMeLabel, bottomStackView].forEach(rootStackView.addArrangedSubview)
-
+        rootStackView.setCustomSpacing(.DS.Padding.double, after: aboutMeLabel)
         self.paletteType = palette
         refresh(with: palette)
 

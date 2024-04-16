@@ -5,6 +5,7 @@ open class ProfileComponentView: UIView {
     private enum Constants {
         static let avatarLength: CGFloat = 72
         static let maximumAccountsDisplay = 3
+        static let accountIconLength: CGFloat = 32
     }
 
     var maximumAccountsDisplay = Constants.maximumAccountsDisplay
@@ -153,7 +154,18 @@ open class ProfileComponentView: UIView {
 
     func createAccountButton(with model: AccountModel) -> UIButton {
         let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
         Configure(button).asAccountButton().content(model).palette(paletteType)
+        button.imageView?.contentMode = .scaleAspectFit
+        button.imageView?.translatesAutoresizingMaskIntoConstraints = false
+        if let imageView = button.imageView {
+            NSLayoutConstraint.activate([
+                button.widthAnchor.constraint(equalToConstant: Constants.accountIconLength),
+                button.heightAnchor.constraint(equalToConstant: Constants.accountIconLength),
+                imageView.widthAnchor.constraint(equalToConstant: Constants.accountIconLength),
+                imageView.heightAnchor.constraint(equalToConstant: Constants.accountIconLength),
+            ])
+        }
         return button
     }
 }
