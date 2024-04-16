@@ -2,13 +2,6 @@ import Gravatar
 import UIKit
 
 public class ProfileSummaryView: ProfileComponentView {
-    static let defaultPadding = UIEdgeInsets(
-        top: .DS.Padding.split,
-        left: .DS.Padding.medium,
-        bottom: .DS.Padding.split,
-        right: .DS.Padding.medium
-    )
-
     private lazy var basicInfoStackView: UIStackView = {
         let stack = UIStackView(arrangedSubviews: [displayNameLabel, personalInfoLabel, profileButton])
         stack.translatesAutoresizingMaskIntoConstraints = false
@@ -16,8 +9,8 @@ public class ProfileSummaryView: ProfileComponentView {
         return stack
     }()
 
-    public init(frame: CGRect, paletteType palette: PaletteType) {
-        super.init(frame: frame, paletteType: palette, padding: Self.defaultPadding)
+    override public init(frame: CGRect, paletteType palette: PaletteType, padding: UIEdgeInsets? = nil) {
+        super.init(frame: frame, paletteType: palette, padding: padding)
 
         rootStackView.axis = .horizontal
         rootStackView.alignment = .top
@@ -31,7 +24,7 @@ public class ProfileSummaryView: ProfileComponentView {
         Configure(profileButton).asProfileButton().style(.view).palette(paletteType)
     }
 
-    public override func update(with config: ProfileViewConfiguration) {
+    override public func update(with config: ProfileViewConfiguration) {
         super.update(with: config)
         guard let model = config.summaryModel else { return }
         update(with: model)

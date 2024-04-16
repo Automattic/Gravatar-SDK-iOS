@@ -1,5 +1,5 @@
-import UIKit
 import Gravatar
+import UIKit
 
 public struct ProfileViewConfiguration: UIContentConfiguration {
     let model: ProfileModel?
@@ -10,14 +10,13 @@ public struct ProfileViewConfiguration: UIContentConfiguration {
     }
 
     public var palette: PaletteType
-    public var padding: UIEdgeInsets
+    public var padding: UIEdgeInsets = ProfileComponentView.defaultPadding
 
     init(model: ProfileModel?, palette: PaletteType, profileStyle: Style) {
         self.model = model
         self.summaryModel = nil
         self.palette = palette
         self.profileStyle = profileStyle
-        self.padding = profileStyle.defaultPadding
     }
 
     init(model: ProfileSummaryModel?, palette: PaletteType, profileStyle: Style) {
@@ -25,7 +24,6 @@ public struct ProfileViewConfiguration: UIContentConfiguration {
         self.summaryModel = model
         self.palette = palette
         self.profileStyle = profileStyle
-        self.padding = profileStyle.defaultPadding
     }
 
     public func makeContentView() -> UIView & UIContentView {
@@ -51,17 +49,6 @@ extension ProfileViewConfiguration {
         case summary
         // case large
         // case largeSummary
-    }
-}
-
-extension ProfileViewConfiguration.Style {
-    var defaultPadding: UIEdgeInsets {
-        switch self {
-        case .standard:
-            ProfileView.defaultPadding
-        case .summary:
-            ProfileSummaryView.defaultPadding
-        }
     }
 }
 

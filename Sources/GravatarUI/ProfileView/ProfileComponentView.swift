@@ -2,6 +2,19 @@ import Gravatar
 import UIKit
 
 open class ProfileComponentView: UIView, UIContentView {
+    private enum Constants {
+        static let avatarLength: CGFloat = 72
+        static let maximumAccountsDisplay = 3
+        static let accountIconLength: CGFloat = 32
+    }
+
+    static let defaultPadding = UIEdgeInsets(
+        top: .DS.Padding.split,
+        left: .DS.Padding.medium,
+        bottom: .DS.Padding.split,
+        right: .DS.Padding.medium
+    )
+
     public var configuration: UIContentConfiguration = ProfileViewConfiguration(model: nil, palette: .system, profileStyle: .standard) {
         didSet {
             guard let config = configuration as? ProfileViewConfiguration else {
@@ -9,12 +22,6 @@ open class ProfileComponentView: UIView, UIContentView {
             }
             update(with: config)
         }
-    }
-
-    private enum Constants {
-        static let avatarLength: CGFloat = 72
-        static let maximumAccountsDisplay = 3
-        static let accountIconLength: CGFloat = 32
     }
 
     var maximumAccountsDisplay = Constants.maximumAccountsDisplay
@@ -101,11 +108,11 @@ open class ProfileComponentView: UIView, UIContentView {
         super.init(frame: frame)
     }
 
-    public init(frame: CGRect, paletteType: PaletteType, padding: UIEdgeInsets) {
+    public init(frame: CGRect, paletteType: PaletteType, padding: UIEdgeInsets?) {
         self.paletteType = paletteType
         super.init(frame: frame)
         commonInit()
-        self.padding = padding
+        self.padding = padding ?? Self.defaultPadding
     }
 
     func commonInit() {
