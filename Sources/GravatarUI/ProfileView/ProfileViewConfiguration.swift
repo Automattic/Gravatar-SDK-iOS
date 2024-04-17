@@ -30,9 +30,13 @@ public struct ProfileViewConfiguration: UIContentConfiguration {
         let view: UIView & UIContentView
         switch profileStyle {
         case .standard:
-            view = ProfileView(frame: .zero, paletteType: palette)
+            view = ProfileView(frame: .zero)
         case .summary:
-            view = ProfileSummaryView(frame: .zero, paletteType: palette)
+            view = ProfileSummaryView(frame: .zero)
+        case .large:
+            view = LargeProfileView(frame: .zero)
+        case .largeSummary:
+            view = LargeProfileSummaryView(frame: .zero)
         }
         view.configuration = self
         return view
@@ -47,8 +51,8 @@ extension ProfileViewConfiguration {
     public enum Style {
         case standard
         case summary
-        // case large
-        // case largeSummary
+        case large
+        case largeSummary
     }
 }
 
@@ -59,5 +63,13 @@ extension ProfileViewConfiguration {
 
     public static func summary(model: ProfileSummaryModel? = nil, palette: PaletteType = .system) -> ProfileViewConfiguration {
         self.init(model: model, palette: palette, profileStyle: .summary)
+    }
+
+    public static func large(model: ProfileModel? = nil, palette: PaletteType = .system) -> ProfileViewConfiguration {
+        self.init(model: model, palette: palette, profileStyle: .large)
+    }
+
+    public static func largeSummary(model: ProfileSummaryModel? = nil, palette: PaletteType = .system) -> ProfileViewConfiguration {
+        self.init(model: model, palette: palette, profileStyle: .largeSummary)
     }
 }
