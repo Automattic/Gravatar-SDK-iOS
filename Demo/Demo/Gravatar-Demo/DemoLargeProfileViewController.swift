@@ -1,6 +1,7 @@
 import UIKit
 import Gravatar
 import GravatarUI
+import SafariServices
 
 class DemoLargeProfileViewController: UIViewController {
     
@@ -44,6 +45,7 @@ class DemoLargeProfileViewController: UIViewController {
         let view = ProfileView(frame: .zero, paletteType: preferredPaletteType)
         view.translatesAutoresizingMaskIntoConstraints = false
         view.avatarImageView.gravatar.activityIndicatorType = .activity
+        view.delegate = self
         return view
     }()
 
@@ -51,6 +53,7 @@ class DemoLargeProfileViewController: UIViewController {
         let view = ProfileSummaryView(frame: .zero, paletteType: preferredPaletteType)
         view.translatesAutoresizingMaskIntoConstraints = false
         view.avatarImageView.gravatar.activityIndicatorType = .activity
+        view.delegate = self
         return view
     }()
 
@@ -164,5 +167,19 @@ class DemoLargeProfileViewController: UIViewController {
                 print(error)
             }
         }
+    }
+}
+
+extension DemoLargeProfileViewController: ProfileViewDelegate {
+    func didTapOnProfileButton(with style: GravatarUI.ProfileButtonStyle, profileURL: URL?) {
+        guard let profileURL else { return }
+        let safari = SFSafariViewController(url: profileURL)
+        present(safari, animated: true)
+    }
+
+    func didTapOnAccountButton(with accountModel: AccountModel) {
+        guard let accountURL = accountModel.accountURL else { return }
+        let safari = SFSafariViewController(url: accountURL)
+        present(safari, animated: true)
     }
 }

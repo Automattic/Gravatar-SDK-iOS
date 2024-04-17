@@ -1,13 +1,16 @@
 import UIKit
 import Gravatar
 import GravatarUI
+import SafariServices
 
 class DemoProfileConfigurationViewController: UITableViewController {
     lazy var dataSource = UITableViewDiffableDataSource<Section, String>(tableView: tableView) { [weak self] tableView, indexPath, itemIdentifier in
         let cellID = "ProfileCell"
         let cell = tableView.dequeueReusableCell(withIdentifier: cellID) ?? UITableViewCell(style: .default, reuseIdentifier: cellID)
         let model = self?.models[itemIdentifier]
-        cell.contentConfiguration = ProfileViewConfiguration.summary(model: model)
+        var config = ProfileViewConfiguration.standard(model: model)
+        config.delegate = self
+        cell.contentConfiguration = config
         return cell
     }
 
@@ -76,6 +79,20 @@ class DemoProfileConfigurationViewController: UITableViewController {
         } catch {
             print(error)
         }
+    }
+}
+
+extension DemoProfileConfigurationViewController: ProfileViewDelegate {
+    func didTapOnProfileButton(with style: GravatarUI.ProfileButtonStyle, profileURL: URL?) {
+        guard let profileURL else { return }
+        let safari = SFSafariViewController(url: profileURL)
+        present(safari, animated: true)
+    }
+
+    func didTapOnAccountButton(with accountModel: AccountModel) {
+        guard let accountURL = accountModel.accountURL else { return }
+        let safari = SFSafariViewController(url: accountURL)
+        present(safari, animated: true)
     }
 }
 

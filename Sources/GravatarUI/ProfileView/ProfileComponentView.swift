@@ -4,7 +4,7 @@ import UIKit
 open class ProfileComponentView: UIView, UIContentView {
     private enum Constants {
         static let avatarLength: CGFloat = 72
-        static let maximumAccountsDisplay = 3
+        static let maximumAccountsDisplay = 4
         static let accountIconLength: CGFloat = 32
     }
 
@@ -24,6 +24,10 @@ open class ProfileComponentView: UIView, UIContentView {
         }
     }
 
+    public weak var delegate: ProfileViewDelegate?
+
+    var profileMetadata: ProfileMetadataModel?
+    var accounts: [AccountModel] = []
     var maximumAccountsDisplay = Constants.maximumAccountsDisplay
 
     var padding: UIEdgeInsets {
@@ -82,10 +86,8 @@ open class ProfileComponentView: UIView, UIContentView {
     }()
 
     public lazy var profileButton: UIButton = {
-        var config = UIButton.Configuration.borderless()
-
-        let button = UIButton(configuration: config)
-
+        let button = UIButton(configuration: .borderless())
+        button.addTarget(self, action: #selector(onProfileButtonTap), for: .touchUpInside)
         return button
     }()
 
@@ -174,18 +176,20 @@ open class ProfileComponentView: UIView, UIContentView {
     }
 
     func updateAccountButtons(with model: AccountListModel) {
-        let buttons = model.accountsList?.prefix(maximumAccountsDisplay).map(createAccountButton)
+        accounts = Array(model.accountsList.prefix(4))
+        let buttons = accounts.enumerated().map(createAccountButton)
         for view in accountButtonsStackView.arrangedSubviews {
             accountButtonsStackView.removeArrangedSubview(view)
             view.removeFromSuperview()
         }
-        accountButtonsStackView.addArrangedSubview(createAccountButton(with: model.gravatarAccount))
-        buttons?.forEach(accountButtonsStackView.addArrangedSubview)
+        buttons.forEach(accountButtonsStackView.addArrangedSubview)
     }
 
-    func createAccountButton(with model: AccountModel) -> UIButton {
+    func createAccountButton(index: Int, model: AccountModel) -> UIButton {
         let button = UIButton()
+        button.tag = index
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(onAccountButtonTap), for: .touchUpInside)
         Configure(button).asAccountButton().content(model).palette(paletteType)
         button.imageView?.contentMode = .scaleAspectFit
         button.imageView?.translatesAutoresizingMaskIntoConstraints = false
@@ -207,4 +211,20 @@ open class ProfileComponentView: UIView, UIContentView {
             loadAvatar(with: avatarID)
         }
     }
+
+    @objc func onAccountButtonTap(_ button: UIButton) {
+        let index = button.tag
+        guard let delegate, index >= 0, index < accounts.count else { return }
+        let account = accounts[index]
+        delegate.didTapOnAccountButton(with: account)
+    }
+
+    @objc func onProfileButtonTap() {
+        delegate?.didTapOnProfileButton(with: .view, profileURL: profileMetadata?.profileURL)
+    }
+}
+
+public protocol ProfileViewDelegate: NSObjectProtocol {
+    func didTapOnProfileButton(with style: ProfileButtonStyle, profileURL: URL?)
+    func didTapOnAccountButton(with accountModel: AccountModel)
 }

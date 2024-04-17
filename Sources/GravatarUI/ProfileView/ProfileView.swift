@@ -43,7 +43,7 @@ public class ProfileView: ProfileComponentView {
         Configure(displayNameLabel).asDisplayName().content(model).palette(paletteType).font(.DS.smallTitle)
         Configure(personalInfoLabel).asPersonalInfo().content(model).palette(paletteType)
         Configure(profileButton).asProfileButton().style(.view).alignment(.trailing).palette(paletteType)
-
+        profileMetadata = model
         updateAccountButtons(with: model)
     }
 
