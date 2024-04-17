@@ -2,8 +2,8 @@ import Gravatar
 import UIKit
 
 public struct ProfileViewConfiguration: UIContentConfiguration {
-    let model: ProfileModel?
-    let summaryModel: ProfileSummaryModel?
+    var model: ProfileModel?
+    var summaryModel: ProfileSummaryModel?
     let profileStyle: Style
     var avatarID: AvatarIdentifier? {
         model?.avatarIdentifier ?? summaryModel?.avatarIdentifier
@@ -11,6 +11,9 @@ public struct ProfileViewConfiguration: UIContentConfiguration {
 
     public var palette: PaletteType
     public var padding: UIEdgeInsets = BaseProfileView.defaultPadding
+    public var isLoading: Bool = false
+    public var shouldShowPlaceholderWhenModelIsNil: Bool = true
+    public var shouldShowPlaceholderWhileLoading: Bool = true
 
     init(model: ProfileModel?, palette: PaletteType, profileStyle: Style) {
         self.model = model
@@ -33,6 +36,10 @@ public struct ProfileViewConfiguration: UIContentConfiguration {
             view = ProfileView(frame: .zero, paletteType: palette)
         case .summary:
             view = ProfileSummaryView(frame: .zero, paletteType: palette)
+        case .large:
+            view = LargeProfileView(frame: .zero, paletteType: palette)
+        case .largeSummary:
+            view = LargeProfileSummaryView(frame: .zero, paletteType: palette)
         }
         view.configuration = self
         return view
@@ -47,8 +54,8 @@ extension ProfileViewConfiguration {
     public enum Style {
         case standard
         case summary
-        // case large
-        // case largeSummary
+        case large
+        case largeSummary
     }
 }
 
@@ -59,5 +66,13 @@ extension ProfileViewConfiguration {
 
     public static func summary(model: ProfileSummaryModel? = nil, palette: PaletteType = .system) -> ProfileViewConfiguration {
         self.init(model: model, palette: palette, profileStyle: .summary)
+    }
+
+    public static func large(model: ProfileModel? = nil, palette: PaletteType = .system) -> ProfileViewConfiguration {
+        self.init(model: model, palette: palette, profileStyle: .large)
+    }
+
+    public static func largeSummary(model: ProfileSummaryModel? = nil, palette: PaletteType = .system) -> ProfileViewConfiguration {
+        self.init(model: model, palette: palette, profileStyle: .largeSummary)
     }
 }
