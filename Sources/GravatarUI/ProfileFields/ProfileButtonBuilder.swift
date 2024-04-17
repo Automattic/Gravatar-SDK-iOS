@@ -40,7 +40,7 @@ public struct ProfileButtonBuilder {
     }
 
     @discardableResult
-    public func alignment(_ alignment: UIControl.ContentHorizontalAlignment) -> ProfileButtonBuilder {
+    func alignment(_ alignment: UIControl.ContentHorizontalAlignment) -> ProfileButtonBuilder {
         button.contentHorizontalAlignment = alignment
         return self
     }

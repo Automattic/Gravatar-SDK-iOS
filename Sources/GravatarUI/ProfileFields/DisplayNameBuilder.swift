@@ -9,7 +9,7 @@ public struct DisplayNameBuilder {
     @discardableResult
     public func content(_ model: DisplayNameModel) -> DisplayNameBuilder {
         label.text = model.displayName ?? model.fullName ?? model.userName
-        label.font = .DS.mediumTitle
+        label.font = .DS.title2
         label.numberOfLines = 0
         return self
     }
@@ -21,7 +21,7 @@ public struct DisplayNameBuilder {
     }
 
     @discardableResult
-    public func font(_ font: UIFont) -> DisplayNameBuilder {
+    func font(_ font: UIFont) -> DisplayNameBuilder {
         label.font = font
         return self
     }
