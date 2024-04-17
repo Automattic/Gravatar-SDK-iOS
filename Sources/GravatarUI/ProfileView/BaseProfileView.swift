@@ -94,7 +94,7 @@ open class BaseProfileView: UIView, UIContentView {
         let action = UIAction { [weak self] _ in
             self?.delegate?.didTapOnProfileButton(with: .view, profileURL: self?.profileMetadata?.profileURL)
         }
-        button.addAction(action , for: .touchUpInside)
+        button.addAction(action, for: .touchUpInside)
         return button
     }()
 

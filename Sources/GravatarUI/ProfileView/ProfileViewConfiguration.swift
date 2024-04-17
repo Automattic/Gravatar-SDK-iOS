@@ -28,12 +28,11 @@ public struct ProfileViewConfiguration: UIContentConfiguration {
     }
 
     public func makeContentView() -> UIView & UIContentView {
-        let view: BaseProfileView
-        switch profileStyle {
+        let view: BaseProfileView = switch profileStyle {
         case .standard:
-            view = ProfileView(frame: .zero, paletteType: palette)
+            ProfileView(frame: .zero, paletteType: palette)
         case .summary:
-            view = ProfileSummaryView(frame: .zero, paletteType: palette)
+            ProfileSummaryView(frame: .zero, paletteType: palette)
         }
         view.configuration = self
         view.delegate = self.delegate
