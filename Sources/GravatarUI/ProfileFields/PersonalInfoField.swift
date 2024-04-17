@@ -30,7 +30,7 @@ public struct PersonalInfoBuilder {
         }
         label.text = resultText
         label.font = .DS.Body.xSmall
-        label.numberOfLines = lines.count
+        label.numberOfLines = 0
         return self
     }
 

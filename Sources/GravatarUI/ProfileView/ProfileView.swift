@@ -1,7 +1,7 @@
 import Gravatar
 import UIKit
 
-public class ProfileView: ProfileComponentView {
+public class ProfileView: BaseProfileView {
     private lazy var topStackView: UIStackView = {
         let stack = UIStackView(arrangedSubviews: [avatarImageView, basicInfoStackView])
         stack.translatesAutoresizingMaskIntoConstraints = false
@@ -31,9 +31,8 @@ public class ProfileView: ProfileComponentView {
         return stack
     }()
 
-    override public init(frame: CGRect, paletteType palette: PaletteType, padding: UIEdgeInsets? = nil) {
-        super.init(frame: frame, paletteType: palette, padding: padding)
-
+    override public init(frame: CGRect) {
+        super.init(frame: frame)
         [topStackView, aboutMeLabel, bottomStackView].forEach(rootStackView.addArrangedSubview)
         rootStackView.setCustomSpacing(.DS.Padding.double, after: aboutMeLabel)
     }

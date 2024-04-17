@@ -10,7 +10,7 @@ public struct ProfileViewConfiguration: UIContentConfiguration {
     }
 
     public var palette: PaletteType
-    public var padding: UIEdgeInsets = ProfileComponentView.defaultPadding
+    public var padding: UIEdgeInsets = BaseProfileView.defaultPadding
 
     init(model: ProfileModel?, palette: PaletteType, profileStyle: Style) {
         self.model = model
