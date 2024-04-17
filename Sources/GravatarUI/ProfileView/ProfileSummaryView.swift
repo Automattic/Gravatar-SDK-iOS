@@ -1,7 +1,7 @@
 import Gravatar
 import UIKit
 
-public class ProfileSummaryView: ProfileComponentView {
+public class ProfileSummaryView: BaseProfileView {
     private lazy var basicInfoStackView: UIStackView = {
         let stack = UIStackView(arrangedSubviews: [displayNameLabel, personalInfoLabel, profileButton])
         stack.translatesAutoresizingMaskIntoConstraints = false
@@ -9,12 +9,10 @@ public class ProfileSummaryView: ProfileComponentView {
         return stack
     }()
 
-    override public init(frame: CGRect, paletteType palette: PaletteType, padding: UIEdgeInsets? = nil) {
-        super.init(frame: frame, paletteType: palette, padding: padding)
-
+    override public init(frame: CGRect) {
+        super.init(frame: frame)
         rootStackView.axis = .horizontal
         rootStackView.alignment = .top
-
         [avatarImageView, basicInfoStackView].forEach(rootStackView.addArrangedSubview)
     }
 

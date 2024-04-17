@@ -21,7 +21,7 @@ public struct DisplayNameBuilder {
     }
 
     @discardableResult
-    public func font(_ font: UIFont) -> DisplayNameBuilder {
+    func font(_ font: UIFont) -> DisplayNameBuilder {
         label.font = font
         return self
     }
