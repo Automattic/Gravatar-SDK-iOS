@@ -17,7 +17,7 @@ public class ProfileSummaryView: BaseProfileView {
     }
 
     public func update(with model: ProfileSummaryModel) {
-        Configure(displayNameLabel).asDisplayName().content(model).palette(paletteType).font(.DS.smallTitle)
+        Configure(displayNameLabel).asDisplayName().content(model).palette(paletteType).font(.DS.headline)
         Configure(personalInfoLabel).asPersonalInfo().content(model, lines: [.init([.location])]).palette(paletteType)
         Configure(profileButton).asProfileButton().style(.view).palette(paletteType)
     }

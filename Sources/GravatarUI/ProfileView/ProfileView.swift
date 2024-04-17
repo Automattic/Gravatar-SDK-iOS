@@ -39,7 +39,7 @@ public class ProfileView: BaseProfileView {
 
     public func update(with model: ProfileModel) {
         Configure(aboutMeLabel).asAboutMe().content(model).palette(paletteType)
-        Configure(displayNameLabel).asDisplayName().content(model).palette(paletteType).font(.DS.smallTitle)
+        Configure(displayNameLabel).asDisplayName().content(model).palette(paletteType).font(.DS.headline)
         Configure(personalInfoLabel).asPersonalInfo().content(model).palette(paletteType)
         Configure(profileButton).asProfileButton().style(.view).alignment(.trailing).palette(paletteType)
 
