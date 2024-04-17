@@ -2,10 +2,11 @@ import Gravatar
 import UIKit
 
 open class BaseProfileView: UIView, UIContentView {
-    private enum Constants {
+    enum Constants {
         static let avatarLength: CGFloat = 72
         static let maximumAccountsDisplay = 3
         static let accountIconLength: CGFloat = 32
+        static let defaultDisplayNamePlaceholderHeight: CGFloat = 24
     }
 
     open var avatarLength: CGFloat {
@@ -61,23 +62,32 @@ open class BaseProfileView: UIView, UIContentView {
         imageView.heightAnchor.constraint(equalToConstant: avatarLength).isActive = true
         imageView.layer.cornerRadius = avatarLength / 2
         imageView.clipsToBounds = true
+        imageView.setContentHuggingPriority(.defaultHigh, for: .horizontal)
         return imageView
     }()
-
+    
     public private(set) lazy var aboutMeLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.adjustsFontForContentSizeCategory = true
         return label
     }()
-
+    
+    public private(set) lazy var aboutMePlaceholderLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.adjustsFontForContentSizeCategory = true
+        label.isHidden = true
+        return label
+    }()
+    
     public private(set) lazy var displayNameLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.adjustsFontForContentSizeCategory = true
         return label
     }()
-
+    
     public private(set) lazy var personalInfoLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -96,6 +106,7 @@ open class BaseProfileView: UIView, UIContentView {
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.axis = .horizontal
         stack.spacing = .DS.Padding.half
+        stack.setContentHuggingPriority(.defaultHigh, for: .horizontal)
         return stack
     }()
 
@@ -104,6 +115,15 @@ open class BaseProfileView: UIView, UIContentView {
             refresh(with: paletteType)
         }
     }
+    
+    public var isLoading: Bool = false {
+        didSet {
+            updatePlaceholderState()
+            //TODO: show loading animation
+        }
+    }
+    public var shouldShowPlaceholderWhenEmpty: Bool = true
+    public var shouldShowPlaceholderWhileLoading: Bool = true
 
     override public init(frame: CGRect) {
         self.paletteType = .system
@@ -129,7 +149,12 @@ open class BaseProfileView: UIView, UIContentView {
         ])
         refresh(with: paletteType)
     }
-
+    
+    open override func willMove(toSuperview newSuperview: UIView?) {
+        super.willMove(toSuperview: newSuperview)
+        updatePlaceholderState()
+    }
+    
     @available(*, unavailable)
     public required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -209,5 +234,87 @@ open class BaseProfileView: UIView, UIContentView {
         if let avatarID = config.avatarID {
             loadAvatar(with: avatarID)
         }
+        isLoading = config.isLoading
+        shouldShowPlaceholderWhileLoading = config.shouldShowPlaceholderWhileLoading
+        shouldShowPlaceholderWhenEmpty = config.shouldShowPlaceholderWhenEmpty
+    }
+    
+    var isEmpty: Bool = true {
+        didSet {
+            updatePlaceholderState()
+        }
+    }
+    
+    func shouldShowPlaceholders() -> Bool {
+        if shouldShowPlaceholderWhenEmpty && isEmpty {
+            return true
+        }
+        if shouldShowPlaceholderWhileLoading && isLoading {
+            return true
+        }
+        return false
+    }
+    
+    func updatePlaceholderState() {
+        if shouldShowPlaceholders() {
+            showPlaceholders()
+        }
+        else {
+            hidePlaceholders()
+        }
+    }
+    
+    private lazy var avatarPlaceholderDisplayer: ImageViewPlaceholderDisplayer = {
+        ImageViewPlaceholderDisplayer(baseView: avatarImageView, color: .porpoiseGray)
+    }()
+    
+    private lazy var aboutMePlaceholderDisplayer: RectangularPlaceholderDisplayer = {
+        RectangularPlaceholderDisplayer(baseView: aboutMeLabel, color: .porpoiseGray, cornerRadius: 8, height: 14, widthRatioToParent: 0.8)
+    }()
+    
+    private lazy var aboutMeSecondLineDisplayer: RectangularPlaceholderDisplayer = {
+        RectangularPlaceholderDisplayer(baseView: aboutMePlaceholderLabel, color: .porpoiseGray, cornerRadius: 8, height: 14, widthRatioToParent: 0.6)
+    }()
+    
+    private lazy var displayNamePlaceholderDisplayer: RectangularPlaceholderDisplayer = {
+        RectangularPlaceholderDisplayer(baseView: displayNameLabel, color: .porpoiseGray, cornerRadius: displayNamePlaceholderHeight / 2, height: displayNamePlaceholderHeight, widthRatioToParent: 0.6)
+    }()
+
+    private lazy var personalInfoPlaceholderDisplayer: RectangularPlaceholderDisplayer = {
+        RectangularPlaceholderDisplayer(baseView: personalInfoLabel, color: .porpoiseGray, cornerRadius: 8, height: 14, widthRatioToParent: 0.8)
+    }()
+
+    private lazy var profileButtonPlaceholderDisplayer: RectangularPlaceholderDisplayer = {
+        RectangularPlaceholderDisplayer(baseView: profileButton, color: .porpoiseGray, cornerRadius: 8, height: 16, widthRatioToParent: 0.2)
+    }()
+    
+    private lazy var accountButtonsPlaceholderDisplayer: AccountButtonsPlaceholderDisplayer = {
+        AccountButtonsPlaceholderDisplayer(containerStackView: accountButtonsStackView, color: .porpoiseGray)
+    }()
+    
+    open var displayNamePlaceholderHeight: CGFloat {
+        Constants.defaultDisplayNamePlaceholderHeight
+    }
+    
+    open func showPlaceholders() {
+        avatarPlaceholderDisplayer.show()
+        aboutMePlaceholderDisplayer.show()
+        aboutMeSecondLineDisplayer.show()
+        aboutMePlaceholderLabel.isHidden = false
+        displayNamePlaceholderDisplayer.show()
+        personalInfoPlaceholderDisplayer.show()
+        profileButtonPlaceholderDisplayer.show()
+        accountButtonsPlaceholderDisplayer.show()
+    }
+    
+    open func hidePlaceholders() {
+        avatarPlaceholderDisplayer.hide()
+        aboutMePlaceholderDisplayer.hide()
+        aboutMeSecondLineDisplayer.hide()
+        displayNamePlaceholderDisplayer.hide()
+        personalInfoPlaceholderDisplayer.hide()
+        profileButtonPlaceholderDisplayer.hide()
+        accountButtonsPlaceholderDisplayer.hide()
+        aboutMePlaceholderLabel.isHidden = true
     }
 }

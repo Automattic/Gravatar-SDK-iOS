@@ -6,17 +6,20 @@ public class ProfileSummaryView: BaseProfileView {
         let stack = UIStackView(arrangedSubviews: [displayNameLabel, personalInfoLabel, profileButton])
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.axis = .vertical
+        stack.alignment = .leading
         return stack
     }()
 
     override public init(frame: CGRect) {
         super.init(frame: frame)
         rootStackView.axis = .horizontal
-        rootStackView.alignment = .top
+        rootStackView.alignment = .center
         [avatarImageView, basicInfoStackView].forEach(rootStackView.addArrangedSubview)
     }
 
-    public func update(with model: ProfileSummaryModel) {
+    public func update(with model: ProfileSummaryModel?) {
+        isEmpty = model == nil
+        guard let model else { return }
         Configure(displayNameLabel).asDisplayName().content(model).palette(paletteType).font(.DS.headline)
         Configure(personalInfoLabel).asPersonalInfo().content(model, lines: [.init([.location])]).palette(paletteType)
         Configure(profileButton).asProfileButton().style(.view).palette(paletteType)
@@ -24,7 +27,16 @@ public class ProfileSummaryView: BaseProfileView {
 
     override public func update(with config: ProfileViewConfiguration) {
         super.update(with: config)
-        guard let model = config.summaryModel else { return }
-        update(with: model)
+        update(with: config.summaryModel)
+    }
+    
+    public override func showPlaceholders() {
+        super.showPlaceholders()
+        basicInfoStackView.spacing = .DS.Padding.single
+    }
+    
+    public override func hidePlaceholders() {
+        super.hidePlaceholders()
+        basicInfoStackView.spacing = 0
     }
 }

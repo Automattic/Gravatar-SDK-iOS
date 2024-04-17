@@ -2,8 +2,8 @@ import Gravatar
 import UIKit
 
 public struct ProfileViewConfiguration: UIContentConfiguration {
-    var model: ProfileModel?
-    var summaryModel: ProfileSummaryModel?
+    public var model: ProfileModel?
+    public var summaryModel: ProfileSummaryModel?
     let profileStyle: Style
     var avatarID: AvatarIdentifier? {
         model?.avatarIdentifier ?? summaryModel?.avatarIdentifier
@@ -12,7 +12,7 @@ public struct ProfileViewConfiguration: UIContentConfiguration {
     public var palette: PaletteType
     public var padding: UIEdgeInsets = BaseProfileView.defaultPadding
     public var isLoading: Bool = false
-    public var shouldShowPlaceholderWhenModelIsNil: Bool = true
+    public var shouldShowPlaceholderWhenEmpty: Bool = true
     public var shouldShowPlaceholderWhileLoading: Bool = true
 
     init(model: ProfileModel?, palette: PaletteType, profileStyle: Style) {
