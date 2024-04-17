@@ -91,7 +91,10 @@ open class BaseProfileView: UIView, UIContentView {
 
     public lazy var profileButton: UIButton = {
         let button = UIButton(configuration: .borderless())
-        button.addTarget(self, action: #selector(onProfileButtonTap), for: .touchUpInside)
+        let action = UIAction { [weak self] _ in
+            self?.delegate?.didTapOnProfileButton(with: .view, profileURL: self?.profileMetadata?.profileURL)
+        }
+        button.addAction(action , for: .touchUpInside)
         return button
     }()
 
@@ -181,8 +184,8 @@ open class BaseProfileView: UIView, UIContentView {
     }
 
     func updateAccountButtons(with model: AccountListModel) {
-        accounts = Array(model.accountsList.prefix(4))
-        let buttons = accounts.enumerated().map(createAccountButton)
+        accounts = Array(model.accountsList.prefix(Constants.maximumAccountsDisplay))
+        let buttons = accounts.map(createAccountButton)
         for view in accountButtonsStackView.arrangedSubviews {
             accountButtonsStackView.removeArrangedSubview(view)
             view.removeFromSuperview()
@@ -190,11 +193,14 @@ open class BaseProfileView: UIView, UIContentView {
         buttons.forEach(accountButtonsStackView.addArrangedSubview)
     }
 
-    func createAccountButton(index: Int, model: AccountModel) -> UIButton {
+    func createAccountButton(model: AccountModel) -> UIButton {
         let button = UIButton()
-        button.tag = index
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.addTarget(self, action: #selector(onAccountButtonTap), for: .touchUpInside)
+        let action = UIAction { [weak self] _ in
+            self?.delegate?.didTapOnAccountButton(with: model)
+        }
+        button.addAction(action, for: .touchUpInside)
+
         Configure(button).asAccountButton().content(model).palette(paletteType)
         button.imageView?.contentMode = .scaleAspectFit
         button.imageView?.translatesAutoresizingMaskIntoConstraints = false
@@ -215,17 +221,6 @@ open class BaseProfileView: UIView, UIContentView {
         if let avatarID = config.avatarID {
             loadAvatar(with: avatarID)
         }
-    }
-
-    @objc func onAccountButtonTap(_ button: UIButton) {
-        let index = button.tag
-        guard let delegate, index >= 0, index < accounts.count else { return }
-        let account = accounts[index]
-        delegate.didTapOnAccountButton(with: account)
-    }
-
-    @objc func onProfileButtonTap() {
-        delegate?.didTapOnProfileButton(with: .view, profileURL: profileMetadata?.profileURL)
     }
 }
 

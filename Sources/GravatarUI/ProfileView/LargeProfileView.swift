@@ -48,5 +48,6 @@ public class LargeProfileView: BaseProfileView {
         Configure(personalInfoLabel).asPersonalInfo().content(model).palette(paletteType)
         Configure(profileButton).asProfileButton().style(.view).alignment(.trailing).palette(paletteType)
         updateAccountButtons(with: model)
+        profileMetadata = model
     }
 }

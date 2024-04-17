@@ -31,6 +31,7 @@ class DemoLargeProfileViewController: UIViewController {
         let view = LargeProfileView(frame: .zero, paletteType: preferredPaletteType)
         view.translatesAutoresizingMaskIntoConstraints = false
         view.avatarImageView.gravatar.activityIndicatorType = .activity
+        view.delegate = self
         return view
     }()
 
@@ -38,6 +39,7 @@ class DemoLargeProfileViewController: UIViewController {
         let view = LargeProfileSummaryView(frame: .zero, paletteType: preferredPaletteType)
         view.translatesAutoresizingMaskIntoConstraints = false
         view.avatarImageView.gravatar.activityIndicatorType = .activity
+        view.delegate = self
         return view
     }()
 

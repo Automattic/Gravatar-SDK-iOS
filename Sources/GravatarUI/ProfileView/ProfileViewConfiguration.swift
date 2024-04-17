@@ -28,7 +28,7 @@ public struct ProfileViewConfiguration: UIContentConfiguration {
     }
 
     public func makeContentView() -> UIView & UIContentView {
-        let view: ProfileComponentView
+        let view: BaseProfileView
         switch profileStyle {
         case .standard:
             view = ProfileView(frame: .zero, paletteType: palette)
