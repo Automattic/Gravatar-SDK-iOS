@@ -12,20 +12,14 @@ public class LargeProfileView: BaseProfileView {
     }
 
     private lazy var topStackView: UIStackView = {
-        let spacer = UIView()
-        spacer.translatesAutoresizingMaskIntoConstraints = false
-        spacer.setContentHuggingPriority(.defaultLow, for: .vertical)
-        let stack = UIStackView(arrangedSubviews: [avatarImageView, spacer])
+        let stack = UIStackView(arrangedSubviews: [avatarImageView, UIView.spacer()])
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.axis = .horizontal
         return stack
     }()
 
     private lazy var bottomStackView: UIStackView = {
-        let spacer = UIView()
-        spacer.translatesAutoresizingMaskIntoConstraints = false
-        spacer.setContentHuggingPriority(.defaultLow, for: .vertical)
-        let stack = UIStackView(arrangedSubviews: [accountButtonsStackView, spacer, profileButton])
+        let stack = UIStackView(arrangedSubviews: [accountButtonsStackView, UIView.spacer(), profileButton])
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.axis = .horizontal
         stack.alignment = .center
@@ -35,7 +29,7 @@ public class LargeProfileView: BaseProfileView {
 
     override public init(frame: CGRect) {
         super.init(frame: frame)
-        [topStackView, displayNameLabel, personalInfoLabel, aboutMeLabel, aboutMePlaceholderLabel, bottomStackView].forEach(rootStackView.addArrangedSubview)
+        [topStackView, displayNameLabel, personalInfoLabel, aboutMeLabel, aboutMePlaceholderLabel, bottomStackView, UIView.spacer()].forEach(rootStackView.addArrangedSubview)
         setRootStackViewSpacing()
     }
     

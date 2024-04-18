@@ -19,7 +19,7 @@ public class LargeProfileSummaryView: BaseProfileView {
     
     override public init(frame: CGRect) {
         super.init(frame: frame)
-        [avatarImageView, displayNameLabel, personalInfoLabel, profileButton].forEach(rootStackView.addArrangedSubview)
+        [avatarImageView, displayNameLabel, personalInfoLabel, profileButton, UIView.spacer()].forEach(rootStackView.addArrangedSubview)
         rootStackView.alignment = .center
         setRootStackViewSpacing()
     }

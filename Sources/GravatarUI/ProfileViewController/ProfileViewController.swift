@@ -4,28 +4,28 @@ import UIKit
 
 @MainActor
 public class ProfileViewController: UIViewController {
-    let viewModel = ProfileViewModel()
-    let profileView: UIView & UIContentView
-    public var profileIdentifier: ProfileIdentifier? = nil
-    var configuration: ProfileViewConfiguration {
+    private let viewModel: ProfileViewModel
+    private let profileView: UIView & UIContentView
+    private var configuration: ProfileViewConfiguration {
         didSet {
             profileView.configuration = configuration
         }
     }
 
     private var cancellables = Set<AnyCancellable>()
-    var profileFetchingErrorHandler: ((ProfileServiceError) -> Void)?
+    public var profileFetchingErrorHandler: ((ProfileServiceError) -> Void)?
 
-    public init(configuration: ProfileViewConfiguration, profileIdentifier: ProfileIdentifier? = nil) {
+    public init(configuration: ProfileViewConfiguration, viewModel: ProfileViewModel? = nil) {
+        self.viewModel = viewModel ?? ProfileViewModel()
         self.profileView = configuration.makeContentView()
         self.configuration = configuration
-        self.profileIdentifier = profileIdentifier
         super.init(nibName: nil, bundle: nil)
     }
 
     override public func viewDidLoad() {
         super.viewDidLoad()
         view.addSubview(profileView)
+        self.profileView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             view.leadingAnchor.constraint(equalTo: profileView.leadingAnchor),
             view.trailingAnchor.constraint(equalTo: profileView.trailingAnchor),
@@ -67,10 +67,9 @@ public class ProfileViewController: UIViewController {
         }.store(in: &cancellables)
     }
 
-    public func fetchProfile() {
-        guard let profileIdentifier else { return }
+    private func fetchProfile() {
         Task {
-            await viewModel.fetch(with: profileIdentifier)
+            await viewModel.fetchProfile()
         }
     }
 }

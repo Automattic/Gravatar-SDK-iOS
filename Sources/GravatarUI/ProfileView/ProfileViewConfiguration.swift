@@ -51,7 +51,7 @@ public struct ProfileViewConfiguration: UIContentConfiguration {
 }
 
 extension ProfileViewConfiguration {
-    public enum Style {
+    public enum Style: String, CaseIterable {
         case standard
         case summary
         case large

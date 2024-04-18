@@ -7,6 +7,8 @@ open class BaseProfileView: UIView, UIContentView {
         static let maximumAccountsDisplay = 3
         static let accountIconLength: CGFloat = 32
         static let defaultDisplayNamePlaceholderHeight: CGFloat = 24
+        static let placeholderColor: UIColor = .bleachedSilkWhite
+        static let loadingAnimationColors: [UIColor] = [placeholderColor, .plasterWhite]
     }
 
     open var avatarLength: CGFloat {
@@ -116,12 +118,29 @@ open class BaseProfileView: UIView, UIContentView {
         }
     }
     
-    public var isLoading: Bool = false {
+    /// Provides the activityIndicator to show when `isLoading` is `true` .
+    /// Defaults to ``ProfileViewActivityIndicatorProvider``. Set to `nil` in case activity indicator is not wanted.
+    public var activityIndicatorProvider: ActivityIndicatorProvider? {
         didSet {
-            updatePlaceholderState()
-            //TODO: show loading animation
+            //addActivityIndicator()
         }
     }
+    
+    private var activityIndicatorView: UIView?
+
+    public var isLoading: Bool = false {
+        didSet {
+            guard isLoading != oldValue else { return }
+            if isLoading {
+                startLoadingAnimation()
+            }
+            else {
+                stopLoadingAnimation()
+            }
+            updatePlaceholderState()
+        }
+    }
+    
     public var shouldShowPlaceholderWhenEmpty: Bool = true
     public var shouldShowPlaceholderWhileLoading: Bool = true
 
@@ -129,6 +148,7 @@ open class BaseProfileView: UIView, UIContentView {
         self.paletteType = .system
         super.init(frame: frame)
         self.padding = Self.defaultPadding
+        self.activityIndicatorProvider = ProfileViewActivityIndicatorProvider(colors: [.plasterWhite, .clear])
         commonInit()
     }
 
@@ -147,6 +167,7 @@ open class BaseProfileView: UIView, UIContentView {
             layoutMarginsGuide.trailingAnchor.constraint(equalTo: rootStackView.trailingAnchor),
             layoutMarginsGuide.bottomAnchor.constraint(equalTo: rootStackView.bottomAnchor),
         ])
+        //addActivityIndicator()
         refresh(with: paletteType)
     }
     
@@ -239,6 +260,38 @@ open class BaseProfileView: UIView, UIContentView {
         shouldShowPlaceholderWhenEmpty = config.shouldShowPlaceholderWhenEmpty
     }
     
+    // MARK: - Activity Indicator
+    
+    /*private func addActivityIndicator() {
+        if let activityIndicatorView { // Remove previous
+            activityIndicatorView.removeFromSuperview()
+        }
+        guard let activityIndicatorProvider else {
+            activityIndicatorView = nil
+            return
+        }
+        let newIndicatorView = activityIndicatorProvider.view
+        addSubview(newIndicatorView)
+        newIndicatorView.translatesAutoresizingMaskIntoConstraints = false
+        newIndicatorView.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
+        newIndicatorView.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
+        switch activityIndicatorProvider.sizeStrategy(in: self) {
+        case .intrinsicSize:
+            break
+        case .full:
+            newIndicatorView.heightAnchor.constraint(equalTo: heightAnchor, constant: 0).isActive = true
+            newIndicatorView.widthAnchor.constraint(equalTo: widthAnchor, constant: 0).isActive = true
+        case .size(let size):
+            newIndicatorView.heightAnchor.constraint(equalToConstant: size.height).isActive = true
+            newIndicatorView.widthAnchor.constraint(equalToConstant: size.width).isActive = true
+        }
+        bringSubviewToFront(newIndicatorView)
+        newIndicatorView.isHidden = true
+        activityIndicatorView = newIndicatorView
+    }*/
+    
+    // MARK: - Placeholder handling
+    
     var isEmpty: Bool = true {
         didSet {
             updatePlaceholderState()
@@ -264,32 +317,44 @@ open class BaseProfileView: UIView, UIContentView {
         }
     }
     
+    private lazy var placeholderDisplayers: [AnimatingPlaceholderDisplaying] = {
+        [
+            avatarPlaceholderDisplayer,
+            aboutMePlaceholderDisplayer,
+            aboutMeSecondLineDisplayer,
+            displayNamePlaceholderDisplayer,
+            personalInfoPlaceholderDisplayer,
+            profileButtonPlaceholderDisplayer,
+            accountButtonsPlaceholderDisplayer
+        ]
+    }()
+    
     private lazy var avatarPlaceholderDisplayer: ImageViewPlaceholderDisplayer = {
-        ImageViewPlaceholderDisplayer(baseView: avatarImageView, color: .porpoiseGray)
+        ImageViewPlaceholderDisplayer(baseView: avatarImageView, color: Constants.placeholderColor, animationColors: Constants.loadingAnimationColors)
     }()
     
     private lazy var aboutMePlaceholderDisplayer: RectangularPlaceholderDisplayer = {
-        RectangularPlaceholderDisplayer(baseView: aboutMeLabel, color: .porpoiseGray, cornerRadius: 8, height: 14, widthRatioToParent: 0.8)
+        RectangularPlaceholderDisplayer(baseView: aboutMeLabel, color: Constants.placeholderColor, cornerRadius: 8, height: 14, widthRatioToParent: 0.8, animationColors: Constants.loadingAnimationColors)
     }()
     
     private lazy var aboutMeSecondLineDisplayer: RectangularPlaceholderDisplayer = {
-        RectangularPlaceholderDisplayer(baseView: aboutMePlaceholderLabel, color: .porpoiseGray, cornerRadius: 8, height: 14, widthRatioToParent: 0.6)
+        RectangularPlaceholderDisplayer(baseView: aboutMePlaceholderLabel, color: Constants.placeholderColor, cornerRadius: 8, height: 14, widthRatioToParent: 0.6, animationColors: Constants.loadingAnimationColors)
     }()
     
     private lazy var displayNamePlaceholderDisplayer: RectangularPlaceholderDisplayer = {
-        RectangularPlaceholderDisplayer(baseView: displayNameLabel, color: .porpoiseGray, cornerRadius: displayNamePlaceholderHeight / 2, height: displayNamePlaceholderHeight, widthRatioToParent: 0.6)
+        RectangularPlaceholderDisplayer(baseView: displayNameLabel, color: Constants.placeholderColor, cornerRadius: displayNamePlaceholderHeight / 2, height: displayNamePlaceholderHeight, widthRatioToParent: 0.6, animationColors: Constants.loadingAnimationColors)
     }()
 
     private lazy var personalInfoPlaceholderDisplayer: RectangularPlaceholderDisplayer = {
-        RectangularPlaceholderDisplayer(baseView: personalInfoLabel, color: .porpoiseGray, cornerRadius: 8, height: 14, widthRatioToParent: 0.8)
+        RectangularPlaceholderDisplayer(baseView: personalInfoLabel, color: Constants.placeholderColor, cornerRadius: 8, height: 14, widthRatioToParent: 0.8, animationColors: Constants.loadingAnimationColors)
     }()
 
     private lazy var profileButtonPlaceholderDisplayer: RectangularPlaceholderDisplayer = {
-        RectangularPlaceholderDisplayer(baseView: profileButton, color: .porpoiseGray, cornerRadius: 8, height: 16, widthRatioToParent: 0.2)
+        RectangularPlaceholderDisplayer(baseView: profileButton, color: Constants.placeholderColor, cornerRadius: 8, height: 16, widthRatioToParent: 0.2, animationColors: Constants.loadingAnimationColors)
     }()
     
     private lazy var accountButtonsPlaceholderDisplayer: AccountButtonsPlaceholderDisplayer = {
-        AccountButtonsPlaceholderDisplayer(containerStackView: accountButtonsStackView, color: .porpoiseGray)
+        AccountButtonsPlaceholderDisplayer(containerStackView: accountButtonsStackView, color: Constants.placeholderColor, animationColors: Constants.loadingAnimationColors)
     }()
     
     open var displayNamePlaceholderHeight: CGFloat {
@@ -297,24 +362,20 @@ open class BaseProfileView: UIView, UIContentView {
     }
     
     open func showPlaceholders() {
-        avatarPlaceholderDisplayer.show()
-        aboutMePlaceholderDisplayer.show()
-        aboutMeSecondLineDisplayer.show()
+        placeholderDisplayers.forEach { $0.show() }
         aboutMePlaceholderLabel.isHidden = false
-        displayNamePlaceholderDisplayer.show()
-        personalInfoPlaceholderDisplayer.show()
-        profileButtonPlaceholderDisplayer.show()
-        accountButtonsPlaceholderDisplayer.show()
     }
     
     open func hidePlaceholders() {
-        avatarPlaceholderDisplayer.hide()
-        aboutMePlaceholderDisplayer.hide()
-        aboutMeSecondLineDisplayer.hide()
-        displayNamePlaceholderDisplayer.hide()
-        personalInfoPlaceholderDisplayer.hide()
-        profileButtonPlaceholderDisplayer.hide()
-        accountButtonsPlaceholderDisplayer.hide()
+        placeholderDisplayers.forEach { $0.hide() }
         aboutMePlaceholderLabel.isHidden = true
+    }
+    
+    func startLoadingAnimation() {
+        placeholderDisplayers.forEach { $0.startAnimating() }
+    }
+    
+    func stopLoadingAnimation() {
+        placeholderDisplayers.forEach { $0.stopAnimating() }
     }
 }

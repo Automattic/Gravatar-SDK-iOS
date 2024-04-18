@@ -1,24 +1,30 @@
 import UIKit
 
 @MainActor
-protocol PlaceholderDisplaying {
+protocol AnimatingPlaceholderDisplaying {
+    var color: UIColor { get set }
+    var animationColors: [UIColor] { get set }
     func show()
     func hide()
-    var color: UIColor { get }
+    func startAnimating()
+    func stopAnimating()
 }
 
 @MainActor
-class RectangularPlaceholderDisplayer: PlaceholderDisplaying {
-    
-    let color: UIColor
-    let baseView: UIView
+class RectangularPlaceholderDisplayer: AnimatingPlaceholderDisplaying {
+    var color: UIColor
+    var animationColors: [UIColor]
+    var baseView: UIView
     let cornerRadius: CGFloat
     let height: CGFloat
     let widthRatioToParent: CGFloat
     var layoutConstraints: [NSLayoutConstraint] = []
-    
-    init(baseView: UIView, color: UIColor, cornerRadius: CGFloat, height: CGFloat, widthRatioToParent: CGFloat) {
+    var isShowing: Bool = false
+    private var animator: UIViewPropertyAnimator?
+
+    init(baseView: UIView, color: UIColor, cornerRadius: CGFloat, height: CGFloat, widthRatioToParent: CGFloat, animationColors: [UIColor]) {
         self.color = color
+        self.animationColors = animationColors
         self.baseView = baseView
         self.cornerRadius = cornerRadius
         self.height = height
@@ -26,18 +32,34 @@ class RectangularPlaceholderDisplayer: PlaceholderDisplaying {
     }
     
     func show() {
+        guard !isShowing else { return }
+        // Deactivate existing ones if any
+        NSLayoutConstraint.deactivate(layoutConstraints)
         layoutConstraints = baseView.transitionIntoPlaceholderState(color: color, cornerRadius: cornerRadius, height: height, widthRatioToParent: widthRatioToParent)
         NSLayoutConstraint.activate(layoutConstraints)
+        isShowing = true
     }
     
     func hide() {
         baseView.resetPlaceholderState(color: .clear)
         NSLayoutConstraint.deactivate(layoutConstraints)
+        layoutConstraints = []
+        isShowing = false
+    }
+    
+    func startAnimating() {
+        if animator?.isRunning == true { return }
+        animator = self.baseView.loopBackgroundColors(colors: animationColors)
+    }
+    
+    func stopAnimating() {
+        animator?.stopAnimation(true)
+        self.baseView.backgroundColor = color
     }
 }
 
 @MainActor
-class BackgroundColorPlaceholderDisplayer<T: UIView>: PlaceholderDisplaying {
+class BackgroundColorPlaceholderDisplayer<T: UIView>: AnimatingPlaceholderDisplaying {
     func show() {
         originalBackgroundColor = baseView.backgroundColor
         baseView.backgroundColor = color
@@ -48,12 +70,22 @@ class BackgroundColorPlaceholderDisplayer<T: UIView>: PlaceholderDisplaying {
     }
     
     var color: UIColor
+    var animationColors: [UIColor]
     let baseView: T
     var originalBackgroundColor: UIColor? = nil
 
-    init(baseView: T, color: UIColor) {
+    init(baseView: T, color: UIColor, animationColors: [UIColor]) {
         self.color = color
+        self.animationColors = animationColors
         self.baseView = baseView
+    }
+    
+    func startAnimating() {
+        self.baseView.loopBackgroundColors(colors: animationColors)
+    }
+    
+    func stopAnimating() {
+        self.baseView.backgroundColor = color
     }
 }
 
@@ -73,8 +105,9 @@ class ImageViewPlaceholderDisplayer: BackgroundColorPlaceholderDisplayer<UIImage
     }
 }
 
-class AccountButtonsPlaceholderDisplayer: PlaceholderDisplaying {
+class AccountButtonsPlaceholderDisplayer: AnimatingPlaceholderDisplaying {
     var color: UIColor
+    var animationColors: [UIColor]
     let containerStackView: UIStackView
     
     func show() {
@@ -86,6 +119,15 @@ class AccountButtonsPlaceholderDisplayer: PlaceholderDisplaying {
         removeAllArrangedSubviews()
     }
     
+    
+    func startAnimating() {
+        containerStackView.arrangedSubviews.forEach { $0.loopBackgroundColors(colors: animationColors) }
+    }
+    
+    func stopAnimating() {
+        containerStackView.arrangedSubviews.forEach { $0.backgroundColor = color }
+    }
+    
     private func removeAllArrangedSubviews() {
         containerStackView.arrangedSubviews.forEach { view in
             containerStackView.removeArrangedSubview(view)
@@ -93,8 +135,9 @@ class AccountButtonsPlaceholderDisplayer: PlaceholderDisplaying {
         }
     }
     
-    init(containerStackView: UIStackView, color: UIColor) {
+    init(containerStackView: UIStackView, color: UIColor, animationColors: [UIColor]) {
         self.color = color
+        self.animationColors = animationColors
         self.containerStackView = containerStackView
     }
     
@@ -124,7 +167,7 @@ extension UIView {
         var constraints: [NSLayoutConstraint] = []
         
         if let height {
-            var heightConstraint = heightAnchor.constraint(equalToConstant: height)
+            let heightConstraint = heightAnchor.constraint(equalToConstant: height)
             heightConstraint.priority = .required
             constraints.append(heightConstraint)
         }
@@ -143,5 +186,21 @@ extension UIView {
             clipsToBounds = false
         }
         backgroundColor = color
+    }
+    
+    func loopBackgroundColors(withDuration duration: TimeInterval = 0.8, colors: [UIColor]) -> UIViewPropertyAnimator {
+        return UIViewPropertyAnimator.runningPropertyAnimator(withDuration: duration, delay: 0, options: [.repeat, .autoreverse, .curveEaseOut]) {
+            colors.forEach { color in
+                self.backgroundColor = color
+            }
+        } completion: { _ in
+            
+        }
+
+        /*UIView.animate(withDuration: duration, delay: 0.0, options: [.repeat, .autoreverse, .curveEaseOut]) {
+            colors.forEach { color in
+                self.backgroundColor = color
+            }
+        }*/
     }
 }

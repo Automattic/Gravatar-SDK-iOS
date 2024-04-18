@@ -22,6 +22,8 @@
 		49C5D6102B5B33E20067C2A8 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49C5D60F2B5B33E20067C2A8 /* ContentView.swift */; };
 		49C5D6122B5B33E20067C2A8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 49C5D6112B5B33E20067C2A8 /* Assets.xcassets */; };
 		49C5D6152B5B33E20067C2A8 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 49C5D6142B5B33E20067C2A8 /* Preview Assets.xcassets */; };
+		916D25B02BD12478005FF46C /* DemoStandaloneProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 916D25AF2BD12478005FF46C /* DemoStandaloneProfileViewController.swift */; };
+		916D25B22BD12BC2005FF46C /* BaseDemoProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 916D25B12BD12BC2005FF46C /* BaseDemoProfileViewController.swift */; };
 		91956A522B6793AF00BF3CF0 /* SwitchWithLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91956A512B6793AF00BF3CF0 /* SwitchWithLabel.swift */; };
 		91956A542B67943A00BF3CF0 /* DemoUIImageViewExtensionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91956A532B67943A00BF3CF0 /* DemoUIImageViewExtensionViewController.swift */; };
 		91E2FB042BC0276E00265E8E /* DemoLargeProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91E2FB032BC0276E00265E8E /* DemoLargeProfileViewController.swift */; };
@@ -46,6 +48,8 @@
 		49C5D60F2B5B33E20067C2A8 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		49C5D6112B5B33E20067C2A8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		49C5D6142B5B33E20067C2A8 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		916D25AF2BD12478005FF46C /* DemoStandaloneProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoStandaloneProfileViewController.swift; sourceTree = "<group>"; };
+		916D25B12BD12BC2005FF46C /* BaseDemoProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseDemoProfileViewController.swift; sourceTree = "<group>"; };
 		91956A512B6793AF00BF3CF0 /* SwitchWithLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchWithLabel.swift; sourceTree = "<group>"; };
 		91956A532B67943A00BF3CF0 /* DemoUIImageViewExtensionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoUIImageViewExtensionViewController.swift; sourceTree = "<group>"; };
 		91E2FB032BC0276E00265E8E /* DemoLargeProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoLargeProfileViewController.swift; sourceTree = "<group>"; };
@@ -107,6 +111,8 @@
 				1ECAB5062BC984440043A331 /* DemoProfileConfigurationViewController.swift */,
 				1E0087942B63DBCB0012ECEA /* DemoUploadImageViewController.swift */,
 				91956A532B67943A00BF3CF0 /* DemoUIImageViewExtensionViewController.swift */,
+				916D25AF2BD12478005FF46C /* DemoStandaloneProfileViewController.swift */,
+				916D25B12BD12BC2005FF46C /* BaseDemoProfileViewController.swift */,
 				91F0B3DB2B62815F0025C4F8 /* MainTableViewController.swift */,
 				495775EA2B5B34980082812A /* Assets.xcassets */,
 				495775EC2B5B34980082812A /* LaunchScreen.storyboard */,
@@ -271,10 +277,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				91F0B3DD2B62815F0025C4F8 /* MainTableViewController.swift in Sources */,
+				916D25B02BD12478005FF46C /* DemoStandaloneProfileViewController.swift in Sources */,
 				1E0087932B63CFFE0012ECEA /* DemoFetchProfileViewController.swift in Sources */,
 				1E0087952B63DBCB0012ECEA /* DemoUploadImageViewController.swift in Sources */,
 				495775E22B5B34970082812A /* AppDelegate.swift in Sources */,
 				91956A522B6793AF00BF3CF0 /* SwitchWithLabel.swift in Sources */,
+				916D25B22BD12BC2005FF46C /* BaseDemoProfileViewController.swift in Sources */,
 				91F0B3DE2B62815F0025C4F8 /* DemoAvatarDownloadViewController.swift in Sources */,
 				91956A542B67943A00BF3CF0 /* DemoUIImageViewExtensionViewController.swift in Sources */,
 				495775E42B5B34970082812A /* SceneDelegate.swift in Sources */,
