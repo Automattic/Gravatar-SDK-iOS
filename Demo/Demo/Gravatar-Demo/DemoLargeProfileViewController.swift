@@ -45,6 +45,7 @@ class DemoLargeProfileViewController: UIViewController {
 
     lazy var profileView: ProfileView = {
         let view = ProfileView(frame: .zero, paletteType: preferredPaletteType)
+        view.profileButtonStyle = .edit
         view.translatesAutoresizingMaskIntoConstraints = false
         view.avatarImageView.gravatar.activityIndicatorType = .activity
         view.delegate = self
@@ -52,7 +53,7 @@ class DemoLargeProfileViewController: UIViewController {
     }()
 
     lazy var profileSummaryView: ProfileSummaryView = {
-        let view = ProfileSummaryView(frame: .zero, paletteType: preferredPaletteType)
+        let view = ProfileSummaryView(frame: .zero, paletteType: preferredPaletteType, profileButtonStyle: .edit)
         view.translatesAutoresizingMaskIntoConstraints = false
         view.avatarImageView.gravatar.activityIndicatorType = .activity
         view.delegate = self
@@ -174,7 +175,10 @@ class DemoLargeProfileViewController: UIViewController {
 
 extension DemoLargeProfileViewController: ProfileViewDelegate {
     func didTapOnProfileButton(with style: GravatarUI.ProfileButtonStyle, profileURL: URL?) {
-        guard let profileURL else { return }
+        guard var profileURL else { return }
+        if style == .edit {
+            profileURL.appendPathComponent("profile", conformingTo: .url)
+        }
         let safari = SFSafariViewController(url: profileURL)
         present(safari, animated: true)
     }

@@ -12,6 +12,12 @@ open class BaseProfileView: UIView, UIContentView {
         Constants.avatarLength
     }
 
+    public var profileButtonStyle: ProfileButtonStyle = .view {
+        didSet {
+            Configure(profileButton).asProfileButton().style(profileButtonStyle)
+        }
+    }
+
     static let defaultPadding = UIEdgeInsets(
         top: .DS.Padding.split,
         left: .DS.Padding.medium,
@@ -92,7 +98,8 @@ open class BaseProfileView: UIView, UIContentView {
     public lazy var profileButton: UIButton = {
         let button = UIButton(configuration: .borderless())
         let action = UIAction { [weak self] _ in
-            self?.delegate?.didTapOnProfileButton(with: .view, profileURL: self?.profileMetadata?.profileURL)
+            guard let self else { return }
+            self.delegate?.didTapOnProfileButton(with: profileButtonStyle, profileURL: self.profileMetadata?.profileURL)
         }
         button.addAction(action, for: .touchUpInside)
         return button
@@ -119,11 +126,17 @@ open class BaseProfileView: UIView, UIContentView {
         commonInit()
     }
 
-    public convenience init(frame: CGRect, paletteType: PaletteType, padding: UIEdgeInsets? = nil) {
+    public convenience init(
+        frame: CGRect,
+        paletteType: PaletteType? = nil,
+        profileButtonStyle: ProfileButtonStyle? = nil,
+        padding: UIEdgeInsets? = nil
+    ) {
         self.init(frame: frame)
-        self.paletteType = paletteType
+        self.paletteType = paletteType ?? self.paletteType
+        self.profileButtonStyle = profileButtonStyle ?? self.profileButtonStyle
         self.padding = padding ?? Self.defaultPadding
-        refresh(with: paletteType)
+        refresh(with: self.paletteType)
     }
 
     func commonInit() {

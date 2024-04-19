@@ -11,6 +11,7 @@ public struct ProfileViewConfiguration: UIContentConfiguration {
 
     public var palette: PaletteType
     public var padding: UIEdgeInsets = BaseProfileView.defaultPadding
+    public var profileButtonStyle: ProfileButtonStyle = .view
     public weak var delegate: ProfileViewDelegate?
 
     init(model: ProfileModel?, palette: PaletteType, profileStyle: Style) {
@@ -30,9 +31,9 @@ public struct ProfileViewConfiguration: UIContentConfiguration {
     public func makeContentView() -> UIView & UIContentView {
         let view: BaseProfileView = switch profileStyle {
         case .standard:
-            ProfileView(frame: .zero, paletteType: palette)
+            ProfileView(frame: .zero, paletteType: palette, profileButtonStyle: profileButtonStyle)
         case .summary:
-            ProfileSummaryView(frame: .zero, paletteType: palette)
+            ProfileSummaryView(frame: .zero, paletteType: palette, profileButtonStyle: profileButtonStyle)
         }
         view.configuration = self
         view.delegate = self.delegate

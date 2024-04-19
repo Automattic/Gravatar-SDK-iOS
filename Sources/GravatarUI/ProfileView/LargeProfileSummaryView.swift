@@ -35,7 +35,7 @@ public class LargeProfileSummaryView: BaseProfileView {
         Configure(personalInfoLabel).asPersonalInfo().content(model, lines: Self.personalInfoLines).palette(paletteType)
         displayNameLabel.textAlignment = .center
         personalInfoLabel.textAlignment = .center
-        Configure(profileButton).asProfileButton().style(.view).palette(paletteType)
+        Configure(profileButton).asProfileButton().style(profileButtonStyle).palette(paletteType)
         profileMetadata = model
     }
 }
