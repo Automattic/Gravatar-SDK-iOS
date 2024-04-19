@@ -4,9 +4,11 @@ public struct PersonalInfoBuilder {
     public static var defaultPersonalInfo: [PersonalInfoLine] {
         [
             .init([.jobTitle]),
-            .init([.namePronunciation, .defaultSeparator, .pronouns, .defaultSeparator, .location]),
+            .init([.namePronunciation, .pronouns, .location]),
         ]
     }
+
+    static let defaultSeparator: String = "・"
 
     let label: UILabel
     init(label: UILabel) {
@@ -16,19 +18,17 @@ public struct PersonalInfoBuilder {
     @discardableResult
     public func content(
         _ model: PersonalInfoModel,
-        lines: [PersonalInfoLine] = Self.defaultPersonalInfo
+        lines: [PersonalInfoLine] = Self.defaultPersonalInfo,
+        separator: String? = nil
     ) -> PersonalInfoBuilder {
-        var resultText = ""
-        var previousLine = ""
-        for line in lines {
-            let text = line.text(from: model)
-            if !previousLine.isEmpty && !text.isEmpty {
-                resultText.append("\n")
-            }
-            resultText.append(text)
-            previousLine = text
-        }
-        label.text = resultText
+        let separator = separator ?? Self.defaultSeparator
+        let text = lines.map { line in
+            line.buildingBlocks
+                .compactMap { $0.text(from: model) }
+                .joined(separator: "\(separator)")
+        }.filter { !$0.isEmpty }.joined(separator: "\n")
+
+        label.text = text
         label.font = .DS.Body.xSmall
         label.numberOfLines = 0
         return self

@@ -8,17 +8,9 @@ public struct PersonalInfoLine {
     }
 
     func text(from model: PersonalInfoModel) -> String {
-        var string = ""
-        var previousBlockText = ""
-        for block in buildingBlocks {
-            let textToAdd = block.text(from: model) ?? ""
-            // Do not add separator if the previous block is empty
-            if !block.isSeparator || (block.isSeparator && !previousBlockText.isEmpty) {
-                string += textToAdd
-            }
-            previousBlockText = textToAdd
-        }
-        return string
+        buildingBlocks.compactMap { block in
+            block.text(from: model)
+        }.joined()
     }
 }
 
@@ -27,7 +19,6 @@ public enum PersonalInfoBuildingBlock {
     case namePronunciation
     case pronouns
     case location
-    case separator(String)
 
     func text(from model: PersonalInfoModel) -> String? {
         switch self {
@@ -39,21 +30,6 @@ public enum PersonalInfoBuildingBlock {
             model.pronouns
         case .location:
             model.currentLocation
-        case .separator(let string):
-            string
-        }
-    }
-
-    static var defaultSeparator: PersonalInfoBuildingBlock {
-        .separator("・")
-    }
-
-    var isSeparator: Bool {
-        switch self {
-        case .separator:
-            true
-        default:
-            false
         }
     }
 }
