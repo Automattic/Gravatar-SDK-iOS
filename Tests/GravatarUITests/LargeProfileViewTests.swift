@@ -6,7 +6,6 @@ import XCTest
 final class LargeProfileViewTests: XCTestCase {
     enum Constants {
         static let width: CGFloat = 320
-        static let containerHeight: CGFloat = 350
     }
 
     let palettesToTest: [PaletteType] = [.light, .dark]
@@ -25,18 +24,18 @@ final class LargeProfileViewTests: XCTestCase {
         }
     }
 
+    func testEmptyLargeProfileView() throws {
+        for paletteType in palettesToTest {
+            let (cardView, containerView) = createViews(paletteType: paletteType)
+            assertSnapshot(of: containerView, as: .image, named: "testEmptyLargeProfileView-\(paletteType.name)")
+        }
+    }
+    
     private func createViews(paletteType: PaletteType) -> (LargeProfileView, UIView) {
         let cardView = LargeProfileView(frame: .zero, paletteType: paletteType)
         cardView.translatesAutoresizingMaskIntoConstraints = false
         cardView.widthAnchor.constraint(equalToConstant: Constants.width).isActive = true
-        let containerView = UIView()
-        containerView.backgroundColor = .purple
-        containerView.translatesAutoresizingMaskIntoConstraints = false
-        containerView.widthAnchor.constraint(equalToConstant: Constants.width + 20).isActive = true
-        containerView.heightAnchor.constraint(equalToConstant: Constants.containerHeight).isActive = true
-        containerView.addSubview(cardView)
-        cardView.topAnchor.constraint(equalTo: containerView.topAnchor).isActive = true
-        cardView.centerXAnchor.constraint(equalTo: containerView.centerXAnchor).isActive = true
+        let containerView = cardView.wrapInSuperView(with: Constants.width)
         return (cardView, containerView)
     }
 }

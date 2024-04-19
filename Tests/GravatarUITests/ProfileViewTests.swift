@@ -20,11 +20,21 @@ final class ProfileViewTests: XCTestCase {
             assertSnapshot(of: containerView, as: .image, named: "\(interfaceStyle.name)")
         }
     }
+    
+    func testEmptyProfileView() throws {
+        for interfaceStyle in UIUserInterfaceStyle.allCases {
+            let containerView = createViews(model: nil)
+            containerView.overrideUserInterfaceStyle = interfaceStyle
+            assertSnapshot(of: containerView, as: .image, named: "\(interfaceStyle.name)")
+        }
+    }
 
-    private func createViews(model: ProfileModel) -> UIView {
+    private func createViews(model: ProfileModel?) -> UIView {
         let cardView = ProfileView(frame: .zero, paletteType: .system)
-        cardView.avatarImageView.backgroundColor = .systemBlue
         cardView.update(with: model)
+        if model != nil {
+            cardView.avatarImageView.backgroundColor = .systemBlue
+        }
         cardView.translatesAutoresizingMaskIntoConstraints = false
         cardView.widthAnchor.constraint(equalToConstant: Constants.width).isActive = true
 

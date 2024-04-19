@@ -12,7 +12,6 @@ open class BaseDemoProfileViewController: UIViewController {
         textField.autocapitalizationType = .none
         textField.textContentType = .emailAddress
         textField.textAlignment = .center
-        textField.text = "pinarolguc@gmail.com"
         return textField
     }()
     

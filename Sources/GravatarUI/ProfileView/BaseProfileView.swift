@@ -141,7 +141,6 @@ open class BaseProfileView: UIView, UIContentView {
             } else {
                 activityIndicator?.stopAnimating(on: self)
             }
-            togglePlaceholder()
         }
     }
 
@@ -218,7 +217,6 @@ open class BaseProfileView: UIView, UIContentView {
         Configure(aboutMeLabel).asAboutMe().palette(paletteType)
         Configure(displayNameLabel).asDisplayName().palette(paletteType)
         Configure(personalInfoLabel).asPersonalInfo().palette(paletteType)
-
         Configure(profileButton).asProfileButton().palette(paletteType)
 
         accountButtonsStackView.arrangedSubviews.compactMap { $0 as? UIButton }.forEach { button in

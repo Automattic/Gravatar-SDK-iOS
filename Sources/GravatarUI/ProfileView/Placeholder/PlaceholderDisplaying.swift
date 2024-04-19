@@ -7,48 +7,74 @@ public protocol PlaceholderDisplaying {
     // called.
     var isTemporary: Bool { get }
     /// Color of the placeholder state.
-    var color: UIColor { get set }
+    var placeholderColor: UIColor { get set }
     /// Shows the placeholder state of this object.
     func showPlaceholder()
     /// Hides the placeholder state of this object. Reverts any changes made by `showPlaceholder()`.
     func hidePlaceholder()
-    /// Sets the color of the underlying view element.
-    func set(viewColor color: UIColor?)
+    /// Sets the `layer.backgroundColor` of the underlying view element.
+    func set(layerColor newColor: UIColor?)
+    /// Sets the `backgroundColor` of the underlying view element.
+    func set(viewColor newColor: UIColor?)
+    /// Prepares for color animations.
+    func prepareForAnimation()
+    /// Refreshes the color.  `backgroundColor` is set to `placeholderColor` and`layer.backgroundColor` to nil.
+    func refreshColor()
+}
+
+extension PlaceholderDisplaying {
+    func refreshColor() {
+        set(layerColor: .clear)
+        set(viewColor: placeholderColor)
+    }
 }
 
 /// This ``PlaceholderDisplaying`` implementation updates the background color when `showPlaceholder()` is called.
 @MainActor
 class BackgroundColorPlaceholderDisplayer<T: UIView>: PlaceholderDisplaying {
-    var color: UIColor
+    var placeholderColor: UIColor
     let baseView: T
     let isTemporary: Bool
-    let resetBackgroundColor: UIColor
+    let originalBackgroundColor: UIColor
 
-    init(baseView: T, color: UIColor, resetBackgroundColor: UIColor = .clear, isTemporary: Bool = false) {
-        self.color = color
+    init(baseView: T, color: UIColor, originalBackgroundColor: UIColor = .clear, isTemporary: Bool = false) {
+        self.placeholderColor = color
         self.baseView = baseView
         self.isTemporary = isTemporary
-        self.resetBackgroundColor = resetBackgroundColor
+        self.originalBackgroundColor = originalBackgroundColor
     }
 
     func showPlaceholder() {
         if isTemporary {
             baseView.isHidden = false
         }
-        set(viewColor: color)
+        set(viewColor: placeholderColor)
     }
 
     func hidePlaceholder() {
-        set(viewColor: resetBackgroundColor)
+        set(viewColor: originalBackgroundColor)
+        set(layerColor: .clear)
         if isTemporary {
             baseView.isHidden = true
         }
     }
-
+    
     func set(viewColor newColor: UIColor?) {
-        // Set to "layer.backgroundColor" because in some UIView subclasses the normal backgroundColor is not animatable. I observed some problems in UILabel,
-        // UIButton.
+        // UIColor can automatically adjust according to `UIUserInterfaceStyle`, but CGColor can't.
+        // That's why we can't just rely on `layer.backgroundColor`. We need to set this.
+        baseView.backgroundColor = newColor
+    }
+    
+    func set(layerColor newColor: UIColor?) {
+        // backgroundColor is not animatable for some UIView subclasses. For example: UILabel. So we need to animate over `layer.backgroundColor`.
         baseView.layer.backgroundColor = newColor?.cgColor
+    }
+    
+    func prepareForAnimation() {
+        if baseView is UILabel {
+            // If UILabel's backgroundColor is set, the animation won't be visible. So we need to clear it. This is only needed for UILabel so far.
+            set(viewColor: .clear)
+        }
     }
 }
 
@@ -94,11 +120,11 @@ class RectangularPlaceholderDisplayer<T: UIView>: BackgroundColorPlaceholderDisp
 /// This ``PlaceholderDisplaying`` implementation is tailored for account buttons. It shows 4 shadow account buttons in the given color.
 @MainActor
 class AccountButtonsPlaceholderDisplayer: PlaceholderDisplaying {
-    var color: UIColor
+    var placeholderColor: UIColor
     private let containerStackView: UIStackView
     let isTemporary: Bool
     init(containerStackView: UIStackView, color: UIColor, isTemporary: Bool = false) {
-        self.color = color
+        self.placeholderColor = color
         self.isTemporary = isTemporary
         self.containerStackView = containerStackView
     }
@@ -128,7 +154,7 @@ class AccountButtonsPlaceholderDisplayer: PlaceholderDisplaying {
     private func placeholderView() -> UIView {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.layer.backgroundColor = color.cgColor
+        view.backgroundColor = placeholderColor
         NSLayoutConstraint.activate([
             view.heightAnchor.constraint(equalToConstant: BaseProfileView.Constants.accountIconLength),
             view.widthAnchor.constraint(equalToConstant: BaseProfileView.Constants.accountIconLength),
@@ -138,12 +164,19 @@ class AccountButtonsPlaceholderDisplayer: PlaceholderDisplaying {
         return view
     }
 
-    func set(viewColor color: UIColor?) {
+    func set(viewColor newColor: UIColor?) {
         for arrangedSubview in containerStackView.arrangedSubviews {
-            // Set to "layer.backgroundColor", for animation consistency with other views.
-            arrangedSubview.layer.backgroundColor = color?.cgColor
+            arrangedSubview.backgroundColor = newColor
         }
     }
+    
+    func set(layerColor newColor: UIColor?) {
+        for arrangedSubview in containerStackView.arrangedSubviews {
+            arrangedSubview.layer.backgroundColor = newColor?.cgColor
+        }
+    }
+    
+    func prepareForAnimation() { }
 }
 
 @MainActor

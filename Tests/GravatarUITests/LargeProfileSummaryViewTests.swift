@@ -21,10 +21,20 @@ final class LargeProfileSummaryViewTests: XCTestCase {
         }
     }
 
-    private func createViews(model: ProfileSummaryModel) -> UIView {
+    func testEmptyProfileSummaryView() throws {
+        for interfaceStyle in UIUserInterfaceStyle.allCases {
+            let containerView = createViews(model: nil)
+            containerView.overrideUserInterfaceStyle = interfaceStyle
+            assertSnapshot(of: containerView, as: .image, named: "empty-\(interfaceStyle.name)")
+        }
+    }
+
+    private func createViews(model: ProfileSummaryModel?) -> UIView {
         let cardView = LargeProfileSummaryView(frame: .zero, paletteType: .system)
-        cardView.avatarImageView.backgroundColor = .systemBlue
         cardView.update(with: model)
+        if model != nil {
+            cardView.avatarImageView.backgroundColor = .systemBlue
+        }
         cardView.translatesAutoresizingMaskIntoConstraints = false
         cardView.widthAnchor.constraint(equalToConstant: Constants.width).isActive = true
 

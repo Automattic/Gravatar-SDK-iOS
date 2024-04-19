@@ -21,11 +21,21 @@ final class ProfileSummaryViewTests: XCTestCase {
         }
     }
 
-    private func createViews(model: ProfileSummaryModel) -> UIView {
+    func testEmptyProfileSummaryView() throws {
+        for interfaceStyle in UIUserInterfaceStyle.allCases {
+            let containerView = createViews(model: nil)
+            containerView.overrideUserInterfaceStyle = interfaceStyle
+            assertSnapshot(of: containerView, as: .image, named: "\(interfaceStyle.name)")
+        }
+    }
+    
+    private func createViews(model: ProfileSummaryModel?) -> UIView {
         let cardView = ProfileSummaryView(frame: .zero, paletteType: .system)
-        cardView.avatarImageView.backgroundColor = .systemBlue
         cardView.update(with: model)
         cardView.translatesAutoresizingMaskIntoConstraints = false
+        if model != nil {
+            cardView.avatarImageView.backgroundColor = .systemBlue
+        }
         cardView.widthAnchor.constraint(equalToConstant: Constants.width).isActive = true
 
         return cardView.wrapInSuperView(with: Constants.width)

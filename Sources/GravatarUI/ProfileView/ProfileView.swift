@@ -36,7 +36,9 @@ public class ProfileView: BaseProfileView {
     }
 
     private func setRootStackViewSpacing() {
+        basicInfoStackView.spacing = 0
         rootStackView.setCustomSpacing(.DS.Padding.double, after: aboutMeLabel)
+        rootStackView.setCustomSpacing(0, after: bottomStackView)
     }
 
     public func update(with model: ProfileModel?) {
@@ -64,7 +66,6 @@ public class ProfileView: BaseProfileView {
 
     override public func hidePlaceholders() {
         super.hidePlaceholders()
-        basicInfoStackView.spacing = 0
         setRootStackViewSpacing()
     }
 }

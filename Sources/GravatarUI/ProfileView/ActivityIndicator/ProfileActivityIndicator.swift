@@ -1,6 +1,6 @@
 import UIKit
 
-/// Describes a general purpose activity inficator.
+/// Describes a general purpose activity indicator.
 @MainActor
 public protocol ActivityIndicator {
     associatedtype T: UIView
@@ -27,6 +27,9 @@ class ProfilePlaceholderActivityIndicator: ProfileActivityIndicator {
         // This activity indicator should only work when fields are in their placeholder state.
         guard placeholderDisplayer.isShowing else { return }
         shouldStopAnimating = false
+        self.placeholderDisplayer.elements?.forEach { element in
+            element.prepareForAnimation()
+        }
         doLoadingAnimation(index: 0, animatingColors: baseView.placeholderColors.loadingAnimationColors)
     }
 
@@ -34,6 +37,14 @@ class ProfilePlaceholderActivityIndicator: ProfileActivityIndicator {
         shouldStopAnimating = true
         if animator?.isRunning == true {
             animator?.stopAnimation(true)
+        }
+        self.placeholderDisplayer.elements?.forEach { element in
+            if placeholderDisplayer.isShowing {
+                element.refreshColor()
+            }
+            else {
+                element.hidePlaceholder()
+            }
         }
     }
 
@@ -46,7 +57,7 @@ class ProfilePlaceholderActivityIndicator: ProfileActivityIndicator {
             guard index < animatingColors.count,
                   let elements = self.placeholderDisplayer.elements else { return }
             for element in elements {
-                element.set(viewColor: animatingColors[index])
+                element.set(layerColor: animatingColors[index])
             }
         } completion: { [weak self] _ in
             self?.doLoadingAnimation(index: index + 1, animatingColors: animatingColors)

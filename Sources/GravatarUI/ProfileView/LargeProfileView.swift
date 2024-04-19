@@ -38,6 +38,9 @@ public class LargeProfileView: BaseProfileView {
         rootStackView.setCustomSpacing(.DS.Padding.double, after: avatarImageView)
         rootStackView.setCustomSpacing(0, after: displayNameLabel)
         rootStackView.setCustomSpacing(.DS.Padding.double, after: aboutMeLabel)
+        rootStackView.setCustomSpacing(0, after: aboutMePlaceholderLabel)
+        rootStackView.setCustomSpacing(.DS.Padding.single, after: personalInfoLabel)
+        rootStackView.setCustomSpacing(0, after: bottomStackView)
     }
 
     public func update(with model: ProfileModel?) {
@@ -57,8 +60,8 @@ public class LargeProfileView: BaseProfileView {
 
     override public func showPlaceholders() {
         super.showPlaceholders()
-        rootStackView.setCustomSpacing(.DS.Padding.split, after: displayNameLabel)
-        rootStackView.setCustomSpacing(.DS.Padding.medium, after: personalInfoLabel)
+        rootStackView.setCustomSpacing(.DS.Padding.single, after: displayNameLabel)
+        rootStackView.setCustomSpacing(.DS.Padding.double, after: personalInfoLabel)
         rootStackView.setCustomSpacing(.DS.Padding.single, after: aboutMeLabel)
         rootStackView.setCustomSpacing(.DS.Padding.double, after: aboutMePlaceholderLabel)
     }

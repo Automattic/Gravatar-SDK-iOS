@@ -28,6 +28,7 @@ public class LargeProfileSummaryView: BaseProfileView {
         rootStackView.setCustomSpacing(.DS.Padding.double, after: avatarImageView)
         rootStackView.setCustomSpacing(0, after: displayNameLabel)
         rootStackView.setCustomSpacing(0, after: personalInfoLabel)
+        rootStackView.setCustomSpacing(0, after: profileButton)
     }
 
     public func update(with model: ProfileSummaryModel?) {
