@@ -14,7 +14,7 @@ public class ProfileView: BaseProfileView {
         let stack = UIStackView(arrangedSubviews: [accountButtonsStackView, profileButton])
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.axis = .horizontal
-        stack.distribution = .fillProportionally
+        stack.distribution = .equalCentering
         stack.spacing = .DS.Padding.split
         return stack
     }()

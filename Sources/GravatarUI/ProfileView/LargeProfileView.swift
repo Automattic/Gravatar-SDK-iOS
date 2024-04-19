@@ -25,6 +25,7 @@ public class LargeProfileView: BaseProfileView {
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.axis = .horizontal
         stack.alignment = .center
+        stack.distribution = .equalCentering
         stack.spacing = .DS.Padding.split
         return stack
     }()
