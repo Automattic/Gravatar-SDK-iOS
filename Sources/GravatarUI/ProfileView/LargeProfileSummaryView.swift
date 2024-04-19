@@ -17,8 +17,8 @@ public class LargeProfileSummaryView: BaseProfileView {
         Constants.avatarLength
     }
     
-    override public init(frame: CGRect) {
-        super.init(frame: frame)
+    override public func arrangeSubviews() {
+        super.arrangeSubviews()
         [avatarImageView, displayNameLabel, personalInfoLabel, profileButton, UIView.spacer()].forEach(rootStackView.addArrangedSubview)
         rootStackView.alignment = .center
         setRootStackViewSpacing()
@@ -28,11 +28,6 @@ public class LargeProfileSummaryView: BaseProfileView {
         rootStackView.setCustomSpacing(.DS.Padding.double, after: avatarImageView)
         rootStackView.setCustomSpacing(0, after: displayNameLabel)
         rootStackView.setCustomSpacing(0, after: personalInfoLabel)
-    }
-
-    @available(*, unavailable)
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
 
     public func update(with model: ProfileSummaryModel?) {

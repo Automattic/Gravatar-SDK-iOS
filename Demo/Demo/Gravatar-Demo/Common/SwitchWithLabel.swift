@@ -28,6 +28,7 @@ class SwitchWithLabel: UIView {
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.axis = .horizontal
         stack.spacing = 6
+        stack.alignment = .center
         return stack
     }()
     

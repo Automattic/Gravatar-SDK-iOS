@@ -27,8 +27,8 @@ public class LargeProfileView: BaseProfileView {
         return stack
     }()
 
-    override public init(frame: CGRect) {
-        super.init(frame: frame)
+    override public func arrangeSubviews() {
+        super.arrangeSubviews()
         [topStackView, displayNameLabel, personalInfoLabel, aboutMeLabel, aboutMePlaceholderLabel, bottomStackView, UIView.spacer()].forEach(rootStackView.addArrangedSubview)
         setRootStackViewSpacing()
     }
@@ -37,11 +37,6 @@ public class LargeProfileView: BaseProfileView {
         rootStackView.setCustomSpacing(.DS.Padding.double, after: avatarImageView)
         rootStackView.setCustomSpacing(0, after: displayNameLabel)
         rootStackView.setCustomSpacing(.DS.Padding.double, after: aboutMeLabel)
-    }
-
-    @available(*, unavailable)
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
 
     public func update(with model: ProfileModel?) {

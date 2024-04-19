@@ -7,10 +7,15 @@ open class BaseProfileView: UIView, UIContentView {
         static let maximumAccountsDisplay = 3
         static let accountIconLength: CGFloat = 32
         static let defaultDisplayNamePlaceholderHeight: CGFloat = 24
-        static let placeholderColor: UIColor = .bleachedSilkWhite
-        static let loadingAnimationColors: [UIColor] = [placeholderColor, .plasterWhite]
     }
-
+    
+    public enum PlaceholderColorPolicy {
+        /// Gets the placeholder colors from the current palette.
+        case currentPalette
+        /// Custom colors. You can as well pass predefined colors from the `PaletteType``. Example: ``PaletteType.light.placeholder``.
+        case custom(PlaceholderColors)
+    }
+    
     open var avatarLength: CGFloat {
         Constants.avatarLength
     }
@@ -118,37 +123,36 @@ open class BaseProfileView: UIView, UIContentView {
         }
     }
     
-    /// Provides the activityIndicator to show when `isLoading` is `true` .
-    /// Defaults to ``ProfileViewActivityIndicatorProvider``. Set to `nil` in case activity indicator is not wanted.
-    public var activityIndicatorProvider: ActivityIndicatorProvider? {
-        didSet {
-            //addActivityIndicator()
-        }
-    }
+    /// Colors to use in the placeholder state (which basically means when all fields are empty).
+    public var placeholderColorPolicy: PlaceholderColorPolicy = .currentPalette
     
-    private var activityIndicatorView: UIView?
+    /// Activity indicator to show when `isLoading` is `true` .
+    /// Defaults to ``ProfilePlaceholderActivityIndicator``.
+    public var activityIndicator: (any ProfileActivityIndicator)?
+    
+    /// Displays a placeholder when all the fields are empty. Defaults to ``ProfileViewPlaceholderDisplayer``.
+    public var placeholderDisplayer: (any ProfileViewPlaceholderDisplaying)?
 
     public var isLoading: Bool = false {
         didSet {
             guard isLoading != oldValue else { return }
             if isLoading {
-                startLoadingAnimation()
+                activityIndicator?.startAnimating(on: self)
             }
             else {
-                stopLoadingAnimation()
+                activityIndicator?.stopAnimating(on: self)
             }
-            updatePlaceholderState()
+            togglePlaceholder()
         }
     }
     
-    public var shouldShowPlaceholderWhenEmpty: Bool = true
-    public var shouldShowPlaceholderWhileLoading: Bool = true
-
     override public init(frame: CGRect) {
         self.paletteType = .system
         super.init(frame: frame)
         self.padding = Self.defaultPadding
-        self.activityIndicatorProvider = ProfileViewActivityIndicatorProvider(colors: [.plasterWhite, .clear])
+        let placeholderDisplayer = ProfileViewPlaceholderDisplayer()
+        self.placeholderDisplayer = placeholderDisplayer
+        self.activityIndicator = ProfilePlaceholderActivityIndicator(placeholderDisplayer: placeholderDisplayer)
         commonInit()
     }
 
@@ -167,13 +171,14 @@ open class BaseProfileView: UIView, UIContentView {
             layoutMarginsGuide.trailingAnchor.constraint(equalTo: rootStackView.trailingAnchor),
             layoutMarginsGuide.bottomAnchor.constraint(equalTo: rootStackView.bottomAnchor),
         ])
-        //addActivityIndicator()
         refresh(with: paletteType)
+        placeholderDisplayer?.setup(using: self)
+        arrangeSubviews()
+        togglePlaceholder() // We should call this after subviews are added (which means after `arrangeSubviews()`)
     }
     
-    open override func willMove(toSuperview newSuperview: UIView?) {
-        super.willMove(toSuperview: newSuperview)
-        updatePlaceholderState()
+    open func arrangeSubviews() {
+        // Subclasses should override
     }
     
     @available(*, unavailable)
@@ -220,6 +225,7 @@ open class BaseProfileView: UIView, UIContentView {
         accountButtonsStackView.arrangedSubviews.compactMap { $0 as? UIButton }.forEach { button in
             Configure(button).asAccountButton().palette(paletteType)
         }
+        placeholderDisplayer?.refresh(with: placeholderColors)
     }
 
     func updateAccountButtons(with model: AccountListModel) {
@@ -256,60 +262,31 @@ open class BaseProfileView: UIView, UIContentView {
             loadAvatar(with: avatarID)
         }
         isLoading = config.isLoading
-        shouldShowPlaceholderWhileLoading = config.shouldShowPlaceholderWhileLoading
-        shouldShowPlaceholderWhenEmpty = config.shouldShowPlaceholderWhenEmpty
     }
-    
-    // MARK: - Activity Indicator
-    
-    /*private func addActivityIndicator() {
-        if let activityIndicatorView { // Remove previous
-            activityIndicatorView.removeFromSuperview()
-        }
-        guard let activityIndicatorProvider else {
-            activityIndicatorView = nil
-            return
-        }
-        let newIndicatorView = activityIndicatorProvider.view
-        addSubview(newIndicatorView)
-        newIndicatorView.translatesAutoresizingMaskIntoConstraints = false
-        newIndicatorView.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
-        newIndicatorView.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
-        switch activityIndicatorProvider.sizeStrategy(in: self) {
-        case .intrinsicSize:
-            break
-        case .full:
-            newIndicatorView.heightAnchor.constraint(equalTo: heightAnchor, constant: 0).isActive = true
-            newIndicatorView.widthAnchor.constraint(equalTo: widthAnchor, constant: 0).isActive = true
-        case .size(let size):
-            newIndicatorView.heightAnchor.constraint(equalToConstant: size.height).isActive = true
-            newIndicatorView.widthAnchor.constraint(equalToConstant: size.width).isActive = true
-        }
-        bringSubviewToFront(newIndicatorView)
-        newIndicatorView.isHidden = true
-        activityIndicatorView = newIndicatorView
-    }*/
     
     // MARK: - Placeholder handling
     
-    var isEmpty: Bool = true {
+    var placeholderColors: PlaceholderColors {
+        switch placeholderColorPolicy {
+        case .currentPalette:
+            return paletteType.palette.placeholder
+        case .custom(let placeholderColors):
+            return placeholderColors
+        }
+    }
+    
+    open var isEmpty: Bool = true {
         didSet {
-            updatePlaceholderState()
+            togglePlaceholder()
         }
     }
     
-    func shouldShowPlaceholders() -> Bool {
-        if shouldShowPlaceholderWhenEmpty && isEmpty {
-            return true
-        }
-        if shouldShowPlaceholderWhileLoading && isLoading {
-            return true
-        }
-        return false
+    func shouldShowPlaceholder() -> Bool {
+        return isEmpty
     }
     
-    func updatePlaceholderState() {
-        if shouldShowPlaceholders() {
+    func togglePlaceholder() {
+        if shouldShowPlaceholder() {
             showPlaceholders()
         }
         else {
@@ -317,65 +294,15 @@ open class BaseProfileView: UIView, UIContentView {
         }
     }
     
-    private lazy var placeholderDisplayers: [AnimatingPlaceholderDisplaying] = {
-        [
-            avatarPlaceholderDisplayer,
-            aboutMePlaceholderDisplayer,
-            aboutMeSecondLineDisplayer,
-            displayNamePlaceholderDisplayer,
-            personalInfoPlaceholderDisplayer,
-            profileButtonPlaceholderDisplayer,
-            accountButtonsPlaceholderDisplayer
-        ]
-    }()
-    
-    private lazy var avatarPlaceholderDisplayer: ImageViewPlaceholderDisplayer = {
-        ImageViewPlaceholderDisplayer(baseView: avatarImageView, color: Constants.placeholderColor, animationColors: Constants.loadingAnimationColors)
-    }()
-    
-    private lazy var aboutMePlaceholderDisplayer: RectangularPlaceholderDisplayer = {
-        RectangularPlaceholderDisplayer(baseView: aboutMeLabel, color: Constants.placeholderColor, cornerRadius: 8, height: 14, widthRatioToParent: 0.8, animationColors: Constants.loadingAnimationColors)
-    }()
-    
-    private lazy var aboutMeSecondLineDisplayer: RectangularPlaceholderDisplayer = {
-        RectangularPlaceholderDisplayer(baseView: aboutMePlaceholderLabel, color: Constants.placeholderColor, cornerRadius: 8, height: 14, widthRatioToParent: 0.6, animationColors: Constants.loadingAnimationColors)
-    }()
-    
-    private lazy var displayNamePlaceholderDisplayer: RectangularPlaceholderDisplayer = {
-        RectangularPlaceholderDisplayer(baseView: displayNameLabel, color: Constants.placeholderColor, cornerRadius: displayNamePlaceholderHeight / 2, height: displayNamePlaceholderHeight, widthRatioToParent: 0.6, animationColors: Constants.loadingAnimationColors)
-    }()
-
-    private lazy var personalInfoPlaceholderDisplayer: RectangularPlaceholderDisplayer = {
-        RectangularPlaceholderDisplayer(baseView: personalInfoLabel, color: Constants.placeholderColor, cornerRadius: 8, height: 14, widthRatioToParent: 0.8, animationColors: Constants.loadingAnimationColors)
-    }()
-
-    private lazy var profileButtonPlaceholderDisplayer: RectangularPlaceholderDisplayer = {
-        RectangularPlaceholderDisplayer(baseView: profileButton, color: Constants.placeholderColor, cornerRadius: 8, height: 16, widthRatioToParent: 0.2, animationColors: Constants.loadingAnimationColors)
-    }()
-    
-    private lazy var accountButtonsPlaceholderDisplayer: AccountButtonsPlaceholderDisplayer = {
-        AccountButtonsPlaceholderDisplayer(containerStackView: accountButtonsStackView, color: Constants.placeholderColor, animationColors: Constants.loadingAnimationColors)
-    }()
-    
     open var displayNamePlaceholderHeight: CGFloat {
         Constants.defaultDisplayNamePlaceholderHeight
     }
     
     open func showPlaceholders() {
-        placeholderDisplayers.forEach { $0.show() }
-        aboutMePlaceholderLabel.isHidden = false
+        placeholderDisplayer?.showPlaceholder(on: self)
     }
     
     open func hidePlaceholders() {
-        placeholderDisplayers.forEach { $0.hide() }
-        aboutMePlaceholderLabel.isHidden = true
-    }
-    
-    func startLoadingAnimation() {
-        placeholderDisplayers.forEach { $0.startAnimating() }
-    }
-    
-    func stopLoadingAnimation() {
-        placeholderDisplayers.forEach { $0.stopAnimating() }
+        placeholderDisplayer?.hidePlaceholder(on: self)
     }
 }

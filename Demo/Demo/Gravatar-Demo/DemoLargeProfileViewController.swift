@@ -24,6 +24,13 @@ class DemoLargeProfileViewController: UIViewController {
         return button
     }()
     
+    private lazy var activityIndictorSwitchWithLabel: SwitchWithLabel = {
+        let view = SwitchWithLabel(labelText: "Test activity indicator (only works when cards are empty)")
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.switchView.addTarget(self, action: #selector(toggleLoadingState), for: .valueChanged)
+        return view
+    }()
+    
     lazy var largeProfileView: LargeProfileView = {
         let view = LargeProfileView(frame: .zero, paletteType: preferredPaletteType)
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -35,13 +42,6 @@ class DemoLargeProfileViewController: UIViewController {
         let view = LargeProfileSummaryView(frame: .zero, paletteType: preferredPaletteType)
         view.translatesAutoresizingMaskIntoConstraints = false
         view.avatarImageView.gravatar.activityIndicatorType = .activity
-        return view
-    }()
-
-    private lazy var activityIndictorSwitchWithLabel: SwitchWithLabel = {
-        let view = SwitchWithLabel(labelText: "Show activity indicator")
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.switchView.addTarget(self, action: #selector(toggleLoadingState), for: .valueChanged)
         return view
     }()
     
