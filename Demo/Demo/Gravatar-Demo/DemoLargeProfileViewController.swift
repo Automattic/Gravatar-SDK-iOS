@@ -175,10 +175,7 @@ class DemoLargeProfileViewController: UIViewController {
 
 extension DemoLargeProfileViewController: ProfileViewDelegate {
     func didTapOnProfileButton(with style: GravatarUI.ProfileButtonStyle, profileURL: URL?) {
-        guard var profileURL else { return }
-        if style == .edit {
-            profileURL.appendPathComponent("profile", conformingTo: .url)
-        }
+        guard let profileURL else { return }
         let safari = SFSafariViewController(url: profileURL)
         present(safari, animated: true)
     }
@@ -186,6 +183,7 @@ extension DemoLargeProfileViewController: ProfileViewDelegate {
     func didTapOnAccountButton(with accountModel: AccountModel) {
         guard let accountURL = accountModel.accountURL else { return }
         let safari = SFSafariViewController(url: accountURL)
+
         present(safari, animated: true)
     }
 }

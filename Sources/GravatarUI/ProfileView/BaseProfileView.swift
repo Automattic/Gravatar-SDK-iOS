@@ -99,7 +99,8 @@ open class BaseProfileView: UIView, UIContentView {
         let button = UIButton(configuration: .borderless())
         let action = UIAction { [weak self] _ in
             guard let self else { return }
-            self.delegate?.didTapOnProfileButton(with: profileButtonStyle, profileURL: self.profileMetadata?.profileURL)
+            let url = profileButtonStyle == .edit ? self.profileMetadata?.profileEditURL : self.profileMetadata?.profileURL
+            self.delegate?.didTapOnProfileButton(with: profileButtonStyle, profileURL: url)
         }
         button.addAction(action, for: .touchUpInside)
         return button
