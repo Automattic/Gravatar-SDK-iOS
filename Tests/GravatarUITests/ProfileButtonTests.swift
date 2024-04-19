@@ -33,13 +33,13 @@ final class ProfileButtonTests: XCTestCase {
     func testProfileButtonSnapshots() {
         let button = UIButton(frame: frame)
 
-        [ProfileButtonStyle.view, .edit].forEach {
+        for style in [ProfileButtonStyle.view, .edit] {
             Configure(button)
                 .asProfileButton()
-                .style($0)
+                .style(style)
                 .palette(.light)
 
-            assertSnapshot(of: button, as: .image, named: "\($0)")
+            assertSnapshot(of: button, as: .image, named: "\(style)")
         }
     }
 }
