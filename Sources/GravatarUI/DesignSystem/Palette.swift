@@ -29,7 +29,7 @@ public enum PaletteType {
     case dark
     case system
     case custom(() -> Palette)
-    
+
     public var palette: Palette {
         switch self {
         case .light:
@@ -42,7 +42,7 @@ public enum PaletteType {
             paletteProvider()
         }
     }
-    
+
     public var name: String {
         palette.name
     }
@@ -80,17 +80,19 @@ extension Palette {
             )
         )
     }
-    
+
     static func systemPlaceholderAnimationColors() -> [UIColor] {
         var colors: [UIColor] = []
         let count = min(light.placeholder.loadingAnimationColors.count, dark.placeholder.loadingAnimationColors.count)
-        for i in 0..<count {
-            colors.append(UIColor(light: light.placeholder.loadingAnimationColors[i],
-                                  dark: dark.placeholder.loadingAnimationColors[i]))
+        for i in 0 ..< count {
+            colors.append(UIColor(
+                light: light.placeholder.loadingAnimationColors[i],
+                dark: dark.placeholder.loadingAnimationColors[i]
+            ))
         }
         return colors
     }
-    
+
     public static var light: Palette {
         .init(
             name: "Light",
@@ -101,11 +103,13 @@ extension Palette {
             ),
             background: .init(primary: .white),
             avatarBorder: .porpoiseGray,
-            placeholder: PlaceholderColors(backgroundColor: .smokeWhite,
-                                           loadingAnimationColors: [.smokeWhite, .bleachedSilkWhite])
+            placeholder: PlaceholderColors(
+                backgroundColor: .smokeWhite,
+                loadingAnimationColors: [.smokeWhite, .bleachedSilkWhite]
+            )
         )
     }
-    
+
     static var dark: Palette {
         .init(
             name: "Dark",
@@ -116,8 +120,10 @@ extension Palette {
             ),
             background: .init(primary: .gravatarBlack),
             avatarBorder: .porpoiseGray,
-            placeholder: PlaceholderColors(backgroundColor: .boatAnchorGray,
-                                           loadingAnimationColors: [.boatAnchorGray, .spanishGray])
+            placeholder: PlaceholderColors(
+                backgroundColor: .boatAnchorGray,
+                loadingAnimationColors: [.boatAnchorGray, .spanishGray]
+            )
         )
     }
 }

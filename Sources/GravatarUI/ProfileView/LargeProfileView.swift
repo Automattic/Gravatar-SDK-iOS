@@ -29,10 +29,11 @@ public class LargeProfileView: BaseProfileView {
 
     override public func arrangeSubviews() {
         super.arrangeSubviews()
-        [topStackView, displayNameLabel, personalInfoLabel, aboutMeLabel, aboutMePlaceholderLabel, bottomStackView, UIView.spacer()].forEach(rootStackView.addArrangedSubview)
+        [topStackView, displayNameLabel, personalInfoLabel, aboutMeLabel, aboutMePlaceholderLabel, bottomStackView, UIView.spacer()]
+            .forEach(rootStackView.addArrangedSubview)
         setRootStackViewSpacing()
     }
-    
+
     private func setRootStackViewSpacing() {
         rootStackView.setCustomSpacing(.DS.Padding.double, after: avatarImageView)
         rootStackView.setCustomSpacing(0, after: displayNameLabel)
@@ -53,20 +54,20 @@ public class LargeProfileView: BaseProfileView {
         super.update(with: config)
         update(with: config.model)
     }
-    
-    public override func showPlaceholders() {
+
+    override public func showPlaceholders() {
         super.showPlaceholders()
         rootStackView.setCustomSpacing(.DS.Padding.split, after: displayNameLabel)
         rootStackView.setCustomSpacing(.DS.Padding.medium, after: personalInfoLabel)
         rootStackView.setCustomSpacing(.DS.Padding.single, after: aboutMeLabel)
         rootStackView.setCustomSpacing(.DS.Padding.double, after: aboutMePlaceholderLabel)
     }
-    
-    public override func hidePlaceholders() {
+
+    override public func hidePlaceholders() {
         super.hidePlaceholders()
         setRootStackViewSpacing()
     }
-    
+
     override public var displayNamePlaceholderHeight: CGFloat {
         Constants.displayNamePlaceholderHeight
     }

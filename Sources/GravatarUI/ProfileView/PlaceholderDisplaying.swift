@@ -2,7 +2,8 @@ import UIKit
 
 @MainActor
 public protocol PlaceholderDisplaying {
-    // If 'true', the placeholder element(or elements) will be made visible when `showPlaceholder()` is called, and will be hidden when `hidePlaceholder()` is called.
+    // If 'true', the placeholder element(or elements) will be made visible when `showPlaceholder()` is called, and will be hidden when `hidePlaceholder()` is
+    // called.
     var isTemporary: Bool { get }
     var color: UIColor { get set }
     func showPlaceholder()
@@ -17,33 +18,33 @@ class BackgroundColorPlaceholderDisplayer<T: UIView>: PlaceholderDisplaying {
     let baseView: T
     let isTemporary: Bool
     let resetBackgroundColor: UIColor
-    
+
     init(baseView: T, color: UIColor, resetBackgroundColor: UIColor = .clear, isTemporary: Bool = false) {
         self.color = color
         self.baseView = baseView
         self.isTemporary = isTemporary
         self.resetBackgroundColor = resetBackgroundColor
     }
-    
+
     func showPlaceholder() {
         if isTemporary {
             baseView.isHidden = false
         }
         set(viewColor: color)
     }
-    
+
     func hidePlaceholder() {
         set(viewColor: resetBackgroundColor)
         if isTemporary {
             baseView.isHidden = true
         }
     }
-    
+
     func set(viewColor newColor: UIColor?) {
         // Set to "layer.backgroundColor" because in some views the normal backgroundColor is not animatable.
         baseView.layer.backgroundColor = newColor?.cgColor
     }
-    
+
     func resetViewColor() {
         set(viewColor: color)
     }
@@ -51,14 +52,13 @@ class BackgroundColorPlaceholderDisplayer<T: UIView>: PlaceholderDisplaying {
 
 @MainActor
 class RectangularPlaceholderDisplayer<T: UIView>: BackgroundColorPlaceholderDisplayer<T> {
-
     private let cornerRadius: CGFloat
     private let height: CGFloat
     private let widthRatioToParent: CGFloat
     private var layoutConstraints: [NSLayoutConstraint] = []
     private var isShowing: Bool = false
     private var originalCornerRadius: CGFloat
-    
+
     init(baseView: T, color: UIColor, cornerRadius: CGFloat, height: CGFloat, widthRatioToParent: CGFloat, isTemporary: Bool = false) {
         self.cornerRadius = cornerRadius
         self.height = height
@@ -66,7 +66,7 @@ class RectangularPlaceholderDisplayer<T: UIView>: BackgroundColorPlaceholderDisp
         self.originalCornerRadius = baseView.layer.cornerRadius
         super.init(baseView: baseView, color: color, isTemporary: isTemporary)
     }
-    
+
     override func showPlaceholder() {
         super.showPlaceholder()
         guard !isShowing else { return }
@@ -76,7 +76,7 @@ class RectangularPlaceholderDisplayer<T: UIView>: BackgroundColorPlaceholderDisp
         NSLayoutConstraint.activate(layoutConstraints)
         isShowing = true
     }
-    
+
     override func hidePlaceholder() {
         super.hidePlaceholder()
         baseView.resetPlaceholder(cornerRadius: originalCornerRadius)
@@ -88,7 +88,6 @@ class RectangularPlaceholderDisplayer<T: UIView>: BackgroundColorPlaceholderDisp
 
 @MainActor
 class AccountButtonsPlaceholderDisplayer: PlaceholderDisplaying {
-
     var color: UIColor
     private let containerStackView: UIStackView
     let isTemporary: Bool
@@ -97,7 +96,7 @@ class AccountButtonsPlaceholderDisplayer: PlaceholderDisplaying {
         self.isTemporary = isTemporary
         self.containerStackView = containerStackView
     }
-    
+
     func showPlaceholder() {
         removeAllArrangedSubviews()
         [placeholderView(), placeholderView(), placeholderView(), placeholderView()].forEach(containerStackView.addArrangedSubview)
@@ -105,7 +104,7 @@ class AccountButtonsPlaceholderDisplayer: PlaceholderDisplaying {
             containerStackView.isHidden = false
         }
     }
-    
+
     func hidePlaceholder() {
         removeAllArrangedSubviews()
         if isTemporary {
@@ -114,63 +113,61 @@ class AccountButtonsPlaceholderDisplayer: PlaceholderDisplaying {
     }
 
     private func removeAllArrangedSubviews() {
-        containerStackView.arrangedSubviews.forEach { view in
+        for view in containerStackView.arrangedSubviews {
             containerStackView.removeArrangedSubview(view)
             view.removeFromSuperview()
         }
     }
 
-    
     private func placeholderView() -> UIView {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.layer.backgroundColor = color.cgColor
         NSLayoutConstraint.activate([
             view.heightAnchor.constraint(equalToConstant: BaseProfileView.Constants.accountIconLength),
-            view.widthAnchor.constraint(equalToConstant: BaseProfileView.Constants.accountIconLength)
+            view.widthAnchor.constraint(equalToConstant: BaseProfileView.Constants.accountIconLength),
         ])
         view.layer.cornerRadius = BaseProfileView.Constants.accountIconLength / 2
         view.clipsToBounds = true
         return view
     }
-    
+
     func set(viewColor color: UIColor?) {
-        containerStackView.arrangedSubviews.forEach {
+        for arrangedSubview in containerStackView.arrangedSubviews {
             // Set to "layer.backgroundColor", for animation consistency with other views.
-            $0.layer.backgroundColor = color?.cgColor
+            arrangedSubview.layer.backgroundColor = color?.cgColor
         }
     }
-    
+
     func resetViewColor() {
         set(viewColor: color)
     }
 }
 
 @MainActor
-fileprivate extension UIView {
-    
-    func turnIntoPlaceholder(cornerRadius: CGFloat?, height: CGFloat?, widthRatioToParent: CGFloat?) -> [NSLayoutConstraint] {
+extension UIView {
+    fileprivate func turnIntoPlaceholder(cornerRadius: CGFloat?, height: CGFloat?, widthRatioToParent: CGFloat?) -> [NSLayoutConstraint] {
         if let cornerRadius {
             layer.cornerRadius = cornerRadius
             clipsToBounds = true
         }
         var constraints: [NSLayoutConstraint] = []
-        
+
         if let height {
             let heightConstraint = heightAnchor.constraint(equalToConstant: height)
             heightConstraint.priority = .required
             constraints.append(heightConstraint)
         }
-        
-        if let widthRatioToParent, let superview  {
+
+        if let widthRatioToParent, let superview {
             let widthConstraint = widthAnchor.constraint(equalTo: superview.widthAnchor, multiplier: widthRatioToParent)
             widthConstraint.priority = .required
             constraints.append(widthConstraint)
         }
         return constraints
     }
-    
-    func resetPlaceholder(cornerRadius: CGFloat) {
+
+    fileprivate func resetPlaceholder(cornerRadius: CGFloat) {
         layer.cornerRadius = cornerRadius
         if cornerRadius == 0 {
             clipsToBounds = false

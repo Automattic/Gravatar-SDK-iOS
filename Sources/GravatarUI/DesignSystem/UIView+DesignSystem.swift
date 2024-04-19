@@ -1,7 +1,6 @@
 import UIKit
 
 extension UIView {
-    
     static func spacer() -> UIView {
         let spacer = UIView()
         spacer.translatesAutoresizingMaskIntoConstraints = false

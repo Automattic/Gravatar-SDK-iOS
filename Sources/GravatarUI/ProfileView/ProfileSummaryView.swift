@@ -29,13 +29,13 @@ public class ProfileSummaryView: BaseProfileView {
         super.update(with: config)
         update(with: config.summaryModel)
     }
-    
-    public override func showPlaceholders() {
+
+    override public func showPlaceholders() {
         super.showPlaceholders()
         basicInfoStackView.spacing = .DS.Padding.single
     }
-    
-    public override func hidePlaceholders() {
+
+    override public func hidePlaceholders() {
         super.hidePlaceholders()
         basicInfoStackView.spacing = 0
     }

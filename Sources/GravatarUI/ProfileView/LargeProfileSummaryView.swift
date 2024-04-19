@@ -16,14 +16,14 @@ public class LargeProfileSummaryView: BaseProfileView {
     override public var avatarLength: CGFloat {
         Constants.avatarLength
     }
-    
+
     override public func arrangeSubviews() {
         super.arrangeSubviews()
         [avatarImageView, displayNameLabel, personalInfoLabel, profileButton, UIView.spacer()].forEach(rootStackView.addArrangedSubview)
         rootStackView.alignment = .center
         setRootStackViewSpacing()
     }
-    
+
     private func setRootStackViewSpacing() {
         rootStackView.setCustomSpacing(.DS.Padding.double, after: avatarImageView)
         rootStackView.setCustomSpacing(0, after: displayNameLabel)
@@ -39,23 +39,23 @@ public class LargeProfileSummaryView: BaseProfileView {
         personalInfoLabel.textAlignment = .center
         Configure(profileButton).asProfileButton().style(.view).palette(paletteType)
     }
-    
+
     override public func update(with config: ProfileViewConfiguration) {
         super.update(with: config)
         update(with: config.summaryModel)
     }
-    
-    public override func showPlaceholders() {
+
+    override public func showPlaceholders() {
         super.showPlaceholders()
         rootStackView.setCustomSpacing(.DS.Padding.split, after: displayNameLabel)
         rootStackView.setCustomSpacing(.DS.Padding.single, after: personalInfoLabel)
     }
-    
-    public override func hidePlaceholders() {
+
+    override public func hidePlaceholders() {
         super.hidePlaceholders()
         setRootStackViewSpacing()
     }
-    
+
     override public var displayNamePlaceholderHeight: CGFloat {
         Constants.displayNamePlaceholderHeight
     }

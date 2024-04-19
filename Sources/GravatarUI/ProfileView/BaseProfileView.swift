@@ -8,14 +8,14 @@ open class BaseProfileView: UIView, UIContentView {
         static let accountIconLength: CGFloat = 32
         static let defaultDisplayNamePlaceholderHeight: CGFloat = 24
     }
-    
+
     public enum PlaceholderColorPolicy {
         /// Gets the placeholder colors from the current palette.
         case currentPalette
         /// Custom colors. You can as well pass predefined colors from the `PaletteType``. Example: ``PaletteType.light.placeholder``.
         case custom(PlaceholderColors)
     }
-    
+
     open var avatarLength: CGFloat {
         Constants.avatarLength
     }
@@ -72,14 +72,14 @@ open class BaseProfileView: UIView, UIContentView {
         imageView.setContentHuggingPriority(.defaultHigh, for: .horizontal)
         return imageView
     }()
-    
+
     public private(set) lazy var aboutMeLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.adjustsFontForContentSizeCategory = true
         return label
     }()
-    
+
     public private(set) lazy var aboutMePlaceholderLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -87,14 +87,14 @@ open class BaseProfileView: UIView, UIContentView {
         label.isHidden = true
         return label
     }()
-    
+
     public private(set) lazy var displayNameLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.adjustsFontForContentSizeCategory = true
         return label
     }()
-    
+
     public private(set) lazy var personalInfoLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -122,14 +122,14 @@ open class BaseProfileView: UIView, UIContentView {
             refresh(with: paletteType)
         }
     }
-    
+
     /// Colors to use in the placeholder state (which basically means when all fields are empty).
     public var placeholderColorPolicy: PlaceholderColorPolicy = .currentPalette
-    
+
     /// Activity indicator to show when `isLoading` is `true` .
     /// Defaults to ``ProfilePlaceholderActivityIndicator``.
     public var activityIndicator: (any ProfileActivityIndicator)?
-    
+
     /// Displays a placeholder when all the fields are empty. Defaults to ``ProfileViewPlaceholderDisplayer``.
     public var placeholderDisplayer: (any ProfileViewPlaceholderDisplaying)?
 
@@ -138,14 +138,13 @@ open class BaseProfileView: UIView, UIContentView {
             guard isLoading != oldValue else { return }
             if isLoading {
                 activityIndicator?.startAnimating(on: self)
-            }
-            else {
+            } else {
                 activityIndicator?.stopAnimating(on: self)
             }
             togglePlaceholder()
         }
     }
-    
+
     override public init(frame: CGRect) {
         self.paletteType = .system
         super.init(frame: frame)
@@ -176,11 +175,11 @@ open class BaseProfileView: UIView, UIContentView {
         arrangeSubviews()
         togglePlaceholder() // We should call this after subviews are added (which means after `arrangeSubviews()`)
     }
-    
+
     open func arrangeSubviews() {
         // Subclasses should override
     }
-    
+
     @available(*, unavailable)
     public required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -263,45 +262,44 @@ open class BaseProfileView: UIView, UIContentView {
         }
         isLoading = config.isLoading
     }
-    
+
     // MARK: - Placeholder handling
-    
+
     var placeholderColors: PlaceholderColors {
         switch placeholderColorPolicy {
         case .currentPalette:
-            return paletteType.palette.placeholder
+            paletteType.palette.placeholder
         case .custom(let placeholderColors):
-            return placeholderColors
+            placeholderColors
         }
     }
-    
+
     open var isEmpty: Bool = true {
         didSet {
             togglePlaceholder()
         }
     }
-    
+
     func shouldShowPlaceholder() -> Bool {
-        return isEmpty
+        isEmpty
     }
-    
+
     func togglePlaceholder() {
         if shouldShowPlaceholder() {
             showPlaceholders()
-        }
-        else {
+        } else {
             hidePlaceholders()
         }
     }
-    
+
     open var displayNamePlaceholderHeight: CGFloat {
         Constants.defaultDisplayNamePlaceholderHeight
     }
-    
+
     open func showPlaceholders() {
         placeholderDisplayer?.showPlaceholder(on: self)
     }
-    
+
     open func hidePlaceholders() {
         placeholderDisplayer?.hidePlaceholder(on: self)
     }
