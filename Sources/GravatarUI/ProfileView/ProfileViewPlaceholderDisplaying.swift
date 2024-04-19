@@ -1,7 +1,7 @@
 import UIKit
 
-/// Defines the interactions for showing/hiding placeholder state of the `BaseProfileView`. Placeholder state means the state of `BaseProfileView` when all the
-/// fields are empty.
+/// Defines the interactions for showing/hiding placeholder state of the `BaseProfileView`. Placeholder state is defined as the state of `BaseProfileView` when
+/// all the fields are empty.
 @MainActor
 public protocol ProfileViewPlaceholderDisplaying {
     func showPlaceholder(on view: BaseProfileView)
@@ -85,5 +85,3 @@ class ProfileViewPlaceholderDisplayer: ProfileViewPlaceholderDisplaying {
         }
     }
 }
-
-extension BaseProfileView {}

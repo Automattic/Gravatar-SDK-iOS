@@ -1,5 +1,6 @@
 import UIKit
 
+/// Describes a general purpose activity inficator.
 @MainActor
 public protocol ActivityIndicator {
     associatedtype T: UIView
@@ -9,7 +10,7 @@ public protocol ActivityIndicator {
 
 public protocol ProfileActivityIndicator: ActivityIndicator where T == BaseProfileView {}
 
-/// Activity indicator that animates the backgroundColor of each placeholder element.
+/// Activity indicator that is designed for `BaseProfileView`.  Animates the backgroundColor of each placeholder element to indicate activity.
 @MainActor
 class ProfilePlaceholderActivityIndicator: ProfileActivityIndicator {
     let placeholderDisplayer: ProfileViewPlaceholderDisplayer
@@ -21,9 +22,9 @@ class ProfilePlaceholderActivityIndicator: ProfileActivityIndicator {
         self.placeholderDisplayer = placeholderDisplayer
     }
 
-    /// Animates the background colors of each field that `ProfileViewPlaceholderDisplayer` holds.
+    /// Animates the background colors of each UI element to indicate activity.
     func startAnimating(on baseView: BaseProfileView) {
-        // This activity indicator should only work when fields are in their placeholder state
+        // This activity indicator should only work when fields are in their placeholder state.
         guard placeholderDisplayer.isShowing else { return }
         shouldStopAnimating = false
         doLoadingAnimation(index: 0, animatingColors: baseView.placeholderColors.loadingAnimationColors)

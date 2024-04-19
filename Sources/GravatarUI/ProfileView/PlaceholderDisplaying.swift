@@ -1,17 +1,22 @@
 import UIKit
 
+/// Describes a UI element that can show a placeholder with a specific color.
 @MainActor
 public protocol PlaceholderDisplaying {
     // If 'true', the placeholder element(or elements) will be made visible when `showPlaceholder()` is called, and will be hidden when `hidePlaceholder()` is
     // called.
     var isTemporary: Bool { get }
+    /// Color of the placeholder state.
     var color: UIColor { get set }
+    /// Shows the placeholder state of this object.
     func showPlaceholder()
+    /// Hides the placeholder state of this object. Reverts any changes made by `showPlaceholder()`.
     func hidePlaceholder()
+    /// Sets the color of the underlying view element.
     func set(viewColor color: UIColor?)
-    func resetViewColor()
 }
 
+/// This ``PlaceholderDisplaying`` implementation updates the background color when `showPlaceholder()` is called.
 @MainActor
 class BackgroundColorPlaceholderDisplayer<T: UIView>: PlaceholderDisplaying {
     var color: UIColor
@@ -41,15 +46,15 @@ class BackgroundColorPlaceholderDisplayer<T: UIView>: PlaceholderDisplaying {
     }
 
     func set(viewColor newColor: UIColor?) {
-        // Set to "layer.backgroundColor" because in some views the normal backgroundColor is not animatable.
+        // Set to "layer.backgroundColor" because in some UIView subclasses the normal backgroundColor is not animatable. I observed some problems in UILabel,
+        // UIButton.
         baseView.layer.backgroundColor = newColor?.cgColor
-    }
-
-    func resetViewColor() {
-        set(viewColor: color)
     }
 }
 
+/// A ``PlaceholderDisplaying`` implementation that Inherits ``BackgroundColorPlaceholderDisplayer`.
+/// In addition to ``BackgroundColorPlaceholderDisplayer``, this  gives a size to the ui element and rounds its corners a bit when `showPlaceholder()` is
+/// called.
 @MainActor
 class RectangularPlaceholderDisplayer<T: UIView>: BackgroundColorPlaceholderDisplayer<T> {
     private let cornerRadius: CGFloat
@@ -86,6 +91,7 @@ class RectangularPlaceholderDisplayer<T: UIView>: BackgroundColorPlaceholderDisp
     }
 }
 
+/// This ``PlaceholderDisplaying`` implementation is tailored for account buttons. It shows 4 shadow account buttons in the given color.
 @MainActor
 class AccountButtonsPlaceholderDisplayer: PlaceholderDisplaying {
     var color: UIColor
@@ -137,10 +143,6 @@ class AccountButtonsPlaceholderDisplayer: PlaceholderDisplaying {
             // Set to "layer.backgroundColor", for animation consistency with other views.
             arrangedSubview.layer.backgroundColor = color?.cgColor
         }
-    }
-
-    func resetViewColor() {
-        set(viewColor: color)
     }
 }
 

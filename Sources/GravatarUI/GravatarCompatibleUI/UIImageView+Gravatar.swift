@@ -14,7 +14,6 @@ private var imageTaskKey: Void?
 private var dataTaskKey: Void?
 private var imageDownloaderKey: Void?
 
-@MainActor
 extension GravatarWrapper where Component: UIImageView {
     /// Describes which indicator type is going to be used. Default is `.none`, which means no activity indicator will be shown.
     public var activityIndicatorType: ActivityIndicatorType {

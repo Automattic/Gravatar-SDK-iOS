@@ -12,7 +12,7 @@ open class BaseProfileView: UIView, UIContentView {
     public enum PlaceholderColorPolicy {
         /// Gets the placeholder colors from the current palette.
         case currentPalette
-        /// Custom colors. You can as well pass predefined colors from the `PaletteType``. Example: ``PaletteType.light.placeholder``.
+        /// Custom colors. You can also pass predefined colors from any `Palette``. Example: ``PaletteType.light.placeholder``.
         case custom(PlaceholderColors)
     }
 
@@ -123,7 +123,7 @@ open class BaseProfileView: UIView, UIContentView {
         }
     }
 
-    /// Colors to use in the placeholder state (which basically means when all fields are empty).
+    /// Colors policy to use in the placeholder state (which basically means when all fields are empty).
     public var placeholderColorPolicy: PlaceholderColorPolicy = .currentPalette
 
     /// Activity indicator to show when `isLoading` is `true` .
