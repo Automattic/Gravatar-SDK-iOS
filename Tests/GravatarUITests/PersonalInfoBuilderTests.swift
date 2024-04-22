@@ -29,7 +29,7 @@ final class PersonalInfoBuilderTests: XCTestCase {
             .content(
                 testData,
                 lines: [
-                    .init([.namePronunciation, .separator(" - "), .jobTitle]),
+                    .init([.namePronunciation, .jobTitle]),
                     .init([.location]),
                 ]
             )
@@ -53,9 +53,9 @@ final class PersonalInfoBuilderTests: XCTestCase {
             Configure(label)
                 .asPersonalInfo()
                 .content(TestPersonalInfo.fullInfo(), lines: [
-                    .init([.namePronunciation, .separator(" - "), .jobTitle]),
+                    .init([.namePronunciation, .jobTitle]),
                     .init([.location]),
-                ])
+                ], separator: " - ")
                 .palette(palette)
             assertSnapshot(of: label, as: .image, named: "testPersonalInfoFull-\(palette.name)")
         }
@@ -69,6 +69,25 @@ final class PersonalInfoBuilderTests: XCTestCase {
             .palette(.light)
         assertSnapshot(of: label, as: .image)
     }
+
+    func testPersonalInfoSkipsSeparatorWithPronounsOnly() {
+        let label = UILabel(frame: frame)
+        let testData = TestPersonalInfo.pronounsOnly()
+        Configure(label)
+            .asPersonalInfo()
+            .content(testData)
+
+        XCTAssertEqual(label.text, "she/her", "Do not put unnecessary separator")
+    }
+
+    func testPersonalInfoFullText() {
+        let label = UILabel(frame: frame)
+        Configure(label)
+            .asPersonalInfo()
+            .content(TestPersonalInfo.fullInfo())
+
+        XCTAssertEqual(label.text, "Carpenter\nCar-N・she/her・Connecticut", "Do not put unnecessary separator")
+    }
 }
 
 struct TestPersonalInfo: PersonalInfoModel {
@@ -79,6 +98,10 @@ struct TestPersonalInfo: PersonalInfoModel {
 
     static func fullInfo() -> TestPersonalInfo {
         TestPersonalInfo(jobTitle: "Carpenter", pronunciation: "Car-N", pronouns: "she/her", currentLocation: "Connecticut")
+    }
+
+    static func pronounsOnly() -> TestPersonalInfo {
+        TestPersonalInfo(pronouns: "she/her")
     }
 
     static func empty() -> TestPersonalInfo {

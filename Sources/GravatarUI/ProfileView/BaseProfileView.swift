@@ -4,7 +4,7 @@ import UIKit
 open class BaseProfileView: UIView, UIContentView {
     enum Constants {
         static let avatarLength: CGFloat = 72
-        static let maximumAccountsDisplay = 3
+        static let maximumAccountsDisplay = 4
         static let accountIconLength: CGFloat = 32
         static let defaultDisplayNamePlaceholderHeight: CGFloat = 24
     }
@@ -18,6 +18,12 @@ open class BaseProfileView: UIView, UIContentView {
 
     open var avatarLength: CGFloat {
         Constants.avatarLength
+    }
+
+    public var profileButtonStyle: ProfileButtonStyle = .view {
+        didSet {
+            Configure(profileButton).asProfileButton().style(profileButtonStyle)
+        }
     }
 
     static let defaultPadding = UIEdgeInsets(
@@ -36,6 +42,10 @@ open class BaseProfileView: UIView, UIContentView {
         }
     }
 
+    public weak var delegate: ProfileViewDelegate?
+
+    var profileMetadata: ProfileMetadataModel?
+    var accounts: [AccountModel] = []
     var maximumAccountsDisplay = Constants.maximumAccountsDisplay
 
     var padding: UIEdgeInsets {
@@ -103,8 +113,11 @@ open class BaseProfileView: UIView, UIContentView {
     }()
 
     public lazy var profileButton: UIButton = {
-        var config = UIButton.Configuration.borderless()
-        let button = UIButton(configuration: config)
+        let button = UIButton(configuration: .borderless())
+        let action = UIAction { [weak self] action in
+            self?.onProfileButtonPressed(with: action)
+        }
+        button.addAction(action, for: .touchUpInside)
         return button
     }()
 
@@ -154,11 +167,17 @@ open class BaseProfileView: UIView, UIContentView {
         commonInit()
     }
 
-    public convenience init(frame: CGRect, paletteType: PaletteType, padding: UIEdgeInsets? = nil) {
+    public convenience init(
+        frame: CGRect,
+        paletteType: PaletteType? = nil,
+        profileButtonStyle: ProfileButtonStyle? = nil,
+        padding: UIEdgeInsets? = nil
+    ) {
         self.init(frame: frame)
-        self.paletteType = paletteType
+        self.paletteType = paletteType ?? self.paletteType
+        self.profileButtonStyle = profileButtonStyle ?? self.profileButtonStyle
         self.padding = padding ?? Self.defaultPadding
-        refresh(with: paletteType)
+        refresh(with: self.paletteType)
     }
 
     func commonInit() {
@@ -226,18 +245,24 @@ open class BaseProfileView: UIView, UIContentView {
     }
 
     func updateAccountButtons(with model: AccountListModel) {
-        let buttons = model.accountsList?.prefix(maximumAccountsDisplay).map(createAccountButton)
+        accounts = Array(model.accountsList.prefix(Constants.maximumAccountsDisplay))
+        let buttons = accounts.map(createAccountButton)
         for view in accountButtonsStackView.arrangedSubviews {
             accountButtonsStackView.removeArrangedSubview(view)
             view.removeFromSuperview()
         }
-        accountButtonsStackView.addArrangedSubview(createAccountButton(with: model.gravatarAccount))
-        buttons?.forEach(accountButtonsStackView.addArrangedSubview)
+        buttons.forEach(accountButtonsStackView.addArrangedSubview)
     }
 
-    func createAccountButton(with model: AccountModel) -> UIButton {
+    func createAccountButton(model: AccountModel) -> UIButton {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
+        let action = UIAction { [weak self] _ in
+            guard let self else { return }
+            self.delegate?.profileView(self, didTapOnAccountButtonWithModel: model)
+        }
+        button.addAction(action, for: .touchUpInside)
+
         Configure(button).asAccountButton().content(model).palette(paletteType)
         button.imageView?.contentMode = .scaleAspectFit
         button.imageView?.translatesAutoresizingMaskIntoConstraints = false
@@ -257,6 +282,9 @@ open class BaseProfileView: UIView, UIContentView {
         padding = config.padding
         if let avatarID = config.avatarID {
             loadAvatar(with: avatarID)
+        }
+        if config.model != nil || config.summaryModel != nil {
+            profileButtonStyle = config.profileButtonStyle
         }
         isLoading = config.isLoading
     }
@@ -301,4 +329,18 @@ open class BaseProfileView: UIView, UIContentView {
     open func hidePlaceholders() {
         placeholderDisplayer?.hidePlaceholder(on: self)
     }
+
+    private func onProfileButtonPressed(with action: UIAction) {
+        let url = profileButtonStyle == .edit ? self.profileMetadata?.profileEditURL : self.profileMetadata?.profileURL
+        self.delegate?.profileView(
+            self,
+            didTapOnProfileButtonWithStyle: profileButtonStyle,
+            profileURL: url
+        )
+    }
+}
+
+public protocol ProfileViewDelegate: NSObjectProtocol {
+    func profileView(_ view: BaseProfileView, didTapOnProfileButtonWithStyle style: ProfileButtonStyle, profileURL: URL?)
+    func profileView(_ view: BaseProfileView, didTapOnAccountButtonWithModel accountModel: AccountModel)
 }

@@ -2,13 +2,16 @@ import UIKit
 
 public enum ProfileButtonStyle {
     case view
+    case edit
 }
 
 extension ProfileButtonStyle {
     var localizedTitle: String {
         switch self {
         case .view:
-            NSLocalizedString("View profile", comment: "Title for edit button in Gravatar profile view")
+            NSLocalizedString("gravatarViewProfile", value: "View profile", comment: "Title for view profile button in Gravatar profile view")
+        case .edit:
+            NSLocalizedString("gravatarEditProfile", value: "Edit profile", comment: "Title for edit profile button in Gravatar profile view")
         }
     }
 }

@@ -41,9 +41,7 @@ final class LargeProfileViewTests: XCTestCase {
 }
 
 struct TestProfileCardModel: ProfileModel {
-    var gravatarAccount: GravatarUI.AccountModel
-
-    var accountsList: [GravatarUI.AccountModel]?
+    var accountsList: [GravatarUI.AccountModel]
 
     var aboutMe: String?
     var displayName: String?
@@ -54,11 +52,12 @@ struct TestProfileCardModel: ProfileModel {
     var pronouns: String?
     var currentLocation: String?
     var avatarIdentifier: Gravatar.AvatarIdentifier
+    var profileURL: URL?
 
     static func fullCard() -> TestProfileCardModel {
         TestProfileCardModel(
-            gravatarAccount: TestAccountModel(display: "Gravatar", shortname: "gravatar"),
             accountsList: [
+                TestAccountModel(display: "Gravatar", shortname: "gravatar"),
                 TestAccountModel(display: "WordPress", shortname: "wordpress"),
                 TestAccountModel(display: "Tumblr", shortname: "tumblr"),
                 TestAccountModel(display: "Unknown", shortname: "unknown"),
@@ -72,8 +71,13 @@ struct TestProfileCardModel: ProfileModel {
             pronunciation: "Car-N",
             pronouns: "she/her",
             currentLocation: "Neverland",
-            avatarIdentifier: .email("email@domain.com")
+            avatarIdentifier: .email("email@domain.com"),
+            profileURL: URL(string: "https://gravatar.com/profile")
         )
+    }
+
+    var profileEditURL: URL? {
+        URL(string: "https://gravatar.com/profile")
     }
 }
 
