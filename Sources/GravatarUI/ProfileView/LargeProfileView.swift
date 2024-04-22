@@ -4,6 +4,7 @@ import UIKit
 public class LargeProfileView: BaseProfileView {
     private enum Constants {
         static let avatarLength: CGFloat = 132.0
+        static let displayNamePlaceholderHeight: CGFloat = 32
     }
 
     override public var avatarLength: CGFloat {
@@ -56,5 +57,9 @@ public class LargeProfileView: BaseProfileView {
         super.update(with: config)
         guard let model = config.model else { return }
         update(with: model)
+    }
+    
+    override public var displayNamePlaceholderHeight: CGFloat {
+        Constants.displayNamePlaceholderHeight
     }
 }

@@ -2,16 +2,27 @@ import Gravatar
 import UIKit
 
 open class BaseProfileView: UIView, UIContentView {
-    private enum Constants {
+    enum Constants {
         static let avatarLength: CGFloat = 72
         static let maximumAccountsDisplay = 4
         static let accountIconLength: CGFloat = 32
+        static let defaultDisplayNamePlaceholderHeight: CGFloat = 24
     }
 
     open var avatarLength: CGFloat {
         Constants.avatarLength
     }
 
+    public enum PlaceholderColorPolicy {
+        /// Gets the placeholder colors from the current palette.
+        case currentPalette
+        /// Custom colors. You can also pass predefined colors from any `Palette``. Example: ``PaletteType.light.placeholder``.
+        case custom(PlaceholderColors)
+    }
+    
+    /// Colors policy to use in the placeholder state (which basically means when all fields are empty).
+    public var placeholderColorPolicy: PlaceholderColorPolicy = .currentPalette
+    
     public var profileButtonStyle: ProfileButtonStyle = .view {
         didSet {
             Configure(profileButton).asProfileButton().style(profileButtonStyle)
@@ -71,6 +82,7 @@ open class BaseProfileView: UIView, UIContentView {
         imageView.heightAnchor.constraint(equalToConstant: avatarLength).isActive = true
         imageView.layer.cornerRadius = avatarLength / 2
         imageView.clipsToBounds = true
+        imageView.setContentHuggingPriority(.defaultHigh, for: .horizontal)
         return imageView
     }()
 
@@ -81,6 +93,15 @@ open class BaseProfileView: UIView, UIContentView {
         return label
     }()
 
+    /// The placeholder state of "about me" label consists of 2 separate lines in some designs. This label's only purpose is to serve as the 2nd line of that placeholder.
+    lazy var aboutMePlaceholderLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.adjustsFontForContentSizeCategory = true
+        label.isHidden = true
+        return label
+    }()
+    
     public private(set) lazy var displayNameLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -109,6 +130,7 @@ open class BaseProfileView: UIView, UIContentView {
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.axis = .horizontal
         stack.spacing = .DS.Padding.half
+        stack.setContentHuggingPriority(.defaultHigh, for: .horizontal)
         return stack
     }()
 
@@ -246,6 +268,21 @@ open class BaseProfileView: UIView, UIContentView {
             didTapOnProfileButtonWithStyle: profileButtonStyle,
             profileURL: url
         )
+    }
+    
+    // MARK: - Placeholder handling
+
+    var placeholderColors: PlaceholderColors {
+        switch placeholderColorPolicy {
+        case .currentPalette:
+            paletteType.palette.placeholder
+        case .custom(let placeholderColors):
+            placeholderColors
+        }
+    }
+    
+    open var displayNamePlaceholderHeight: CGFloat {
+        Constants.defaultDisplayNamePlaceholderHeight
     }
 }
 
