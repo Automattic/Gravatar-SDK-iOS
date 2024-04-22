@@ -42,7 +42,7 @@ jobs:
             transform-for-static-hosting /tmp/docbuild/Build/Products/Debug-iphoneos/Gravatar.doccarchive \
             --hosting-base-path Gravatar-SDK-iOS/$GRAVATAR_URL \
             --output-path gravatar-docs;
-          echo "<script>window.location.href += \"$GRAVATAR_URL/documentation/gravatar\"</script>" > docs/index.html;
+          echo "<script>window.location.href += \"$GRAVATAR_URL/documentation/gravatar\"</script>" > gravatar-docs/index.html;
 
       - name: Build GravatarUI DocC
         run: |
@@ -53,7 +53,7 @@ jobs:
             transform-for-static-hosting /tmp/docbuild/Build/Products/Debug-iphoneos/GravatarUI.doccarchive \
             --hosting-base-path Gravatar-SDK-iOS/$GRAVATAR_UI_URL \
             --output-path gravatar-ui-docs;
-          echo "<script>window.location.href += \"$GRAVATAR_UI_URL/documentation/gravatar\"</script>" > docs/index.html;
+          echo "<script>window.location.href += \"$GRAVATAR_UI_URL/documentation/gravatar\"</script>" > gravatar-ui-docs/index.html;
 
       - name: Move generated docs to branch directory
         run: |
