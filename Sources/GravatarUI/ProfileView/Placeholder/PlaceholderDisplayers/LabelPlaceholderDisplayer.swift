@@ -1,6 +1,6 @@
 import UIKit
 
-/// A ``PlaceholderDisplaying`` implementation for the "Edit/View profile" button.
+/// A ``PlaceholderDisplaying`` implementation for a UILabel.
 @MainActor
 class LabelPlaceholderDisplayer: RectangularPlaceholderDisplayer<UILabel> {
     
