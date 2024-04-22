@@ -16,7 +16,7 @@ open class BaseProfileView: UIView, UIContentView {
     public enum PlaceholderColorPolicy {
         /// Gets the placeholder colors from the current palette.
         case currentPalette
-        /// Custom colors. You can also pass predefined colors from any `Palette``. Example: ``PaletteType.light.placeholder``.
+        /// Custom colors. You can also pass predefined colors from any ``Palette``. Example:  `Palette.light.placeholder`.
         case custom(PlaceholderColors)
     }
 

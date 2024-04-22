@@ -35,7 +35,6 @@ final class TestPlaceholderDisplayers: XCTestCase {
         let view = UIView(frame: .zero)
         view.isHidden = true
         view.applySize(Constants.elementSize)
-        let containerView = view.wrapInSuperView(with: Constants.containerWidth)
         let placeholderDisplayer = BackgroundColorPlaceholderDisplayer(
             baseView: view,
             color: .porpoiseGray,
