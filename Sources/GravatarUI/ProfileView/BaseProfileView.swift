@@ -92,7 +92,12 @@ open class BaseProfileView: UIView, UIContentView {
     public lazy var profileButton: UIButton = {
         let button = UIButton(configuration: .borderless())
         let action = UIAction { [weak self] _ in
-            self?.delegate?.didTapOnProfileButton(with: .view, profileURL: self?.profileMetadata?.profileURL)
+            guard let self else { return }
+            self.delegate?.profileView(
+                self,
+                didTapOnProfileButtonWithStyle: .view,
+                profileURL: self.profileMetadata?.profileURL
+            )
         }
         button.addAction(action, for: .touchUpInside)
         return button
@@ -197,7 +202,8 @@ open class BaseProfileView: UIView, UIContentView {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         let action = UIAction { [weak self] _ in
-            self?.delegate?.didTapOnAccountButton(with: model)
+            guard let self else { return }
+            self.delegate?.profileView(self, didTapOnAccountButtonWithModel: model)
         }
         button.addAction(action, for: .touchUpInside)
 
@@ -225,6 +231,6 @@ open class BaseProfileView: UIView, UIContentView {
 }
 
 public protocol ProfileViewDelegate: NSObjectProtocol {
-    func didTapOnProfileButton(with style: ProfileButtonStyle, profileURL: URL?)
-    func didTapOnAccountButton(with accountModel: AccountModel)
+    func profileView(_ view: BaseProfileView, didTapOnProfileButtonWithStyle style: ProfileButtonStyle, profileURL: URL?)
+    func profileView(_ view: BaseProfileView, didTapOnAccountButtonWithModel accountModel: AccountModel)
 }
