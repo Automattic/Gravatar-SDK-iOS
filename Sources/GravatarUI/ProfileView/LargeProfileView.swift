@@ -50,4 +50,10 @@ public class LargeProfileView: BaseProfileView {
         updateAccountButtons(with: model)
         profileMetadata = model
     }
+
+    override public func update(with config: ProfileViewConfiguration) {
+        super.update(with: config)
+        guard let model = config.model else { return }
+        update(with: model)
+    }
 }

@@ -12,7 +12,7 @@ public class ProfileSummaryView: BaseProfileView {
     override public init(frame: CGRect) {
         super.init(frame: frame)
         rootStackView.axis = .horizontal
-        rootStackView.alignment = .top
+        rootStackView.alignment = .center
         [avatarImageView, basicInfoStackView].forEach(rootStackView.addArrangedSubview)
     }
 
