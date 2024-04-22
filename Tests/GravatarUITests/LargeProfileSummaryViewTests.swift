@@ -15,20 +15,55 @@ final class LargeProfileSummaryViewTests: XCTestCase {
 
     func testLargeProfileSummaryView() throws {
         for interfaceStyle in UIUserInterfaceStyle.allCases {
-            let containerView = createViews(model: TestProfileCardModel.summaryCard())
+            let (containerView, _) = createViews(model: TestProfileCardModel.summaryCard())
             containerView.overrideUserInterfaceStyle = interfaceStyle
             assertSnapshot(of: containerView, as: .image, named: "\(interfaceStyle.name)")
         }
     }
 
-    private func createViews(model: ProfileSummaryModel) -> UIView {
+    func testInitiallyEmptyLargeProfileSummaryView() throws {
+        for interfaceStyle in UIUserInterfaceStyle.allCases {
+            let (containerView, _) = createViews(model: nil)
+            containerView.overrideUserInterfaceStyle = interfaceStyle
+            assertSnapshot(of: containerView, as: .image, named: "\(interfaceStyle.name)")
+        }
+    }
+
+    func testLargeProfileSummaryViewPlaceholdersCanShow() throws {
+        let interfaceStyle: UIUserInterfaceStyle = .light
+        let (containerView, cardView) = createViews(model: TestProfileCardModel.summaryCard())
+        containerView.overrideUserInterfaceStyle = interfaceStyle
+        cardView.update(with: nil) // clear data and show placeholders
+        assertSnapshot(of: containerView, as: .image, named: "\(interfaceStyle.name)")
+    }
+
+    func testLargeProfileSummaryViewPlaceholdersCanHide() throws {
+        let interfaceStyle: UIUserInterfaceStyle = .light
+        let (containerView, cardView) = createViews(model: TestProfileCardModel.summaryCard())
+        containerView.overrideUserInterfaceStyle = interfaceStyle
+        cardView.update(with: nil) // clear data and show placeholders
+        cardView.update(with: TestProfileCardModel.summaryCard()) // set data and hide placeholders
+        assertSnapshot(of: containerView, as: .image, named: "\(interfaceStyle.name)")
+    }
+
+    func testLargeProfileSummaryViewPlaceholderCanUpdateColors() throws {
+        let interfaceStyle: UIUserInterfaceStyle = .light
+        let (containerView, cardView) = createViews(model: nil)
+        containerView.overrideUserInterfaceStyle = interfaceStyle
+        cardView.placeholderColorPolicy = .custom(PlaceholderColors(backgroundColor: .purple, loadingAnimationColors: [.green, .blue]))
+        assertSnapshot(of: containerView, as: .image, named: "\(interfaceStyle.name)")
+    }
+
+    private func createViews(model: ProfileSummaryModel?) -> (UIView, LargeProfileSummaryView) {
         let cardView = LargeProfileSummaryView(frame: .zero, paletteType: .system)
-        cardView.avatarImageView.backgroundColor = .systemBlue
         cardView.update(with: model)
+        if model != nil {
+            cardView.avatarImageView.backgroundColor = .systemBlue
+        }
         cardView.translatesAutoresizingMaskIntoConstraints = false
         cardView.widthAnchor.constraint(equalToConstant: Constants.width).isActive = true
 
-        return cardView.wrapInSuperView(with: Constants.width)
+        return (cardView.wrapInSuperView(with: Constants.width), cardView)
     }
 }
 
