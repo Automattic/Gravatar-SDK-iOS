@@ -94,7 +94,8 @@ extension Palette {
             placeholder: PlaceholderColors(
                 backgroundColor: .smokeWhite,
                 loadingAnimationColors: [.smokeWhite, .bleachedSilkWhite]
-            )        )
+            )
+        )
     }
 
     static var dark: Palette {
@@ -113,7 +114,7 @@ extension Palette {
             )
         )
     }
-    
+
     private static func systemPlaceholderAnimationColors() -> [UIColor] {
         var colors: [UIColor] = []
         let count = min(light.placeholder.loadingAnimationColors.count, dark.placeholder.loadingAnimationColors.count)

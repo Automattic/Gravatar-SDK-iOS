@@ -8,12 +8,14 @@ final class TestPlaceholderDisplayers: XCTestCase {
         static let elementSize = CGSize(width: 40, height: 20)
         static let containerWidth = elementSize.width * 2
     }
+
     override func setUpWithError() throws {
         try super.setUpWithError()
         // isRecording = true
     }
 
-    @MainActor func testBackgroundColorPlaceholderDisplayer() throws {
+    @MainActor
+    func testBackgroundColorPlaceholderDisplayer() throws {
         let view = UIView(frame: .zero)
         view.applySize(Constants.elementSize)
         let containerView = view.wrapInSuperView(with: Constants.containerWidth)
@@ -27,8 +29,9 @@ final class TestPlaceholderDisplayers: XCTestCase {
         placeholderDisplayer.hidePlaceholder()
         assertSnapshot(of: containerView, as: .image, named: "placeholder-hidden")
     }
-    
-    @MainActor func testBackgroundColorPlaceholderDisplayerTemporaryField() throws {
+
+    @MainActor
+    func testBackgroundColorPlaceholderDisplayerTemporaryField() throws {
         let view = UIView(frame: .zero)
         view.isHidden = true
         view.applySize(Constants.elementSize)
@@ -44,8 +47,9 @@ final class TestPlaceholderDisplayers: XCTestCase {
         placeholderDisplayer.hidePlaceholder()
         XCTAssertTrue(view.isHidden)
     }
-    
-    @MainActor func testRectangularColorPlaceholderDisplayer() throws {
+
+    @MainActor
+    func testRectangularColorPlaceholderDisplayer() throws {
         let view = UIView(frame: .zero)
         view.applySize(Constants.elementSize)
         let containerView = view.wrapInSuperView(with: Constants.containerWidth)
@@ -62,16 +66,17 @@ final class TestPlaceholderDisplayers: XCTestCase {
         placeholderDisplayer.hidePlaceholder()
         assertSnapshot(of: containerView, as: .image, named: "placeholder-hidden")
     }
-    
-    @MainActor func testProfileButtonPlaceholderDisplayer() throws {
+
+    @MainActor
+    func testProfileButtonPlaceholderDisplayer() throws {
         let button = UIButton(frame: .zero)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("View profile", for: .normal)
         button.setImage(UIImage(systemName: "star.fill"), for: .normal)
         let containerView = button.wrapInSuperView(with: 120)
         let placeholderDisplayer = ProfileButtonPlaceholderDisplayer(
-            baseView: button, 
-            color: .porpoiseGray, 
+            baseView: button,
+            color: .porpoiseGray,
             originalBackgroundColor: .dugongGray,
             cornerRadius: 8,
             height: 30,
@@ -82,8 +87,9 @@ final class TestPlaceholderDisplayers: XCTestCase {
         placeholderDisplayer.hidePlaceholder()
         assertSnapshot(of: containerView, as: .image, named: "placeholder-hidden")
     }
-    
-    @MainActor func testAccountButtonsPlaceholderDisplayer() throws {
+
+    @MainActor
+    func testAccountButtonsPlaceholderDisplayer() throws {
         let stackView = UIStackView(frame: .zero)
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.spacing = 4

@@ -12,7 +12,15 @@ class RectangularPlaceholderDisplayer<T: UIView>: BackgroundColorPlaceholderDisp
     private var isShowing: Bool = false
     private var originalCornerRadius: CGFloat
 
-    init(baseView: T, color: UIColor, originalBackgroundColor: UIColor = .clear, cornerRadius: CGFloat, height: CGFloat, widthRatioToParent: CGFloat, isTemporary: Bool = false) {
+    init(
+        baseView: T,
+        color: UIColor,
+        originalBackgroundColor: UIColor = .clear,
+        cornerRadius: CGFloat,
+        height: CGFloat,
+        widthRatioToParent: CGFloat,
+        isTemporary: Bool = false
+    ) {
         self.cornerRadius = cornerRadius
         self.height = height
         self.widthRatioToParent = widthRatioToParent

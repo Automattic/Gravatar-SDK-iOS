@@ -19,10 +19,10 @@ open class BaseProfileView: UIView, UIContentView {
         /// Custom colors. You can also pass predefined colors from any `Palette``. Example: ``PaletteType.light.placeholder``.
         case custom(PlaceholderColors)
     }
-    
+
     /// Colors policy to use in the placeholder state (which basically means when all fields are empty).
     public var placeholderColorPolicy: PlaceholderColorPolicy = .currentPalette
-    
+
     public var profileButtonStyle: ProfileButtonStyle = .view {
         didSet {
             Configure(profileButton).asProfileButton().style(profileButtonStyle)
@@ -93,7 +93,8 @@ open class BaseProfileView: UIView, UIContentView {
         return label
     }()
 
-    /// The placeholder state of "about me" label consists of 2 separate lines in some designs. This label's only purpose is to serve as the 2nd line of that placeholder.
+    /// The placeholder state of "about me" label consists of 2 separate lines in some designs. This label's only purpose is to serve as the 2nd line of that
+    /// placeholder.
     lazy var aboutMePlaceholderLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -101,7 +102,7 @@ open class BaseProfileView: UIView, UIContentView {
         label.isHidden = true
         return label
     }()
-    
+
     public private(set) lazy var displayNameLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -269,7 +270,7 @@ open class BaseProfileView: UIView, UIContentView {
             profileURL: url
         )
     }
-    
+
     // MARK: - Placeholder handling
 
     var placeholderColors: PlaceholderColors {
@@ -280,7 +281,7 @@ open class BaseProfileView: UIView, UIContentView {
             placeholderColors
         }
     }
-    
+
     open var displayNamePlaceholderHeight: CGFloat {
         Constants.defaultDisplayNamePlaceholderHeight
     }

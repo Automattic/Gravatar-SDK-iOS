@@ -58,7 +58,7 @@ public class LargeProfileView: BaseProfileView {
         guard let model = config.model else { return }
         update(with: model)
     }
-    
+
     override public var displayNamePlaceholderHeight: CGFloat {
         Constants.displayNamePlaceholderHeight
     }

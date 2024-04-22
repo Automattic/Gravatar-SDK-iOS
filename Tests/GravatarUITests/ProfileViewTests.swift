@@ -45,7 +45,7 @@ extension UIView {
         centerXAnchor.constraint(equalTo: containerView.centerXAnchor).isActive = true
         return containerView
     }
-    
+
     func applySize(_ size: CGSize) {
         translatesAutoresizingMaskIntoConstraints = false
         widthAnchor.constraint(equalToConstant: size.width).isActive = true
