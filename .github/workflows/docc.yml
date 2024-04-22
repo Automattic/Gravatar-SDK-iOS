@@ -1,9 +1,9 @@
 # Name your workflow.
-name: Deploy DocC
+name: Deploy Gravatar DocC
 on:
   # Runs on pushes and PRs targeting the default branch
   push:
-    branches: [ "trunk" ]
+    branches: [ "test-docc-2" ]
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
   contents: read
@@ -36,7 +36,11 @@ jobs:
             transform-for-static-hosting /tmp/docbuild/Build/Products/Debug-iphoneos/Gravatar.doccarchive \
             --hosting-base-path Gravatar-SDK-iOS \
             --output-path docs;
-          echo "<script>window.location.href += \"documentation/gravatar\"</script>" > docs/index.html;
+          echo "<script>window.location.href += \"${{ github.ref_name }}/documentation/gravatar\"</script>" > docs/index.html;
+
+      - name: Move generated docs to branch directory
+        run: mkdir -p ./_site/${{ github.ref_name }} && mv ./docs/* ./_site/${{ github.ref_name }}/
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
