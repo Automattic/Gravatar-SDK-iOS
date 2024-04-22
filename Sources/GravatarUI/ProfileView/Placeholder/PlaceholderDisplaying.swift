@@ -78,6 +78,22 @@ class BackgroundColorPlaceholderDisplayer<T: UIView>: PlaceholderDisplaying {
     }
 }
 
+/// A ``PlaceholderDisplaying`` implementation for the "Edit/View profile" button.
+class ProfileButtonPlaceholderDisplayer: RectangularPlaceholderDisplayer<UIButton> {
+    
+    override func showPlaceholder() {
+        super.showPlaceholder()
+        baseView.imageView?.isHidden = true
+        baseView.titleLabel?.isHidden = true
+    }
+    
+    override func hidePlaceholder() {
+        super.hidePlaceholder()
+        baseView.imageView?.isHidden = false
+        baseView.titleLabel?.isHidden = false
+    }
+}
+
 /// A ``PlaceholderDisplaying`` implementation that Inherits ``BackgroundColorPlaceholderDisplayer`.
 /// In addition to ``BackgroundColorPlaceholderDisplayer``, this  gives a size to the ui element and rounds its corners a bit when `showPlaceholder()` is
 /// called.

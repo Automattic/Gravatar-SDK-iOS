@@ -51,7 +51,7 @@ class ProfileViewPlaceholderDisplayer: ProfileViewPlaceholderDisplaying {
                 height: 14,
                 widthRatioToParent: 0.8
             ),
-            RectangularPlaceholderDisplayer(
+            ProfileButtonPlaceholderDisplayer(
                 baseView: view.profileButton,
                 color: color,
                 cornerRadius: 8,
