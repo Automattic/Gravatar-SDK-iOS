@@ -37,4 +37,10 @@ public class LargeProfileSummaryView: BaseProfileView {
         personalInfoLabel.textAlignment = .center
         Configure(profileButton).asProfileButton().style(.view).palette(paletteType)
     }
+
+    override public func update(with config: ProfileViewConfiguration) {
+        super.update(with: config)
+        guard let model = config.summaryModel else { return }
+        update(with: model)
+    }
 }
