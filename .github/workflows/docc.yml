@@ -34,7 +34,7 @@ jobs:
             -destination 'generic/platform=iOS';
           $(xcrun --find docc) process-archive \
             transform-for-static-hosting /tmp/docbuild/Build/Products/Debug-iphoneos/Gravatar.doccarchive \
-            --hosting-base-path Gravatar-SDK-iOS \
+            --hosting-base-path Gravatar-SDK-iOS/${{ github.ref_name }} \
             --output-path docs;
           echo "<script>window.location.href += \"${{ github.ref_name }}/documentation/gravatar\"</script>" > docs/index.html;
 
