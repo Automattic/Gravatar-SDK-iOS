@@ -41,8 +41,7 @@ class ProfilePlaceholderActivityIndicator: ProfileActivityIndicator {
         self.placeholderDisplayer.elements?.forEach { element in
             if placeholderDisplayer.isShowing {
                 element.refreshColor()
-            }
-            else {
+            } else {
                 element.hidePlaceholder()
             }
         }

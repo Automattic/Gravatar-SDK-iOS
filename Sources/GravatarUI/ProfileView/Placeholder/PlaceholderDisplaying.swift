@@ -58,18 +58,18 @@ class BackgroundColorPlaceholderDisplayer<T: UIView>: PlaceholderDisplaying {
             baseView.isHidden = true
         }
     }
-    
+
     func set(viewColor newColor: UIColor?) {
         // UIColor can automatically adjust according to `UIUserInterfaceStyle`, but CGColor can't.
         // That's why we can't just rely on `layer.backgroundColor`. We need to set this.
         baseView.backgroundColor = newColor
     }
-    
+
     func set(layerColor newColor: UIColor?) {
         // backgroundColor is not animatable for some UIView subclasses. For example: UILabel. So we need to animate over `layer.backgroundColor`.
         baseView.layer.backgroundColor = newColor?.cgColor
     }
-    
+
     func prepareForAnimation() {
         if baseView is UILabel {
             // If UILabel's backgroundColor is set, the animation won't be visible. So we need to clear it. This is only needed for UILabel so far.
@@ -169,14 +169,14 @@ class AccountButtonsPlaceholderDisplayer: PlaceholderDisplaying {
             arrangedSubview.backgroundColor = newColor
         }
     }
-    
+
     func set(layerColor newColor: UIColor?) {
         for arrangedSubview in containerStackView.arrangedSubviews {
             arrangedSubview.layer.backgroundColor = newColor?.cgColor
         }
     }
-    
-    func prepareForAnimation() { }
+
+    func prepareForAnimation() {}
 }
 
 @MainActor

@@ -20,7 +20,7 @@ final class ProfileViewTests: XCTestCase {
             assertSnapshot(of: containerView, as: .image, named: "\(interfaceStyle.name)")
         }
     }
-    
+
     func testEmptyProfileView() throws {
         for interfaceStyle in UIUserInterfaceStyle.allCases {
             let containerView = createViews(model: nil)

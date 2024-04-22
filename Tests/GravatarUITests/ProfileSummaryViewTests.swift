@@ -28,7 +28,7 @@ final class ProfileSummaryViewTests: XCTestCase {
             assertSnapshot(of: containerView, as: .image, named: "\(interfaceStyle.name)")
         }
     }
-    
+
     private func createViews(model: ProfileSummaryModel?) -> UIView {
         let cardView = ProfileSummaryView(frame: .zero, paletteType: .system)
         cardView.update(with: model)

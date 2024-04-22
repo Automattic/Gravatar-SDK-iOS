@@ -74,7 +74,7 @@ class ProfileViewPlaceholderDisplayer: ProfileViewPlaceholderDisplaying {
         isShowing = false
         elements?.forEach { $0.hidePlaceholder() }
     }
-    
+
     func refresh(with placeholderColors: PlaceholderColors) {
         guard let elements else { return }
         for var element in elements {
