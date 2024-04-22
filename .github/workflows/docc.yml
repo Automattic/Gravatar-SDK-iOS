@@ -41,7 +41,8 @@ jobs:
       - name: Move generated docs to branch directory
         run: |
           mkdir -p ./_site/${{ github.ref_name }} && mv ./docs/* ./_site/${{ github.ref_name }}/;
-          ls -a ./site/${{ github.ref_name }}/
+          ls .
+          ls ./site/${{ github.ref_name }}
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
