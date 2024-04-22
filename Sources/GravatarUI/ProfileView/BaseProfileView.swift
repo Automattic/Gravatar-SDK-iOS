@@ -20,7 +20,7 @@ open class BaseProfileView: UIView, UIContentView {
         case custom(PlaceholderColors)
     }
 
-    /// Colors policy to use in the placeholder state (which basically means when all fields are empty).
+    /// Placeholder color policy to use in the placeholder state (which basically means when all fields are empty).
     public var placeholderColorPolicy: PlaceholderColorPolicy = .currentPalette
 
     public var profileButtonStyle: ProfileButtonStyle = .view {
