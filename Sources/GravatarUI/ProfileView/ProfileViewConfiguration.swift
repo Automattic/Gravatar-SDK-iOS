@@ -11,6 +11,7 @@ public struct ProfileViewConfiguration: UIContentConfiguration {
 
     public var palette: PaletteType
     public var padding: UIEdgeInsets = BaseProfileView.defaultPadding
+    public var profileButtonStyle: ProfileButtonStyle = .view
     public weak var delegate: ProfileViewDelegate?
 
     init(model: ProfileModel?, palette: PaletteType, profileStyle: Style) {

@@ -73,4 +73,19 @@ final class TestProfileConfiguration: XCTestCase {
         XCTAssertEqual(view.layoutMargins, .zero)
         XCTAssertEqual((view as? LargeProfileSummaryView)?.displayNameLabel.text, model.displayName)
     }
+
+    @MainActor
+    func testConfigurationUpdatesProfileButtonStyle() throws {
+        let view = ProfileViewConfiguration.largeSummary().makeContentView()
+        let profileView = view as! LargeProfileSummaryView
+
+        XCTAssertEqual(profileView.profileButton.titleLabel?.text, nil)
+
+        let model = TestProfileCardModel.summaryCard()
+        var config = ProfileViewConfiguration.largeSummary(model: model)
+        config.profileButtonStyle = .edit
+        profileView.configuration = config
+
+        XCTAssertEqual(profileView.profileButton.titleLabel?.text, "Edit profile")
+    }
 }

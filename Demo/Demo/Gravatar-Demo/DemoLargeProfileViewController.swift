@@ -45,6 +45,7 @@ class DemoLargeProfileViewController: UIViewController {
 
     lazy var profileView: ProfileView = {
         let view = ProfileView(frame: .zero, paletteType: preferredPaletteType)
+        view.profileButtonStyle = .edit
         view.translatesAutoresizingMaskIntoConstraints = false
         view.avatarImageView.gravatar.activityIndicatorType = .activity
         view.delegate = self
@@ -52,7 +53,7 @@ class DemoLargeProfileViewController: UIViewController {
     }()
 
     lazy var profileSummaryView: ProfileSummaryView = {
-        let view = ProfileSummaryView(frame: .zero, paletteType: preferredPaletteType)
+        let view = ProfileSummaryView(frame: .zero, paletteType: preferredPaletteType, profileButtonStyle: .edit)
         view.translatesAutoresizingMaskIntoConstraints = false
         view.avatarImageView.gravatar.activityIndicatorType = .activity
         view.delegate = self
@@ -182,6 +183,7 @@ extension DemoLargeProfileViewController: ProfileViewDelegate {
     func profileView(_ view: BaseProfileView, didTapOnAccountButtonWithModel accountModel: AccountModel) {
         guard let accountURL = accountModel.accountURL else { return }
         let safari = SFSafariViewController(url: accountURL)
+
         present(safari, animated: true)
     }
 }

@@ -76,6 +76,10 @@ struct TestProfileCardModel: ProfileModel {
             profileURL: URL(string: "https://gravatar.com/profile")
         )
     }
+
+    var profileEditURL: URL? {
+        URL(string: "https://gravatar.com/profile")
+    }
 }
 
 struct TestAccountModel: AccountModel {
