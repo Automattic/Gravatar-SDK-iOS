@@ -16,7 +16,7 @@ concurrency:
 
 env:
   GRAVATAR_URL: "gravatar/${{ github.ref_name }}"
-  GRAVATAR_UI_URL: "gravatar-ui/${{ github.ref_name }}"
+  GRAVATAR_UI_URL: "gravatarui/${{ github.ref_name }}"
 
 jobs:
   # Single deploy job since we're just deploying
