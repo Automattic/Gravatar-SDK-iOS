@@ -20,6 +20,7 @@ public class ProfileSummaryView: BaseProfileView {
         Configure(displayNameLabel).asDisplayName().content(model).palette(paletteType).font(.DS.headline)
         Configure(personalInfoLabel).asPersonalInfo().content(model, lines: [.init([.location])]).palette(paletteType)
         Configure(profileButton).asProfileButton().style(.view).palette(paletteType)
+        profileMetadata = model
     }
 
     override public func update(with config: ProfileViewConfiguration) {

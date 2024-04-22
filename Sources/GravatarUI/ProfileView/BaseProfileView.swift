@@ -4,7 +4,7 @@ import UIKit
 open class BaseProfileView: UIView, UIContentView {
     private enum Constants {
         static let avatarLength: CGFloat = 72
-        static let maximumAccountsDisplay = 3
+        static let maximumAccountsDisplay = 4
         static let accountIconLength: CGFloat = 32
     }
 
@@ -28,6 +28,10 @@ open class BaseProfileView: UIView, UIContentView {
         }
     }
 
+    public weak var delegate: ProfileViewDelegate?
+
+    var profileMetadata: ProfileMetadataModel?
+    var accounts: [AccountModel] = []
     var maximumAccountsDisplay = Constants.maximumAccountsDisplay
 
     var padding: UIEdgeInsets {
@@ -86,8 +90,16 @@ open class BaseProfileView: UIView, UIContentView {
     }()
 
     public lazy var profileButton: UIButton = {
-        var config = UIButton.Configuration.borderless()
-        let button = UIButton(configuration: config)
+        let button = UIButton(configuration: .borderless())
+        let action = UIAction { [weak self] _ in
+            guard let self else { return }
+            self.delegate?.profileView(
+                self,
+                didTapOnProfileButtonWithStyle: .view,
+                profileURL: self.profileMetadata?.profileURL
+            )
+        }
+        button.addAction(action, for: .touchUpInside)
         return button
     }()
 
@@ -177,18 +189,24 @@ open class BaseProfileView: UIView, UIContentView {
     }
 
     func updateAccountButtons(with model: AccountListModel) {
-        let buttons = model.accountsList?.prefix(maximumAccountsDisplay).map(createAccountButton)
+        accounts = Array(model.accountsList.prefix(Constants.maximumAccountsDisplay))
+        let buttons = accounts.map(createAccountButton)
         for view in accountButtonsStackView.arrangedSubviews {
             accountButtonsStackView.removeArrangedSubview(view)
             view.removeFromSuperview()
         }
-        accountButtonsStackView.addArrangedSubview(createAccountButton(with: model.gravatarAccount))
-        buttons?.forEach(accountButtonsStackView.addArrangedSubview)
+        buttons.forEach(accountButtonsStackView.addArrangedSubview)
     }
 
-    func createAccountButton(with model: AccountModel) -> UIButton {
+    func createAccountButton(model: AccountModel) -> UIButton {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
+        let action = UIAction { [weak self] _ in
+            guard let self else { return }
+            self.delegate?.profileView(self, didTapOnAccountButtonWithModel: model)
+        }
+        button.addAction(action, for: .touchUpInside)
+
         Configure(button).asAccountButton().content(model).palette(paletteType)
         button.imageView?.contentMode = .scaleAspectFit
         button.imageView?.translatesAutoresizingMaskIntoConstraints = false
@@ -210,4 +228,9 @@ open class BaseProfileView: UIView, UIContentView {
             loadAvatar(with: avatarID)
         }
     }
+}
+
+public protocol ProfileViewDelegate: NSObjectProtocol {
+    func profileView(_ view: BaseProfileView, didTapOnProfileButtonWithStyle style: ProfileButtonStyle, profileURL: URL?)
+    func profileView(_ view: BaseProfileView, didTapOnAccountButtonWithModel accountModel: AccountModel)
 }

@@ -1,6 +1,7 @@
 import UIKit
 import Gravatar
 import GravatarUI
+import SafariServices
 
 class DemoLargeProfileViewController: UIViewController {
     
@@ -30,6 +31,7 @@ class DemoLargeProfileViewController: UIViewController {
         let view = LargeProfileView(frame: .zero, paletteType: preferredPaletteType)
         view.translatesAutoresizingMaskIntoConstraints = false
         view.avatarImageView.gravatar.activityIndicatorType = .activity
+        view.delegate = self
         return view
     }()
 
@@ -37,6 +39,7 @@ class DemoLargeProfileViewController: UIViewController {
         let view = LargeProfileSummaryView(frame: .zero, paletteType: preferredPaletteType)
         view.translatesAutoresizingMaskIntoConstraints = false
         view.avatarImageView.gravatar.activityIndicatorType = .activity
+        view.delegate = self
         return view
     }()
 
@@ -44,6 +47,7 @@ class DemoLargeProfileViewController: UIViewController {
         let view = ProfileView(frame: .zero, paletteType: preferredPaletteType)
         view.translatesAutoresizingMaskIntoConstraints = false
         view.avatarImageView.gravatar.activityIndicatorType = .activity
+        view.delegate = self
         return view
     }()
 
@@ -51,6 +55,7 @@ class DemoLargeProfileViewController: UIViewController {
         let view = ProfileSummaryView(frame: .zero, paletteType: preferredPaletteType)
         view.translatesAutoresizingMaskIntoConstraints = false
         view.avatarImageView.gravatar.activityIndicatorType = .activity
+        view.delegate = self
         return view
     }()
 
@@ -164,5 +169,19 @@ class DemoLargeProfileViewController: UIViewController {
                 print(error)
             }
         }
+    }
+}
+
+extension DemoLargeProfileViewController: ProfileViewDelegate {
+    func profileView(_ view: BaseProfileView, didTapOnProfileButtonWithStyle style: ProfileButtonStyle, profileURL: URL?) {
+        guard let profileURL else { return }
+        let safari = SFSafariViewController(url: profileURL)
+        present(safari, animated: true)
+    }
+
+    func profileView(_ view: BaseProfileView, didTapOnAccountButtonWithModel accountModel: AccountModel) {
+        guard let accountURL = accountModel.accountURL else { return }
+        let safari = SFSafariViewController(url: accountURL)
+        present(safari, animated: true)
     }
 }

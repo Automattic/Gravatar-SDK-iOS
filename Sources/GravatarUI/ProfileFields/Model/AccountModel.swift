@@ -9,8 +9,7 @@ public protocol AccountModel {
 }
 
 public protocol AccountListModel {
-    var accountsList: [AccountModel]? { get }
-    var gravatarAccount: AccountModel { get }
+    var accountsList: [AccountModel] { get }
 }
 
 struct GravatarAccountModel: AccountModel {
@@ -23,11 +22,11 @@ struct GravatarAccountModel: AccountModel {
 extension UserProfile.Account: AccountModel {}
 
 extension UserProfile: AccountListModel {
-    public var accountsList: [AccountModel]? {
-        accounts
+    public var accountsList: [AccountModel] {
+        [gravatarAccount] + (accounts ?? [])
     }
 
-    public var gravatarAccount: AccountModel {
+    var gravatarAccount: AccountModel {
         GravatarAccountModel(accountURL: profileURL)
     }
 }

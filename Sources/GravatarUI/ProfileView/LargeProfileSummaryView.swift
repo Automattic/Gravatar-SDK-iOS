@@ -36,6 +36,7 @@ public class LargeProfileSummaryView: BaseProfileView {
         displayNameLabel.textAlignment = .center
         personalInfoLabel.textAlignment = .center
         Configure(profileButton).asProfileButton().style(.view).palette(paletteType)
+        profileMetadata = model
     }
 
     override public func update(with config: ProfileViewConfiguration) {
