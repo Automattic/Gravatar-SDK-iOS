@@ -14,6 +14,9 @@ concurrency:
   group: "pages"
   cancel-in-progress: true
 
+env:
+  GRAVATAR_URL: "gravatar/${{ github.ref_name }}"
+
 jobs:
   # Single deploy job since we're just deploying
   deploy:
@@ -21,7 +24,6 @@ jobs:
       # Must be set to this for deploying to GitHub Pages
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-      GRAVATAR_URL: "gravatar/${{ github.ref_name }}"
     runs-on: macos-13
     steps:
       - run: echo $GRAVATAR_URL
