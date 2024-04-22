@@ -49,7 +49,7 @@ final class LargeProfileViewTests: XCTestCase {
         cardView.update(with: TestProfileCardModel.summaryCard()) // set data and hide placeholders
         assertSnapshot(of: containerView, as: .image, named: "\(interfaceStyle.name)")
     }
-    
+
     func testLargeProfileViewPlaceholderCanUpdateColors() throws {
         let interfaceStyle: UIUserInterfaceStyle = .light
         let (cardView, containerView) = createViews(paletteType: .light)
@@ -57,7 +57,7 @@ final class LargeProfileViewTests: XCTestCase {
         cardView.placeholderColorPolicy = .custom(PlaceholderColors(backgroundColor: .purple, loadingAnimationColors: [.green, .blue]))
         assertSnapshot(of: containerView, as: .image, named: "\(interfaceStyle.name)")
     }
-    
+
     private func createViews(paletteType: PaletteType) -> (LargeProfileView, UIView) {
         let cardView = LargeProfileView(frame: .zero, paletteType: paletteType)
         cardView.translatesAutoresizingMaskIntoConstraints = false

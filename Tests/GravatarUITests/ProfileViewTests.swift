@@ -53,7 +53,7 @@ final class ProfileViewTests: XCTestCase {
         cardView.placeholderColorPolicy = .custom(PlaceholderColors(backgroundColor: .purple, loadingAnimationColors: [.green, .blue]))
         assertSnapshot(of: containerView, as: .image, named: "\(interfaceStyle.name)")
     }
-    
+
     private func createViews(model: ProfileModel?) -> (UIView, ProfileView) {
         let cardView = ProfileView(frame: .zero, paletteType: .system)
         cardView.update(with: model)
