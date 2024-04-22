@@ -6,6 +6,7 @@ public class ProfileView: BaseProfileView {
         let stack = UIStackView(arrangedSubviews: [avatarImageView, basicInfoStackView])
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.axis = .horizontal
+        stack.alignment = .center
         stack.spacing = .DS.Padding.split
         return stack
     }()
@@ -20,10 +21,7 @@ public class ProfileView: BaseProfileView {
     }()
 
     private lazy var basicInfoStackView: UIStackView = {
-        let spacer = UIView()
-        spacer.translatesAutoresizingMaskIntoConstraints = false
-        spacer.setContentHuggingPriority(.defaultLow, for: .vertical)
-        let stack = UIStackView(arrangedSubviews: [displayNameLabel, personalInfoLabel, spacer])
+        let stack = UIStackView(arrangedSubviews: [displayNameLabel, personalInfoLabel])
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.axis = .vertical
         stack.alignment = .leading

@@ -8,7 +8,7 @@ public class LargeProfileSummaryView: BaseProfileView {
 
     public static var personalInfoLines: [PersonalInfoLine] {
         [
-            .init([.namePronunciation, .defaultSeparator, .pronouns, .defaultSeparator, .location]),
+            .init([.namePronunciation, .pronouns, .location]),
         ]
     }
 
@@ -37,5 +37,11 @@ public class LargeProfileSummaryView: BaseProfileView {
         personalInfoLabel.textAlignment = .center
         Configure(profileButton).asProfileButton().style(profileButtonStyle).palette(paletteType)
         profileMetadata = model
+    }
+
+    override public func update(with config: ProfileViewConfiguration) {
+        super.update(with: config)
+        guard let model = config.summaryModel else { return }
+        update(with: model)
     }
 }

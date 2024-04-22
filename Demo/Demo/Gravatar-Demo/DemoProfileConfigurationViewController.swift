@@ -83,13 +83,13 @@ class DemoProfileConfigurationViewController: UITableViewController {
 }
 
 extension DemoProfileConfigurationViewController: ProfileViewDelegate {
-    func didTapOnProfileButton(with style: GravatarUI.ProfileButtonStyle, profileURL: URL?) {
+    func profileView(_ view: BaseProfileView, didTapOnProfileButtonWithStyle style: ProfileButtonStyle, profileURL: URL?) {
         guard let profileURL else { return }
         let safari = SFSafariViewController(url: profileURL)
         present(safari, animated: true)
     }
 
-    func didTapOnAccountButton(with accountModel: AccountModel) {
+    func profileView(_ view: BaseProfileView, didTapOnAccountButtonWithModel accountModel: AccountModel) {
         guard let accountURL = accountModel.accountURL else { return }
         let safari = SFSafariViewController(url: accountURL)
         present(safari, animated: true)

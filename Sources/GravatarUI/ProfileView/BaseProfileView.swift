@@ -97,10 +97,8 @@ open class BaseProfileView: UIView, UIContentView {
 
     public lazy var profileButton: UIButton = {
         let button = UIButton(configuration: .borderless())
-        let action = UIAction { [weak self] _ in
-            guard let self else { return }
-            let url = profileButtonStyle == .edit ? self.profileMetadata?.profileEditURL : self.profileMetadata?.profileURL
-            self.delegate?.didTapOnProfileButton(with: profileButtonStyle, profileURL: url)
+        let action = UIAction { [weak self] action in
+            self?.onProfileButtonPressed(with: action)
         }
         button.addAction(action, for: .touchUpInside)
         return button
@@ -211,7 +209,8 @@ open class BaseProfileView: UIView, UIContentView {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         let action = UIAction { [weak self] _ in
-            self?.delegate?.didTapOnAccountButton(with: model)
+            guard let self else { return }
+            self.delegate?.profileView(self, didTapOnAccountButtonWithModel: model)
         }
         button.addAction(action, for: .touchUpInside)
 
@@ -235,10 +234,22 @@ open class BaseProfileView: UIView, UIContentView {
         if let avatarID = config.avatarID {
             loadAvatar(with: avatarID)
         }
+        if config.model != nil || config.summaryModel != nil {
+            profileButtonStyle = config.profileButtonStyle
+        }
+    }
+
+    private func onProfileButtonPressed(with action: UIAction) {
+        let url = profileButtonStyle == .edit ? self.profileMetadata?.profileEditURL : self.profileMetadata?.profileURL
+        self.delegate?.profileView(
+            self,
+            didTapOnProfileButtonWithStyle: profileButtonStyle,
+            profileURL: url
+        )
     }
 }
 
 public protocol ProfileViewDelegate: NSObjectProtocol {
-    func didTapOnProfileButton(with style: ProfileButtonStyle, profileURL: URL?)
-    func didTapOnAccountButton(with accountModel: AccountModel)
+    func profileView(_ view: BaseProfileView, didTapOnProfileButtonWithStyle style: ProfileButtonStyle, profileURL: URL?)
+    func profileView(_ view: BaseProfileView, didTapOnAccountButtonWithModel accountModel: AccountModel)
 }

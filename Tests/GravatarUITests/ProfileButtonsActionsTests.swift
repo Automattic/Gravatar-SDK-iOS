@@ -93,11 +93,11 @@ class TestProfileViewDelegate: NSObject, ProfileViewDelegate {
     var profileButtonActions: [(style: ProfileButtonStyle, url: URL?)] = []
     var accountButtonActions: [AccountModel] = []
 
-    func didTapOnProfileButton(with style: ProfileButtonStyle, profileURL: URL?) {
+    func profileView(_ view: BaseProfileView, didTapOnProfileButtonWithStyle style: ProfileButtonStyle, profileURL: URL?) {
         profileButtonActions.append((style: style, url: profileURL))
     }
 
-    func didTapOnAccountButton(with accountModel: AccountModel) {
+    func profileView(_ view: BaseProfileView, didTapOnAccountButtonWithModel accountModel: AccountModel) {
         accountButtonActions.append(accountModel)
     }
 }
