@@ -5,10 +5,18 @@ public struct ForegroundColors {
     public let primary: UIColor
     public let primarySlightlyDimmed: UIColor
     public let secondary: UIColor
+    public init(primary: UIColor, primarySlightlyDimmed: UIColor, secondary: UIColor) {
+        self.primary = primary
+        self.primarySlightlyDimmed = primarySlightlyDimmed
+        self.secondary = secondary
+    }
 }
 
 public struct BackgroundColors {
     public let primary: UIColor
+    public init(primary: UIColor) {
+        self.primary = primary
+    }
 }
 
 public struct Palette {
@@ -17,11 +25,22 @@ public struct Palette {
     public let background: BackgroundColors
     public let avatarBorder: UIColor
     public let placeholder: PlaceholderColors
+    public init(name: String, foreground: ForegroundColors, background: BackgroundColors, avatarBorder: UIColor, placeholder: PlaceholderColors) {
+        self.name = name
+        self.foreground = foreground
+        self.background = background
+        self.avatarBorder = avatarBorder
+        self.placeholder = placeholder
+    }
 }
 
 public struct PlaceholderColors {
     var backgroundColor: UIColor
     var loadingAnimationColors: [UIColor]
+    public init(backgroundColor: UIColor, loadingAnimationColors: [UIColor]) {
+        self.backgroundColor = backgroundColor
+        self.loadingAnimationColors = loadingAnimationColors
+    }
 }
 
 public enum PaletteType {
