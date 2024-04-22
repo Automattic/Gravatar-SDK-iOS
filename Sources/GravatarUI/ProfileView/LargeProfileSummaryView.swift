@@ -8,7 +8,7 @@ public class LargeProfileSummaryView: BaseProfileView {
 
     public static var personalInfoLines: [PersonalInfoLine] {
         [
-            .init([.namePronunciation, .defaultSeparator, .pronouns, .defaultSeparator, .location]),
+            .init([.namePronunciation, .pronouns, .location]),
         ]
     }
 
