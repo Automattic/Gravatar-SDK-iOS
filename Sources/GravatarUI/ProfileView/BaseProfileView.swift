@@ -191,7 +191,7 @@ open class BaseProfileView: UIView, UIContentView {
     }
 
     open func arrangeSubviews() {
-        // Subclasses should override and add fields to the `rootStackView`.
+        assertionFailure("Subviews must override this to add necessary UI elements to the `rootStackView`")
     }
 
     @available(*, unavailable)
