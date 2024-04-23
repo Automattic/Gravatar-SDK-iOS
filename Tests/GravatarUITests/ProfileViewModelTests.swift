@@ -6,13 +6,14 @@ import XCTest
 
 final class ProfileViewModelTests: XCTestCase {
     private var cancellables: Set<AnyCancellable> = []
-    
+
     override func setUp() {
         super.setUp()
         cancellables = []
     }
-    
-    @MainActor func testIsLoadingUpdatesOnSuccess() async throws {
+
+    @MainActor
+    func testIsLoadingUpdatesOnSuccess() async throws {
         let viewModel = ProfileViewModel(profileService: successfulService())
         var states: [Bool] = []
         viewModel.$isLoading.sink { isLoading in
@@ -21,8 +22,9 @@ final class ProfileViewModelTests: XCTestCase {
         await viewModel.fetchProfile(profileIdentifier: .email("test@email.com"))
         XCTAssertEqual(states, [false, true, false])
     }
-    
-    @MainActor func testIsLoadingUpdatesOnFailure() async throws {
+
+    @MainActor
+    func testIsLoadingUpdatesOnFailure() async throws {
         let viewModel = ProfileViewModel(profileService: failingService())
         var states: [Bool] = []
         viewModel.$isLoading.sink { isLoading in
@@ -31,8 +33,9 @@ final class ProfileViewModelTests: XCTestCase {
         await viewModel.fetchProfile(profileIdentifier: .email("test@email.com"))
         XCTAssertEqual(states, [false, true, false])
     }
-    
-    @MainActor func testProfileFetchingResultUpdatesOnSuccess() async throws {
+
+    @MainActor
+    func testProfileFetchingResultUpdatesOnSuccess() async throws {
         let viewModel = ProfileViewModel(profileService: successfulService())
         var states: [Result<UserProfile, ProfileServiceError>?] = []
         viewModel.$profileFetchingResult.sink { result in
@@ -43,8 +46,9 @@ final class ProfileViewModelTests: XCTestCase {
         XCTAssertTrue(states[0] == nil)
         XCTAssertNotNil(try states[1]?.get() as? UserProfile)
     }
-    
-    @MainActor func testProfileFetchingResultUpdatesOnFailure() async throws {
+
+    @MainActor
+    func testProfileFetchingResultUpdatesOnFailure() async throws {
         let viewModel = ProfileViewModel(profileService: failingService())
         var states: [Result<UserProfile, ProfileServiceError>?] = []
         viewModel.$profileFetchingResult.sink { result in
@@ -55,19 +59,19 @@ final class ProfileViewModelTests: XCTestCase {
         XCTAssertTrue(states[0] == nil)
         let result = try XCTUnwrap(states[1])
         switch result {
-        case .success(_):
+        case .success:
             XCTFail("The result should haven been a failure")
-        case .failure(_):
+        case .failure:
             break
         }
     }
-    
+
     func successfulService() -> ProfileService {
         let session = URLSessionMock(returnData: jsonData, response: .successResponse())
         let client = URLSessionHTTPClient(urlSession: session)
         return ProfileService(client: client)
     }
-    
+
     func failingService() -> ProfileService {
         let session = URLSessionMock(returnData: jsonData, response: .errorResponse(code: 404))
         let client = URLSessionHTTPClient(urlSession: session)
