@@ -18,7 +18,6 @@ public class LargeProfileSummaryView: BaseProfileView {
     }
 
     override public func arrangeSubviews() {
-        super.arrangeSubviews()
         [avatarImageView, displayNameLabel, personalInfoLabel, profileButton].forEach(rootStackView.addArrangedSubview)
         setRootStackViewSpacing()
         rootStackView.alignment = .center
