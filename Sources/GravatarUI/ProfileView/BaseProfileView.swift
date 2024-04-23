@@ -30,6 +30,21 @@ open class BaseProfileView: UIView, UIContentView {
     /// Displays a placeholder when all the fields are empty. Defaults to `ProfileViewPlaceholderDisplayer`. Set  to`nil` for not using any.
     public var placeholderDisplayer: ProfileViewPlaceholderDisplaying?
 
+    /// Activity indicator to show when `isLoading` is `true` .
+    /// Defaults to ``ProfilePlaceholderActivityIndicator``.
+    public var activityIndicator: (any ProfileActivityIndicator)?
+
+    public var isLoading: Bool = false {
+        didSet {
+            guard isLoading != oldValue else { return }
+            if isLoading {
+                activityIndicator?.startAnimating(on: self)
+            } else {
+                activityIndicator?.stopAnimating(on: self)
+            }
+        }
+    }
+
     public var profileButtonStyle: ProfileButtonStyle = .view {
         didSet {
             Configure(profileButton).asProfileButton().style(profileButtonStyle)
@@ -157,7 +172,9 @@ open class BaseProfileView: UIView, UIContentView {
 
     override public init(frame: CGRect) {
         self.paletteType = .system
-        self.placeholderDisplayer = ProfileViewPlaceholderDisplayer()
+        let placeholderDisplayer = ProfileViewPlaceholderDisplayer()
+        self.placeholderDisplayer = placeholderDisplayer
+        self.activityIndicator = ProfilePlaceholderActivityIndicator(placeholderDisplayer: placeholderDisplayer)
         super.init(frame: frame)
         self.padding = Self.defaultPadding
         commonInit()
@@ -277,6 +294,7 @@ open class BaseProfileView: UIView, UIContentView {
     open func update(with config: ProfileViewConfiguration) {
         paletteType = config.palette
         padding = config.padding
+        isLoading = config.isLoading
         if let avatarID = config.avatarID {
             loadAvatar(with: avatarID)
         }
