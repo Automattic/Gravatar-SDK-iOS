@@ -1,19 +1,13 @@
 import Foundation
 import Gravatar
 
-public protocol ProfileFetching {
-    func fetch(with profileID: ProfileIdentifier) async throws -> UserProfile
-}
-
-extension ProfileService: ProfileFetching {}
-
 @MainActor
 public class ProfileViewModel {
-    @Published var isLoading: Bool = false
-    @Published var profileFetchingResult: Result<UserProfile, ProfileServiceError>?
-    private let profileService: ProfileFetching
+    @Published public private(set) var isLoading: Bool = false
+    @Published public private(set) var profileFetchingResult: Result<UserProfile, ProfileServiceError>?
+    private let profileService: ProfileService
 
-    public init(profileService: ProfileFetching = ProfileService()) {
+    public init(profileService: ProfileService = ProfileService()) {
         self.profileService = profileService
     }
 
