@@ -30,7 +30,7 @@ public class LargeProfileView: BaseProfileView {
 
     override public func arrangeSubviews() {
         super.arrangeSubviews()
-        [topStackView, displayNameLabel, personalInfoLabel, aboutMeLabel, aboutMePlaceholderLabel, bottomStackView, .spacer()]
+        [topStackView, displayNameLabel, personalInfoLabel, aboutMeLabel, aboutMePlaceholderLabel, bottomStackView]
             .forEach(rootStackView.addArrangedSubview)
         setRootStackViewSpacing()
     }
