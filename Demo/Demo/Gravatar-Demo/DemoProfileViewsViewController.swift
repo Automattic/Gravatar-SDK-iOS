@@ -3,18 +3,7 @@ import Gravatar
 import GravatarUI
 import SafariServices
 
-class DemoLargeProfileViewController: UIViewController {
-    
-    let emailField: UITextField = {
-        let textField = UITextField()
-        textField.translatesAutoresizingMaskIntoConstraints = false
-        textField.placeholder = "Email"
-        textField.keyboardType = .emailAddress
-        textField.autocapitalizationType = .none
-        textField.textContentType = .emailAddress
-        textField.textAlignment = .center
-        return textField
-    }()
+class DemoProfileViewsViewController: DemoBaseProfileViewController {
 
     lazy var fetchProfileButton: UIButton = {
         let button = UIButton(type: .system)
@@ -24,7 +13,7 @@ class DemoLargeProfileViewController: UIViewController {
         button.addTarget(self, action: #selector(fetchProfileButtonHandler), for: .touchUpInside)
         return button
     }()
-
+    
     private lazy var activityIndictorSwitchWithLabel: SwitchWithLabel = {
         let view = SwitchWithLabel(labelText: "Test activity indicator (only works when cards are empty)")
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -65,89 +54,17 @@ class DemoLargeProfileViewController: UIViewController {
         return view
     }()
 
-    lazy var rootStackView: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [emailField, paletteButton, fetchProfileButton, activityIndictorSwitchWithLabel])
-        stack.translatesAutoresizingMaskIntoConstraints = false
-        stack.axis = .vertical
-        stack.spacing = 12
-        stack.distribution = .fill
-        stack.alignment = .fill
-
-        return stack
-    }()
-
-    private lazy var paletteButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("Palette: \(preferredPaletteType.name)", for: .normal)
-        button.addTarget(self, action: #selector(selectPalette), for: .touchUpInside)
-        return button
-    }()
-    
-    let paletteTypes: [PaletteType] = [.system, .light, .dark]
-    
-    var preferredPaletteType: PaletteType = .system {
-        didSet {
-            largeProfileView.paletteType = preferredPaletteType
-            largeProfileSummaryView.paletteType = preferredPaletteType
-            profileView.paletteType = preferredPaletteType
-            profileSummaryView.paletteType = preferredPaletteType
-        }
+    override func preferredPaletteTypeChanged() {
+        largeProfileView.paletteType = preferredPaletteType
+        largeProfileSummaryView.paletteType = preferredPaletteType
+        profileView.paletteType = preferredPaletteType
+        profileSummaryView.paletteType = preferredPaletteType
     }
-
-    let scrollView = UIScrollView()
-
-    override func loadView() {
-        scrollView.contentInset = UIEdgeInsets(top: 20, left: 20, bottom: 20, right: -20)
-        view = scrollView
-    }
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "Fetch Profile"
-
-        view.backgroundColor = .secondarySystemBackground
-
-        view.addSubview(rootStackView)
-        rootStackView.addArrangedSubview(largeProfileView)
-        rootStackView.addArrangedSubview(largeProfileSummaryView)
-        rootStackView.addArrangedSubview(profileView)
-        rootStackView.addArrangedSubview(profileSummaryView)
-
-        NSLayoutConstraint.activate([
-            scrollView.contentLayoutGuide.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
-
-            rootStackView.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
-            rootStackView.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
-            rootStackView.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
-            rootStackView.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor),
-            rootStackView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -40),
-        ])
-    }
-    
-    @objc private func selectPalette() {
-        let controller = UIAlertController(title: "Palette", message: nil, preferredStyle: .actionSheet)
-
-        paletteTypes.forEach { option in
-            controller.addAction(UIAlertAction(title: "\(option.name)", style: .default) { [weak self] action in
-                guard let title = action.title else { return }
-                switch title {
-                case PaletteType.system.name:
-                    self?.preferredPaletteType = PaletteType.system
-                case PaletteType.light.name:
-                    self?.preferredPaletteType = PaletteType.light
-                case PaletteType.dark.name:
-                    self?.preferredPaletteType = PaletteType.dark
-                default:
-                    self?.preferredPaletteType = PaletteType.system
-                }
-                self?.paletteButton.setTitle("Palette: \(self?.preferredPaletteType.name ?? "")", for: .normal)
-            })
-        }
-
-        controller.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-
-        present(controller, animated: true)
+        [emailField, paletteButton, fetchProfileButton, activityIndictorSwitchWithLabel, largeProfileView, largeProfileSummaryView, profileView, profileSummaryView].forEach(rootStackView.addArrangedSubview)
     }
     
     @objc func toggleLoadingState() {
@@ -189,7 +106,7 @@ class DemoLargeProfileViewController: UIViewController {
     }
 }
 
-extension DemoLargeProfileViewController: ProfileViewDelegate {
+extension DemoProfileViewsViewController: ProfileViewDelegate {
     func profileView(_ view: BaseProfileView, didTapOnProfileButtonWithStyle style: ProfileButtonStyle, profileURL: URL?) {
         guard let profileURL else { return }
         let safari = SFSafariViewController(url: profileURL)

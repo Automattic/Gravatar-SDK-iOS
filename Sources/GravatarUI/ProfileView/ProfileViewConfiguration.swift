@@ -2,8 +2,8 @@ import Gravatar
 import UIKit
 
 public struct ProfileViewConfiguration: UIContentConfiguration {
-    let model: ProfileModel?
-    let summaryModel: ProfileSummaryModel?
+    public var model: ProfileModel?
+    public var summaryModel: ProfileSummaryModel?
     let profileStyle: Style
     var avatarID: AvatarIdentifier? {
         model?.avatarIdentifier ?? summaryModel?.avatarIdentifier
@@ -51,7 +51,7 @@ public struct ProfileViewConfiguration: UIContentConfiguration {
 }
 
 extension ProfileViewConfiguration {
-    public enum Style {
+    public enum Style: String, CaseIterable {
         case standard
         case summary
         case large
