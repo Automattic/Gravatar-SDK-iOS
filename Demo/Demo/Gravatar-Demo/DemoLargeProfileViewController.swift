@@ -25,8 +25,13 @@ class DemoLargeProfileViewController: UIViewController {
         return button
     }()
 
-    let activityIndicator = UIActivityIndicatorView(style: .large)
-
+    private lazy var activityIndictorSwitchWithLabel: SwitchWithLabel = {
+        let view = SwitchWithLabel(labelText: "Test activity indicator (only works when cards are empty)")
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.switchView.addTarget(self, action: #selector(toggleLoadingState), for: .valueChanged)
+        return view
+    }()
+    
     lazy var largeProfileView: LargeProfileView = {
         let view = LargeProfileView(frame: .zero, paletteType: preferredPaletteType)
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -61,7 +66,7 @@ class DemoLargeProfileViewController: UIViewController {
     }()
 
     lazy var rootStackView: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [emailField, paletteButton, fetchProfileButton, activityIndicator])
+        let stack = UIStackView(arrangedSubviews: [emailField, paletteButton, fetchProfileButton, activityIndictorSwitchWithLabel])
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.axis = .vertical
         stack.spacing = 12
@@ -144,18 +149,29 @@ class DemoLargeProfileViewController: UIViewController {
 
         present(controller, animated: true)
     }
+    
+    @objc func toggleLoadingState() {
+        updateLoading(isLoading: activityIndictorSwitchWithLabel.isOn)
+    }
 
+    private func updateLoading(isLoading: Bool) {
+        largeProfileView.isLoading = isLoading
+        largeProfileSummaryView.isLoading = isLoading
+        profileView.isLoading = isLoading
+        profileSummaryView.isLoading = isLoading
+    }
+    
     @objc func fetchProfileButtonHandler() {
         var identifier: ProfileIdentifier
         guard let email = emailField.text, email.isEmpty == false else { return }
         identifier = .email(email)
 
-        guard activityIndicator.isAnimating == false else { return }
+        guard largeProfileView.isLoading == false else { return }
         
-        activityIndicator.startAnimating()
+        updateLoading(isLoading: true)
         let service = ProfileService()
         Task {
-            defer { activityIndicator.stopAnimating() }
+            defer { updateLoading(isLoading: false) }
             do {
                 let profile = try await service.fetch(with: identifier)
                 largeProfileView.update(with: profile)
