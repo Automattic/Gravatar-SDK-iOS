@@ -1,7 +1,7 @@
 import Foundation
 
 /// Represents a Gravatar account email address
-public struct Email {
+public struct Email: Equatable {
     let string: String
 
     var hashID: HashID {
