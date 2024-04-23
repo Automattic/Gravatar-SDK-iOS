@@ -304,7 +304,14 @@ open class BaseProfileView: UIView, UIContentView {
         isLoading = config.isLoading
         avatarActivityIndicatorType = config.avatarActivityIndicatorType
         if let avatarID = config.avatarID {
-            loadAvatar(with: avatarID)
+            loadAvatar(
+                with: avatarID,
+                placeholder: config.avatarPlaceholder,
+                rating: config.avatarRating,
+                defaultAvatarOption: config.defaultAvatarOption,
+                options: config.avatarSettingOptions,
+                completionHandler: nil
+            )
         }
         if config.model != nil || config.summaryModel != nil {
             profileButtonStyle = config.profileButtonStyle

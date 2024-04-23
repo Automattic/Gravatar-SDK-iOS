@@ -13,6 +13,11 @@ public struct ProfileViewConfiguration: UIContentConfiguration {
     public var padding: UIEdgeInsets = BaseProfileView.defaultPadding
     public var isLoading: Bool = false
     public var avatarActivityIndicatorType: ActivityIndicatorType = .activity
+    public var avatarPlaceholder: UIImage? = nil
+    public var avatarRating: Rating? = nil
+    public var defaultAvatarOption: DefaultAvatarOption? = nil
+    public var avatarSettingOptions: [ImageSettingOption]? = nil
+
     public var profileButtonStyle: ProfileButtonStyle = .view
     public weak var delegate: ProfileViewDelegate?
 
