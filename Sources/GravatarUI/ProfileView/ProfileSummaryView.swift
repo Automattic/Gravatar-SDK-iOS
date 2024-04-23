@@ -10,23 +10,14 @@ public class ProfileSummaryView: BaseProfileView {
         return stack
     }()
 
-    private lazy var contentStackView: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [avatarImageView, basicInfoStackView])
-        stack.translatesAutoresizingMaskIntoConstraints = false
-        stack.axis = .horizontal
-        stack.alignment = .center
-        stack.spacing = .DS.Padding.single
-        return stack
-    }()
-
     override public func arrangeSubviews() {
-        super.arrangeSubviews()
-        [contentStackView, .spacer()].forEach(rootStackView.addArrangedSubview)
+        rootStackView.axis = .horizontal
+        rootStackView.alignment = .center
+        [avatarImageView, basicInfoStackView].forEach(rootStackView.addArrangedSubview)
         setStackViewSpacing()
     }
 
     private func setStackViewSpacing() {
-        rootStackView.spacing = 0
         basicInfoStackView.spacing = 0
     }
 
