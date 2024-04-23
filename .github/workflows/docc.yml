@@ -15,8 +15,8 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  GRAVATAR_URL: "gravatar/${{ github.ref_name }}"
-  GRAVATAR_UI_URL: "gravatarui/${{ github.ref_name }}"
+  GRAVATAR_URL: "gravatar"
+  GRAVATAR_UI_URL: "gravatarui"
 
 jobs:
   # Single deploy job since we're just deploying
@@ -27,8 +27,6 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: macos-13
     steps:
-      - run: echo $GRAVATAR_URL
-      - run: echo "$GRAVATAR_URL"
       - name: Checkout 🛎️
         uses: actions/checkout@v3
       - name: Switch Xcode 🔄
