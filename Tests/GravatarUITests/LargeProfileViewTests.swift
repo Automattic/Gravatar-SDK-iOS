@@ -6,7 +6,6 @@ import XCTest
 final class LargeProfileViewTests: XCTestCase {
     enum Constants {
         static let width: CGFloat = 320
-        static let containerHeight: CGFloat = 350
     }
 
     let palettesToTest: [PaletteType] = [.light, .dark]
@@ -25,18 +24,45 @@ final class LargeProfileViewTests: XCTestCase {
         }
     }
 
+    func testInitiallyEmptyLargeProfileView() throws {
+        for paletteType in palettesToTest {
+            let (_, containerView) = createViews(paletteType: paletteType)
+            assertSnapshot(of: containerView, as: .image, named: "\(paletteType.name)")
+        }
+    }
+
+    func testLargeProfileViewPlaceholdersCanShow() throws {
+        let interfaceStyle: UIUserInterfaceStyle = .light
+        let (cardView, containerView) = createViews(paletteType: .light)
+        containerView.overrideUserInterfaceStyle = interfaceStyle
+        cardView.update(with: TestProfileCardModel.fullCard())
+        cardView.update(with: nil) // clear data and show placeholders
+        assertSnapshot(of: containerView, as: .image, named: "\(interfaceStyle.name)")
+    }
+
+    func testLargeProfileViewPlaceholdersCanHide() throws {
+        let interfaceStyle: UIUserInterfaceStyle = .light
+        let (cardView, containerView) = createViews(paletteType: .light)
+        containerView.overrideUserInterfaceStyle = interfaceStyle
+        cardView.update(with: TestProfileCardModel.fullCard())
+        cardView.update(with: nil) // clear data and show placeholders
+        cardView.update(with: TestProfileCardModel.summaryCard()) // set data and hide placeholders
+        assertSnapshot(of: containerView, as: .image, named: "\(interfaceStyle.name)")
+    }
+
+    func testLargeProfileViewPlaceholderCanUpdateColors() throws {
+        let interfaceStyle: UIUserInterfaceStyle = .light
+        let (cardView, containerView) = createViews(paletteType: .light)
+        containerView.overrideUserInterfaceStyle = interfaceStyle
+        cardView.placeholderColorPolicy = .custom(PlaceholderColors(backgroundColor: .purple, loadingAnimationColors: [.green, .blue]))
+        assertSnapshot(of: containerView, as: .image, named: "\(interfaceStyle.name)")
+    }
+
     private func createViews(paletteType: PaletteType) -> (LargeProfileView, UIView) {
         let cardView = LargeProfileView(frame: .zero, paletteType: paletteType)
         cardView.translatesAutoresizingMaskIntoConstraints = false
         cardView.widthAnchor.constraint(equalToConstant: Constants.width).isActive = true
-        let containerView = UIView()
-        containerView.backgroundColor = .purple
-        containerView.translatesAutoresizingMaskIntoConstraints = false
-        containerView.widthAnchor.constraint(equalToConstant: Constants.width + 20).isActive = true
-        containerView.heightAnchor.constraint(equalToConstant: Constants.containerHeight).isActive = true
-        containerView.addSubview(cardView)
-        cardView.topAnchor.constraint(equalTo: containerView.topAnchor).isActive = true
-        cardView.centerXAnchor.constraint(equalTo: containerView.centerXAnchor).isActive = true
+        let containerView = cardView.wrapInSuperView(with: Constants.width)
         return (cardView, containerView)
     }
 }
