@@ -16,6 +16,12 @@ public struct Palette {
     public let foreground: ForegroundColors
     public let background: BackgroundColors
     public let avatarBorder: UIColor
+    public let placeholder: PlaceholderColors
+}
+
+public struct PlaceholderColors {
+    var backgroundColor: UIColor
+    var loadingAnimationColors: [UIColor]
 }
 
 public enum PaletteType {
@@ -64,7 +70,14 @@ extension Palette {
                 light: light.background.primary,
                 dark: dark.background.primary
             )),
-            avatarBorder: .porpoiseGray
+            avatarBorder: .porpoiseGray,
+            placeholder: PlaceholderColors(
+                backgroundColor: UIColor(
+                    light: light.placeholder.backgroundColor,
+                    dark: dark.placeholder.backgroundColor
+                ),
+                loadingAnimationColors: systemPlaceholderAnimationColors()
+            )
         )
     }
 
@@ -77,7 +90,11 @@ extension Palette {
                 secondary: .dugongGray
             ),
             background: .init(primary: .white),
-            avatarBorder: .porpoiseGray
+            avatarBorder: .porpoiseGray,
+            placeholder: PlaceholderColors(
+                backgroundColor: .smokeWhite,
+                loadingAnimationColors: [.smokeWhite, .bleachedSilkWhite]
+            )
         )
     }
 
@@ -90,7 +107,23 @@ extension Palette {
                 secondary: .snowflakeWhite60
             ),
             background: .init(primary: .gravatarBlack),
-            avatarBorder: .porpoiseGray
+            avatarBorder: .porpoiseGray,
+            placeholder: PlaceholderColors(
+                backgroundColor: .boatAnchorGray,
+                loadingAnimationColors: [.boatAnchorGray, .spanishGray]
+            )
         )
+    }
+
+    private static func systemPlaceholderAnimationColors() -> [UIColor] {
+        var colors: [UIColor] = []
+        let count = min(light.placeholder.loadingAnimationColors.count, dark.placeholder.loadingAnimationColors.count)
+        for i in 0 ..< count {
+            colors.append(UIColor(
+                light: light.placeholder.loadingAnimationColors[i],
+                dark: dark.placeholder.loadingAnimationColors[i]
+            ))
+        }
+        return colors
     }
 }

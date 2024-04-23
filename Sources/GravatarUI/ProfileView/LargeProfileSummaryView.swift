@@ -4,6 +4,7 @@ import UIKit
 public class LargeProfileSummaryView: BaseProfileView {
     private enum Constants {
         static let avatarLength: CGFloat = 132.0
+        static let displayNamePlaceholderHeight: CGFloat = 32
     }
 
     public static var personalInfoLines: [PersonalInfoLine] {
@@ -43,5 +44,9 @@ public class LargeProfileSummaryView: BaseProfileView {
         super.update(with: config)
         guard let model = config.summaryModel else { return }
         update(with: model)
+    }
+
+    override public var displayNamePlaceholderHeight: CGFloat {
+        Constants.displayNamePlaceholderHeight
     }
 }
