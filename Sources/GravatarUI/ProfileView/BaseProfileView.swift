@@ -317,12 +317,12 @@ open class BaseProfileView: UIView, UIContentView {
         avatarImageView.image = nil
     }
 
-    func shouldShowPlaceholder() -> Bool {
+    var shouldShowPlaceholder: Bool {
         model == nil
     }
 
     func togglePlaceholder() {
-        if shouldShowPlaceholder() {
+        if shouldShowPlaceholder {
             showPlaceholders()
         } else {
             hidePlaceholders()
