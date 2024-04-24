@@ -2,7 +2,6 @@ import Combine
 import Gravatar
 import UIKit
 
-@MainActor
 public class ProfileViewController: UIViewController {
     private let viewModel: ProfileViewModel
     private let profileView: UIView & UIContentView
