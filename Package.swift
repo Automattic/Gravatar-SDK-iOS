@@ -36,7 +36,8 @@ let package = Package(
         ),
         .target(
             name: "GravatarUI",
-            dependencies: ["Gravatar"]
+            dependencies: ["Gravatar"],
+            resources: [.process("Resources")]
         ),
         .testTarget(
             name: "GravatarUITests",

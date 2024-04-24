@@ -243,7 +243,7 @@ open class BaseProfileView: UIView, UIContentView {
 
     func updateAccountButtons(with model: AccountListModel?) {
         accounts = Array(model?.accountsList.prefix(Constants.maximumAccountsDisplay) ?? [])
-        let buttons = accounts.map(createAccountButton)
+        let buttons = accounts.map(createAccountIconView)
         for view in accountButtonsStackView.arrangedSubviews {
             accountButtonsStackView.removeArrangedSubview(view)
             view.removeFromSuperview()
@@ -272,6 +272,29 @@ open class BaseProfileView: UIView, UIContentView {
             ])
         }
         return button
+    }
+
+    func createAccountIconView(model: AccountModel) -> UIView {
+        if model.shortname == "gravatar" /* UIImage(named: model.shortname) != nil*/ {
+            return createAccountButton(model: model)
+        }
+        else if let iconURL = model.iconURL {
+            return createAccountWebView(url: iconURL)
+        }
+        else {
+            return createAccountButton(model: model)
+        }
+    }
+    
+    func createAccountWebView(url: URL) -> AccountIconWebView {
+        let webView = AccountIconWebView(iconSize: CGSize(width: Constants.accountIconLength, height: Constants.accountIconLength), fillColor: paletteType.palette.foreground.primary)
+        webView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            webView.widthAnchor.constraint(equalToConstant: Constants.accountIconLength),
+            webView.heightAnchor.constraint(equalToConstant: Constants.accountIconLength),
+        ])
+        webView.load(from: url)
+        return webView
     }
 
     open func update(with config: ProfileViewConfiguration) {
