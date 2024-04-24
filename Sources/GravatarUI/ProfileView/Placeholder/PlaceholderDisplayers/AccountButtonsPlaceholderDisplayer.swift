@@ -6,6 +6,7 @@ class AccountButtonsPlaceholderDisplayer: PlaceholderDisplaying {
     var placeholderColor: UIColor
     private let containerStackView: UIStackView
     let isTemporary: Bool
+    let placeholderTag = 100
     init(containerStackView: UIStackView, color: UIColor, isTemporary: Bool = false) {
         self.placeholderColor = color
         self.isTemporary = isTemporary
@@ -29,8 +30,10 @@ class AccountButtonsPlaceholderDisplayer: PlaceholderDisplaying {
 
     private func removeAllArrangedSubviews() {
         for view in containerStackView.arrangedSubviews {
-            containerStackView.removeArrangedSubview(view)
-            view.removeFromSuperview()
+            if view.tag == placeholderTag {
+                containerStackView.removeArrangedSubview(view)
+                view.removeFromSuperview()
+            }
         }
     }
 
@@ -38,6 +41,7 @@ class AccountButtonsPlaceholderDisplayer: PlaceholderDisplaying {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = placeholderColor
+        view.tag = placeholderTag
         NSLayoutConstraint.activate([
             view.heightAnchor.constraint(equalToConstant: BaseProfileView.Constants.accountIconLength),
             view.widthAnchor.constraint(equalToConstant: BaseProfileView.Constants.accountIconLength),
