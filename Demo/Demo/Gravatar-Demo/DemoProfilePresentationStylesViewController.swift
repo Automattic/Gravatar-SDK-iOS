@@ -3,7 +3,7 @@ import Gravatar
 import GravatarUI
 
 @MainActor
-class DemoProfileViewControllerPresentingViewController: DemoBaseProfileViewController, UISheetPresentationControllerDelegate {
+class DemoProfilePresentationStylesViewController: DemoBaseProfileViewController, UISheetPresentationControllerDelegate {
     
     lazy var showBottomSheetButton: UIButton = {
         let button = UIButton(type: .system)

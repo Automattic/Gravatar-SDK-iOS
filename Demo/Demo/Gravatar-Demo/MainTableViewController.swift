@@ -76,7 +76,7 @@ class MainTableViewController: UITableViewController {
         case .configuration:
             show(DemoProfileConfigurationViewController(style: .insetGrouped), sender: nil)
         case .profileViewController:
-            navigationController?.pushViewController(DemoProfileViewControllerPresentingViewController(), animated: true)
+            navigationController?.pushViewController(DemoProfilePresentationStylesViewController(), animated: true)
         }
     }
 }
