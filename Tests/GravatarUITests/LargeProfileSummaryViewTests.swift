@@ -54,6 +54,25 @@ final class LargeProfileSummaryViewTests: XCTestCase {
         assertSnapshot(of: containerView, as: .image, named: "\(interfaceStyle.name)")
     }
 
+    func testLargeProfileSummaryViewLoadingStateClearsWhenEmpty() throws {
+        let interfaceStyle: UIUserInterfaceStyle = .light
+        let (containerView, cardView) = createViews(model: nil)
+        containerView.overrideUserInterfaceStyle = interfaceStyle
+        cardView.isLoading = true
+        cardView.isLoading = false
+        assertSnapshot(of: containerView, as: .image, named: "\(interfaceStyle.name)")
+    }
+
+    func testLargeProfileSummaryViewLoadingStateClearsWhenDataIsPresent() throws {
+        let interfaceStyle: UIUserInterfaceStyle = .light
+        let (containerView, cardView) = createViews(model: nil)
+        containerView.overrideUserInterfaceStyle = interfaceStyle
+        cardView.isLoading = true
+        cardView.update(with: TestProfileCardModel.summaryCard())
+        cardView.isLoading = false
+        assertSnapshot(of: containerView, as: .image, named: "\(interfaceStyle.name)")
+    }
+
     private func createViews(model: ProfileSummaryModel?) -> (UIView, LargeProfileSummaryView) {
         let cardView = LargeProfileSummaryView(frame: .zero, paletteType: .system)
         cardView.update(with: model)

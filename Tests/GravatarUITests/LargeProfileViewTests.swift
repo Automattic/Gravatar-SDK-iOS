@@ -58,6 +58,25 @@ final class LargeProfileViewTests: XCTestCase {
         assertSnapshot(of: containerView, as: .image, named: "\(interfaceStyle.name)")
     }
 
+    func testLargeProfileViewLoadingStateClearsWhenEmpty() throws {
+        let interfaceStyle: UIUserInterfaceStyle = .light
+        let (cardView, containerView) = createViews(paletteType: .light)
+        containerView.overrideUserInterfaceStyle = interfaceStyle
+        cardView.isLoading = true
+        cardView.isLoading = false
+        assertSnapshot(of: containerView, as: .image, named: "\(interfaceStyle.name)")
+    }
+
+    func testLargeProfileViewLoadingStateClearsWhenDataIsPresent() throws {
+        let interfaceStyle: UIUserInterfaceStyle = .light
+        let (cardView, containerView) = createViews(paletteType: .light)
+        containerView.overrideUserInterfaceStyle = interfaceStyle
+        cardView.isLoading = true
+        cardView.update(with: TestProfileCardModel.fullCard())
+        cardView.isLoading = false
+        assertSnapshot(of: containerView, as: .image, named: "\(interfaceStyle.name)")
+    }
+
     private func createViews(paletteType: PaletteType) -> (LargeProfileView, UIView) {
         let cardView = LargeProfileView(frame: .zero, paletteType: paletteType)
         cardView.translatesAutoresizingMaskIntoConstraints = false
