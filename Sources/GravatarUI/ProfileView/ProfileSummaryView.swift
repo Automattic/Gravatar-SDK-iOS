@@ -1,6 +1,8 @@
 import Gravatar
 import UIKit
 
+/// A smaller profile view with sumarized information
+/// ![Sumarized tandard profile view.](profileSummaryView.view)
 public class ProfileSummaryView: BaseProfileView {
     private lazy var basicInfoStackView: UIStackView = {
         let stack = UIStackView(arrangedSubviews: [displayNameLabel, personalInfoLabel, profileButton])

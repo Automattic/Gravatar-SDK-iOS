@@ -1,6 +1,8 @@
 import Gravatar
 import UIKit
 
+/// A profile view with standard layout
+/// ![](profileView.view)
 public class ProfileView: BaseProfileView {
     private lazy var topStackView: UIStackView = {
         let stack = UIStackView(arrangedSubviews: [avatarImageView, basicInfoStackView])
