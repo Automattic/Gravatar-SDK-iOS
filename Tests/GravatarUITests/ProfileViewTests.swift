@@ -15,20 +15,74 @@ final class ProfileViewTests: XCTestCase {
 
     func testProfileView() throws {
         for interfaceStyle in UIUserInterfaceStyle.allCases {
-            let containerView = createViews(model: TestProfileCardModel.summaryCard())
+            let (containerView, _) = createViews(model: TestProfileCardModel.summaryCard())
             containerView.overrideUserInterfaceStyle = interfaceStyle
             assertSnapshot(of: containerView, as: .image, named: "\(interfaceStyle.name)")
         }
     }
 
-    private func createViews(model: ProfileModel) -> UIView {
+    func testInitiallyEmptyProfileView() throws {
+        for interfaceStyle in UIUserInterfaceStyle.allCases {
+            let (containerView, _) = createViews(model: nil)
+            containerView.overrideUserInterfaceStyle = interfaceStyle
+            assertSnapshot(of: containerView, as: .image, named: "\(interfaceStyle.name)")
+        }
+    }
+
+    func testProfileViewPlaceholdersCanShow() throws {
+        let interfaceStyle: UIUserInterfaceStyle = .light
+        let (containerView, cardView) = createViews(model: TestProfileCardModel.summaryCard())
+        containerView.overrideUserInterfaceStyle = interfaceStyle
+        cardView.update(with: nil) // clear data and show placeholders
+        assertSnapshot(of: containerView, as: .image, named: "\(interfaceStyle.name)")
+    }
+
+    func testProfileViewPlaceholdersCanHide() throws {
+        let interfaceStyle: UIUserInterfaceStyle = .light
+        let (containerView, cardView) = createViews(model: TestProfileCardModel.summaryCard())
+        containerView.overrideUserInterfaceStyle = interfaceStyle
+        cardView.update(with: nil) // clear data and show placeholders
+        cardView.update(with: TestProfileCardModel.summaryCard()) // set data and hide placeholders
+        assertSnapshot(of: containerView, as: .image, named: "\(interfaceStyle.name)")
+    }
+
+    func testProfileViewPlaceholderCanUpdateColors() throws {
+        let interfaceStyle: UIUserInterfaceStyle = .light
+        let (containerView, cardView) = createViews(model: nil)
+        containerView.overrideUserInterfaceStyle = interfaceStyle
+        cardView.placeholderColorPolicy = .custom(PlaceholderColors(backgroundColor: .purple, loadingAnimationColors: [.green, .blue]))
+        assertSnapshot(of: containerView, as: .image, named: "\(interfaceStyle.name)")
+    }
+
+    func testProfileViewLoadingStateClearsWhenEmpty() throws {
+        let interfaceStyle: UIUserInterfaceStyle = .light
+        let (containerView, cardView) = createViews(model: nil)
+        containerView.overrideUserInterfaceStyle = interfaceStyle
+        cardView.isLoading = true
+        cardView.isLoading = false
+        assertSnapshot(of: containerView, as: .image, named: "\(interfaceStyle.name)")
+    }
+
+    func testProfileViewLoadingStateClearsWhenDataIsPresent() throws {
+        let interfaceStyle: UIUserInterfaceStyle = .light
+        let (containerView, cardView) = createViews(model: nil)
+        containerView.overrideUserInterfaceStyle = interfaceStyle
+        cardView.isLoading = true
+        cardView.update(with: TestProfileCardModel.summaryCard())
+        cardView.isLoading = false
+        assertSnapshot(of: containerView, as: .image, named: "\(interfaceStyle.name)")
+    }
+
+    private func createViews(model: ProfileModel?) -> (UIView, ProfileView) {
         let cardView = ProfileView(frame: .zero, paletteType: .system)
-        cardView.avatarImageView.backgroundColor = .systemBlue
         cardView.update(with: model)
+        if model != nil {
+            cardView.avatarImageView.backgroundColor = .systemBlue
+        }
         cardView.translatesAutoresizingMaskIntoConstraints = false
         cardView.widthAnchor.constraint(equalToConstant: Constants.width).isActive = true
 
-        return cardView.wrapInSuperView(with: Constants.width)
+        return (cardView.wrapInSuperView(with: Constants.width), cardView)
     }
 }
 

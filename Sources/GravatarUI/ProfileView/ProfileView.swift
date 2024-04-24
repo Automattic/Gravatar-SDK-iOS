@@ -14,11 +14,12 @@ public class ProfileView: BaseProfileView {
     }()
 
     private lazy var bottomStackView: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [accountButtonsStackView, profileButton])
+        let stack = UIStackView(arrangedSubviews: [accountButtonsStackView, .spacer(), profileButton])
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.axis = .horizontal
         stack.distribution = .equalCentering
         stack.spacing = .DS.Padding.split
+        stack.alignment = .center
         return stack
     }()
 
@@ -31,24 +32,41 @@ public class ProfileView: BaseProfileView {
         return stack
     }()
 
-    override public init(frame: CGRect) {
-        super.init(frame: frame)
-        [topStackView, aboutMeLabel, bottomStackView].forEach(rootStackView.addArrangedSubview)
-        rootStackView.setCustomSpacing(.DS.Padding.double, after: aboutMeLabel)
+    override public func arrangeSubviews() {
+        [topStackView, aboutMeLabel, aboutMePlaceholderLabel, bottomStackView].forEach(rootStackView.addArrangedSubview)
+        setRootStackViewSpacing()
     }
 
-    public func update(with model: ProfileModel) {
+    private func setRootStackViewSpacing() {
+        basicInfoStackView.spacing = 0
+        rootStackView.setCustomSpacing(.DS.Padding.double, after: aboutMeLabel)
+        rootStackView.setCustomSpacing(0, after: bottomStackView)
+    }
+
+    public func update(with model: ProfileModel?) {
+        self.model = model
+        guard let model else { return }
         Configure(aboutMeLabel).asAboutMe().content(model).palette(paletteType)
         Configure(displayNameLabel).asDisplayName().content(model).palette(paletteType).font(.DS.headline)
         Configure(personalInfoLabel).asPersonalInfo().content(model).palette(paletteType)
         Configure(profileButton).asProfileButton().style(profileButtonStyle).alignment(.trailing).palette(paletteType)
-        profileMetadata = model
         updateAccountButtons(with: model)
     }
 
     override public func update(with config: ProfileViewConfiguration) {
         super.update(with: config)
-        guard let model = config.model else { return }
-        update(with: model)
+        update(with: config.model)
+    }
+
+    override public func showPlaceholders() {
+        super.showPlaceholders()
+        basicInfoStackView.spacing = .DS.Padding.single
+        rootStackView.setCustomSpacing(.DS.Padding.single, after: aboutMeLabel)
+        rootStackView.setCustomSpacing(.DS.Padding.double, after: aboutMePlaceholderLabel)
+    }
+
+    override public func hidePlaceholders() {
+        super.hidePlaceholders()
+        setRootStackViewSpacing()
     }
 }

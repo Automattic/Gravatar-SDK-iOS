@@ -19,33 +19,43 @@ public class LargeProfileSummaryView: BaseProfileView {
         Constants.avatarLength
     }
 
-    override public init(frame: CGRect) {
-        super.init(frame: frame)
+    override public func arrangeSubviews() {
         [avatarImageView, displayNameLabel, personalInfoLabel, profileButton].forEach(rootStackView.addArrangedSubview)
-        rootStackView.setCustomSpacing(.DS.Padding.double, after: avatarImageView)
-        rootStackView.setCustomSpacing(0, after: displayNameLabel)
-        rootStackView.setCustomSpacing(0, after: personalInfoLabel)
+        setRootStackViewSpacing()
         rootStackView.alignment = .center
     }
 
-    @available(*, unavailable)
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    private func setRootStackViewSpacing() {
+        rootStackView.setCustomSpacing(.DS.Padding.double, after: avatarImageView)
+        rootStackView.setCustomSpacing(0, after: displayNameLabel)
+        rootStackView.setCustomSpacing(0, after: personalInfoLabel)
+        rootStackView.setCustomSpacing(0, after: profileButton)
     }
 
-    public func update(with model: ProfileSummaryModel) {
-        Configure(displayNameLabel).asDisplayName().content(model).palette(paletteType)
-        Configure(personalInfoLabel).asPersonalInfo().content(model, lines: Self.personalInfoLines).palette(paletteType)
+    public func update(with model: ProfileSummaryModel?) {
+        self.model = model
+        guard let model else { return }
         displayNameLabel.textAlignment = .center
         personalInfoLabel.textAlignment = .center
+        Configure(displayNameLabel).asDisplayName().content(model).palette(paletteType)
+        Configure(personalInfoLabel).asPersonalInfo().content(model, lines: Self.personalInfoLines).palette(paletteType)
         Configure(profileButton).asProfileButton().style(profileButtonStyle).palette(paletteType)
-        profileMetadata = model
     }
 
     override public func update(with config: ProfileViewConfiguration) {
         super.update(with: config)
-        guard let model = config.summaryModel else { return }
-        update(with: model)
+        update(with: config.summaryModel)
+    }
+
+    override public func showPlaceholders() {
+        super.showPlaceholders()
+        rootStackView.setCustomSpacing(.DS.Padding.split, after: displayNameLabel)
+        rootStackView.setCustomSpacing(.DS.Padding.single, after: personalInfoLabel)
+    }
+
+    override public func hidePlaceholders() {
+        super.hidePlaceholders()
+        setRootStackViewSpacing()
     }
 
     override public var displayNamePlaceholderHeight: CGFloat {

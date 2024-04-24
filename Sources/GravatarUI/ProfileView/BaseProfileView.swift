@@ -16,12 +16,41 @@ open class BaseProfileView: UIView, UIContentView {
     public enum PlaceholderColorPolicy {
         /// Gets the placeholder colors from the current palette.
         case currentPalette
-        /// Custom colors. You can also pass predefined colors from any ``Palette``. Example:  `Palette.light.placeholder`.
+        /// Custom colors. You can also pass predefined colors from any ``Palette``. Example:  `PaletteType.light.palette.placeholder`.
         case custom(PlaceholderColors)
     }
 
     /// Placeholder color policy to use in the placeholder state (which basically means when all fields are empty).
-    public var placeholderColorPolicy: PlaceholderColorPolicy = .currentPalette
+    public var placeholderColorPolicy: PlaceholderColorPolicy = .currentPalette {
+        didSet {
+            placeholderDisplayer?.refresh(with: placeholderColors)
+        }
+    }
+
+    /// Displays a placeholder when all the fields are empty. Defaults to `ProfileViewPlaceholderDisplayer`. Set  to`nil` for not using any.
+    public var placeholderDisplayer: ProfileViewPlaceholderDisplaying?
+
+    /// Activity indicator to show when `isLoading` is `true` .
+    /// Defaults to ``ProfilePlaceholderActivityIndicator``.
+    public var activityIndicator: (any ProfileActivityIndicator)?
+
+    /// Avatar's activity indicator to show while downloading an image.
+    public var avatarActivityIndicatorType: ActivityIndicatorType = .activity {
+        didSet {
+            avatarImageView.gravatar.activityIndicatorType = avatarActivityIndicatorType
+        }
+    }
+
+    public var isLoading: Bool = false {
+        didSet {
+            guard isLoading != oldValue else { return }
+            if isLoading {
+                activityIndicator?.startAnimating(on: self)
+            } else {
+                activityIndicator?.stopAnimating(on: self)
+            }
+        }
+    }
 
     public var profileButtonStyle: ProfileButtonStyle = .view {
         didSet {
@@ -47,9 +76,16 @@ open class BaseProfileView: UIView, UIContentView {
 
     public weak var delegate: ProfileViewDelegate?
 
-    var profileMetadata: ProfileMetadataModel?
     var accounts: [AccountModel] = []
     var maximumAccountsDisplay = Constants.maximumAccountsDisplay
+    var model: ProfileSummaryModel? {
+        didSet {
+            if model == nil {
+                clearFields()
+            }
+            togglePlaceholder()
+        }
+    }
 
     var padding: UIEdgeInsets {
         get {
@@ -143,6 +179,9 @@ open class BaseProfileView: UIView, UIContentView {
 
     override public init(frame: CGRect) {
         self.paletteType = .system
+        let placeholderDisplayer = ProfileViewPlaceholderDisplayer()
+        self.placeholderDisplayer = placeholderDisplayer
+        self.activityIndicator = ProfilePlaceholderActivityIndicator(placeholderDisplayer: placeholderDisplayer)
         super.init(frame: frame)
         self.padding = Self.defaultPadding
         commonInit()
@@ -170,6 +209,13 @@ open class BaseProfileView: UIView, UIContentView {
             layoutMarginsGuide.bottomAnchor.constraint(equalTo: rootStackView.bottomAnchor),
         ])
         refresh(with: paletteType)
+        placeholderDisplayer?.setup(using: self)
+        arrangeSubviews()
+        togglePlaceholder() // We should call this after subviews are added (which means after `arrangeSubviews()`)
+    }
+
+    open func arrangeSubviews() {
+        assertionFailure("Subviews must override this to add necessary UI elements to the `rootStackView`")
     }
 
     @available(*, unavailable)
@@ -216,10 +262,11 @@ open class BaseProfileView: UIView, UIContentView {
         accountButtonsStackView.arrangedSubviews.compactMap { $0 as? UIButton }.forEach { button in
             Configure(button).asAccountButton().palette(paletteType)
         }
+        placeholderDisplayer?.refresh(with: placeholderColors)
     }
 
-    func updateAccountButtons(with model: AccountListModel) {
-        accounts = Array(model.accountsList.prefix(Constants.maximumAccountsDisplay))
+    func updateAccountButtons(with model: AccountListModel?) {
+        accounts = Array(model?.accountsList.prefix(Constants.maximumAccountsDisplay) ?? [])
         let buttons = accounts.map(createAccountButton)
         for view in accountButtonsStackView.arrangedSubviews {
             accountButtonsStackView.removeArrangedSubview(view)
@@ -254,8 +301,17 @@ open class BaseProfileView: UIView, UIContentView {
     open func update(with config: ProfileViewConfiguration) {
         paletteType = config.palette
         padding = config.padding
+        isLoading = config.isLoading
+        avatarActivityIndicatorType = config.avatarActivityIndicatorType
         if let avatarID = config.avatarID {
-            loadAvatar(with: avatarID)
+            loadAvatar(
+                with: avatarID,
+                placeholder: config.avatarPlaceholder,
+                rating: config.avatarRating,
+                defaultAvatarOption: config.defaultAvatarOption,
+                options: config.avatarSettingOptions,
+                completionHandler: nil
+            )
         }
         if config.model != nil || config.summaryModel != nil {
             profileButtonStyle = config.profileButtonStyle
@@ -263,7 +319,7 @@ open class BaseProfileView: UIView, UIContentView {
     }
 
     private func onProfileButtonPressed(with action: UIAction) {
-        let url = profileButtonStyle == .edit ? self.profileMetadata?.profileEditURL : self.profileMetadata?.profileURL
+        let url = profileButtonStyle == .edit ? self.model?.profileEditURL : self.model?.profileURL
         self.delegate?.profileView(
             self,
             didTapOnProfileButtonWithStyle: profileButtonStyle,
@@ -284,6 +340,34 @@ open class BaseProfileView: UIView, UIContentView {
 
     open var displayNamePlaceholderHeight: CGFloat {
         Constants.defaultDisplayNamePlaceholderHeight
+    }
+
+    func clearFields() {
+        displayNameLabel.text = nil
+        personalInfoLabel.text = nil
+        aboutMeLabel.text = nil
+        updateAccountButtons(with: nil)
+        avatarImageView.image = nil
+    }
+
+    var shouldShowPlaceholder: Bool {
+        model == nil
+    }
+
+    func togglePlaceholder() {
+        if shouldShowPlaceholder {
+            showPlaceholders()
+        } else {
+            hidePlaceholders()
+        }
+    }
+
+    open func showPlaceholders() {
+        placeholderDisplayer?.showPlaceholder(on: self)
+    }
+
+    open func hidePlaceholders() {
+        placeholderDisplayer?.hidePlaceholder(on: self)
     }
 }
 
