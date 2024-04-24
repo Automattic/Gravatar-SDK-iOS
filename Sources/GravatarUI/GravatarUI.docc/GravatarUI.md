@@ -9,7 +9,6 @@ Gravatar iOS SDK
                )
 }
 
-
 ## Overview
 
 An “avatar” is an image that represents you online—a little picture that appears next to your name when you interact with websites.

@@ -1,8 +1,8 @@
 import Gravatar
 import UIKit
 
+/// ![](largeProfileSummaryView.view)
 /// A  profile view with large avatar image and sumarized information..
-/// ![Large  profile summary view.](largeProfileSummaryView.view)
 public class LargeProfileSummaryView: BaseProfileView {
     private enum Constants {
         static let avatarLength: CGFloat = 132.0
