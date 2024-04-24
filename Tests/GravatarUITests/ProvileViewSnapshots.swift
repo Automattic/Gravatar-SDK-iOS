@@ -67,8 +67,8 @@ final class ProfileViewSnapshots: XCTestCase {
     }
 }
 
-private extension TestProfileCardModel {
-    static let exampleModel = TestProfileCardModel(
+extension TestProfileCardModel {
+    fileprivate static let exampleModel = TestProfileCardModel(
         accountsList: [
             TestAccountModel(display: "Gravatar", shortname: "gravatar"),
             TestAccountModel(display: "WordPress", shortname: "wordpress"),
