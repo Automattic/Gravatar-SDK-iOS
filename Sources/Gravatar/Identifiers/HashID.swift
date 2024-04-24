@@ -1,7 +1,7 @@
 import Foundation
 
 /// A type that provides a hash that represents a gravatar profile
-public struct HashID {
+public struct HashID: Equatable {
     let string: String
 
     /// Initializes a new `HashID` object, reprensenting the gravatar hash of the Gravatar email address

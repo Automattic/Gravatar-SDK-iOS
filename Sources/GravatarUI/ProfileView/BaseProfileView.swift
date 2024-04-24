@@ -34,6 +34,13 @@ open class BaseProfileView: UIView, UIContentView {
     /// Defaults to ``ProfilePlaceholderActivityIndicator``.
     public var activityIndicator: (any ProfileActivityIndicator)?
 
+    /// Avatar's activity indicator to show while downloading an image.
+    public var avatarActivityIndicatorType: ActivityIndicatorType = .activity {
+        didSet {
+            avatarImageView.gravatar.activityIndicatorType = avatarActivityIndicatorType
+        }
+    }
+
     public var isLoading: Bool = false {
         didSet {
             guard isLoading != oldValue else { return }
@@ -295,8 +302,16 @@ open class BaseProfileView: UIView, UIContentView {
         paletteType = config.palette
         padding = config.padding
         isLoading = config.isLoading
+        avatarActivityIndicatorType = config.avatarActivityIndicatorType
         if let avatarID = config.avatarID {
-            loadAvatar(with: avatarID)
+            loadAvatar(
+                with: avatarID,
+                placeholder: config.avatarPlaceholder,
+                rating: config.avatarRating,
+                defaultAvatarOption: config.defaultAvatarOption,
+                options: config.avatarSettingOptions,
+                completionHandler: nil
+            )
         }
         if config.model != nil || config.summaryModel != nil {
             profileButtonStyle = config.profileButtonStyle

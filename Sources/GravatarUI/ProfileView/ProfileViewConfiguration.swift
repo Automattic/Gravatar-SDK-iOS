@@ -2,8 +2,8 @@ import Gravatar
 import UIKit
 
 public struct ProfileViewConfiguration: UIContentConfiguration {
-    let model: ProfileModel?
-    let summaryModel: ProfileSummaryModel?
+    public var model: ProfileModel?
+    public var summaryModel: ProfileSummaryModel?
     let profileStyle: Style
     var avatarID: AvatarIdentifier? {
         model?.avatarIdentifier ?? summaryModel?.avatarIdentifier
@@ -12,6 +12,12 @@ public struct ProfileViewConfiguration: UIContentConfiguration {
     public var palette: PaletteType
     public var padding: UIEdgeInsets = BaseProfileView.defaultPadding
     public var isLoading: Bool = false
+    public var avatarActivityIndicatorType: ActivityIndicatorType = .activity
+    public var avatarPlaceholder: UIImage? = nil
+    public var avatarRating: Rating? = nil
+    public var defaultAvatarOption: DefaultAvatarOption? = nil
+    public var avatarSettingOptions: [ImageSettingOption]? = nil
+
     public var profileButtonStyle: ProfileButtonStyle = .view
     public weak var delegate: ProfileViewDelegate?
 
@@ -51,7 +57,7 @@ public struct ProfileViewConfiguration: UIContentConfiguration {
 }
 
 extension ProfileViewConfiguration {
-    public enum Style {
+    public enum Style: String, CaseIterable {
         case standard
         case summary
         case large
