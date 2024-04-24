@@ -16,11 +16,11 @@ public class ProfileViewController: UIViewController {
     private var profileIdentifier: ProfileIdentifier?
     public var profileFetchingErrorHandler: ((ProfileServiceError) -> Void)?
 
-    public let scrollView: UIScrollView = {
-        let view = UIScrollView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
+    public let scrollView: UIScrollView = .init()
+
+    override public func loadView() {
+        view = scrollView
+    }
 
     public init(configuration: ProfileViewConfiguration, viewModel: ProfileViewModel? = nil, profileIdentifier: ProfileIdentifier?) {
         self.viewModel = viewModel ?? ProfileViewModel()
@@ -32,14 +32,9 @@ public class ProfileViewController: UIViewController {
 
     override public func viewDidLoad() {
         super.viewDidLoad()
-        view.addSubview(scrollView)
-        scrollView.addSubview(profileView)
+        view.addSubview(profileView)
         self.profileView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            scrollView.topAnchor.constraint(equalTo: view.topAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             profileView.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
             profileView.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
             profileView.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
