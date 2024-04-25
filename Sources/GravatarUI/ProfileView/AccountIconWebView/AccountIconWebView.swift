@@ -21,6 +21,7 @@ class AccountIconWebView: WKWebView, WKNavigationDelegate, UIGestureRecognizerDe
 
     private enum HTMLConstructionError: Error {
         case canNotConvertDataToString
+        case notValidSVG
     }
 
     private let iconSize: CGSize
@@ -28,6 +29,7 @@ class AccountIconWebView: WKWebView, WKNavigationDelegate, UIGestureRecognizerDe
         didSet {
             guard let iconURL else { return }
             load(from: iconURL)
+            fallbackImageView.tintColor = paletteType.palette.foreground.primary
         }
     }
 
@@ -47,6 +49,7 @@ class AccountIconWebView: WKWebView, WKNavigationDelegate, UIGestureRecognizerDe
             imageView.centerXAnchor.constraint(equalTo: centerXAnchor),
             imageView.centerYAnchor.constraint(equalTo: centerYAnchor),
         ])
+        imageView.tintColor = paletteType.palette.foreground.primary
         return imageView
     }()
 
@@ -82,6 +85,9 @@ class AccountIconWebView: WKWebView, WKNavigationDelegate, UIGestureRecognizerDe
         let data = try Data(contentsOf: url)
         guard let svgString = String(data: data, encoding: .utf8) else {
             throw HTMLConstructionError.canNotConvertDataToString
+        }
+        guard svgString.trimmingCharacters(in: .whitespacesAndNewlines).lowercased().hasPrefix("<svg") else {
+            throw HTMLConstructionError.notValidSVG
         }
         SVGCache.shared.setSVG(svgString, forKey: url.absoluteString)
         return html(withSVG: svgString)

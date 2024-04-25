@@ -3,7 +3,7 @@ import UIKit
 
 @MainActor
 public struct AccountButtonBuilder {
-    static let fallbackIcon: UIImage? = UIImage(localName: "link")
+    static let fallbackIcon: UIImage? = UIImage(systemName: "link")
     let button: UIButton
     init(button: UIButton) {
         self.button = button
