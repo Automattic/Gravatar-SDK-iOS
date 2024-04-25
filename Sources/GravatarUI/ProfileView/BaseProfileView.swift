@@ -238,6 +238,9 @@ open class BaseProfileView: UIView, UIContentView {
         accountButtonsStackView.arrangedSubviews.compactMap { $0 as? UIButton }.forEach { button in
             Configure(button).asAccountButton().palette(paletteType)
         }
+        accountButtonsStackView.arrangedSubviews.compactMap { $0 as? AccountIconWebView }.forEach { view in
+            view.paletteType = paletteType
+        }
         placeholderDisplayer?.refresh(with: placeholderColors)
     }
 
@@ -287,7 +290,7 @@ open class BaseProfileView: UIView, UIContentView {
     }
     
     func createAccountWebView(url: URL) -> AccountIconWebView {
-        let webView = AccountIconWebView(iconSize: CGSize(width: Constants.accountIconLength, height: Constants.accountIconLength), fillColor: paletteType.palette.foreground.primary)
+        let webView = AccountIconWebView(iconSize: CGSize(width: Constants.accountIconLength, height: Constants.accountIconLength), paletteType: paletteType)
         webView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             webView.widthAnchor.constraint(equalToConstant: Constants.accountIconLength),

@@ -4,79 +4,107 @@ import Gravatar
 
 class AccountIconWebView: WKWebView, WKNavigationDelegate {
     
-    let iconSize: CGSize
-    var fillColor: UIColor
-    var task: Task<Void, Never>?
-    init(frame: CGRect = .zero, iconSize: CGSize, fillColor: UIColor) {
+    class SVGCache {
+        private let cache: NSCache<NSString, NSString> = NSCache<NSString, NSString>()
+
+        public static let shared: SVGCache = SVGCache()
+
+        public init() {}
+
+        public func setSVG(_ svg: String, forKey key: String) {
+            cache.setObject(svg as NSString, forKey: key as NSString)
+        }
+
+        public func getSVG(forKey key: String) -> String? {
+            cache.object(forKey: key as NSString) as String?
+        }
+    }
+
+    private enum HTMLConstructionError: Error {
+        case canNotConvertDataToString
+    }
+    
+    private let iconSize: CGSize
+    var paletteType: PaletteType {
+        didSet {
+            guard let iconURL else { return }
+            load(from: iconURL)
+        }
+    }
+    
+    private var task: Task<Void, Never>?
+    private var iconURL: URL?
+    
+    private lazy var fallbackImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.image = AccountButtonBuilder.fallbackIcon
+        imageView.isHidden = true
+        addSubview(imageView)
+        NSLayoutConstraint.activate([
+            imageView.widthAnchor.constraint(equalTo: widthAnchor),
+            imageView.heightAnchor.constraint(equalTo: heightAnchor),
+            imageView.centerXAnchor.constraint(equalTo: centerXAnchor),
+            imageView.centerYAnchor.constraint(equalTo: centerYAnchor),
+        ])
+        return imageView
+    }()
+    
+    init(frame: CGRect = .zero, iconSize: CGSize, paletteType: PaletteType) {
         self.iconSize = iconSize
-        self.fillColor = fillColor
+        self.paletteType = paletteType
         super.init(frame: frame, configuration: WKWebViewConfiguration())
-        translatesAutoresizingMaskIntoConstraints = false
+        scrollView.showsHorizontalScrollIndicator = false
+        scrollView.showsVerticalScrollIndicator = false
+        scrollView.scrollIndicatorInsets = .zero
+        scrollView.isScrollEnabled = false
+        scrollView.contentInset = .zero
+        scrollView.contentInsetAdjustmentBehavior = .never
+        navigationDelegate = self
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
-    func load(from url: URL) {
-        let text = svgHTMLString(svgString: "", fillColor: "").components(separatedBy: .newlines).joined()
-        scrollView.showsHorizontalScrollIndicator = false
-        scrollView.showsVerticalScrollIndicator = false
-        scrollView.scrollIndicatorInsets = .zero
-   //     scrollView.isScrollEnabled = false
-        scrollView.contentInset = .zero
-        scrollView.backgroundColor = .clear
-        scrollView.contentInsetAdjustmentBehavior = .never
-    //    scrollView.contentMode = .scaleAspectFill
-        //scrollView.contentSize = .init(width: 32, height: 32)
-        loadHTMLString(text, baseURL: nil)
-        navigationDelegate = self
-    //    sizeToFit()
-
-    //    contentMode = .scaleAspectFill
-        //sizeToFit()
-       // autoresizesSubviews = false
-      /*
-       task?.cancel()
-       task = Task {
-            do {
-                let result: (data: Data, response: URLResponse) = try await URLSession.shared.data(for: URLRequest(url: url))
-                //guard let svgString = String(data: result.data, encoding: .utf8) else { return }
-                //let html = svgHTMLString(svgString: svgString, fillColor: "").replacingOccurrences(of: "\n", with: "").replacingOccurrences(of: "\\", with: "")
-                //if let fileURL = Bundle.module.url(forResource: "icon", withExtension: "html") {
-                //    let string = (try String(contentsOf: fileURL)).components(separatedBy: .newlines).joined()
-                   // loadFileURL(fileURL, allowingReadAccessTo: fileURL)
-                //    loadHTMLString(string, baseURL: nil)
-                }
-                //load(URLRequest(url: url))
-               // loadHTMLString(html, baseURL: nil)
-                
-            } catch {
-                print(String(describing: error))
-            }
-        }*/
-    }
-    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-        print("height: \(webView.scrollView.contentSize.height)")
-        print("width: \(webView.scrollView.contentSize.width)")
-        scrollView.backgroundColor = .clear
-        webView.invalidateIntrinsicContentSize()
-        let bottomOffset = CGPoint(x: 0, y: scrollView.contentSize.height - scrollView.bounds.height + scrollView.contentInset.bottom)
-        scrollView.setContentOffset(bottomOffset, animated: false)
-        scrollView.contentSize = .init(width: 32, height: 32)
-        webView.contentScaleFactor = 0.1
-        webView.maximumContentSizeCategory = .small
-        webView.contentMode = .center
-        
+    
+    private func prepareHTMLString(from url: URL) async throws -> String {
+        if let svgString = SVGCache.shared.getSVG(forKey: url.absoluteString) {
+            return html(withSVG: svgString as String)
+        }
+        let data = try Data(contentsOf: url)
+        guard let svgString = String(data: data, encoding: .utf8) else {
+            throw HTMLConstructionError.canNotConvertDataToString
+        }
+        SVGCache.shared.setSVG(svgString, forKey: url.absoluteString)
+        return html(withSVG: svgString)
     }
     
-    override var intrinsicContentSize: CGSize {
-        .init(width: 32, height: 32)
+    private func html(withSVG svg: String) -> String {
+        htmlString(
+            svgString: svg,
+            fillColor: paletteType.palette.foreground.primary.hexString(),
+            backgroundColor: paletteType.palette.background.primary.hexString()
+        )
+    }
+    
+    func load(from url: URL) {
+        self.iconURL = url
+        task?.cancel()
+        task = Task {
+            do {
+                fallbackImageView.isHidden = true
+                let html = try await prepareHTMLString(from: url)
+                loadHTMLString(html, baseURL: nil)
+            } catch {
+                loadHTMLString("", baseURL: nil)
+                fallbackImageView.isHidden = false
+            }
+        }
     }
 }
 
 
-func svgHTMLString(svgString: String, fillColor: String) -> String {
+func htmlString(svgString: String, fillColor: String, backgroundColor: String) -> String {
 """
 <html>
     <head>
@@ -90,25 +118,20 @@ func svgHTMLString(svgString: String, fillColor: String) -> String {
         display:flex;
         align-items:center;
         justify-content:center;
-        background-color: rgba(0, 0, 0, 0);
     }
     .icon path {
-        fill: rgb(255, 0, 0);
-        background-color: rgba(0, 0, 0, 0);
+        fill: \(fillColor);
     }
     body {
         margin: 0;
-        background-color: rgba(0, 0, 0, 0);
-        //background-color: green;
+        background-color: \(backgroundColor);
     }
     </style>
     <head/>
 <body>
 
 <div class=icon>
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M13.3879 20C10.9774 20 9.18958 18.7646 9.18958 15.8016V11.0609H7V8.48964C9.41055 7.86692 10.4149 5.79787 10.5254 4H13.0264V8.07784H15.9391V11.0609H13.0264V15.189C13.0264 16.4244 13.6491 16.8562 14.6434 16.8562H16.0596V20H13.3879Z" fill="black"/>
-    </svg>
+\(svgString)
 </div>
 
 </body>

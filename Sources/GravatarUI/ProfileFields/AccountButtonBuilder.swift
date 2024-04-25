@@ -3,6 +3,7 @@ import UIKit
 
 @MainActor
 public struct AccountButtonBuilder {
+    static let fallbackIcon: UIImage? = UIImage(localName: "link")
     let button: UIButton
     init(button: UIButton) {
         self.button = button
@@ -18,7 +19,7 @@ public struct AccountButtonBuilder {
     }
 
     private func image(with model: AccountModel) -> UIImage? {
-        UIImage(localName: model.shortname) ?? UIImage(localName: "link")
+        UIImage(localName: model.shortname) ?? Self.fallbackIcon
     }
 
     @discardableResult
