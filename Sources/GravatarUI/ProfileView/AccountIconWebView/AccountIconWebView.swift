@@ -1,13 +1,12 @@
+import Gravatar
 import UIKit
 import WebKit
-import Gravatar
 
-class AccountIconWebView: WKWebView, WKNavigationDelegate {
-    
+class AccountIconWebView: WKWebView, WKNavigationDelegate, UIGestureRecognizerDelegate {
     class SVGCache {
-        private let cache: NSCache<NSString, NSString> = NSCache<NSString, NSString>()
+        private let cache: NSCache<NSString, NSString> = .init()
 
-        static let shared: SVGCache = SVGCache()
+        static let shared: SVGCache = .init()
 
         init() {}
 
@@ -23,7 +22,7 @@ class AccountIconWebView: WKWebView, WKNavigationDelegate {
     private enum HTMLConstructionError: Error {
         case canNotConvertDataToString
     }
-    
+
     private let iconSize: CGSize
     var paletteType: PaletteType {
         didSet {
@@ -31,10 +30,11 @@ class AccountIconWebView: WKWebView, WKNavigationDelegate {
             load(from: iconURL)
         }
     }
-    
+
     private var task: Task<Void, Never>?
     private var iconURL: URL?
-    
+    private var tapHandler: (() -> Void)?
+
     private lazy var fallbackImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -49,10 +49,11 @@ class AccountIconWebView: WKWebView, WKNavigationDelegate {
         ])
         return imageView
     }()
-    
-    init(frame: CGRect = .zero, iconSize: CGSize, paletteType: PaletteType) {
+
+    init(frame: CGRect = .zero, iconSize: CGSize, paletteType: PaletteType, tapHandler: (() -> Void)?) {
         self.iconSize = iconSize
         self.paletteType = paletteType
+        self.tapHandler = tapHandler
         super.init(frame: frame, configuration: WKWebViewConfiguration())
         scrollView.showsHorizontalScrollIndicator = false
         scrollView.showsVerticalScrollIndicator = false
@@ -64,12 +65,16 @@ class AccountIconWebView: WKWebView, WKNavigationDelegate {
         isOpaque = false
         backgroundColor = .clear
         scrollView.backgroundColor = .clear
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(didTap))
+        tapGesture.delegate = self
+        addGestureRecognizer(tapGesture)
     }
-    
+
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     private func prepareHTMLString(from url: URL) async throws -> String {
         if let svgString = SVGCache.shared.getSVG(forKey: url.absoluteString) {
             return html(withSVG: svgString as String)
@@ -81,15 +86,7 @@ class AccountIconWebView: WKWebView, WKNavigationDelegate {
         SVGCache.shared.setSVG(svgString, forKey: url.absoluteString)
         return html(withSVG: svgString)
     }
-    
-    private func html(withSVG svg: String) -> String {
-        htmlString(
-            svgString: svg,
-            fillColor: paletteType.palette.foreground.primary.hexString(),
-            backgroundColor: paletteType.palette.background.primary.hexString()
-        )
-    }
-    
+
     func load(from url: URL) {
         self.iconURL = url
         task?.cancel()
@@ -104,40 +101,41 @@ class AccountIconWebView: WKWebView, WKNavigationDelegate {
             }
         }
     }
-}
 
-
-func htmlString(svgString: String, fillColor: String, backgroundColor: String) -> String {
-"""
-<html>
-    <head>
-    <meta name="viewport" content="width=96px, height=96px, shrink-to-fit=YES">
-    <style>
-    .icon svg {
-        height: 100%;
-        width: 100%;
-        margin: 0px 0px 0px 0px;
-        padding: 0px;
-        display:flex;
-        align-items:center;
-        justify-content:center;
+    @objc
+    func didTap() {
+        tapHandler?()
     }
-    .icon path {
-        fill: \(fillColor);
-    }
-    body {
-        margin: 0;
-        background-color: transparent;
-    }
-    </style>
-    <head/>
-<body>
 
-<div class=icon>
-\(svgString)
-</div>
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        true
+    }
 
-</body>
-</html>
-"""
+    func html(withSVG svg: String) -> String {
+        """
+        <html>
+            <head>
+                <meta name="viewport" content="width=\(iconSize.width)">
+                <style>
+                .icon svg {
+                    height: 100%;
+                    width: 100%;
+                }
+                .icon path {
+                    fill: \(paletteType.palette.foreground.primary.hexString());
+                }
+                body {
+                    margin: 0;
+                    background-color: transparent;
+                }
+                </style>
+            <head/>
+            <body>
+                <div class=icon>
+                \(svg)
+                </div>
+            </body>
+        </html>
+        """
+    }
 }

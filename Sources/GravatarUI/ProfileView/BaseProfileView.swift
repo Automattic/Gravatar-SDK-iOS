@@ -254,12 +254,11 @@ open class BaseProfileView: UIView, UIContentView {
         buttons.forEach(accountButtonsStackView.addArrangedSubview)
     }
 
-    func createAccountButton(model: AccountModel) -> UIButton {
+    func createAccountButton(model: AccountModel, tapHandler: @escaping () -> Void) -> UIButton {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        let action = UIAction { [weak self] _ in
-            guard let self else { return }
-            self.delegate?.profileView(self, didTapOnAccountButtonWithModel: model)
+        let action = UIAction { _ in
+            tapHandler()
         }
         button.addAction(action, for: .touchUpInside)
 
@@ -278,19 +277,25 @@ open class BaseProfileView: UIView, UIContentView {
     }
 
     func createAccountIconView(model: AccountModel) -> UIView {
-        if model.shortname == "gravatar" /* UIImage(named: model.shortname) != nil*/ {
-            return createAccountButton(model: model)
+        let tapHandler = { [weak self] in
+            guard let self else { return }
+            self.delegate?.profileView(self, didTapOnAccountButtonWithModel: model)
         }
-        else if let iconURL = model.iconURL {
-            return createAccountWebView(url: iconURL)
-        }
-        else {
-            return createAccountButton(model: model)
+        if UIImage(named: model.shortname) != nil {
+            return createAccountButton(model: model, tapHandler: tapHandler)
+        } else if let iconURL = model.iconURL { // If we have the iconURL try downloading the icon
+            return createAccountWebView(url: iconURL, tapHandler: tapHandler)
+        } else { // This will show the local fallback icon
+            return createAccountButton(model: model, tapHandler: tapHandler)
         }
     }
-    
-    func createAccountWebView(url: URL) -> AccountIconWebView {
-        let webView = AccountIconWebView(iconSize: CGSize(width: Constants.accountIconLength, height: Constants.accountIconLength), paletteType: paletteType)
+
+    func createAccountWebView(url: URL, tapHandler: @escaping () -> Void) -> AccountIconWebView {
+        let webView = AccountIconWebView(
+            iconSize: CGSize(width: Constants.accountIconLength, height: Constants.accountIconLength),
+            paletteType: paletteType,
+            tapHandler: tapHandler
+        )
         webView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             webView.widthAnchor.constraint(equalToConstant: Constants.accountIconLength),
