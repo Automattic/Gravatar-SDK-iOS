@@ -3,8 +3,8 @@ import UIKit
 
 class DemoRemoteSVGViewController: UITableViewController {
     
-    var paletteType: PaletteType = .dark
-    
+    let paletteTypes: [PaletteType] = [.system, .light, .dark]
+
     enum Row: String, CaseIterable {
         case tumblr
         case facebook
@@ -35,10 +35,35 @@ class DemoRemoteSVGViewController: UITableViewController {
     
     private static let reuseID =  "DefaultCell"
     
+    lazy var paletteButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setTitle("Palette: \(preferredPaletteType.name)", for: .normal)
+        button.addTarget(self, action: #selector(selectPalette), for: .touchUpInside)
+        return button
+    }()
+    
+    lazy var headerStackView: UIStackView = {
+        let stack = UIStackView(arrangedSubviews: [paletteButton])
+        stack.axis = .vertical
+        stack.alignment = .center
+        stack.spacing = 12
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        return stack
+    }()
+    
+    var preferredPaletteType: PaletteType = .system {
+        didSet {
+            tableView.reloadData()
+            tableView.backgroundColor = preferredPaletteType.palette.background.primary
+        }
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.register(SVGImageCell.self, forCellReuseIdentifier: Self.reuseID)
-        tableView.backgroundColor = paletteType.palette.background.primary
+        tableView.backgroundColor = preferredPaletteType.palette.background.primary
+        tableView.tableHeaderView = headerStackView
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -48,16 +73,39 @@ class DemoRemoteSVGViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: Self.reuseID, for: indexPath) as? SVGImageCell else { return UITableViewCell() }
         let row = Row.allCases[indexPath.row]
-        cell.update(with: row.url, name: row.rawValue, paletteType: paletteType)
+        cell.update(with: row.url, name: row.rawValue, paletteType: preferredPaletteType)
         return cell
+    }
+    
+    @objc private func selectPalette() {
+        let controller = UIAlertController(title: "Palette", message: nil, preferredStyle: .actionSheet)
+
+        paletteTypes.forEach { option in
+            controller.addAction(UIAlertAction(title: "\(option.name)", style: .default) { [weak self] action in
+                guard let title = action.title else { return }
+                switch title {
+                case PaletteType.system.name:
+                    self?.preferredPaletteType = PaletteType.system
+                case PaletteType.light.name:
+                    self?.preferredPaletteType = PaletteType.light
+                case PaletteType.dark.name:
+                    self?.preferredPaletteType = PaletteType.dark
+                default:
+                    self?.preferredPaletteType = PaletteType.system
+                }
+                self?.paletteButton.setTitle("Palette: \(self?.preferredPaletteType.name ?? "")", for: .normal)
+            })
+        }
+        controller.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        present(controller, animated: true)
     }
 }
 
 class SVGImageCell: UITableViewCell {
     static let iconSize = CGSize(width: 50, height: 50)
-    let logoView: AccountIconWebView = {
-        let view = AccountIconWebView(iconSize: iconSize, paletteType: .dark) {
-            print("Tapped!")
+    let logoView: RemoteSVGView = {
+        let view = RemoteSVGView(iconSize: iconSize) {
+            print("Icon Tapped!")
         }
         view.translatesAutoresizingMaskIntoConstraints = false
         view.heightAnchor.constraint(equalToConstant: iconSize.height).isActive = true
@@ -86,8 +134,8 @@ class SVGImageCell: UITableViewCell {
     
     func update(with url: URL?, name: String, paletteType: PaletteType) {
         guard let url else { return }
-        logoView.paletteType = paletteType
-        logoView.load(from: url)
+        logoView.refresh(paletteType: paletteType, shouldReloadURL: false)
+        logoView.loadIcon(from: url)
         iconNameLabel.text = name
         iconNameLabel.textColor = paletteType.palette.foreground.primary
         contentView.backgroundColor = paletteType.palette.background.primary

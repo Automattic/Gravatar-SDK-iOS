@@ -262,8 +262,9 @@ open class BaseProfileView: UIView, UIContentView {
         accountButtonsStackView.arrangedSubviews.compactMap { $0 as? UIButton }.forEach { button in
             Configure(button).asAccountButton().palette(paletteType)
         }
-        accountButtonsStackView.arrangedSubviews.compactMap { $0 as? AccountIconWebView }.forEach { view in
-            view.paletteType = paletteType
+        
+        accountButtonsStackView.arrangedSubviews.compactMap { $0 as? RemoteSVGView }.forEach { view in
+            view.refresh(paletteType: paletteType)
         }
         placeholderDisplayer?.refresh(with: placeholderColors)
     }
@@ -305,7 +306,7 @@ open class BaseProfileView: UIView, UIContentView {
             guard let self else { return }
             self.delegate?.profileView(self, didTapOnAccountButtonWithModel: model)
         }
-        if UIImage(named: model.shortname) != nil {
+        if model.shortname == "gravatar" /*UIImage(named: model.shortname) != nil*/ {
             return createAccountButton(model: model, tapHandler: tapHandler)
         } else if let iconURL = model.iconURL { // If we have the iconURL try downloading the icon
             return createAccountWebView(url: iconURL, tapHandler: tapHandler)
@@ -314,18 +315,18 @@ open class BaseProfileView: UIView, UIContentView {
         }
     }
 
-    func createAccountWebView(url: URL, tapHandler: @escaping () -> Void) -> AccountIconWebView {
-        let webView = AccountIconWebView(
+    func createAccountWebView(url: URL, tapHandler: @escaping () -> Void) -> RemoteSVGView {
+        let webView = RemoteSVGView(
             iconSize: CGSize(width: Constants.accountIconLength, height: Constants.accountIconLength),
-            paletteType: paletteType,
             tapHandler: tapHandler
         )
+        webView.refresh(paletteType: paletteType, shouldReloadURL: false)
         webView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             webView.widthAnchor.constraint(equalToConstant: Constants.accountIconLength),
             webView.heightAnchor.constraint(equalToConstant: Constants.accountIconLength),
         ])
-        webView.load(from: url)
+        webView.loadIcon(from: url)
         return webView
     }
 

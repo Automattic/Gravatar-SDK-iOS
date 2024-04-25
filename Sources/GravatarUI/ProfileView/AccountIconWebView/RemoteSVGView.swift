@@ -2,7 +2,7 @@ import Gravatar
 import UIKit
 import WebKit
 
-class AccountIconWebView: WKWebView, WKNavigationDelegate, UIGestureRecognizerDelegate {
+class RemoteSVGView: UIView, WKNavigationDelegate, UIGestureRecognizerDelegate {
     class SVGCache {
         private let cache: NSCache<NSString, NSString> = .init()
 
@@ -25,49 +25,51 @@ class AccountIconWebView: WKWebView, WKNavigationDelegate, UIGestureRecognizerDe
     }
 
     private let iconSize: CGSize
-    var paletteType: PaletteType {
-        didSet {
-            guard let iconURL else { return }
-            load(from: iconURL)
-            fallbackImageView.tintColor = paletteType.palette.foreground.primary
-        }
-    }
-
     private var task: Task<Void, Never>?
     private var iconURL: URL?
     private var tapHandler: (() -> Void)?
 
+    private lazy var webView: WKWebView = {
+        let webView = WKWebView()
+        webView.translatesAutoresizingMaskIntoConstraints = false
+        webView.scrollView.showsHorizontalScrollIndicator = false
+        webView.scrollView.showsVerticalScrollIndicator = false
+        webView.scrollView.scrollIndicatorInsets = .zero
+        webView.scrollView.isScrollEnabled = false
+        webView.scrollView.contentInset = .zero
+        webView.scrollView.contentInsetAdjustmentBehavior = .never
+        webView.navigationDelegate = self
+        webView.isOpaque = false
+        webView.backgroundColor = .clear
+        webView.scrollView.backgroundColor = .clear
+        return webView
+    }()
+    
     private lazy var fallbackImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.image = AccountButtonBuilder.fallbackIcon
         imageView.isHidden = true
+        addSubview(webView)
         addSubview(imageView)
         NSLayoutConstraint.activate([
+            webView.widthAnchor.constraint(equalTo: widthAnchor),
+            webView.heightAnchor.constraint(equalTo: heightAnchor),
+            webView.centerXAnchor.constraint(equalTo: centerXAnchor),
+            webView.centerYAnchor.constraint(equalTo: centerYAnchor),
             imageView.widthAnchor.constraint(equalTo: widthAnchor),
             imageView.heightAnchor.constraint(equalTo: heightAnchor),
             imageView.centerXAnchor.constraint(equalTo: centerXAnchor),
             imageView.centerYAnchor.constraint(equalTo: centerYAnchor),
         ])
-        imageView.tintColor = paletteType.palette.foreground.primary
         return imageView
     }()
 
-    init(frame: CGRect = .zero, iconSize: CGSize, paletteType: PaletteType, tapHandler: (() -> Void)?) {
+    init(frame: CGRect = .zero, iconSize: CGSize, tapHandler: (() -> Void)?) {
         self.iconSize = iconSize
-        self.paletteType = paletteType
         self.tapHandler = tapHandler
-        super.init(frame: frame, configuration: WKWebViewConfiguration())
-        scrollView.showsHorizontalScrollIndicator = false
-        scrollView.showsVerticalScrollIndicator = false
-        scrollView.scrollIndicatorInsets = .zero
-        scrollView.isScrollEnabled = false
-        scrollView.contentInset = .zero
-        scrollView.contentInsetAdjustmentBehavior = .never
-        navigationDelegate = self
-        isOpaque = false
-        backgroundColor = .clear
-        scrollView.backgroundColor = .clear
+        super.init(frame: frame)
+        refresh(paletteType: .system, shouldReloadURL: false)
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(didTap))
         tapGesture.delegate = self
         addGestureRecognizer(tapGesture)
@@ -78,9 +80,9 @@ class AccountIconWebView: WKWebView, WKNavigationDelegate, UIGestureRecognizerDe
         fatalError("init(coder:) has not been implemented")
     }
 
-    private func prepareHTMLString(from url: URL) async throws -> String {
+    private func prepareHTMLString(from url: URL, paletteType: PaletteType) async throws -> String {
         if let svgString = SVGCache.shared.getSVG(forKey: url.absoluteString) {
-            return html(withSVG: svgString as String)
+            return html(withSVG: svgString as String, paletteType: paletteType)
         }
         let data = try Data(contentsOf: url)
         guard let svgString = String(data: data, encoding: .utf8) else {
@@ -90,34 +92,53 @@ class AccountIconWebView: WKWebView, WKNavigationDelegate, UIGestureRecognizerDe
             throw HTMLConstructionError.notValidSVG
         }
         SVGCache.shared.setSVG(svgString, forKey: url.absoluteString)
-        return html(withSVG: svgString)
+        return html(withSVG: svgString, paletteType: paletteType)
     }
-
-    func load(from url: URL) {
-        self.iconURL = url
+    
+    private var paletteType: PaletteType = .system
+    
+    func refresh(paletteType newPaletteType: PaletteType, shouldReloadURL: Bool = true) {
+        self.paletteType = newPaletteType
+        fallbackImageView.tintColor = paletteType.palette.foreground.primary
+        if let iconURL, shouldReloadURL {
+            loadIcon(from: iconURL)
+        }
+    }
+    
+    func loadIcon(from url: URL) {
+        if url != iconURL && iconURL != nil {
+            // hiding by changing alpha to keep its size
+            webView.alpha = 0
+        }
+        fallbackImageView.isHidden = true
+        iconURL = nil
         task?.cancel()
         task = Task {
             do {
-                fallbackImageView.isHidden = true
-                let html = try await prepareHTMLString(from: url)
-                loadHTMLString(html, baseURL: nil)
+                let html = try await prepareHTMLString(from: url, paletteType: paletteType)
+                webView.loadHTMLString(html, baseURL: nil)
+                iconURL = url
             } catch {
-                loadHTMLString("", baseURL: nil)
                 fallbackImageView.isHidden = false
+                webView.alpha = 0
             }
         }
     }
-
+    
+    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        webView.alpha = 1
+    }
+    
     @objc
     func didTap() {
         tapHandler?()
     }
-
+    
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         true
     }
 
-    func html(withSVG svg: String) -> String {
+    func html(withSVG svg: String, paletteType: PaletteType) -> String {
         """
         <html>
             <head>
