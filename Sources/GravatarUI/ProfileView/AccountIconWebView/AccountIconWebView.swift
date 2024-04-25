@@ -25,6 +25,7 @@ class AccountIconWebView: WKWebView, WKNavigationDelegate {
         scrollView.scrollIndicatorInsets = .zero
    //     scrollView.isScrollEnabled = false
         scrollView.contentInset = .zero
+        scrollView.backgroundColor = .clear
         scrollView.contentInsetAdjustmentBehavior = .never
     //    scrollView.contentMode = .scaleAspectFill
         //scrollView.contentSize = .init(width: 32, height: 32)
@@ -56,8 +57,21 @@ class AccountIconWebView: WKWebView, WKNavigationDelegate {
         }*/
     }
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        print("height: \(webView.scrollView.contentSize.height)")
+        print("width: \(webView.scrollView.contentSize.width)")
+        scrollView.backgroundColor = .clear
+        webView.invalidateIntrinsicContentSize()
         let bottomOffset = CGPoint(x: 0, y: scrollView.contentSize.height - scrollView.bounds.height + scrollView.contentInset.bottom)
         scrollView.setContentOffset(bottomOffset, animated: false)
+        scrollView.contentSize = .init(width: 32, height: 32)
+        webView.contentScaleFactor = 0.1
+        webView.maximumContentSizeCategory = .small
+        webView.contentMode = .center
+        
+    }
+    
+    override var intrinsicContentSize: CGSize {
+        .init(width: 32, height: 32)
     }
 }
 
@@ -66,7 +80,7 @@ func svgHTMLString(svgString: String, fillColor: String) -> String {
 """
 <html>
     <head>
-    <meta name="viewport" content="height=96, shrink-to-fit=YES">
+    <meta name="viewport" content="width=96px, height=96px, shrink-to-fit=YES">
     <style>
     .icon svg {
         height: 100%;
@@ -76,9 +90,16 @@ func svgHTMLString(svgString: String, fillColor: String) -> String {
         display:flex;
         align-items:center;
         justify-content:center;
+        background-color: rgba(0, 0, 0, 0);
     }
     .icon path {
-        fill: red;
+        fill: rgb(255, 0, 0);
+        background-color: rgba(0, 0, 0, 0);
+    }
+    body {
+        margin: 0;
+        background-color: rgba(0, 0, 0, 0);
+        //background-color: green;
     }
     </style>
     <head/>
