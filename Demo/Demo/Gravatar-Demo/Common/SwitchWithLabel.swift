@@ -27,6 +27,7 @@ class SwitchWithLabel: UIView {
         let stack = UIStackView(arrangedSubviews: [switchView, label])
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.axis = .horizontal
+        stack.alignment = .center
         stack.spacing = 6
         return stack
     }()

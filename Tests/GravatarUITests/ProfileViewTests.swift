@@ -54,6 +54,25 @@ final class ProfileViewTests: XCTestCase {
         assertSnapshot(of: containerView, as: .image, named: "\(interfaceStyle.name)")
     }
 
+    func testProfileViewLoadingStateClearsWhenEmpty() throws {
+        let interfaceStyle: UIUserInterfaceStyle = .light
+        let (containerView, cardView) = createViews(model: nil)
+        containerView.overrideUserInterfaceStyle = interfaceStyle
+        cardView.isLoading = true
+        cardView.isLoading = false
+        assertSnapshot(of: containerView, as: .image, named: "\(interfaceStyle.name)")
+    }
+
+    func testProfileViewLoadingStateClearsWhenDataIsPresent() throws {
+        let interfaceStyle: UIUserInterfaceStyle = .light
+        let (containerView, cardView) = createViews(model: nil)
+        containerView.overrideUserInterfaceStyle = interfaceStyle
+        cardView.isLoading = true
+        cardView.update(with: TestProfileCardModel.summaryCard())
+        cardView.isLoading = false
+        assertSnapshot(of: containerView, as: .image, named: "\(interfaceStyle.name)")
+    }
+
     private func createViews(model: ProfileModel?) -> (UIView, ProfileView) {
         let cardView = ProfileView(frame: .zero, paletteType: .system)
         cardView.update(with: model)

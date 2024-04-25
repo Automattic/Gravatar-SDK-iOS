@@ -17,6 +17,7 @@ class MainTableViewController: UITableViewController {
         case imageUpload
         case profileCard
         case configuration
+        case profileViewController
         case displayRemoteSVG
     }
     
@@ -49,6 +50,8 @@ class MainTableViewController: UITableViewController {
             content.text = "Profile Card"
         case .configuration:
             content.text = "Profile Card Configuration"
+        case .profileViewController:
+            content.text = "Profile View Controller"
         case .displayRemoteSVG:
             content.text = "Display remote SVG"
         }
@@ -72,9 +75,11 @@ class MainTableViewController: UITableViewController {
         case .imageUpload:
             navigationController?.pushViewController(DemoUploadImageViewController(), animated: true)
         case .profileCard:
-            navigationController?.pushViewController(DemoLargeProfileViewController(), animated: true)
+            navigationController?.pushViewController(DemoProfileViewsViewController(), animated: true)
         case .configuration:
             show(DemoProfileConfigurationViewController(style: .insetGrouped), sender: nil)
+        case .profileViewController:
+            navigationController?.pushViewController(DemoProfilePresentationStylesViewController(), animated: true)
         case .displayRemoteSVG:
             navigationController?.pushViewController(DemoRemoteSVGViewController(), animated: true)
         }
