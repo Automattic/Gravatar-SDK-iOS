@@ -64,6 +64,9 @@ class DemoRemoteSVGViewController: UITableViewController {
         tableView.register(SVGImageCell.self, forCellReuseIdentifier: Self.reuseID)
         tableView.backgroundColor = preferredPaletteType.palette.background.primary
         tableView.tableHeaderView = headerStackView
+        headerStackView.widthAnchor.constraint(equalTo: tableView.widthAnchor).isActive = true
+        tableView.tableHeaderView?.setNeedsLayout()
+        tableView.tableHeaderView?.layoutIfNeeded()
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
