@@ -44,7 +44,7 @@ class RemoteSVGView: UIView, WKNavigationDelegate, UIGestureRecognizerDelegate {
         webView.scrollView.backgroundColor = .clear
         return webView
     }()
-    
+
     private lazy var fallbackImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -94,9 +94,9 @@ class RemoteSVGView: UIView, WKNavigationDelegate, UIGestureRecognizerDelegate {
         SVGCache.shared.setSVG(svgString, forKey: url.absoluteString)
         return html(withSVG: svgString, paletteType: paletteType)
     }
-    
+
     private var paletteType: PaletteType = .system
-    
+
     func refresh(paletteType newPaletteType: PaletteType, shouldReloadURL: Bool = true) {
         self.paletteType = newPaletteType
         fallbackImageView.tintColor = paletteType.palette.foreground.primary
@@ -104,7 +104,7 @@ class RemoteSVGView: UIView, WKNavigationDelegate, UIGestureRecognizerDelegate {
             loadIcon(from: iconURL)
         }
     }
-    
+
     func loadIcon(from url: URL) {
         if url != iconURL && iconURL != nil {
             // hiding by changing alpha to keep its size
@@ -124,16 +124,16 @@ class RemoteSVGView: UIView, WKNavigationDelegate, UIGestureRecognizerDelegate {
             }
         }
     }
-    
+
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         webView.alpha = 1
     }
-    
+
     @objc
     func didTap() {
         tapHandler?()
     }
-    
+
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         true
     }
