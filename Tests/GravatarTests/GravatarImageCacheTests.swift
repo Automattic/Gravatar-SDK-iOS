@@ -2,11 +2,22 @@
 import XCTest
 
 final class GravatarImageCacheTests: XCTestCase {
-    private let key: String = "key"
+    private let key = URL(string: "https://image.com/image.png")!
 
-    func testSetAndGet() throws {
+    func testSetAndGet() async throws {
         let cache = ImageCache()
-        cache.setImage(ImageHelper.testImage, forKey: key)
-        XCTAssertNotNil(cache.getImage(forKey: key))
+        await cache.setImage(ImageHelper.testImage, for: key)
+        let image = try await cache.getImage(for: key)
+        XCTAssertNotNil(image)
+    }
+
+    func testRequestingMultipleTimes() async throws {
+        let cache = ImageCache()
+        let task = Task<UIImage, Error> {
+            ImageHelper.testImage
+        }
+        await cache.setTask(task, for: key)
+        let image = try await cache.getImage(for: key)
+        XCTAssertNotNil(image)
     }
 }

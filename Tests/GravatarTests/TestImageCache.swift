@@ -1,20 +1,23 @@
-import Foundation
 import Gravatar
 import UIKit
 
-class TestImageCache: ImageCaching {
-    var dict: [String: UIImage] = [:]
+actor TestImageCache: ImageCaching {
+    var dict: [URL: UIImage] = [:]
+
     var getImageCallCount = 0
+    var setTaskCallCount = 0
     var setImageCallsCount = 0
 
-    init() {}
-
-    func setImage(_ image: UIImage, forKey key: String) {
+    func setImage(_ image: UIImage, for key: URL) async {
         setImageCallsCount += 1
         dict[key] = image
     }
 
-    func getImage(forKey key: String) -> UIImage? {
+    func setTask(_ task: Task<UIImage, Error>, for key: URL) async {
+        setTaskCallCount += 1
+    }
+
+    func getImage(for key: URL) async throws -> UIImage? {
         getImageCallCount += 1
         return dict[key]
     }

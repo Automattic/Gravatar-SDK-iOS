@@ -2,7 +2,7 @@ import Foundation
 import UIKit
 
 /// Represents the result of a  Gravatar image download task.
-public struct ImageDownloadResult {
+public struct ImageDownloadResult: Sendable {
     public init(image: UIImage, sourceURL: URL) {
         self.image = image
         self.sourceURL = sourceURL
