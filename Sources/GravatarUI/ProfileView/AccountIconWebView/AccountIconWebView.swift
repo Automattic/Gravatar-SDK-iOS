@@ -7,15 +7,15 @@ class AccountIconWebView: WKWebView, WKNavigationDelegate {
     class SVGCache {
         private let cache: NSCache<NSString, NSString> = NSCache<NSString, NSString>()
 
-        public static let shared: SVGCache = SVGCache()
+        static let shared: SVGCache = SVGCache()
 
-        public init() {}
+        init() {}
 
-        public func setSVG(_ svg: String, forKey key: String) {
+        func setSVG(_ svg: String, forKey key: String) {
             cache.setObject(svg as NSString, forKey: key as NSString)
         }
 
-        public func getSVG(forKey key: String) -> String? {
+        func getSVG(forKey key: String) -> String? {
             cache.object(forKey: key as NSString) as String?
         }
     }
@@ -61,6 +61,9 @@ class AccountIconWebView: WKWebView, WKNavigationDelegate {
         scrollView.contentInset = .zero
         scrollView.contentInsetAdjustmentBehavior = .never
         navigationDelegate = self
+        isOpaque = false
+        backgroundColor = .clear
+        scrollView.backgroundColor = .clear
     }
     
     required init?(coder: NSCoder) {
@@ -124,7 +127,7 @@ func htmlString(svgString: String, fillColor: String, backgroundColor: String) -
     }
     body {
         margin: 0;
-        background-color: \(backgroundColor);
+        background-color: transparent;
     }
     </style>
     <head/>
