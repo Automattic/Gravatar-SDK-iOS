@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 
 /// Enum defining methods for processing and transforming the image data into a UIImage instance.
 ///
@@ -10,15 +11,21 @@ public enum ImageProcessingMethod {
 
     /// A processing method which will directly transform the `Data` to an `UIImage` and return it.
     ///
-    /// This method will use the appropiate scale factor for the device screen.
+    /// This method uses UITraitCollection's displayScale to create a UIImage instance.
     case common
+
+    /// A processing method which will directly transform the `Data` to a `UIImage` using the given scale factor.
+    /// - Parameter scaleFactor: The scale factor to use to create the `UIImage`.
+    case scaleFactor(_ scaleFactor: CGFloat)
 }
 
 extension ImageProcessingMethod {
     var processor: ImageProcessor {
         switch self {
         case .common:
-            DefaultImageProcessor.common
+            DefaultImageProcessor(scaleFactor: UITraitCollection.current.displayScale)
+        case .scaleFactor(let scaleFactor):
+            DefaultImageProcessor(scaleFactor: scaleFactor)
         case .custom(let processor):
             processor
         }
