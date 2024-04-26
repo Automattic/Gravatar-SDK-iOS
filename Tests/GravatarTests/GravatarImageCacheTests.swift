@@ -6,8 +6,8 @@ final class GravatarImageCacheTests: XCTestCase {
 
     func testSetAndGet() async throws {
         let cache = ImageCache()
-        await cache.setEntry(.ready(ImageHelper.testImage), for: key)
-        let image = await cache.getEntry(with: key)
+        cache.setEntry(.ready(ImageHelper.testImage), for: key)
+        let image = cache.getEntry(with: key)
         XCTAssertNotNil(image)
     }
 
@@ -16,8 +16,8 @@ final class GravatarImageCacheTests: XCTestCase {
         let task = Task<UIImage, Error> {
             ImageHelper.testImage
         }
-        await cache.setEntry(.inProgress(task), for: key)
-        let image = await cache.getEntry(with: key)
+        cache.setEntry(.inProgress(task), for: key)
+        let image = cache.getEntry(with: key)
         XCTAssertNotNil(image)
     }
 }

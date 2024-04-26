@@ -22,6 +22,7 @@ public actor ImageDownloadService: ImageDownloader {
 
     private func fetchImage(from url: URL, forceRefresh: Bool, processor: ImageProcessor) async throws -> ImageDownloadResult {
         let request = URLRequest.imageRequest(url: url, forceRefresh: forceRefresh)
+
         let task = Task<UIImage, Error> {
             let (data, _) = try await self.client.fetchData(with: request)
             guard let image = processor.process(data) else {
@@ -31,15 +32,10 @@ public actor ImageDownloadService: ImageDownloader {
         }
 
         await imageCache.setEntry(.inProgress(task), for: url.absoluteString)
-        do {
-            let image = try await task.value
-            await imageCache.setEntry(.ready(image), for: url.absoluteString)
-            return ImageDownloadResult(image: image, sourceURL: url)
-        } catch let error as HTTPClientError {
-            throw ImageFetchingError.responseError(reason: error.map())
-        } catch {
-            throw ImageFetchingError.responseError(reason: .unexpected(error))
-        }
+
+        let image = try await getImage(from: task)
+        await imageCache.setEntry(.ready(image), for: url.absoluteString)
+        return ImageDownloadResult(image: image, sourceURL: url)
     }
 
     public func fetchImage(
@@ -47,26 +43,34 @@ public actor ImageDownloadService: ImageDownloader {
         forceRefresh: Bool = false,
         processingMethod: ImageProcessingMethod = .common
     ) async throws -> ImageDownloadResult {
-        if !forceRefresh, let result = try await cachedImageResult(for: url) {
-            return result
+        if !forceRefresh, let image = try await cachedImage(for: url) {
+            return ImageDownloadResult(image: image, sourceURL: url)
         }
         return try await fetchImage(from: url, forceRefresh: forceRefresh, processor: processingMethod.processor)
     }
 
-    func cachedImageResult(for url: URL) async throws -> ImageDownloadResult? {
+    func cachedImage(for url: URL) async throws -> UIImage? {
         guard let entry = await imageCache.getEntry(with: url.absoluteString) else {
             return nil
         }
 
-        let image = try await { switch entry {
-            case .inProgress(let task):
-                return try await task.value
-            case .ready(let image):
-                return image
-            }
-        }()
+        switch entry {
+        case .inProgress(let task):
+            return try await getImage(from: task)
+        case .ready(let image):
+            return image
+        }
+    }
 
-        return ImageDownloadResult(image: image, sourceURL: url)
+    func getImage(from task: Task<UIImage, Error>) async throws -> UIImage {
+        do {
+            let image = try await task.value
+            return image
+        } catch let error as HTTPClientError {
+            throw ImageFetchingError.responseError(reason: error.map())
+        } catch {
+            throw ImageFetchingError.responseError(reason: .unexpected(error))
+        }
     }
 }
 

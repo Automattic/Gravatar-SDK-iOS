@@ -4,7 +4,7 @@ import UIKit
 ///
 /// An ImageCaching will cache an instance of an image, or the task of retriving an image from remote.
 /// Requesting an image from cache should await for any task cached and return the image from this task instead of creating a new task.
-public protocol ImageCaching: Sendable {
+public protocol ImageCaching {
     /// Saves an image in the cache.
     /// - Parameters:
     ///   - image: The cache entry to set.
@@ -12,7 +12,7 @@ public protocol ImageCaching: Sendable {
     func setEntry(_ entry: CacheEntry, for key: String) async
 
     /// Gets a `CacheEntry` from cache for the given key, or nil if none is found.
-    ///.
+    /// .
     /// - Parameter key: The key for the entry to get.
     /// - Returns: The cache entry which could contain an image, or a task to retreive the image. Nill is returned if nothing is found.
     func getEntry(with key: String) async -> CacheEntry?
@@ -24,7 +24,7 @@ extension ImageCaching {
 }
 
 /// The default `ImageCaching` used by this SDK.
-public actor ImageCache: ImageCaching, Sendable {
+public struct ImageCache: ImageCaching {
     private let cache = NSCache<NSString, CacheEntryObject>()
 
     /// The default cache used by the image dowloader.
