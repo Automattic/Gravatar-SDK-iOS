@@ -306,7 +306,7 @@ open class BaseProfileView: UIView, UIContentView {
             guard let self else { return }
             self.delegate?.profileView(self, didTapOnAccountButtonWithModel: model)
         }
-        if model.shortname == "gravatar" /*UIImage(named: model.shortname) != nil*/ {
+        if UIImage(named: model.shortname) != nil {
             return createAccountButton(model: model, tapHandler: tapHandler)
         } else if let iconURL = model.iconURL { // If we have the iconURL try downloading the icon
             return createAccountWebView(url: iconURL, tapHandler: tapHandler)
