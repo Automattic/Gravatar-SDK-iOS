@@ -3,22 +3,6 @@ import UIKit
 import WebKit
 
 class RemoteSVGView: UIView, WKNavigationDelegate, UIGestureRecognizerDelegate {
-    class SVGCache {
-        private let cache: NSCache<NSString, NSString> = .init()
-
-        static let shared: SVGCache = .init()
-
-        init() {}
-
-        func setSVG(_ svg: String, forKey key: String) {
-            cache.setObject(svg as NSString, forKey: key as NSString)
-        }
-
-        func getSVG(forKey key: String) -> String? {
-            cache.object(forKey: key as NSString) as String?
-        }
-    }
-
     private enum HTMLConstructionError: Error {
         case canNotConvertDataToString
         case notValidSVG
@@ -28,6 +12,7 @@ class RemoteSVGView: UIView, WKNavigationDelegate, UIGestureRecognizerDelegate {
     private var task: Task<Void, Never>?
     private var iconURL: URL?
     private var tapHandler: (() -> Void)?
+    private static let cache: NSCache<NSString, NSString> = .init()
 
     private lazy var webView: WKWebView = {
         let webView = WKWebView()
@@ -81,7 +66,7 @@ class RemoteSVGView: UIView, WKNavigationDelegate, UIGestureRecognizerDelegate {
     }
 
     private func prepareHTMLString(from url: URL, paletteType: PaletteType) async throws -> String {
-        if let svgString = SVGCache.shared.getSVG(forKey: url.absoluteString) {
+        if let svgString = Self.cache.object(forKey: url.absoluteString as NSString) as String? {
             return html(withSVG: svgString as String, paletteType: paletteType)
         }
         let data = try Data(contentsOf: url)
@@ -91,7 +76,7 @@ class RemoteSVGView: UIView, WKNavigationDelegate, UIGestureRecognizerDelegate {
         guard svgString.trimmingCharacters(in: .whitespacesAndNewlines).lowercased().hasPrefix("<svg") else {
             throw HTMLConstructionError.notValidSVG
         }
-        SVGCache.shared.setSVG(svgString, forKey: url.absoluteString)
+        Self.cache.setObject(svgString as NSString, forKey: url.absoluteString as NSString)
         return html(withSVG: svgString, paletteType: paletteType)
     }
 
