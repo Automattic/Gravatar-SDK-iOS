@@ -2,30 +2,20 @@ import UIKit
 
 /// Represents a cache for images
 ///
-/// An ImageCaching will cache the task of obtaining an image from remote.
+/// An ImageCaching will cache an instance of an image, or the task of retriving an image from remote.
 /// Requesting an image from cache should await for any task cached and return the image from this task instead of creating a new task.
 public protocol ImageCaching: Sendable {
     /// Saves an image in the cache.
     /// - Parameters:
-    ///   - image: The image to set
-    ///   - key: The Image's URL.
-    func setImage(_ image: UIImage, for key: URL) async
+    ///   - image: The cache entry to set.
+    ///   - key: The entry's key, used to be found via `.getEntry(key:)`.
+    func setEntry(_ entry: CacheEntry, for key: String) async
 
-    /// Saves a task used to request the image into the cache.
-    ///
-    /// This should be used to avoid requesting the same image multiple times while the image is already being requested.
-    /// If you don't need this behavior, you can opt out by not implementing this function.
-    /// - Parameters:
-    ///   - task: The task to set.
-    ///   - key: The image's URL.
-    func setTask(_ task: Task<UIImage, Error>, for key: URL) async
-
-    /// Gets an image from cache for the given URL, or nil if none is found.
-    ///
-    /// If a task is found for the given URL, this  will await until the task returns the image.
-    /// - Parameter key: The image URL.
-    /// - Returns: The image cached for the given URL, or nil if none is found.
-    func getImage(for key: URL) async throws -> UIImage?
+    /// Gets a `CacheEntry` from cache for the given key, or nil if none is found.
+    ///.
+    /// - Parameter key: The key for the entry to get.
+    /// - Returns: The cache entry which could contain an image, or a task to retreive the image. Nill is returned if nothing is found.
+    func getEntry(with key: String) async -> CacheEntry?
 }
 
 /// Making `setTask` optional.
@@ -34,36 +24,29 @@ extension ImageCaching {
 }
 
 /// The default `ImageCaching` used by this SDK.
-public actor ImageCache: ImageCaching {
+public actor ImageCache: ImageCaching, Sendable {
     private let cache = NSCache<NSString, CacheEntryObject>()
 
     /// The default cache used by the image dowloader.
-    public static var shared: ImageCaching = ImageCache()
+    public static let shared: ImageCaching = ImageCache()
 
     public init() {}
 
-    public func setImage(_ image: UIImage, for key: URL) {
-        cache[key] = .ready(image)
+    public func setEntry(_ entry: CacheEntry, for key: String) {
+        cache[key] = .init(entry)
     }
 
-    public func setTask(_ task: Task<UIImage, Error>, for key: URL) async {
-        cache[key] = .inProgress(task)
-    }
-
-    public func getImage(for key: URL) async throws -> UIImage? {
-        switch cache[key] {
-        case .ready(let image):
-            image
-        case .inProgress(let task):
-            try await task.value
-        case .none:
-            nil
-        }
+    public func getEntry(with key: String) -> CacheEntry? {
+        cache[key]
     }
 }
 
-private enum CacheEntry: Sendable {
+/// ImageCache can save an in-progress task of retreiving an image from remote.
+/// This enum represent both possible states for an image in the cache system.
+public enum CacheEntry: Sendable {
+    /// A task of retreiving an image is in progress.
     case inProgress(Task<UIImage, Error>)
+    /// An image instance is readily available.
     case ready(UIImage)
 }
 
@@ -73,14 +56,14 @@ private final class CacheEntryObject {
 }
 
 extension NSCache where KeyType == NSString, ObjectType == CacheEntryObject {
-    fileprivate subscript(_ url: URL) -> CacheEntry? {
+    fileprivate subscript(_ key: String) -> CacheEntry? {
         get {
-            let key = url.absoluteString as NSString
+            let key = key as NSString
             let value = object(forKey: key)
             return value?.entry
         }
         set {
-            let key = url.absoluteString as NSString
+            let key = key as NSString
             if let entry = newValue {
                 let value = CacheEntryObject(entry: entry)
                 setObject(value, forKey: key)
