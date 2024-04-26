@@ -10,9 +10,9 @@ actor TestImageCache: ImageCaching {
 
     func setEntry(_ entry: Gravatar.CacheEntry, for key: String) async {
         switch entry {
-        case .inProgress(_):
+        case .inProgress:
             setTaskCallCount += 1
-        case .ready(_):
+        case .ready:
             setImageCallsCount += 1
         }
         dict[key] = CacheEntryWrapper(entry)
