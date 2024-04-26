@@ -107,8 +107,7 @@ class RemoteSVGView: UIView, WKNavigationDelegate, UIGestureRecognizerDelegate {
 
     func loadIcon(from url: URL) {
         if url != iconURL && iconURL != nil {
-            // hiding by changing alpha to keep its size
-            webView.alpha = 0
+            webView.isHidden = true
         }
         fallbackImageView.isHidden = true
         iconURL = nil
@@ -120,13 +119,13 @@ class RemoteSVGView: UIView, WKNavigationDelegate, UIGestureRecognizerDelegate {
                 iconURL = url
             } catch {
                 fallbackImageView.isHidden = false
-                webView.alpha = 0
+                webView.isHidden = true
             }
         }
     }
 
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-        webView.alpha = 1
+        webView.isHidden = false
     }
 
     @objc
