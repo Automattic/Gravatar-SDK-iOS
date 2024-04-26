@@ -69,7 +69,8 @@ class RemoteSVGView: UIView, WKNavigationDelegate, UIGestureRecognizerDelegate {
         if let svgString = Self.cache.object(forKey: url.absoluteString as NSString) as String? {
             return html(withSVG: svgString as String, paletteType: paletteType)
         }
-        let data = try Data(contentsOf: url)
+
+        let (data, _) = try await URLSession.shared.data(from: url)
         guard let svgString = String(data: data, encoding: .utf8) else {
             throw HTMLConstructionError.canNotConvertDataToString
         }
