@@ -11,7 +11,7 @@ import Gravatar
 class DemoAvatarDownloadViewController: UIViewController {
     static let imageViewSize: CGFloat = 300
 
-    private let segmentedControl: UISegmentedControl = {
+    private lazy var segmentedControl: UISegmentedControl = {
         let control = UISegmentedControl(items: ["Email", "Hash"])
         control.addTarget(self, action: #selector(chooseFetchType(_:)), for: .valueChanged)
         control.selectedSegmentIndex = 0
