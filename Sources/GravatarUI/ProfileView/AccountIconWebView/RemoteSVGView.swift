@@ -65,9 +65,9 @@ class RemoteSVGView: UIView, WKNavigationDelegate, UIGestureRecognizerDelegate {
         fatalError("init(coder:) has not been implemented")
     }
 
-    private func prepareHTMLString(from url: URL, paletteType: PaletteType) async throws -> String {
+    private func prepareHTMLString(from url: URL) async throws -> String {
         if let svgString = Self.cache.object(forKey: url.absoluteString as NSString) as String? {
-            return html(withSVG: svgString as String, paletteType: paletteType)
+            return html(withSVG: svgString as String)
         }
 
         let (data, _) = try await URLSession.shared.data(from: url)
@@ -78,7 +78,7 @@ class RemoteSVGView: UIView, WKNavigationDelegate, UIGestureRecognizerDelegate {
             throw HTMLConstructionError.notValidSVG
         }
         Self.cache.setObject(svgString as NSString, forKey: url.absoluteString as NSString)
-        return html(withSVG: svgString, paletteType: paletteType)
+        return html(withSVG: svgString)
     }
 
     private var paletteType: PaletteType = .system
@@ -100,7 +100,7 @@ class RemoteSVGView: UIView, WKNavigationDelegate, UIGestureRecognizerDelegate {
         task?.cancel()
         task = Task {
             do {
-                let html = try await prepareHTMLString(from: url, paletteType: paletteType)
+                let html = try await prepareHTMLString(from: url)
                 webView.loadHTMLString(html, baseURL: nil)
                 iconURL = url
             } catch {
@@ -123,7 +123,7 @@ class RemoteSVGView: UIView, WKNavigationDelegate, UIGestureRecognizerDelegate {
         true
     }
 
-    func html(withSVG svg: String, paletteType: PaletteType) -> String {
+    func html(withSVG svg: String) -> String {
         """
         <html>
             <head>
