@@ -35,6 +35,7 @@ final class AvatarServiceTests: XCTestCase {
         XCTAssertTrue(sessionMock.request?.value(forHTTPHeaderField: "Authorization")?.hasPrefix("Bearer ") ?? false)
         XCTAssertNotNil(sessionMock.request?.value(forHTTPHeaderField: "Content-Type"))
         XCTAssertTrue(sessionMock.request?.value(forHTTPHeaderField: "Content-Type")?.hasPrefix("multipart/form-data; boundary=Boundary") ?? false)
+        XCTAssertTrue(sessionMock.request?.value(forHTTPHeaderField: "Client-Type") == "ios")
     }
 
     func testUploadImageError() async throws {
@@ -127,14 +128,4 @@ private func avatarService(with session: URLSessionProtocol, cache: ImageCaching
     let client = URLSessionHTTPClient(urlSession: session)
     let service = AvatarService(client: client, cache: cache)
     return service
-}
-
-extension HTTPURLResponse {
-    static func successResponse(with url: URL? = URL(string: "https://gravatar.com")) -> HTTPURLResponse {
-        HTTPURLResponse(url: url!, statusCode: 200, httpVersion: nil, headerFields: nil)!
-    }
-
-    static func errorResponse(with url: URL? = URL(string: "https://gravatar.com"), code: Int) -> HTTPURLResponse {
-        HTTPURLResponse(url: url!, statusCode: code, httpVersion: nil, headerFields: nil)!
-    }
 }

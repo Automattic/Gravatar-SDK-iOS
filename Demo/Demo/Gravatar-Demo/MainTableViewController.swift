@@ -15,6 +15,10 @@ class MainTableViewController: UITableViewController {
         case uiImageViewExtension
         case fetchProfile
         case imageUpload
+        case profileCard
+        case configuration
+        case profileViewController
+        case displayRemoteSVG
     }
     
     private static let reuseID =  "DefaultCell"
@@ -42,6 +46,14 @@ class MainTableViewController: UITableViewController {
             content.text = "Fetch Profile"
         case .imageUpload:
             content.text = "Image Upload"
+        case .profileCard:
+            content.text = "Profile Card"
+        case .configuration:
+            content.text = "Profile Card Configuration"
+        case .profileViewController:
+            content.text = "Profile View Controller"
+        case .displayRemoteSVG:
+            content.text = "Display remote SVG"
         }
         cell.contentConfiguration = content
         return cell
@@ -62,6 +74,14 @@ class MainTableViewController: UITableViewController {
             navigationController?.pushViewController(vc, animated: true)
         case .imageUpload:
             navigationController?.pushViewController(DemoUploadImageViewController(), animated: true)
+        case .profileCard:
+            navigationController?.pushViewController(DemoProfileViewsViewController(), animated: true)
+        case .configuration:
+            show(DemoProfileConfigurationViewController(style: .insetGrouped), sender: nil)
+        case .profileViewController:
+            navigationController?.pushViewController(DemoProfilePresentationStylesViewController(), animated: true)
+        case .displayRemoteSVG:
+            navigationController?.pushViewController(DemoRemoteSVGViewController(), animated: true)
         }
     }
 }

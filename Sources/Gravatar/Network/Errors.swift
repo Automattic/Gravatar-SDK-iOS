@@ -45,17 +45,6 @@ public enum ImageFetchingError: Error {
     case responseError(reason: ResponseErrorReason)
     /// The `ImageProcessor` has failed and the image could not be created from the downloaded data.
     case imageProcessorFailed
-
-    func map() -> ImageFetchingComponentError {
-        switch self {
-        case .requestError(let reason):
-            .requestError(reason: reason)
-        case .responseError(let reason):
-            .responseError(reason: reason)
-        case .imageProcessorFailed:
-            .imageProcessorFailed
-        }
-    }
 }
 
 /// Errors thrown by Gravatar compatible UI components(see: `GravatarCompatible`) when fetching an image.
