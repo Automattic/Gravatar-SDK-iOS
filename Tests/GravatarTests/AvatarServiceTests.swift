@@ -77,8 +77,8 @@ final class AvatarServiceTests: XCTestCase {
         _ = try await service.fetch(with: .email(TestData.email), options: options)
         _ = try await service.fetch(with: .email(TestData.email), options: options)
 
-        let getImageCallCount = await cache.getImageCallCount
-        let setImageCallsCount = await cache.setImageCallsCount
+        let getImageCallCount = cache.getImageCallCount
+        let setImageCallsCount = cache.setImageCallsCount
         XCTAssertEqual(getImageCallCount, 0, "We should not hit the cache")
         XCTAssertEqual(setImageCallsCount, 3, "We should have cached the image on every forced refresh")
         XCTAssertEqual(sessionMock.callsCount, 3, "We should fetch from network")
@@ -94,8 +94,8 @@ final class AvatarServiceTests: XCTestCase {
         _ = try await service.fetch(with: .email(TestData.email), options: options)
         _ = try await service.fetch(with: .email(TestData.email), options: options)
 
-        let getImageCallCount = await cache.getImageCallCount
-        let setImageCallsCount = await cache.setImageCallsCount
+        let getImageCallCount = cache.getImageCallCount
+        let setImageCallsCount = cache.setImageCallsCount
         XCTAssertEqual(getImageCallCount, 3, "We should hit the cache")
         XCTAssertEqual(setImageCallsCount, 1, "We should save once to the cache")
         XCTAssertEqual(sessionMock.callsCount, 1, "We should fetch from network only the first time")

@@ -50,7 +50,7 @@ public struct ImageDownloadService: ImageDownloader {
         return try await fetchImage(from: url, forceRefresh: forceRefresh, processor: processingMethod.processor)
     }
 
-    func cachedImage(for url: URL) async throws -> UIImage? {
+    private func cachedImage(for url: URL) async throws -> UIImage? {
         guard let entry = imageCache.getEntry(with: url.absoluteString) else {
             return nil
         }
