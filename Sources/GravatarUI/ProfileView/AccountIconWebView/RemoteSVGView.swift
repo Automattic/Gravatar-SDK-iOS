@@ -2,16 +2,21 @@ import Gravatar
 import UIKit
 import WebKit
 
-class RemoteSVGView: UIView, WKNavigationDelegate, UIGestureRecognizerDelegate {
+class RemoteSVGButton: UIControl, WKNavigationDelegate, UIGestureRecognizerDelegate {
     private enum HTMLConstructionError: Error {
         case canNotConvertDataToString
         case notValidSVG
     }
 
+    override var isHighlighted: Bool {
+        didSet {
+            webView.alpha = isHighlighted ? 0.8 : 1
+        }
+    }
+
     private let iconSize: CGSize
     private var task: Task<Void, Never>?
     private var iconURL: URL?
-    private var tapHandler: (() -> Void)?
     private static let cache: NSCache<NSString, NSString> = .init()
 
     private lazy var webView: WKWebView = {
@@ -27,6 +32,7 @@ class RemoteSVGView: UIView, WKNavigationDelegate, UIGestureRecognizerDelegate {
         webView.isOpaque = false
         webView.backgroundColor = .clear
         webView.scrollView.backgroundColor = .clear
+        webView.isUserInteractionEnabled = false
         return webView
     }()
 
@@ -35,6 +41,7 @@ class RemoteSVGView: UIView, WKNavigationDelegate, UIGestureRecognizerDelegate {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.image = AccountButtonBuilder.fallbackIcon
         imageView.isHidden = true
+        imageView.isUserInteractionEnabled = false
         addSubview(webView)
         addSubview(imageView)
         NSLayoutConstraint.activate([
@@ -50,14 +57,10 @@ class RemoteSVGView: UIView, WKNavigationDelegate, UIGestureRecognizerDelegate {
         return imageView
     }()
 
-    init(frame: CGRect = .zero, iconSize: CGSize, tapHandler: (() -> Void)?) {
+    init(frame: CGRect = .zero, iconSize: CGSize) {
         self.iconSize = iconSize
-        self.tapHandler = tapHandler
         super.init(frame: frame)
         refresh(paletteType: .system, shouldReloadURL: false)
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(didTap))
-        tapGesture.delegate = self
-        addGestureRecognizer(tapGesture)
     }
 
     @available(*, unavailable)
@@ -112,11 +115,6 @@ class RemoteSVGView: UIView, WKNavigationDelegate, UIGestureRecognizerDelegate {
 
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         webView.isHidden = false
-    }
-
-    @objc
-    func didTap() {
-        tapHandler?()
     }
 
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {

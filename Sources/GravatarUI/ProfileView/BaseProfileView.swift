@@ -263,7 +263,7 @@ open class BaseProfileView: UIView, UIContentView {
             Configure(button).asAccountButton().palette(paletteType)
         }
 
-        accountButtonsStackView.arrangedSubviews.compactMap { $0 as? RemoteSVGView }.forEach { view in
+        accountButtonsStackView.arrangedSubviews.compactMap { $0 as? RemoteSVGButton }.forEach { view in
             view.refresh(paletteType: paletteType)
         }
         placeholderDisplayer?.refresh(with: placeholderColors)
@@ -279,14 +279,9 @@ open class BaseProfileView: UIView, UIContentView {
         buttons.forEach(accountButtonsStackView.addArrangedSubview)
     }
 
-    func createAccountButton(model: AccountModel, tapHandler: @escaping () -> Void) -> UIButton {
+    func createAccountButton(model: AccountModel) -> UIButton {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        let action = UIAction { _ in
-            tapHandler()
-        }
-        button.addAction(action, for: .touchUpInside)
-
         Configure(button).asAccountButton().content(model).palette(paletteType)
         button.imageView?.contentMode = .scaleAspectFit
         button.imageView?.translatesAutoresizingMaskIntoConstraints = false
@@ -302,32 +297,33 @@ open class BaseProfileView: UIView, UIContentView {
     }
 
     func createAccountIconView(model: AccountModel) -> UIView {
-        let tapHandler = { [weak self] in
+        let button: UIControl = if UIImage(named: model.shortname) != nil {
+            createAccountButton(model: model)
+        } else if let iconURL = model.iconURL { // If we have the iconURL try downloading the icon
+            createRemoteSVGButton(url: iconURL)
+        } else { // This will show the local fallback icon
+            createAccountButton(model: model)
+        }
+        let action = UIAction { [weak self] _ in
             guard let self else { return }
             self.delegate?.profileView(self, didTapOnAccountButtonWithModel: model)
         }
-        if UIImage(named: model.shortname) != nil {
-            return createAccountButton(model: model, tapHandler: tapHandler)
-        } else if let iconURL = model.iconURL { // If we have the iconURL try downloading the icon
-            return createAccountWebView(url: iconURL, tapHandler: tapHandler)
-        } else { // This will show the local fallback icon
-            return createAccountButton(model: model, tapHandler: tapHandler)
-        }
+        button.addAction(action, for: .touchUpInside)
+        return button
     }
 
-    func createAccountWebView(url: URL, tapHandler: @escaping () -> Void) -> RemoteSVGView {
-        let webView = RemoteSVGView(
-            iconSize: CGSize(width: Constants.accountIconLength, height: Constants.accountIconLength),
-            tapHandler: tapHandler
+    func createRemoteSVGButton(url: URL) -> RemoteSVGButton {
+        let button = RemoteSVGButton(
+            iconSize: CGSize(width: Constants.accountIconLength, height: Constants.accountIconLength)
         )
-        webView.refresh(paletteType: paletteType, shouldReloadURL: false)
-        webView.translatesAutoresizingMaskIntoConstraints = false
+        button.refresh(paletteType: paletteType, shouldReloadURL: false)
+        button.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            webView.widthAnchor.constraint(equalToConstant: Constants.accountIconLength),
-            webView.heightAnchor.constraint(equalToConstant: Constants.accountIconLength),
+            button.widthAnchor.constraint(equalToConstant: Constants.accountIconLength),
+            button.heightAnchor.constraint(equalToConstant: Constants.accountIconLength),
         ])
-        webView.loadIcon(from: url)
-        return webView
+        button.loadIcon(from: url)
+        return button
     }
 
     open func update(with config: ProfileViewConfiguration) {

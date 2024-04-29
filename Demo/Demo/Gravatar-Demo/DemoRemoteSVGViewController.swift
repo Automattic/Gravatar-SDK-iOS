@@ -106,14 +106,16 @@ class DemoRemoteSVGViewController: UITableViewController {
 
 class SVGImageCell: UITableViewCell {
     static let iconSize = CGSize(width: 50, height: 50)
-    let logoView: RemoteSVGView = {
-        let view = RemoteSVGView(iconSize: iconSize) {
+    let logoButton: RemoteSVGButton = {
+        let button = RemoteSVGButton(iconSize: iconSize)
+        let action = UIAction { _ in
             print("Icon Tapped!")
         }
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.heightAnchor.constraint(equalToConstant: iconSize.height).isActive = true
-        view.widthAnchor.constraint(equalToConstant: iconSize.width).isActive = true
-        return view
+        button.addAction(action, for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.heightAnchor.constraint(equalToConstant: iconSize.height).isActive = true
+        button.widthAnchor.constraint(equalToConstant: iconSize.width).isActive = true
+        return button
     }()
     
     let iconNameLabel: UILabel = {
@@ -124,21 +126,21 @@ class SVGImageCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        contentView.addSubview(logoView)
+        contentView.addSubview(logoButton)
         contentView.addSubview(iconNameLabel)
         NSLayoutConstraint.activate([
-            logoView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
-            logoView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 20),
-            logoView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -20),
-            iconNameLabel.leadingAnchor.constraint(equalTo: logoView.trailingAnchor, constant: 20),
-            iconNameLabel.centerYAnchor.constraint(equalTo: logoView.centerYAnchor)
+            logoButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
+            logoButton.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 20),
+            logoButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -20),
+            iconNameLabel.leadingAnchor.constraint(equalTo: logoButton.trailingAnchor, constant: 20),
+            iconNameLabel.centerYAnchor.constraint(equalTo: logoButton.centerYAnchor)
         ])
     }
     
     func update(with url: URL?, name: String, paletteType: PaletteType) {
         guard let url else { return }
-        logoView.refresh(paletteType: paletteType, shouldReloadURL: false)
-        logoView.loadIcon(from: url)
+        logoButton.refresh(paletteType: paletteType, shouldReloadURL: false)
+        logoButton.loadIcon(from: url)
         iconNameLabel.text = name
         iconNameLabel.textColor = paletteType.palette.foreground.primary
         contentView.backgroundColor = paletteType.palette.background.primary
