@@ -2,7 +2,7 @@ import Gravatar
 import UIKit
 import WebKit
 
-class RemoteSVGButton: UIControl, WKNavigationDelegate, UIGestureRecognizerDelegate {
+class RemoteSVGButton: UIControl, WKNavigationDelegate {
     private enum HTMLConstructionError: Error {
         case canNotConvertDataToString
         case notValidSVG
@@ -116,10 +116,6 @@ class RemoteSVGButton: UIControl, WKNavigationDelegate, UIGestureRecognizerDeleg
 
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         webView.isHidden = false
-    }
-
-    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-        true
     }
 
     func html(withSVG svg: String) -> String {
