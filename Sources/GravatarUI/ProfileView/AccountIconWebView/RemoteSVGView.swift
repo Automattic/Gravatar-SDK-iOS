@@ -43,24 +43,24 @@ class RemoteSVGButton: UIControl, WKNavigationDelegate {
         imageView.image = AccountButtonBuilder.fallbackIcon
         imageView.isHidden = true
         imageView.isUserInteractionEnabled = false
-        addSubview(webView)
-        addSubview(imageView)
-        NSLayoutConstraint.activate([
-            webView.widthAnchor.constraint(equalTo: widthAnchor),
-            webView.heightAnchor.constraint(equalTo: heightAnchor),
-            webView.centerXAnchor.constraint(equalTo: centerXAnchor),
-            webView.centerYAnchor.constraint(equalTo: centerYAnchor),
-            imageView.widthAnchor.constraint(equalTo: widthAnchor),
-            imageView.heightAnchor.constraint(equalTo: heightAnchor),
-            imageView.centerXAnchor.constraint(equalTo: centerXAnchor),
-            imageView.centerYAnchor.constraint(equalTo: centerYAnchor),
-        ])
         return imageView
     }()
 
     init(frame: CGRect = .zero, iconSize: CGSize) {
         self.iconSize = iconSize
         super.init(frame: frame)
+        addSubview(webView)
+        addSubview(fallbackImageView)
+        NSLayoutConstraint.activate([
+            webView.widthAnchor.constraint(equalTo: widthAnchor),
+            webView.heightAnchor.constraint(equalTo: heightAnchor),
+            webView.centerXAnchor.constraint(equalTo: centerXAnchor),
+            webView.centerYAnchor.constraint(equalTo: centerYAnchor),
+            fallbackImageView.widthAnchor.constraint(equalTo: widthAnchor),
+            fallbackImageView.heightAnchor.constraint(equalTo: heightAnchor),
+            fallbackImageView.centerXAnchor.constraint(equalTo: centerXAnchor),
+            fallbackImageView.centerYAnchor.constraint(equalTo: centerYAnchor),
+        ])
         refresh(paletteType: .system, shouldReloadURL: false)
     }
 
