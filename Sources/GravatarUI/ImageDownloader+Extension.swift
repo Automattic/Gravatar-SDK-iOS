@@ -6,7 +6,7 @@ extension ImageDownloader {
     func fetchImage(
         with url: URL,
         forceRefresh: Bool = false,
-        processingMethod: ImageProcessingMethod = .common,
+        processingMethod: ImageProcessingMethod = .common(),
         completionHandler: ImageDownloadCompletion?
     ) -> CancellableDataTask? {
         Task {
