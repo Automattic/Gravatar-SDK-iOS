@@ -63,7 +63,7 @@ public struct ImageDownloadService: ImageDownloader {
         }
     }
 
-    func getImage(from task: Task<UIImage, Error>) async throws -> UIImage {
+    private func getImage(from task: Task<UIImage, Error>) async throws -> UIImage {
         do {
             let image = try await task.value
             return image
