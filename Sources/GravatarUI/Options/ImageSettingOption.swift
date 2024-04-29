@@ -32,7 +32,7 @@ public struct ImageSettingOptions {
     var transition: ImageTransition = .none
     var removeCurrentImageWhileLoading = false
     var forceRefresh = false
-    var processingMethod: ImageProcessingMethod = .common
+    var processingMethod: ImageProcessingMethod = .common()
     var imageCache: ImageCaching = ImageCache.shared
     var imageDownloader: ImageDownloader? = nil
 

@@ -39,7 +39,7 @@ public struct ImageDownloadService: ImageDownloader {
     public func fetchImage(
         with url: URL,
         forceRefresh: Bool = false,
-        processingMethod: ImageProcessingMethod = .common
+        processingMethod: ImageProcessingMethod = .common()
     ) async throws -> ImageDownloadResult {
         if !forceRefresh, let result = cachedImageResult(for: url) {
             return result
