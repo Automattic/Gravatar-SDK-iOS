@@ -4,7 +4,7 @@ import UIKit
 ///
 /// This is the default type which implements ``ImageDownloader``..
 /// Unless specified otherwise, `ImageDownloadService` will use a `URLSession` based `HTTPClient`, and a in-memory image cache.
-public actor ImageDownloadService: ImageDownloader {
+public struct ImageDownloadService: ImageDownloader {
     private let client: HTTPClient
     let imageCache: ImageCaching
 
@@ -23,18 +23,19 @@ public actor ImageDownloadService: ImageDownloader {
     private func fetchImage(from url: URL, forceRefresh: Bool, processor: ImageProcessor) async throws -> ImageDownloadResult {
         let request = URLRequest.imageRequest(url: url, forceRefresh: forceRefresh)
 
+        let client = self.client
         let task = Task<UIImage, Error> {
-            let (data, _) = try await self.client.fetchData(with: request)
+            let (data, _) = try await client.fetchData(with: request)
             guard let image = processor.process(data) else {
                 throw ImageFetchingError.imageProcessorFailed
             }
             return image
         }
 
-        await imageCache.setEntry(.inProgress(task), for: url.absoluteString)
+        imageCache.setEntry(.inProgress(task), for: url.absoluteString)
 
         let image = try await getImage(from: task)
-        await imageCache.setEntry(.ready(image), for: url.absoluteString)
+        imageCache.setEntry(.ready(image), for: url.absoluteString)
         return ImageDownloadResult(image: image, sourceURL: url)
     }
 
@@ -50,7 +51,7 @@ public actor ImageDownloadService: ImageDownloader {
     }
 
     func cachedImage(for url: URL) async throws -> UIImage? {
-        guard let entry = await imageCache.getEntry(with: url.absoluteString) else {
+        guard let entry = imageCache.getEntry(with: url.absoluteString) else {
             return nil
         }
 

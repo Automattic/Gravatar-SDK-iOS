@@ -9,13 +9,13 @@ public protocol ImageCaching {
     /// - Parameters:
     ///   - image: The cache entry to set.
     ///   - key: The entry's key, used to be found via `.getEntry(key:)`.
-    func setEntry(_ entry: CacheEntry, for key: String) async
+    func setEntry(_ entry: CacheEntry, for key: String)
 
     /// Gets a `CacheEntry` from cache for the given key, or nil if none is found.
     /// .
     /// - Parameter key: The key for the entry to get.
     /// - Returns: The cache entry which could contain an image, or a task to retreive the image. Nill is returned if nothing is found.
-    func getEntry(with key: String) async -> CacheEntry?
+    func getEntry(with key: String) -> CacheEntry?
 }
 
 /// Making `setTask` optional.
