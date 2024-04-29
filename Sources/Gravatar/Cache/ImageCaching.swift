@@ -1,9 +1,9 @@
 import UIKit
 
-/// Represents a cache for images
+/// Represents a cache for images.
 ///
-/// An ImageCaching will cache an instance of an image, or the task of retriving an image from remote.
-/// Requesting an image from cache should await for any task cached and return the image from this task instead of creating a new task.
+/// An ImageCaching represents a cache for CacheEntry elements. Each CacheEntry is either an instance of an image, or the task of retrieving an image from
+/// remote.
 public protocol ImageCaching {
     /// Saves an image in the cache.
     /// - Parameters:
@@ -12,15 +12,13 @@ public protocol ImageCaching {
     func setEntry(_ entry: CacheEntry, for key: String)
 
     /// Gets a `CacheEntry` from cache for the given key, or nil if none is found.
-    /// .
+    ///
     /// - Parameter key: The key for the entry to get.
-    /// - Returns: The cache entry which could contain an image, or a task to retreive the image. Nill is returned if nothing is found.
+    /// - Returns: The cache entry which could contain an image, the task that is retrieving the image. Nil is returned if nothing is found.
+    ///
+    /// `.inProgress(task)`  is used by the image downloader to check if there's already an ongoing download task for the same image. If yes, the image
+    /// downloader  awaits that ask instead of starting a new one.
     func getEntry(with key: String) -> CacheEntry?
-}
-
-/// Making `setTask` optional.
-extension ImageCaching {
-    public func setTask(_ task: Task<UIImage, Error>, for key: URL) async {}
 }
 
 /// The default `ImageCaching` used by this SDK.
