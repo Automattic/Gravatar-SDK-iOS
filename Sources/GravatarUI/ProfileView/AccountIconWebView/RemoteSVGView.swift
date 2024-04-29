@@ -11,6 +11,7 @@ class RemoteSVGButton: UIControl, WKNavigationDelegate, UIGestureRecognizerDeleg
     override var isHighlighted: Bool {
         didSet {
             webView.alpha = isHighlighted ? 0.8 : 1
+            fallbackImageView.alpha = isHighlighted ? 0.8 : 1
         }
     }
 
@@ -138,10 +139,15 @@ class RemoteSVGButton: UIControl, WKNavigationDelegate, UIGestureRecognizerDeleg
                     margin: 0;
                     background-color: transparent;
                 }
+                @keyframes fadeIn {
+                    0% { opacity: 0; }
+                    100% { opacity: 1; }
+                }
+                .fade-in { animation: fadeIn 0.2s; }
                 </style>
             <head/>
             <body>
-                <div class=icon>
+                <div class="icon fade-in">
                 \(svg)
                 </div>
             </body>
