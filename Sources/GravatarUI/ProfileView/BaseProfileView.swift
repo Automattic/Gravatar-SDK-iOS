@@ -262,12 +262,16 @@ open class BaseProfileView: UIView, UIContentView {
         accountButtonsStackView.arrangedSubviews.compactMap { $0 as? UIButton }.forEach { button in
             Configure(button).asAccountButton().palette(paletteType)
         }
+
+        accountButtonsStackView.arrangedSubviews.compactMap { $0 as? RemoteSVGButton }.forEach { view in
+            view.refresh(paletteType: paletteType)
+        }
         placeholderDisplayer?.refresh(with: placeholderColors)
     }
 
     func updateAccountButtons(with model: AccountListModel?) {
         accounts = Array(model?.accountsList.prefix(Constants.maximumAccountsDisplay) ?? [])
-        let buttons = accounts.map(createAccountButton)
+        let buttons = accounts.map(createAccountIconView)
         for view in accountButtonsStackView.arrangedSubviews {
             accountButtonsStackView.removeArrangedSubview(view)
             view.removeFromSuperview()
@@ -278,12 +282,6 @@ open class BaseProfileView: UIView, UIContentView {
     func createAccountButton(model: AccountModel) -> UIButton {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        let action = UIAction { [weak self] _ in
-            guard let self else { return }
-            self.delegate?.profileView(self, didTapOnAccountButtonWithModel: model)
-        }
-        button.addAction(action, for: .touchUpInside)
-
         Configure(button).asAccountButton().content(model).palette(paletteType)
         button.imageView?.contentMode = .scaleAspectFit
         button.imageView?.translatesAutoresizingMaskIntoConstraints = false
@@ -295,6 +293,36 @@ open class BaseProfileView: UIView, UIContentView {
                 imageView.heightAnchor.constraint(equalToConstant: Constants.accountIconLength),
             ])
         }
+        return button
+    }
+
+    func createAccountIconView(model: AccountModel) -> UIView {
+        let button: UIControl = if UIImage(named: model.shortname) != nil {
+            createAccountButton(model: model)
+        } else if let iconURL = model.iconURL { // If we have the iconURL try downloading the icon
+            createRemoteSVGButton(url: iconURL)
+        } else { // This will show the local fallback icon
+            createAccountButton(model: model)
+        }
+        let action = UIAction { [weak self] _ in
+            guard let self else { return }
+            self.delegate?.profileView(self, didTapOnAccountButtonWithModel: model)
+        }
+        button.addAction(action, for: .touchUpInside)
+        return button
+    }
+
+    func createRemoteSVGButton(url: URL) -> RemoteSVGButton {
+        let button = RemoteSVGButton(
+            iconSize: CGSize(width: Constants.accountIconLength, height: Constants.accountIconLength)
+        )
+        button.refresh(paletteType: paletteType, shouldReloadURL: false)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            button.widthAnchor.constraint(equalToConstant: Constants.accountIconLength),
+            button.heightAnchor.constraint(equalToConstant: Constants.accountIconLength),
+        ])
+        button.loadIcon(from: url)
         return button
     }
 
