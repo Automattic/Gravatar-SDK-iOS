@@ -2,7 +2,7 @@
 
 default_platform(:ios)
 
-OS = '17.2'
+OS = '17.4'
 IPHONE_DEVICE = "iPhone SE (3rd generation) (#{OS})"
 
 platform :ios do
