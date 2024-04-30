@@ -18,16 +18,17 @@ A Gravatar is a Globally Recognized Avatar. You upload an image and create your 
 
 This SDK will allow you to easily implement the Gravatar services in your project.
 
-### Displaying a Gravatar Image
+### Obtaining a Gravatar Image
 
-The easiest way is to use the `UIImageView.gravatar` extension.
+Using the **AvatarService**:
 
 ```swift
-gravatarImageView.gravatar.setImage(email: "user@email.com")
+let service = AvatarService()
+let result = try await imageRetriever.fetch(with: .email("some@email.com"))
+let avatar = result.image
 ```
 
-For more info check:
-- `GravatarWrapper/setImage(email:placeholder:rating:preferredSize:defaultAvatarOption:options:completionHandler:)`
+For more information, check ``AvatarService``.
 
 ## Featured
 

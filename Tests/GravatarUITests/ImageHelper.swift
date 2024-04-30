@@ -17,6 +17,10 @@ class ImageHelper {
         image(named: "placeholder", type: "png")!
     }
 
+    static var exampleAvatarImage: UIImage {
+        image(named: "example_avatar", type: "png")!
+    }
+
     static func dataFromImage(named: String, type: String) -> Data? {
         guard let url = Bundle.testsBundle.url(forResource: named, withExtension: type) else {
             return nil

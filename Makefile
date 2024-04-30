@@ -42,3 +42,12 @@ validate-pod: bundle-install
 	bundle exec pod lib lint \
 		--include-podspecs="*.podspec" \
 		--verbose --fail-fast
+
+update-example-snapshots:
+	for filePath in ./Sources/GravatarUI/GravatarUI.docc/Resources/ProfileExamples/*; \
+	do rm $$filePath; done
+	cp ./Tests/GravatarUITests/__Snapshots__/ProvileViewSnapshots/* ./Sources/GravatarUI/GravatarUI.docc/Resources/ProfileExamples
+	# Append @2x to the file name.
+	cd ./Sources/GravatarUI/GravatarUI.docc/Resources/ProfileExamples && \
+	for filePath in *; do name=$${filePath%.*}; mv $$filePath $${name//-dark/~dark}@2x$${filePath#$$name}; done
+
