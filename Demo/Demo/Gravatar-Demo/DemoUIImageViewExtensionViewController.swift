@@ -7,7 +7,6 @@
 
 import Foundation
 import UIKit
-import Gravatar
 import GravatarUI
 
 class DemoUIImageViewExtensionViewController: UIViewController {

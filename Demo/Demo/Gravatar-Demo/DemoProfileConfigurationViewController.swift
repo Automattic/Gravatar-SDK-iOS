@@ -1,5 +1,4 @@
 import UIKit
-import Gravatar
 import GravatarUI
 import SafariServices
 
