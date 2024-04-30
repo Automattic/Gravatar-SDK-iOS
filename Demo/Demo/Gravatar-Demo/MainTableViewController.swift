@@ -18,6 +18,7 @@ class MainTableViewController: UITableViewController {
         case profileCard
         case configuration
         case profileViewController
+        case displayRemoteSVG
     }
     
     private static let reuseID =  "DefaultCell"
@@ -51,6 +52,8 @@ class MainTableViewController: UITableViewController {
             content.text = "Profile Card Configuration"
         case .profileViewController:
             content.text = "Profile View Controller"
+        case .displayRemoteSVG:
+            content.text = "Display remote SVG"
         }
         cell.contentConfiguration = content
         return cell
@@ -77,6 +80,8 @@ class MainTableViewController: UITableViewController {
             show(DemoProfileConfigurationViewController(style: .insetGrouped), sender: nil)
         case .profileViewController:
             navigationController?.pushViewController(DemoProfilePresentationStylesViewController(), animated: true)
+        case .displayRemoteSVG:
+            navigationController?.pushViewController(DemoRemoteSVGViewController(), animated: true)
         }
     }
 }

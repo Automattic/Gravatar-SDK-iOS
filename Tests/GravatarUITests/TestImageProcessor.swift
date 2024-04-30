@@ -2,7 +2,7 @@ import Foundation
 import Gravatar
 import UIKit
 
-class TestImageProcessor: ImageProcessor {
+final class TestImageProcessor: ImageProcessor {
     init() {}
 
     var processedData = false

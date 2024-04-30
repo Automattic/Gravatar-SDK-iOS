@@ -13,7 +13,7 @@ class DemoFetchProfileViewController: UIViewController {
         return stack
     }()
 
-    let segmentedControl: UISegmentedControl = {
+    lazy var segmentedControl: UISegmentedControl = {
         let control = UISegmentedControl(items: ["Email", "Hash"])
         control.addTarget(self, action: #selector(chooseFetchType(_:)), for: .valueChanged)
         control.selectedSegmentIndex = 0

@@ -1,21 +1,32 @@
-import Foundation
 import Gravatar
 import UIKit
 
 class TestImageCache: ImageCaching {
-    var dict: [String: UIImage] = [:]
+    var dict: [String: CacheEntryWrapper] = [:]
+
     var getImageCallCount = 0
     var setImageCallsCount = 0
+    var setTaskCallCount = 0
 
-    init() {}
-
-    func setImage(_ image: UIImage, forKey key: String) {
-        setImageCallsCount += 1
-        dict[key] = image
+    func setEntry(_ entry: Gravatar.CacheEntry, for key: String) {
+        switch entry {
+        case .inProgress:
+            setTaskCallCount += 1
+        case .ready:
+            setImageCallsCount += 1
+        }
+        dict[key] = CacheEntryWrapper(entry)
     }
 
-    func getImage(forKey key: String) -> UIImage? {
+    func getEntry(with key: String) -> Gravatar.CacheEntry? {
         getImageCallCount += 1
-        return dict[key]
+        return dict[key]?.cacheEntry
+    }
+}
+
+class CacheEntryWrapper {
+    let cacheEntry: CacheEntry
+    init(_ cacheEntry: CacheEntry) {
+        self.cacheEntry = cacheEntry
     }
 }
