@@ -1,4 +1,3 @@
-import Gravatar
 import GravatarUI
 import UIKit
 

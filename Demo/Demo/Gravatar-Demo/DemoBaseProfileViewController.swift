@@ -1,5 +1,4 @@
 import UIKit
-import Gravatar
 import GravatarUI
 
 open class DemoBaseProfileViewController: UIViewController {
