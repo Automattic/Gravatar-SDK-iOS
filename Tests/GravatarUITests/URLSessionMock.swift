@@ -1,7 +1,7 @@
 import Foundation
 import Gravatar
 
-class URLSessionMock: URLSessionProtocol {
+final class URLSessionMock: URLSessionProtocol {
     static let jsonData = """
     {
         "name": "John",

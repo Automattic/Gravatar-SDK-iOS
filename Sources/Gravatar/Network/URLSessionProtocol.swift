@@ -1,7 +1,7 @@
 import UIKit
 
 /// Protocol for dependency injection purposes. `URLSession` conforms to  this protocol.
-public protocol URLSessionProtocol {
+public protocol URLSessionProtocol: Sendable {
     func dataTask(
         with request: URLRequest,
         completionHandler: @escaping @Sendable (Data?, URLResponse?, Error?) -> Void

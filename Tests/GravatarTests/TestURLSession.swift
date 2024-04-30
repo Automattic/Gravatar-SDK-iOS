@@ -9,7 +9,7 @@ enum TestDataTaskFailReason: Equatable {
     case urlMismatch
 }
 
-class TestURLSession: URLSessionProtocol {
+final class TestURLSession: URLSessionProtocol {
     func upload(for request: URLRequest, from bodyData: Data) async throws -> (Data, URLResponse) {
         XCTFail("Not implemented")
         fatalError()
