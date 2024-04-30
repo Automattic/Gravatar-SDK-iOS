@@ -18,7 +18,7 @@ class ImageHelper {
     }
 
     static var exampleAvatarImage: UIImage {
-        image(named: "example_avatar", type: "jpeg")!
+        image(named: "example_avatar", type: "png")!
     }
 
     static func dataFromImage(named: String, type: String) -> Data? {

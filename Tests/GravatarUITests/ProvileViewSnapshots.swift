@@ -75,13 +75,13 @@ extension TestProfileCardModel {
             TestAccountModel(display: "Tumblr", shortname: "tumblr"),
             TestAccountModel(display: "GitHub", shortname: "github"),
         ],
-        aboutMe: "Head of Engineering for WooCommerce, at Automattic. Previously Jetpack, WordPress.com and more. I've been building the web for over 20 years.",
-        displayName: "Beau Lebens",
-        fullName: "Bridget A Rosado",
+        aboutMe: "Engineer at heart, problem-solver by nature. Passionate about innovation and pushing boundaries. Let's build something incredible together.",
+        displayName: "John Appleseed",
+        fullName: "John Appleseed",
         userName: "username",
         jobTitle: "Engineer",
         pronouns: "he/him",
-        currentLocation: "Golden, CO",
+        currentLocation: "Atlanta GA",
         avatarIdentifier: .email("email@domain.com"),
         profileURL: URL(string: "https://gravatar.com/profile")
     )
