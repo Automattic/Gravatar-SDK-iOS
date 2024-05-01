@@ -32,7 +32,7 @@ public struct Palette {
         background: BackgroundColors,
         avatarBorder: UIColor,
         placeholder: PlaceholderColors,
-        preferredUserInterfaceStyle: UIUserInterfaceStyle
+        preferredUserInterfaceStyle: UIUserInterfaceStyle = .unspecified
     ) {
         self.name = name
         self.foreground = foreground
@@ -105,8 +105,7 @@ extension Palette {
                     dark: dark.placeholder.backgroundColor
                 ),
                 loadingAnimationColors: systemPlaceholderAnimationColors()
-            ),
-            preferredUserInterfaceStyle: .unspecified
+            )
         )
     }
 
