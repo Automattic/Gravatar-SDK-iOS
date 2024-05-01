@@ -355,7 +355,7 @@ open class BaseProfileView: UIView, UIContentView {
     }
 
     private func onProfileButtonPressed(with action: UIAction) {
-        let url = profileButtonStyle == .edit ? self.model?.profileEditURL : self.model?.profileURL
+        let url = profileButtonStyle == .view ? self.model?.profileURL : self.model?.profileEditURL
         self.delegate?.profileView(
             self,
             didTapOnProfileButtonWithStyle: profileButtonStyle,
