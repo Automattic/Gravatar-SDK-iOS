@@ -1,0 +1,25 @@
+{
+  "images" : [
+    {
+      "filename" : "empty-profile-avatar-light.pdf",
+      "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "Empty Profile Avatar.pdf",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  },
+  "properties" : {
+    "preserves-vector-representation" : true
+  }
+}

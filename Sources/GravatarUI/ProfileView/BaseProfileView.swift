@@ -251,6 +251,7 @@ open class BaseProfileView: UIView, UIContentView {
     }
 
     func refresh(with paletteType: PaletteType) {
+        avatarImageView.overrideUserInterfaceStyle = paletteType.palette.preferredUserInterfaceStyle
         avatarImageView.layer.borderColor = paletteType.palette.avatarBorder.cgColor
         backgroundColor = paletteType.palette.background.primary
         Configure(aboutMeLabel).asAboutMe().palette(paletteType)
@@ -326,12 +327,19 @@ open class BaseProfileView: UIView, UIContentView {
         return button
     }
 
+    public func updateAsEmpty(userName: String? = nil) {
+        guard let config = (configuration as? ProfileViewConfiguration) else { return }
+        configuration = config.emptyProfile(userName: userName)
+    }
+
     open func update(with config: ProfileViewConfiguration) {
+        clearFields()
         paletteType = config.palette
         padding = config.padding
         isLoading = config.isLoading
         avatarActivityIndicatorType = config.avatarActivityIndicatorType
-        if let avatarID = config.avatarID {
+        avatarImageView.image = config.avatarPlaceholder
+        if let avatarID = config.avatarID, !avatarID.id.isEmpty {
             loadAvatar(
                 with: avatarID,
                 placeholder: config.avatarPlaceholder,

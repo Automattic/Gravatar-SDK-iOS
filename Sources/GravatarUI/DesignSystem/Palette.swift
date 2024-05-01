@@ -25,12 +25,14 @@ public struct Palette {
     public let background: BackgroundColors
     public let avatarBorder: UIColor
     public let placeholder: PlaceholderColors
-    public init(name: String, foreground: ForegroundColors, background: BackgroundColors, avatarBorder: UIColor, placeholder: PlaceholderColors) {
+    public let preferredUserInterfaceStyle: UIUserInterfaceStyle
+    init(name: String, foreground: ForegroundColors, background: BackgroundColors, avatarBorder: UIColor, placeholder: PlaceholderColors, preferredUserInterfaceStyle: UIUserInterfaceStyle) {
         self.name = name
         self.foreground = foreground
         self.background = background
         self.avatarBorder = avatarBorder
         self.placeholder = placeholder
+        self.preferredUserInterfaceStyle = preferredUserInterfaceStyle
     }
 }
 
@@ -96,7 +98,8 @@ extension Palette {
                     dark: dark.placeholder.backgroundColor
                 ),
                 loadingAnimationColors: systemPlaceholderAnimationColors()
-            )
+            ), 
+            preferredUserInterfaceStyle: .unspecified
         )
     }
 
@@ -113,7 +116,8 @@ extension Palette {
             placeholder: PlaceholderColors(
                 backgroundColor: .smokeWhite,
                 loadingAnimationColors: [.smokeWhite, .bleachedSilkWhite]
-            )
+            ), 
+            preferredUserInterfaceStyle: .light
         )
     }
 
@@ -130,7 +134,8 @@ extension Palette {
             placeholder: PlaceholderColors(
                 backgroundColor: .boatAnchorGray,
                 loadingAnimationColors: [.boatAnchorGray, .spanishGray]
-            )
+            ), 
+            preferredUserInterfaceStyle: .dark
         )
     }
 

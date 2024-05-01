@@ -72,6 +72,15 @@ final class LargeProfileSummaryViewTests: XCTestCase {
         assertSnapshot(of: containerView, as: .image, named: "\(interfaceStyle.name)")
     }
 
+    func testLargeProfileSummaryViewEmptyState() throws {
+        for interfaceStyle in UIUserInterfaceStyle.allCases {
+            let (containerView, profileView) = createViews(model: nil)
+            profileView.updateAsEmpty()
+            containerView.overrideUserInterfaceStyle = interfaceStyle
+            assertSnapshot(of: containerView, as: .image, named: "\(interfaceStyle.name)")
+        }
+    }
+
     private func createViews(model: ProfileSummaryModel?) -> (UIView, LargeProfileSummaryView) {
         let cardView = LargeProfileSummaryView(frame: .zero, paletteType: .system)
         cardView.update(with: model)

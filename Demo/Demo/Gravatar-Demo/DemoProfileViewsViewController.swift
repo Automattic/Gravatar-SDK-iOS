@@ -98,6 +98,11 @@ class DemoProfileViewsViewController: DemoBaseProfileViewController {
                 profileView.loadAvatar(with: profile.avatarIdentifier, options: [.transition(.fade(0.2))])
                 profileSummaryView.update(with: profile)
                 profileSummaryView.loadAvatar(with: profile.avatarIdentifier, options: [.transition(.fade(0.2))])
+            } catch ProfileServiceError.responseError(reason: let reason) where reason.httpStatusCode == 404 {
+                largeProfileView.updateAsEmpty()
+                largeProfileSummaryView.updateAsEmpty()
+                profileView.updateAsEmpty()
+                profileSummaryView.updateAsEmpty()
             } catch {
                 print(error)
             }

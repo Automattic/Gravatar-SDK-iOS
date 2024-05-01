@@ -76,6 +76,17 @@ final class LargeProfileViewTests: XCTestCase {
         assertSnapshot(of: containerView, as: .image, named: "\(interfaceStyle.name)")
     }
 
+    func testLargeProfileViewEmptyState() throws {
+        for paletteType in palettesToTest {
+            let (cardView, containerView) = createViews(paletteType: paletteType)
+            cardView.updateAsEmpty()
+            containerView.backgroundColor = .systemBackground
+            containerView.overrideUserInterfaceStyle = paletteType.palette.preferredUserInterfaceStyle
+            cardView.avatarImageView.backgroundColor = .blue
+            assertSnapshot(of: containerView, as: .image, named: "testLargeProfileView-\(paletteType.name)")
+        }
+    }
+
     private func createViews(paletteType: PaletteType) -> (LargeProfileView, UIView) {
         let cardView = LargeProfileView(frame: .zero, paletteType: paletteType)
         cardView.translatesAutoresizingMaskIntoConstraints = false
