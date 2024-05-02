@@ -1,7 +1,7 @@
 import Foundation
 import UIKit
 
-public enum ResponseErrorReason {
+public enum ResponseErrorReason: Sendable {
     /// An error occurred in the system URL session.
     case URLSessionError(error: Error)
 
@@ -31,7 +31,7 @@ public enum ResponseErrorReason {
     }
 }
 
-public enum RequestErrorReason {
+public enum RequestErrorReason: Sendable {
     /// The URL could not be initialized.
     case urlInitializationFailed
 
