@@ -4,7 +4,7 @@ import Foundation
 ///
 /// The `ProfileService` uses an `ProfileIdentifier` to specifiy which avatar to fetch.  The `ProfileService` allows specifying a profile
 /// by either its email address or the hashID
-public enum ProfileIdentifier: Equatable {
+public enum ProfileIdentifier: Equatable, Sendable {
     case email(Email)
     case hashID(HashID)
 }
