@@ -63,5 +63,6 @@ class AccountButtonsPlaceholderDisplayer: PlaceholderDisplaying {
         }
     }
 
-    func prepareForAnimation() {}
+    func animationWillBegin() {}
+    func animationDidEnd() {}
 }
