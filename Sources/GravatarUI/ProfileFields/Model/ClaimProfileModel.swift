@@ -75,8 +75,8 @@ extension ProfileSummaryView: ProfileViewClaimProfileConfigurable {
     }
 }
 
-private extension ProfileViewConfiguration {
-    func configureAsClaim() -> ProfileViewConfiguration {
+extension ProfileViewConfiguration {
+    fileprivate func configureAsClaim() -> ProfileViewConfiguration {
         var copy = self
         copy.profileButtonStyle = .create
         copy.avatarPlaceholder = UIImage(named: "empty-profile-avatar")

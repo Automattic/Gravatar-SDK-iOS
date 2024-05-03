@@ -76,7 +76,7 @@ final class LargeProfileViewTests: XCTestCase {
         assertSnapshot(of: containerView, as: .image, named: "\(interfaceStyle.name)")
     }
 
-    @MainActor 
+    @MainActor
     func testLargeProfileViewEmptyState() throws {
         for paletteType in palettesToTest {
             let (cardView, containerView) = createViews(paletteType: paletteType)
