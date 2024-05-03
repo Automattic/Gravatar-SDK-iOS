@@ -224,13 +224,17 @@ open class BaseProfileView: UIView, UIContentView {
     }
 
     public func loadAvatar(
-        with avatarIdentifier: AvatarIdentifier,
+        with avatarIdentifier: AvatarIdentifier?,
         placeholder: UIImage? = nil,
         rating: Rating? = nil,
         defaultAvatarOption: DefaultAvatarOption? = nil,
         options: [ImageSettingOption]? = nil,
         completionHandler: ImageSetCompletion? = nil
     ) {
+        guard let avatarIdentifier else {
+            avatarImageView.image = placeholder
+            return
+        }
         avatarImageView.gravatar.setImage(
             avatarID: avatarIdentifier,
             placeholder: placeholder,
@@ -329,29 +333,30 @@ open class BaseProfileView: UIView, UIContentView {
 
     public func updateAsEmpty(userName: String? = nil) {
         guard let config = (configuration as? ProfileViewConfiguration) else { return }
+        clearFields()
         configuration = config.emptyProfile(userName: userName)
     }
 
     open func update(with config: ProfileViewConfiguration) {
-        clearFields()
         paletteType = config.palette
         padding = config.padding
         isLoading = config.isLoading
         avatarActivityIndicatorType = config.avatarActivityIndicatorType
-        avatarImageView.image = config.avatarPlaceholder
-        if let avatarID = config.avatarID, !avatarID.id.isEmpty {
-            loadAvatar(
-                with: avatarID,
-                placeholder: config.avatarPlaceholder,
-                rating: config.avatarRating,
-                defaultAvatarOption: config.defaultAvatarOption,
-                options: config.avatarSettingOptions,
-                completionHandler: nil
-            )
-        }
+        loadAvatar(with: config)
         if config.model != nil || config.summaryModel != nil {
             profileButtonStyle = config.profileButtonStyle
         }
+    }
+
+    private func loadAvatar(with config: ProfileViewConfiguration) {
+        loadAvatar(
+            with: config.avatarID,
+            placeholder: config.avatarPlaceholder,
+            rating: config.avatarRating,
+            defaultAvatarOption: config.defaultAvatarOption,
+            options: config.avatarSettingOptions,
+            completionHandler: nil
+        )
     }
 
     private func onProfileButtonPressed(with action: UIAction) {

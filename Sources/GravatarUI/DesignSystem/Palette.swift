@@ -26,6 +26,16 @@ public struct Palette {
     public let avatarBorder: UIColor
     public let placeholder: PlaceholderColors
     public let preferredUserInterfaceStyle: UIUserInterfaceStyle
+    /// Creates an instance of `Palette`.
+    ///
+    /// - Parameters:
+    ///   - name: The palete name.
+    ///   - foreground: Colors used on foreground elements like text.
+    ///   - background: Colors used for the background elements.
+    ///   - avatarBorder: Color used around the profile avatar image.
+    ///   - placeholder: Colors to use as placeholders.
+    ///   - preferredUserInterfaceStyle: Defines if this palette is a dark or light palette.
+    ///   This helps choose the correct images for this palette. Pass `.unspecified` to choose the system's user interface style. Default is `.unspecified`.
     init(
         name: String,
         foreground: ForegroundColors,

@@ -20,7 +20,7 @@ struct EmptyProfileModel: ProfileModel {
     )
 
     let accountsList: [any AccountModel] = [GravatarAccountModel(accountURL: URL(string: "https://gravatar.com/profile"))]
-    let avatarIdentifier: Gravatar.AvatarIdentifier = .hashID("")
+    let avatarIdentifier: Gravatar.AvatarIdentifier? = nil
     let profileEditURL: URL? = URL(string: "https://gravatar.com/profile")
     let userName: String = "empty"
     var fullName: String? {
