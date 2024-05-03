@@ -20,7 +20,7 @@ class ProfilePlaceholderActivityIndicator: ProfileActivityIndicator {
         guard placeholderDisplayer.isShowing else { return }
         shouldStopAnimating = false
         self.placeholderDisplayer.elements?.forEach { element in
-            element.prepareForAnimation()
+            element.animationWillBegin()
         }
         doLoadingAnimation(index: 0, animatingColors: baseView.placeholderColors.loadingAnimationColors)
     }
@@ -31,6 +31,7 @@ class ProfilePlaceholderActivityIndicator: ProfileActivityIndicator {
             animator?.stopAnimation(true)
         }
         self.placeholderDisplayer.elements?.forEach { element in
+            element.animationDidEnd()
             if placeholderDisplayer.isShowing {
                 element.refreshColor()
             } else {
