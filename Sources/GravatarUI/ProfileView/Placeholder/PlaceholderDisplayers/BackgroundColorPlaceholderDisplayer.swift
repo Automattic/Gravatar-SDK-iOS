@@ -41,5 +41,6 @@ class BackgroundColorPlaceholderDisplayer<T: UIView>: PlaceholderDisplaying {
         baseView.layer.backgroundColor = newColor?.cgColor
     }
 
-    func prepareForAnimation() {}
+    func animationWillBegin() {}
+    func animationDidEnd() {}
 }
