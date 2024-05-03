@@ -91,12 +91,16 @@ class DemoProfileViewsViewController: DemoBaseProfileViewController {
             do {
                 let profile = try await service.fetch(with: identifier)
                 largeProfileView.update(with: profile)
+                largeProfileView.profileButtonStyle = .view
                 largeProfileView.loadAvatar(with: profile.avatarIdentifier, options: [.transition(.fade(0.2))])
                 largeProfileSummaryView.update(with: profile)
+                largeProfileSummaryView.profileButtonStyle = .view
                 largeProfileSummaryView.loadAvatar(with: profile.avatarIdentifier, options: [.transition(.fade(0.2))])
                 profileView.update(with: profile)
+                profileView.profileButtonStyle = .view
                 profileView.loadAvatar(with: profile.avatarIdentifier, options: [.transition(.fade(0.2))])
                 profileSummaryView.update(with: profile)
+                profileSummaryView.profileButtonStyle = .view
                 profileSummaryView.loadAvatar(with: profile.avatarIdentifier, options: [.transition(.fade(0.2))])
             } catch ProfileServiceError.responseError(reason: let reason) where reason.httpStatusCode == 404 {
                 largeProfileView.updateWithClaimProfilePrompt()

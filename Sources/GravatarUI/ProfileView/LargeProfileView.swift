@@ -47,7 +47,6 @@ public class LargeProfileView: BaseProfileView {
 
     public func update(with model: ProfileModel?) {
         self.model = model
-        aboutMeDashedLabel.showDashedBorder = false
         guard let model else { return }
         Configure(aboutMeLabel).asAboutMe().content(model).palette(paletteType)
         Configure(displayNameLabel).asDisplayName().content(model).palette(paletteType)
@@ -59,7 +58,6 @@ public class LargeProfileView: BaseProfileView {
     override public func update(with config: ProfileViewConfiguration) {
         super.update(with: config)
         update(with: config.model)
-        aboutMeDashedLabel.showDashedBorder = config.dashedAboutMe
     }
 
     override public func showPlaceholders() {

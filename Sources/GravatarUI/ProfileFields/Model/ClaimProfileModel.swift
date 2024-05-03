@@ -80,7 +80,6 @@ extension ProfileViewConfiguration {
         var copy = self
         copy.profileButtonStyle = .create
         copy.avatarPlaceholder = UIImage(named: "empty-profile-avatar")
-        copy.dashedAboutMe = true
         return copy
     }
 }

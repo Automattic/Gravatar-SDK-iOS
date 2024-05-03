@@ -22,12 +22,12 @@ class DashedLabel: UILabel {
     var dashedPadding: UIEdgeInsets = Constants.dashedPadding
 
     var dashColor: UIColor = .clear
-    var dashedBorderLayer: CAShapeLayer {
+    var dashedBorderLayer: CAShapeLayer = {
         let layer = CAShapeLayer()
         layer.fillColor = nil
         layer.isHidden = true
         return layer
-    }
+    }()
 
     var showDashedBorder: Bool = false {
         didSet {

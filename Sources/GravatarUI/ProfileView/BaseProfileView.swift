@@ -54,7 +54,8 @@ open class BaseProfileView: UIView, UIContentView {
 
     public var profileButtonStyle: ProfileButtonStyle = .view {
         didSet {
-            Configure(profileButton).asProfileButton().style(profileButtonStyle)
+            Configure(profileButton).asProfileButton().style(profileButtonStyle).palette(paletteType)
+            aboutMeDashedLabel.showDashedBorder = profileButtonStyle == .create
         }
     }
 

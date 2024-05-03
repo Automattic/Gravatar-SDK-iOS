@@ -5,7 +5,6 @@ public struct ProfileViewConfiguration: UIContentConfiguration {
     public var model: ProfileModel?
     public var summaryModel: ProfileSummaryModel?
     let profileStyle: Style
-    var dashedAboutMe = false
     var avatarID: AvatarIdentifier? {
         model?.avatarIdentifier ?? summaryModel?.avatarIdentifier
     }
