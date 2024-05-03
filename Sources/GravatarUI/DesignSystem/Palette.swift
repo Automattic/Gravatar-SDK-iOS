@@ -24,6 +24,7 @@ public struct Palette {
     public let foreground: ForegroundColors
     public let background: BackgroundColors
     public let avatarBorder: UIColor
+    public let border: UIColor
     public let placeholder: PlaceholderColors
     public let preferredUserInterfaceStyle: UIUserInterfaceStyle
     /// Creates an instance of `Palette`.
@@ -41,6 +42,7 @@ public struct Palette {
         foreground: ForegroundColors,
         background: BackgroundColors,
         avatarBorder: UIColor,
+        border: UIColor,
         placeholder: PlaceholderColors,
         preferredUserInterfaceStyle: UIUserInterfaceStyle = .unspecified
     ) {
@@ -48,6 +50,7 @@ public struct Palette {
         self.foreground = foreground
         self.background = background
         self.avatarBorder = avatarBorder
+        self.border = border
         self.placeholder = placeholder
         self.preferredUserInterfaceStyle = preferredUserInterfaceStyle
     }
@@ -109,6 +112,10 @@ extension Palette {
                 dark: dark.background.primary
             )),
             avatarBorder: .porpoiseGray,
+            border: .init(
+                light: light.border,
+                dark: dark.border
+            ),
             placeholder: PlaceholderColors(
                 backgroundColor: UIColor(
                     light: light.placeholder.backgroundColor,
@@ -129,6 +136,7 @@ extension Palette {
             ),
             background: .init(primary: .white),
             avatarBorder: .porpoiseGray,
+            border: .porpoiseGray,
             placeholder: PlaceholderColors(
                 backgroundColor: .smokeWhite,
                 loadingAnimationColors: [.smokeWhite, .bleachedSilkWhite]
@@ -146,7 +154,8 @@ extension Palette {
                 secondary: .snowflakeWhite60
             ),
             background: .init(primary: .gravatarBlack),
-            avatarBorder: .porpoiseGray,
+            avatarBorder: .porpoiseGray, 
+            border: .orchidBlack,
             placeholder: PlaceholderColors(
                 backgroundColor: .boatAnchorGray,
                 loadingAnimationColors: [.boatAnchorGray, .spanishGray]

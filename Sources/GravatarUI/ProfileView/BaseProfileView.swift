@@ -122,12 +122,16 @@ open class BaseProfileView: UIView, UIContentView {
         return imageView
     }()
 
-    public private(set) lazy var aboutMeLabel: UILabel = {
-        let label = UILabel()
+    let aboutMeDashedLabel: DashedLabel = {
+        let label = DashedLabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.adjustsFontForContentSizeCategory = true
         return label
     }()
+
+    public var aboutMeLabel: UILabel {
+        return aboutMeDashedLabel
+    }
 
     /// The placeholder state of "about me" label consists of 2 separate lines in some designs. This label's only purpose is to serve as the 2nd line of that
     /// placeholder.
@@ -261,8 +265,10 @@ open class BaseProfileView: UIView, UIContentView {
         Configure(aboutMeLabel).asAboutMe().palette(paletteType)
         Configure(displayNameLabel).asDisplayName().palette(paletteType)
         Configure(personalInfoLabel).asPersonalInfo().palette(paletteType)
-
         Configure(profileButton).asProfileButton().palette(paletteType)
+
+        aboutMeDashedLabel.dashColor = paletteType.palette.border
+        aboutMeDashedLabel.updateDashedBorder()
 
         accountButtonsStackView.arrangedSubviews.compactMap { $0 as? UIButton }.forEach { button in
             Configure(button).asAccountButton().palette(paletteType)
