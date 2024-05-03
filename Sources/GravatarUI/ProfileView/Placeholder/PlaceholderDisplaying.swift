@@ -16,8 +16,10 @@ public protocol PlaceholderDisplaying {
     func set(layerColor newColor: UIColor?)
     /// Sets the `backgroundColor` of the underlying view element.
     func set(viewColor newColor: UIColor?)
-    /// Prepares for color animations.
-    func prepareForAnimation()
+    /// Informs the element before the animations begin.
+    func animationWillBegin()
+    /// Informs the element after the  animations end.
+    func animationDidEnd()
     /// Refreshes the color.  `backgroundColor` is set to `placeholderColor` and`layer.backgroundColor` to nil.
     func refreshColor()
 }

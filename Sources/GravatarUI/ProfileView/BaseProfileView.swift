@@ -297,7 +297,7 @@ open class BaseProfileView: UIView, UIContentView {
     }
 
     func createAccountIconView(model: AccountModel) -> UIView {
-        let button: UIControl = if UIImage(named: model.shortname) != nil {
+        let button: UIControl = if UIImage(localName: model.shortname) != nil {
             createAccountButton(model: model)
         } else if let iconURL = model.iconURL { // If we have the iconURL try downloading the icon
             createRemoteSVGButton(url: iconURL)
