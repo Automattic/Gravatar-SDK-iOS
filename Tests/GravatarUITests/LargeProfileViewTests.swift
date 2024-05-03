@@ -76,10 +76,11 @@ final class LargeProfileViewTests: XCTestCase {
         assertSnapshot(of: containerView, as: .image, named: "\(interfaceStyle.name)")
     }
 
+    @MainActor 
     func testLargeProfileViewEmptyState() throws {
         for paletteType in palettesToTest {
             let (cardView, containerView) = createViews(paletteType: paletteType)
-            cardView.updateAsEmpty()
+            cardView.updateWithClaimProfilePrompt()
             containerView.backgroundColor = .systemBackground
             containerView.overrideUserInterfaceStyle = paletteType.palette.preferredUserInterfaceStyle
             cardView.avatarImageView.backgroundColor = .blue
@@ -107,7 +108,7 @@ struct TestProfileCardModel: ProfileModel {
     var pronunciation: String?
     var pronouns: String?
     var currentLocation: String?
-    var avatarIdentifier: Gravatar.AvatarIdentifier
+    var avatarIdentifier: Gravatar.AvatarIdentifier?
     var profileURL: URL?
 
     static func fullCard() -> TestProfileCardModel {

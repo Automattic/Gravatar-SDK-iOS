@@ -72,10 +72,11 @@ final class LargeProfileSummaryViewTests: XCTestCase {
         assertSnapshot(of: containerView, as: .image, named: "\(interfaceStyle.name)")
     }
 
+    @MainActor 
     func testLargeProfileSummaryViewEmptyState() throws {
         for interfaceStyle in UIUserInterfaceStyle.allCases {
             let (containerView, profileView) = createViews(model: nil)
-            profileView.updateAsEmpty()
+            profileView.updateWithClaimProfilePrompt()
             containerView.overrideUserInterfaceStyle = interfaceStyle
             assertSnapshot(of: containerView, as: .image, named: "\(interfaceStyle.name)")
         }

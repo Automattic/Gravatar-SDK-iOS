@@ -72,12 +72,13 @@ final class ProfileViewTests: XCTestCase {
         assertSnapshot(of: containerView, as: .image, named: "\(interfaceStyle.name)")
     }
 
+    @MainActor
     func testProfileViewEmptyState() throws {
         for interfaceStyle in UIUserInterfaceStyle.allCases {
             let interfaceStyle: UIUserInterfaceStyle = interfaceStyle
             let (containerView, cardView) = createViews(model: nil)
             containerView.overrideUserInterfaceStyle = interfaceStyle
-            cardView.updateAsEmpty()
+            cardView.updateWithClaimProfilePrompt()
             assertSnapshot(of: containerView, as: .image, named: "\(interfaceStyle.name)")
         }
     }

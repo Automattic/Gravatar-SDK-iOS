@@ -81,14 +81,4 @@ extension ProfileViewConfiguration {
     public static func largeSummary(model: ProfileSummaryModel? = nil, palette: PaletteType = .system) -> ProfileViewConfiguration {
         self.init(model: model, palette: palette, profileStyle: .largeSummary)
     }
-
-    public func emptyProfile(userName: String? = nil) -> ProfileViewConfiguration {
-        var copy = self
-        copy.isLoading = false
-        copy.model = EmptyProfileModel(userName: userName)
-        copy.summaryModel = EmptyProfileModel(userName: userName)
-        copy.profileButtonStyle = .create
-        copy.avatarPlaceholder = UIImage(named: "empty-profile-avatar")
-        return copy
-    }
 }

@@ -331,12 +331,6 @@ open class BaseProfileView: UIView, UIContentView {
         return button
     }
 
-    public func updateAsEmpty(userName: String? = nil) {
-        guard let config = (configuration as? ProfileViewConfiguration) else { return }
-        clearFields()
-        configuration = config.emptyProfile(userName: userName)
-    }
-
     open func update(with config: ProfileViewConfiguration) {
         paletteType = config.palette
         padding = config.padding
