@@ -15,6 +15,7 @@ class DashedLabel: UILabel {
             layer.masksToBounds = cornerRadius > 0
         }
     }
+
     var dashWidth: CGFloat = Constants.dashWidth
     var dashLength: CGFloat = Constants.dashLength
     var dashSpaceLength: CGFloat = Constants.dashSpaceLength
@@ -39,6 +40,7 @@ class DashedLabel: UILabel {
         layer.addSublayer(dashedBorderLayer)
     }
 
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

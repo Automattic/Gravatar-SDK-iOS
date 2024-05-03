@@ -154,7 +154,7 @@ extension Palette {
                 secondary: .snowflakeWhite60
             ),
             background: .init(primary: .gravatarBlack),
-            avatarBorder: .porpoiseGray, 
+            avatarBorder: .porpoiseGray,
             border: .orchidBlack,
             placeholder: PlaceholderColors(
                 backgroundColor: .boatAnchorGray,

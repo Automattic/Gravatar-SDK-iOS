@@ -130,7 +130,7 @@ open class BaseProfileView: UIView, UIContentView {
     }()
 
     public var aboutMeLabel: UILabel {
-        return aboutMeDashedLabel
+        aboutMeDashedLabel
     }
 
     /// The placeholder state of "about me" label consists of 2 separate lines in some designs. This label's only purpose is to serve as the 2nd line of that
