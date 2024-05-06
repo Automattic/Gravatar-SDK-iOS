@@ -54,7 +54,8 @@ open class BaseProfileView: UIView, UIContentView {
 
     public var profileButtonStyle: ProfileButtonStyle = .view {
         didSet {
-            Configure(profileButton).asProfileButton().style(profileButtonStyle)
+            Configure(profileButton).asProfileButton().style(profileButtonStyle).palette(paletteType)
+            aboutMeDashedLabel.showDashedBorder = profileButtonStyle == .create
         }
     }
 
@@ -122,12 +123,16 @@ open class BaseProfileView: UIView, UIContentView {
         return imageView
     }()
 
-    public private(set) lazy var aboutMeLabel: UILabel = {
-        let label = UILabel()
+    let aboutMeDashedLabel: DashedLabel = {
+        let label = DashedLabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.adjustsFontForContentSizeCategory = true
         return label
     }()
+
+    public var aboutMeLabel: UILabel {
+        aboutMeDashedLabel
+    }
 
     /// The placeholder state of "about me" label consists of 2 separate lines in some designs. This label's only purpose is to serve as the 2nd line of that
     /// placeholder.
@@ -224,13 +229,17 @@ open class BaseProfileView: UIView, UIContentView {
     }
 
     public func loadAvatar(
-        with avatarIdentifier: AvatarIdentifier,
+        with avatarIdentifier: AvatarIdentifier?,
         placeholder: UIImage? = nil,
         rating: Rating? = nil,
         defaultAvatarOption: DefaultAvatarOption? = nil,
         options: [ImageSettingOption]? = nil,
         completionHandler: ImageSetCompletion? = nil
     ) {
+        guard let avatarIdentifier else {
+            avatarImageView.image = placeholder
+            return
+        }
         avatarImageView.gravatar.setImage(
             avatarID: avatarIdentifier,
             placeholder: placeholder,
@@ -251,13 +260,16 @@ open class BaseProfileView: UIView, UIContentView {
     }
 
     func refresh(with paletteType: PaletteType) {
+        avatarImageView.overrideUserInterfaceStyle = paletteType.palette.preferredUserInterfaceStyle
         avatarImageView.layer.borderColor = paletteType.palette.avatarBorder.cgColor
         backgroundColor = paletteType.palette.background.primary
         Configure(aboutMeLabel).asAboutMe().palette(paletteType)
         Configure(displayNameLabel).asDisplayName().palette(paletteType)
         Configure(personalInfoLabel).asPersonalInfo().palette(paletteType)
-
         Configure(profileButton).asProfileButton().palette(paletteType)
+
+        aboutMeDashedLabel.dashColor = paletteType.palette.border
+        aboutMeDashedLabel.updateDashedBorder()
 
         accountButtonsStackView.arrangedSubviews.compactMap { $0 as? UIButton }.forEach { button in
             Configure(button).asAccountButton().palette(paletteType)
@@ -297,7 +309,7 @@ open class BaseProfileView: UIView, UIContentView {
     }
 
     func createAccountIconView(model: AccountModel) -> UIView {
-        let button: UIControl = if UIImage(localName: model.shortname) != nil {
+        let button: UIControl = if UIImage(named: model.shortname) != nil {
             createAccountButton(model: model)
         } else if let iconURL = model.iconURL { // If we have the iconURL try downloading the icon
             createRemoteSVGButton(url: iconURL)
@@ -331,23 +343,25 @@ open class BaseProfileView: UIView, UIContentView {
         padding = config.padding
         isLoading = config.isLoading
         avatarActivityIndicatorType = config.avatarActivityIndicatorType
-        if let avatarID = config.avatarID {
-            loadAvatar(
-                with: avatarID,
-                placeholder: config.avatarPlaceholder,
-                rating: config.avatarRating,
-                defaultAvatarOption: config.defaultAvatarOption,
-                options: config.avatarSettingOptions,
-                completionHandler: nil
-            )
-        }
+        loadAvatar(with: config)
         if config.model != nil || config.summaryModel != nil {
             profileButtonStyle = config.profileButtonStyle
         }
     }
 
+    private func loadAvatar(with config: ProfileViewConfiguration) {
+        loadAvatar(
+            with: config.avatarID,
+            placeholder: config.avatarPlaceholder,
+            rating: config.avatarRating,
+            defaultAvatarOption: config.defaultAvatarOption,
+            options: config.avatarSettingOptions,
+            completionHandler: nil
+        )
+    }
+
     private func onProfileButtonPressed(with action: UIAction) {
-        let url = profileButtonStyle == .edit ? self.model?.profileEditURL : self.model?.profileURL
+        let url = profileButtonStyle == .view ? self.model?.profileURL : self.model?.profileEditURL
         self.delegate?.profileView(
             self,
             didTapOnProfileButtonWithStyle: profileButtonStyle,

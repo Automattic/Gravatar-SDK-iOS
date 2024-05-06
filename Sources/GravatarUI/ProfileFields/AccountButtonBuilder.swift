@@ -3,7 +3,7 @@ import UIKit
 
 @MainActor
 public struct AccountButtonBuilder {
-    static let fallbackIcon: UIImage? = UIImage(localName: "wp-link")
+    static let fallbackIcon: UIImage? = UIImage(named: "wp-link")
     let button: UIButton
     init(button: UIButton) {
         self.button = button
@@ -19,7 +19,7 @@ public struct AccountButtonBuilder {
     }
 
     private func image(with model: AccountModel) -> UIImage? {
-        UIImage(localName: model.shortname) ?? Self.fallbackIcon
+        UIImage(named: model.shortname) ?? Self.fallbackIcon
     }
 
     @discardableResult
@@ -33,8 +33,8 @@ public struct AccountButtonBuilder {
 }
 
 extension UIImage {
-    convenience init?(localName: String) {
-        self.init(named: localName, in: Bundle.module, with: nil)
+    convenience init?(named name: String) {
+        self.init(named: name, in: Bundle.module, compatibleWith: nil)
     }
 }
 
