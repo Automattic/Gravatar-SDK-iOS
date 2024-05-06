@@ -7,7 +7,7 @@ public protocol ProfileViewPlaceholderDisplaying {
     func showPlaceholder(on view: BaseProfileView)
     func hidePlaceholder(on view: BaseProfileView)
     func setup(using view: BaseProfileView)
-    func refresh(with placeholderColors: PlaceholderColors)
+    func refresh(with placeholderColors: PlaceholderColors, paletteType: PaletteType)
 }
 
 /// ProfileViewPlaceholderDisplayer can convert each element of `BaseProfileView` into a placeholder and revert back.
@@ -20,7 +20,9 @@ class ProfileViewPlaceholderDisplayer: ProfileViewPlaceholderDisplaying {
         let color = view.placeholderColors.backgroundColor
         elements = [
             BackgroundColorPlaceholderDisplayer<UIImageView>(
-                baseView: view.avatarImageView, color: color, originalBackgroundColor: .clear
+                baseView: view.avatarImageView,
+                color: color,
+                originalBackgroundColor: view.paletteType.palette.avatar.background
             ),
             LabelPlaceholderDisplayer(
                 baseView: view.aboutMeLabel,
@@ -75,10 +77,13 @@ class ProfileViewPlaceholderDisplayer: ProfileViewPlaceholderDisplaying {
         elements?.forEach { $0.hidePlaceholder() }
     }
 
-    func refresh(with placeholderColors: PlaceholderColors) {
+    func refresh(with placeholderColors: PlaceholderColors, paletteType: PaletteType) {
         guard let elements else { return }
         for var element in elements {
             element.placeholderColor = placeholderColors.backgroundColor
+            if let element = element as? BackgroundColorPlaceholderDisplayer<UIImageView> {
+                element.originalBackgroundColor = paletteType.palette.avatar.background
+            }
             if isShowing {
                 element.set(viewColor: placeholderColors.backgroundColor)
             }

@@ -22,7 +22,7 @@ public struct BackgroundColors {
 public struct AvatarColors {
     public let border: UIColor
     public let background: UIColor
-    
+
     public init(border: UIColor, background: UIColor) {
         self.border = border
         self.background = background
@@ -58,7 +58,7 @@ public enum PaletteType {
     case dark
     case system
     case custom(() -> Palette)
-    
+
     public var palette: Palette {
         switch self {
         case .light:
@@ -71,7 +71,7 @@ public enum PaletteType {
             paletteProvider()
         }
     }
-    
+
     public var name: String {
         palette.name
     }
@@ -115,7 +115,7 @@ extension Palette {
             )
         )
     }
-    
+
     public static var light: Palette {
         .init(
             name: "Light",
@@ -135,7 +135,7 @@ extension Palette {
             )
         )
     }
-    
+
     static var dark: Palette {
         .init(
             name: "Dark",
@@ -155,7 +155,7 @@ extension Palette {
             )
         )
     }
-    
+
     private static func systemPlaceholderAnimationColors() -> [UIColor] {
         var colors: [UIColor] = []
         let count = min(light.placeholder.loadingAnimationColors.count, dark.placeholder.loadingAnimationColors.count)

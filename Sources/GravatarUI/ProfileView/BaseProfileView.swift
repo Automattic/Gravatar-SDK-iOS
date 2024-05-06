@@ -23,7 +23,7 @@ open class BaseProfileView: UIView, UIContentView {
     /// Placeholder color policy to use in the placeholder state (which basically means when all fields are empty).
     public var placeholderColorPolicy: PlaceholderColorPolicy = .currentPalette {
         didSet {
-            placeholderDisplayer?.refresh(with: placeholderColors)
+            placeholderDisplayer?.refresh(with: placeholderColors, paletteType: paletteType)
         }
     }
 
@@ -252,6 +252,7 @@ open class BaseProfileView: UIView, UIContentView {
 
     func refresh(with paletteType: PaletteType) {
         avatarImageView.layer.borderColor = paletteType.palette.avatar.border.cgColor
+        avatarImageView.backgroundColor = paletteType.palette.avatar.background
         backgroundColor = paletteType.palette.background.primary
         Configure(aboutMeLabel).asAboutMe().palette(paletteType)
         Configure(displayNameLabel).asDisplayName().palette(paletteType)
@@ -266,7 +267,7 @@ open class BaseProfileView: UIView, UIContentView {
         accountButtonsStackView.arrangedSubviews.compactMap { $0 as? RemoteSVGButton }.forEach { view in
             view.refresh(paletteType: paletteType)
         }
-        placeholderDisplayer?.refresh(with: placeholderColors)
+        placeholderDisplayer?.refresh(with: placeholderColors, paletteType: paletteType)
     }
 
     func updateAccountButtons(with model: AccountListModel?) {

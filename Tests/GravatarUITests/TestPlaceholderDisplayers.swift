@@ -21,7 +21,7 @@ final class TestPlaceholderDisplayers: XCTestCase {
         let placeholderDisplayer = BackgroundColorPlaceholderDisplayer(
             baseView: view,
             color: .porpoiseGray,
-            originalBackgroundColor: .white
+            originalColor: .white
         )
         placeholderDisplayer.showPlaceholder()
         assertSnapshot(of: containerView, as: .image, named: "placeholder-shown")
@@ -37,7 +37,7 @@ final class TestPlaceholderDisplayers: XCTestCase {
         let placeholderDisplayer = BackgroundColorPlaceholderDisplayer(
             baseView: view,
             color: .porpoiseGray,
-            originalBackgroundColor: .white,
+            originalColor: .white,
             isTemporary: true
         )
         placeholderDisplayer.showPlaceholder()
@@ -54,7 +54,7 @@ final class TestPlaceholderDisplayers: XCTestCase {
         let placeholderDisplayer = RectangularPlaceholderDisplayer(
             baseView: view,
             color: .porpoiseGray,
-            originalBackgroundColor: .white,
+            originalColor: .white,
             cornerRadius: 8,
             height: Constants.elementSize.height,
             widthRatioToParent: 0.8
@@ -75,7 +75,7 @@ final class TestPlaceholderDisplayers: XCTestCase {
         let placeholderDisplayer = ProfileButtonPlaceholderDisplayer(
             baseView: button,
             color: .porpoiseGray,
-            originalBackgroundColor: .dugongGray,
+            originalColor: .dugongGray,
             cornerRadius: 8,
             height: 30,
             widthRatioToParent: 0.8
