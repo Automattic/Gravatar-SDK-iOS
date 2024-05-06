@@ -6,7 +6,7 @@ class BackgroundColorPlaceholderDisplayer<T: UIView>: PlaceholderDisplaying {
     var placeholderColor: UIColor
     let baseView: T
     let isTemporary: Bool
-    let originalBackgroundColor: UIColor
+    var originalBackgroundColor: UIColor
 
     init(baseView: T, color: UIColor, originalBackgroundColor: UIColor, isTemporary: Bool = false) {
         self.placeholderColor = color
