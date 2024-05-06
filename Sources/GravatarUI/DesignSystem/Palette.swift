@@ -34,13 +34,35 @@ public struct Palette {
     public let foreground: ForegroundColors
     public let background: BackgroundColors
     public let avatar: AvatarColors
+    public let border: UIColor
     public let placeholder: PlaceholderColors
-    public init(name: String, foreground: ForegroundColors, background: BackgroundColors, avatar: AvatarColors, placeholder: PlaceholderColors) {
+    public let preferredUserInterfaceStyle: UIUserInterfaceStyle
+    /// Creates an instance of `Palette`.
+    ///
+    /// - Parameters:
+    ///   - name: The palete name.
+    ///   - foreground: Colors used on foreground elements like text.
+    ///   - background: Colors used for the background elements.
+    ///   - avatar: Colors used for the profile avatar image.
+    ///   - placeholder: Colors to use as placeholders.
+    ///   - preferredUserInterfaceStyle: Defines if this palette is a dark or light palette.
+    ///   This helps choose the correct images for this palette. Pass `.unspecified` to choose the system's user interface style. Default is `.unspecified`.
+    init(
+        name: String,
+        foreground: ForegroundColors,
+        background: BackgroundColors,
+        avatar: AvatarColors,
+        border: UIColor,
+        placeholder: PlaceholderColors,
+        preferredUserInterfaceStyle: UIUserInterfaceStyle = .unspecified
+    ) {
         self.name = name
         self.foreground = foreground
         self.background = background
         self.avatar = avatar
+        self.border = border
         self.placeholder = placeholder
+        self.preferredUserInterfaceStyle = preferredUserInterfaceStyle
     }
 }
 
@@ -106,6 +128,10 @@ extension Palette {
                     dark: dark.placeholder.backgroundColor
                 )
             ),
+            border: .init(
+                light: light.border,
+                dark: dark.border
+            ),
             placeholder: PlaceholderColors(
                 backgroundColor: UIColor(
                     light: light.placeholder.backgroundColor,
@@ -129,10 +155,12 @@ extension Palette {
                 border: .porpoiseGray,
                 background: .smokeWhite
             ),
+            border: .porpoiseGray,
             placeholder: PlaceholderColors(
                 backgroundColor: .smokeWhite,
                 loadingAnimationColors: [.smokeWhite, .bleachedSilkWhite]
-            )
+            ),
+            preferredUserInterfaceStyle: .light
         )
     }
 
@@ -149,10 +177,12 @@ extension Palette {
                 border: .porpoiseGray,
                 background: .boatAnchorGray
             ),
+            border: .bovineGray,
             placeholder: PlaceholderColors(
                 backgroundColor: .boatAnchorGray,
                 loadingAnimationColors: [.boatAnchorGray, .spanishGray]
-            )
+            ),
+            preferredUserInterfaceStyle: .dark
         )
     }
 

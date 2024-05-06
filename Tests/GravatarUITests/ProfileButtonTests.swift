@@ -2,7 +2,6 @@ import GravatarUI
 import SnapshotTesting
 import XCTest
 
-@MainActor
 final class ProfileButtonTests: XCTestCase {
     let frame = CGRect(x: 0, y: 0, width: 100, height: 50)
     let palettesToTest: [PaletteType] = [.light, .dark]
@@ -12,6 +11,7 @@ final class ProfileButtonTests: XCTestCase {
         // isRecording = true
     }
 
+    @MainActor
     func testProfileButtonViewStyle() {
         let button = UIButton(frame: frame)
         Configure(button)
@@ -21,6 +21,7 @@ final class ProfileButtonTests: XCTestCase {
         XCTAssertEqual(button.titleLabel?.text, "View profile")
     }
 
+    @MainActor
     func testProfileButtonEditStyle() {
         let button = UIButton(frame: frame)
         Configure(button)
@@ -30,6 +31,7 @@ final class ProfileButtonTests: XCTestCase {
         XCTAssertEqual(button.titleLabel?.text, "Edit profile")
     }
 
+    @MainActor
     func testProfileButtonSnapshots() {
         let button = UIButton(frame: frame)
 

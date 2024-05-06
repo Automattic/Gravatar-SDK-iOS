@@ -6,15 +6,14 @@ class DemoProfileConfigurationViewController: UITableViewController {
     lazy var dataSource = UITableViewDiffableDataSource<Section, String>(tableView: tableView) { [weak self] tableView, indexPath, itemIdentifier in
         let cellID = "ProfileCell"
         let cell = tableView.dequeueReusableCell(withIdentifier: cellID) ?? UITableViewCell(style: .default, reuseIdentifier: cellID)
-        let model = self?.models[itemIdentifier]
-        var config = ProfileViewConfiguration.standard(model: model)
-        config.delegate = self
+        var config = self?.models[itemIdentifier]
+        config?.delegate = self
         cell.contentConfiguration = config
         return cell
     }
 
     var snapshot = NSDiffableDataSourceSnapshot<Section, String>()
-    var models = [String: UserProfile]()
+    var models = [String: ProfileViewConfiguration]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -65,14 +64,21 @@ class DemoProfileConfigurationViewController: UITableViewController {
 
     func addEmail(_ email: String) async {
         guard !email.isEmpty else { return }
-
+        
+        var config = ProfileViewConfiguration.standard()
+        config.isLoading = true
+        models[email] = config
         snapshot.appendItems([email])
         await dataSource.apply(snapshot)
 
         let service = ProfileService()
         do {
             let profile = try await service.fetch(with: .email(email))
-            models[email] = profile
+            models[email] = .standard(model: profile)
+            snapshot.reloadItems([email])
+            await dataSource.apply(snapshot)
+        } catch ProfileServiceError.responseError(let reason) where reason.httpStatusCode == 404 {
+            models[email] = ProfileView.claimProfileConfiguration()
             snapshot.reloadItems([email])
             await dataSource.apply(snapshot)
         } catch {
