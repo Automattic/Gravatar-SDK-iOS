@@ -124,8 +124,8 @@ extension Palette {
             avatar: AvatarColors(
                 border: .porpoiseGray,
                 background: UIColor(
-                    light: light.placeholder.backgroundColor,
-                    dark: dark.placeholder.backgroundColor
+                    light: light.avatar.background,
+                    dark: dark.avatar.background
                 )
             ),
             border: .init(
