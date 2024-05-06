@@ -19,17 +19,27 @@ public struct BackgroundColors {
     }
 }
 
+public struct AvatarColors {
+    public let border: UIColor
+    public let background: UIColor
+    
+    public init(border: UIColor, background: UIColor) {
+        self.border = border
+        self.background = background
+    }
+}
+
 public struct Palette {
     public let name: String
     public let foreground: ForegroundColors
     public let background: BackgroundColors
-    public let avatarBorder: UIColor
+    public let avatar: AvatarColors
     public let placeholder: PlaceholderColors
-    public init(name: String, foreground: ForegroundColors, background: BackgroundColors, avatarBorder: UIColor, placeholder: PlaceholderColors) {
+    public init(name: String, foreground: ForegroundColors, background: BackgroundColors, avatar: AvatarColors, placeholder: PlaceholderColors) {
         self.name = name
         self.foreground = foreground
         self.background = background
-        self.avatarBorder = avatarBorder
+        self.avatar = avatar
         self.placeholder = placeholder
     }
 }
@@ -48,7 +58,7 @@ public enum PaletteType {
     case dark
     case system
     case custom(() -> Palette)
-
+    
     public var palette: Palette {
         switch self {
         case .light:
@@ -61,7 +71,7 @@ public enum PaletteType {
             paletteProvider()
         }
     }
-
+    
     public var name: String {
         palette.name
     }
@@ -89,7 +99,13 @@ extension Palette {
                 light: light.background.primary,
                 dark: dark.background.primary
             )),
-            avatarBorder: .porpoiseGray,
+            avatar: AvatarColors(
+                border: .porpoiseGray,
+                background: UIColor(
+                    light: light.placeholder.backgroundColor,
+                    dark: dark.placeholder.backgroundColor
+                )
+            ),
             placeholder: PlaceholderColors(
                 backgroundColor: UIColor(
                     light: light.placeholder.backgroundColor,
@@ -99,7 +115,7 @@ extension Palette {
             )
         )
     }
-
+    
     public static var light: Palette {
         .init(
             name: "Light",
@@ -109,14 +125,17 @@ extension Palette {
                 secondary: .dugongGray
             ),
             background: .init(primary: .white),
-            avatarBorder: .porpoiseGray,
+            avatar: AvatarColors(
+                border: .porpoiseGray,
+                background: .smokeWhite
+            ),
             placeholder: PlaceholderColors(
                 backgroundColor: .smokeWhite,
                 loadingAnimationColors: [.smokeWhite, .bleachedSilkWhite]
             )
         )
     }
-
+    
     static var dark: Palette {
         .init(
             name: "Dark",
@@ -126,14 +145,17 @@ extension Palette {
                 secondary: .snowflakeWhite60
             ),
             background: .init(primary: .gravatarBlack),
-            avatarBorder: .porpoiseGray,
+            avatar: AvatarColors(
+                border: .porpoiseGray,
+                background: .boatAnchorGray
+            ),
             placeholder: PlaceholderColors(
                 backgroundColor: .boatAnchorGray,
                 loadingAnimationColors: [.boatAnchorGray, .spanishGray]
             )
         )
     }
-
+    
     private static func systemPlaceholderAnimationColors() -> [UIColor] {
         var colors: [UIColor] = []
         let count = min(light.placeholder.loadingAnimationColors.count, dark.placeholder.loadingAnimationColors.count)
