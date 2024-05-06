@@ -34,7 +34,7 @@ extension UIColor {
     static let boatAnchorGray: UIColor = .rgba(107, 107, 107)
     static let spanishGray: UIColor = .rgba(151, 151, 151)
     static let dugongGray: UIColor = .rgba(112, 112, 112)
-    static let orchidBlack: UIColor = .rgba(80, 87, 94)
+    static let bovineGray: UIColor = .rgba(80, 87, 94)
 
     static func rgba(_ red: CGFloat, _ green: CGFloat, _ blue: CGFloat, alpha: CGFloat = 1.0) -> UIColor {
         UIColor(red: red / 255, green: green / 255, blue: blue / 255, alpha: alpha)

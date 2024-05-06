@@ -155,7 +155,7 @@ extension Palette {
             ),
             background: .init(primary: .gravatarBlack),
             avatarBorder: .porpoiseGray,
-            border: .orchidBlack,
+            border: .bovineGray,
             placeholder: PlaceholderColors(
                 backgroundColor: .boatAnchorGray,
                 loadingAnimationColors: [.boatAnchorGray, .spanishGray]
