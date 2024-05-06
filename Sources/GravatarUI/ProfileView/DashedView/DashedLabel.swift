@@ -21,7 +21,12 @@ class DashedLabel: UILabel {
     var dashSpaceLength: CGFloat = Constants.dashSpaceLength
     var dashedPadding: UIEdgeInsets = Constants.dashedPadding
 
-    var dashColor: UIColor = .clear
+    var dashColor: UIColor = .clear {
+        didSet {
+            dashedBorderLayer.strokeColor = dashColor.cgColor
+        }
+    }
+
     var dashedBorderLayer: CAShapeLayer = {
         let layer = CAShapeLayer()
         layer.fillColor = nil
@@ -32,12 +37,21 @@ class DashedLabel: UILabel {
     var showDashedBorder: Bool = false {
         didSet {
             dashedBorderLayer.isHidden = !showDashedBorder
+            if showDashedBorder {
+                updateDashedBorder()
+            }
         }
     }
 
     override init(frame: CGRect) {
         super.init(frame: frame)
         layer.addSublayer(dashedBorderLayer)
+
+        if #available(iOS 17.0, *) {
+            registerForTraitChanges([UITraitUserInterfaceStyle.self]) { (self: Self, _) in
+                self.dashedBorderLayer.strokeColor = self.dashColor.cgColor
+            }
+        }
     }
 
     @available(*, unavailable)
@@ -47,16 +61,22 @@ class DashedLabel: UILabel {
 
     override func layoutSubviews() {
         super.layoutSubviews()
-        updateDashedBorder()
+        dashedBorderLayer.frame = bounds
+        dashedBorderLayer.path = UIBezierPath(roundedRect: bounds, cornerRadius: cornerRadius).cgPath
+    }
+
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        if #unavailable(iOS 17.0) {
+            if traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) {
+                dashedBorderLayer.strokeColor = dashColor.cgColor
+            }
+        }
     }
 
     func updateDashedBorder() {
-        guard showDashedBorder else { return }
         dashedBorderLayer.lineWidth = dashWidth
-        dashedBorderLayer.strokeColor = dashColor.cgColor
         dashedBorderLayer.lineDashPattern = [dashLength, dashSpaceLength] as [NSNumber]
-        dashedBorderLayer.frame = bounds
-        dashedBorderLayer.path = UIBezierPath(roundedRect: bounds, cornerRadius: cornerRadius).cgPath
     }
 
     override func drawText(in rect: CGRect) {

@@ -75,7 +75,6 @@ final class ProfileViewTests: XCTestCase {
     @MainActor
     func testProfileViewEmptyState() throws {
         for interfaceStyle in UIUserInterfaceStyle.allCases {
-            let interfaceStyle: UIUserInterfaceStyle = interfaceStyle
             let (containerView, cardView) = createViews(model: nil)
             containerView.overrideUserInterfaceStyle = interfaceStyle
             cardView.updateWithClaimProfilePrompt()
