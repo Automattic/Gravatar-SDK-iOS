@@ -4,7 +4,7 @@ import UIKit
 public struct ProfileViewConfiguration: UIContentConfiguration {
     public var model: ProfileModel?
     public var summaryModel: ProfileSummaryModel?
-    let profileStyle: Style
+    public let profileStyle: Style
     var avatarID: AvatarIdentifier? {
         model?.avatarIdentifier ?? summaryModel?.avatarIdentifier
     }
@@ -84,7 +84,7 @@ extension ProfileViewConfiguration {
 
     /// List of some prefilled `ProfileViewConfiguration`s  that are designed for different purposes. For example, as a fallback for when the user doesn't have
     /// a Gravatar account.
-    enum Templates {
+    public enum Templates {
         /// Creates a `ProfileViewConfiguration` that is designed for emails without a Gravatar account. This configuration invites the user to claim their
         /// Gravatar profile.
         /// - Parameters:
