@@ -82,27 +82,23 @@ extension ProfileViewConfiguration {
         self.init(model: model, palette: palette, profileStyle: .largeSummary)
     }
 
-    /// List of some prefilled `ProfileViewConfiguration`s  that are designed for different purposes. For example, as a fallback for when the user doesn't have
-    /// a Gravatar account.
-    public enum Templates {
-        /// Creates a `ProfileViewConfiguration` that is designed for emails without a Gravatar account. This configuration invites the user to claim their
-        /// Gravatar profile.
-        /// - Parameters:
-        ///   - style: Style of the profile view. See: ``ProfileViewConfiguration.Style``
-        ///   - userName: Optional. If not provided, a string that says "Your Name" will be shown.
-        ///   - palette: The ``PaletteType`` to use.
-        /// - Returns: A new `ProfileViewConfiguration`.
-        public static func claimProfile(profileStyle style: Style, userName: String? = nil, palette: PaletteType = .system) -> ProfileViewConfiguration {
-            switch style {
-            case .standard:
-                ProfileViewConfiguration.standard(model: ClaimProfileModel(userName: userName), palette: palette).configureAsClaim()
-            case .large:
-                ProfileViewConfiguration.large(model: ClaimProfileModel(userName: userName), palette: palette).configureAsClaim()
-            case .largeSummary:
-                ProfileViewConfiguration.largeSummary(model: ClaimProfileModel(userName: userName), palette: palette).configureAsClaim()
-            case .summary:
-                ProfileViewConfiguration.summary(model: ClaimProfileModel(userName: userName), palette: palette).configureAsClaim()
-            }
+    /// Creates a `ProfileViewConfiguration` that is designed for emails without a Gravatar account. This configuration invites the user to claim their
+    /// Gravatar profile.
+    /// - Parameters:
+    ///   - style: Style of the profile view. See: ``ProfileViewConfiguration.Style``
+    ///   - userName: Optional. If not provided, a string that says "Your Name" will be shown.
+    ///   - palette: The ``PaletteType`` to use.
+    /// - Returns: A new `ProfileViewConfiguration`.
+    public static func claimProfile(profileStyle style: Style, userName: String? = nil, palette: PaletteType = .system) -> ProfileViewConfiguration {
+        switch style {
+        case .standard:
+            ProfileViewConfiguration.standard(model: ClaimProfileModel(userName: userName), palette: palette).configureAsClaim()
+        case .large:
+            ProfileViewConfiguration.large(model: ClaimProfileModel(userName: userName), palette: palette).configureAsClaim()
+        case .largeSummary:
+            ProfileViewConfiguration.largeSummary(model: ClaimProfileModel(userName: userName), palette: palette).configureAsClaim()
+        case .summary:
+            ProfileViewConfiguration.summary(model: ClaimProfileModel(userName: userName), palette: palette).configureAsClaim()
         }
     }
 }

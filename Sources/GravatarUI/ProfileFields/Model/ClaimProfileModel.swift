@@ -53,24 +53,24 @@ extension ProfileViewClaimProfileConfigurable where Self: BaseProfileView {
 
 extension LargeProfileView: ProfileViewClaimProfileConfigurable {
     public static func claimProfileConfiguration(userName: String? = nil, palette: PaletteType = .system) -> ProfileViewConfiguration {
-        ProfileViewConfiguration.Templates.claimProfile(profileStyle: .large, userName: userName, palette: palette)
+        ProfileViewConfiguration.claimProfile(profileStyle: .large, userName: userName, palette: palette)
     }
 }
 
 extension ProfileView: ProfileViewClaimProfileConfigurable {
     public static func claimProfileConfiguration(userName: String? = nil, palette: PaletteType = .system) -> ProfileViewConfiguration {
-        ProfileViewConfiguration.Templates.claimProfile(profileStyle: .standard, userName: userName, palette: palette)
+        ProfileViewConfiguration.claimProfile(profileStyle: .standard, userName: userName, palette: palette)
     }
 }
 
 extension LargeProfileSummaryView: ProfileViewClaimProfileConfigurable {
     public static func claimProfileConfiguration(userName: String? = nil, palette: PaletteType = .system) -> ProfileViewConfiguration {
-        ProfileViewConfiguration.Templates.claimProfile(profileStyle: .largeSummary, userName: userName, palette: palette)
+        ProfileViewConfiguration.claimProfile(profileStyle: .largeSummary, userName: userName, palette: palette)
     }
 }
 
 extension ProfileSummaryView: ProfileViewClaimProfileConfigurable {
     public static func claimProfileConfiguration(userName: String? = nil, palette: PaletteType = .system) -> ProfileViewConfiguration {
-        ProfileViewConfiguration.Templates.claimProfile(profileStyle: .summary, userName: userName, palette: palette)
+        ProfileViewConfiguration.claimProfile(profileStyle: .summary, userName: userName, palette: palette)
     }
 }
