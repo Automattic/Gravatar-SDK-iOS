@@ -23,7 +23,7 @@ open class BaseProfileView: UIView, UIContentView {
     /// Placeholder color policy to use in the placeholder state (which basically means when all fields are empty).
     public var placeholderColorPolicy: PlaceholderColorPolicy = .currentPalette {
         didSet {
-            placeholderDisplayer?.refresh(with: placeholderColors)
+            placeholderDisplayer?.refresh(with: placeholderColors, paletteType: paletteType)
         }
     }
 
@@ -250,7 +250,7 @@ open class BaseProfileView: UIView, UIContentView {
         ) { [weak self] result in
             switch result {
             case .success:
-                self?.avatarImageView.layer.borderColor = self?.paletteType.palette.avatarBorder.cgColor
+                self?.avatarImageView.layer.borderColor = self?.paletteType.palette.avatar.border.cgColor
                 self?.avatarImageView.layer.borderWidth = 1
             default:
                 self?.avatarImageView.layer.borderColor = UIColor.clear.cgColor
@@ -260,8 +260,9 @@ open class BaseProfileView: UIView, UIContentView {
     }
 
     func refresh(with paletteType: PaletteType) {
+        avatarImageView.layer.borderColor = paletteType.palette.avatar.border.cgColor
+        avatarImageView.backgroundColor = paletteType.palette.avatar.background
         avatarImageView.overrideUserInterfaceStyle = paletteType.palette.preferredUserInterfaceStyle
-        avatarImageView.layer.borderColor = paletteType.palette.avatarBorder.cgColor
         backgroundColor = paletteType.palette.background.primary
         Configure(aboutMeLabel).asAboutMe().palette(paletteType)
         Configure(displayNameLabel).asDisplayName().palette(paletteType)
@@ -278,7 +279,7 @@ open class BaseProfileView: UIView, UIContentView {
         accountButtonsStackView.arrangedSubviews.compactMap { $0 as? RemoteSVGButton }.forEach { view in
             view.refresh(paletteType: paletteType)
         }
-        placeholderDisplayer?.refresh(with: placeholderColors)
+        placeholderDisplayer?.refresh(with: placeholderColors, paletteType: paletteType)
     }
 
     func updateAccountButtons(with model: AccountListModel?) {
