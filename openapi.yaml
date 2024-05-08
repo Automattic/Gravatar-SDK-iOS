@@ -1,0 +1,312 @@
+openapi: 3.1.0
+info:
+  title: Gravatar Public API
+  version: 3.0.0
+  description: Gravatar's public API endpoints
+  contact:
+    name: Gravatar
+    url: https://gravatar.com
+servers:
+  - url: https://api.gravatar.com/v3
+    description: Production server
+tags:
+  - name: profiles
+    description: Operations about user profiles
+components:
+  schemas:
+    Link:
+      type: object
+      description: A link the user has added to their profile.
+      required:
+        - label
+        - url
+      properties:
+        label:
+          type: string
+          description: The label for the link.
+          examples:
+            - Personal Website
+        url:
+          type: string
+          format: uri
+          description: The URL to the link.
+          examples:
+            - https://example.com
+    CryptoWalletAddress:
+      type: object
+      description: A crypto currency wallet address the user accepts.
+      required:
+        - label
+        - address
+      properties:
+        label:
+          type: string
+          description: The label for the crypto currency.
+          examples:
+            - ETH
+        address:
+          type: string
+          description: The wallet address for the crypto currency.
+          examples:
+            - 0xABC123...
+    VerifiedAccount:
+      type: object
+      description: A verified account on a user's profile.
+      required:
+        - service_label
+        - service_icon
+        - url
+      properties:
+        service_label:
+          type: string
+          description: The name of the service.
+          examples:
+            - Tumblr
+        service_icon:
+          type: string
+          description: The URL to the service's icon.
+          format: uri
+          examples:
+            - https://gravatar.com/icons/tumblr-alt.svg
+        url:
+          type: string
+          description: The URL to the user's profile on the service.
+          format: uri
+          examples:
+            - https://example.tumblr.com/
+    GalleryImage:
+      type: object
+      description: A gallery image a user has uploaded.
+      required:
+        - url
+      properties:
+        url:
+          type: string
+          description: The URL to the image.
+          format: uri
+          examples:
+            - >-
+              https://0.gravatar.com/userimage/5/04bbd674f72c703f6335e2e7a00acc9a
+    Profile:
+      type: object
+      description: A user's profile information.
+      required:
+        - hash
+        - display_name
+        - profile_url
+        - avatar_url
+        - avatar_alt_text
+        - location
+        - description
+        - job_title
+        - company
+        - verified_accounts
+        - pronunciation
+        - pronouns
+      properties:
+        hash:
+          type: string
+          description: The SHA256 hash of the user's primary email address.
+          examples:
+            - 31c5543c1734d25c7206f5fd591525d0295bec6fe84ff82f946a34fe970a1e66
+        display_name:
+          type: string
+          description: >-
+            The user's display name. This is the name that is displayed on their
+            profile.
+          examples:
+            - Alex Morgan
+        profile_url:
+          type: string
+          description: The full URL for the user's profile.
+          format: uri
+          examples:
+            - https://gravatar.com/example
+        avatar_url:
+          type: string
+          format: uri
+          description: The URL for the user's avatar image if it has been set.
+          examples:
+            - >-
+              https://0.gravatar.com/avatar/33252cd1f33526af53580fcb1736172f06e6716f32afdd1be19ec3096d15dea5
+        avatar_alt_text:
+          type: string
+          description: The alt text for the user's avatar image if it has been set.
+          examples:
+            - >-
+              Alex Morgan's avatar image. Alex is smiling and standing in beside
+              a large dog who is looking up at Alex.
+        location:
+          type: string
+          description: The user's location.
+          examples:
+            - New York, USA
+        description:
+          type: string
+          description: The about section on a user's profile.
+          examples:
+            - I like playing hide and seek.
+        job_title:
+          type: string
+          description: The user's job title.
+          examples:
+            - Landscape Architect
+        company:
+          type: string
+          description: The user's current company's name.
+          examples:
+            - ACME Corp
+        verified_accounts:
+          type: array
+          description: >-
+            A list of verified accounts the user has added to their profile.
+            This is limited to a max of 4 in unauthenticated requests.
+          items:
+            $ref: '#/components/schemas/VerifiedAccount'
+        pronunciation:
+          type: string
+          description: The phonetic pronunciation of the user's name.
+          examples:
+            - Al-ex Mor-gan
+        pronouns:
+          type: string
+          description: The pronouns the user uses.
+          examples:
+            - She/They
+        links:
+          type: array
+          description: >-
+            A list of links the user has added to their profile. This is only
+            provided in authenticated API requests.
+          items:
+            $ref: '#/components/schemas/Link'
+        payments:
+          type: object
+          required:
+            - links
+            - crypto_wallets
+          description: >-
+            The user's public payment information. This is only provided in
+            authenticated API requests.
+          properties:
+            links:
+              type: array
+              description: A list of payment URLs the user has added to their profile.
+              items:
+                $ref: '#/components/schemas/Link'
+            crypto_wallets:
+              type: array
+              description: A list of crypto currencies the user accepts.
+              items:
+                $ref: '#/components/schemas/CryptoWalletAddress'
+        contact_info:
+          type: object
+          description: >-
+            The user's contact information. This is only available if the user
+            has chosen to make it public. This is only provided in authenticated
+            API requests.
+          properties:
+            home_phone:
+              type: string
+              description: The user's home phone number.
+              examples:
+                - +1-555-555-0100
+            work_phone:
+              type: string
+              description: The user's work phone number.
+              examples:
+                - +1-555-555-0101
+            cell_phone:
+              type: string
+              description: The user's cell phone number.
+              examples:
+                - +1-555-555-0102
+            email:
+              type: string
+              description: >-
+                The user's email address as provided on the contact section of
+                the profile. Might differ from their account emails.
+              format: email
+              examples:
+                - alex@example.com
+            contact_form:
+              type: string
+              description: The URL to the user's contact form.
+              format: uri
+              examples:
+                - https://example.com/contact-me
+            calendar:
+              type: string
+              description: The URL to the user's calendar.
+              format: uri
+              examples:
+                - https://example.com/calendar
+        gallery:
+          type: array
+          description: >-
+            Additional images a user has uploaded. This is only provided in
+            authenticated API requests.
+          items:
+            $ref: '#/components/schemas/GalleryImage'
+        number_verified_accounts:
+          type: integer
+          description: >-
+            The number of verified accounts the user has added to their profile.
+            This count includes verified accounts the user is hiding from their
+            profile. This is only provided in authenticated API requests.
+          examples:
+            - 3
+        last_profile_edit:
+          type: string
+          description: >-
+            The date and time (UTC) the user last edited their profile. This is
+            only provided in authenticated API requests.
+          format: date-time
+          examples:
+            - '2021-10-01T12:00:00Z'
+        registration_date:
+          type: string
+          description: >-
+            The date the user registered their account. This is only provided in
+            authenticated API requests.
+          format: date
+          examples:
+            - '2021-10-01'
+paths:
+  /profiles/{profileIdentifier}:
+    get:
+      summary: Get profile by identifier
+      description: Returns a profile by the given identifier.
+      tags:
+        - profiles
+      operationId: getProfileById
+      parameters:
+        - name: profileIdentifier
+          in: path
+          required: true
+          description: >-
+            This can either be an email address, SHA256 hash of an email
+            address, or profile URL slug.
+          schema:
+            type: string
+        - name: Authorization
+          in: header
+          required: false
+          schema:
+            type: string
+          description: >-
+            Bearer token to authenticate the request. Full profile information
+            is only available in authenticated requests.
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+        '404':
+          description: Profile not found
+        '429':
+          description: Rate limit exceeded
+        '500':
+          description: Internal server error

@@ -1,0 +1,6 @@
+generate:
+  - types
+  - client
+filter:
+  tags:
+    - profiles
