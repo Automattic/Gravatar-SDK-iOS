@@ -53,33 +53,24 @@ extension ProfileViewClaimProfileConfigurable where Self: BaseProfileView {
 
 extension LargeProfileView: ProfileViewClaimProfileConfigurable {
     public static func claimProfileConfiguration(userName: String? = nil, palette: PaletteType = .system) -> ProfileViewConfiguration {
-        ProfileViewConfiguration.large(model: ClaimProfileModel(userName: userName), palette: palette).configureAsClaim()
+        ProfileViewConfiguration.claimProfile(profileStyle: .large, userName: userName, palette: palette)
     }
 }
 
 extension ProfileView: ProfileViewClaimProfileConfigurable {
     public static func claimProfileConfiguration(userName: String? = nil, palette: PaletteType = .system) -> ProfileViewConfiguration {
-        ProfileViewConfiguration.standard(model: ClaimProfileModel(userName: userName), palette: palette).configureAsClaim()
+        ProfileViewConfiguration.claimProfile(profileStyle: .standard, userName: userName, palette: palette)
     }
 }
 
 extension LargeProfileSummaryView: ProfileViewClaimProfileConfigurable {
     public static func claimProfileConfiguration(userName: String? = nil, palette: PaletteType = .system) -> ProfileViewConfiguration {
-        ProfileViewConfiguration.largeSummary(model: ClaimProfileModel(userName: userName), palette: palette).configureAsClaim()
+        ProfileViewConfiguration.claimProfile(profileStyle: .largeSummary, userName: userName, palette: palette)
     }
 }
 
 extension ProfileSummaryView: ProfileViewClaimProfileConfigurable {
     public static func claimProfileConfiguration(userName: String? = nil, palette: PaletteType = .system) -> ProfileViewConfiguration {
-        ProfileViewConfiguration.summary(model: ClaimProfileModel(userName: userName), palette: palette).configureAsClaim()
-    }
-}
-
-extension ProfileViewConfiguration {
-    fileprivate func configureAsClaim() -> ProfileViewConfiguration {
-        var copy = self
-        copy.profileButtonStyle = .create
-        copy.avatarPlaceholder = UIImage(named: "empty-profile-avatar")
-        return copy
+        ProfileViewConfiguration.claimProfile(profileStyle: .summary, userName: userName, palette: palette)
     }
 }

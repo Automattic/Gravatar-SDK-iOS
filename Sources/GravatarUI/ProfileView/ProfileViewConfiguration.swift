@@ -4,7 +4,7 @@ import UIKit
 public struct ProfileViewConfiguration: UIContentConfiguration {
     public var model: ProfileModel?
     public var summaryModel: ProfileSummaryModel?
-    let profileStyle: Style
+    public let profileStyle: Style
     var avatarID: AvatarIdentifier? {
         model?.avatarIdentifier ?? summaryModel?.avatarIdentifier
     }
@@ -80,5 +80,34 @@ extension ProfileViewConfiguration {
 
     public static func largeSummary(model: ProfileSummaryModel? = nil, palette: PaletteType = .system) -> ProfileViewConfiguration {
         self.init(model: model, palette: palette, profileStyle: .largeSummary)
+    }
+
+    /// Creates a `ProfileViewConfiguration` that is designed for emails without a Gravatar account. This configuration invites the user to claim their
+    /// Gravatar profile.
+    /// - Parameters:
+    ///   - style: Style of the profile view. See: ``ProfileViewConfiguration.Style``
+    ///   - userName: Optional. If not provided, a string that says "Your Name" will be shown.
+    ///   - palette: The ``PaletteType`` to use.
+    /// - Returns: A new `ProfileViewConfiguration`.
+    public static func claimProfile(profileStyle style: Style, userName: String? = nil, palette: PaletteType = .system) -> ProfileViewConfiguration {
+        switch style {
+        case .standard:
+            ProfileViewConfiguration.standard(model: ClaimProfileModel(userName: userName), palette: palette).configureAsClaim()
+        case .large:
+            ProfileViewConfiguration.large(model: ClaimProfileModel(userName: userName), palette: palette).configureAsClaim()
+        case .largeSummary:
+            ProfileViewConfiguration.largeSummary(model: ClaimProfileModel(userName: userName), palette: palette).configureAsClaim()
+        case .summary:
+            ProfileViewConfiguration.summary(model: ClaimProfileModel(userName: userName), palette: palette).configureAsClaim()
+        }
+    }
+}
+
+extension ProfileViewConfiguration {
+    private func configureAsClaim() -> ProfileViewConfiguration {
+        var copy = self
+        copy.profileButtonStyle = .create
+        copy.avatarPlaceholder = UIImage(named: "empty-profile-avatar")
+        return copy
     }
 }
