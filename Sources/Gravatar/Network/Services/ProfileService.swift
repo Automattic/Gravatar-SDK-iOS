@@ -4,7 +4,7 @@ import OpenAPIURLSession
 
 public enum GravatarProfileFetchResult {
     case success(UserProfile)
-    case failure(ProfileServiceError)
+    case failure(APIError)
 }
 
 /// A service to perform Profile related tasks.
@@ -26,10 +26,10 @@ public struct ProfileService: ProfileFetching {
             do {
                 let profile = try await fetch(with: profileID)
                 onCompletion(.success(profile))
-            } catch let error as ProfileServiceError {
+            } catch let error as APIError {
                 onCompletion(.failure(error))
             } catch {
-                onCompletion(.failure(.responseError(reason: .unexpected(error))))
+                onCompletion(.failure(APIError.other(error)))
             }
         }
     }
@@ -47,7 +47,7 @@ extension ProfileService {
                 transport: URLSessionTransport(configuration: .init(session: session))
             )
         } catch {
-            throw ProfileServiceError.requestError(reason: .invalidServerURL)
+            throw APIError.invalidServerURL
         }
     }
 
@@ -61,18 +61,16 @@ extension ProfileService {
                 let profile = try response.body.json
                 return UserProfile(profile: profile)
             case .notFound(_):
-                throw ProfileServiceError.responseError(reason: .invalidHTTPStatusCode(code: 404))
+                throw APIError.invalidHTTPStatusCode(APIErrorCode.notFound)
             case .tooManyRequests(_):
-                throw ProfileServiceError.responseError(reason: .invalidHTTPStatusCode(code: 429))
+                throw APIError.invalidHTTPStatusCode(APIErrorCode.tooManyRequests)
             case .internalServerError(_):
-                throw ProfileServiceError.responseError(reason: .invalidHTTPStatusCode(code: 500))
+                throw APIError.invalidHTTPStatusCode(APIErrorCode.internalServerError)
             case .undocumented(statusCode: let statusCode, _):
-                throw ProfileServiceError.responseError(reason: .invalidHTTPStatusCode(code: statusCode))
+                throw APIError.invalidHTTPStatusCode(statusCode)
             }
-        } catch let error as ClientError {
-            throw ProfileServiceError.responseError(reason: .unexpected(error.underlyingError))
         } catch {
-            throw ProfileServiceError.responseError(reason: .unexpected(error))
+            throw error.map()
         }
     }
 }

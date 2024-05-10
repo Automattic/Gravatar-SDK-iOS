@@ -64,7 +64,7 @@ extension HTTPClientError {
         case .URLSessionError(let error):
             .URLSessionError(error: error)
         case .invalidHTTPStatusCodeError(let response):
-            .invalidHTTPStatusCode(code: response.statusCode)
+            .invalidHTTPStatusCode(response: response)
         case .invalidURLResponseError(let response):
             .invalidURLResponse(response: response)
         }

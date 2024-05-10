@@ -6,7 +6,7 @@ public enum ResponseErrorReason: Sendable {
     case URLSessionError(error: Error)
 
     /// The response contains an invalid HTTP status code. By default, status code >= 400 is recognized as invalid.
-    case invalidHTTPStatusCode(code: Int)
+    case invalidHTTPStatusCode(response: HTTPURLResponse)
 
     /// The response is not a `HTTPURLResponse`.
     case invalidURLResponse(response: URLResponse)
@@ -24,8 +24,8 @@ public enum ResponseErrorReason: Sendable {
 
     // If self is a `.invalidHTTPStatusCode` returns the HTTP statusCode from the response. Otherwise returns `nil`.
     public var httpStatusCode: Int? {
-        if case .invalidHTTPStatusCode(let code) = self {
-            return code
+        if case .invalidHTTPStatusCode(let response) = self {
+            return response.statusCode
         }
         return nil
     }
@@ -37,8 +37,6 @@ public enum RequestErrorReason: Sendable {
 
     /// The input url is empty or `nil`.
     case emptyURL
-
-    case invalidServerURL
 }
 
 /// Errors thrown by `ImageDownloadService` when fetching an image.
@@ -78,6 +76,7 @@ public enum ImageUploadError: Error {
     case responseError(reason: ResponseErrorReason)
 }
 
+/*
 public enum ProfileServiceError: Error {
     case requestError(reason: RequestErrorReason)
     case responseError(reason: ResponseErrorReason)
@@ -95,4 +94,17 @@ extension ProfileServiceError: CustomDebugStringConvertible {
             "No profile information was found in the response."
         }
     }
+}
+*/
+enum APIErrorCode {
+    static let notFound = 404
+    static let tooManyRequests = 429
+    static let internalServerError = 500
+}
+
+public enum APIError: Error {
+    case invalidServerURL
+    case invalidHTTPStatusCode(Int)
+    case decodingError(DecodingError)
+    case other(Error)
 }
