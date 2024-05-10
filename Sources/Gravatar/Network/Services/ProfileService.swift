@@ -69,8 +69,6 @@ extension ProfileService {
             case .undocumented(statusCode: let statusCode, _):
                 throw ProfileServiceError.responseError(reason: .invalidHTTPStatusCode(code: statusCode))
             }
-        } catch let error as HTTPClientError {
-            throw ProfileServiceError.responseError(reason: error.map())
         } catch let error as ClientError {
             throw ProfileServiceError.responseError(reason: .unexpected(error.underlyingError))
         } catch {
