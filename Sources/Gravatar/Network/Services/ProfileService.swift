@@ -1,5 +1,6 @@
 import Foundation
 import OpenAPIRuntime
+import OpenAPIURLSession
 
 public enum GravatarProfileFetchResult {
     case success(UserProfile)
@@ -8,14 +9,12 @@ public enum GravatarProfileFetchResult {
 
 /// A service to perform Profile related tasks.
 public struct ProfileService: ProfileFetching {
-    let client: HTTPClient
+    let session: URLSession
 
     /// Creates a new `ProfileService`.
     ///
-    /// Optionally, you can pass a custom type conforming to ``HTTPClient`` to gain control over networking tasks.
-    /// - Parameter client: A type which will perform basic networking operations.
-    public init(client: HTTPClient? = nil) {
-        self.client = client ?? URLSessionHTTPClient()
+    public init(session: URLSession = .shared) {
+        self.session = session
     }
 
     /// Fetches a Gravatar user's profile information.
@@ -41,11 +40,11 @@ public struct ProfileService: ProfileFetching {
 }
 
 extension ProfileService {
-    private func openApiClient(with client: HTTPClient) throws -> Client {
+    private func openApiClient() throws -> Client {
         do {
             return Client(
                 serverURL: try Servers.server1(),
-                transport: APIClientTransport(httpClient: client)
+                transport: URLSessionTransport(configuration: .init(session: session))
             )
         } catch {
             throw ProfileServiceError.requestError(reason: .invalidServerURL)
@@ -53,7 +52,7 @@ extension ProfileService {
     }
 
     private func fetch(with profileID: String) async throws -> UserProfile {
-        let openApiClient = try openApiClient(with: client)
+        let openApiClient = try openApiClient()
         do {
             let output = try await openApiClient.getProfileById(.init(path: .init(profileIdentifier: profileID)))
 

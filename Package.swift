@@ -23,6 +23,7 @@ let package = Package(
         .package(url: "https://github.com/nicklockwood/SwiftFormat", from: "0.53.0"),
         .package(url: "https://github.com/pointfreeco/swift-snapshot-testing", from: "1.8.1"),
         .package(url: "https://github.com/apple/swift-openapi-runtime", from: "1.4.0"),
+        .package(url: "https://github.com/apple/swift-openapi-urlsession", from: "1.0.0")
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -31,6 +32,7 @@ let package = Package(
             name: "Gravatar",
             dependencies: [
                 .product(name: "OpenAPIRuntime", package: "swift-openapi-runtime"),
+                .product(name: "OpenAPIURLSession", package: "swift-openapi-urlsession"),
             ]
         ),
         .testTarget(
