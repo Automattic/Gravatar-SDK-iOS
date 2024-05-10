@@ -1,157 +1,237 @@
 import Foundation
 
-struct Root: Decodable {
-    let entry: [UserProfile]
-}
+public struct UserProfile: Hashable, Sendable {
+    let profile: Components.Schemas.Profile
+    
+    public var hash: String {
+        profile.hash
+    }
 
-public struct UserProfile: Decodable {
-    public let hash: String
-    public let requestHash: String
-    public let preferredUsername: String
-    public let displayName: String?
-    public let name: Name?
-    public let pronouns: String?
-    public let aboutMe: String?
+    public var displayName: String? {
+        profile.display_name
+    }
 
-    public let urls: [LinkURL]
-    public let photos: [Photo]
-    public let emails: [Email]?
-    public let accounts: [Account]?
-
-    public let jobTitle: String?
-    public let currentLocation: String?
-    public let pronunciation: String?
-
-    private let profileUrl: String
     public var profileURLString: String {
-        profileUrl
+        profile.profile_url
     }
 
     public var profileURL: URL? {
         URL(string: profileURLString)
     }
 
-    private let thumbnailUrl: String
-    public var thumbnailURLString: String {
-        thumbnailUrl
+    public var avatarURLString: String {
+        profile.avatar_url
     }
 
-    public var thumbnailURL: URL? {
-        URL(string: thumbnailURLString)
+    public var avatarURL: URL? {
+        URL(string: profile.avatar_url)
     }
 
-    let lastProfileEdit: String?
+    public var avatarAltText: String {
+        profile.avatar_alt_text
+    }
+
+    public var location: String {
+        profile.location
+    }
+
+    public var description: String {
+        profile.description
+    }
+
+    public var jobTitle: String {
+        profile.job_title
+    }
+
+    public var company: String {
+        profile.company
+    }
+
+    public var pronunciation: String {
+        profile.pronunciation
+    }
+
+    public var pronouns: String {
+        profile.pronouns
+    }
+
+    public var numberVerifiedAccounts: Int? {
+        profile.number_verified_accounts
+    }
+
+    public var lastProfileEdit: Date? {
+        profile.last_profile_edit
+    }
+
+    public var registrationDate: String? {
+        profile.registration_date
+    }
+
+    public var verifiedAccounts: [VerifiedAccount] {
+        profile.verified_accounts.map(VerifiedAccount.init)
+    }
+
+    public var links: [Link]? {
+        profile.links?.map(Link.init)
+    }
+
+    public var gallery: [GalleryImage]? {
+        profile.gallery?.map(GalleryImage.init)
+    }
+
+    public var payments: Payment? {
+        profile.payments.flatMap(Payment.init)
+    }
+
+    public var contactInfo: ContactInfo? {
+        profile.contact_info.flatMap(ContactInfo.init)
+    }
 }
 
-extension UserProfile {
-    public var lastProfileEditDate: Date? {
-        guard let lastProfileEdit else {
-            return nil
-        }
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-        formatter.timeZone = TimeZone(secondsFromGMT: 0)
-        return formatter.date(from: lastProfileEdit)
-    }
-}
 
 extension UserProfile {
-    public struct Name: Decodable {
-        public let givenName: String?
-        public let familyName: String?
-        public let formatted: String?
-    }
-
-    public struct Email: Decodable {
-        public let value: String
-        public let isPrimary: Bool
-
-        enum CodingKeys: String, CodingKey {
-            case value
-            case isPrimary = "primary"
+    /// A link the user has added to their profile.
+    ///
+    public struct Link: Hashable, Sendable {
+        let link: Components.Schemas.Link
+        /// The label for the link.
+        public var label: String {
+            link.label
         }
-
-        public init(from decoder: Decoder) throws {
-            let container: KeyedDecodingContainer<UserProfile.Email.CodingKeys> = try decoder.container(keyedBy: UserProfile.Email.CodingKeys.self)
-
-            self.value = try container.decode(String.self, forKey: CodingKeys.value)
-
-            if let primaryString = try? container.decodeIfPresent(String.self, forKey: CodingKeys.isPrimary) {
-                self.isPrimary = primaryString == "true"
-            } else if let primaryBool = try? container.decodeIfPresent(Bool.self, forKey: CodingKeys.isPrimary) {
-                self.isPrimary = primaryBool
-            } else {
-                self.isPrimary = false
-            }
+        /// The URL string to the link.
+        public var urlString: String {
+            link.url
         }
-    }
-
-    public struct Account: Decodable {
-        public let domain: String
-        public let display: String
-        public let username: String
-        public let name: String
-        public let shortname: String
-
-        public let url: String
-        public let iconURLString: String
-        public let isVerified: Bool
-
-        public var accountURL: URL? {
-            URL(string: url)
-        }
-
-        public var iconURL: URL? {
-            URL(string: iconURLString)
-        }
-
-        enum CodingKeys: String, CodingKey {
-            case domain
-            case display
-            case username
-            case name
-            case shortname
-            case url
-            case iconUrl
-            case isVerified = "verified"
-        }
-
-        public init(from decoder: Decoder) throws {
-            let container: KeyedDecodingContainer<UserProfile.Account.CodingKeys> = try decoder.container(keyedBy: UserProfile.Account.CodingKeys.self)
-            self.domain = try container.decode(String.self, forKey: UserProfile.Account.CodingKeys.domain)
-            self.display = try container.decode(String.self, forKey: UserProfile.Account.CodingKeys.display)
-            self.username = try container.decode(String.self, forKey: UserProfile.Account.CodingKeys.username)
-            self.name = try container.decode(String.self, forKey: UserProfile.Account.CodingKeys.name)
-            self.shortname = try container.decode(String.self, forKey: UserProfile.Account.CodingKeys.shortname)
-            self.url = try container.decode(String.self, forKey: UserProfile.Account.CodingKeys.url)
-            self.iconURLString = try container.decode(String.self, forKey: UserProfile.Account.CodingKeys.iconUrl)
-
-            if let verifiedString = try? container.decodeIfPresent(String.self, forKey: CodingKeys.isVerified) {
-                self.isVerified = verifiedString == "true"
-            } else if let verifiedBool = try? container.decodeIfPresent(Bool.self, forKey: CodingKeys.isVerified) {
-                self.isVerified = verifiedBool
-            } else {
-                self.isVerified = false
-            }
-        }
-    }
-
-    public struct LinkURL: Decodable {
-        public let title: String
-        public let linkSlug: String?
-        public let value: String
-
-        var url: URL? {
-            URL(string: value)
-        }
-    }
-
-    public struct Photo: Decodable {
-        public let type: String?
-        public let value: String
-
+        /// The URL to the link.
         public var url: URL? {
-            URL(string: value)
+            URL(string: urlString)
+        }
+
+        init(link: Components.Schemas.Link) {
+            self.link = link
+        }
+    }
+    /// A crypto currency wallet address the user accepts.
+    ///
+    public struct CryptoWalletAddress: Hashable, Sendable {
+        let wallet: Components.Schemas.CryptoWalletAddress
+        /// The label for the crypto currency.
+        ///
+        public var label: String {
+            wallet.label
+        }
+        /// The wallet address for the crypto currency.
+        ///
+        public var address: String {
+            wallet.address
+        }
+
+        init(wallet: Components.Schemas.CryptoWalletAddress) {
+            self.wallet = wallet
+        }
+    }
+    /// A verified account on a user's profile.
+    ///
+    public struct VerifiedAccount: Hashable, Sendable {
+        let account: Components.Schemas.VerifiedAccount
+
+        /// The name of the service.
+        ///
+        public var service_label: String {
+            account.service_label
+        }
+        /// The URL to the service's icon.
+        ///
+        public var service_icon: String {
+            account.service_icon
+        }
+        /// The URL string to the user's profile on the service.
+        ///
+        public var urlString: String {
+            account.url
+        }
+        /// The URL to the user's profile on the service.
+        ///
+        public var url: URL? {
+            URL(string: account.url)
+        }
+
+        init(account: Components.Schemas.VerifiedAccount) {
+            self.account = account
+        }
+    }
+    /// A gallery image a user has uploaded.
+    ///
+    public struct GalleryImage: Hashable, Sendable {
+        let gallery: Components.Schemas.GalleryImage
+        /// The URL string to the image.
+        ///
+        public var urlString: String {
+            gallery.url
+        }
+        /// The URL  to the image.
+        ///
+        public var url: URL? {
+            URL(string: gallery.url)
+        }
+
+        init(gallery: Components.Schemas.GalleryImage) {
+            self.gallery = gallery
+        }
+    }
+
+    public struct Payment: Hashable, Sendable {
+        let payment: Components.Schemas.Profile.paymentsPayload
+        /// A list of payment URLs the user has added to their profile.
+        ///
+        public var links: [Link] {
+            payment.links.map(Link.init)
+        }
+        /// A list of crypto currencies the user accepts.
+        ///
+        public var cryptoWallets: [CryptoWalletAddress] {
+            payment.crypto_wallets.map(CryptoWalletAddress.init)
+        }
+
+        init(payment: Components.Schemas.Profile.paymentsPayload) {
+            self.payment = payment
+        }
+    }
+
+    public struct ContactInfo: Hashable, Sendable {
+        let info: Components.Schemas.Profile.contact_infoPayload
+        /// The user's home phone number.
+        ///
+        public var homePhone: String? {
+            info.home_phone
+        }
+        /// The user's work phone number.
+        ///
+        public var workPhone: String? {
+            info.work_phone
+        }
+        /// The user's cell phone number.
+        ///
+        public var cellPhone: String? {
+            info.cell_phone
+        }
+        /// The user's email address as provided on the contact section of the profile. Might differ from their account emails.
+        ///
+        public var email: String? {
+            info.email
+        }
+        /// The URL to the user's contact form.
+        ///
+        public var contactForm: String? {
+            info.contact_form
+        }
+        /// The URL to the user's calendar.
+        ///
+        public var calendar: String? {
+            info.calendar
+        }
+        init(info: Components.Schemas.Profile.contact_infoPayload) {
+            self.info = info
         }
     }
 }

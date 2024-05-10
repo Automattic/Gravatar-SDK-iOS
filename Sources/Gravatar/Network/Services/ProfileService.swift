@@ -1,6 +1,5 @@
 import Foundation
-
-private let baseURL = "https://gravatar.com/"
+import OpenAPIRuntime
 
 public enum GravatarProfileFetchResult {
     case success(UserProfile)
@@ -9,7 +8,7 @@ public enum GravatarProfileFetchResult {
 
 /// A service to perform Profile related tasks.
 public struct ProfileService: ProfileFetching {
-    private let client: HTTPClient
+    let client: HTTPClient
 
     /// Creates a new `ProfileService`.
     ///
@@ -37,69 +36,46 @@ public struct ProfileService: ProfileFetching {
     }
 
     public func fetch(with profileID: ProfileIdentifier) async throws -> UserProfile {
-        try await fetch(withPath: profileID.id)
+        try await fetch(with: profileID.id)
     }
 }
 
 extension ProfileService {
-    /// Error thrown when URL can not be created with the given baseURL and path.
-    struct CannotCreateURLFromGivenPath: Error {
-        let baseURL: String
-        let path: String
-    }
-
-    private func url(from path: String) throws -> URL {
-        guard let url = URL(string: baseURL + path) else {
-            throw CannotCreateURLFromGivenPath(baseURL: baseURL, path: path)
-        }
-        return url
-    }
-
-    private func fetch(withPath path: String) async throws -> UserProfile {
-        let url = try url(from: path + ".json")
-        return try await fetch(with: URLRequest(url: url))
-    }
-
-    private func fetch(with request: URLRequest) async throws -> UserProfile {
+    private func openApiClient(with client: HTTPClient) throws -> Client {
         do {
-            let (data, response) = try await client.fetchData(with: request)
-            let fetchProfileResult = map(data, response)
-            switch fetchProfileResult {
-            case .success(let profile):
-                return profile
-            case .failure(let error):
-                throw error
+            return Client(
+                serverURL: try Servers.server1(),
+                transport: APIClientTransport(httpClient: client)
+            )
+        } catch {
+            throw ProfileServiceError.requestError(reason: .invalidServerURL)
+        }
+    }
+
+    private func fetch(with profileID: String) async throws -> UserProfile {
+        let openApiClient = try openApiClient(with: client)
+        do {
+            let output = try await openApiClient.getProfileById(.init(path: .init(profileIdentifier: profileID)))
+
+            switch output {
+            case .ok(let response):
+                let profile = try response.body.json
+                return UserProfile(profile: profile)
+            case .notFound(_):
+                throw ProfileServiceError.responseError(reason: .invalidHTTPStatusCode(code: 404))
+            case .tooManyRequests(_):
+                throw ProfileServiceError.responseError(reason: .invalidHTTPStatusCode(code: 429))
+            case .internalServerError(_):
+                throw ProfileServiceError.responseError(reason: .invalidHTTPStatusCode(code: 500))
+            case .undocumented(statusCode: let statusCode, _):
+                throw ProfileServiceError.responseError(reason: .invalidHTTPStatusCode(code: statusCode))
             }
         } catch let error as HTTPClientError {
             throw ProfileServiceError.responseError(reason: error.map())
-        }
-    }
-
-    private func map(_ data: Data, _: HTTPURLResponse) -> Result<UserProfile, ProfileServiceError> {
-        do {
-            let decoder = JSONDecoder()
-            decoder.keyDecodingStrategy = .convertFromSnakeCase
-            let root = try decoder.decode(Root.self, from: data)
-            let profile = try profile(from: root.entry)
-            return .success(profile)
-        } catch let error as HTTPClientError {
-            return .failure(.responseError(reason: error.map()))
-        } catch _ as ProfileService.CannotCreateURLFromGivenPath {
-            return .failure(.requestError(reason: .urlInitializationFailed))
-        } catch let error as ProfileServiceError {
-            return .failure(error)
-        } catch _ as DecodingError {
-            return .failure(.noProfileInResponse)
+        } catch let error as ClientError {
+            throw ProfileServiceError.responseError(reason: .unexpected(error.underlyingError))
         } catch {
-            return .failure(.responseError(reason: .unexpected(error)))
+            throw ProfileServiceError.responseError(reason: .unexpected(error))
         }
-    }
-
-    private func profile(from profiles: [UserProfile]) throws -> UserProfile {
-        guard let profile = profiles.first else {
-            throw ProfileServiceError.noProfileInResponse
-        }
-
-        return profile
     }
 }

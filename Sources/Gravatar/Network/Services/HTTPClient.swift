@@ -6,7 +6,7 @@ import HTTPTypes
 ///
 /// You can provide your own type conforming to this protocol to gain control over all networking operations performed internally by this SDK.
 /// For more info, see ``AvatarService/init(client:cache:)`` and ``ProfileService/init(client:)``.
-public protocol InternalHTTPClient: Sendable {
+public protocol HTTPClient: Sendable {
     /// Performs a data request using the  information provided,  and delivers the result asynchronously.
     /// - Parameter request: A URL request object that provides request-specific information such as the URL and cache policy.
     /// - Returns: An asynchronously-delivered tuple that contains the URL contents as a Data instance, and a HTTPURLResponse.
@@ -20,18 +20,16 @@ public protocol InternalHTTPClient: Sendable {
     func uploadData(with request: URLRequest, data: Data) async throws -> HTTPURLResponse
 }
 
-// NOTE: No changes on external Clients, BUT `ClientTransport` will become public for this to work.
-// (InternalHTTPClient also but we can find a better name)
-// I'd prefer to not generate the client automatically, but this is big part of the idea of OpenApi.
-public protocol HTTPClient: InternalHTTPClient & ClientTransport {
+struct APIClientTransport: ClientTransport {
+    let httpClient: HTTPClient
+    init(httpClient: HTTPClient) {
+        self.httpClient = httpClient
+    }
 
-}
-
-extension HTTPClient {
     func send(_ request: HTTPTypes.HTTPRequest, body: OpenAPIRuntime.HTTPBody?, baseURL: URL, operationID: String) async throws -> (HTTPTypes.HTTPResponse, OpenAPIRuntime.HTTPBody?) {
         let req = try URLRequest(request, baseURL: baseURL)
 
-        let (data, response) = try await fetchData(with: req)
+        let (data, response) = try await httpClient.fetchData(with: req)
 
         return (try HTTPResponse(response), .init(data))
     }
@@ -67,8 +65,10 @@ extension HTTPResponse {
         }
         var headerFields = HTTPFields()
         for (headerName, headerValue) in httpResponse.allHeaderFields {
-            guard let rawName = headerName as? String, let name = HTTPField.Name(rawName),
-                  let value = headerValue as? String
+            guard 
+                let rawName = headerName as? String,
+                let name = HTTPField.Name(rawName),
+                let value = headerValue as? String
             else { continue }
             headerFields[name] = value
         }

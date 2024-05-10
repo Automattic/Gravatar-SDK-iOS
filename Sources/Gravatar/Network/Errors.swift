@@ -6,7 +6,7 @@ public enum ResponseErrorReason: Sendable {
     case URLSessionError(error: Error)
 
     /// The response contains an invalid HTTP status code. By default, status code >= 400 is recognized as invalid.
-    case invalidHTTPStatusCode(response: HTTPURLResponse)
+    case invalidHTTPStatusCode(code: Int)
 
     /// The response is not a `HTTPURLResponse`.
     case invalidURLResponse(response: URLResponse)
@@ -24,8 +24,8 @@ public enum ResponseErrorReason: Sendable {
 
     // If self is a `.invalidHTTPStatusCode` returns the HTTP statusCode from the response. Otherwise returns `nil`.
     public var httpStatusCode: Int? {
-        if case .invalidHTTPStatusCode(let response) = self {
-            return response.statusCode
+        if case .invalidHTTPStatusCode(let code) = self {
+            return code
         }
         return nil
     }
@@ -37,6 +37,8 @@ public enum RequestErrorReason: Sendable {
 
     /// The input url is empty or `nil`.
     case emptyURL
+
+    case invalidServerURL
 }
 
 /// Errors thrown by `ImageDownloadService` when fetching an image.
