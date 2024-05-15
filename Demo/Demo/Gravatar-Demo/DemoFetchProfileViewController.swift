@@ -100,8 +100,10 @@ class DemoFetchProfileViewController: UIViewController {
     func fetchProfile(with profileID: ProfileIdentifier) async {
         let service = ProfileService()
         do {
-            let profile = try await service.fetch(with: profileID)
-            setProfile(with: profile)
+//            let profile = try await service.fetch(with: profileID)
+            let profileV3 = try await service.v3fetchProfile(with: profileID)
+            print("V3: \(profileV3)")
+//            setProfile(with: profile)
         } catch {
             showError(error)
         }

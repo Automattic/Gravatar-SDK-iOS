@@ -1,6 +1,7 @@
 import Foundation
 
 private let baseURL = "https://gravatar.com/"
+private let v3BaseURL = URL(string: "https://api.gravatar.com/v3/profiles/")!
 
 public enum GravatarProfileFetchResult {
     case success(UserProfile)
@@ -36,6 +37,20 @@ public struct ProfileService: ProfileFetching {
         }
     }
 
+    public func v3fetchProfile(with profileID: ProfileIdentifier) async throws -> Profile {
+        let url = v3BaseURL.appending(pathComponent: profileID.id)
+        let request = URLRequest(url: url)
+        // TODO: Add token to headers
+        let (data, response) = try await client.fetchData(with: request)
+        let profileResult: Result<Profile, ProfileServiceError> = map(data, response)
+        switch profileResult {
+        case .success(let success):
+            return success
+        case .failure(let failure):
+            throw failure
+        }
+    }
+
     public func fetch(with profileID: ProfileIdentifier) async throws -> UserProfile {
         try await fetch(withPath: profileID.id)
     }
@@ -63,10 +78,10 @@ extension ProfileService {
     private func fetch(with request: URLRequest) async throws -> UserProfile {
         do {
             let (data, response) = try await client.fetchData(with: request)
-            let fetchProfileResult = map(data, response)
+            let fetchProfileResult: Result<Root, ProfileServiceError> = map(data, response)
             switch fetchProfileResult {
-            case .success(let profile):
-                return profile
+            case .success(let profileRoot):
+                return try profile(from: profileRoot.entry)
             case .failure(let error):
                 throw error
             }
@@ -75,12 +90,11 @@ extension ProfileService {
         }
     }
 
-    private func map(_ data: Data, _: HTTPURLResponse) -> Result<UserProfile, ProfileServiceError> {
+    private func map<UserType: Decodable>(_ data: Data, _: HTTPURLResponse) -> Result<UserType, ProfileServiceError> {
         do {
             let decoder = JSONDecoder()
-            decoder.keyDecodingStrategy = .convertFromSnakeCase
-            let root = try decoder.decode(Root.self, from: data)
-            let profile = try profile(from: root.entry)
+//            decoder.keyDecodingStrategy = .convertFromSnakeCase
+            let profile = try decoder.decode(UserType.self, from: data)
             return .success(profile)
         } catch let error as HTTPClientError {
             return .failure(.responseError(reason: error.map()))
@@ -88,7 +102,8 @@ extension ProfileService {
             return .failure(.requestError(reason: .urlInitializationFailed))
         } catch let error as ProfileServiceError {
             return .failure(error)
-        } catch _ as DecodingError {
+        } catch let error as DecodingError {
+            print(error)
             return .failure(.noProfileInResponse)
         } catch {
             return .failure(.responseError(reason: .unexpected(error)))
