@@ -120,6 +120,9 @@ open class BaseProfileView: UIView, UIContentView {
         imageView.layer.cornerRadius = avatarLength / 2
         imageView.clipsToBounds = true
         imageView.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(avatarTapped))
+        imageView.addGestureRecognizer(tapGestureRecognizer)
+        imageView.isUserInteractionEnabled = true
         return imageView
     }()
 
@@ -370,6 +373,11 @@ open class BaseProfileView: UIView, UIContentView {
         )
     }
 
+    @objc
+    private func avatarTapped() {
+        delegate?.profileView(self, didTapOnAvatarWithID: model?.avatarIdentifier)
+    }
+
     // MARK: - Placeholder handling
 
     var placeholderColors: PlaceholderColors {
@@ -417,4 +425,5 @@ open class BaseProfileView: UIView, UIContentView {
 public protocol ProfileViewDelegate: NSObjectProtocol {
     func profileView(_ view: BaseProfileView, didTapOnProfileButtonWithStyle style: ProfileButtonStyle, profileURL: URL?)
     func profileView(_ view: BaseProfileView, didTapOnAccountButtonWithModel accountModel: AccountModel)
+    func profileView(_ view: BaseProfileView, didTapOnAvatarWithID avatarID: AvatarIdentifier?)
 }
