@@ -86,6 +86,7 @@ generate: $(OUTPUT_DIRECTORY) # Generates the open-api model
     -g swift5 -o ./generated -p packageName=Gravatar \
 	--additional-properties=useJsonEncodable=false,readonlyProperties=true && \
     cp "$(OPENAPI_GENERATOR_CLONE_DIR)"/generated/OpenAPIClient/Classes/OpenAPIs/Models/* "$(OUTPUT_DIRECTORY)" && \
+    make swiftformat && \
     make clean
 
 clean-generated:  # Delete the output directory used for generated sources.
