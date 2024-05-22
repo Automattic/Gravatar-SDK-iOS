@@ -1,45 +1,44 @@
 import Foundation
-#if canImport(AnyCodable)
-import AnyCodable
-#endif
 
-/** A user&#39;s profile information. */
-public struct Profile: Codable, Hashable {
-    /** The SHA256 hash of the user's primary email address. */
+/// A user's profile information.
+///
+public struct Profile: Codable, Hashable, Sendable {
+    /// The SHA256 hash of the user's primary email address.
     public private(set) var hash: String
-    /** The user's display name. This is the name that is displayed on their profile. */
+    /// The user's display name. This is the name that is displayed on their profile.
     public private(set) var displayName: String
-    /** The full URL for the user's profile. */
+    /// The full URL for the user's profile.
     public private(set) var profileUrl: String
-    /** The URL for the user's avatar image if it has been set. */
+    /// The URL for the user's avatar image if it has been set.
     public private(set) var avatarUrl: String
-    /** The alt text for the user's avatar image if it has been set. */
+    /// The alt text for the user's avatar image if it has been set.
     public private(set) var avatarAltText: String
-    /** The user's location. */
+    /// The user's location.
     public private(set) var location: String
-    /** The about section on a user's profile. */
+    /// The about section on a user's profile.
     public private(set) var description: String
-    /** The user's job title. */
+    /// The user's job title.
     public private(set) var jobTitle: String
-    /** The user's current company's name. */
+    /// The user's current company's name.
     public private(set) var company: String
-    /** A list of verified accounts the user has added to their profile. This is limited to a max of 4 in unauthenticated requests. */
+    /// A list of verified accounts the user has added to their profile. This is limited to a max of 4 in unauthenticated requests.
     public private(set) var verifiedAccounts: [VerifiedAccount]
-    /** The phonetic pronunciation of the user's name. */
+    /// The phonetic pronunciation of the user's name.
     public private(set) var pronunciation: String
-    /** The pronouns the user uses. */
+    /// The pronouns the user uses.
     public private(set) var pronouns: String
-    /** A list of links the user has added to their profile. This is only provided in authenticated API requests. */
+    /// A list of links the user has added to their profile. This is only provided in authenticated API requests.
     public private(set) var links: [Link]?
     public private(set) var payments: ProfilePayments?
     public private(set) var contactInfo: ProfileContactInfo?
-    /** Additional images a user has uploaded. This is only provided in authenticated API requests. */
+    /// Additional images a user has uploaded. This is only provided in authenticated API requests.
     public private(set) var gallery: [GalleryImage]?
-    /** The number of verified accounts the user has added to their profile. This count includes verified accounts the user is hiding from their profile. This is only provided in authenticated API requests. */
+    /// The number of verified accounts the user has added to their profile. This count includes verified accounts the user is hiding from their profile. This
+    /// is only provided in authenticated API requests.
     public private(set) var numberVerifiedAccounts: Int?
-    /** The date and time (UTC) the user last edited their profile. This is only provided in authenticated API requests. */
+    /// The date and time (UTC) the user last edited their profile. This is only provided in authenticated API requests.
     public private(set) var lastProfileEdit: Date?
-    /** The date the user registered their account. This is only provided in authenticated API requests. */
+    /// The date the user registered their account. This is only provided in authenticated API requests.
     public private(set) var registrationDate: Date?
 
     public init(

@@ -1,15 +1,13 @@
 import Foundation
-#if canImport(AnyCodable)
-import AnyCodable
-#endif
 
-/** A verified account on a user&#39;s profile. */
-public struct VerifiedAccount: Codable, Hashable {
-    /** The name of the service. */
+/// A verified account on a user's profile.
+///
+public struct VerifiedAccount: Codable, Hashable, Sendable {
+    /// The name of the service.
     public private(set) var serviceLabel: String
-    /** The URL to the service's icon. */
+    /// The URL to the service's icon.
     public private(set) var serviceIcon: String
-    /** The URL to the user's profile on the service. */
+    /// The URL to the user's profile on the service.
     public private(set) var url: String
 
     public init(serviceLabel: String, serviceIcon: String, url: String) {

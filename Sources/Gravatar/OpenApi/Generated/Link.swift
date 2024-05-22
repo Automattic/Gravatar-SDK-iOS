@@ -1,13 +1,11 @@
 import Foundation
-#if canImport(AnyCodable)
-import AnyCodable
-#endif
 
-/** A link the user has added to their profile. */
-public struct Link: Codable, Hashable {
-    /** The label for the link. */
+/// A link the user has added to their profile.
+///
+public struct Link: Codable, Hashable, Sendable {
+    /// The label for the link.
     public private(set) var label: String
-    /** The URL to the link. */
+    /// The URL to the link.
     public private(set) var url: String
 
     public init(label: String, url: String) {

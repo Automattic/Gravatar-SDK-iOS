@@ -1,11 +1,9 @@
 import Foundation
-#if canImport(AnyCodable)
-import AnyCodable
-#endif
 
-/** A gallery image a user has uploaded. */
-public struct GalleryImage: Codable, Hashable {
-    /** The URL to the image. */
+/// A gallery image a user has uploaded.
+///
+public struct GalleryImage: Codable, Hashable, Sendable {
+    /// The URL to the image.
     public private(set) var url: String
 
     public init(url: String) {

@@ -1,13 +1,11 @@
 import Foundation
-#if canImport(AnyCodable)
-import AnyCodable
-#endif
 
-/** A crypto currency wallet address the user accepts. */
-public struct CryptoWalletAddress: Codable, Hashable {
-    /** The label for the crypto currency. */
+/// A crypto currency wallet address the user accepts.
+///
+public struct CryptoWalletAddress: Codable, Hashable, Sendable {
+    /// The label for the crypto currency.
     public private(set) var label: String
-    /** The wallet address for the crypto currency. */
+    /// The wallet address for the crypto currency.
     public private(set) var address: String
 
     public init(label: String, address: String) {

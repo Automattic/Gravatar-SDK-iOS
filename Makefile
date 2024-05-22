@@ -11,7 +11,8 @@ SWIFTFORMAT_CACHE = ~/Library/Caches/com.charcoaldesign.swiftformat
 OPENAPI_GENERATOR_GIT_URL ?= https://github.com/openapitools/openapi-generator
 OPENAPI_GENERATOR_GIT_TAG ?= v7.5.0
 OPENAPI_GENERATOR_CLONE_DIR ?= $(CURRENT_MAKEFILE_DIR)/openapi-generator
-OPENAPI_YAML_PATH ?= $(CURRENT_MAKEFILE_DIR)/openapi.yaml
+OPENAPI_YAML_PATH ?= $(CURRENT_MAKEFILE_DIR)/openapi/spec.yaml
+MODEL_TEMPLATE_PATH ?= $(CURRENT_MAKEFILE_DIR)/openapi
 OUTPUT_DIRECTORY ?= $(CURRENT_MAKEFILE_DIR)/Sources/Gravatar/OpenApi/Generated
 
 # Derived values (don't change these).
@@ -81,13 +82,18 @@ install-and-generate: $(OPENAPI_GENERATOR_CLONE_DIR) # Clones and setup the open
 
 generate: $(OUTPUT_DIRECTORY) # Generates the open-api model
 	cp "$(OPENAPI_YAML_PATH)" "$(OPENAPI_GENERATOR_CLONE_DIR)"/openapi.yaml
+	mkdir -p "$(OPENAPI_GENERATOR_CLONE_DIR)"/templates
+	cp "$(MODEL_TEMPLATE_PATH)"/*.mustache "$(OPENAPI_GENERATOR_CLONE_DIR)"/templates/
 	"$(OPENAPI_GENERATOR_CLONE_DIR)"/run-in-docker.sh generate -i openapi.yaml \
     --global-property models \
-    -g swift5 -o ./generated -p packageName=Gravatar \
+    -t templates \
+    -g swift5 \
+    -o ./generated \
+    -p packageName=Gravatar \
 	--additional-properties=useJsonEncodable=false,readonlyProperties=true && \
     cp "$(OPENAPI_GENERATOR_CLONE_DIR)"/generated/OpenAPIClient/Classes/OpenAPIs/Models/* "$(OUTPUT_DIRECTORY)" && \
     make swiftformat && \
-    make clean
+    echo "DONE! 🎉"
 
 clean-generated:  # Delete the output directory used for generated sources.
 	@echo 'Delete entire directory: $(OUTPUT_DIRECTORY)? [y/N] ' && read ans && [ $${ans:-N} = y ] || (echo "Aborted"; exit 1)

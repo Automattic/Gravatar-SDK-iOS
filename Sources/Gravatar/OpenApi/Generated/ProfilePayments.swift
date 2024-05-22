@@ -1,13 +1,11 @@
 import Foundation
-#if canImport(AnyCodable)
-import AnyCodable
-#endif
 
-/** The user&#39;s public payment information. This is only provided in authenticated API requests. */
-public struct ProfilePayments: Codable, Hashable {
-    /** A list of payment URLs the user has added to their profile. */
+/// The user's public payment information. This is only provided in authenticated API requests.
+///
+public struct ProfilePayments: Codable, Hashable, Sendable {
+    /// A list of payment URLs the user has added to their profile.
     public private(set) var links: [Link]
-    /** A list of crypto currencies the user accepts. */
+    /// A list of crypto currencies the user accepts.
     public private(set) var cryptoWallets: [CryptoWalletAddress]
 
     public init(links: [Link], cryptoWallets: [CryptoWalletAddress]) {
