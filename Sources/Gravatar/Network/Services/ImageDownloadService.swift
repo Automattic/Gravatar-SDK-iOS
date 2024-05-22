@@ -32,10 +32,10 @@ public struct ImageDownloadService: ImageDownloader {
             return image
         }
 
-        imageCache.setEntry(.inProgress(task), for: url.absoluteString)
+        await imageCache.setEntry(.inProgress(task), for: url.absoluteString)
 
         let image = try await getImage(from: task)
-        imageCache.setEntry(.ready(image), for: url.absoluteString)
+        await imageCache.setEntry(.ready(image), for: url.absoluteString)
         return ImageDownloadResult(image: image, sourceURL: url)
     }
 
@@ -51,7 +51,7 @@ public struct ImageDownloadService: ImageDownloader {
     }
 
     private func cachedImage(for url: URL) async throws -> UIImage? {
-        guard let entry = imageCache.getEntry(with: url.absoluteString) else {
+        guard let entry = await imageCache.getEntry(with: url.absoluteString) else {
             return nil
         }
 

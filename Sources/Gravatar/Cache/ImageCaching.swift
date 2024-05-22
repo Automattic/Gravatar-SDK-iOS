@@ -4,12 +4,12 @@ import UIKit
 ///
 /// An ImageCaching represents a cache for CacheEntry elements. Each CacheEntry is either an instance of an image, or the task of retrieving an image from
 /// remote.
-public protocol ImageCaching {
+public protocol ImageCaching: Sendable {
     /// Saves an image in the cache.
     /// - Parameters:
     ///   - image: The cache entry to set.
     ///   - key: The entry's key, used to be found via `.getEntry(key:)`.
-    func setEntry(_ entry: CacheEntry, for key: String)
+    func setEntry(_ entry: CacheEntry, for key: String) async
 
     /// Gets a `CacheEntry` from cache for the given key, or nil if none is found.
     ///
@@ -18,12 +18,12 @@ public protocol ImageCaching {
     ///
     /// `.inProgress(task)`  is used by the image downloader to check if there's already an ongoing download task for the same image. If yes, the image
     /// downloader  awaits that ask instead of starting a new one.
-    func getEntry(with key: String) -> CacheEntry?
+    func getEntry(with key: String) async -> CacheEntry?
 }
 
 /// The default `ImageCaching` used by this SDK.
 public struct ImageCache: ImageCaching {
-    private let cache = NSCache<NSString, CacheEntryObject>()
+    private let cache = NSCacheForImage()
 
     /// The default cache used by the image dowloader.
     public static let shared: ImageCaching = ImageCache()
@@ -39,6 +39,8 @@ public struct ImageCache: ImageCaching {
     }
 }
 
+private class NSCacheForImage: NSCache<NSString, CacheEntryObject>, @unchecked Sendable {}
+
 /// ImageCache can save an in-progress task of retreiving an image from remote.
 /// This enum represent both possible states for an image in the cache system.
 public enum CacheEntry: Sendable {
@@ -48,7 +50,7 @@ public enum CacheEntry: Sendable {
     case ready(UIImage)
 }
 
-private final class CacheEntryObject {
+private final class CacheEntryObject: Sendable {
     let entry: CacheEntry
     init(entry: CacheEntry) { self.entry = entry }
 }
