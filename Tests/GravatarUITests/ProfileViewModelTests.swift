@@ -82,44 +82,17 @@ final class ProfileViewModelTests: XCTestCase {
 // The minimum amount of info. (email: doxomi4985@aersm.com)
 let jsonData: Data = """
 {
-  "entry": [
-    {
-      "hash": "2437c5959b925a1d574d1a2ca1a457ef",
-      "requestHash": "2437c5959b925a1d574d1a2ca1a457ef",
-      "profileUrl": "https://gravatar.com/doxomi4985",
-      "preferredUsername": "doxomi4985",
-      "thumbnailUrl": "https://1.gravatar.com/avatar/2437c5959b925a1d574d1a2ca1a457ef",
-      "photos": [
-        {
-          "value": "https://1.gravatar.com/avatar/2437c5959b925a1d574d1a2ca1a457ef",
-          "type": "thumbnail"
-        }
-      ],
-      "displayName": "doxomi4985",
-      "urls": [],
-      "score": {
-        "value": 1,
-        "full": {
-          "photos": 0,
-          "last_profile_edit": 0,
-          "displayName": 1,
-          "hidden_contact_info": 0,
-          "hidden_wallet": 0,
-          "urls": 0,
-          "hidden_avatar": 0,
-          "age": 0
-        },
-        "accountable": {
-          "displayName": 1
-        }
-      }
-    }
-  ]
-}
-""".data(using: .utf8)!
-
-private let emptyJsonData = """
-{
-    "entry": []
+  "hash": "somehash",
+  "display_name": "Edu",
+  "profile_url": "https://gravatar.com/some",
+  "avatar_url": "https://0.gravatar.com/avatar/somehash",
+  "avatar_alt_text": "",
+  "location": "Nowhereland",
+  "description": "",
+  "job_title": "",
+  "company": "",
+  "verified_accounts": [],
+  "pronunciation": "",
+  "pronouns": ""
 }
 """.data(using: .utf8)!

@@ -23,14 +23,20 @@ public enum PersonalInfoBuildingBlock {
     func text(from model: PersonalInfoModel) -> String? {
         switch self {
         case .jobTitle:
-            model.jobTitle
+            model.jobTitle.nilIfEmpty()
         case .namePronunciation:
-            model.pronunciation
+            model.pronunciation.nilIfEmpty()
         case .pronouns:
-            model.pronouns
+            model.pronouns.nilIfEmpty()
         case .location:
-            model.location
+            model.location.nilIfEmpty()
         }
+    }
+}
+
+extension String {
+     fileprivate func nilIfEmpty() -> String? {
+        isEmpty ? nil : self
     }
 }
 

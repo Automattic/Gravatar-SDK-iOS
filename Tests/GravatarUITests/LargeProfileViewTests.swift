@@ -119,7 +119,7 @@ struct TestProfileCardModel: ProfileModel {
                 TestAccountModel(serviceLabel: "hidden", shortname: "hidden"),
             ],
             description: "Hello, this is something about me.",
-            displayName: "username",
+            displayName: "Display Name",
             jobTitle: "Engineer",
             pronunciation: "Car-N",
             pronouns: "she/her",

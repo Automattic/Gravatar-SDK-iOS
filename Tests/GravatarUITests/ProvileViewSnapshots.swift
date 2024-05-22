@@ -76,7 +76,7 @@ extension TestProfileCardModel {
             TestAccountModel(serviceLabel: "GitHub", shortname: "github"),
         ],
         description: "Engineer at heart, problem-solver by nature. Passionate about innovation and pushing boundaries. Let's build something incredible together.",
-        displayName: "username",
+        displayName: "John Appleseed",
         jobTitle: "Engineer",
         pronunciation: "",
         pronouns: "he/him",
