@@ -88,6 +88,13 @@ class DemoProfileConfigurationViewController: UITableViewController {
 }
 
 extension DemoProfileConfigurationViewController: ProfileViewDelegate {
+    func profileView(_ view: GravatarUI.BaseProfileView, didTapOnAvatarWithID avatarID: Gravatar.AvatarIdentifier?) {
+        print("Avatar tapped!")
+        if let avatarID {
+            print("Avatar ID: \(AvatarURL(with: avatarID)?.url.absoluteString ?? "")")
+        }
+    }
+    
     func profileView(_ view: BaseProfileView, didTapOnProfileButtonWithStyle style: ProfileButtonStyle, profileURL: URL?) {
         guard let profileURL else { return }
         let safari = SFSafariViewController(url: profileURL)
