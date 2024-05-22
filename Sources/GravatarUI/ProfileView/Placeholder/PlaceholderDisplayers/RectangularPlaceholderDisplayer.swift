@@ -5,12 +5,12 @@ import UIKit
 /// called.
 @MainActor
 class RectangularPlaceholderDisplayer<T: UIView>: BackgroundColorPlaceholderDisplayer<T> {
-    private let cornerRadius: CGFloat
-    private let height: CGFloat
+    fileprivate let cornerRadius: CGFloat
+    fileprivate let height: CGFloat
     private let widthRatioToParent: CGFloat
-    private var layoutConstraints: [NSLayoutConstraint] = []
-    private var isShowing: Bool = false
-    private var originalCornerRadius: CGFloat
+    fileprivate var layoutConstraints: [NSLayoutConstraint] = []
+    fileprivate var isShowing: Bool = false
+    fileprivate var originalCornerRadius: CGFloat
 
     init(
         baseView: T,
@@ -45,4 +45,26 @@ class RectangularPlaceholderDisplayer<T: UIView>: BackgroundColorPlaceholderDisp
         layoutConstraints = []
         isShowing = false
     }
+}
+
+@MainActor
+class ConstantSizeRectangularPlaceholderDisplayer<T: UIView>: RectangularPlaceholderDisplayer<T> {
+    
+    fileprivate let width: CGFloat
+    
+    init(baseView: T, color: UIColor, originalBackgroundColor: UIColor = .clear, cornerRadius: CGFloat, height: CGFloat, width: CGFloat, isTemporary: Bool = false) {
+        self.width = width
+        super.init(baseView: baseView, color: color, originalBackgroundColor: originalBackgroundColor, cornerRadius: cornerRadius, height: height, widthRatioToParent: 0, isTemporary: isTemporary)
+    }
+
+    override func showPlaceholder() {
+        super.showPlaceholder()
+        guard !isShowing else { return }
+        // Deactivate existing ones
+        NSLayoutConstraint.deactivate(layoutConstraints)
+        layoutConstraints = baseView.turnIntoPlaceholder(cornerRadius: cornerRadius, height: height, width: width)
+        NSLayoutConstraint.activate(layoutConstraints)
+        isShowing = true
+    }
+
 }

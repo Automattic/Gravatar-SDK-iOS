@@ -1,0 +1,111 @@
+import GravatarUI
+import SnapshotTesting
+import XCTest
+
+final class LargeProfileSummaryWithCustomAvatarViewTests: XCTestCase {
+    enum Constants {
+        static let width: CGFloat = 320
+    }
+
+    override func setUp() async throws {
+        try await super.setUp()
+        // isRecording = true
+    }
+
+    func testLargeProfileSummaryView() throws {
+        for interfaceStyle in UIUserInterfaceStyle.allCases {
+            let (containerView, _) = createViews(model: TestProfileCardModel.summaryCard())
+            containerView.overrideUserInterfaceStyle = interfaceStyle
+            assertSnapshot(of: containerView, as: .image, named: "\(interfaceStyle.name)")
+        }
+    }
+
+    func testInitiallyEmptyLargeProfileSummaryView() throws {
+        for interfaceStyle in UIUserInterfaceStyle.allCases {
+            let (containerView, _) = createViews(model: nil)
+            containerView.overrideUserInterfaceStyle = interfaceStyle
+            assertSnapshot(of: containerView, as: .image, named: "\(interfaceStyle.name)")
+        }
+    }
+
+    func testLargeProfileSummaryViewPlaceholdersCanShow() throws {
+        let interfaceStyle: UIUserInterfaceStyle = .light
+        let (containerView, cardView) = createViews(model: TestProfileCardModel.summaryCard())
+        containerView.overrideUserInterfaceStyle = interfaceStyle
+        cardView.update(with: nil) // clear data and show placeholders
+        assertSnapshot(of: containerView, as: .image, named: "\(interfaceStyle.name)")
+    }
+
+    func testLargeProfileSummaryViewPlaceholdersCanHide() throws {
+        let interfaceStyle: UIUserInterfaceStyle = .light
+        let (containerView, cardView) = createViews(model: TestProfileCardModel.summaryCard())
+        containerView.overrideUserInterfaceStyle = interfaceStyle
+        cardView.update(with: nil) // clear data and show placeholders
+        cardView.update(with: TestProfileCardModel.summaryCard()) // set data and hide placeholders
+        assertSnapshot(of: containerView, as: .image, named: "\(interfaceStyle.name)")
+    }
+
+    func testLargeProfileSummaryViewPlaceholderCanUpdateColors() throws {
+        let interfaceStyle: UIUserInterfaceStyle = .light
+        let (containerView, cardView) = createViews(model: nil)
+        containerView.overrideUserInterfaceStyle = interfaceStyle
+        cardView.placeholderColorPolicy = .custom(PlaceholderColors(backgroundColor: .purple, loadingAnimationColors: [.green, .blue]))
+        assertSnapshot(of: containerView, as: .image, named: "\(interfaceStyle.name)")
+    }
+
+    func testLargeProfileSummaryViewLoadingStateClearsWhenEmpty() throws {
+        let interfaceStyle: UIUserInterfaceStyle = .light
+        let (containerView, cardView) = createViews(model: nil)
+        containerView.overrideUserInterfaceStyle = interfaceStyle
+        cardView.isLoading = true
+        cardView.isLoading = false
+        assertSnapshot(of: containerView, as: .image, named: "\(interfaceStyle.name)")
+    }
+
+    func testLargeProfileSummaryViewLoadingStateClearsWhenDataIsPresent() throws {
+        let interfaceStyle: UIUserInterfaceStyle = .light
+        let (containerView, cardView) = createViews(model: nil)
+        containerView.overrideUserInterfaceStyle = interfaceStyle
+        cardView.isLoading = true
+        cardView.update(with: TestProfileCardModel.summaryCard())
+        cardView.isLoading = false
+        assertSnapshot(of: containerView, as: .image, named: "\(interfaceStyle.name)")
+    }
+
+    @MainActor
+    func testLargeProfileSummaryViewEmptyState() throws {
+        for interfaceStyle in UIUserInterfaceStyle.allCases {
+            let (containerView, profileView) = createViews(model: nil)
+            profileView.updateWithClaimProfilePrompt()
+            containerView.overrideUserInterfaceStyle = interfaceStyle
+            assertSnapshot(of: containerView, as: .image, named: "\(interfaceStyle.name)")
+        }
+    }
+
+    private func createViews(model: ProfileSummaryModel?) -> (UIView, LargeProfileSummaryView) {
+        let cardView = LargeProfileSummaryWithCustomAvatarView(frame: .zero, paletteType: .system)
+        cardView.update(with: model)
+        cardView.translatesAutoresizingMaskIntoConstraints = false
+        cardView.widthAnchor.constraint(equalToConstant: Constants.width).isActive = true
+
+        return (cardView.wrapInSuperView(with: Constants.width), cardView)
+    }
+}
+
+class LargeProfileSummaryWithCustomAvatarView: LargeProfileSummaryView {
+    
+    public private(set) lazy var customAvatarView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.widthAnchor.constraint(equalToConstant: avatarLength).isActive = true
+        view.heightAnchor.constraint(equalToConstant: avatarLength).isActive = true
+        view.layer.cornerRadius = avatarLength / 2
+        return view
+    }()
+    
+    open override func arrangeSubviews() {
+        [customAvatarView, displayNameLabel, personalInfoLabel, profileButton].forEach(rootStackView.addArrangedSubview)
+        setRootStackViewSpacing()
+        rootStackView.alignment = .center
+    }
+}

@@ -9,7 +9,7 @@ public class LargeProfileView: BaseProfileView {
         static let displayNamePlaceholderHeight: CGFloat = 32
     }
 
-    override public var avatarLength: CGFloat {
+    override class public var avatarLength: CGFloat {
         Constants.avatarLength
     }
 
