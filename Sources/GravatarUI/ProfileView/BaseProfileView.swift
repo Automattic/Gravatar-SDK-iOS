@@ -330,6 +330,7 @@ open class BaseProfileView: UIView, UIContentView {
         padding = config.padding
         isLoading = config.isLoading
         avatarActivityIndicatorType = config.avatarActivityIndicatorType
+        delegate = config.delegate
         loadAvatar(with: config)
         if config.model != nil || config.summaryModel != nil {
             profileButtonStyle = config.profileButtonStyle
