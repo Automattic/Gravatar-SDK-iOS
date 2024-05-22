@@ -3,7 +3,7 @@ import UIKit
 
 /// ![](largeProfileSummaryView.view)
 /// A  profile view with large avatar image and sumarized information..
- open class LargeProfileSummaryView: BaseProfileView {
+public class LargeProfileSummaryView: BaseProfileView {
     private enum Constants {
         static let avatarLength: CGFloat = 132.0
         static let displayNamePlaceholderHeight: CGFloat = 32
@@ -19,13 +19,13 @@ import UIKit
         Constants.avatarLength
     }
 
-    open override func arrangeSubviews() {
+    override public func arrangeSubviews() {
         [avatarImageView, displayNameLabel, personalInfoLabel, profileButton].forEach(rootStackView.addArrangedSubview)
         setRootStackViewSpacing()
         rootStackView.alignment = .center
     }
 
-    open func setRootStackViewSpacing() {
+    private func setRootStackViewSpacing() {
         rootStackView.setCustomSpacing(.DS.Padding.double, after: avatarImageView)
         rootStackView.setCustomSpacing(0, after: displayNameLabel)
         rootStackView.setCustomSpacing(0, after: personalInfoLabel)
