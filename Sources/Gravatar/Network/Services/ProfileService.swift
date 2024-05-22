@@ -2,13 +2,13 @@ import Foundation
 
 private let baseURL = URL(string: "https://api.gravatar.com/v3/profiles/")!
 
-public enum GravatarProfileFetchResult {
+public enum GravatarProfileFetchResult: Sendable {
     case success(Profile)
     case failure(ProfileServiceError)
 }
 
 /// A service to perform Profile related tasks.
-public struct ProfileService: ProfileFetching {
+public struct ProfileService: ProfileFetching, Sendable {
     private let client: HTTPClient
 
     /// Creates a new `ProfileService`.
@@ -23,7 +23,7 @@ public struct ProfileService: ProfileFetching {
     /// - Parameters:
     ///   - profileID: A `ProfileIdentifier` for the Gravatar profile
     ///   - onCompletion: The completion handler to call when the fetch request is complete.
-    public func fetchProfile(with profileID: ProfileIdentifier, onCompletion: @escaping ((_ result: GravatarProfileFetchResult) -> Void)) {
+    public func fetchProfile(with profileID: ProfileIdentifier, onCompletion: @Sendable @escaping (_ result: GravatarProfileFetchResult) -> Void) {
         Task {
             do {
                 let profile = try await fetch(with: profileID)
