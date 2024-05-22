@@ -117,13 +117,9 @@ open class BaseProfileView: UIView, UIContentView {
     /// Provides the avatar to show in this view.
     public var avatarProvider: AvatarProviding
     
-    lazy var avatarImageView: UIView = {
-        let view = avatarProvider.avatarView
-        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(avatarTapped))
-        view.addGestureRecognizer(tapGestureRecognizer)
-        view.isUserInteractionEnabled = true
-        return view
-    }()
+    var avatarImageView: UIView {
+        avatarProvider.avatarView
+    }
     
     let aboutMeDashedLabel: DashedLabel = {
         let label = DashedLabel()
@@ -210,6 +206,11 @@ open class BaseProfileView: UIView, UIContentView {
             layoutMarginsGuide.trailingAnchor.constraint(equalTo: rootStackView.trailingAnchor),
             layoutMarginsGuide.bottomAnchor.constraint(equalTo: rootStackView.bottomAnchor),
         ])
+        if let defaultAvatarProvider = avatarProvider as? DefaultAvatarProvider {
+            let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(avatarTapped))
+            defaultAvatarProvider.avatarView.addGestureRecognizer(tapGestureRecognizer)
+            defaultAvatarProvider.avatarView.isUserInteractionEnabled = true
+        }
         refresh(with: paletteType)
         placeholderDisplayer?.setup(using: self)
         arrangeSubviews()
