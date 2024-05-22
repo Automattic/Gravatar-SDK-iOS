@@ -23,11 +23,11 @@ extension VerifiedAccount: AccountModel {
     public var shortname: String {
         serviceLabel.lowercased()
     }
-    
+
     public var iconURL: URL? {
         URL(string: serviceIcon)
     }
-    
+
     public var accountURL: URL? {
         URL(string: url)
     }

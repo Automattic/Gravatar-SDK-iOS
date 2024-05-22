@@ -35,7 +35,7 @@ public enum PersonalInfoBuildingBlock {
 }
 
 extension String {
-     fileprivate func nilIfEmpty() -> String? {
+    fileprivate func nilIfEmpty() -> String? {
         isEmpty ? nil : self
     }
 }
@@ -47,4 +47,4 @@ public protocol PersonalInfoModel {
     var location: String { get }
 }
 
-extension Profile: PersonalInfoModel { }
+extension Profile: PersonalInfoModel {}
