@@ -70,17 +70,17 @@ final class ProfileViewSnapshots: XCTestCase {
 extension TestProfileCardModel {
     fileprivate static let exampleModel = TestProfileCardModel(
         accountsList: [
-            TestAccountModel(display: "Gravatar", shortname: "gravatar"),
-            TestAccountModel(display: "WordPress", shortname: "wordpress"),
-            TestAccountModel(display: "Tumblr", shortname: "tumblr"),
-            TestAccountModel(display: "GitHub", shortname: "github"),
+            TestAccountModel(serviceLabel: "Gravatar", shortname: "gravatar"),
+            TestAccountModel(serviceLabel: "WordPress", shortname: "wordpress"),
+            TestAccountModel(serviceLabel: "Tumblr", shortname: "tumblr"),
+            TestAccountModel(serviceLabel: "GitHub", shortname: "github"),
         ],
-        aboutMe: "Engineer at heart, problem-solver by nature. Passionate about innovation and pushing boundaries. Let's build something incredible together.",
-        userName: "username",
+        description: "Engineer at heart, problem-solver by nature. Passionate about innovation and pushing boundaries. Let's build something incredible together.",
+        displayName: "username",
         jobTitle: "Engineer",
         pronunciation: "",
         pronouns: "he/him",
-        currentLocation: "Atlanta GA",
+        location: "Atlanta GA",
         avatarIdentifier: .email("email@domain.com"),
         profileURL: URL(string: "https://gravatar.com/profile")
     )

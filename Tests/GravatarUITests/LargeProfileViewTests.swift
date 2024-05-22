@@ -100,30 +100,30 @@ final class LargeProfileViewTests: XCTestCase {
 struct TestProfileCardModel: ProfileModel {
     var accountsList: [GravatarUI.AccountModel]
 
-    var aboutMe: String
-    var userName: String
+    var description: String
+    var displayName: String
     var jobTitle: String
     var pronunciation: String
     var pronouns: String
-    var currentLocation: String
+    var location: String
     var avatarIdentifier: Gravatar.AvatarIdentifier?
     var profileURL: URL?
 
     static func fullCard() -> TestProfileCardModel {
         TestProfileCardModel(
             accountsList: [
-                TestAccountModel(display: "Gravatar", shortname: "gravatar"),
-                TestAccountModel(display: "WordPress", shortname: "wordpress"),
-                TestAccountModel(display: "Tumblr", shortname: "tumblr"),
-                TestAccountModel(display: "Unknown", shortname: "unknown"),
-                TestAccountModel(display: "hidden", shortname: "hidden"),
+                TestAccountModel(serviceLabel: "Gravatar", shortname: "gravatar"),
+                TestAccountModel(serviceLabel: "WordPress", shortname: "wordpress"),
+                TestAccountModel(serviceLabel: "Tumblr", shortname: "tumblr"),
+                TestAccountModel(serviceLabel: "Unknown", shortname: "unknown"),
+                TestAccountModel(serviceLabel: "hidden", shortname: "hidden"),
             ],
-            aboutMe: "Hello, this is something about me.",
-            userName: "username",
+            description: "Hello, this is something about me.",
+            displayName: "username",
             jobTitle: "Engineer",
             pronunciation: "Car-N",
             pronouns: "she/her",
-            currentLocation: "Neverland",
+            location: "Neverland",
             avatarIdentifier: .email("email@domain.com"),
             profileURL: URL(string: "https://gravatar.com/profile")
         )
@@ -136,7 +136,7 @@ struct TestProfileCardModel: ProfileModel {
 
 struct TestAccountModel: AccountModel {
     var accountURL: URL?
-    var display: String
+    var serviceLabel: String
     var shortname: String
     var iconURL: URL?
 }

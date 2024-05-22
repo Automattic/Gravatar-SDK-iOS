@@ -13,7 +13,7 @@ final class DisplayNameBuilderTests: XCTestCase {
     }
 
     func testDisplayNameField() {
-        let displayName = TestDisplayName(displayName: "Display Name", fullName: "Name Surname", userName: "username")
+        let displayName = TestDisplayName(displayName: "Display Name")
         let label = UILabel(frame: frame)
         for palette in palettesToTest {
             Configure(label)
@@ -25,7 +25,7 @@ final class DisplayNameBuilderTests: XCTestCase {
     }
 
     func testDisplayNameFieldWithSmallWidth() {
-        let displayName = TestDisplayName(displayName: "Display Name", fullName: "Name Surname", userName: "username")
+        let displayName = TestDisplayName(displayName: "Display Name")
         let label = UILabel(frame: frameSmall)
         Configure(label)
             .asDisplayName()
@@ -33,34 +33,8 @@ final class DisplayNameBuilderTests: XCTestCase {
             .palette(.light)
         assertSnapshot(of: label, as: .image)
     }
-
-    func testDisplayNameFieldWithMissingNames() {
-        let displayName = TestDisplayName(displayName: nil, fullName: nil, userName: "username")
-        let label = UILabel(frame: frame)
-        for palette in palettesToTest {
-            Configure(label)
-                .asDisplayName()
-                .content(displayName)
-                .palette(palette)
-            assertSnapshot(of: label, as: .image, named: "testDisplayNameFieldWithMissingNames-\(palette.name)")
-        }
-    }
-
-    func testDisplayNameFieldWithMissingDisplayName() {
-        let displayName = TestDisplayName(displayName: nil, fullName: "Name Surname", userName: "username")
-        let label = UILabel(frame: frame)
-        for palette in palettesToTest {
-            Configure(label)
-                .asDisplayName()
-                .content(displayName)
-                .palette(palette)
-            assertSnapshot(of: label, as: .image, named: "testDisplayNameFieldWithMissingDisplayName-\(palette.name)")
-        }
-    }
 }
 
 struct TestDisplayName: DisplayNameModel {
-    var displayName: String?
-    var fullName: String?
-    var userName: String
+    var displayName: String
 }
