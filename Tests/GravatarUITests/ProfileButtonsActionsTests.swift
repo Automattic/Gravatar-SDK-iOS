@@ -99,4 +99,6 @@ class TestProfileViewDelegate: NSObject, ProfileViewDelegate {
     func profileView(_ view: BaseProfileView, didTapOnAccountButtonWithModel accountModel: AccountModel) {
         accountButtonActions.append(accountModel)
     }
+
+    func profileView(_ view: GravatarUI.BaseProfileView, didTapOnAvatarWithID avatarID: Gravatar.AvatarIdentifier?) {}
 }
