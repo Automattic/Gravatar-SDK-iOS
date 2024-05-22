@@ -52,7 +52,7 @@ final class TestProfileConfiguration: XCTestCase {
         view.configuration = updatedConfig
 
         XCTAssertEqual(view.layoutMargins, .zero)
-        XCTAssertEqual((view as? LargeProfileView)?.displayNameLabel.text, model.displayName)
+        XCTAssertEqual((view as? LargeProfileView)?.displayNameLabel.text, model.userName)
     }
 
     @MainActor
@@ -71,7 +71,7 @@ final class TestProfileConfiguration: XCTestCase {
         view.configuration = updatedConfig
 
         XCTAssertEqual(view.layoutMargins, .zero)
-        XCTAssertEqual((view as? LargeProfileSummaryView)?.displayNameLabel.text, model.displayName)
+        XCTAssertEqual((view as? LargeProfileSummaryView)?.displayNameLabel.text, model.userName)
     }
 
     @MainActor

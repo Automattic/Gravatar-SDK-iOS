@@ -4,7 +4,7 @@ import Gravatar
 @MainActor
 public class ProfileViewModel {
     @Published public private(set) var isLoading: Bool = false
-    @Published public private(set) var profileFetchingResult: Result<UserProfile, ProfileServiceError>?
+    @Published public private(set) var profileFetchingResult: Result<Profile, ProfileServiceError>?
     private let profileService: ProfileService
 
     public init(profileService: ProfileService = ProfileService()) {

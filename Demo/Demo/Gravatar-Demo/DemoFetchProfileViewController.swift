@@ -100,24 +100,23 @@ class DemoFetchProfileViewController: UIViewController {
     func fetchProfile(with profileID: ProfileIdentifier) async {
         let service = ProfileService()
         do {
-//            let profile = try await service.fetch(with: profileID)
-            let profileV3 = try await service.v3fetchProfile(with: profileID)
-            print("V3: \(profileV3)")
-//            setProfile(with: profile)
+            let profile = try await service.fetch(with: profileID)
+            print("V3: \(profile)")
+            setProfile(with: profile)
         } catch {
             showError(error)
         }
     }
 
-    func setProfile(with profile: UserProfile) {
+    func setProfile(with profile: Profile) {
         activityIndicator.stopAnimating()
         profileTextView.text = """
-Profile URL: \(profile.profileURLString)
-Display name: \(profile.displayName ?? "")
-Name: \(profile.displayName ?? "")
-Preferred User Name: \(profile.preferredUsername)
-Thumbnail URL: \(profile.thumbnailURLString)
-Last edit: \(String(describing: profile.lastProfileEditDate))
+Profile URL: \(profile.profileUrl)
+Display name: \(profile.displayName)
+Name: \(profile.displayName)
+Preferred User Name: \(profile.displayName)
+Thumbnail URL: \(profile.avatarUrl)
+Last edit: \(String(describing: profile.lastProfileEdit))
 """
     }
 

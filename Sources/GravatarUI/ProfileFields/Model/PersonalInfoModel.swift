@@ -29,16 +29,16 @@ public enum PersonalInfoBuildingBlock {
         case .pronouns:
             model.pronouns
         case .location:
-            model.currentLocation
+            model.location
         }
     }
 }
 
 public protocol PersonalInfoModel {
-    var jobTitle: String? { get }
-    var pronunciation: String? { get }
-    var pronouns: String? { get }
-    var currentLocation: String? { get }
+    var jobTitle: String { get }
+    var pronunciation: String { get }
+    var pronouns: String { get }
+    var location: String { get }
 }
 
-extension UserProfile: PersonalInfoModel {}
+extension Profile: PersonalInfoModel { }

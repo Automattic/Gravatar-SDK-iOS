@@ -37,20 +37,20 @@ final class ProfileViewModelTests: XCTestCase {
     @MainActor
     func testProfileFetchingResultUpdatesOnSuccess() async throws {
         let viewModel = ProfileViewModel(profileService: successfulService())
-        var states: [Result<UserProfile, ProfileServiceError>?] = []
+        var states: [Result<Profile, ProfileServiceError>?] = []
         viewModel.$profileFetchingResult.sink { result in
             states.append(result)
         }.store(in: &cancellables)
         await viewModel.fetchProfile(profileIdentifier: .email("test@email.com"))
         XCTAssertEqual(states.count, 2)
         XCTAssertTrue(states[0] == nil)
-        XCTAssertNotNil(try states[1]?.get() as? UserProfile)
+        XCTAssertNotNil(try states[1]?.get() as? Profile)
     }
 
     @MainActor
     func testProfileFetchingResultUpdatesOnFailure() async throws {
         let viewModel = ProfileViewModel(profileService: failingService())
-        var states: [Result<UserProfile, ProfileServiceError>?] = []
+        var states: [Result<Profile, ProfileServiceError>?] = []
         viewModel.$profileFetchingResult.sink { result in
             states.append(result)
         }.store(in: &cancellables)

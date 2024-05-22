@@ -2,7 +2,7 @@ import Foundation
 import Gravatar
 
 public protocol AboutMeModel {
-    var aboutMe: String? { get }
+    var description: String { get }
 }
 
-extension UserProfile: AboutMeModel {}
+extension Profile: AboutMeModel { }

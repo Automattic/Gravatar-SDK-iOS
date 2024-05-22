@@ -8,7 +8,7 @@ public struct AboutMeBuilder {
 
     @discardableResult
     public func content(_ model: AboutMeModel) -> AboutMeBuilder {
-        label.text = model.aboutMe
+        label.text = model.description
         label.font = .DS.Body.xSmall
         label.numberOfLines = 2
         return self

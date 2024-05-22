@@ -100,14 +100,12 @@ final class LargeProfileViewTests: XCTestCase {
 struct TestProfileCardModel: ProfileModel {
     var accountsList: [GravatarUI.AccountModel]
 
-    var aboutMe: String?
-    var displayName: String?
-    var fullName: String?
+    var aboutMe: String
     var userName: String
-    var jobTitle: String?
-    var pronunciation: String?
-    var pronouns: String?
-    var currentLocation: String?
+    var jobTitle: String
+    var pronunciation: String
+    var pronouns: String
+    var currentLocation: String
     var avatarIdentifier: Gravatar.AvatarIdentifier?
     var profileURL: URL?
 
@@ -121,8 +119,6 @@ struct TestProfileCardModel: ProfileModel {
                 TestAccountModel(display: "hidden", shortname: "hidden"),
             ],
             aboutMe: "Hello, this is something about me.",
-            displayName: "Display Name",
-            fullName: "Name Surname",
             userName: "username",
             jobTitle: "Engineer",
             pronunciation: "Car-N",

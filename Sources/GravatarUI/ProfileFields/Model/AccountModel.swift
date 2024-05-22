@@ -2,7 +2,7 @@ import Foundation
 import Gravatar
 
 public protocol AccountModel {
-    var display: String { get }
+    var serviceLabel: String { get }
     var shortname: String { get }
     var iconURL: URL? { get }
     var accountURL: URL? { get }
@@ -13,20 +13,32 @@ public protocol AccountListModel {
 }
 
 struct GravatarAccountModel: AccountModel {
-    let display: String = "Gravatar"
+    let serviceLabel: String = "Gravatar"
     let shortname: String = "gravatar"
     let iconURL: URL? = nil
     let accountURL: URL?
 }
 
-extension UserProfile.Account: AccountModel {}
+extension VerifiedAccount: AccountModel {
+    public var shortname: String {
+        serviceLabel.lowercased()
+    }
+    
+    public var iconURL: URL? {
+        URL(string: serviceIcon)
+    }
+    
+    public var accountURL: URL? {
+        URL(string: url)
+    }
+}
 
-extension UserProfile: AccountListModel {
+extension Profile: AccountListModel {
     public var accountsList: [AccountModel] {
-        [gravatarAccount] + (accounts ?? [])
+        [gravatarAccount] + verifiedAccounts
     }
 
     var gravatarAccount: AccountModel {
-        GravatarAccountModel(accountURL: profileURL)
+        GravatarAccountModel(accountURL: URL(string: profileUrl))
     }
 }

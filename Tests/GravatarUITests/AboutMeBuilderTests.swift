@@ -34,7 +34,8 @@ final class AboutMeBuilderTests: XCTestCase {
 }
 
 struct TestAboutMeModel: AboutMeModel {
-    var aboutMe: String?
+    var aboutMe: String
+
     static func new() -> TestAboutMeModel {
         TestAboutMeModel(aboutMe: "Hi, I am 20 years old. My favorite fruit is sour cherry. My favorite pet is racoon.")
     }
