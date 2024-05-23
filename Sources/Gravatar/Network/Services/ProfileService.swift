@@ -39,7 +39,7 @@ public struct ProfileService: ProfileFetching, Sendable {
     public func fetch(with profileID: ProfileIdentifier) async throws -> Profile {
         let url = baseURL.appending(pathComponent: profileID.id)
         let request = URLRequest(url: url)
-        // TODO: Add token to headers
+        // TODO: Add API key to headers
         return try await fetch(with: request)
     }
 }
@@ -60,15 +60,15 @@ extension ProfileService {
         }
     }
 
-    private func map<UserType: Decodable>(_ data: Data, _: HTTPURLResponse) -> Result<UserType, ProfileServiceError> {
+    private func map(_ data: Data, _: HTTPURLResponse) -> Result<Profile, ProfileServiceError> {
         do {
-            let profile = try JSONDecoder().decode(UserType.self, from: data)
+            let profile = try JSONDecoder().decode(Profile.self, from: data)
             return .success(profile)
         } catch let error as HTTPClientError {
             return .failure(.responseError(reason: error.map()))
         } catch let error as ProfileServiceError {
             return .failure(error)
-        } catch let error as DecodingError {
+        } catch _ as DecodingError {
             return .failure(.noProfileInResponse)
         } catch {
             return .failure(.responseError(reason: .unexpected(error)))
