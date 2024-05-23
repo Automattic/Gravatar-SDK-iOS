@@ -69,7 +69,6 @@ extension ProfileService {
         } catch let error as ProfileServiceError {
             return .failure(error)
         } catch let error as DecodingError {
-            print(error)
             return .failure(.noProfileInResponse)
         } catch {
             return .failure(.responseError(reason: .unexpected(error)))
