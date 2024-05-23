@@ -101,7 +101,6 @@ class DemoFetchProfileViewController: UIViewController {
         let service = ProfileService()
         do {
             let profile = try await service.fetch(with: profileID)
-            print("V3: \(profile)")
             setProfile(with: profile)
         } catch {
             showError(error)
