@@ -23,22 +23,28 @@ public enum PersonalInfoBuildingBlock {
     func text(from model: PersonalInfoModel) -> String? {
         switch self {
         case .jobTitle:
-            model.jobTitle
+            model.jobTitle.nilIfEmpty()
         case .namePronunciation:
-            model.pronunciation
+            model.pronunciation.nilIfEmpty()
         case .pronouns:
-            model.pronouns
+            model.pronouns.nilIfEmpty()
         case .location:
-            model.currentLocation
+            model.location.nilIfEmpty()
         }
     }
 }
 
-public protocol PersonalInfoModel {
-    var jobTitle: String? { get }
-    var pronunciation: String? { get }
-    var pronouns: String? { get }
-    var currentLocation: String? { get }
+extension String {
+    fileprivate func nilIfEmpty() -> String? {
+        isEmpty ? nil : self
+    }
 }
 
-extension UserProfile: PersonalInfoModel {}
+public protocol PersonalInfoModel {
+    var jobTitle: String { get }
+    var pronunciation: String { get }
+    var pronouns: String { get }
+    var location: String { get }
+}
+
+extension Profile: PersonalInfoModel {}

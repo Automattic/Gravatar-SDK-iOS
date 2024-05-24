@@ -8,7 +8,7 @@ public struct DisplayNameBuilder {
 
     @discardableResult
     public func content(_ model: DisplayNameModel) -> DisplayNameBuilder {
-        label.text = model.displayName ?? model.fullName ?? model.userName
+        label.text = model.displayName
         label.font = .DS.title2
         label.numberOfLines = 0
         return self

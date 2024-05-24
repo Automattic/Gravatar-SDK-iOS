@@ -1,19 +1,19 @@
 import UIKit
 
 struct ClaimProfileModel: ProfileModel {
-    let aboutMe: String? = NSLocalizedString(
+    let description: String = NSLocalizedString(
         "GravatarEmptyProfileAboutMeKey",
         value: "Tell the world who you are. Your avatar and bio that follows you across the web.",
         comment: ""
     )
 
-    let currentLocation: String? = NSLocalizedString(
+    let location: String = NSLocalizedString(
         "GravatarEmptyProfileInformationKey",
         value: "Add your location, pronouns, etc",
         comment: ""
     )
 
-    var displayName: String? = NSLocalizedString(
+    var displayName: String = NSLocalizedString(
         "GravatarEmptyProfileDisplayNameKey",
         value: "Your Name",
         comment: ""
@@ -27,9 +27,9 @@ struct ClaimProfileModel: ProfileModel {
         displayName
     }
 
-    let jobTitle: String? = nil
-    let pronunciation: String? = nil
-    let pronouns: String? = nil
+    let jobTitle: String = ""
+    let pronunciation: String = ""
+    let pronouns: String = ""
     let profileURL: URL? = nil
 
     init(userName: String? = nil) {

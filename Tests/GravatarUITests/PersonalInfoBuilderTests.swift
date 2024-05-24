@@ -22,7 +22,7 @@ final class PersonalInfoBuilderTests: XCTestCase {
 
     func testPersonalInfoSkipsSeparatorAndNewLine() {
         let label = UILabel(frame: frame)
-        let testData = TestPersonalInfo(jobTitle: "Engineer", pronunciation: nil)
+        let testData = TestPersonalInfo(jobTitle: "Engineer", pronunciation: "")
         Configure(label)
             .asPersonalInfo()
             .content(
@@ -90,13 +90,13 @@ final class PersonalInfoBuilderTests: XCTestCase {
 }
 
 struct TestPersonalInfo: PersonalInfoModel {
-    var jobTitle: String?
-    var pronunciation: String?
-    var pronouns: String?
-    var currentLocation: String?
+    var jobTitle: String = ""
+    var pronunciation: String = ""
+    var pronouns: String = ""
+    var location: String = ""
 
     static func fullInfo() -> TestPersonalInfo {
-        TestPersonalInfo(jobTitle: "Carpenter", pronunciation: "Car-N", pronouns: "she/her", currentLocation: "Connecticut")
+        TestPersonalInfo(jobTitle: "Carpenter", pronunciation: "Car-N", pronouns: "she/her", location: "Connecticut")
     }
 
     static func pronounsOnly() -> TestPersonalInfo {

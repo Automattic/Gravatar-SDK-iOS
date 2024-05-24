@@ -6,8 +6,12 @@ public protocol ProfileMetadataModel {
     var profileEditURL: URL? { get }
 }
 
-extension UserProfile: ProfileMetadataModel {
+extension Profile: ProfileMetadataModel {
     public var profileEditURL: URL? {
         URL(string: "https://gravatar.com/profile")
+    }
+
+    public var profileURL: URL? {
+        URL(string: profileUrl)
     }
 }
