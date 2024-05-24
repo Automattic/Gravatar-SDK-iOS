@@ -107,15 +107,15 @@ class DemoFetchProfileViewController: UIViewController {
         }
     }
 
-    func setProfile(with profile: UserProfile) {
+    func setProfile(with profile: Profile) {
         activityIndicator.stopAnimating()
         profileTextView.text = """
-Profile URL: \(profile.profileURLString)
-Display name: \(profile.displayName ?? "")
-Name: \(profile.displayName ?? "")
-Preferred User Name: \(profile.preferredUsername)
-Thumbnail URL: \(profile.thumbnailURLString)
-Last edit: \(String(describing: profile.lastProfileEditDate))
+Profile URL: \(profile.profileUrl)
+Display name: \(profile.displayName)
+Name: \(profile.displayName)
+Preferred User Name: \(profile.displayName)
+Thumbnail URL: \(profile.avatarUrl)
+Last edit: \(String(describing: profile.lastProfileEdit))
 """
     }
 
