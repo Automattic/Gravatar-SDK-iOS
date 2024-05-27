@@ -60,10 +60,11 @@ class ProfileViewPlaceholderDisplayer: ProfileViewPlaceholderDisplaying {
                 color: color
             ),
         ]
-        if let avatarImageView = view.avatarType.imageView {
+        if view.avatarType.shouldApplyStyling, 
+            let imageView = view.avatarType.imageView {
             elements?.append(
-                BackgroundColorPlaceholderDisplayer<UIImageView>(
-                    baseView: avatarImageView,
+                BackgroundColorPlaceholderDisplayer<UIView>(
+                    baseView: imageView,
                     color: color,
                     originalBackgroundColor: view.paletteType.palette.avatar.background
                 )

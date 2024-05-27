@@ -7,9 +7,8 @@ public enum AvatarType {
     /// If `skipStyling` is `true` then no size & shape & border changes will be applied to the `UIImageView` so the appearance needs to be managed externally.
     case imageView(UIImageView, skipStyling: Bool = false)
 
-    /// Avatar is a `UIView` that has a `UIImageView`.
-    /// If `skipStyling` is `true` then no size & shape & border changes will be applied to the `UIImageView` so the appearance needs to be managed externally.
-    case imageViewWrapper(ImageViewWrapper, skipStyling: Bool = false)
+    /// Avatar is a `UIView` that has a `UIImageView` and its appearance needs to be managed externally.
+    case imageViewWrapper(ImageViewWrapper)
 
     /// Avatar is a custom `UIView` whose appearance is fully managed externally.
     case custom(AvatarProviding)
@@ -18,10 +17,19 @@ public enum AvatarType {
         switch self {
         case .imageView(let imageView, _):
             imageView
-        case .imageViewWrapper(let wrapper, _):
+        case .imageViewWrapper(let wrapper):
             wrapper.imageView
         case .custom:
             nil
+        }
+    }
+    
+    var shouldApplyStyling: Bool {
+        switch self {
+        case let .imageView(_, skipStyling):
+            return !skipStyling
+        case .imageViewWrapper, .custom:
+            return false
         }
     }
 
@@ -29,8 +37,8 @@ public enum AvatarType {
         switch self {
         case .imageView(let imageView, let skipStyling):
             DefaultAvatarProvider(baseView: imageView, avatarImageView: imageView, skipStyling: skipStyling, avatarLength: avatarLength, paletteType: paletteType)
-        case .imageViewWrapper(let wrapper, let skipStyling):
-            DefaultAvatarProvider(baseView: wrapper.baseView, avatarImageView: wrapper.imageView, skipStyling: skipStyling, avatarLength: avatarLength, paletteType: paletteType)
+        case .imageViewWrapper(let wrapper):
+            DefaultAvatarProvider(baseView: wrapper.baseView, avatarImageView: wrapper.imageView, skipStyling: true, avatarLength: avatarLength, paletteType: paletteType)
         case .custom(let provider):
             provider
         }
@@ -47,7 +55,7 @@ public protocol ImageViewWrapper {
     var baseView: UIView { get }
 }
 
-/// Provides a UIView to be used as the avatar in a `BaseProfileView`. This is for taking full control over what kind of avatar component to use.
+/// Provides a UIView to be used as the avatar in a `BaseProfileView`. This is for taking full control over the avatar..
 @MainActor
 public protocol AvatarProviding {
     /// `UIView` to insert into the avatar's slot in a `BaseProfileView`.

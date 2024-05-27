@@ -469,9 +469,9 @@ class DefaultAvatarProvider: AvatarProviding {
         baseView.translatesAutoresizingMaskIntoConstraints = false
         baseView.widthAnchor.constraint(equalToConstant: avatarLength).isActive = true
         baseView.heightAnchor.constraint(equalToConstant: avatarLength).isActive = true
-        baseView.setContentHuggingPriority(.defaultHigh, for: .horizontal)
-        baseView.layer.cornerRadius = avatarCornerRadius
-        baseView.clipsToBounds = true
+        avatarImageView.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+        avatarImageView.layer.cornerRadius = avatarCornerRadius
+        avatarImageView.clipsToBounds = true
     }
 
     func setImage(with source: URL?, placeholder: UIImage?, options: [ImageSettingOption]?, completion: ((Bool) -> Void)?) {
@@ -484,7 +484,7 @@ class DefaultAvatarProvider: AvatarProviding {
             switch result {
             case .success:
                 if !self.skipStyling {
-                    self.baseView.layer.borderColor = self.paletteType.palette.avatar.border.cgColor
+                    self.avatarImageView.layer.borderColor = self.paletteType.palette.avatar.border.cgColor
                     self.avatarBorderWidth = avatarBorderWidth
                 }
                 completion?(true)
@@ -504,9 +504,9 @@ class DefaultAvatarProvider: AvatarProviding {
     func refresh(with paletteType: PaletteType) {
         guard !skipStyling else { return }
         self.paletteType = paletteType
-        baseView.layer.borderColor = paletteType.palette.avatar.border.cgColor
-        baseView.backgroundColor = paletteType.palette.avatar.background
-        baseView.overrideUserInterfaceStyle = paletteType.palette.preferredUserInterfaceStyle
+        avatarImageView.layer.borderColor = paletteType.palette.avatar.border.cgColor
+        avatarImageView.backgroundColor = paletteType.palette.avatar.background
+        avatarImageView.overrideUserInterfaceStyle = paletteType.palette.preferredUserInterfaceStyle
     }
 
     var avatarView: UIView {
