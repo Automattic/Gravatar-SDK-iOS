@@ -9,8 +9,8 @@ final class ImageDownloadServiceTests: XCTestCase {
         let service = imageDownloadService(with: sessionMock)
 
         let imageResponse = try await service.fetchImage(with: URL(string: imageURL)!)
-
-        XCTAssertEqual(sessionMock.request?.url?.absoluteString, "https://gravatar.com/avatar/HASH")
+        let request = await sessionMock.request
+        XCTAssertEqual(request?.url?.absoluteString, "https://gravatar.com/avatar/HASH")
         XCTAssertNotNil(imageResponse.image)
     }
 
@@ -27,11 +27,13 @@ final class ImageDownloadServiceTests: XCTestCase {
         let setImageCallsCount = await cache.setImageCallsCount
         let setTaskCallCount = await cache.setTaskCallCount
         let getImageCallsCount = await cache.getImageCallsCount
+        let request = await sessionMock.request
+        let callsCount = await sessionMock.callsCount
         XCTAssertEqual(setImageCallsCount, 1)
         XCTAssertEqual(setTaskCallCount, 1)
         XCTAssertEqual(getImageCallsCount, 3)
-        XCTAssertEqual(sessionMock.callsCount, 1)
-        XCTAssertEqual(sessionMock.request?.url?.absoluteString, "https://gravatar.com/avatar/HASH")
+        XCTAssertEqual(callsCount, 1)
+        XCTAssertEqual(request?.url?.absoluteString, "https://gravatar.com/avatar/HASH")
         XCTAssertNotNil(imageResponse.image)
     }
 }

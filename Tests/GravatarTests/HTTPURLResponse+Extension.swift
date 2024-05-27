@@ -21,7 +21,7 @@ struct HTTPClientMock: HTTPClient {
     }
 
     func fetchData(with request: URLRequest) async throws -> (Data, HTTPURLResponse) {
-        session.request = request
+        await session.update(request: request)
         return (session.returnData, session.response)
     }
 

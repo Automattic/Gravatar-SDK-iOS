@@ -20,8 +20,7 @@ final class TestURLSession: URLSessionProtocol {
         fatalError()
     }
 
-    var failReason: TestDataTaskFailReason?
-    private(set) var dataTaskCount: Int = 0
+    let failReason: TestDataTaskFailReason?
     static let error = NSError(domain: "test", code: 1234)
 
     init(failReason: TestDataTaskFailReason? = nil) {
@@ -29,7 +28,6 @@ final class TestURLSession: URLSessionProtocol {
     }
 
     func dataTask(with request: URLRequest, completionHandler: @escaping @Sendable (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTask {
-        dataTaskCount += 1
         guard let url = request.url else {
             XCTFail()
             return URLSession.shared.dataTask(with: request)
