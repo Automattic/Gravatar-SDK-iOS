@@ -18,7 +18,6 @@ final class LargeProfileViewTests: XCTestCase {
         for paletteType in palettesToTest {
             let (cardView, containerView) = createViews(paletteType: paletteType)
             cardView.update(with: TestProfileCardModel.fullCard())
-            cardView.avatarView.backgroundColor = .blue
             assertSnapshot(of: containerView, as: .image, named: "testLargeProfileView-\(paletteType.name)")
         }
     }
@@ -83,7 +82,6 @@ final class LargeProfileViewTests: XCTestCase {
             cardView.updateWithClaimProfilePrompt()
             containerView.backgroundColor = .systemBackground
             containerView.overrideUserInterfaceStyle = paletteType.palette.preferredUserInterfaceStyle
-            cardView.avatarImageView?.backgroundColor = .blue
             assertSnapshot(of: containerView, as: .image, named: "testLargeProfileView-\(paletteType.name)")
         }
     }
