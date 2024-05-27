@@ -23,22 +23,34 @@ public enum AvatarType {
             nil
         }
     }
-    
+
     var shouldApplyStyling: Bool {
         switch self {
-        case let .imageView(_, skipStyling):
-            return !skipStyling
+        case .imageView(_, let skipStyling):
+            !skipStyling
         case .imageViewWrapper, .custom:
-            return false
+            false
         }
     }
 
     func avatarProvider(avatarLength: CGFloat, paletteType: PaletteType) -> AvatarProviding {
         switch self {
         case .imageView(let imageView, let skipStyling):
-            DefaultAvatarProvider(baseView: imageView, avatarImageView: imageView, skipStyling: skipStyling, avatarLength: avatarLength, paletteType: paletteType)
+            DefaultAvatarProvider(
+                baseView: imageView,
+                avatarImageView: imageView,
+                skipStyling: skipStyling,
+                avatarLength: avatarLength,
+                paletteType: paletteType
+            )
         case .imageViewWrapper(let wrapper):
-            DefaultAvatarProvider(baseView: wrapper.baseView, avatarImageView: wrapper.imageView, skipStyling: true, avatarLength: avatarLength, paletteType: paletteType)
+            DefaultAvatarProvider(
+                baseView: wrapper.baseView,
+                avatarImageView: wrapper.imageView,
+                skipStyling: true,
+                avatarLength: avatarLength,
+                paletteType: paletteType
+            )
         case .custom(let provider):
             provider
         }

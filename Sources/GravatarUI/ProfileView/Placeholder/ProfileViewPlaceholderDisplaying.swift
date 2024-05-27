@@ -60,8 +60,9 @@ class ProfileViewPlaceholderDisplayer: ProfileViewPlaceholderDisplaying {
                 color: color
             ),
         ]
-        if view.avatarType.shouldApplyStyling, 
-            let imageView = view.avatarType.imageView {
+        if view.avatarType.shouldApplyStyling,
+           let imageView = view.avatarType.imageView
+        {
             elements?.append(
                 BackgroundColorPlaceholderDisplayer<UIView>(
                     baseView: imageView,
