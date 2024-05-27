@@ -5,7 +5,7 @@ import UIKit
 /// A profile view with standard layout
 public class ProfileView: BaseProfileView {
     private lazy var topStackView: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [avatarImageView, basicInfoStackView])
+        let stack = UIStackView(arrangedSubviews: [avatarView, basicInfoStackView])
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.axis = .horizontal
         stack.alignment = .center

@@ -10,36 +10,6 @@ public protocol ProfileViewPlaceholderDisplaying {
     func refresh(with placeholderColors: PlaceholderColors, paletteType: PaletteType)
 }
 
-@MainActor
-public enum ProfileViewPlaceholderPolicy {
-    case none
-    case colorShifting
-    case shapeShifting(cornerRadius: CGFloat, size: CGSize)
-    case custom(_ placeholderDisplaying: PlaceholderDisplaying)
-    
-    func avatarPlaceholderDisplayer(for view: BaseProfileView) -> PlaceholderDisplaying? {
-        let color = view.placeholderColors.backgroundColor
-        switch self {
-        case .none:
-            return nil
-        case .colorShifting:
-            return BackgroundColorPlaceholderDisplayer<UIView>(
-                baseView: view.avatarImageView,
-                color: color,
-                originalBackgroundColor: view.paletteType.palette.avatar.background
-            )
-        case .shapeShifting(let cornerRadius, let size):
-            return ConstantSizeRectangularPlaceholderDisplayer(baseView: view.avatarImageView,
-                                                               color: color,
-                                                               cornerRadius: cornerRadius,
-                                                               height: size.height,
-                                                               width: size.width)
-        case .custom(let placeholderDisplaying):
-            return placeholderDisplaying
-        }
-    }
-}
-
 /// ProfileViewPlaceholderDisplayer can convert each element of `BaseProfileView` into a placeholder and revert back.
 @MainActor
 class ProfileViewPlaceholderDisplayer: ProfileViewPlaceholderDisplaying {
@@ -48,7 +18,6 @@ class ProfileViewPlaceholderDisplayer: ProfileViewPlaceholderDisplaying {
 
     func setup(using view: BaseProfileView) {
         let color = view.placeholderColors.backgroundColor
-        let avatarPlaceholderDisplayer = view.avatarProvider.placeholderPolicy.avatarPlaceholderDisplayer(for: view)
         elements = [
             LabelPlaceholderDisplayer(
                 baseView: view.aboutMeLabel,
@@ -91,8 +60,14 @@ class ProfileViewPlaceholderDisplayer: ProfileViewPlaceholderDisplaying {
                 color: color
             ),
         ]
-        if let avatarPlaceholderDisplayer = view.avatarProvider.placeholderPolicy.avatarPlaceholderDisplayer(for: view) {
-            elements?.append(avatarPlaceholderDisplayer)
+        if let avatarImageView = view.avatarType.imageView {
+            elements?.append(
+                BackgroundColorPlaceholderDisplayer<UIImageView>(
+                    baseView: avatarImageView,
+                    color: color,
+                    originalBackgroundColor: view.paletteType.palette.avatar.background
+                )
+            )
         }
     }
 

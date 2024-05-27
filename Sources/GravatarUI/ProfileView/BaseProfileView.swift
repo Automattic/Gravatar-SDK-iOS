@@ -115,12 +115,19 @@ open class BaseProfileView: UIView, UIContentView {
     }()
 
     /// Provides the avatar to show in this view.
-    public var avatarProvider: AvatarProviding
-    
-    var avatarImageView: UIView {
+    let avatarProvider: AvatarProviding
+
+    /// Type of the avatar. See: ``AvatarType``.
+    public let avatarType: AvatarType
+
+    public var avatarView: UIView {
         avatarProvider.avatarView
     }
-    
+
+    public var avatarImageView: UIImageView? {
+        avatarType.imageView
+    }
+
     let aboutMeDashedLabel: DashedLabel = {
         let label = DashedLabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -181,17 +188,18 @@ open class BaseProfileView: UIView, UIContentView {
     }
 
     public init(
-        frame: CGRect,
+        frame: CGRect = .zero,
         paletteType: PaletteType? = nil,
         profileButtonStyle: ProfileButtonStyle? = nil,
-        avatarProvider: AvatarProviding? = nil,
+        avatarType: AvatarType? = nil,
         padding: UIEdgeInsets? = nil
     ) {
         self.paletteType = paletteType ?? .system
         let placeholderDisplayer = ProfileViewPlaceholderDisplayer()
         self.placeholderDisplayer = placeholderDisplayer
         self.activityIndicator = ProfilePlaceholderActivityIndicator(placeholderDisplayer: placeholderDisplayer)
-        self.avatarProvider = avatarProvider ?? DefaultAvatarProvider(avatarLength: Self.avatarLength, paletteType: self.paletteType)
+        self.avatarType = (avatarType ?? AvatarType.imageView(UIImageView()))
+        self.avatarProvider = self.avatarType.avatarProvider(avatarLength: Self.avatarLength, paletteType: self.paletteType)
         self.profileButtonStyle = profileButtonStyle ?? self.profileButtonStyle
         super.init(frame: frame)
         self.padding = padding ?? Self.defaultPadding
@@ -243,7 +251,7 @@ open class BaseProfileView: UIView, UIContentView {
             preferredSize: pointsSize,
             defaultAvatarOption: defaultAvatarOption
         )
-        
+
         let gravatarURL = AvatarURL(with: avatarIdentifier, options: downloadOptions.avatarQueryOptions)?.url
         avatarProvider.setImage(with: gravatarURL, placeholder: placeholder, options: options, completion: nil)
     }
@@ -412,89 +420,96 @@ public protocol ProfileViewDelegate: NSObjectProtocol {
     func profileView(_ view: BaseProfileView, didTapOnAvatarWithID avatarID: AvatarIdentifier?)
 }
 
-public protocol AvatarProviding {
-    var avatarView: UIView { get }
-    var placeholderPolicy: ProfileViewPlaceholderPolicy { get }
-    func setImage(with source: URL?, placeholder: UIImage?, options: [ImageSettingOption]?, completion: ((Bool) -> Void)?)
-    func setImage(_ image: UIImage?)
-    func refresh(with paletteType: PaletteType)
-}
-
-open class DefaultAvatarProvider: AvatarProviding {
-    
-    open var avatarView: UIView {
-        return avatarImageView
-    }
-    
-    public var placeholderPolicy: ProfileViewPlaceholderPolicy {
-        .colorShifting
-    }
-    
+class DefaultAvatarProvider: AvatarProviding {
     private let avatarLength: CGFloat
+    private let avatarImageView: UIImageView
+    private let baseView: UIView
+    private let skipStyling: Bool
     private(set) var paletteType: PaletteType
-    
-    public var avatarCornerRadius: CGFloat {
+
+    var avatarCornerRadius: CGFloat {
         didSet {
             avatarImageView.layer.cornerRadius = avatarCornerRadius
         }
     }
-    
-    public var avatarBorderWidth: CGFloat {
+
+    var avatarBorderWidth: CGFloat {
         didSet {
             avatarImageView.layer.borderWidth = avatarBorderWidth
         }
     }
-    
-    public var activityIndicatorType: ActivityIndicatorType = .activity {
+
+    var activityIndicatorType: ActivityIndicatorType = .activity {
         didSet {
             avatarImageView.gravatar.activityIndicatorType = activityIndicatorType
         }
     }
 
-    public init(avatarLength: CGFloat, cornerRadius: CGFloat? = nil, borderWidth: CGFloat = 1, paletteType: PaletteType? = nil) {
+    init(
+        baseView: UIView,
+        avatarImageView: UIImageView,
+        skipStyling: Bool,
+        avatarLength: CGFloat,
+        cornerRadius: CGFloat? = nil,
+        borderWidth: CGFloat = 1,
+        paletteType: PaletteType = .system
+    ) {
         self.avatarLength = avatarLength
-        self.paletteType = paletteType ?? .system
+        self.paletteType = paletteType
         self.avatarCornerRadius = cornerRadius ?? avatarLength / 2
         self.avatarBorderWidth = borderWidth
+        self.avatarImageView = avatarImageView
+        self.baseView = baseView
+        self.skipStyling = skipStyling
+        configure()
     }
-    
-    private lazy var avatarImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.widthAnchor.constraint(equalToConstant: avatarLength).isActive = true
-        imageView.heightAnchor.constraint(equalToConstant: avatarLength).isActive = true
-        imageView.layer.cornerRadius = avatarCornerRadius
-        imageView.clipsToBounds = true
-        imageView.setContentHuggingPriority(.defaultHigh, for: .horizontal)
-        return imageView
-    }()
-    
-    open func setImage(with source: URL?, placeholder: UIImage?, options: [ImageSettingOption]?, completion: ((Bool) -> Void)?) {
+
+    private func configure() {
+        guard !skipStyling else { return }
+        baseView.translatesAutoresizingMaskIntoConstraints = false
+        baseView.widthAnchor.constraint(equalToConstant: avatarLength).isActive = true
+        baseView.heightAnchor.constraint(equalToConstant: avatarLength).isActive = true
+        baseView.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+        baseView.layer.cornerRadius = avatarCornerRadius
+        baseView.clipsToBounds = true
+    }
+
+    func setImage(with source: URL?, placeholder: UIImage?, options: [ImageSettingOption]?, completion: ((Bool) -> Void)?) {
         avatarImageView.gravatar.setImage(
             with: source,
             placeholder: placeholder,
             options: options
         ) { [weak self] result in
+            guard let self else { return }
             switch result {
             case .success:
-                self?.avatarImageView.layer.borderColor = self?.paletteType.palette.avatar.border.cgColor
-                self?.avatarBorderWidth = 1
+                if !self.skipStyling {
+                    self.baseView.layer.borderColor = self.paletteType.palette.avatar.border.cgColor
+                    self.avatarBorderWidth = avatarBorderWidth
+                }
                 completion?(true)
             default:
-                self?.avatarImageView.layer.borderColor = UIColor.clear.cgColor
+                if !self.skipStyling {
+                    self.avatarImageView.layer.borderColor = UIColor.clear.cgColor
+                }
                 completion?(false)
             }
         }
     }
-    
-    open func setImage(_ image: UIImage?) {
+
+    func setImage(_ image: UIImage?) {
         avatarImageView.image = image
     }
-    
-    open func refresh(with paletteType: PaletteType) {
+
+    func refresh(with paletteType: PaletteType) {
+        guard !skipStyling else { return }
         self.paletteType = paletteType
-        avatarImageView.layer.borderColor = paletteType.palette.avatar.border.cgColor
-        avatarImageView.backgroundColor = paletteType.palette.avatar.background
-        avatarImageView.overrideUserInterfaceStyle = paletteType.palette.preferredUserInterfaceStyle
+        baseView.layer.borderColor = paletteType.palette.avatar.border.cgColor
+        baseView.backgroundColor = paletteType.palette.avatar.background
+        baseView.overrideUserInterfaceStyle = paletteType.palette.preferredUserInterfaceStyle
+    }
+
+    var avatarView: UIView {
+        baseView
     }
 }

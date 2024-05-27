@@ -86,7 +86,7 @@ final class LargeProfileSummaryViewTests: XCTestCase {
         let cardView = LargeProfileSummaryView(frame: .zero, paletteType: .system)
         cardView.update(with: model)
         if model != nil {
-            cardView.avatarImageView.backgroundColor = .systemBlue
+            cardView.avatarImageView?.backgroundColor = .systemBlue
         }
         cardView.translatesAutoresizingMaskIntoConstraints = false
         cardView.widthAnchor.constraint(equalToConstant: Constants.width).isActive = true
