@@ -18,19 +18,21 @@ actor URLSessionMock: URLSessionProtocol {
             _callsCount
         }
     }
+
     private var _request: URLRequest? = nil
     var request: URLRequest? {
         get async {
             _request
         }
     }
+
     private var _uploadData: Data? = nil
     var uploadData: Data? {
         get async {
             _uploadData
         }
     }
-    
+
     init(returnData: Data, response: HTTPURLResponse, error: NSError? = nil) {
         self.returnData = returnData
         self.response = response
@@ -58,7 +60,7 @@ actor URLSessionMock: URLSessionProtocol {
         }
         return (returnData, response)
     }
-    
+
     func update(request: URLRequest) async {
         _request = request
     }
