@@ -125,7 +125,7 @@ final class ProfileSummaryViewTests: XCTestCase {
         containerView.overrideUserInterfaceStyle = UIUserInterfaceStyle.light
         assertSnapshot(of: containerView, as: .image)
     }
-    
+
     private func createViews(model: ProfileSummaryModel?, avatarType: AvatarType? = nil) -> (UIView, ProfileSummaryView) {
         let cardView = ProfileSummaryView(frame: .zero, paletteType: .system, avatarType: avatarType)
         cardView.update(with: model)
