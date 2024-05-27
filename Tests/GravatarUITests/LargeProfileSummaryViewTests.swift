@@ -87,8 +87,7 @@ final class LargeProfileSummaryViewTests: XCTestCase {
         let (containerView, _) = createViews(
             model: TestProfileCardModel.summaryCard(),
             paletteType: .light,
-            avatarType: .imageView(TestAvatarImageView(frame: .zero)),
-            shouldSetAvatarBG: false
+            avatarType: .imageView(TestAvatarImageView(frame: .zero))
         )
         assertSnapshot(of: containerView, as: .image)
     }
@@ -99,8 +98,7 @@ final class LargeProfileSummaryViewTests: XCTestCase {
         let (containerView, _) = createViews(
             model: TestProfileCardModel.summaryCard(),
             paletteType: .light,
-            avatarType: .imageView(avatarView, skipStyling: true),
-            shouldSetAvatarBG: false
+            avatarType: .imageView(avatarView, skipStyling: true)
         )
         avatarView.applyStyle()
         assertSnapshot(of: containerView, as: .image)
@@ -112,8 +110,7 @@ final class LargeProfileSummaryViewTests: XCTestCase {
         let (containerView, _) = createViews(
             model: TestProfileCardModel.summaryCard(),
             paletteType: .light,
-            avatarType: .imageViewWrapper(avatarView),
-            shouldSetAvatarBG: false
+            avatarType: .imageViewWrapper(avatarView)
         )
         assertSnapshot(of: containerView, as: .image)
     }
@@ -124,8 +121,7 @@ final class LargeProfileSummaryViewTests: XCTestCase {
         let (containerView, _) = createViews(
             model: TestProfileCardModel.summaryCard(),
             paletteType: .light,
-            avatarType: .custom(avatarView),
-            shouldSetAvatarBG: false
+            avatarType: .custom(avatarView)
         )
         assertSnapshot(of: containerView, as: .image)
     }
@@ -133,14 +129,10 @@ final class LargeProfileSummaryViewTests: XCTestCase {
     private func createViews(
         model: ProfileSummaryModel?,
         paletteType: PaletteType = .system,
-        avatarType: AvatarType? = nil,
-        shouldSetAvatarBG: Bool = true
+        avatarType: AvatarType? = nil
     ) -> (UIView, LargeProfileSummaryView) {
         let cardView = LargeProfileSummaryView(frame: .zero, paletteType: .system, avatarType: avatarType)
         cardView.update(with: model)
-        if model != nil && shouldSetAvatarBG {
-            cardView.avatarImageView?.backgroundColor = .systemBlue
-        }
         cardView.translatesAutoresizingMaskIntoConstraints = false
         cardView.widthAnchor.constraint(equalToConstant: Constants.width).isActive = true
 
