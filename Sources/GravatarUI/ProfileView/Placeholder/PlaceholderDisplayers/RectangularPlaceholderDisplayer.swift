@@ -46,25 +46,3 @@ class RectangularPlaceholderDisplayer<T: UIView>: BackgroundColorPlaceholderDisp
         isShowing = false
     }
 }
-
-@MainActor
-class ConstantSizeRectangularPlaceholderDisplayer<T: UIView>: RectangularPlaceholderDisplayer<T> {
-    
-    fileprivate let width: CGFloat
-    
-    init(baseView: T, color: UIColor, originalBackgroundColor: UIColor = .clear, cornerRadius: CGFloat, height: CGFloat, width: CGFloat, isTemporary: Bool = false) {
-        self.width = width
-        super.init(baseView: baseView, color: color, originalBackgroundColor: originalBackgroundColor, cornerRadius: cornerRadius, height: height, widthRatioToParent: 0, isTemporary: isTemporary)
-    }
-
-    override func showPlaceholder() {
-        super.showPlaceholder()
-        guard !isShowing else { return }
-        // Deactivate existing ones
-        NSLayoutConstraint.deactivate(layoutConstraints)
-        layoutConstraints = baseView.turnIntoPlaceholder(cornerRadius: cornerRadius, height: height, width: width)
-        NSLayoutConstraint.activate(layoutConstraints)
-        isShowing = true
-    }
-
-}
