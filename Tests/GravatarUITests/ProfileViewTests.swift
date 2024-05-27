@@ -86,8 +86,7 @@ final class ProfileViewTests: XCTestCase {
     func testProfileViewCustomAvatarViewImageViewSubview() {
         let (containerView, _) = createViews(
             model: TestProfileCardModel.summaryCard(),
-            avatarType: .imageView(TestAvatarImageView(frame: .zero)),
-            shouldSetAvatarBG: false
+            avatarType: .imageView(TestAvatarImageView(frame: .zero))
         )
         containerView.overrideUserInterfaceStyle = UIUserInterfaceStyle.light
         assertSnapshot(of: containerView, as: .image)
@@ -98,8 +97,7 @@ final class ProfileViewTests: XCTestCase {
         let avatarView = TestAvatarImageView(frame: .zero)
         let (containerView, _) = createViews(
             model: TestProfileCardModel.summaryCard(),
-            avatarType: .imageView(avatarView, skipStyling: true),
-            shouldSetAvatarBG: false
+            avatarType: .imageView(avatarView, skipStyling: true)
         )
         containerView.overrideUserInterfaceStyle = UIUserInterfaceStyle.light
         avatarView.applyStyle()
@@ -111,8 +109,7 @@ final class ProfileViewTests: XCTestCase {
         let avatarView = TestAvatarImageViewWrapper(frame: .zero)
         let (containerView, _) = createViews(
             model: TestProfileCardModel.summaryCard(),
-            avatarType: .imageViewWrapper(avatarView),
-            shouldSetAvatarBG: false
+            avatarType: .imageViewWrapper(avatarView)
         )
         containerView.overrideUserInterfaceStyle = UIUserInterfaceStyle.light
         assertSnapshot(of: containerView, as: .image)
@@ -123,19 +120,15 @@ final class ProfileViewTests: XCTestCase {
         let avatarView = TestCustomAvatarView()
         let (containerView, _) = createViews(
             model: TestProfileCardModel.summaryCard(),
-            avatarType: .custom(avatarView),
-            shouldSetAvatarBG: false
+            avatarType: .custom(avatarView)
         )
         containerView.overrideUserInterfaceStyle = UIUserInterfaceStyle.light
         assertSnapshot(of: containerView, as: .image)
     }
 
-    private func createViews(model: ProfileModel?, avatarType: AvatarType? = nil, shouldSetAvatarBG: Bool = true) -> (UIView, ProfileView) {
+    private func createViews(model: ProfileModel?, avatarType: AvatarType? = nil) -> (UIView, ProfileView) {
         let cardView = ProfileView(frame: .zero, paletteType: .system, avatarType: avatarType)
         cardView.update(with: model)
-        if shouldSetAvatarBG && model != nil {
-            cardView.avatarImageView?.backgroundColor = .systemBlue
-        }
         cardView.translatesAutoresizingMaskIntoConstraints = false
         cardView.widthAnchor.constraint(equalToConstant: Constants.width).isActive = true
 
