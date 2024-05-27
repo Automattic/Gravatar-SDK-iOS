@@ -88,8 +88,52 @@ final class LargeProfileViewTests: XCTestCase {
         }
     }
 
-    private func createViews(paletteType: PaletteType) -> (LargeProfileView, UIView) {
-        let cardView = LargeProfileView(frame: .zero, paletteType: paletteType)
+    @MainActor
+    func testLargeProfileCustomAvatarViewImageViewSubview() {
+        let (cardView, containerView) = createViews(
+            paletteType: .light,
+            avatarType: .imageView(TestAvatarImageView(frame: .zero))
+        )
+        cardView.update(with: TestProfileCardModel.fullCard())
+        assertSnapshot(of: containerView, as: .image)
+    }
+
+    @MainActor
+    func testLargeProfileViewCustomAvatarImageViewSubviewCustomStyle() {
+        let avatarView = TestAvatarImageView(frame: .zero)
+        let (cardView, containerView) = createViews(
+            paletteType: .light,
+            avatarType: .imageView(avatarView, skipStyling: true)
+        )
+        avatarView.applyStyle()
+        cardView.update(with: TestProfileCardModel.fullCard())
+        assertSnapshot(of: containerView, as: .image)
+    }
+
+    @MainActor
+    func testLargeProfileCustomAvatarImageViewWrapper() {
+        let avatarView = TestAvatarImageViewWrapper(frame: .zero)
+        let (cardView, containerView) = createViews(
+            paletteType: .light,
+            avatarType: .imageViewWrapper(avatarView)
+        )
+        cardView.update(with: TestProfileCardModel.fullCard())
+        assertSnapshot(of: containerView, as: .image)
+    }
+
+    @MainActor
+    func testLargeProfileCustomAvatarView() {
+        let avatarView = TestCustomAvatarView()
+        let (cardView, containerView) = createViews(
+            paletteType: .light,
+            avatarType: .custom(avatarView)
+        )
+        cardView.update(with: TestProfileCardModel.fullCard())
+        assertSnapshot(of: containerView, as: .image)
+    }
+
+    private func createViews(paletteType: PaletteType, avatarType: AvatarType? = nil) -> (LargeProfileView, UIView) {
+        let cardView = LargeProfileView(frame: .zero, paletteType: paletteType, avatarType: avatarType)
         cardView.translatesAutoresizingMaskIntoConstraints = false
         cardView.widthAnchor.constraint(equalToConstant: Constants.width).isActive = true
         let containerView = cardView.wrapInSuperView(with: Constants.width)
