@@ -184,15 +184,13 @@ class DemoUploadImageViewController: UIViewController, ASWebAuthenticationPresen
                 let access_token: String
             }
             tokenRequest.httpBody = components2.query?.data(using: .utf8)
-            tokenRequest.addValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type") // change as per server requirements
-            tokenRequest.setValue("Basic \(base64EncodedString)", forHTTPHeaderField: "Authorization")
+            tokenRequest.addValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
             Task {
                 do {
                     
                     print(String(describing: tokenRequest))
                     let result: (data: Data, response: URLResponse) = try await URLSession.shared.data(for: tokenRequest)
                     let res = try JSONDecoder().decode(AuthResult.self, from: result.data)
-                    //let res = try JSONSerialization.jsonObject(with: result.data)
                     print(res.access_token)
                     self.tokenField.text = res.access_token
                 } catch {
