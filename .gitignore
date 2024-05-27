@@ -44,3 +44,4 @@ fastlane/README.md
 fastlane/report.xml
 fastlane/test_output
 openapi-generator/
+Demo/Demo/Gravatar-Demo/ApiKey.swift
