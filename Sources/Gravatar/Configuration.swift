@@ -1,15 +1,12 @@
 import Foundation
 
-@MainActor
-public class Configuration {
+public actor Configuration {
     private(set) var apiKey: String?
-    static let shared = Configuration(apiKey: nil)
+    static public let shared = Configuration()
 
-    private init(apiKey: String? = nil) {
+    private init() {}
+
+    public func configure(with apiKey: String) {
         self.apiKey = apiKey
-    }
-
-    public static func configure(with apiKey: String) {
-        shared.apiKey = apiKey
     }
 }

@@ -81,9 +81,8 @@ extension URLRequest {
         case authorization = "Authorization"
     }
 
-    @MainActor
-    fileprivate func authorized(with key: String? = Configuration.shared.apiKey) -> URLRequest {
-        guard let key else { return self }
+    fileprivate func authorized() async -> URLRequest {
+        guard let key = await Configuration.shared.apiKey else { return self }
         let bearerKey = "Bearer \(key)"
         var copy = self
         copy.setValue(bearerKey, forHTTPHeaderField: HeaderField.authorization.rawValue)
