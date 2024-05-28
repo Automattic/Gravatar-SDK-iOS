@@ -12,6 +12,7 @@ final class AboutMeBuilderTests: XCTestCase {
         // isRecording = true
     }
 
+    @MainActor
     func testAboutMe() {
         let label = UILabel(frame: frame)
         for palette in palettesToTest {
@@ -23,6 +24,7 @@ final class AboutMeBuilderTests: XCTestCase {
         }
     }
 
+    @MainActor
     func testAboutMeWithSmallWidth() {
         let label = UILabel(frame: frameSmall)
         Configure(label)
@@ -34,7 +36,7 @@ final class AboutMeBuilderTests: XCTestCase {
 }
 
 struct TestAboutMeModel: AboutMeModel {
-    var description: String
+    let description: String
 
     static func new() -> TestAboutMeModel {
         TestAboutMeModel(description: "Hi, I am 20 years old. My favorite fruit is sour cherry. My favorite pet is racoon.")

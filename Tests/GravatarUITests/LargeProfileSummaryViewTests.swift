@@ -12,6 +12,7 @@ final class LargeProfileSummaryViewTests: XCTestCase {
         // isRecording = true
     }
 
+    @MainActor
     func testLargeProfileSummaryView() throws {
         for interfaceStyle in UIUserInterfaceStyle.allCases {
             let (containerView, _) = createViews(model: TestProfileCardModel.summaryCard())
@@ -20,6 +21,7 @@ final class LargeProfileSummaryViewTests: XCTestCase {
         }
     }
 
+    @MainActor
     func testInitiallyEmptyLargeProfileSummaryView() throws {
         for interfaceStyle in UIUserInterfaceStyle.allCases {
             let (containerView, _) = createViews(model: nil)
@@ -28,6 +30,7 @@ final class LargeProfileSummaryViewTests: XCTestCase {
         }
     }
 
+    @MainActor
     func testLargeProfileSummaryViewPlaceholdersCanShow() throws {
         let interfaceStyle: UIUserInterfaceStyle = .light
         let (containerView, cardView) = createViews(model: TestProfileCardModel.summaryCard())
@@ -36,6 +39,7 @@ final class LargeProfileSummaryViewTests: XCTestCase {
         assertSnapshot(of: containerView, as: .image, named: "\(interfaceStyle.name)")
     }
 
+    @MainActor
     func testLargeProfileSummaryViewPlaceholdersCanHide() throws {
         let interfaceStyle: UIUserInterfaceStyle = .light
         let (containerView, cardView) = createViews(model: TestProfileCardModel.summaryCard())
@@ -45,6 +49,7 @@ final class LargeProfileSummaryViewTests: XCTestCase {
         assertSnapshot(of: containerView, as: .image, named: "\(interfaceStyle.name)")
     }
 
+    @MainActor
     func testLargeProfileSummaryViewPlaceholderCanUpdateColors() throws {
         let interfaceStyle: UIUserInterfaceStyle = .light
         let (containerView, cardView) = createViews(model: nil)
@@ -53,6 +58,7 @@ final class LargeProfileSummaryViewTests: XCTestCase {
         assertSnapshot(of: containerView, as: .image, named: "\(interfaceStyle.name)")
     }
 
+    @MainActor
     func testLargeProfileSummaryViewLoadingStateClearsWhenEmpty() throws {
         let interfaceStyle: UIUserInterfaceStyle = .light
         let (containerView, cardView) = createViews(model: nil)
@@ -62,6 +68,7 @@ final class LargeProfileSummaryViewTests: XCTestCase {
         assertSnapshot(of: containerView, as: .image, named: "\(interfaceStyle.name)")
     }
 
+    @MainActor
     func testLargeProfileSummaryViewLoadingStateClearsWhenDataIsPresent() throws {
         let interfaceStyle: UIUserInterfaceStyle = .light
         let (containerView, cardView) = createViews(model: nil)
@@ -82,6 +89,7 @@ final class LargeProfileSummaryViewTests: XCTestCase {
         }
     }
 
+    @MainActor
     private func createViews(model: ProfileSummaryModel?) -> (UIView, LargeProfileSummaryView) {
         let cardView = LargeProfileSummaryView(frame: .zero, paletteType: .system)
         cardView.update(with: model)
