@@ -6,7 +6,7 @@ public actor Configuration {
 
     private init() {}
 
-    public func configure(with apiKey: String) {
+    public func configure(with apiKey: String?) {
         self.apiKey = apiKey
     }
 }
