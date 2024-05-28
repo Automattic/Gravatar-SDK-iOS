@@ -46,7 +46,7 @@ build-demo-swift: bundle-install
 build-demo-swiftui: bundle-install
 	bundle exec fastlane build_demo scheme:Gravatar-SwiftUI-Demo
 
-bundle-install: secrets
+bundle-install:
 	bundle install
 
 swiftformat: # Automatically find and fixes lint issues
@@ -55,7 +55,7 @@ swiftformat: # Automatically find and fixes lint issues
 		--allow-writing-to-directory "$(SWIFTFORMAT_CACHE)" \
 		swiftformat
 
-lint: secrets # Use swiftformat to warn about format issues
+lint: # Use swiftformat to warn about format issues
 	swift package plugin \
 		--allow-writing-to-package-directory \
 		--allow-writing-to-directory "$(SWIFTFORMAT_CACHE)" \
