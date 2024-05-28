@@ -45,7 +45,7 @@ extension Bundle {
         guard let url = Bundle.testsBundle.url(forResource: resource, withExtension: "json") else {
             return nil
         }
-        return try? Data.init(contentsOf: url)
+        return try? Data(contentsOf: url)
     }
 
     static var fullProfileJsonData: Data? {
