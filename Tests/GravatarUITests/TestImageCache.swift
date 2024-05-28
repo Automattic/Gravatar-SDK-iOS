@@ -1,30 +1,48 @@
 import Gravatar
 import UIKit
 
-class TestImageCache: ImageCaching {
+actor TestImageCache: ImageCaching {
     var dict: [String: CacheEntryWrapper] = [:]
 
-    var getImageCallCount = 0
-    var setImageCallsCount = 0
-    var setTaskCallCount = 0
+    private var _getImageCallCount = 0
+    private var _setImageCallsCount = 0
+    private var _setTaskCallCount = 0
 
-    func setEntry(_ entry: Gravatar.CacheEntry, for key: String) {
+    func setEntry(_ entry: Gravatar.CacheEntry, for key: String) async {
         switch entry {
         case .inProgress:
-            setTaskCallCount += 1
+            _setTaskCallCount += 1
         case .ready:
-            setImageCallsCount += 1
+            _setImageCallsCount += 1
         }
         dict[key] = CacheEntryWrapper(entry)
     }
 
-    func getEntry(with key: String) -> Gravatar.CacheEntry? {
-        getImageCallCount += 1
+    func getEntry(with key: String) async -> Gravatar.CacheEntry? {
+        _getImageCallCount += 1
         return dict[key]?.cacheEntry
+    }
+
+    var setImageCallsCount: Int {
+        get async {
+            _setImageCallsCount
+        }
+    }
+
+    var getImageCallsCount: Int {
+        get async {
+            _getImageCallCount
+        }
+    }
+
+    var setTaskCallCount: Int {
+        get async {
+            _setTaskCallCount
+        }
     }
 }
 
-class CacheEntryWrapper {
+struct CacheEntryWrapper: Sendable {
     let cacheEntry: CacheEntry
     init(_ cacheEntry: CacheEntry) {
         self.cacheEntry = cacheEntry
