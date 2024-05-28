@@ -38,7 +38,7 @@ public struct ProfileService: ProfileFetching, Sendable {
 
     public func fetch(with profileID: ProfileIdentifier) async throws -> Profile {
         let url = baseURL.appending(pathComponent: profileID.id)
-        let request = await URLRequest(url: url).authorized(with: Configuration.shared.apiKey)
+        let request = await URLRequest(url: url).authorized()
         return try await fetch(with: request)
     }
 }
@@ -67,7 +67,8 @@ extension ProfileService {
             return .failure(.responseError(reason: error.map()))
         } catch let error as ProfileServiceError {
             return .failure(error)
-        } catch _ as DecodingError {
+        } catch let error as DecodingError {
+            print(error)
             return .failure(.noProfileInResponse)
         } catch {
             return .failure(.responseError(reason: .unexpected(error)))
@@ -80,7 +81,8 @@ extension URLRequest {
         case authorization = "Authorization"
     }
 
-    fileprivate func authorized(with key: String?) -> URLRequest {
+    @MainActor
+    fileprivate func authorized(with key: String? = Configuration.shared.apiKey) -> URLRequest {
         guard let key else { return self }
         let bearerKey = "Bearer \(key)"
         var copy = self
