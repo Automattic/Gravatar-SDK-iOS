@@ -1,5 +1,6 @@
 import UIKit
 
+@MainActor
 public struct AboutMeBuilder {
     let label: UILabel
     init(label: UILabel) {

@@ -1,5 +1,6 @@
 import UIKit
 
+@MainActor
 public struct PersonalInfoBuilder {
     public static var defaultPersonalInfo: [PersonalInfoLine] {
         [

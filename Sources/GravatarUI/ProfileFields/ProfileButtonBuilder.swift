@@ -19,6 +19,7 @@ extension ProfileButtonStyle {
     }
 }
 
+@MainActor
 public struct ProfileButtonBuilder {
     let button: UIButton
     init(button: UIButton) {

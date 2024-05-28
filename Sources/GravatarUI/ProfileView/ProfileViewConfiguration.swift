@@ -1,6 +1,7 @@
 import Gravatar
 import UIKit
 
+@MainActor
 public struct ProfileViewConfiguration: UIContentConfiguration {
     public var model: ProfileModel?
     public var summaryModel: ProfileSummaryModel?
@@ -51,7 +52,7 @@ public struct ProfileViewConfiguration: UIContentConfiguration {
         return view
     }
 
-    public func updated(for state: UIConfigurationState) -> ProfileViewConfiguration {
+    public nonisolated func updated(for state: UIConfigurationState) -> ProfileViewConfiguration {
         self
     }
 }
