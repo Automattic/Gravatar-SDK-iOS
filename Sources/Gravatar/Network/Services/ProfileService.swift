@@ -38,7 +38,7 @@ public struct ProfileService: ProfileFetching, Sendable {
 
     public func fetch(with profileID: ProfileIdentifier) async throws -> Profile {
         let url = baseURL.appending(pathComponent: profileID.id)
-        let request = URLRequest(url: url).authorized(with: await Configuration.shared.apiKey)
+        let request = await URLRequest(url: url).authorized(with: Configuration.shared.apiKey)
         return try await fetch(with: request)
     }
 }
