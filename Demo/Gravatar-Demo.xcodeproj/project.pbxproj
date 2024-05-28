@@ -178,7 +178,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 495775F02B5B34980082812A /* Build configuration list for PBXNativeTarget "Gravatar-Demo" */;
 			buildPhases = (
-				1ED769E92C048E0B00680D78 /* ShellScript */,
 				495775DB2B5B34970082812A /* Sources */,
 				495775DC2B5B34970082812A /* Frameworks */,
 				495775DD2B5B34970082812A /* Resources */,
@@ -277,28 +276,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		1ED769E92C048E0B00680D78 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/ApiKey.swift",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# Creates the ApiKey.swift file to be used in the demo app.\nFILEPATH=\"./Demo/Gravatar-Demo/Secrets.swift\"\nif [ ! -f \"$FILEPATH\" ]\nthen\ncat > \"$FILEPATH\" << EOF\nlet apiKey: String? = nil\nEOF\nfi\n";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		495775DB2B5B34970082812A /* Sources */ = {
