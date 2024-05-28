@@ -69,7 +69,7 @@ extension ProfileService {
             return .failure(.responseError(reason: error.map()))
         } catch let error as ProfileServiceError {
             return .failure(error)
-        } catch let error as DecodingError {
+        } catch _ as DecodingError {
             return .failure(.noProfileInResponse)
         } catch {
             return .failure(.responseError(reason: .unexpected(error)))
