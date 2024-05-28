@@ -61,14 +61,15 @@ extension ProfileService {
 
     private func map(_ data: Data, _: HTTPURLResponse) -> Result<Profile, ProfileServiceError> {
         do {
-            let profile = try JSONDecoder().decode(Profile.self, from: data)
+            let decoder = JSONDecoder()
+            decoder.dateDecodingStrategy = .iso8601
+            let profile = try decoder.decode(Profile.self, from: data)
             return .success(profile)
         } catch let error as HTTPClientError {
             return .failure(.responseError(reason: error.map()))
         } catch let error as ProfileServiceError {
             return .failure(error)
         } catch let error as DecodingError {
-            print(error)
             return .failure(.noProfileInResponse)
         } catch {
             return .failure(.responseError(reason: .unexpected(error)))
