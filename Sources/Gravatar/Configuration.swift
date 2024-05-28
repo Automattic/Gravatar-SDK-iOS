@@ -2,7 +2,7 @@ import Foundation
 
 public actor Configuration {
     private(set) var apiKey: String?
-    static public let shared = Configuration()
+    public static let shared = Configuration()
 
     private init() {}
 
