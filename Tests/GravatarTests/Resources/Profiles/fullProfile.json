@@ -1,0 +1,60 @@
+{
+    "hash": "somehash",
+    "display_name": "John Appleseed",
+    "profile_url": "https://gravatar.com/notreal",
+    "avatar_url": "https://2.gravatar.com/avatar/hashhash",
+    "avatar_alt_text": "",
+    "location": "Beach tennis court",
+    "description": "I'm a beach tennis player who enjoys the dynamic challenges and camaraderie of the game on the sand. Embracing the strategic aspects, beach tennis has become a fulfilling pastime for me, offering both excitement and a sense of community.\n\nBy Chat GPT.",
+    "job_title": "Engineer",
+    "company": "A company",
+    "verified_accounts": [
+        {
+            "service_label": "WordPress",
+            "service_icon": "https://secure.gravatar.com/icons/wordpress.svg",
+            "url": "http://notreal.wordpress.com"
+        }
+    ],
+    "pronunciation": "John",
+    "pronouns": "he/him",
+    "links": [
+        {
+            "label": "My site verified",
+            "url": "https://notreal.wordpress.com/"
+        },
+        {
+            "label": "Gravatar",
+            "url": "https://gravatar.com"
+        }
+    ],
+    "payments": {
+        "links": [
+            {
+                "label": "Patreon",
+                "url": "https://www.patreon.com/fakelink"
+            }
+        ],
+        "crypto_wallets": [
+            {
+                "label": "Bitcoin",
+                "address": "someaddress"
+            }
+        ]
+    },
+    "contact_info": {
+        "home_phone": "1800123-1234",
+        "work_phone": "",
+        "cell_phone": "",
+        "email": "thisisnotmy@email.com",
+        "contact_form": "https://example.com/contact",
+        "calendar": "https://calendar.google.com/yourlink"
+    },
+    "gallery": [
+        {
+            "url": "https://1.gravatar.com/userimage/133992229/hashhash"
+        }
+    ],
+    "number_verified_accounts": 1,
+    "last_profile_edit": "2024-05-28T14:17:03Z",
+    "registration_date": "2018-01-24T14:23:32Z"
+}

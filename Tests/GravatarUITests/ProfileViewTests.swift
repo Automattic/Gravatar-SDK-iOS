@@ -82,12 +82,53 @@ final class ProfileViewTests: XCTestCase {
         }
     }
 
-    private func createViews(model: ProfileModel?) -> (UIView, ProfileView) {
-        let cardView = ProfileView(frame: .zero, paletteType: .system)
+    @MainActor
+    func testProfileViewCustomAvatarViewImageViewSubview() {
+        let (containerView, _) = createViews(
+            model: TestProfileCardModel.summaryCard(),
+            avatarType: .imageView(TestAvatarImageView(frame: .zero))
+        )
+        containerView.overrideUserInterfaceStyle = UIUserInterfaceStyle.light
+        assertSnapshot(of: containerView, as: .image)
+    }
+
+    @MainActor
+    func testProfileViewCustomAvatarImageViewSubviewCustomStyle() {
+        let avatarView = TestAvatarImageView(frame: .zero)
+        let (containerView, _) = createViews(
+            model: TestProfileCardModel.summaryCard(),
+            avatarType: .imageView(avatarView, skipStyling: true)
+        )
+        containerView.overrideUserInterfaceStyle = UIUserInterfaceStyle.light
+        avatarView.applyStyle()
+        assertSnapshot(of: containerView, as: .image)
+    }
+
+    @MainActor
+    func testProfileViewCustomAvatarImageViewWrapper() {
+        let avatarView = TestAvatarImageViewWrapper(frame: .zero)
+        let (containerView, _) = createViews(
+            model: TestProfileCardModel.summaryCard(),
+            avatarType: .imageViewWrapper(avatarView)
+        )
+        containerView.overrideUserInterfaceStyle = UIUserInterfaceStyle.light
+        assertSnapshot(of: containerView, as: .image)
+    }
+
+    @MainActor
+    func testProfileViewCustomAvatarView() {
+        let avatarView = TestCustomAvatarView()
+        let (containerView, _) = createViews(
+            model: TestProfileCardModel.summaryCard(),
+            avatarType: .custom(avatarView)
+        )
+        containerView.overrideUserInterfaceStyle = UIUserInterfaceStyle.light
+        assertSnapshot(of: containerView, as: .image)
+    }
+
+    private func createViews(model: ProfileModel?, avatarType: AvatarType? = nil) -> (UIView, ProfileView) {
+        let cardView = ProfileView(frame: .zero, paletteType: .system, avatarType: avatarType)
         cardView.update(with: model)
-        if model != nil {
-            cardView.avatarImageView.backgroundColor = .systemBlue
-        }
         cardView.translatesAutoresizingMaskIntoConstraints = false
         cardView.widthAnchor.constraint(equalToConstant: Constants.width).isActive = true
 

@@ -23,7 +23,7 @@ class DemoProfileViewsViewController: DemoBaseProfileViewController {
     lazy var largeProfileView: LargeProfileView = {
         let view = LargeProfileView(frame: .zero, paletteType: preferredPaletteType)
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.avatarImageView.gravatar.activityIndicatorType = .activity
+        view.avatarActivityIndicatorType = .activity
         view.delegate = self
         return view
     }()
@@ -31,7 +31,7 @@ class DemoProfileViewsViewController: DemoBaseProfileViewController {
     lazy var largeProfileSummaryView: LargeProfileSummaryView = {
         let view = LargeProfileSummaryView(frame: .zero, paletteType: preferredPaletteType)
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.avatarImageView.gravatar.activityIndicatorType = .activity
+        view.avatarActivityIndicatorType = .activity
         view.delegate = self
         return view
     }()
@@ -40,7 +40,7 @@ class DemoProfileViewsViewController: DemoBaseProfileViewController {
         let view = ProfileView(frame: .zero, paletteType: preferredPaletteType)
         view.profileButtonStyle = .edit
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.avatarImageView.gravatar.activityIndicatorType = .activity
+        view.avatarActivityIndicatorType = .activity
         view.delegate = self
         return view
     }()
@@ -48,7 +48,7 @@ class DemoProfileViewsViewController: DemoBaseProfileViewController {
     lazy var profileSummaryView: ProfileSummaryView = {
         let view = ProfileSummaryView(frame: .zero, paletteType: preferredPaletteType, profileButtonStyle: .edit)
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.avatarImageView.gravatar.activityIndicatorType = .activity
+        view.avatarActivityIndicatorType = .activity
         view.delegate = self
         return view
     }()

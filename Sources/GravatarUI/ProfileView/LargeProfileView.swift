@@ -9,12 +9,12 @@ public class LargeProfileView: BaseProfileView {
         static let displayNamePlaceholderHeight: CGFloat = 32
     }
 
-    override public var avatarLength: CGFloat {
+    override public class var avatarLength: CGFloat {
         Constants.avatarLength
     }
 
     private lazy var topStackView: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [avatarImageView, .spacer()])
+        let stack = UIStackView(arrangedSubviews: [avatarView, .spacer()])
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.axis = .horizontal
         return stack
@@ -37,7 +37,7 @@ public class LargeProfileView: BaseProfileView {
     }
 
     private func setRootStackViewSpacing() {
-        rootStackView.setCustomSpacing(.DS.Padding.double, after: avatarImageView)
+        rootStackView.setCustomSpacing(.DS.Padding.double, after: avatarView)
         rootStackView.setCustomSpacing(0, after: displayNameLabel)
         rootStackView.setCustomSpacing(.DS.Padding.double, after: aboutMeLabel)
         rootStackView.setCustomSpacing(0, after: aboutMePlaceholderLabel)

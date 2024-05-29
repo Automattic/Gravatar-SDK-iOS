@@ -19,11 +19,6 @@ class ProfileViewPlaceholderDisplayer: ProfileViewPlaceholderDisplaying {
     func setup(using view: BaseProfileView) {
         let color = view.placeholderColors.backgroundColor
         elements = [
-            BackgroundColorPlaceholderDisplayer<UIImageView>(
-                baseView: view.avatarImageView,
-                color: color,
-                originalBackgroundColor: view.paletteType.palette.avatar.background
-            ),
             LabelPlaceholderDisplayer(
                 baseView: view.aboutMeLabel,
                 color: color,
@@ -65,6 +60,17 @@ class ProfileViewPlaceholderDisplayer: ProfileViewPlaceholderDisplaying {
                 color: color
             ),
         ]
+        if view.avatarType.shouldApplyStyling,
+           let imageView = view.avatarType.imageView
+        {
+            elements?.append(
+                BackgroundColorPlaceholderDisplayer<UIView>(
+                    baseView: imageView,
+                    color: color,
+                    originalBackgroundColor: view.paletteType.palette.avatar.background
+                )
+            )
+        }
     }
 
     func showPlaceholder(on view: BaseProfileView) {

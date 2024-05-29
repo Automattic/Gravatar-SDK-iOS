@@ -5,12 +5,12 @@ import UIKit
 /// called.
 @MainActor
 class RectangularPlaceholderDisplayer<T: UIView>: BackgroundColorPlaceholderDisplayer<T> {
-    private let cornerRadius: CGFloat
-    private let height: CGFloat
+    fileprivate let cornerRadius: CGFloat
+    fileprivate let height: CGFloat
     private let widthRatioToParent: CGFloat
-    private var layoutConstraints: [NSLayoutConstraint] = []
-    private var isShowing: Bool = false
-    private var originalCornerRadius: CGFloat
+    fileprivate var layoutConstraints: [NSLayoutConstraint] = []
+    fileprivate var isShowing: Bool = false
+    fileprivate var originalCornerRadius: CGFloat
 
     init(
         baseView: T,
