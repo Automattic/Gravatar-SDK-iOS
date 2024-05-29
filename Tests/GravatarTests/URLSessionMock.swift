@@ -1,7 +1,7 @@
 import Foundation
 import Gravatar
 
-final class URLSessionMock: URLSessionProtocol {
+actor URLSessionMock: URLSessionProtocol {
     static let jsonData = """
     {
         "name": "John",
@@ -12,10 +12,9 @@ final class URLSessionMock: URLSessionProtocol {
     let returnData: Data
     let response: HTTPURLResponse
     let error: NSError?
-    var callsCount = 0
-
-    var request: URLRequest? = nil
-    var uploadData: Data? = nil
+    private(set) var callsCount = 0
+    private(set) var request: URLRequest? = nil
+    private(set) var uploadData: Data? = nil
 
     init(returnData: Data, response: HTTPURLResponse, error: NSError? = nil) {
         self.returnData = returnData
@@ -23,7 +22,7 @@ final class URLSessionMock: URLSessionProtocol {
         self.error = error
     }
 
-    func dataTask(with request: URLRequest, completionHandler: @escaping @Sendable (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTask {
+    nonisolated func dataTask(with request: URLRequest, completionHandler: @escaping @Sendable (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTask {
         fatalError()
     }
 
@@ -43,5 +42,9 @@ final class URLSessionMock: URLSessionProtocol {
             throw error
         }
         return (returnData, response)
+    }
+
+    func update(request: URLRequest) async {
+        self.request = request
     }
 }

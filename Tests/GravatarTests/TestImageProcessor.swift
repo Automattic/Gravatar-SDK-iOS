@@ -2,11 +2,14 @@ import Gravatar
 import UIKit
 
 final class TestImageProcessor: ImageProcessor {
-    init() {}
+    let identifier: String
+    init(identifier: String = "") {
+        self.identifier = identifier
+    }
 
-    var processedData = false
     func process(_: Data) -> UIImage? {
-        processedData = true
-        return UIImage()
+        let image = UIImage()
+        image.accessibilityIdentifier = identifier
+        return image
     }
 }

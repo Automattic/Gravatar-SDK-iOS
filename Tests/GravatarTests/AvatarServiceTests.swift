@@ -14,8 +14,8 @@ final class AvatarServiceTests: XCTestCase {
         let options = ImageDownloadOptions()
 
         let imageResponse = try await service.fetch(with: .email(TestData.email), options: options)
-
-        XCTAssertEqual(sessionMock.request?.url, TestData.urlFromEmail)
+        let request = await sessionMock.request
+        XCTAssertEqual(request?.url, TestData.urlFromEmail)
         XCTAssertNotNil(imageResponse.image)
     }
 
@@ -25,17 +25,19 @@ final class AvatarServiceTests: XCTestCase {
         let service = avatarService(with: sessionMock)
 
         try await service.upload(ImageHelper.testImage, email: Email("some@email.com"), accessToken: "AccessToken")
-
+        let data = await sessionMock.uploadData
+        let uploadData = try XCTUnwrap(data)
         XCTAssertTrue(
-            String(data: sessionMock.uploadData!, encoding: .isoLatin1)!.contains("some@email.com"),
+            String(data: uploadData, encoding: .isoLatin1)!.contains("some@email.com"),
             "Multipart form data should use the raw email address instead of its hash"
         )
-        XCTAssertEqual(sessionMock.request?.url?.absoluteString, "https://api.gravatar.com/v1/upload-image")
-        XCTAssertNotNil(sessionMock.request?.value(forHTTPHeaderField: "Authorization"))
-        XCTAssertTrue(sessionMock.request?.value(forHTTPHeaderField: "Authorization")?.hasPrefix("Bearer ") ?? false)
-        XCTAssertNotNil(sessionMock.request?.value(forHTTPHeaderField: "Content-Type"))
-        XCTAssertTrue(sessionMock.request?.value(forHTTPHeaderField: "Content-Type")?.hasPrefix("multipart/form-data; boundary=Boundary") ?? false)
-        XCTAssertTrue(sessionMock.request?.value(forHTTPHeaderField: "Client-Type") == "ios")
+        let request = await sessionMock.request
+        XCTAssertEqual(request?.url?.absoluteString, "https://api.gravatar.com/v1/upload-image")
+        XCTAssertNotNil(request?.value(forHTTPHeaderField: "Authorization"))
+        XCTAssertTrue(request?.value(forHTTPHeaderField: "Authorization")?.hasPrefix("Bearer ") ?? false)
+        XCTAssertNotNil(request?.value(forHTTPHeaderField: "Content-Type"))
+        XCTAssertTrue(request?.value(forHTTPHeaderField: "Content-Type")?.hasPrefix("multipart/form-data; boundary=Boundary") ?? false)
+        XCTAssertTrue(request?.value(forHTTPHeaderField: "Client-Type") == "ios")
     }
 
     func testUploadImageError() async throws {
@@ -79,10 +81,10 @@ final class AvatarServiceTests: XCTestCase {
 
         let setImageCallsCount = await cache.setImageCallsCount
         let getImageCallsCount = await cache.getImageCallsCount
-
+        let callsCount = await sessionMock.callsCount
         XCTAssertEqual(getImageCallsCount, 0, "We should not hit the cache")
         XCTAssertEqual(setImageCallsCount, 3, "We should have cached the image on every forced refresh")
-        XCTAssertEqual(sessionMock.callsCount, 3, "We should fetch from network")
+        XCTAssertEqual(callsCount, 3, "We should fetch from network")
     }
 
     func testForceRefreshDisabled() async throws {
@@ -97,22 +99,23 @@ final class AvatarServiceTests: XCTestCase {
 
         let setImageCallsCount = await cache.setImageCallsCount
         let getImageCallsCount = await cache.getImageCallsCount
-
+        let callsCount = await sessionMock.callsCount
         XCTAssertEqual(getImageCallsCount, 3, "We should hit the cache")
         XCTAssertEqual(setImageCallsCount, 1, "We should save once to the cache")
-        XCTAssertEqual(sessionMock.callsCount, 1, "We should fetch from network only the first time")
+        XCTAssertEqual(callsCount, 1, "We should fetch from network only the first time")
     }
 
     func testAlternativeImageProcessor() async throws {
         let response = HTTPURLResponse.successResponse(with: TestData.urlFromEmail)
         let sessionMock = URLSessionMock(returnData: ImageHelper.testImageData, response: response)
         let service = avatarService(with: sessionMock)
-        let testProcessor = TestImageProcessor()
+        let identifier = "Test"
+        let testProcessor = TestImageProcessor(identifier: identifier)
         let options = ImageDownloadOptions(processingMethod: .custom(processor: testProcessor))
 
-        _ = try await service.fetch(with: .email(TestData.email), options: options)
+        let result = try await service.fetch(with: .email(TestData.email), options: options)
 
-        XCTAssertTrue(testProcessor.processedData)
+        XCTAssertTrue(result.image.accessibilityIdentifier == identifier)
     }
 
     func testFetchAvatarWithDefaultAvatarOption() async throws {
@@ -124,8 +127,8 @@ final class AvatarServiceTests: XCTestCase {
         let options = ImageDownloadOptions(defaultAvatarOption: .mysteryPerson)
 
         let imageResponse = try await service.fetch(with: .email(TestData.email), options: options)
-
-        XCTAssertEqual(sessionMock.request?.url?.query, expectedQuery)
+        let request = await sessionMock.request
+        XCTAssertEqual(request?.url?.query, expectedQuery)
         XCTAssertNotNil(imageResponse.image)
     }
 }

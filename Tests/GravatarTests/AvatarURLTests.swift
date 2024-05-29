@@ -27,7 +27,7 @@ final class AvatarURLTests: XCTestCase {
 
     func testAvatarURLWithPointSize() throws {
         let pointSize = CGFloat(200)
-        let expectedPixelSize = pointSize * UIScreen.main.scale
+        let expectedPixelSize = pointSize * UITraitCollection.current.displayScale
 
         let url = AvatarURL(url: verifiedAvatarURL, options: AvatarQueryOptions(preferredSize: .points(pointSize)))?.url
 
