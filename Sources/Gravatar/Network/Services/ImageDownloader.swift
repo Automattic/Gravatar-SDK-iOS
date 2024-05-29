@@ -4,7 +4,7 @@ import UIKit
 public typealias ImageDownloadCompletion = (Result<ImageDownloadResult, ImageFetchingError>) -> Void
 
 /// Represents a type which can be used by Gravatar to fetch images.
-public protocol ImageDownloader {
+public protocol ImageDownloader: Sendable {
     /// Fetches an image from the given `URL`, and delivers the image asynchronously. Throws `ImageFetchingError`.
     /// - Parameters:
     ///   - url: The URL from where to download the image.

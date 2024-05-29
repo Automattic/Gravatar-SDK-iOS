@@ -6,8 +6,8 @@ enum GravatarImageSetMockResult {
     case success
 }
 
-class TestImageFetcher: ImageDownloader {
-    var result: GravatarImageSetMockResult
+actor TestImageFetcher: ImageDownloader {
+    private(set) var result: GravatarImageSetMockResult
 
     init(result: GravatarImageSetMockResult) {
         self.result = result

@@ -7,6 +7,7 @@ public enum ActivityIndicatorType {
     case custom(ActivityIndicatorProvider)
 }
 
+@MainActor
 /// An indicator type which can be used to show the download task is in progress.
 public protocol ActivityIndicatorProvider {
     /// Called when the indicator should start animating.
@@ -29,6 +30,7 @@ public enum ActivityIndicatorSizeStrategy {
     case size(CGSize)
 }
 
+@MainActor
 final class DefaultActivityIndicatorProvider: ActivityIndicatorProvider {
     private let activityIndicatorView: UIActivityIndicatorView
 

@@ -42,14 +42,20 @@ let package = Package(
         ),
         .target(
             name: "GravatarUI",
-            dependencies: ["Gravatar"]
+            dependencies: ["Gravatar"],
+            swiftSettings: [
+              .enableExperimentalFeature("StrictConcurrency")
+            ]
         ),
         .testTarget(
             name: "GravatarUITests",
             dependencies: ["GravatarUI",
                            .product(name: "SnapshotTesting", package: "swift-snapshot-testing")],
             resources: [.process("Resources"),
-                        .process("__Snapshots__")]
+                        .process("__Snapshots__")],
+            swiftSettings: [
+              .enableExperimentalFeature("StrictConcurrency")
+            ]
         )
     ]
 )

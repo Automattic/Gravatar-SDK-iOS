@@ -28,7 +28,7 @@ public enum ImageSettingOption {
 }
 
 /// Parsed options derived from [ImageSettingOption]
-public struct ImageSettingOptions {
+public struct ImageSettingOptions: Sendable {
     var transition: ImageTransition = .none
     var removeCurrentImageWhileLoading = false
     var forceRefresh = false
