@@ -58,8 +58,8 @@ final class ProfileViewSnapshots: XCTestCase {
     }
 
     private func wrap(_ view: BaseProfileView) -> UIView {
-        view.avatarImageView.backgroundColor = .systemBlue
-        view.avatarImageView.image = ImageHelper.exampleAvatarImage
+        view.avatarImageView?.backgroundColor = .systemBlue
+        view.avatarImageView?.image = ImageHelper.exampleAvatarImage
         view.translatesAutoresizingMaskIntoConstraints = false
         view.widthAnchor.constraint(equalToConstant: Constants.width).isActive = true
 
