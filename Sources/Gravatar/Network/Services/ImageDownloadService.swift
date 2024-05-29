@@ -25,7 +25,9 @@ public struct ImageDownloadService: ImageDownloader {
 
         let client = self.client
         let task = Task<UIImage, Error> {
+            //try Task.checkCancellation()
             let (data, _) = try await client.fetchData(with: request)
+            //try Task.checkCancellation()
             guard let image = processor.process(data) else {
                 throw ImageFetchingError.imageProcessorFailed
             }
