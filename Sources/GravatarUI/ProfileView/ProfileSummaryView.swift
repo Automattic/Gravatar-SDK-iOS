@@ -15,7 +15,7 @@ public class ProfileSummaryView: BaseProfileView {
     override public func arrangeSubviews() {
         rootStackView.axis = .horizontal
         rootStackView.alignment = .center
-        [avatarImageView, basicInfoStackView].forEach(rootStackView.addArrangedSubview)
+        [avatarView, basicInfoStackView].forEach(rootStackView.addArrangedSubview)
         setStackViewSpacing()
     }
 

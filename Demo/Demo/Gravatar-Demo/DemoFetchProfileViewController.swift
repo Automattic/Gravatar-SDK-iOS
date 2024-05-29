@@ -112,10 +112,11 @@ class DemoFetchProfileViewController: UIViewController {
         profileTextView.text = """
 Profile URL: \(profile.profileUrl)
 Display name: \(profile.displayName)
-Name: \(profile.displayName)
 Preferred User Name: \(profile.displayName)
 Thumbnail URL: \(profile.avatarUrl)
+Wallets: \(String(describing: profile.payments?.cryptoWallets))
 Last edit: \(String(describing: profile.lastProfileEdit))
+Registration date: \(String(describing: profile.registrationDate))
 """
     }
 
