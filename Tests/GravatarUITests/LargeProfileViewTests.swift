@@ -137,6 +137,7 @@ final class LargeProfileViewTests: XCTestCase {
         assertSnapshot(of: containerView, as: .image)
     }
 
+    @MainActor
     private func createViews(paletteType: PaletteType, avatarType: AvatarType? = nil) -> (LargeProfileView, UIView) {
         let cardView = LargeProfileView(frame: .zero, paletteType: paletteType, avatarType: avatarType)
         cardView.translatesAutoresizingMaskIntoConstraints = false

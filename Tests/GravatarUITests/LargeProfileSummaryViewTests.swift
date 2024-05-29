@@ -133,6 +133,7 @@ final class LargeProfileSummaryViewTests: XCTestCase {
         assertSnapshot(of: containerView, as: .image)
     }
 
+    @MainActor
     private func createViews(
         model: ProfileSummaryModel?,
         paletteType: PaletteType = .system,

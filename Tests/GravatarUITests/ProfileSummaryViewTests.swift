@@ -133,6 +133,7 @@ final class ProfileSummaryViewTests: XCTestCase {
         assertSnapshot(of: containerView, as: .image)
     }
 
+    @MainActor
     private func createViews(model: ProfileSummaryModel?, avatarType: AvatarType? = nil) -> (UIView, ProfileSummaryView) {
         let cardView = ProfileSummaryView(frame: .zero, paletteType: .system, avatarType: avatarType)
         cardView.update(with: model)
