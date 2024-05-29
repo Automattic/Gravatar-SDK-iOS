@@ -25,7 +25,7 @@ final class ImageDownloadServiceTests: XCTestCase {
         _ = try await service.fetchImage(with: URL(string: imageURL)!)
         let imageResponse = try await service.fetchImage(with: URL(string: imageURL)!)
         let setImageCallsCount = await cache.setImageCallsCount
-        let setTaskCallCount = await cache.setTaskCallCount
+        let setTaskCallCount = await cache.setTaskCallsCount
         let getImageCallsCount = await cache.getImageCallsCount
         let request = await sessionMock.request
         let callsCount = await sessionMock.callsCount
