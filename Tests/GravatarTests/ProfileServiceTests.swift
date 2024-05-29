@@ -15,7 +15,8 @@ final class ProfileServiceTests: XCTestCase {
 
         do {
             _ = try await service.fetch(with: .hashID(""))
-            XCTAssertNil(session.request?.value(forHTTPHeaderField: "Authorization"))
+            let request = await session.request
+            XCTAssertNil(request?.value(forHTTPHeaderField: "Authorization"))
         } catch {
             XCTFail(error.localizedDescription)
         }
@@ -33,7 +34,8 @@ final class ProfileServiceTests: XCTestCase {
 
         do {
             _ = try await service.fetch(with: .hashID(""))
-            XCTAssertNotNil(session.request?.value(forHTTPHeaderField: "Authorization"))
+            let request = await session.request
+            XCTAssertNotNil(request?.value(forHTTPHeaderField: "Authorization"))
         } catch {
             XCTFail(error.localizedDescription)
         }
