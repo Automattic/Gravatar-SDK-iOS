@@ -9,6 +9,7 @@ final class ProfileViewActionsTests: XCTestCase {
         delegate = TestProfileViewDelegate()
     }
 
+    @MainActor
     func testProfileViewButtonsActions() throws {
         let model = TestProfileCardModel.fullCard()
 
@@ -28,6 +29,7 @@ final class ProfileViewActionsTests: XCTestCase {
         XCTAssertEqual(delegate.accountButtonActions.last?.shortname, "unknown")
     }
 
+    @MainActor
     func testProfileSummaryViewButtonsActions() throws {
         let model = TestProfileCardModel.summaryCard()
 
@@ -45,6 +47,7 @@ final class ProfileViewActionsTests: XCTestCase {
         XCTAssertEqual(delegate.accountButtonActions.count, 0)
     }
 
+    @MainActor
     func testLargeProfileViewButtonsActions() throws {
         let model = TestProfileCardModel.fullCard()
 
@@ -64,6 +67,7 @@ final class ProfileViewActionsTests: XCTestCase {
         XCTAssertEqual(delegate.accountButtonActions.last?.shortname, "unknown")
     }
 
+    @MainActor
     func testLargeProfileSummaryViewButtonsActions() throws {
         let model = TestProfileCardModel.summaryCard()
 
@@ -81,6 +85,7 @@ final class ProfileViewActionsTests: XCTestCase {
         XCTAssertEqual(delegate.accountButtonActions.count, 0)
     }
 
+    @MainActor
     func tap(_ view: UIView?) {
         let button = view as? UIButton
         XCTAssertNotNil(button, "View is not a button")

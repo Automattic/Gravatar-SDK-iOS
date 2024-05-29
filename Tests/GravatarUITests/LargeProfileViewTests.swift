@@ -14,6 +14,7 @@ final class LargeProfileViewTests: XCTestCase {
         // isRecording = true
     }
 
+    @MainActor
     func testLargeProfileView() throws {
         for paletteType in palettesToTest {
             let (cardView, containerView) = createViews(paletteType: paletteType)
@@ -22,6 +23,7 @@ final class LargeProfileViewTests: XCTestCase {
         }
     }
 
+    @MainActor
     func testInitiallyEmptyLargeProfileView() throws {
         for paletteType in palettesToTest {
             let (_, containerView) = createViews(paletteType: paletteType)
@@ -29,6 +31,7 @@ final class LargeProfileViewTests: XCTestCase {
         }
     }
 
+    @MainActor
     func testLargeProfileViewPlaceholdersCanShow() throws {
         let interfaceStyle: UIUserInterfaceStyle = .light
         let (cardView, containerView) = createViews(paletteType: .light)
@@ -38,6 +41,7 @@ final class LargeProfileViewTests: XCTestCase {
         assertSnapshot(of: containerView, as: .image, named: "\(interfaceStyle.name)")
     }
 
+    @MainActor
     func testLargeProfileViewPlaceholdersCanHide() throws {
         let interfaceStyle: UIUserInterfaceStyle = .light
         let (cardView, containerView) = createViews(paletteType: .light)
@@ -48,6 +52,7 @@ final class LargeProfileViewTests: XCTestCase {
         assertSnapshot(of: containerView, as: .image, named: "\(interfaceStyle.name)")
     }
 
+    @MainActor
     func testLargeProfileViewPlaceholderCanUpdateColors() throws {
         let interfaceStyle: UIUserInterfaceStyle = .light
         let (cardView, containerView) = createViews(paletteType: .light)
@@ -56,6 +61,7 @@ final class LargeProfileViewTests: XCTestCase {
         assertSnapshot(of: containerView, as: .image, named: "\(interfaceStyle.name)")
     }
 
+    @MainActor
     func testLargeProfileViewLoadingStateClearsWhenEmpty() throws {
         let interfaceStyle: UIUserInterfaceStyle = .light
         let (cardView, containerView) = createViews(paletteType: .light)
@@ -65,6 +71,7 @@ final class LargeProfileViewTests: XCTestCase {
         assertSnapshot(of: containerView, as: .image, named: "\(interfaceStyle.name)")
     }
 
+    @MainActor
     func testLargeProfileViewLoadingStateClearsWhenDataIsPresent() throws {
         let interfaceStyle: UIUserInterfaceStyle = .light
         let (cardView, containerView) = createViews(paletteType: .light)

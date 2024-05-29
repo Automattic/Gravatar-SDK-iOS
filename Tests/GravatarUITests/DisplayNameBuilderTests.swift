@@ -12,6 +12,7 @@ final class DisplayNameBuilderTests: XCTestCase {
         // isRecording = true
     }
 
+    @MainActor
     func testDisplayNameField() {
         let displayName = TestDisplayName(displayName: "Display Name")
         let label = UILabel(frame: frame)
@@ -24,6 +25,7 @@ final class DisplayNameBuilderTests: XCTestCase {
         }
     }
 
+    @MainActor
     func testDisplayNameFieldWithSmallWidth() {
         let displayName = TestDisplayName(displayName: "Display Name")
         let label = UILabel(frame: frameSmall)
@@ -36,5 +38,5 @@ final class DisplayNameBuilderTests: XCTestCase {
 }
 
 struct TestDisplayName: DisplayNameModel {
-    var displayName: String
+    let displayName: String
 }

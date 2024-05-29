@@ -12,6 +12,7 @@ final class PersonalInfoBuilderTests: XCTestCase {
         // isRecording = true
     }
 
+    @MainActor
     func testPersonalInfoEmpty() {
         let label = UILabel(frame: frame)
         Configure(label)
@@ -20,6 +21,7 @@ final class PersonalInfoBuilderTests: XCTestCase {
         XCTAssertEqual(label.text, "")
     }
 
+    @MainActor
     func testPersonalInfoSkipsSeparatorAndNewLine() {
         let label = UILabel(frame: frame)
         let testData = TestPersonalInfo(jobTitle: "Engineer", pronunciation: "")
@@ -35,6 +37,7 @@ final class PersonalInfoBuilderTests: XCTestCase {
         XCTAssertEqual(label.text, "Engineer", "Do not put unnecessary separator or new line.")
     }
 
+    @MainActor
     func testPersonalInfoFull() {
         let label = UILabel(frame: frame)
         for palette in palettesToTest {
@@ -46,6 +49,7 @@ final class PersonalInfoBuilderTests: XCTestCase {
         }
     }
 
+    @MainActor
     func testPersonalInfoCustom() {
         let label = UILabel(frame: frame)
         for palette in palettesToTest {
@@ -60,6 +64,7 @@ final class PersonalInfoBuilderTests: XCTestCase {
         }
     }
 
+    @MainActor
     func testPersonalInfoWithSmallWidth() {
         let label = UILabel(frame: frameSmall)
         Configure(label)
@@ -69,6 +74,7 @@ final class PersonalInfoBuilderTests: XCTestCase {
         assertSnapshot(of: label, as: .image)
     }
 
+    @MainActor
     func testPersonalInfoSkipsSeparatorWithPronounsOnly() {
         let label = UILabel(frame: frame)
         let testData = TestPersonalInfo.pronounsOnly()
@@ -79,6 +85,7 @@ final class PersonalInfoBuilderTests: XCTestCase {
         XCTAssertEqual(label.text, "she/her", "Do not put unnecessary separator")
     }
 
+    @MainActor
     func testPersonalInfoFullText() {
         let label = UILabel(frame: frame)
         Configure(label)

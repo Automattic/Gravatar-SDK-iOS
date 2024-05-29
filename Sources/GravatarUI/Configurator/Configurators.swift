@@ -1,5 +1,6 @@
 import UIKit
 
+@MainActor
 /// Provides several UILabel builders.
 public struct LabelConfigurator {
     let label: UILabel
@@ -38,6 +39,7 @@ public struct ButtonConfigurator {
     }
 }
 
+@MainActor
 /// Returns the LabelConfigurator created with the given UILabel
 public func Configure(_ label: UILabel) -> LabelConfigurator {
     LabelConfigurator(label: label)

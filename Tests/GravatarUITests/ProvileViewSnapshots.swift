@@ -13,6 +13,7 @@ final class ProfileViewSnapshots: XCTestCase {
         // isRecording = true
     }
 
+    @MainActor
     func testProfileView() throws {
         for interfaceStyle in UIUserInterfaceStyle.allCases {
             let profileView = ProfileView()
@@ -24,6 +25,7 @@ final class ProfileViewSnapshots: XCTestCase {
         }
     }
 
+    @MainActor
     func testProfileSummaryView() throws {
         for interfaceStyle in UIUserInterfaceStyle.allCases {
             let profileView = ProfileSummaryView()
@@ -35,6 +37,7 @@ final class ProfileViewSnapshots: XCTestCase {
         }
     }
 
+    @MainActor
     func testLargeProfileView() throws {
         for interfaceStyle in UIUserInterfaceStyle.allCases {
             let profileView = LargeProfileView()
@@ -46,6 +49,7 @@ final class ProfileViewSnapshots: XCTestCase {
         }
     }
 
+    @MainActor
     func testLargeProfileSummaryView() throws {
         for interfaceStyle in UIUserInterfaceStyle.allCases {
             let profileView = LargeProfileSummaryView()
@@ -57,6 +61,7 @@ final class ProfileViewSnapshots: XCTestCase {
         }
     }
 
+    @MainActor
     private func wrap(_ view: BaseProfileView) -> UIView {
         view.avatarImageView?.backgroundColor = .systemBlue
         view.avatarImageView?.image = ImageHelper.exampleAvatarImage
@@ -68,6 +73,7 @@ final class ProfileViewSnapshots: XCTestCase {
 }
 
 extension TestProfileCardModel {
+    @MainActor
     fileprivate static let exampleModel = TestProfileCardModel(
         accountsList: [
             TestAccountModel(serviceLabel: "Gravatar", shortname: "gravatar"),

@@ -39,6 +39,7 @@ struct ClaimProfileModel: ProfileModel {
     }
 }
 
+@MainActor
 public protocol ProfileViewClaimProfileConfigurable {
     static func claimProfileConfiguration(userName: String?, palette: PaletteType) -> ProfileViewConfiguration
     func updateWithClaimProfilePrompt(userName: String?)
