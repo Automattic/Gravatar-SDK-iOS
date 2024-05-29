@@ -38,8 +38,7 @@ public struct ProfileService: ProfileFetching, Sendable {
 
     public func fetch(with profileID: ProfileIdentifier) async throws -> Profile {
         let url = baseURL.appending(pathComponent: profileID.id)
-        let request = URLRequest(url: url)
-        // TODO: Add API key to headers
+        let request = await URLRequest(url: url).authorized()
         return try await fetch(with: request)
     }
 }
@@ -62,7 +61,9 @@ extension ProfileService {
 
     private func map(_ data: Data, _: HTTPURLResponse) -> Result<Profile, ProfileServiceError> {
         do {
-            let profile = try JSONDecoder().decode(Profile.self, from: data)
+            let decoder = JSONDecoder()
+            decoder.dateDecodingStrategy = .iso8601
+            let profile = try decoder.decode(Profile.self, from: data)
             return .success(profile)
         } catch let error as HTTPClientError {
             return .failure(.responseError(reason: error.map()))
@@ -73,5 +74,19 @@ extension ProfileService {
         } catch {
             return .failure(.responseError(reason: .unexpected(error)))
         }
+    }
+}
+
+extension URLRequest {
+    private enum HeaderField: String {
+        case authorization = "Authorization"
+    }
+
+    fileprivate func authorized() async -> URLRequest {
+        guard let key = await Configuration.shared.apiKey else { return self }
+        let bearerKey = "Bearer \(key)"
+        var copy = self
+        copy.setValue(bearerKey, forHTTPHeaderField: HeaderField.authorization.rawValue)
+        return copy
     }
 }
