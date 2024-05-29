@@ -14,10 +14,12 @@ OPENAPI_GENERATOR_CLONE_DIR ?= $(CURRENT_MAKEFILE_DIR)/openapi-generator
 OPENAPI_YAML_PATH ?= $(CURRENT_MAKEFILE_DIR)/openapi/spec.yaml
 MODEL_TEMPLATE_PATH ?= $(CURRENT_MAKEFILE_DIR)/openapi
 OUTPUT_DIRECTORY ?= $(CURRENT_MAKEFILE_DIR)/Sources/Gravatar/OpenApi/Generated
+SECRETS_PATH=$(CURRENT_MAKEFILE_DIR)/Demo/Demo/Gravatar-Demo/Secrets.swift
 
 # Derived values (don't change these).
 CURRENT_MAKEFILE_PATH := $(abspath $(lastword $(MAKEFILE_LIST)))
 CURRENT_MAKEFILE_DIR := $(patsubst %/,%,$(dir $(CURRENT_MAKEFILE_PATH)))
+
 
 # If no target is specified, display help
 .DEFAULT_GOAL := help
@@ -27,17 +29,17 @@ help:  # Display this help.
 	@-+echo
 	@-+grep -Eh "^[a-z-]+:.*#" $(CURRENT_MAKEFILE_PATH) | sed -E 's/^(.*:)(.*#+)(.*)/  \1 @@@ \3 /' | column -t -s "@@@"
 
-dev: # Open the package in xcode
+dev: secrets # Open the package in xcode
 	xed .
 
-dev-demo: # Open an xcode project with the package and a demo project
+dev-demo: secrets # Open an xcode project with the package and a demo project
 	xed Demo/
 
 test: bundle-install
 	bundle exec fastlane test
 
-build-demo: build-demo-swift build-demo-swiftui
-	
+build-demo: secrets build-demo-swift build-demo-swiftui
+
 build-demo-swift: bundle-install
 	bundle exec fastlane build_demo scheme:Gravatar-Demo
 
@@ -75,6 +77,12 @@ update-example-snapshots:
 	# Append @2x to the file name.
 	cd ./Sources/GravatarUI/GravatarUI.docc/Resources/ProfileExamples && \
 	for filePath in *; do name=$${filePath%.*}; mv $$filePath $${name//-dark/~dark}@2x$${filePath#$$name}; done
+
+secrets: # Creates the Secrets file in the Demo app.
+	if [ ! -f $(SECRETS_PATH) ]; then \
+		touch $(SECRETS_PATH); \
+		echo "let apiKey: String? = nil" > $(SECRETS_PATH); \
+	fi
 
 install-and-generate: $(OPENAPI_GENERATOR_CLONE_DIR) # Clones and setup the openapi-generator.
 	"$(OPENAPI_GENERATOR_CLONE_DIR)"/run-in-docker.sh mvn package

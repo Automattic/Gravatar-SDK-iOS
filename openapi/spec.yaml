@@ -269,9 +269,16 @@ components:
           description: >-
             The date the user registered their account. This is only provided in
             authenticated API requests.
-          format: date
+          format: date-time
           examples:
-            - '2021-10-01'
+            - '2021-10-01T12:00:00Z'
+  securitySchemes:
+    apiKey:
+      type: http
+      scheme: bearer
+      description: >-
+        Bearer token to authenticate the request. Full profile information is
+        only available in authenticated requests.
 paths:
   /profiles/{profileIdentifier}:
     get:
@@ -289,14 +296,6 @@ paths:
             slug.
           schema:
             type: string
-        - name: Authorization
-          in: header
-          required: false
-          schema:
-            type: string
-          description: >-
-            Bearer token to authenticate the request. Full profile information
-            is only available in authenticated requests.
       responses:
         '200':
           description: Successful response
@@ -310,3 +309,5 @@ paths:
           description: Rate limit exceeded
         '500':
           description: Internal server error
+security:
+  - apiKey: []
