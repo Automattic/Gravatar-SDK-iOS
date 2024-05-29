@@ -10,7 +10,7 @@ public enum AvatarType {
     /// Avatar is a `UIView` that has a `UIImageView` and its appearance needs to be managed externally.
     case imageViewWrapper(ImageViewWrapper)
 
-    /// Avatar is a custom `UIView` whose appearance is fully managed externally.
+    /// Avatar is a custom `UIView` whose appearance and contents are fully managed externally.
     case custom(AvatarProviding)
 
     var imageView: UIImageView? {
