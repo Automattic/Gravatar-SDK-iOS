@@ -122,7 +122,7 @@ extension GravatarWrapper where Component: UIImageView {
         }
     }
 
-    private func setDownloadTask(_ newValue: CancellableDataTask?) {
+    private func setDownloadTask(_ newValue: Task<Void, Never>?) {
         setRetainedAssociatedObject(component, dataTaskKey, newValue)
     }
 
