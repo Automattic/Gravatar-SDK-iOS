@@ -60,7 +60,7 @@ public enum AvatarType {
 /// Defines a UIView that has a UIImageView subview.
 @MainActor
 public protocol ImageViewWrapper {
-    // The `UIImageView` to display the avatar.
+    /// The `UIImageView` to display the avatar.
     var imageView: UIImageView { get }
 
     /// The parent view for the imageView. It doesn't have to be the direct parent.
