@@ -12,26 +12,9 @@ actor URLSessionMock: URLSessionProtocol {
     let returnData: Data
     let response: HTTPURLResponse
     let error: NSError?
-    private var _callsCount = 0
-    var callsCount: Int {
-        get async {
-            _callsCount
-        }
-    }
-
-    private var _request: URLRequest? = nil
-    var request: URLRequest? {
-        get async {
-            _request
-        }
-    }
-
-    private var _uploadData: Data? = nil
-    var uploadData: Data? {
-        get async {
-            _uploadData
-        }
-    }
+    private(set) var callsCount = 0
+    private(set) var request: URLRequest? = nil
+    private(set) var uploadData: Data? = nil
 
     init(returnData: Data, response: HTTPURLResponse, error: NSError? = nil) {
         self.returnData = returnData
@@ -44,8 +27,8 @@ actor URLSessionMock: URLSessionProtocol {
     }
 
     func data(for request: URLRequest) async throws -> (Data, URLResponse) {
-        _callsCount += 1
-        self._request = request
+        callsCount += 1
+        self.request = request
         if let error {
             throw error
         }
@@ -53,8 +36,8 @@ actor URLSessionMock: URLSessionProtocol {
     }
 
     func upload(for request: URLRequest, from bodyData: Data) async throws -> (Data, URLResponse) {
-        self._request = request
-        self._uploadData = bodyData
+        self.request = request
+        self.uploadData = bodyData
         if let error {
             throw error
         }
@@ -62,6 +45,6 @@ actor URLSessionMock: URLSessionProtocol {
     }
 
     func update(request: URLRequest) async {
-        _request = request
+        self.request = request
     }
 }
