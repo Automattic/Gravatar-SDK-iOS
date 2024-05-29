@@ -67,7 +67,7 @@ public protocol ImageViewWrapper {
     var baseView: UIView { get }
 }
 
-/// Provides a UIView to be used as the avatar in a `BaseProfileView`. This is for taking full control over the avatar..
+/// Provides a UIView to be used as the avatar in a `BaseProfileView`. This is for taking full control over the avatar.
 @MainActor
 public protocol AvatarProviding {
     /// `UIView` to insert into the avatar's slot in a `BaseProfileView`.
