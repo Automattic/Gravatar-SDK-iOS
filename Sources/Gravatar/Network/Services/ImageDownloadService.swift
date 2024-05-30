@@ -69,7 +69,6 @@ public struct ImageDownloadService: ImageDownloader, Sendable {
             case .inProgress(let task):
                 if !task.isCancelled {
                     task.cancel()
-                    await imageCache.setEntry(nil, for: url.absoluteString)
                 }
             default:
                 break

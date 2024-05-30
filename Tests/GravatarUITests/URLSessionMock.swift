@@ -12,6 +12,7 @@ actor URLSessionMock: URLSessionProtocol {
     let returnData: Data
     let response: HTTPURLResponse
     let error: NSError?
+    var isCancellable: Bool = false
     private(set) var callsCount = 0
     private(set) var request: URLRequest? = nil
     private(set) var uploadData: Data? = nil
@@ -29,6 +30,12 @@ actor URLSessionMock: URLSessionProtocol {
     func data(for request: URLRequest) async throws -> (Data, URLResponse) {
         callsCount += 1
         self.request = request
+        if isCancellable {
+            for _ in 0 ... 100 {
+                try await Task.sleep(nanoseconds: UInt64(0.05 * 1_000_000_000))
+                try Task.checkCancellation()
+            }
+        }
         if let error {
             throw error
         }
@@ -46,5 +53,9 @@ actor URLSessionMock: URLSessionProtocol {
 
     func update(request: URLRequest) async {
         self.request = request
+    }
+
+    func update(isCancellable: Bool) async {
+        self.isCancellable = isCancellable
     }
 }
