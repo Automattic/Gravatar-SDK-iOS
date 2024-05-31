@@ -2,6 +2,7 @@ import Combine
 @testable import Gravatar
 import GravatarUI
 import SnapshotTesting
+@testable import TestHelpers
 import XCTest
 
 final class ProfileViewModelTests: XCTestCase {
