@@ -13,3 +13,9 @@ final class TestImageProcessor: ImageProcessor {
         return image
     }
 }
+
+final class FailingImageProcessor: ImageProcessor {
+    func process(_: Data) -> UIImage? {
+        nil
+    }
+}

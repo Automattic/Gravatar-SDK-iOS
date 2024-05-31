@@ -13,6 +13,7 @@ private let placeholderKey: UnsafeMutableRawPointer = .allocate(byteCount: 1, al
 private let imageTaskKey: UnsafeMutableRawPointer = .allocate(byteCount: 1, alignment: MemoryLayout<UInt8>.alignment)
 private let dataTaskKey: UnsafeMutableRawPointer = .allocate(byteCount: 1, alignment: MemoryLayout<UInt8>.alignment)
 private let imageDownloaderKey: UnsafeMutableRawPointer = .allocate(byteCount: 1, alignment: MemoryLayout<UInt8>.alignment)
+private let sourceURLKey: UnsafeMutableRawPointer = .allocate(byteCount: 1, alignment: MemoryLayout<UInt8>.alignment)
 
 @MainActor
 extension GravatarWrapper where Component: UIImageView {
@@ -100,6 +101,15 @@ extension GravatarWrapper where Component: UIImageView {
         }
     }
 
+    public private(set) var sourceURL: URL? {
+        get {
+            getAssociatedObject(component, sourceURLKey)
+        }
+        set {
+            setRetainedAssociatedObject(component, sourceURLKey, newValue)
+        }
+    }
+
     public private(set) var taskIdentifier: UInt? {
         get {
             let box: Box<UInt>? = getAssociatedObject(component, taskIdentifierKey)
@@ -130,6 +140,13 @@ extension GravatarWrapper where Component: UIImageView {
         if let downloadTask, !downloadTask.isCancelled {
             downloadTask.cancel()
             setDownloadTask(nil)
+        }
+        if let sourceURL {
+            Task {
+                await imageDownloader?.cancelTask(for: sourceURL)
+                var mutatingSelf = self
+                mutatingSelf.sourceURL = nil
+            }
         }
     }
 
@@ -213,6 +230,7 @@ extension GravatarWrapper where Component: UIImageView {
         guard let source else {
             mutatingSelf.placeholder = placeholder
             mutatingSelf.taskIdentifier = nil
+            mutatingSelf.sourceURL = nil
             throw ImageFetchingComponentError.requestError(reason: .emptyURL)
         }
         let options = ImageSettingOptions(options: options)
@@ -284,6 +302,7 @@ extension GravatarWrapper where Component: UIImageView {
             }
         }
         mutatingSelf.downloadTask = task
+        mutatingSelf.sourceURL = source
         return task
     }
 

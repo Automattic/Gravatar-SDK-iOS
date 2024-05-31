@@ -9,7 +9,7 @@ public protocol ImageCaching: Sendable {
     /// - Parameters:
     ///   - image: The cache entry to set.
     ///   - key: The entry's key, used to be found via `.getEntry(key:)`.
-    func setEntry(_ entry: CacheEntry, for key: String) async
+    func setEntry(_ entry: CacheEntry?, for key: String) async
 
     /// Gets a `CacheEntry` from cache for the given key, or nil if none is found.
     ///
@@ -30,8 +30,12 @@ public struct ImageCache: ImageCaching {
 
     public init() {}
 
-    public func setEntry(_ entry: CacheEntry, for key: String) {
-        cache[key] = .init(entry)
+    public func setEntry(_ entry: CacheEntry?, for key: String) {
+        if let entry {
+            cache[key] = .init(entry)
+        } else {
+            cache[key] = nil
+        }
     }
 
     public func getEntry(with key: String) -> CacheEntry? {

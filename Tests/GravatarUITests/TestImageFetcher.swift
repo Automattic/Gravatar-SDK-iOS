@@ -25,4 +25,6 @@ actor TestImageFetcher: ImageDownloader {
         }
         return try await task.value
     }
+
+    func cancelTask(for url: URL) async {}
 }

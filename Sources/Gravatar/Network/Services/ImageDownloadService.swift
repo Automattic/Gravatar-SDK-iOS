@@ -4,7 +4,7 @@ import UIKit
 ///
 /// This is the default type which implements ``ImageDownloader``..
 /// Unless specified otherwise, `ImageDownloadService` will use a `URLSession` based `HTTPClient`, and a in-memory image cache.
-public struct ImageDownloadService: ImageDownloader {
+public struct ImageDownloadService: ImageDownloader, Sendable {
     private let client: HTTPClient
     let imageCache: ImageCaching
 
@@ -20,59 +20,69 @@ public struct ImageDownloadService: ImageDownloader {
         self.imageCache = cache ?? ImageCache()
     }
 
-    private func fetchImage(from url: URL, forceRefresh: Bool, processor: ImageProcessor) async throws -> ImageDownloadResult {
+    public func fetchImage(with url: URL, forceRefresh: Bool = false, processingMethod: ImageProcessingMethod = .common()) async throws -> ImageDownloadResult {
         let request = URLRequest.imageRequest(url: url, forceRefresh: forceRefresh)
 
-        let client = self.client
-        let task = Task<UIImage, Error> {
-            //try Task.checkCancellation()
-            let (data, _) = try await client.fetchData(with: request)
-            //try Task.checkCancellation()
-            guard let image = processor.process(data) else {
-                throw ImageFetchingError.imageProcessorFailed
-            }
-            return image
-        }
-
-        await imageCache.setEntry(.inProgress(task), for: url.absoluteString)
-
-        let image = try await getImage(from: task)
-        await imageCache.setEntry(.ready(image), for: url.absoluteString)
-        return ImageDownloadResult(image: image, sourceURL: url)
-    }
-
-    public func fetchImage(
-        with url: URL,
-        forceRefresh: Bool = false,
-        processingMethod: ImageProcessingMethod = .common()
-    ) async throws -> ImageDownloadResult {
         if !forceRefresh, let image = try await cachedImage(for: url) {
             return ImageDownloadResult(image: image, sourceURL: url)
         }
-        return try await fetchImage(from: url, forceRefresh: forceRefresh, processor: processingMethod.processor)
+        let task = Task<UIImage, Error> {
+            try await fetchAndProcessImage(request: request, processor: processingMethod.processor)
+        }
+        let image = try await awaitAndCacheImage(from: task, cacheKey: url.absoluteString)
+        return ImageDownloadResult(image: image, sourceURL: url)
     }
 
     private func cachedImage(for url: URL) async throws -> UIImage? {
-        guard let entry = await imageCache.getEntry(with: url.absoluteString) else {
-            return nil
-        }
-
+        guard let entry = await imageCache.getEntry(with: url.absoluteString) else { return nil }
         switch entry {
         case .inProgress(let task):
-            return try await getImage(from: task)
+            let image = try await task.value
+            return image
         case .ready(let image):
             return image
         }
     }
 
-    private func getImage(from task: Task<UIImage, Error>) async throws -> UIImage {
+    private func awaitAndCacheImage(from task: Task<UIImage, Error>, cacheKey key: String) async throws -> UIImage {
+        await imageCache.setEntry(.inProgress(task), for: key)
+        let image: UIImage
         do {
-            let image = try await task.value
+            image = try await task.value
+        } catch {
+            await imageCache.setEntry(nil, for: key)
+            throw error
+        }
+        await imageCache.setEntry(.ready(image), for: key)
+        return image
+    }
+
+    private func fetchAndProcessImage(request: URLRequest, processor: ImageProcessor) async throws -> UIImage {
+        do {
+            let (data, _) = try await client.fetchData(with: request)
+            guard let image = processor.process(data) else {
+                throw ImageFetchingError.imageProcessorFailed
+            }
             return image
         } catch let error as HTTPClientError {
             throw ImageFetchingError.responseError(reason: error.map())
+        } catch let error as ImageFetchingError {
+            throw error
         } catch {
             throw ImageFetchingError.responseError(reason: .unexpected(error))
+        }
+    }
+
+    public func cancelTask(for url: URL) async {
+        if let entry = await imageCache.getEntry(with: url.absoluteString) {
+            switch entry {
+            case .inProgress(let task):
+                if !task.isCancelled {
+                    task.cancel()
+                }
+            default:
+                break
+            }
         }
     }
 }
