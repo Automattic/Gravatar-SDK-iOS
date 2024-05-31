@@ -1,13 +1,11 @@
 @Tutorials(name: "Gravatar SDK Tutorials") {
     @Intro(title: "Learn to use Gravatar SDK") {
-        
-        @Image(source: "gravatar-sdk.png", alt: "Logo")
     }
     
     @Chapter(name: "Profile views as Contacts List.") {
         Learn how to use GravatarUI to create a contacts list.
         
-        @Image(source: "tutorial_01_02.png", alt: "Add an accessible description for your image here.")
+        @Image(source: "tutorial_01_header.png", alt: "Add an accessible description for your image here.")
         
         @TutorialReference(tutorial: "doc:ContactsList")
     }

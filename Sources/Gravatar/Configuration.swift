@@ -9,7 +9,7 @@ public actor Configuration {
     public static let shared = Configuration()
 
     private init() {}
-    
+
     /// Updates the current configuration instance.
     /// - Parameter apiKey: The new authorisation API key.
     public func configure(with apiKey: String?) {

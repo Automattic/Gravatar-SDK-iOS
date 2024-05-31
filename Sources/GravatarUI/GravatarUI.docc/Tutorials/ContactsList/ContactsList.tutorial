@@ -1,16 +1,16 @@
 @Tutorial(time: 10) {
     @Intro(title: "Profile views as contacts list") {
         In this tutorial you will learn how to use ``ProfileViewConfiguration`` to present a list of contacts in a `UITableViewController`.
-        @Image(source: "tutorial_01_02.png", alt: "Profile summary view.")
+        @Image(source: "tutorial_01_header.png", alt: "Profile summary view.")
     }
     
     @Section(title: "Display a Profile View as a table view cell") {
         @ContentAndMedia { }
-        
+
         @Steps {
             @Step {
                 We start with a standard `UITableViewController`, using `UITableViewDiffableDataSource`.
-                
+
                 For the ItemIdentifiers, we will use the `ProfileIdentifier` type.
                 @Code(name: "TableViewController.swift", file: "Tut_01.swift")
             }
