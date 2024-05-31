@@ -13,6 +13,7 @@ private let placeholderKey: UnsafeMutableRawPointer = .allocate(byteCount: 1, al
 private let imageTaskKey: UnsafeMutableRawPointer = .allocate(byteCount: 1, alignment: MemoryLayout<UInt8>.alignment)
 private let dataTaskKey: UnsafeMutableRawPointer = .allocate(byteCount: 1, alignment: MemoryLayout<UInt8>.alignment)
 private let imageDownloaderKey: UnsafeMutableRawPointer = .allocate(byteCount: 1, alignment: MemoryLayout<UInt8>.alignment)
+private let sourceURLKey: UnsafeMutableRawPointer = .allocate(byteCount: 1, alignment: MemoryLayout<UInt8>.alignment)
 
 extension GravatarWrapper where Component: UIImageView {
     /// Describes which indicator type is going to be used. Default is `.none`, which means no activity indicator will be shown.
@@ -99,6 +100,15 @@ extension GravatarWrapper where Component: UIImageView {
         }
     }
 
+    public private(set) var sourceURL: URL? {
+        get {
+            getAssociatedObject(component, sourceURLKey)
+        }
+        set {
+            setRetainedAssociatedObject(component, sourceURLKey, newValue)
+        }
+    }
+
     public private(set) var taskIdentifier: UInt? {
         get {
             let box: Box<UInt>? = getAssociatedObject(component, taskIdentifierKey)
@@ -128,6 +138,11 @@ extension GravatarWrapper where Component: UIImageView {
     public func cancelImageDownload() {
         downloadTask?.cancel()
         setDownloadTask(nil)
+        if let sourceURL {
+            Task {
+                await imageDownloader?.cancelTask(for: sourceURL)
+            }
+        }
     }
 
     /// Downloads the Gravatar profile image and sets it to this UIImageView.
@@ -181,6 +196,7 @@ extension GravatarWrapper where Component: UIImageView {
         guard let source else {
             mutatingSelf.placeholder = placeholder
             mutatingSelf.taskIdentifier = nil
+            mutatingSelf.sourceURL = nil
             completionHandler?(.failure(ImageFetchingComponentError.requestError(reason: .emptyURL)))
             return nil
         }
@@ -231,6 +247,7 @@ extension GravatarWrapper where Component: UIImageView {
                     }
                 }
             }
+        mutatingSelf.sourceURL = source
         mutatingSelf.downloadTask = task
         return task
     }

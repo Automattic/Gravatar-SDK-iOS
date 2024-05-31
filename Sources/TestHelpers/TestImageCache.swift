@@ -8,7 +8,11 @@ actor TestImageCache: ImageCaching {
     private(set) var setImageCallsCount = 0
     private(set) var setTaskCallsCount = 0
 
-    func setEntry(_ entry: Gravatar.CacheEntry, for key: String) async {
+    func setEntry(_ entry: Gravatar.CacheEntry?, for key: String) async {
+        guard let entry else {
+            dict[key] = nil
+            return
+        }
         switch entry {
         case .inProgress:
             setTaskCallsCount += 1
