@@ -1,4 +1,5 @@
 import GravatarUI
+@testable import TestHelpers
 import XCTest
 
 enum GravatarImageSetMockResult {

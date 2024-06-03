@@ -31,7 +31,7 @@ open class BaseProfileView: UIView, UIContentView {
     public var placeholderDisplayer: ProfileViewPlaceholderDisplaying?
 
     /// Activity indicator to show when `isLoading` is `true` .
-    /// Defaults to ``ProfilePlaceholderActivityIndicator``.
+    /// Defaults to `ProfilePlaceholderActivityIndicator`.
     public var activityIndicator: (any ProfileActivityIndicator)?
 
     /// Avatar's activity indicator to show while downloading an image.

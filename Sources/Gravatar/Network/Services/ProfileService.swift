@@ -8,6 +8,10 @@ public enum GravatarProfileFetchResult: Sendable {
 }
 
 /// A service to perform Profile related tasks.
+///
+/// By default, the ``Profile`` instance returned by ``fetch(with:)`` will contain only a subset of the abailable information.
+///
+/// To obtain the full profile information, you need to configure an API Key using ``Configuration``
 public struct ProfileService: ProfileFetching, Sendable {
     private let client: HTTPClient
 
