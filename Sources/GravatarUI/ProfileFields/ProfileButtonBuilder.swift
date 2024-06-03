@@ -1,8 +1,15 @@
 import UIKit
 
+/// Styles for the profile view action button.
+///
 public enum ProfileButtonStyle {
+    /// Style which provides a link to display the profile.
     case view
+    /// Style which provides a link to edit the profile.
+    /// >  Use this option only when the profile is owned by your app's authenticated user.
     case edit
+    /// Style which provides a link to crerate a new account.
+    /// > This style is automatically set when the view is configured as `claimProfile`.
     case create
 }
 

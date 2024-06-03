@@ -338,7 +338,7 @@ open class BaseProfileView: UIView, UIContentView {
         paletteType = config.palette
         padding = config.padding
         isLoading = config.isLoading
-        avatarActivityIndicatorType = config.avatarActivityIndicatorType
+        avatarActivityIndicatorType = config.avatarConfiguration.activityIndicatorType
         delegate = config.delegate
         loadAvatar(with: config)
         if config.model != nil || config.summaryModel != nil {
@@ -349,10 +349,10 @@ open class BaseProfileView: UIView, UIContentView {
     private func loadAvatar(with config: ProfileViewConfiguration) {
         loadAvatar(
             with: config.avatarID,
-            placeholder: config.avatarPlaceholder,
-            rating: config.avatarRating,
-            defaultAvatarOption: config.defaultAvatarOption,
-            options: config.avatarSettingOptions
+            placeholder: config.avatarConfiguration.placeholder,
+            rating: config.avatarConfiguration.rating,
+            defaultAvatarOption: config.avatarConfiguration.defaultAvatarOption,
+            options: config.avatarConfiguration.settingOptions
         )
     }
 
