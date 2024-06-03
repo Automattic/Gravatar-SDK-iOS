@@ -1,0 +1,67 @@
+@Tutorial(time: 10) {
+    @Intro(title: "Profile views as contacts list") {
+        In this tutorial you will learn how to use ``ProfileViewConfiguration`` to present a list of contacts in a `UITableViewController`.
+        @Image(source: "tutorial_01_header.png", alt: "Profile summary view.")
+    }
+    
+    @Section(title: "Display a Profile View as a table view cell") {
+        @ContentAndMedia { }
+
+        @Steps {
+            @Step {
+                We start with a standard `UITableViewController`, using `UITableViewDiffableDataSource`.
+
+                For the ItemIdentifiers, we will use the `ProfileIdentifier` type.
+                @Code(name: "TableViewController.swift", file: "Tut_01.swift")
+            }
+
+            @Step {
+                ``ProfileViewConfiguration`` is central to this implementation. It comforms to `UIContentConfiguration` and can create any kind of ProfileView.
+                
+                In this case, we will create a ``ProfileViewConfiguration`` set to create a `.summary` Profile View, which is a good fit for a table view. We will also set it in `loading` state. Finally, we will store it in a Dictionary keyed by the profile's email identifier.
+
+                @Code(name: "TableViewController.swift", file: "Tut_02.swift")
+            }
+
+            @Step {
+                To refresh the table view, we need to add the identifier to the data source.
+
+                Back to the `dataSource` definition, we get a copy of our ProfileViewConfiguration instance, and we set it as the cell's content configuration.
+
+                @Code(name: "TableViewController.swift", file: "Tut_03.swift")
+            }
+
+            @Step {
+                To connect the dots, we use `viewDidLoad` to add an email, with this we can see the loading state of the profile card after building the project.
+                
+                @Code(name: "TableViewController.swift", file: "Tut_04.swift")
+            }
+
+            @Step {
+                 Running the code we have so far will display a loading profile view in a table view cell.
+
+                @Image(source: "tutorial_01_01.png", alt: "Profile summary view in loading state.")
+            }
+        }
+    }
+
+    @Section(title: "Load profile data into the table view") {
+        @ContentAndMedia { }
+        @Steps {
+            @Step {
+                We use the `ProfileService` to fetch the profile data from Gravatar service.
+                @Code(name: "TableViewController.swift", file: "Tut_05.swift")
+            }
+
+            @Step {
+                We call our new async function from a `Task` and handle the possible errors.
+                @Code(name: "TableViewController.swift", file: "Tut_06.swift", previousFile: "Tut_06_comparison.swift")
+            }
+
+            @Step {
+                Running the project again, we can see that the profile data is loaded in the table view cell, displayed by the Profile summary view.
+                @Image(source: "tutorial_01_02.png", alt: "Profile summary view.")
+            }
+        }
+    }
+}

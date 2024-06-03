@@ -1,6 +1,6 @@
 ## File options
 
---exclude .build
+--exclude .build,**/*.docc/**
 
 ## Formatting options
 
