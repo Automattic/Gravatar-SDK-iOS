@@ -4,7 +4,7 @@ import UIKit
 /// Enum defining methods for processing and transforming the image data into a UIImage instance.
 ///
 /// Each case represents a specific processing or transformation method that will be applied to the image data.
-public enum ImageProcessingMethod {
+public enum ImageProcessingMethod: Sendable {
     /// Apply a custom processor to the image data.
     /// - Parameter processor: An instance of a type conforming to `ImageProcessor`.
     case custom(processor: ImageProcessor)
