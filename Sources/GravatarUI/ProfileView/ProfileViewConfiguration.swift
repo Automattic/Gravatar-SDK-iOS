@@ -26,6 +26,7 @@ public struct ProfileViewConfiguration: UIContentConfiguration {
     var avatarID: AvatarIdentifier? {
         model?.avatarIdentifier ?? summaryModel?.avatarIdentifier
     }
+
     /// The palette to be used to style the view.
     public var palette: PaletteType
     /// Creates a padding space around the content of the profile view.
@@ -116,6 +117,7 @@ extension ProfileViewConfiguration {
     public static func standard(model: ProfileModel? = nil, palette: PaletteType = .system) -> ProfileViewConfiguration {
         self.init(model: model, palette: palette, profileStyle: .standard)
     }
+
     /// Creates a configuration set with the `summary` style.
     /// - Parameters:
     ///   - model: The model to be used to populate the profile view content.
@@ -124,6 +126,7 @@ extension ProfileViewConfiguration {
     public static func summary(model: ProfileSummaryModel? = nil, palette: PaletteType = .system) -> ProfileViewConfiguration {
         self.init(model: model, palette: palette, profileStyle: .summary)
     }
+
     /// Creates a configuration set with the `large` style.
     /// - Parameters:
     ///   - model: The model to be used to populate the profile view content.
@@ -132,6 +135,7 @@ extension ProfileViewConfiguration {
     public static func large(model: ProfileModel? = nil, palette: PaletteType = .system) -> ProfileViewConfiguration {
         self.init(model: model, palette: palette, profileStyle: .large)
     }
+
     /// Creates a configuration set with the `largeSummary` style.
     /// - Parameters:
     ///   - model: The model to be used to populate the profile view content.
