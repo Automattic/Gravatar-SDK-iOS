@@ -99,7 +99,7 @@ func updateAvatar(with image: UIImage) {
 
 ### Download Profile information
 
-You can get the public information of a Gravatar using an instance of `ProfileService`.
+You can get the public information of a Gravatar using an instance of ``ProfileService``.
 
 ```swift
 import Gravatar
@@ -114,7 +114,7 @@ func fetchProfile(with email: String) async {
     let service = ProfileService()
 
     do {
-        let profile = try await service.fetchProfile(for: email)
+        let profile = try await service.fetch(with: .email(email))
         updateUI(with: profile)
     } catch {
         print(error)
@@ -122,7 +122,17 @@ func fetchProfile(with email: String) async {
 }
 
 @MainActor
-func updateUI(with profile: UserProfile) {
+func updateUI(with profile: Profile) {
     /// Update UI elements...
 }
 ```
+
+#### Getting full Profile information
+
+Use the ``Configuration`` class to set an api key, which will be used to authorise the request of a full Gravatar profile.
+
+```swift
+await Configuration.shared.configure(with: apiKey)
+```
+
+See ``Profile`` to know which fields are public, and whichones need authorization.

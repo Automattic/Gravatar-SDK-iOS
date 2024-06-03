@@ -34,6 +34,12 @@ profileView.update(with: profile)
 `ProfileView` will look like this:
 ![Profile view example](profileView.view)
 
+## Tutorials
+
+@Links(visualStyle: list) {
+    - <doc:ContactsList>
+}
+
 ## Topics
 
 ### Profile views
