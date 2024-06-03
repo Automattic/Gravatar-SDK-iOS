@@ -127,7 +127,7 @@ extension GravatarWrapper where Component: UIImageView {
         }
     }
 
-    /// Downloads the Gravatar profile image and sets it to this UIImageView.
+    /// Downloads the Gravatar profile image and sets it to this UIImageView. Throws ``ImageFetchingComponentError``.
     ///
     /// - Parameters:
     ///   - avatarID: an `AvatarIdentifier`
@@ -137,7 +137,6 @@ extension GravatarWrapper where Component: UIImageView {
     /// real bounds and those bounds are used.
     ///   You can get a performance benefit by setting this value since it will avoid the `layoutIfNeeded()` call.
     ///   - options: A set of options to define image setting behaviour. See ``ImageSettingOption`` for more info.
-    ///   - completionHandler: Completion block that's called when image downloading and setting completes.
     /// - Returns: The ``ImageDownloadResult`` or throws ``ImageFetchingComponentError``.
     @discardableResult
     public func setImage(
@@ -159,12 +158,11 @@ extension GravatarWrapper where Component: UIImageView {
         return try await setImage(with: gravatarURL, placeholder: placeholder, options: options)
     }
 
-    /// Downloads the  image and sets it to this UIImageView.
+    /// Downloads the image and sets it to this UIImageView. Throws ``ImageFetchingComponentError``.
     /// - Parameters:
     ///   - source: URL for the image.
     ///   - placeholder: A placeholder to show while downloading the image.
     ///   - options: A set of options to define image setting behaviour. See ``ImageSettingOption`` for more info.
-    ///   - completionHandler: Completion block that's called when image downloading and setting completes.
     /// - Returns: The ``ImageDownloadResult`` or throws ``ImageFetchingComponentError``.
     public func setImage(
         with source: URL?,
