@@ -2,7 +2,7 @@ import Foundation
 import Gravatar
 import UIKit
 
-public typealias ImageSetCompletion = (Result<ImageDownloadResult, ImageFetchingComponentError>) -> Void
+public typealias ImageSetCompletion = @Sendable (Result<ImageDownloadResult, ImageFetchingComponentError>) -> Void
 
 // MARK: - Associated Object
 
@@ -13,10 +13,11 @@ private let placeholderKey: UnsafeMutableRawPointer = .allocate(byteCount: 1, al
 private let imageTaskKey: UnsafeMutableRawPointer = .allocate(byteCount: 1, alignment: MemoryLayout<UInt8>.alignment)
 private let dataTaskKey: UnsafeMutableRawPointer = .allocate(byteCount: 1, alignment: MemoryLayout<UInt8>.alignment)
 private let imageDownloaderKey: UnsafeMutableRawPointer = .allocate(byteCount: 1, alignment: MemoryLayout<UInt8>.alignment)
-private let sourceURLKey: UnsafeMutableRawPointer = .allocate(byteCount: 1, alignment: MemoryLayout<UInt8>.alignment)
 
 @MainActor
 extension GravatarWrapper where Component: UIImageView {
+    typealias DownloadTask = IdentifiedTask<String, Void>
+
     /// Describes which indicator type is going to be used. Default is `.none`, which means no activity indicator will be shown.
     public var activityIndicatorType: ActivityIndicatorType {
         get {
@@ -92,21 +93,12 @@ extension GravatarWrapper where Component: UIImageView {
         }
     }
 
-    public private(set) var downloadTask: Task<Void, Never>? {
+    private var downloadTask: DownloadTask? {
         get {
             getAssociatedObject(component, dataTaskKey)
         }
         set {
             setDownloadTask(newValue)
-        }
-    }
-
-    public private(set) var sourceURL: URL? {
-        get {
-            getAssociatedObject(component, sourceURLKey)
-        }
-        set {
-            setRetainedAssociatedObject(component, sourceURLKey, newValue)
         }
     }
 
@@ -132,21 +124,17 @@ extension GravatarWrapper where Component: UIImageView {
         }
     }
 
-    private func setDownloadTask(_ newValue: Task<Void, Never>?) {
+    private func setDownloadTask(_ newValue: DownloadTask?) {
         setRetainedAssociatedObject(component, dataTaskKey, newValue)
     }
 
-    public func cancelImageDownload() {
-        if let downloadTask, !downloadTask.isCancelled {
-            downloadTask.cancel()
-            setDownloadTask(nil)
-        }
-        if let sourceURL {
-            Task {
-                await imageDownloader?.cancelTask(for: sourceURL)
-                var mutatingSelf = self
-                mutatingSelf.sourceURL = nil
+    public func cancelImageDownload() async {
+        if let downloadTask, !downloadTask.task.isCancelled {
+            if let url = URL(string: downloadTask.id) {
+                await imageDownloader?.cancelTask(for: url)
             }
+            downloadTask.task.cancel()
+            setDownloadTask(nil)
         }
     }
 
@@ -230,7 +218,6 @@ extension GravatarWrapper where Component: UIImageView {
         guard let source else {
             mutatingSelf.placeholder = placeholder
             mutatingSelf.taskIdentifier = nil
-            mutatingSelf.sourceURL = nil
             throw ImageFetchingComponentError.requestError(reason: .emptyURL)
         }
         let options = ImageSettingOptions(options: options)
@@ -291,7 +278,7 @@ extension GravatarWrapper where Component: UIImageView {
         completionHandler: ImageSetCompletion? = nil
     ) -> Task<Void, Never>? {
         var mutatingSelf = self
-        let task = Task {
+        let identifiedTask = IdentifiedTask(id: source?.absoluteString ?? UUID().uuidString) {
             do {
                 let result = try await setImage(with: source, placeholder: placeholder, options: options)
                 completionHandler?(.success(result))
@@ -301,9 +288,8 @@ extension GravatarWrapper where Component: UIImageView {
                 completionHandler?(.failure(.responseError(reason: .unexpected(error))))
             }
         }
-        mutatingSelf.downloadTask = task
-        mutatingSelf.sourceURL = source
-        return task
+        mutatingSelf.downloadTask = identifiedTask
+        return identifiedTask.task
     }
 
     private func pointImageSize(from size: CGSize?) -> ImageSize? {
