@@ -137,7 +137,7 @@ extension GravatarWrapper where Component: UIImageView {
     /// real bounds and those bounds are used.
     ///   You can get a performance benefit by setting this value since it will avoid the `layoutIfNeeded()` call.
     ///   - options: A set of options to define image setting behaviour. See ``ImageSettingOption`` for more info.
-    /// - Returns: The ``ImageDownloadResult`` or throws ``ImageFetchingComponentError``.
+    /// - Returns: The ``ImageDownloadResult``.
     @discardableResult
     public func setImage(
         avatarID: AvatarIdentifier,
@@ -163,7 +163,7 @@ extension GravatarWrapper where Component: UIImageView {
     ///   - source: URL for the image.
     ///   - placeholder: A placeholder to show while downloading the image.
     ///   - options: A set of options to define image setting behaviour. See ``ImageSettingOption`` for more info.
-    /// - Returns: The ``ImageDownloadResult`` or throws ``ImageFetchingComponentError``.
+    /// - Returns: The ``ImageDownloadResult``.
     public func setImage(
         with source: URL?,
         placeholder: UIImage? = nil,
