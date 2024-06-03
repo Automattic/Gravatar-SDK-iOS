@@ -1,7 +1,6 @@
 import Gravatar
 import UIKit
 
-@MainActor
 /// A configuration that specifies the appearance and behavior of a ProfileView and its contents.
 ///
 /// You can use a configuration instance to configure a ProfileView, or to create one using `makeContentView()` method.
@@ -15,6 +14,7 @@ import UIKit
 /// ```
 /// After creating a configuration, you can modify any of the available fields to properly configure the profile view.
 ///
+@MainActor
 public struct ProfileViewConfiguration: UIContentConfiguration {
     /// The model used to populate the view's content.
     public var model: ProfileModel?
@@ -91,17 +91,18 @@ extension ProfileViewConfiguration {
 }
 
 extension ProfileViewConfiguration {
+    /// A configuration that specifies the behavior and loading options for the profile avatar.
     public struct AvatarConfiguration {
         /// The activity indicator used on the image view while the avatar is loading.
         public var activityIndicatorType: ActivityIndicatorType = .activity
         /// An image to be displayed while an avatar image has not been set.
         public var placeholder: UIImage? = nil
-        /// The maximum rating of the avatar for it to be displayed. See ``Gravatar.Rating`` for more info.
+        /// The maximum rating of the avatar for it to be displayed. See `Gravatar.Rating` for more info.
         public var rating: Rating? = nil
         /// The avatar style to be displayed when no avatar has been found
-        /// See ``Gravatar.DefaultAvatarOption`` for more info.
+        /// See `Gravatar.DefaultAvatarOption` for more info.
         public var defaultAvatarOption: DefaultAvatarOption? = nil
-        /// Options for fetchingg the avatar image. See ``Gravatar.ImageSettingOption`` for more info.
+        /// Options for fetchingg the avatar image. See `Gravatar.ImageSettingOption` for more info.
         public var settingOptions: [ImageSettingOption]? = nil
     }
 }
@@ -143,7 +144,7 @@ extension ProfileViewConfiguration {
     /// Creates a `ProfileViewConfiguration` that is designed for emails without a Gravatar account. This configuration invites the user to claim their
     /// Gravatar profile.
     /// - Parameters:
-    ///   - style: Style of the profile view. See: ``ProfileViewConfiguration.Style``
+    ///   - style: Style of the profile view. See: ``Style``
     ///   - userName: Optional. If not provided, a string that says "Your Name" will be shown.
     ///   - palette: The ``PaletteType`` to use.
     /// - Returns: A new `ProfileViewConfiguration`.
