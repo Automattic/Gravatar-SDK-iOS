@@ -1,4 +1,5 @@
 @testable import Gravatar
+@testable import TestHelpers
 import XCTest
 
 final class AvatarServiceTests: XCTestCase {

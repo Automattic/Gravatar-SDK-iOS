@@ -1,6 +1,5 @@
 import Foundation
 import Gravatar
-import XCTest
 
 enum TestDataTaskFailReason: Equatable {
     case dataEmpty
@@ -11,12 +10,10 @@ enum TestDataTaskFailReason: Equatable {
 
 final class TestURLSession: URLSessionProtocol {
     func upload(for request: URLRequest, from bodyData: Data) async throws -> (Data, URLResponse) {
-        XCTFail("Not implemented")
         fatalError()
     }
 
     func data(for request: URLRequest) async throws -> (Data, URLResponse) {
-        XCTFail("Not implemented")
         fatalError()
     }
 
@@ -29,7 +26,6 @@ final class TestURLSession: URLSessionProtocol {
 
     func dataTask(with request: URLRequest, completionHandler: @escaping @Sendable (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTask {
         guard let url = request.url else {
-            XCTFail()
             return URLSession.shared.dataTask(with: request)
         }
         guard let failReason else {

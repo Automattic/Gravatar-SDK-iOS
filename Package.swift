@@ -29,27 +29,35 @@ let package = Package(
         .target(
             name: "Gravatar",
             swiftSettings: [
-              .enableExperimentalFeature("StrictConcurrency")
+                .enableExperimentalFeature("StrictConcurrency")
             ]
         ),
         .testTarget(
             name: "GravatarTests",
-            dependencies: ["Gravatar"],
+            dependencies: ["Gravatar", "TestHelpers"],
             resources: [.process("Resources")],
             swiftSettings: [
-              .enableExperimentalFeature("StrictConcurrency")
+                .enableExperimentalFeature("StrictConcurrency")
             ]
         ),
         .target(
             name: "GravatarUI",
-            dependencies: ["Gravatar"]
+            dependencies: ["Gravatar", "TestHelpers"]
         ),
         .testTarget(
             name: "GravatarUITests",
-            dependencies: ["GravatarUI",
+            dependencies: ["GravatarUI", "TestHelpers",
                            .product(name: "SnapshotTesting", package: "swift-snapshot-testing")],
             resources: [.process("Resources"),
                         .process("__Snapshots__")]
+        ),
+        .target(
+            name: "TestHelpers",
+            dependencies: ["Gravatar"],
+            resources: [.process("Resources")],
+            swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency")
+            ]
         )
     ]
 )
