@@ -14,7 +14,7 @@ Pod::Spec.new do |s|
   }
   s.documentation_url = 'https://automattic.github.io/Gravatar-SDK-iOS/'
     
-  s.swift_version     = '5.10'
+  s.swift_version     = '5.9'
 
   ios_deployment_target = '15.0'
 
