@@ -15,10 +15,11 @@ public struct PersonalInfoBuilder {
     @discardableResult
     public func content(
         _ model: PersonalInfoModel,
-        lines: [PersonalInfoLine] = PersonalInfoBuilder.defaultPersonalInfo,
+        lines: [PersonalInfoLine]? = nil,
         separator: String? = nil
     ) -> PersonalInfoBuilder {
         let separator = separator ?? Self.defaultSeparator
+        let lines = lines ?? PersonalInfoBuilder.defaultPersonalInfo
         let text = lines.map { line in
             line.buildingBlocks
                 .compactMap { $0.text(from: model) }
