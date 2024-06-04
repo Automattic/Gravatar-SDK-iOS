@@ -1,6 +1,6 @@
 import Foundation
 
-public enum ImageTransition {
+public enum ImageTransition: Sendable {
     /// No animation transition.
     case none
     /// Fade in the loaded image in a given duration.

@@ -3,7 +3,7 @@ import Gravatar
 import UIKit
 
 /// Options to use when fetching a Gravatar profile image and setting it to a `GravatarCompatible` UI component.
-public enum ImageSettingOption {
+public enum ImageSettingOption: Sendable {
     /// Transition style to use when setting the new image downloaded. Default: .none
     case transition(ImageTransition)
 
@@ -28,7 +28,7 @@ public enum ImageSettingOption {
 }
 
 /// Parsed options derived from [ImageSettingOption]
-public struct ImageSettingOptions {
+public struct ImageSettingOptions: Sendable {
     var transition: ImageTransition = .none
     var removeCurrentImageWhileLoading = false
     var forceRefresh = false

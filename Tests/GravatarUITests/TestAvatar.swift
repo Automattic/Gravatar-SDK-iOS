@@ -105,7 +105,7 @@ class TestCustomAvatarView: UIView, AvatarProviding {
         self
     }
 
-    func setImage(with source: URL?, placeholder: UIImage?, options: [GravatarUI.ImageSettingOption]?, completion: ((Bool) -> Void)?) {}
+    func setImage(with source: URL?, placeholder: UIImage?, options: [GravatarUI.ImageSettingOption]?) async throws {}
 
     func setImage(_: UIImage?) {}
 

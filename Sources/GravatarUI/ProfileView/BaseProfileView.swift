@@ -253,7 +253,9 @@ open class BaseProfileView: UIView, UIContentView {
         )
 
         let gravatarURL = AvatarURL(with: avatarIdentifier, options: downloadOptions.avatarQueryOptions)?.url
-        avatarProvider.setImage(with: gravatarURL, placeholder: placeholder, options: options, completion: nil)
+        Task {
+            try await avatarProvider.setImage(with: gravatarURL, placeholder: placeholder, options: options)
+        }
     }
 
     func refresh(with paletteType: PaletteType) {
@@ -420,6 +422,7 @@ public protocol ProfileViewDelegate: NSObjectProtocol {
     func profileView(_ view: BaseProfileView, didTapOnAvatarWithID avatarID: AvatarIdentifier?)
 }
 
+@MainActor
 class DefaultAvatarProvider: AvatarProviding {
     private let avatarLength: CGFloat
     private let avatarImageView: UIImageView
@@ -474,26 +477,18 @@ class DefaultAvatarProvider: AvatarProviding {
         avatarImageView.clipsToBounds = true
     }
 
-    func setImage(with source: URL?, placeholder: UIImage?, options: [ImageSettingOption]?, completion: ((Bool) -> Void)?) {
-        avatarImageView.gravatar.setImage(
-            with: source,
-            placeholder: placeholder,
-            options: options
-        ) { [weak self] result in
-            guard let self else { return }
-            switch result {
-            case .success:
-                if !self.skipStyling {
-                    self.avatarImageView.layer.borderColor = self.paletteType.palette.avatar.border.cgColor
-                    self.avatarBorderWidth = avatarBorderWidth
-                }
-                completion?(true)
-            default:
-                if !self.skipStyling {
-                    self.avatarImageView.layer.borderColor = UIColor.clear.cgColor
-                }
-                completion?(false)
+    func setImage(with source: URL?, placeholder: UIImage?, options: [ImageSettingOption]?) async throws {
+        do {
+            let _ = try await avatarImageView.gravatar.setImage(with: source, placeholder: placeholder, options: options)
+            if !skipStyling {
+                avatarImageView.layer.borderColor = paletteType.palette.avatar.border.cgColor
+                avatarImageView.layer.borderWidth = avatarBorderWidth
             }
+        } catch {
+            if !skipStyling {
+                avatarImageView.layer.borderColor = UIColor.clear.cgColor
+            }
+            throw error
         }
     }
 
