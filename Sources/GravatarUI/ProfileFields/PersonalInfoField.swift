@@ -19,11 +19,6 @@ public struct PersonalInfoBuilder {
         separator: String? = nil
     ) -> PersonalInfoBuilder {
         let separator = separator ?? Self.defaultSeparator
-        // Note: PersonalInfoBuilder.defaultPersonalInfo was meant to be a default
-        // argument declared in the method signature. But then `make validate-pod`
-        // generates this warning:
-        // "main actor-isolated static property ‘defaultPersonalInfo’ can not be referenced
-        // from a non-isolated context; this is an error in Swift 6" and the validation fails.
         let lines = lines ?? PersonalInfoBuilder.defaultPersonalInfo
         let text = lines.map { line in
             line.buildingBlocks
