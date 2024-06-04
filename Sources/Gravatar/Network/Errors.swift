@@ -40,7 +40,7 @@ public enum RequestErrorReason: Sendable {
 }
 
 /// Errors thrown by `ImageDownloadService` when fetching an image.
-public enum ImageFetchingError: Error {
+public enum ImageFetchingError: Error, Sendable {
     case requestError(reason: RequestErrorReason)
     case responseError(reason: ResponseErrorReason)
     /// The `ImageProcessor` has failed and the image could not be created from the downloaded data.

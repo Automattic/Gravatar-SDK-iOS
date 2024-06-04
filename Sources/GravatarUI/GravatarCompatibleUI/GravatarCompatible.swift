@@ -1,6 +1,7 @@
 import Foundation
 import UIKit
 
+@MainActor
 /// Wrapper for `GravatarCompatible`  types.
 public struct GravatarWrapper<Component> {
     public let component: Component
@@ -11,6 +12,7 @@ public struct GravatarWrapper<Component> {
 
 public protocol GravatarCompatible: AnyObject {}
 
+@MainActor
 /// Provides namespacing for the Gravatar functionality.
 extension GravatarCompatible {
     /// Returns a wrapper that provides Gravatar's convenience methods and properties.

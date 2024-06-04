@@ -2,8 +2,6 @@ import Foundation
 import Gravatar
 import UIKit
 
-public typealias ImageSetCompletion = (Result<ImageDownloadResult, ImageFetchingComponentError>) -> Void
-
 // MARK: - Associated Object
 
 private let taskIdentifierKey: UnsafeMutableRawPointer = .allocate(byteCount: 1, alignment: MemoryLayout<UInt8>.alignment)
@@ -15,6 +13,7 @@ private let dataTaskKey: UnsafeMutableRawPointer = .allocate(byteCount: 1, align
 private let imageDownloaderKey: UnsafeMutableRawPointer = .allocate(byteCount: 1, alignment: MemoryLayout<UInt8>.alignment)
 private let sourceURLKey: UnsafeMutableRawPointer = .allocate(byteCount: 1, alignment: MemoryLayout<UInt8>.alignment)
 
+@MainActor
 extension GravatarWrapper where Component: UIImageView {
     /// Describes which indicator type is going to be used. Default is `.none`, which means no activity indicator will be shown.
     public var activityIndicatorType: ActivityIndicatorType {
@@ -91,15 +90,6 @@ extension GravatarWrapper where Component: UIImageView {
         }
     }
 
-    public private(set) var downloadTask: CancellableDataTask? {
-        get {
-            getAssociatedObject(component, dataTaskKey)
-        }
-        set {
-            setDownloadTask(newValue)
-        }
-    }
-
     public private(set) var sourceURL: URL? {
         get {
             getAssociatedObject(component, sourceURLKey)
@@ -131,21 +121,13 @@ extension GravatarWrapper where Component: UIImageView {
         }
     }
 
-    private func setDownloadTask(_ newValue: CancellableDataTask?) {
-        setRetainedAssociatedObject(component, dataTaskKey, newValue)
-    }
-
-    public func cancelImageDownload() {
-        downloadTask?.cancel()
-        setDownloadTask(nil)
+    public func cancelImageDownload() async {
         if let sourceURL {
-            Task {
-                await imageDownloader?.cancelTask(for: sourceURL)
-            }
+            await imageDownloader?.cancelTask(for: sourceURL)
         }
     }
 
-    /// Downloads the Gravatar profile image and sets it to this UIImageView.
+    /// Downloads the Gravatar profile image and sets it to this UIImageView. Throws ``ImageFetchingComponentError``.
     ///
     /// - Parameters:
     ///   - avatarID: an `AvatarIdentifier`
@@ -155,8 +137,7 @@ extension GravatarWrapper where Component: UIImageView {
     /// real bounds and those bounds are used.
     ///   You can get a performance benefit by setting this value since it will avoid the `layoutIfNeeded()` call.
     ///   - options: A set of options to define image setting behaviour. See ``ImageSettingOption`` for more info.
-    ///   - completionHandler: Completion block that's called when image downloading and setting completes.
-    /// - Returns: The task performing the download operation which can be cancelled.
+    /// - Returns: The ``ImageDownloadResult``.
     @discardableResult
     public func setImage(
         avatarID: AvatarIdentifier,
@@ -164,9 +145,8 @@ extension GravatarWrapper where Component: UIImageView {
         rating: Rating? = nil,
         preferredSize: CGSize? = nil,
         defaultAvatarOption: DefaultAvatarOption? = nil,
-        options: [ImageSettingOption]? = nil,
-        completionHandler: ImageSetCompletion? = nil
-    ) -> CancellableDataTask? {
+        options: [ImageSettingOption]? = nil
+    ) async throws -> ImageDownloadResult {
         let pointsSize = pointImageSize(from: preferredSize)
         let downloadOptions = ImageSettingOptions(options: options).deriveDownloadOptions(
             garavatarRating: rating,
@@ -175,39 +155,31 @@ extension GravatarWrapper where Component: UIImageView {
         )
 
         let gravatarURL = AvatarURL(with: avatarID, options: downloadOptions.avatarQueryOptions)?.url
-        return setImage(with: gravatarURL, placeholder: placeholder, options: options, completionHandler: completionHandler)
+        return try await setImage(with: gravatarURL, placeholder: placeholder, options: options)
     }
 
-    /// Downloads the  image and sets it to this UIImageView.
+    /// Downloads the image and sets it to this UIImageView. Throws ``ImageFetchingComponentError``.
     /// - Parameters:
     ///   - source: URL for the image.
     ///   - placeholder: A placeholder to show while downloading the image.
     ///   - options: A set of options to define image setting behaviour. See ``ImageSettingOption`` for more info.
-    ///   - completionHandler: Completion block that's called when image downloading and setting completes.
-    /// - Returns: The task performing the download operation which can be cancelled.
-    @discardableResult
+    /// - Returns: The ``ImageDownloadResult``.
     public func setImage(
         with source: URL?,
         placeholder: UIImage? = nil,
-        options: [ImageSettingOption]? = nil,
-        completionHandler: ImageSetCompletion? = nil
-    ) -> CancellableDataTask? {
+        options: [ImageSettingOption]? = nil
+    ) async throws -> ImageDownloadResult {
         var mutatingSelf = self
         guard let source else {
             mutatingSelf.placeholder = placeholder
-            mutatingSelf.taskIdentifier = nil
-            mutatingSelf.sourceURL = nil
-            completionHandler?(.failure(ImageFetchingComponentError.requestError(reason: .emptyURL)))
-            return nil
+            cleanup(success: false)
+            throw ImageFetchingComponentError.requestError(reason: .emptyURL)
         }
-
+        mutatingSelf.sourceURL = source
         let options = ImageSettingOptions(options: options)
 
-        let isEmptyImage = component.image == nil && self.placeholder == nil
-        if options.removeCurrentImageWhileLoading || isEmptyImage {
-            // Always set placeholder while there is no image/placeholder yet.
-            mutatingSelf.placeholder = placeholder
-        }
+        showPlaceholderIfNeeded(placeholder, removeCurrentImageWhileLoading: options.removeCurrentImageWhileLoading)
+
         let maybeIndicator = activityIndicator
         maybeIndicator?.startAnimatingView()
 
@@ -217,39 +189,53 @@ extension GravatarWrapper where Component: UIImageView {
         let networkManager = options.imageDownloader ?? ImageDownloadService(cache: options.imageCache)
         mutatingSelf.imageDownloader = networkManager // Retain the network manager otherwise the completion tasks won't be done properly
 
-        let task = networkManager
-            .fetchImage(with: source, forceRefresh: options.forceRefresh, processingMethod: options.processingMethod) { [weak component] result in
-                DispatchQueue.main.async {
-                    maybeIndicator?.stopAnimatingView()
-                    guard issuedIdentifier == self.taskIdentifier else {
-                        completionHandler?(.failure(.outdatedTask(result: result, source: source)))
-                        return
-                    }
+        let result: ImageDownloadResult
+        do {
+            result = try await networkManager.fetchImage(with: source, forceRefresh: options.forceRefresh, processingMethod: options.processingMethod)
+        } catch {
+            maybeIndicator?.stopAnimatingView()
+            try checkIfOutdated(issuedIdentifier: issuedIdentifier, result: Result.failure(error.map()), source: source)
+            cleanup(success: false)
+            throw error.map().map()
+        }
+        maybeIndicator?.stopAnimatingView()
+        try checkIfOutdated(issuedIdentifier: issuedIdentifier, result: Result.success(result), source: source)
+        cleanup(success: true)
+        await setImage(result.image, transition: options.transition)
+        return result
+    }
 
-                    mutatingSelf.downloadTask = nil
-                    mutatingSelf.taskIdentifier = nil
+    private func setImage(_ image: UIImage, transition: ImageTransition) async {
+        switch transition {
+        case .none:
+            component.image = image
+        case .fade(let duration):
+            await self.transition(for: component, into: image, duration: duration)
+        }
+    }
 
-                    switch result {
-                    case .success(let value):
-                        mutatingSelf.placeholder = nil
-                        switch options.transition {
-                        case .none:
-                            component?.image = value.image
-                            completionHandler?(result.map())
-                            return
-                        case .fade(let duration):
-                            self.transition(for: component, into: value.image, duration: duration) {
-                                completionHandler?(result.map())
-                            }
-                        }
-                    case .failure:
-                        completionHandler?(result.map())
-                    }
-                }
-            }
-        mutatingSelf.sourceURL = source
-        mutatingSelf.downloadTask = task
-        return task
+    private func checkIfOutdated(issuedIdentifier: UInt, result: Result<ImageDownloadResult, ImageFetchingError>, source: URL) throws {
+        guard issuedIdentifier == self.taskIdentifier else {
+            throw ImageFetchingComponentError.outdatedTask(result: result, source: source)
+        }
+    }
+
+    private func showPlaceholderIfNeeded(_ placeholder: UIImage?, removeCurrentImageWhileLoading: Bool) {
+        var mutatingSelf = self
+        let isEmptyImage = component.image == nil && self.placeholder == nil
+        if removeCurrentImageWhileLoading || isEmptyImage {
+            // Always set placeholder while there is no image/placeholder yet.
+            mutatingSelf.placeholder = placeholder
+        }
+    }
+
+    private func cleanup(success: Bool) {
+        var mutatingSelf = self
+        mutatingSelf.taskIdentifier = nil
+        mutatingSelf.sourceURL = nil
+        if success {
+            mutatingSelf.placeholder = nil
+        }
     }
 
     private func pointImageSize(from size: CGSize?) -> ImageSize? {
@@ -273,17 +259,19 @@ extension GravatarWrapper where Component: UIImageView {
         return nil
     }
 
-    private func transition(for component: Component?, into image: UIImage, duration: Double, completion: @escaping () -> Void) {
+    private func transition(for component: Component?, into image: UIImage, duration: Double) async {
         guard let component else { return }
-        UIView.transition(
-            with: component,
-            duration: duration,
-            options: [.transitionCrossDissolve],
-            animations: { component.image = image },
-            completion: { _ in
-                completion()
-            }
-        )
+        await withUnsafeContinuation { continuation in
+            UIView.transition(
+                with: component,
+                duration: duration,
+                options: [.transitionCrossDissolve],
+                animations: { component.image = image },
+                completion: { _ in
+                    continuation.resume()
+                }
+            )
+        }
     }
 }
 

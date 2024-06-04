@@ -75,7 +75,7 @@ public protocol AvatarProviding {
 
     /// `BaseProfileView` calls this method to load the avatar from a URL.
     /// You may not need to implement this method if the image is downloaded else where.
-    func setImage(with source: URL?, placeholder: UIImage?, options: [ImageSettingOption]?, completion: ((Bool) -> Void)?)
+    func setImage(with source: URL?, placeholder: UIImage?, options: [ImageSettingOption]?) async throws
 
     /// Sets the given image as the avatar.
     /// - Parameter image: `UIImage` to set as the avatar. If `nil` then the avatar image should be cleared.
