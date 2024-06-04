@@ -1,17 +1,12 @@
 import UIKit
 
-public enum PersonalInfoConstants {
-    public static let defaultPersonalInfo: [PersonalInfoLine] =
-        [
-            .init([.jobTitle]),
-            .init([.namePronunciation, .pronouns, .location]),
-        ]
-}
-
 @MainActor
 public struct PersonalInfoBuilder {
     static let defaultSeparator: String = "・"
-
+    public static let defaultPersonalInfo: [PersonalInfoLine] = [
+        .init([.jobTitle]),
+        .init([.namePronunciation, .pronouns, .location]),
+    ]
     let label: UILabel
     init(label: UILabel) {
         self.label = label
@@ -20,7 +15,7 @@ public struct PersonalInfoBuilder {
     @discardableResult
     public func content(
         _ model: PersonalInfoModel,
-        lines: [PersonalInfoLine] = PersonalInfoConstants.defaultPersonalInfo,
+        lines: [PersonalInfoLine] = PersonalInfoBuilder.defaultPersonalInfo,
         separator: String? = nil
     ) -> PersonalInfoBuilder {
         let separator = separator ?? Self.defaultSeparator
