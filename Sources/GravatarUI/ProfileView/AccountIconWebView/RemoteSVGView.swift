@@ -114,7 +114,13 @@ class RemoteSVGButton: UIControl, WKNavigationDelegate {
         }
     }
 
-    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+    nonisolated func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        Task {
+            await showWebView()
+        }
+    }
+
+    func showWebView() {
         webView.isHidden = false
     }
 
