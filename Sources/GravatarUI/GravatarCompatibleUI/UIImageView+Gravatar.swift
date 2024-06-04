@@ -172,18 +172,14 @@ extension GravatarWrapper where Component: UIImageView {
         var mutatingSelf = self
         guard let source else {
             mutatingSelf.placeholder = placeholder
-            mutatingSelf.taskIdentifier = nil
-            mutatingSelf.sourceURL = nil
+            cleanup(success: false)
             throw ImageFetchingComponentError.requestError(reason: .emptyURL)
         }
         mutatingSelf.sourceURL = source
         let options = ImageSettingOptions(options: options)
 
-        let isEmptyImage = component.image == nil && self.placeholder == nil
-        if options.removeCurrentImageWhileLoading || isEmptyImage {
-            // Always set placeholder while there is no image/placeholder yet.
-            mutatingSelf.placeholder = placeholder
-        }
+        showPlaceholderIfNeeded(placeholder, removeCurrentImageWhileLoading: options.removeCurrentImageWhileLoading)
+
         let maybeIndicator = activityIndicator
         maybeIndicator?.startAnimatingView()
 
@@ -198,28 +194,48 @@ extension GravatarWrapper where Component: UIImageView {
             result = try await networkManager.fetchImage(with: source, forceRefresh: options.forceRefresh, processingMethod: options.processingMethod)
         } catch {
             maybeIndicator?.stopAnimatingView()
-            guard issuedIdentifier == self.taskIdentifier else {
-                throw ImageFetchingComponentError.outdatedTask(result: Result.failure(error.map()), source: source)
-            }
-            mutatingSelf.taskIdentifier = nil
-            mutatingSelf.sourceURL = nil
+            try checkIfOutdated(issuedIdentifier: issuedIdentifier, result: Result.failure(error.map()), source: source)
+            cleanup(success: false)
             throw error.map().map()
         }
         maybeIndicator?.stopAnimatingView()
-        guard issuedIdentifier == self.taskIdentifier else {
-            throw ImageFetchingComponentError.outdatedTask(result: Result.success(result), source: source)
+        try checkIfOutdated(issuedIdentifier: issuedIdentifier, result: Result.success(result), source: source)
+        cleanup(success: true)
+        await setImage(result.image, transition: options.transition)
+        return result
+    }
+
+    private func setImage(_ image: UIImage, transition: ImageTransition) async {
+        switch transition {
+        case .none:
+            component.image = image
+        case .fade(let duration):
+            await self.transition(for: component, into: image, duration: duration)
         }
+    }
+
+    private func checkIfOutdated(issuedIdentifier: UInt, result: Result<ImageDownloadResult, ImageFetchingError>, source: URL) throws {
+        guard issuedIdentifier == self.taskIdentifier else {
+            throw ImageFetchingComponentError.outdatedTask(result: result, source: source)
+        }
+    }
+
+    private func showPlaceholderIfNeeded(_ placeholder: UIImage?, removeCurrentImageWhileLoading: Bool) {
+        var mutatingSelf = self
+        let isEmptyImage = component.image == nil && self.placeholder == nil
+        if removeCurrentImageWhileLoading || isEmptyImage {
+            // Always set placeholder while there is no image/placeholder yet.
+            mutatingSelf.placeholder = placeholder
+        }
+    }
+
+    private func cleanup(success: Bool) {
+        var mutatingSelf = self
         mutatingSelf.taskIdentifier = nil
         mutatingSelf.sourceURL = nil
-        mutatingSelf.placeholder = nil
-
-        switch options.transition {
-        case .none:
-            component.image = result.image
-        case .fade(let duration):
-            await self.transition(for: component, into: result.image, duration: duration)
+        if success {
+            mutatingSelf.placeholder = nil
         }
-        return result
     }
 
     private func pointImageSize(from size: CGSize?) -> ImageSize? {
