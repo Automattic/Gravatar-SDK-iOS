@@ -78,7 +78,7 @@ public struct ProfileViewConfiguration: UIContentConfiguration {
 }
 
 extension ProfileViewConfiguration {
-    /// All the different styel designs for the profile view.
+    /// All the different style designs for the profile view.
     public enum Style: String, CaseIterable {
         /// The configuration will create a ``ProfileView`` instance.
         case standard
