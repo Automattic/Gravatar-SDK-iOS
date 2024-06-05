@@ -134,7 +134,7 @@ open class BaseProfileView: UIView, UIContentView {
     public var avatarView: UIView {
         avatarProvider.avatarView
     }
-    
+
     /// The view which displays the profile's avatar image.
     public var avatarImageView: UIImageView? {
         avatarType.imageView
@@ -146,7 +146,7 @@ open class BaseProfileView: UIView, UIContentView {
         label.adjustsFontForContentSizeCategory = true
         return label
     }()
-    
+
     /// The lable which displays the profile description text.
     public var aboutMeLabel: UILabel {
         aboutMeDashedLabel
@@ -260,13 +260,14 @@ open class BaseProfileView: UIView, UIContentView {
     public required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     /// Loads an avatar to be displayed in the avatar view.
     /// - Parameters:
     ///   - avatarIdentifier: The identifier of the avatar to be loaded.
     ///   - placeholder: An image which will be temporarely displayed while the avatar loads.
     ///   - rating: The maximum avatar rating for the avatar to be displayed. See ``Rating``.
-    ///   - defaultAvatarOption: The avatar which the server will return in case that the avatar with the given id is not found, or if the avatar rating is higher than the specified.
+    ///   - defaultAvatarOption: The avatar which the server will return in case that the avatar with the given id is not found, or if the avatar rating is
+    /// higher than the specified.
     ///   - options: Options to use when fetching a Gravatar profile image and setting it to the avatar image view.
     public func loadAvatar(
         with avatarIdentifier: AvatarIdentifier?,
@@ -369,7 +370,7 @@ open class BaseProfileView: UIView, UIContentView {
         button.loadIcon(from: url)
         return button
     }
-    
+
     /// Updates the profile view content and palette color with the given configuration.
     /// - Parameter config: A profile view configuration with the desired content and styles to be displayed.
     open func update(with config: ProfileViewConfiguration) {
@@ -456,7 +457,7 @@ open class BaseProfileView: UIView, UIContentView {
 public protocol ProfileViewDelegate: NSObjectProtocol {
     /// Tells the delegate the profile action button of the view has been tapped.
     ///
-    /// The `profileURL` contains a url which corresponds to the button intended action declared by the button style. 
+    /// The `profileURL` contains a url which corresponds to the button intended action declared by the button style.
     /// > The expected action to this delegate method call is to present this URL in an internal Safari view.
     /// - Parameters:
     ///   - view: The profile view informing about the tap.
