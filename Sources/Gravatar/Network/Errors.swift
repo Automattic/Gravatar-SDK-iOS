@@ -91,7 +91,7 @@ extension APIError: CustomDebugStringConvertible {
         case .requestError(let reason):
             "Something went wrong when creating the request. Reason: \(reason)."
         case .decodingError(let error):
-            "Something went while decoding the response. Underlying error: \(error)"
+            "Something went wrong while decoding the response. Underlying error: \(error)"
         }
     }
 }
