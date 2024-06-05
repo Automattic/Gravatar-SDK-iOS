@@ -187,7 +187,7 @@ open class BaseProfileView: UIView, UIContentView {
         }
     }
 
-    public var avatarLength: CGFloat {
+    private var avatarLength: CGFloat {
         didSet {
             if let avatarProvider = avatarProvider as? DefaultAvatarProvider {
                 avatarProvider.avatarLength = avatarLength
