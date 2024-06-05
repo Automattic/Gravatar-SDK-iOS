@@ -1,7 +1,17 @@
 import GravatarUI
+import SnapshotTesting
 import XCTest
 
 final class TestProfileConfiguration: XCTestCase {
+    enum Constants {
+        static let width: CGFloat = 320
+    }
+
+    override func setUp() async throws {
+        try await super.setUp()
+        // isRecording = true
+    }
+
     @MainActor
     func testUpdatePaddingConfigurationOnStandardViewStyle() throws {
         let expectedPadding = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
@@ -87,5 +97,23 @@ final class TestProfileConfiguration: XCTestCase {
         profileView.configuration = config
 
         XCTAssertEqual(profileView.profileButton.titleLabel?.text, "Edit profile")
+    }
+
+    @MainActor
+    func testCustomAvatarStyle() throws {
+        let model = TestProfileCardModel.summaryCard()
+        var config = ProfileViewConfiguration.largeSummary(model: model)
+        let view = config.makeContentView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        config.palette = .light
+        config.avatarConfiguration.borderWidth = 2
+        config.avatarConfiguration.borderColor = .green
+        config.avatarConfiguration.cornerRadiusCalculator = { avatarLength in
+            avatarLength / 10
+        }
+        config.avatarConfiguration.avatarLength = 80
+        view.configuration = config
+        let superView = view.wrapInSuperView(with: Constants.width)
+        assertSnapshot(of: superView, as: .image)
     }
 }

@@ -13,10 +13,17 @@ class DemoProfilePresentationStylesViewController: DemoBaseProfileViewController
         return button
     }()
     
+    private lazy var customizeAvatarSwitchWithLabel: SwitchWithLabel = {
+        let view = SwitchWithLabel(labelText: "Customize Avatar")
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "Profile View Controller"
-        [emailField, profileStylesButton, paletteButton, showBottomSheetButton].forEach(rootStackView.addArrangedSubview)
+        [emailField, profileStylesButton, paletteButton, customizeAvatarSwitchWithLabel, showBottomSheetButton].forEach(rootStackView.addArrangedSubview)
+        rootStackView.alignment = .center
     }
     
     @objc func showBottomSheetButtonHandler() {
@@ -68,16 +75,25 @@ class DemoProfilePresentationStylesViewController: DemoBaseProfileViewController
     }
     
     func newConfig() -> ProfileViewConfiguration {
+        var config: ProfileViewConfiguration
         switch preferredProfileStyle {
         case .large:
-            return ProfileViewConfiguration.large(palette: preferredPaletteType)
+            config = ProfileViewConfiguration.large(palette: preferredPaletteType)
         case .largeSummary:
-            return ProfileViewConfiguration.largeSummary(palette: preferredPaletteType)
+            config = ProfileViewConfiguration.largeSummary(palette: preferredPaletteType)
         case .standard:
-            return ProfileViewConfiguration.standard(palette: preferredPaletteType)
+            config = ProfileViewConfiguration.standard(palette: preferredPaletteType)
         case .summary:
-            return ProfileViewConfiguration.summary(palette: preferredPaletteType)
+            config = ProfileViewConfiguration.summary(palette: preferredPaletteType)
         }
+        if customizeAvatarSwitchWithLabel.isOn {
+            config.avatarConfiguration.borderColor = .green
+            config.avatarConfiguration.borderWidth = 3
+            config.avatarConfiguration.cornerRadiusCalculator = { avatarLength in
+                return avatarLength / 8
+            }
+        }
+        return config
     }
     
     func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
