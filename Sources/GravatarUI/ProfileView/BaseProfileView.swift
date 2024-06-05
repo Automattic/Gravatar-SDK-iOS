@@ -1,6 +1,10 @@
 import Gravatar
 import UIKit
 
+/// This class is used as a base class to create different profile view design styles.
+/// > This class is meant to be used as an abstract class. Do not use it on its own.
+///
+/// You can subclass BaseProfileView to create your own Profile View designs.
 open class BaseProfileView: UIView, UIContentView {
     enum Constants {
         static let avatarLength: CGFloat = 72
@@ -9,15 +13,16 @@ open class BaseProfileView: UIView, UIContentView {
         static let defaultDisplayNamePlaceholderHeight: CGFloat = 24
     }
 
-    open class var avatarLength: CGFloat {
-        Constants.avatarLength
-    }
-
     public enum PlaceholderColorPolicy {
         /// Gets the placeholder colors from the current palette.
         case currentPalette
         /// Custom colors. You can also pass predefined colors from any ``Palette``. Example:  `PaletteType.light.palette.placeholder`.
         case custom(PlaceholderColors)
+    }
+
+    /// The diameter of the circular avatar image.
+    open class var avatarLength: CGFloat {
+        Constants.avatarLength
     }
 
     /// Placeholder color policy to use in the placeholder state (which basically means when all fields are empty).
@@ -43,6 +48,7 @@ open class BaseProfileView: UIView, UIContentView {
         }
     }
 
+    /// Wether the view is in loading state.
     public var isLoading: Bool = false {
         didSet {
             guard isLoading != oldValue else { return }
@@ -54,6 +60,8 @@ open class BaseProfileView: UIView, UIContentView {
         }
     }
 
+    /// The style for the profile view action button.
+    /// > Avoid setting `.create` manually. Instead, create a configuration using `ProfileView.claimProfileConfiguration()` and set it to the view.
     public var profileButtonStyle: ProfileButtonStyle = .view {
         didSet {
             Configure(profileButton).asProfileButton().style(profileButtonStyle).palette(paletteType)
@@ -77,6 +85,7 @@ open class BaseProfileView: UIView, UIContentView {
         }
     }
 
+    /// The object that acts as the delegate for the profile view.
     public weak var delegate: ProfileViewDelegate?
 
     var accounts: [AccountModel] = []
@@ -123,7 +132,8 @@ open class BaseProfileView: UIView, UIContentView {
     public var avatarView: UIView {
         avatarProvider.avatarView
     }
-
+    
+    /// The view which displays the profile's avatar image.
     public var avatarImageView: UIImageView? {
         avatarType.imageView
     }
@@ -134,7 +144,8 @@ open class BaseProfileView: UIView, UIContentView {
         label.adjustsFontForContentSizeCategory = true
         return label
     }()
-
+    
+    /// The lable which displays the profile description text.
     public var aboutMeLabel: UILabel {
         aboutMeDashedLabel
     }
@@ -149,6 +160,7 @@ open class BaseProfileView: UIView, UIContentView {
         return label
     }()
 
+    /// The lable which displays the profile name text.
     public private(set) lazy var displayNameLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -156,6 +168,8 @@ open class BaseProfileView: UIView, UIContentView {
         return label
     }()
 
+    /// The lable which displays the profile personal information text,
+    /// such as location, pronouns, etc...
     public private(set) lazy var personalInfoLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -163,6 +177,7 @@ open class BaseProfileView: UIView, UIContentView {
         return label
     }()
 
+    /// The profile action button.
     public lazy var profileButton: UIButton = {
         let button = UIButton(configuration: .borderless())
         let action = UIAction { [weak self] action in
@@ -172,6 +187,7 @@ open class BaseProfileView: UIView, UIContentView {
         return button
     }()
 
+    /// A stack which holds all accounts buttons, such as Gravatar, WordPress, Tumblr, etc...
     public let accountButtonsStackView: UIStackView = {
         let stack = UIStackView()
         stack.translatesAutoresizingMaskIntoConstraints = false
@@ -181,12 +197,21 @@ open class BaseProfileView: UIView, UIContentView {
         return stack
     }()
 
+    /// The palette used to set the profile view colors.
     public var paletteType: PaletteType {
         didSet {
             refresh(with: paletteType)
         }
     }
 
+    /// Creates an instance of BaseProfileView. **Do not** create an instance directly.
+    /// >  This class is intended as an abstract class. You can subclass BaseProfileView, and call this init method as `super.init(...)`
+    /// - Parameters:
+    ///   - frame: The frame rectangle for the view, measured in points.
+    ///   - paletteType: The palette used to apply colors to the view. Defaults to `.system`.
+    ///   - profileButtonStyle: The profile action button style. Defaults to `.view`
+    ///   - avatarType: The avatar view type to be used to display the avatar image. Defaults to a `UIImageView`.
+    ///   - padding: The space around the profile view content. Defaults to a standard padding.
     public init(
         frame: CGRect = .zero,
         paletteType: PaletteType? = nil,
@@ -233,7 +258,14 @@ open class BaseProfileView: UIView, UIContentView {
     public required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
+    
+    /// Loads an avatar to be displayed in the avatar view.
+    /// - Parameters:
+    ///   - avatarIdentifier: The identifier of the avatar to be loaded.
+    ///   - placeholder: An image which will be temporarely displayed while the avatar loads.
+    ///   - rating: The maximum avatar rating for the avatar to be displayed. See ``Rating``.
+    ///   - defaultAvatarOption: The avatar which the server will return in case that the avatar with the given id is not found, or if the avatar rating is higher than the specified.
+    ///   - options: Options to use when fetching a Gravatar profile image and setting it to the avatar image view.
     public func loadAvatar(
         with avatarIdentifier: AvatarIdentifier?,
         placeholder: UIImage? = nil,
@@ -335,7 +367,9 @@ open class BaseProfileView: UIView, UIContentView {
         button.loadIcon(from: url)
         return button
     }
-
+    
+    /// Updates the profile view content and palette color with the given configuration.
+    /// - Parameter config: A profile view configuration with the desired content and styles to be displayed.
     open func update(with config: ProfileViewConfiguration) {
         paletteType = config.palette
         padding = config.padding
@@ -416,95 +450,28 @@ open class BaseProfileView: UIView, UIContentView {
     }
 }
 
+/// Methods for managing actions on the profile view.
 public protocol ProfileViewDelegate: NSObjectProtocol {
+    /// Tells the delegate the profile action button of the view has been tapped.
+    ///
+    /// The `profileURL` contains a url which corresponds to the button intended action declared by the button style. 
+    /// > The expected action to this delegate method call is to present this URL in an internal Safari view.
+    /// - Parameters:
+    ///   - view: The profile view informing about the tap.
+    ///   - style: The current profile action button style.
+    ///   - profileURL: A possible URL to be presented to the user
     func profileView(_ view: BaseProfileView, didTapOnProfileButtonWithStyle style: ProfileButtonStyle, profileURL: URL?)
+    /// Tells the delegate one of the profile associated accounts button has been tapped.
+    ///
+    /// The `accountModel` contains the information about the profile's account which was tapped, including a url to the account on that service.
+    /// > The expected action to this delegate method call is to present this account URL in an internal Safari view.
+    /// - Parameters:
+    ///   - view: The profile view informing about the tap.
+    ///   - accountModel: Information about the associated account which was tapped.
     func profileView(_ view: BaseProfileView, didTapOnAccountButtonWithModel accountModel: AccountModel)
+    /// Tells the delegate the profile avatar view has been tapped.
+    /// - Parameters:
+    ///   - view: The profile view informing about the tap.
+    ///   - avatarID: The ID of the avatar tapped.
     func profileView(_ view: BaseProfileView, didTapOnAvatarWithID avatarID: AvatarIdentifier?)
-}
-
-@MainActor
-class DefaultAvatarProvider: AvatarProviding {
-    private let avatarLength: CGFloat
-    private let avatarImageView: UIImageView
-    private let baseView: UIView
-    private let skipStyling: Bool
-    private(set) var paletteType: PaletteType
-
-    var avatarCornerRadius: CGFloat {
-        didSet {
-            avatarImageView.layer.cornerRadius = avatarCornerRadius
-        }
-    }
-
-    var avatarBorderWidth: CGFloat {
-        didSet {
-            avatarImageView.layer.borderWidth = avatarBorderWidth
-        }
-    }
-
-    var activityIndicatorType: ActivityIndicatorType = .activity {
-        didSet {
-            avatarImageView.gravatar.activityIndicatorType = activityIndicatorType
-        }
-    }
-
-    init(
-        baseView: UIView,
-        avatarImageView: UIImageView,
-        skipStyling: Bool,
-        avatarLength: CGFloat,
-        cornerRadius: CGFloat? = nil,
-        borderWidth: CGFloat = 1,
-        paletteType: PaletteType = .system
-    ) {
-        self.avatarLength = avatarLength
-        self.paletteType = paletteType
-        self.avatarCornerRadius = cornerRadius ?? avatarLength / 2
-        self.avatarBorderWidth = borderWidth
-        self.avatarImageView = avatarImageView
-        self.baseView = baseView
-        self.skipStyling = skipStyling
-        configure()
-    }
-
-    private func configure() {
-        guard !skipStyling else { return }
-        baseView.translatesAutoresizingMaskIntoConstraints = false
-        baseView.widthAnchor.constraint(equalToConstant: avatarLength).isActive = true
-        baseView.heightAnchor.constraint(equalToConstant: avatarLength).isActive = true
-        avatarImageView.setContentHuggingPriority(.defaultHigh, for: .horizontal)
-        avatarImageView.layer.cornerRadius = avatarCornerRadius
-        avatarImageView.clipsToBounds = true
-    }
-
-    func setImage(with source: URL?, placeholder: UIImage?, options: [ImageSettingOption]?) async throws {
-        do {
-            let _ = try await avatarImageView.gravatar.setImage(with: source, placeholder: placeholder, options: options)
-            if !skipStyling {
-                avatarImageView.layer.borderColor = paletteType.palette.avatar.border.cgColor
-                avatarImageView.layer.borderWidth = avatarBorderWidth
-            }
-        } catch {
-            if !skipStyling {
-                avatarImageView.layer.borderColor = UIColor.clear.cgColor
-            }
-            throw error
-        }
-    }
-
-    func setImage(_ image: UIImage?) {
-        avatarImageView.image = image
-    }
-
-    func refresh(with paletteType: PaletteType) {
-        guard !skipStyling else { return }
-        self.paletteType = paletteType
-        avatarImageView.layer.borderColor = paletteType.palette.avatar.border.cgColor
-        avatarImageView.backgroundColor = paletteType.palette.avatar.background
-        avatarImageView.overrideUserInterfaceStyle = paletteType.palette.preferredUserInterfaceStyle
-    }
-
-    var avatarView: UIView {
-        baseView
-    }
 }
