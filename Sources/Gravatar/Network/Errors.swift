@@ -11,7 +11,7 @@ public enum ResponseErrorReason: Sendable {
     /// The response is not a `HTTPURLResponse`.
     case invalidURLResponse(response: URLResponse)
 
-    /// An unexpected error has ocurred.
+    /// An unexpected error has occurred.
     case unexpected(Error)
 
     // `true` if self is a `.invalidHTTPStatusCode`.
@@ -76,21 +76,22 @@ public enum ImageUploadError: Error {
     case responseError(reason: ResponseErrorReason)
 }
 
-public enum ProfileServiceError: Error {
+public enum APIError: Error {
     case requestError(reason: RequestErrorReason)
     case responseError(reason: ResponseErrorReason)
-    case noProfileInResponse
+    /// Error occurred while decoding the response.
+    case decodingError(DecodingError)
 }
 
-extension ProfileServiceError: CustomDebugStringConvertible {
+extension APIError: CustomDebugStringConvertible {
     public var debugDescription: String {
         switch self {
         case .responseError(let reason):
             "A response error has occoured with reason: \(reason)"
         case .requestError(let reason):
             "Something went wrong when creating the request. Reason: \(reason)."
-        case .noProfileInResponse:
-            "No profile information was found in the response."
+        case .decodingError(let error):
+            "Something went while decoding the response. Underlying error: \(error)"
         }
     }
 }
