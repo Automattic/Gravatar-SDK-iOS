@@ -455,7 +455,7 @@ open class BaseProfileView: UIView, UIContentView {
 
 /// Methods for managing actions on the profile view.
 public protocol ProfileViewDelegate: NSObjectProtocol {
-    /// Tells the delegate the profile action button of the view has been tapped.
+    /// Tells the delegate that the profile action button of the view has been tapped.
     ///
     /// The `profileURL` contains a url which corresponds to the button intended action declared by the button style.
     /// > The recommended action for this delegate method is to present this URL in a `SFSafariViewController`.
