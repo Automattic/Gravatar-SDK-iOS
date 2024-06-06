@@ -162,7 +162,7 @@ open class BaseProfileView: UIView, UIContentView {
         return label
     }()
 
-    /// The lable which displays the profile name text.
+    /// The label which displays the profile name text.
     public private(set) lazy var displayNameLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
