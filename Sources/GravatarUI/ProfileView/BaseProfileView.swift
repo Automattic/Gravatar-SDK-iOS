@@ -116,7 +116,7 @@ open class BaseProfileView: UIView, UIContentView {
     }
 
     /// Empty stack view added to the view's hierarchy.
-    /// Use this stack as a base to create your own Profile View design.
+    /// Use this stack as a base to create your own Profile View design. You should override `arrangeSubviews()` to put your views in the `rootStackView`.
     public lazy var rootStackView: UIStackView = {
         let stack = UIStackView()
         stack.translatesAutoresizingMaskIntoConstraints = false
