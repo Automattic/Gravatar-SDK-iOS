@@ -12,6 +12,7 @@ import UIKit
 /// ProfileViewConfiguration.large()        // LargeProfileView
 /// ProfileViewConfiguration.largeSummary() // LargeProfileSummaryView
 /// ```
+/// See: ``ProfileView``, ``ProfileSummaryView``, ``LargeProfileView``, ``LargeProfileSummaryView``.
 /// After creating a configuration, you can modify any of the available fields to properly configure the profile view.
 ///
 @MainActor
@@ -94,17 +95,27 @@ extension ProfileViewConfiguration {
 extension ProfileViewConfiguration {
     /// A configuration that specifies the behavior and loading options for the profile avatar.
     public struct AvatarConfiguration {
-        /// The activity indicator used on the image view while the avatar is loading.
+        /// The activity indicator used on the image view while the avatar is loading. See ``ActivityIndicatorType`` for more info.
         public var activityIndicatorType: ActivityIndicatorType = .activity
         /// An image to be displayed while an avatar image has not been set.
         public var placeholder: UIImage? = nil
-        /// The maximum rating of the avatar for it to be displayed. See `Gravatar.Rating` for more info.
+        /// The maximum rating of the avatar for it to be displayed. See ``Rating`` for more info.
         public var rating: Rating? = nil
         /// The avatar style to be displayed when no avatar has been found
-        /// See `Gravatar.DefaultAvatarOption` for more info.
+        /// See ``DefaultAvatarOption`` for more info.
         public var defaultAvatarOption: DefaultAvatarOption? = nil
-        /// Options for fetchingg the avatar image. See `Gravatar.ImageSettingOption` for more info.
+        /// Options for fetchingg the avatar image. See ``ImageSettingOption`` for more info.
         public var settingOptions: [ImageSettingOption]? = nil
+        /// A closure that calculates the corner radius of avatar based on its length.
+        /// By default, the avatar is circle shaped.
+        public var cornerRadiusCalculator: AvatarCornerRadiusCalculator = AvatarConstants.cornerRadiusCalculator
+        /// The border width of the avatar.
+        public var borderWidth: CGFloat = 1
+        /// The border color of the avatar. If not set, the border color from the palette is used. See ``Palette`` . ``Palette/avatar`` .
+        /// ``AvatarColors/border``.
+        public var borderColor: UIColor? = nil
+        /// Length of the avatar. If not set, a suitable length is chosen according to the ``ProfileViewConfiguration/Style``.
+        public var avatarLength: CGFloat? = nil
     }
 }
 

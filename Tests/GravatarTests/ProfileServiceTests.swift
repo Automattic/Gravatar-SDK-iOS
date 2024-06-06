@@ -32,7 +32,7 @@ final class ProfileServiceTests: XCTestCase {
 
         do {
             _ = try await service.fetch(with: .hashID(""))
-            let request = await session.request
+            let _ = await session.request
             XCTFail()
         } catch APIError.decodingError {
             // Success
@@ -49,7 +49,7 @@ final class ProfileServiceTests: XCTestCase {
         let service = ProfileService(client: URLSessionHTTPClient(urlSession: session))
 
         do {
-            let response = try await service.fetch(with: .hashID(""))
+            let _ = try await service.fetch(with: .hashID(""))
             XCTFail()
         } catch APIError.responseError(reason: let reason) where reason.httpStatusCode == 404 {
             // Expected error has occurred.

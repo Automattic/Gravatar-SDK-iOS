@@ -64,7 +64,7 @@ class ProfileViewPlaceholderDisplayer: ProfileViewPlaceholderDisplaying {
            let imageView = view.avatarType.imageView
         {
             elements?.append(
-                BackgroundColorPlaceholderDisplayer<UIView>(
+                AvatarPlaceholderDisplayer<UIView>(
                     baseView: imageView,
                     color: color,
                     originalBackgroundColor: view.paletteType.palette.avatar.background
