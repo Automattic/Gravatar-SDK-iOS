@@ -207,7 +207,7 @@ open class BaseProfileView: UIView, UIContentView {
     }
 
     /// Creates an instance of BaseProfileView. **Do not** create an instance directly.
-    /// >  This class is intended as an abstract class. You can subclass BaseProfileView, and call this init method as `super.init(...)`
+    /// >  This class is intended as an abstract class. You can subclass BaseProfileView, and call this init method as `super.init(...)`. You should override `arrangeSubviews()` to put your views in the `rootStackView`.
     /// - Parameters:
     ///   - frame: The frame rectangle for the view, measured in points.
     ///   - paletteType: The palette used to apply colors to the view. Defaults to `.system`.
