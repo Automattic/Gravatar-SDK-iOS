@@ -170,7 +170,7 @@ open class BaseProfileView: UIView, UIContentView {
         return label
     }()
 
-    /// The lable which displays the profile personal information text,
+    /// The label which displays the profile personal information text,
     /// such as location, pronouns, etc...
     public private(set) lazy var personalInfoLabel: UILabel = {
         let label = UILabel()
