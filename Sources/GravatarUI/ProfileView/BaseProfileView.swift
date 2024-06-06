@@ -466,7 +466,7 @@ public protocol ProfileViewDelegate: NSObjectProtocol {
     func profileView(_ view: BaseProfileView, didTapOnProfileButtonWithStyle style: ProfileButtonStyle, profileURL: URL?)
     /// Tells the delegate one of the profile associated accounts button has been tapped.
     ///
-    /// The `accountModel` contains the information about the profile's account which was tapped, including a url to the account on that service.
+    /// The `accountModel` contains information about the tapped account including a URL to it.
     /// > The expected action to this delegate method call is to present this account URL in an internal Safari view.
     /// - Parameters:
     ///   - view: The profile view informing about the tap.
