@@ -2,21 +2,42 @@ import UIKit
 
 @MainActor
 class DefaultAvatarProvider: AvatarProviding {
-    private let avatarLength: CGFloat
     private let avatarImageView: UIImageView
     private let baseView: UIView
     private let skipStyling: Bool
     private(set) var paletteType: PaletteType
+    private var widthConstraint: NSLayoutConstraint?
+    private var heightConstraint: NSLayoutConstraint?
 
-    var avatarCornerRadius: CGFloat {
+    var cornerRadiusCalculator: AvatarCornerRadiusCalculator {
         didSet {
-            avatarImageView.layer.cornerRadius = avatarCornerRadius
+            avatarCornerRadius = cornerRadiusCalculator(avatarLength)
+        }
+    }
+
+    var avatarLength: CGFloat {
+        didSet {
+            guard avatarLength != oldValue else { return }
+            avatarCornerRadius = cornerRadiusCalculator(avatarLength)
+            applyLength()
+        }
+    }
+
+    private var avatarCornerRadius: CGFloat {
+        didSet {
+            applyCornerRadius()
         }
     }
 
     var avatarBorderWidth: CGFloat {
         didSet {
-            avatarImageView.layer.borderWidth = avatarBorderWidth
+            applyBorderWidth()
+        }
+    }
+
+    var avatarBorderColor: UIColor? {
+        didSet {
+            applyBorderColor()
         }
     }
 
@@ -26,18 +47,44 @@ class DefaultAvatarProvider: AvatarProviding {
         }
     }
 
+    private func applyBorderWidth() {
+        guard !skipStyling else { return }
+        avatarImageView.layer.borderWidth = avatarBorderWidth
+    }
+
+    private func applyBorderColor() {
+        guard !skipStyling else { return }
+        avatarImageView.layer.borderColor = (avatarBorderColor ?? paletteType.palette.avatar.border).cgColor
+    }
+
+    private func applyCornerRadius() {
+        guard !skipStyling else { return }
+        avatarImageView.layer.cornerRadius = avatarCornerRadius
+    }
+
+    private func applyLength() {
+        guard !skipStyling else { return }
+        widthConstraint?.isActive = false
+        heightConstraint?.isActive = false
+        widthConstraint = baseView.widthAnchor.constraint(equalToConstant: avatarLength)
+        heightConstraint = baseView.heightAnchor.constraint(equalToConstant: avatarLength)
+        widthConstraint?.isActive = true
+        heightConstraint?.isActive = true
+    }
+
     init(
         baseView: UIView,
         avatarImageView: UIImageView,
         skipStyling: Bool,
         avatarLength: CGFloat,
-        cornerRadius: CGFloat? = nil,
+        cornerRadiusCalculator: AvatarCornerRadiusCalculator? = nil,
         borderWidth: CGFloat = 1,
         paletteType: PaletteType = .system
     ) {
         self.avatarLength = avatarLength
         self.paletteType = paletteType
-        self.avatarCornerRadius = cornerRadius ?? avatarLength / 2
+        self.cornerRadiusCalculator = cornerRadiusCalculator ?? AvatarConstants.cornerRadiusCalculator
+        self.avatarCornerRadius = self.cornerRadiusCalculator(avatarLength)
         self.avatarBorderWidth = borderWidth
         self.avatarImageView = avatarImageView
         self.baseView = baseView
@@ -48,26 +95,17 @@ class DefaultAvatarProvider: AvatarProviding {
     private func configure() {
         guard !skipStyling else { return }
         baseView.translatesAutoresizingMaskIntoConstraints = false
-        baseView.widthAnchor.constraint(equalToConstant: avatarLength).isActive = true
-        baseView.heightAnchor.constraint(equalToConstant: avatarLength).isActive = true
         avatarImageView.setContentHuggingPriority(.defaultHigh, for: .horizontal)
-        avatarImageView.layer.cornerRadius = avatarCornerRadius
+        avatarImageView.setContentHuggingPriority(.defaultHigh, for: .vertical)
+        applyLength()
+        applyBorderWidth()
+        applyBorderColor()
+        applyCornerRadius()
         avatarImageView.clipsToBounds = true
     }
 
     func setImage(with source: URL?, placeholder: UIImage?, options: [ImageSettingOption]?) async throws {
-        do {
-            let _ = try await avatarImageView.gravatar.setImage(with: source, placeholder: placeholder, options: options)
-            if !skipStyling {
-                avatarImageView.layer.borderColor = paletteType.palette.avatar.border.cgColor
-                avatarImageView.layer.borderWidth = avatarBorderWidth
-            }
-        } catch {
-            if !skipStyling {
-                avatarImageView.layer.borderColor = UIColor.clear.cgColor
-            }
-            throw error
-        }
+        let _ = try await avatarImageView.gravatar.setImage(with: source, placeholder: placeholder, options: options)
     }
 
     func setImage(_ image: UIImage?) {
@@ -77,7 +115,7 @@ class DefaultAvatarProvider: AvatarProviding {
     func refresh(with paletteType: PaletteType) {
         guard !skipStyling else { return }
         self.paletteType = paletteType
-        avatarImageView.layer.borderColor = paletteType.palette.avatar.border.cgColor
+        applyBorderColor()
         avatarImageView.backgroundColor = paletteType.palette.avatar.background
         avatarImageView.overrideUserInterfaceStyle = paletteType.palette.preferredUserInterfaceStyle
     }
