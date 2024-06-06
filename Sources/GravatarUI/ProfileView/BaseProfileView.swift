@@ -264,7 +264,7 @@ open class BaseProfileView: UIView, UIContentView {
     /// Loads an avatar to be displayed in the avatar view.
     /// - Parameters:
     ///   - avatarIdentifier: The identifier of the avatar to be loaded.
-    ///   - placeholder: An image which will be temporarely displayed while the avatar loads.
+    ///   - placeholder: An image which will be temporarily displayed while the avatar loads.
     ///   - rating: The maximum avatar rating for the avatar to be displayed. See ``Rating``.
     ///   - defaultAvatarOption: The avatar which the server will return in case that the avatar with the given id is not found, or if the avatar rating is
     /// higher than the specified.
