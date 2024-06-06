@@ -475,6 +475,6 @@ public protocol ProfileViewDelegate: NSObjectProtocol {
     /// Tells the delegate that the profile avatar view has been tapped.
     /// - Parameters:
     ///   - view: The profile view informing about the tap.
-    ///   - avatarID: The ID of the avatar tapped.
+    ///   - avatarID: The ID of the avatar tapped. Check out ``AvatarURL`` to create an avatar URL from an `AvatarIdentifier`.
     func profileView(_ view: BaseProfileView, didTapOnAvatarWithID avatarID: AvatarIdentifier?)
 }
