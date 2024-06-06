@@ -48,7 +48,7 @@ open class BaseProfileView: UIView, UIContentView {
         }
     }
 
-    /// Wether the view is in loading state.
+    /// Whether the view is in loading state.
     public var isLoading: Bool = false {
         didSet {
             guard isLoading != oldValue else { return }
