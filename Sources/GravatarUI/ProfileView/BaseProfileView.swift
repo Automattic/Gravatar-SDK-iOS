@@ -458,7 +458,7 @@ public protocol ProfileViewDelegate: NSObjectProtocol {
     /// Tells the delegate the profile action button of the view has been tapped.
     ///
     /// The `profileURL` contains a url which corresponds to the button intended action declared by the button style.
-    /// > The expected action to this delegate method call is to present this URL in an internal Safari view.
+    /// > The recommended action for this delegate method is to present this URL in a `SFSafariViewController`.
     /// - Parameters:
     ///   - view: The profile view informing about the tap.
     ///   - style: The current profile action button style.
