@@ -14,7 +14,7 @@ public class ProfileViewController: UIViewController {
 
     private var cancellables = Set<AnyCancellable>()
     private var profileIdentifier: ProfileIdentifier?
-    public var profileFetchingErrorHandler: ((ProfileServiceError) -> Void)?
+    public var profileFetchingErrorHandler: ((APIError) -> Void)?
 
     public let scrollView: UIScrollView = .init()
 

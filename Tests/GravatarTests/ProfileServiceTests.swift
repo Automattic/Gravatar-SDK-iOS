@@ -23,6 +23,41 @@ final class ProfileServiceTests: XCTestCase {
         }
     }
 
+    func testProfileRequestDecodingError() async {
+        guard let data = "FaultyResponse".data(using: .utf8) else {
+            return XCTFail("Could not create data")
+        }
+        let session = URLSessionMock(returnData: data, response: .successResponse())
+        let service = ProfileService(client: HTTPClientMock(session: session))
+
+        do {
+            _ = try await service.fetch(with: .hashID(""))
+            let request = await session.request
+            XCTFail()
+        } catch APIError.decodingError {
+            // Success
+        } catch {
+            XCTFail(error.localizedDescription)
+        }
+    }
+
+    func testProfileRequestInvalidHTTPStatusError() async {
+        guard let data = Bundle.fullProfileJsonData else {
+            return XCTFail("Could not create data")
+        }
+        let session = URLSessionMock(returnData: data, response: .errorResponse(code: 404))
+        let service = ProfileService(client: URLSessionHTTPClient(urlSession: session))
+
+        do {
+            let response = try await service.fetch(with: .hashID(""))
+            XCTFail()
+        } catch APIError.responseError(reason: let reason) where reason.httpStatusCode == 404 {
+            // Expected error has occurred.
+        } catch {
+            XCTFail(error.localizedDescription)
+        }
+    }
+
     func testProfileRequestWithApiKey() async {
         guard let data = Bundle.fullProfileJsonData else {
             return XCTFail("Could not create data")
