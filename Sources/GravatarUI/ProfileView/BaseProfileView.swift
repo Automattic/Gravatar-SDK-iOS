@@ -467,7 +467,7 @@ public protocol ProfileViewDelegate: NSObjectProtocol {
     /// Tells the delegate one of the profile associated accounts button has been tapped.
     ///
     /// The `accountModel` contains information about the tapped account including a URL to it.
-    /// > The expected action to this delegate method call is to present this account URL in an internal Safari view.
+    /// > The recommended action for this delegate method is to present this URL in a `SFSafariViewController`.
     /// - Parameters:
     ///   - view: The profile view informing about the tap.
     ///   - accountModel: Information about the associated account which was tapped.
