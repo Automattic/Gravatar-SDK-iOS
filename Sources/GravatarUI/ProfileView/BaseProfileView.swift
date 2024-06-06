@@ -206,6 +206,14 @@ open class BaseProfileView: UIView, UIContentView {
         }
     }
 
+    private var avatarLength: CGFloat {
+        didSet {
+            if let avatarProvider = avatarProvider as? DefaultAvatarProvider {
+                avatarProvider.avatarLength = avatarLength
+            }
+        }
+    }
+
     /// Creates an instance of BaseProfileView. **Do not** create an instance directly.
     /// >  This class is intended as an abstract class. You can subclass BaseProfileView, and call this init method as `super.init(...)`. You should override `arrangeSubviews()` to put your views in the `rootStackView`.
     /// - Parameters:
@@ -213,20 +221,23 @@ open class BaseProfileView: UIView, UIContentView {
     ///   - paletteType: The palette used to apply colors to the view. Defaults to `.system`.
     ///   - profileButtonStyle: The profile action button style. Defaults to `.view`
     ///   - avatarType: The avatar view type to be used to display the avatar image. Defaults to a `UIImageView`.
+    ///   - avatarLength: The desired length for the avatar view.
     ///   - padding: The space around the profile view content. Defaults to a standard padding.
     public init(
         frame: CGRect = .zero,
         paletteType: PaletteType? = nil,
         profileButtonStyle: ProfileButtonStyle? = nil,
         avatarType: AvatarType? = nil,
+        avatarLength: CGFloat? = nil,
         padding: UIEdgeInsets? = nil
     ) {
         self.paletteType = paletteType ?? .system
+        self.avatarLength = avatarLength ?? Self.avatarLength
         let placeholderDisplayer = ProfileViewPlaceholderDisplayer()
         self.placeholderDisplayer = placeholderDisplayer
         self.activityIndicator = ProfilePlaceholderActivityIndicator(placeholderDisplayer: placeholderDisplayer)
         self.avatarType = (avatarType ?? AvatarType.imageView(UIImageView()))
-        self.avatarProvider = self.avatarType.avatarProvider(avatarLength: Self.avatarLength, paletteType: self.paletteType)
+        self.avatarProvider = self.avatarType.avatarProvider(avatarLength: self.avatarLength, paletteType: self.paletteType)
         self.profileButtonStyle = profileButtonStyle ?? self.profileButtonStyle
         super.init(frame: frame)
         self.padding = padding ?? Self.defaultPadding
@@ -280,7 +291,7 @@ open class BaseProfileView: UIView, UIContentView {
             avatarProvider.setImage(placeholder)
             return
         }
-        let pointsSize: ImageSize = .points(Self.avatarLength)
+        let pointsSize: ImageSize = .points(avatarLength)
         let downloadOptions = ImageSettingOptions(options: options).deriveDownloadOptions(
             garavatarRating: rating,
             preferredSize: pointsSize,
@@ -379,6 +390,14 @@ open class BaseProfileView: UIView, UIContentView {
         isLoading = config.isLoading
         avatarActivityIndicatorType = config.avatarConfiguration.activityIndicatorType
         delegate = config.delegate
+        if let avatarProvider = avatarProvider as? DefaultAvatarProvider {
+            avatarProvider.cornerRadiusCalculator = config.avatarConfiguration.cornerRadiusCalculator
+            avatarProvider.avatarBorderWidth = config.avatarConfiguration.borderWidth
+            avatarProvider.avatarBorderColor = config.avatarConfiguration.borderColor
+        }
+        if let length = config.avatarConfiguration.avatarLength {
+            avatarLength = length
+        }
         loadAvatar(with: config)
         if config.model != nil || config.summaryModel != nil {
             profileButtonStyle = config.profileButtonStyle
@@ -477,4 +496,12 @@ public protocol ProfileViewDelegate: NSObjectProtocol {
     ///   - view: The profile view informing about the tap.
     ///   - avatarID: The ID of the avatar tapped. Check out ``AvatarURL`` to create an avatar URL from an `AvatarIdentifier`.
     func profileView(_ view: BaseProfileView, didTapOnAvatarWithID avatarID: AvatarIdentifier?)
+}
+
+public typealias AvatarCornerRadiusCalculator = @Sendable (_ avatarLength: CGFloat) -> CGFloat
+
+enum AvatarConstants {
+    static let cornerRadiusCalculator: AvatarCornerRadiusCalculator = { avatarLength in
+        avatarLength / 2
+    }
 }

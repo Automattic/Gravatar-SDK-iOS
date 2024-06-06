@@ -38,7 +38,7 @@ final class ProfileViewModelTests: XCTestCase {
     @MainActor
     func testProfileFetchingResultUpdatesOnSuccess() async throws {
         let viewModel = ProfileViewModel(profileService: successfulService())
-        var states: [Result<Profile, ProfileServiceError>?] = []
+        var states: [Result<Profile, APIError>?] = []
         viewModel.$profileFetchingResult.sink { result in
             states.append(result)
         }.store(in: &cancellables)
@@ -51,7 +51,7 @@ final class ProfileViewModelTests: XCTestCase {
     @MainActor
     func testProfileFetchingResultUpdatesOnFailure() async throws {
         let viewModel = ProfileViewModel(profileService: failingService())
-        var states: [Result<Profile, ProfileServiceError>?] = []
+        var states: [Result<Profile, APIError>?] = []
         viewModel.$profileFetchingResult.sink { result in
             states.append(result)
         }.store(in: &cancellables)

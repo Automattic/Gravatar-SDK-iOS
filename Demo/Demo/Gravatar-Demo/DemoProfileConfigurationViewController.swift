@@ -77,7 +77,7 @@ class DemoProfileConfigurationViewController: UITableViewController {
             models[email] = .standard(model: profile)
             snapshot.reloadItems([email])
             await dataSource.apply(snapshot)
-        } catch ProfileServiceError.responseError(let reason) where reason.httpStatusCode == 404 {
+        } catch APIError.responseError(let reason) where reason.httpStatusCode == 404 {
             models[email] = ProfileView.claimProfileConfiguration()
             snapshot.reloadItems([email])
             await dataSource.apply(snapshot)

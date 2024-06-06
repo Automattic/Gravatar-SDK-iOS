@@ -102,7 +102,7 @@ class DemoProfileViewsViewController: DemoBaseProfileViewController {
                 profileSummaryView.update(with: profile)
                 profileSummaryView.profileButtonStyle = .view
                 profileSummaryView.loadAvatar(with: profile.avatarIdentifier, options: [.transition(.fade(0.2))])
-            } catch ProfileServiceError.responseError(reason: let reason) where reason.httpStatusCode == 404 {
+            } catch APIError.responseError(reason: let reason) where reason.httpStatusCode == 404 {
                 largeProfileView.updateWithClaimProfilePrompt()
                 largeProfileSummaryView.updateWithClaimProfilePrompt()
                 profileView.updateWithClaimProfilePrompt()
