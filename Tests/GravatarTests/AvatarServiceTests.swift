@@ -51,7 +51,7 @@ final class AvatarServiceTests: XCTestCase {
             try await service.upload(ImageHelper.testImage, email: Email("some@email.com"), accessToken: "AccessToken")
             XCTFail("This should throw an error")
         } catch ImageUploadError.responseError(reason: let reason) where reason.httpStatusCode == responseCode {
-            // Expected error has ocurred.
+            // Expected error has occurred.
         } catch {
             XCTFail("This should have thrown an invalidHTTPStatusCode with:\(responseCode)")
         }
