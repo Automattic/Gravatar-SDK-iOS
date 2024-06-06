@@ -8,14 +8,19 @@ Gravatar SDK is a Swift library that allows you to integrate [Gravatar](https://
 
 ## Features
 
+- Display a profile view or an avatar through ready-to-use UI components.
 - Avatar URL calculator based on email and several [query options](https://docs.gravatar.com/general/images/).
 - Avatar downloading based on email or url.
   - `UIImageView` extension to directly set the downloaded image.
-  - Built-in image cache(also the ability to inject your own cache).
+  - Built-in image cache (with the ability to inject your own cache).
 - Avatar uploading to a [Gravatar](https://gravatar.com/) account.
 - Gravatar profile fetching based on email.
 
 ## Installation
+
+### Create an API key
+
+Follow the steps in the [REST API documentation](https://docs.gravatar.com/api/profiles/rest-api/) to create a Gravatar API key. You can use some features without an API Key, but you’ll receive limited information, and stricter rate limits may apply, so we highly encourage you to create one in the [developer portal](https://gravatar.com/developers/).
 
 For installation instructions and examples, see out [getting started](Sources/Gravatar/Gravatar.docc/GettingStarted.md) guide.
 
