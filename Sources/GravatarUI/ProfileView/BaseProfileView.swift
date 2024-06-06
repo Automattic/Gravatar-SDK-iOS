@@ -472,7 +472,7 @@ public protocol ProfileViewDelegate: NSObjectProtocol {
     ///   - view: The profile view informing about the tap.
     ///   - accountModel: Information about the associated account which was tapped.
     func profileView(_ view: BaseProfileView, didTapOnAccountButtonWithModel accountModel: AccountModel)
-    /// Tells the delegate the profile avatar view has been tapped.
+    /// Tells the delegate that the profile avatar view has been tapped.
     /// - Parameters:
     ///   - view: The profile view informing about the tap.
     ///   - avatarID: The ID of the avatar tapped.
