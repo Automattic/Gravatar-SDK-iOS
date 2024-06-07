@@ -74,7 +74,7 @@ final class GravatarWrapper_UIImageViewTests: XCTestCase {
         let imageView = UIImageView(frame: frame)
         let imageRetriever = TestImageFetcher(result: .fail)
         do {
-            let _ = try await imageView.gravatar.setImage(
+            try await imageView.gravatar.setImage(
                 with: nil,
                 placeholder: ImageHelper.placeholderImage,
                 options: [.imageDownloader(imageRetriever)]
@@ -168,7 +168,7 @@ final class GravatarWrapper_UIImageViewTests: XCTestCase {
 
         let task1 = Task {
             do {
-                let _ = try await imageView.gravatar.setImage(
+                try await imageView.gravatar.setImage(
                     with: URL(string: "https://first.com"),
                     options: [.imageDownloader(imageDownloader)]
                 )

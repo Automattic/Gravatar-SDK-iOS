@@ -105,7 +105,7 @@ class DefaultAvatarProvider: AvatarProviding {
     }
 
     func setImage(with source: URL?, placeholder: UIImage?, options: [ImageSettingOption]?) async throws {
-        let _ = try await avatarImageView.gravatar.setImage(with: source, placeholder: placeholder, options: options)
+        try await avatarImageView.gravatar.setImage(with: source, placeholder: placeholder, options: options)
     }
 
     func setImage(_ image: UIImage?) {
