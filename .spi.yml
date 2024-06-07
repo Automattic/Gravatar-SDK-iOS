@@ -5,9 +5,7 @@
 
 version: 1
 builder:
-  configs:
-     - documentation_targets:
-      - GravatarUI
-      - Gravatar
+    configs:
+    - documentation_targets: [Gravatar, GravatarUI]
       platform: ios
       custom_documentation_parameters: [--include-extended-types]
