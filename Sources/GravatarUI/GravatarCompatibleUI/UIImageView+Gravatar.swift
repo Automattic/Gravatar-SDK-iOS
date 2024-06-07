@@ -164,6 +164,7 @@ extension GravatarWrapper where Component: UIImageView {
     ///   - placeholder: A placeholder to show while downloading the image.
     ///   - options: A set of options to define image setting behaviour. See ``ImageSettingOption`` for more info.
     /// - Returns: The ``ImageDownloadResult``.
+    @discardableResult
     public func setImage(
         with source: URL?,
         placeholder: UIImage? = nil,
