@@ -59,13 +59,14 @@ import Gravatar
 
 // [...]
 
-avatarImageView.gravatar.setImage(email: "some@email.com") { result in
-    switch result {
-    case .success(let result):
-        print("The image view is already displaying the avatar! 🎉")
-    case .failure(let error):
-        print(error)
-    }
+let avatarImageView = UIImageView()
+
+do {
+    try await avatarImageView.gravatar.setImage(
+        avatarID: .email("email@domain.com")
+    )
+} catch {
+    print(error)
 }
 ```
 
@@ -84,8 +85,8 @@ func fetchAvatar(with email: String) async {
     let service = AvatarService()
 
     do {
-        let result = try await service.fetchImage(with: email)
-        updateAvatar(with: result.image) 
+        let result = try await service.fetchImage(with: .email(email))
+        updateAvatar(with: result.image)
     } catch {
         print(error)
     }
