@@ -52,7 +52,7 @@ end
 
 ### Downloading a user Gravatar image
 
-Use the `AvatarService` to download an image:
+Use the ``AvatarService`` to download an image:
 
 ```swift
 import Gravatar
@@ -67,8 +67,8 @@ func fetchAvatar(with email: String) async {
     let service = AvatarService()
 
     do {
-        let result = try await service.fetchImage(with: email)
-        updateAvatar(with: result.image) 
+        let result = try await service.fetchImage(with: .email(email))
+        updateAvatar(with: result.image)
     } catch {
         print(error)
     }
