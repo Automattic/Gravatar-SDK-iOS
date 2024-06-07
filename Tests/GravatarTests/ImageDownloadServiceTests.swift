@@ -20,7 +20,8 @@ final class ImageDownloadServiceTests: XCTestCase {
         let response = HTTPURLResponse.successResponse(with: imageURL)
         let sessionMock = URLSessionMock(returnData: ImageHelper.testImageData, response: response)
         await sessionMock.update(isCancellable: true)
-        let service = imageDownloadService(with: sessionMock)
+        let cache = TestImageCache()
+        let service = imageDownloadService(with: sessionMock, cache: cache)
 
         let task1 = Task {
             do {
@@ -28,6 +29,8 @@ final class ImageDownloadServiceTests: XCTestCase {
                 XCTFail()
             } catch ImageFetchingError.responseError(reason: .URLSessionError(error: let error)) {
                 XCTAssertNotNil(error as? CancellationError)
+                let entry = await cache.getEntry(with: imageURL.absoluteString)
+                XCTAssertNil(entry)
             } catch {
                 XCTFail()
             }
