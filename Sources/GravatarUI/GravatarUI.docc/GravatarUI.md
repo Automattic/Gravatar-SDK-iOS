@@ -34,6 +34,24 @@ profileView.update(with: profile)
 `ProfileView` will look like this:
 ![Profile view example](profileView.view)
 
+### Gravatar profile image
+
+To set a gravatar image on your own `UIImageView` instance directly (or a `UIImageView subclass`), the easiest way is to use the `.gravatar` extension:
+
+```swift
+import GravatarUI
+
+// [...]
+do {
+    try await avatarImageView.gravatar.setImage(
+        avatarID: .email("some@email.com")
+    )
+    print("The image view is already displaying the avatar! 🎉")
+} catch {
+    print(error)
+}
+```
+
 ## Tutorials
 
 @Links(visualStyle: list) {
@@ -48,3 +66,11 @@ profileView.update(with: profile)
 - ``ProfileSummaryView``
 - ``LargeProfileView``
 - ``LargeProfileSummaryView``
+
+### Profile view controller
+
+- ``ProfileViewController``
+
+### UI Content Configuration
+
+- ``ProfileViewConfiguration``

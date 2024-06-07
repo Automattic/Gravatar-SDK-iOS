@@ -52,24 +52,7 @@ end
 
 ### Downloading a user Gravatar image
 
-To set a gravatar image in a `UIImageView` (or a `UIImageView subclass`), the easiest way is to use the `.gravatar` extension:
-
-```swift
-import Gravatar
-
-// [...]
-
-avatarImageView.gravatar.setImage(email: "some@email.com") { result in
-    switch result {
-    case .success(let result):
-        print("The image view is already displaying the avatar! 🎉")
-    case .failure(let error):
-        print(error)
-    }
-}
-```
-
-You can also download the Gravatar image using the `AvatarService` to download an image:
+Use the `AvatarService` to download an image:
 
 ```swift
 import Gravatar
