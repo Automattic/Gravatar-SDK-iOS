@@ -2,6 +2,10 @@ import Combine
 import Gravatar
 import UIKit
 
+/// A view controller which displays a Profile View.
+///
+/// You can control which profile view design style is displayed by this view controller by passing a properly configured ``ProfileViewConfiguration`` instance,
+/// with the desired style.
 public class ProfileViewController: UIViewController {
     private let viewModel: ProfileViewModel
     private let profileView: UIView & UIContentView
