@@ -48,74 +48,16 @@ target 'MyApp' do
 end
 ```
 
-## Getting Started
+## Articles
 
-### Downloading a user Gravatar image
-
-Use the ``AvatarService`` to download an image:
-
-```swift
-import Gravatar
-
-// [...]
-
-Task {
-    await fetchAvatar(with: "some@email.com")
+@Links(visualStyle: list) {
+    - <doc:DownloadingAvatar>
 }
 
-func fetchAvatar(with email: String) async {
-    let service = AvatarService()
-
-    do {
-        let result = try await service.fetchImage(with: .email(email))
-        updateAvatar(with: result.image)
-    } catch {
-        print(error)
-    }
+@Links(visualStyle: list) {
+    - <doc:UploadingAvatar>
 }
 
-@MainActor
-func updateAvatar(with image: UIImage) {
-    avatarImageView.image = image
+@Links(visualStyle: list) {
+    - <doc:FetchingProfile>
 }
-```
-
-### Download Profile information
-
-You can get the public information of a Gravatar using an instance of ``ProfileService``.
-
-```swift
-import Gravatar
-
-// [...]
-
-Task {
-    await fetchProfile(with: "some@email.com")
-}
-
-func fetchProfile(with email: String) async {
-    let service = ProfileService()
-
-    do {
-        let profile = try await service.fetch(with: .email(email))
-        updateUI(with: profile)
-    } catch {
-        print(error)
-    }
-}
-
-@MainActor
-func updateUI(with profile: Profile) {
-    /// Update UI elements...
-}
-```
-
-#### Getting full Profile information
-
-Use the ``Configuration`` class to set an api key, which will be used to authorise the request of a full Gravatar profile.
-
-```swift
-await Configuration.shared.configure(with: apiKey)
-```
-
-See ``Profile`` to know which fields are public, and whichones need authorization.
