@@ -15,42 +15,21 @@ An “avatar” is an image that represents you online—a little picture that a
 
 A Gravatar is a Globally Recognized Avatar. You upload an image and create your public profile just once, and then when you participate in any Gravatar-enabled site, your Gravatar image and public profile will automatically follow you there.
 
-This SDK offers an easy way to present Gravatar user's visually in your app.
+This SDK offers ways to adapt Gravatar profiles to your application with stylish visuals.
 
-### How to:
+## Articles
 
-We offer a variety of profile view layouts for different usecases. As an example, you can use a ```ProfileView``` to be added to your UI in this way:
-
-```swift
-// 1. Get an instance of a ProfileService
-let service = ProfileService()
-// 2. Get the user's profile:
-let profile = try await service.fetch(with: .email("user@email.com"))
-// 3. Get the instance of a ProfileView:
-let profileView = ProfileView()
-// 4. Set the profile to the view:
-profileView.update(with: profile)
-```
-`ProfileView` will look like this:
-![Profile view example](profileView.view)
-
-### Gravatar profile image
-
-To set a gravatar image on your own `UIImageView` instance directly (or a `UIImageView subclass`), the easiest way is to use the `.gravatar` extension:
-
-```swift
-import GravatarUI
-
-// [...]
-do {
-    try await avatarImageView.gravatar.setImage(
-        avatarID: .email("some@email.com")
-    )
-    print("The image view is already displaying the avatar! 🎉")
-} catch {
-    print(error)
+@Links(visualStyle: list) {
+    - <doc:GettingStarted>
 }
-```
+
+@Links(visualStyle: list) {
+    - <doc:UIImageViewExtension>
+}
+
+@Links(visualStyle: list) {
+    - <doc:ProfileViews>
+}
 
 ## Tutorials
 
@@ -58,7 +37,7 @@ do {
     - <doc:ContactsList>
 }
 
-## Topics
+## Important Types
 
 ### Profile views
 
@@ -74,3 +53,7 @@ do {
 ### UI Content Configuration
 
 - ``ProfileViewConfiguration``
+
+### Color Palette
+
+- ``PaletteType``
