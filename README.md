@@ -24,6 +24,13 @@ Follow the steps in the [REST API documentation](https://docs.gravatar.com/api/p
 
 For installation instructions and examples, see out [getting started](Sources/Gravatar/Gravatar.docc/GettingStarted.md) guide.
 
+## Documentation
+
+You can find some detailed articles, tutorials and API docs via these links:
+
+- [Gravatar docs](https://automattic.github.io/Gravatar-SDK-iOS/gravatar/documentation/gravatar/)
+- [GravatarUI docs](https://automattic.github.io/Gravatar-SDK-iOS/gravatarui/documentation/gravatarui/)
+
 ## Author
 
 Gravatar

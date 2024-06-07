@@ -23,7 +23,7 @@ do {
 
 #### Extra options
 
-You can pass ``ImageSettingOption``s to change some properties of the operaton.
+You can pass an `option` parameter of type [``ImageSettingOption``] to customize the operaton.
 
 ```swift
 import GravatarUI
