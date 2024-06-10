@@ -22,7 +22,7 @@ Gravatar SDK is a Swift library that allows you to integrate [Gravatar](https://
 
 Follow the steps in the [REST API documentation](https://docs.gravatar.com/api/profiles/rest-api/) to create a Gravatar API key. You can use some features without an API Key, but you’ll receive limited information, and stricter rate limits may apply, so we highly encourage you to create one in the [developer portal](https://gravatar.com/developers/).
 
-For installation instructions and examples, see out [getting started](Sources/Gravatar/Gravatar.docc/GettingStarted.md) guide.
+For installation instructions and examples, see out [getting started](Sources/Gravatar/Gravatar.docc/1.%20GettingStarted.md) guide.
 
 ## Documentation
 
