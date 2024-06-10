@@ -21,13 +21,7 @@ This SDK offers ways to adapt Gravatar profiles to your application with stylish
 
 @Links(visualStyle: list) {
     - <doc:GettingStarted>
-}
-
-@Links(visualStyle: list) {
     - <doc:UIImageViewExtension>
-}
-
-@Links(visualStyle: list) {
     - <doc:ProfileViews>
 }
 
