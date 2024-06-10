@@ -16,21 +16,3 @@ An “avatar” is an image that represents you online—a little picture that a
 A Gravatar is a Globally Recognized Avatar. You upload an image and create your public profile just once, and then when you participate in any Gravatar-enabled site, your Gravatar image and public profile will automatically follow you there.
 
 This SDK will allow you to easily implement the Gravatar services in your project.
-
-## Articles
-
-@Links(visualStyle: list) {
-    - <doc:GettingStarted>
-}
-
-@Links(visualStyle: list) {
-    - <doc:DownloadingAvatar>
-}
-
-@Links(visualStyle: list) {
-    - <doc:UploadingAvatar>
-}
-
-@Links(visualStyle: list) {
-    - <doc:FetchingProfile>
-}
