@@ -48,7 +48,7 @@ let result = try await service.fetch(with: .email("email@domain.com"), options: 
 
 ```
 
-#### Providing a custom `ImageProcessor`
+#### Providing a custom ImageProcessor
 
 If you want to control the way the downloaded `Data` is converted into a `UIImage` you can implement your own ``ImageProcessor``.
 
@@ -87,7 +87,7 @@ let options = AvatarQueryOptions(preferredPixelSize: 120,
                                  rating: .restricted,
                                  defaultAvatarOption: .mysteryPerson)
 
-// ``AvatarURL` takes care of removing the query parameters in the initial URL and reconstructing the URL based on the given options.
+// `AvatarURL` takes care of removing the query parameters in the initial URL and reconstructing the URL based on the given options.
 
 guard let url = URL(string: "https://gravatar.com/avatar/b815b4f3f5e4be2256bce9e25eac7714?r=pg&s=150"),
       let avatarURL = AvatarURL(url: url, options: options)?.url else {

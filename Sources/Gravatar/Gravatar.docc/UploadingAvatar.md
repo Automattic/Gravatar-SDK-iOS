@@ -4,7 +4,7 @@ Let a user to update their avatar.
 
 You can provide a way to upload a new avatar for your users who have a Gravatar account.
 
-At the moment, Gravatar uses WordPress.com OAuth2 access token. Thus, you need a WordPress.com access token to update a user's avatar. Check out [the documentation](https://developer.wordpress.com/docs/oauth2/) to find more about how to get consent ffrom the user and how to retrive an access token. 
+At the moment, Gravatar uses WordPress.com OAuth2 access token. Thus, you need a WordPress.com access token to update a user's avatar. Check out [the documentation](https://developer.wordpress.com/docs/oauth2/) to find more about how to get consent from the user and how to retrieve an access token. 
 
 Use ``AvatarService`` to upload an avatar.
 
