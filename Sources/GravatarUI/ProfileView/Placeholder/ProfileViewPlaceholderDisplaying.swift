@@ -87,7 +87,7 @@ class ProfileViewPlaceholderDisplayer: ProfileViewPlaceholderDisplaying {
         guard let elements else { return }
         for var element in elements {
             element.placeholderColor = placeholderColors.backgroundColor
-            if let element = element as? BackgroundColorPlaceholderDisplayer<UIImageView> {
+            if let element = element as? AvatarPlaceholderDisplayer<UIView> {
                 element.originalBackgroundColor = paletteType.palette.avatar.background
             }
             if isShowing {
