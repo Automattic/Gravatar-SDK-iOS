@@ -47,6 +47,11 @@ class DefaultAvatarProvider: AvatarProviding {
         }
     }
 
+    private func applyAvatarActivityIndicatorTintColor() {
+        guard !skipStyling else { return }
+        avatarImageView.gravatar.activityIndicator?.view.tintColor = paletteType.palette.foreground.secondary
+    }
+
     private func applyBorderWidth() {
         guard !skipStyling else { return }
         avatarImageView.layer.borderWidth = avatarBorderWidth
@@ -101,6 +106,7 @@ class DefaultAvatarProvider: AvatarProviding {
         applyBorderWidth()
         applyBorderColor()
         applyCornerRadius()
+        applyAvatarActivityIndicatorTintColor()
         avatarImageView.clipsToBounds = true
     }
 
@@ -116,6 +122,7 @@ class DefaultAvatarProvider: AvatarProviding {
         guard !skipStyling else { return }
         self.paletteType = paletteType
         applyBorderColor()
+        applyAvatarActivityIndicatorTintColor()
         avatarImageView.backgroundColor = paletteType.palette.avatar.background
         avatarImageView.overrideUserInterfaceStyle = paletteType.palette.preferredUserInterfaceStyle
     }
