@@ -50,6 +50,25 @@ final class LargeProfileSummaryViewTests: XCTestCase {
     }
 
     @MainActor
+    func testLargeProfileSummaryViewPlaceholdersCanShowCustomPalette() throws {
+        let interfaceStyle: UIUserInterfaceStyle = .light
+        let (containerView, cardView) = createViews(model: TestProfileCardModel.summaryCard(), paletteType: .custom(Palette.testPalette))
+        containerView.overrideUserInterfaceStyle = interfaceStyle
+        cardView.update(with: nil) // clear data and show placeholders
+        assertSnapshot(of: containerView, as: .image)
+    }
+
+    @MainActor
+    func testLargeProfileSummaryViewPlaceholdersCanHideCustomPalette() throws {
+        let interfaceStyle: UIUserInterfaceStyle = .light
+        let (containerView, cardView) = createViews(model: TestProfileCardModel.summaryCard(), paletteType: .custom(Palette.testPalette))
+        containerView.overrideUserInterfaceStyle = interfaceStyle
+        cardView.update(with: nil) // clear data and show placeholders
+        cardView.update(with: TestProfileCardModel.summaryCard()) // set data and hide placeholders
+        assertSnapshot(of: containerView, as: .image)
+    }
+
+    @MainActor
     func testLargeProfileSummaryViewPlaceholderCanUpdateColors() throws {
         let interfaceStyle: UIUserInterfaceStyle = .light
         let (containerView, cardView) = createViews(model: nil)
