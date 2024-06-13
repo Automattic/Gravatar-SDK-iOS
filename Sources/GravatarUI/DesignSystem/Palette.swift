@@ -49,7 +49,7 @@ public struct Palette {
     ///   - placeholder: Colors to use as placeholders.
     ///   - preferredUserInterfaceStyle: Defines if this palette is a dark or light palette.
     ///   This helps choose the correct images for this palette. Pass `.unspecified` to choose the system's user interface style. Default is `.unspecified`.
-    init(
+    public init(
         name: String,
         foreground: ForegroundColors,
         background: BackgroundColors,

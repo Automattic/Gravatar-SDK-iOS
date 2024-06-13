@@ -53,6 +53,27 @@ final class LargeProfileViewTests: XCTestCase {
     }
 
     @MainActor
+    func testLargeProfileViewPlaceholdersCanShowCustomPalette() throws {
+        let interfaceStyle: UIUserInterfaceStyle = .light
+        let (cardView, containerView) = createViews(paletteType: .custom(Palette.testPalette))
+        containerView.overrideUserInterfaceStyle = interfaceStyle
+        cardView.update(with: TestProfileCardModel.fullCard())
+        cardView.update(with: nil) // clear data and show placeholders
+        assertSnapshot(of: containerView, as: .image)
+    }
+
+    @MainActor
+    func testLargeProfileViewPlaceholdersCanHideCustomPalette() throws {
+        let interfaceStyle: UIUserInterfaceStyle = .light
+        let (cardView, containerView) = createViews(paletteType: .custom(Palette.testPalette))
+        containerView.overrideUserInterfaceStyle = interfaceStyle
+        cardView.update(with: TestProfileCardModel.fullCard())
+        cardView.update(with: nil) // clear data and show placeholders
+        cardView.update(with: TestProfileCardModel.summaryCard()) // set data and hide placeholders
+        assertSnapshot(of: containerView, as: .image)
+    }
+
+    @MainActor
     func testLargeProfileViewPlaceholderCanUpdateColors() throws {
         let interfaceStyle: UIUserInterfaceStyle = .light
         let (cardView, containerView) = createViews(paletteType: .light)
