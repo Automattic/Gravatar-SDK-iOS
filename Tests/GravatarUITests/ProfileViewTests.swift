@@ -50,6 +50,27 @@ final class ProfileViewTests: XCTestCase {
     }
 
     @MainActor
+    func testProfileViewPlaceholdersCanShowCustomPalette() throws {
+        let interfaceStyle: UIUserInterfaceStyle = .light
+        let (containerView, cardView) = createViews(model: TestProfileCardModel.summaryCard())
+        cardView.paletteType = .custom(Palette.testPalette)
+        containerView.overrideUserInterfaceStyle = interfaceStyle
+        cardView.update(with: nil) // clear data and show placeholders
+        assertSnapshot(of: containerView, as: .image)
+    }
+
+    @MainActor
+    func testProfileViewPlaceholdersCanHideCustomPalette() throws {
+        let interfaceStyle: UIUserInterfaceStyle = .light
+        let (containerView, cardView) = createViews(model: TestProfileCardModel.summaryCard())
+        cardView.paletteType = .custom(Palette.testPalette)
+        containerView.overrideUserInterfaceStyle = interfaceStyle
+        cardView.update(with: nil) // clear data and show placeholders
+        cardView.update(with: TestProfileCardModel.summaryCard()) // set data and hide placeholders
+        assertSnapshot(of: containerView, as: .image)
+    }
+
+    @MainActor
     func testProfileViewPlaceholderCanUpdateColors() throws {
         let interfaceStyle: UIUserInterfaceStyle = .light
         let (containerView, cardView) = createViews(model: nil)
