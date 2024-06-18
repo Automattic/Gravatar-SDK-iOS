@@ -41,6 +41,18 @@ class DefaultAvatarProvider: AvatarProviding {
         }
     }
 
+    var avatarBackgroundColor: UIColor? {
+        didSet {
+            applyBackgroundColor()
+        }
+    }
+
+    var avatarTintColor: UIColor? {
+        didSet {
+            applyTintColor()
+        }
+    }
+
     var activityIndicatorType: ActivityIndicatorType = .activity {
         didSet {
             avatarImageView.gravatar.activityIndicatorType = activityIndicatorType
@@ -60,6 +72,20 @@ class DefaultAvatarProvider: AvatarProviding {
     private func applyBorderColor() {
         guard !skipStyling else { return }
         avatarImageView.layer.borderColor = (avatarBorderColor ?? paletteType.palette.avatar.border).cgColor
+    }
+
+    private func applyBackgroundColor() {
+        guard !skipStyling else { return }
+        if avatarImageView.image == nil {
+            avatarImageView.backgroundColor = paletteType.palette.placeholder.backgroundColor
+        } else {
+            avatarImageView.backgroundColor = avatarBackgroundColor ?? paletteType.palette.avatar.background
+        }
+    }
+
+    private func applyTintColor() {
+        guard !skipStyling else { return }
+        avatarImageView.tintColor = avatarTintColor ?? paletteType.palette.avatar.tint
     }
 
     private func applyCornerRadius() {
@@ -106,6 +132,7 @@ class DefaultAvatarProvider: AvatarProviding {
         applyBorderWidth()
         applyBorderColor()
         applyCornerRadius()
+        applyBackgroundColor()
         applyAvatarActivityIndicatorTintColor()
         avatarImageView.clipsToBounds = true
     }
@@ -123,7 +150,7 @@ class DefaultAvatarProvider: AvatarProviding {
         self.paletteType = paletteType
         applyBorderColor()
         applyAvatarActivityIndicatorTintColor()
-        avatarImageView.backgroundColor = paletteType.palette.avatar.background
+        applyBackgroundColor()
         avatarImageView.overrideUserInterfaceStyle = paletteType.palette.preferredUserInterfaceStyle
     }
 

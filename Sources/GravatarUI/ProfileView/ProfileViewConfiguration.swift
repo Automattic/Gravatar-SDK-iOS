@@ -114,6 +114,8 @@ extension ProfileViewConfiguration {
         /// The border color of the avatar. If not set, the border color from the palette is used. See ``Palette`` . ``Palette/avatar`` .
         /// ``AvatarColors/border``.
         public var borderColor: UIColor? = nil
+        public var backgroundColor: UIColor? = nil
+        public var tintColor: UIColor? = nil
         /// Length of the avatar. If not set, a suitable length is chosen according to the ``ProfileViewConfiguration/Style``.
         public var avatarLength: CGFloat? = nil
     }
@@ -166,23 +168,28 @@ extension ProfileViewConfiguration {
     public static func claimProfile(profileStyle style: Style, userName: String? = nil, palette: PaletteType = .system) -> ProfileViewConfiguration {
         switch style {
         case .standard:
-            ProfileViewConfiguration.standard(model: ClaimProfileModel(userName: userName), palette: palette).configureAsClaim()
+            ProfileViewConfiguration.standard(model: ClaimProfileModel(userName: userName), palette: palette).configureAsClaim(borderWidth: 1)
         case .large:
             ProfileViewConfiguration.large(model: ClaimProfileModel(userName: userName), palette: palette).configureAsClaim()
         case .largeSummary:
             ProfileViewConfiguration.largeSummary(model: ClaimProfileModel(userName: userName), palette: palette).configureAsClaim()
         case .summary:
-            ProfileViewConfiguration.summary(model: ClaimProfileModel(userName: userName), palette: palette).configureAsClaim()
+            ProfileViewConfiguration.summary(model: ClaimProfileModel(userName: userName), palette: palette).configureAsClaim(borderWidth: 1)
         }
     }
 }
 
 extension ProfileViewConfiguration {
-    private func configureAsClaim() -> ProfileViewConfiguration {
+    private func configureAsClaim(borderWidth: CGFloat = 2) -> ProfileViewConfiguration {
         var copy = self
         copy.profileButtonStyle = .create
         var avatarConfig = AvatarConfiguration()
-        avatarConfig.placeholder = UIImage(named: "empty-profile-avatar")
+        avatarConfig.placeholder  = UIImage(named: "empty-profile-avatar")
+        avatarConfig.backgroundColor = palette.palette.avatar.background
+        avatarConfig.tintColor = palette.palette.avatar.tint
+        avatarConfig.borderColor = palette.palette.avatar.border
+        avatarConfig.borderWidth = borderWidth
+
         copy.avatarConfiguration = avatarConfig
         return copy
     }

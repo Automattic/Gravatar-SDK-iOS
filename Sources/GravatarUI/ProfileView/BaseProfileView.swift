@@ -386,6 +386,7 @@ open class BaseProfileView: UIView, UIContentView {
     /// Updates the profile view content and palette color with the given configuration.
     /// - Parameter config: A profile view configuration with the desired content and styles to be displayed.
     open func update(with config: ProfileViewConfiguration) {
+        loadAvatar(with: config)
         paletteType = config.palette
         padding = config.padding
         isLoading = config.isLoading
@@ -395,11 +396,12 @@ open class BaseProfileView: UIView, UIContentView {
             avatarProvider.cornerRadiusCalculator = config.avatarConfiguration.cornerRadiusCalculator
             avatarProvider.avatarBorderWidth = config.avatarConfiguration.borderWidth
             avatarProvider.avatarBorderColor = config.avatarConfiguration.borderColor
+            avatarProvider.avatarBackgroundColor = config.avatarConfiguration.backgroundColor
+            avatarProvider.avatarTintColor = config.avatarConfiguration.tintColor
         }
         if let length = config.avatarConfiguration.avatarLength {
             avatarLength = length
         }
-        loadAvatar(with: config)
         if config.model != nil || config.summaryModel != nil {
             profileButtonStyle = config.profileButtonStyle
         }

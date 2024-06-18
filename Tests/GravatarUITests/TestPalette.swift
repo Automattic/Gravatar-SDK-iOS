@@ -14,7 +14,8 @@ extension Palette {
             background: BackgroundColors(primary: UIColor(red: 251 / 255, green: 216 / 255, blue: 183 / 255, alpha: 1)),
             avatar: AvatarColors(
                 border: UIColor(red: 9 / 255, green: 93 / 255, blue: 154 / 255, alpha: 1),
-                background: UIColor(red: 9 / 255, green: 93 / 255, blue: 154 / 255, alpha: 0.25)
+                background: UIColor(red: 255 / 255, green: 179 / 255, blue: 186 / 255, alpha: 1), 
+                tint: UIColor(red: 9 / 255, green: 93 / 255, blue: 154 / 255, alpha: 1)
             ),
             border: UIColor(red: 255 / 255, green: 99 / 255, blue: 137 / 255, alpha: 1),
             placeholder: PlaceholderColors(

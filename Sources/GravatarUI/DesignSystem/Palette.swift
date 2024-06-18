@@ -22,10 +22,12 @@ public struct BackgroundColors {
 public struct AvatarColors {
     public let border: UIColor
     public let background: UIColor
+    public let tint: UIColor
 
-    public init(border: UIColor, background: UIColor) {
+    public init(border: UIColor, background: UIColor, tint: UIColor) {
         self.border = border
         self.background = background
+        self.tint = tint
     }
 }
 
@@ -128,6 +130,10 @@ extension Palette {
                 background: UIColor(
                     light: light.avatar.background,
                     dark: dark.avatar.background
+                ),
+                tint: UIColor(
+                    light: light.avatar.tint,
+                    dark: dark.avatar.tint
                 )
             ),
             border: .init(
@@ -155,7 +161,8 @@ extension Palette {
             background: .init(primary: .white),
             avatar: AvatarColors(
                 border: .porpoiseGray,
-                background: .smokeWhite
+                background: .white,
+                tint: .porpoiseGray
             ),
             border: .porpoiseGray,
             placeholder: PlaceholderColors(
@@ -177,7 +184,8 @@ extension Palette {
             background: .init(primary: .gravatarBlack),
             avatar: AvatarColors(
                 border: .porpoiseGray,
-                background: .boatAnchorGray
+                background: .gravatarBlack,
+                tint: .bovineGray
             ),
             border: .bovineGray,
             placeholder: PlaceholderColors(

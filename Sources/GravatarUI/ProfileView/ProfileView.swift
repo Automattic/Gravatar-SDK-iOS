@@ -54,8 +54,8 @@ public class ProfileView: BaseProfileView {
     }
 
     override public func update(with config: ProfileViewConfiguration) {
-        super.update(with: config)
         update(with: config.model)
+        super.update(with: config)
     }
 
     override public func showPlaceholders() {
