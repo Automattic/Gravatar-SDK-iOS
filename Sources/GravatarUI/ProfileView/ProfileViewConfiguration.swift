@@ -184,7 +184,7 @@ extension ProfileViewConfiguration {
         var copy = self
         copy.profileButtonStyle = .create
         var avatarConfig = AvatarConfiguration()
-        avatarConfig.placeholder  = UIImage(named: "empty-profile-avatar")
+        avatarConfig.placeholder = UIImage(named: "empty-profile-avatar")
         avatarConfig.backgroundColor = palette.palette.avatar.background
         avatarConfig.tintColor = palette.palette.avatar.tint
         avatarConfig.borderColor = palette.palette.avatar.border
