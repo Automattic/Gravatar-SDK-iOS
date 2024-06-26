@@ -146,10 +146,18 @@ extension Palette {
                 dark: dark.background.primary
             )),
             avatar: AvatarColors(
-                border: .porpoiseGray,
+                border: UIColor(
+                    light: light.avatar.border,
+                    dark: dark.avatar.border
+                ),
+
                 background: UIColor(
                     light: light.avatar.background,
                     dark: dark.avatar.background
+                ),
+                tint: UIColor(
+                    lightOptional: light.avatar.tint,
+                    darkOptional: dark.avatar.tint
                 )
             ),
             border: .init(
@@ -177,7 +185,8 @@ extension Palette {
             background: .init(primary: .white),
             avatar: AvatarColors(
                 border: .porpoiseGray,
-                background: .smokeWhite
+                background: .smokeWhite,
+                tint: .porpoiseGray
             ),
             border: .porpoiseGray,
             placeholder: PlaceholderColors(
@@ -199,7 +208,8 @@ extension Palette {
             background: .init(primary: .gravatarBlack),
             avatar: AvatarColors(
                 border: .porpoiseGray,
-                background: .boatAnchorGray
+                background: .boatAnchorGray,
+                tint: .porpoiseGray
             ),
             border: .bovineGray,
             placeholder: PlaceholderColors(

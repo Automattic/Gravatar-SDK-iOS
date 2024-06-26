@@ -12,6 +12,12 @@ extension UIColor {
         }
     }
 
+    // A way to create dynamic colors with optional parameters
+    convenience init?(lightOptional: UIColor?, darkOptional: UIColor?) {
+        guard let light = lightOptional, let dark = darkOptional else { return nil }
+        self.init(light: light, dark: dark)
+    }
+
     func hexString() -> String {
         var r: CGFloat = 0
         var g: CGFloat = 0
