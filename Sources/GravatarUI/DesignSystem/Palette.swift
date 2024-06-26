@@ -22,10 +22,20 @@ public struct BackgroundColors {
 public struct AvatarColors {
     public let border: UIColor
     public let background: UIColor
+    public let tint: UIColor?
 
-    public init(border: UIColor, background: UIColor) {
+    public init(border: UIColor, background: UIColor, tint: UIColor? = nil) {
         self.border = border
         self.background = background
+        self.tint = tint
+    }
+
+    public func with(border: UIColor? = nil, background: UIColor? = nil, tint: UIColor? = nil) -> AvatarColors {
+        AvatarColors(
+            border: border ?? self.border,
+            background: background ?? self.background,
+            tint: tint ?? self.tint
+        )
     }
 }
 
@@ -66,6 +76,18 @@ public struct Palette {
         self.placeholder = placeholder
         self.preferredUserInterfaceStyle = preferredUserInterfaceStyle
     }
+
+    public func with(avatarColors: ((AvatarColors) -> AvatarColors)? = nil) -> Palette {
+        Palette(
+            name: self.name,
+            foreground: self.foreground,
+            background: self.background,
+            avatar: avatarColors?(self.avatar) ?? self.avatar,
+            border: self.border,
+            placeholder: self.placeholder,
+            preferredUserInterfaceStyle: self.preferredUserInterfaceStyle
+        )
+    }
 }
 
 public struct PlaceholderColors {
@@ -77,23 +99,53 @@ public struct PlaceholderColors {
     }
 }
 
-public enum PaletteType {
+public typealias PaletteCustomizer = (PaletteType, Palette) -> Palette
+
+private let paletteCustomizerKey: UnsafeMutableRawPointer = .allocate(byteCount: 1, alignment: MemoryLayout<UInt8>.alignment)
+
+public protocol PaletteProvider {
+    var palette: Palette { get }
+}
+
+public struct PaletteConfig: PaletteProvider {
+    public let paletteType: PaletteType
+    var paletteCustomizer: PaletteCustomizer? = nil
+
+    public init(paletteType: PaletteType) {
+        self.paletteType = paletteType
+    }
+
+    public var palette: Palette {
+        if let paletteCustomizer {
+            return paletteCustomizer(paletteType, paletteType.palette)
+        }
+        return paletteType.palette
+    }
+
+    public mutating func withChanges(_ customizer: PaletteCustomizer?) {
+        self.paletteCustomizer = customizer
+    }
+}
+
+public enum PaletteType: PaletteProvider {
     case light
     case dark
     case system
     case custom(() -> Palette)
 
     public var palette: Palette {
+        var result: Palette
         switch self {
         case .light:
-            Palette.light
+            result = Palette.light
         case .dark:
-            Palette.dark
+            result = Palette.dark
         case .system:
-            Palette.system
+            result = Palette.system
         case .custom(let paletteProvider):
-            paletteProvider()
+            result = paletteProvider()
         }
+        return result
     }
 
     public var name: String {

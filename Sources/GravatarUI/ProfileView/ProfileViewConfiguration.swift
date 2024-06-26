@@ -30,6 +30,28 @@ public struct ProfileViewConfiguration: UIContentConfiguration {
 
     /// The palette to be used to style the view.
     public var palette: PaletteType
+
+    /*
+     @available(*, deprecated, renamed: "paletteConfig", message: "")
+      /// The palette to be used to style the view.
+      public var palette: PaletteType
+      {
+         set {
+             paletteConfig = .init(paletteType: newValue)
+         }
+
+         get {
+             paletteConfig.paletteType
+         }
+     }
+
+      public var paletteConfig: PaletteConfig {
+         didSet {
+
+         }
+     }
+     */
+
     /// Creates a padding space around the content of the profile view.
     /// To remove all pading, set this to zero.
     public var padding: UIEdgeInsets = BaseProfileView.defaultPadding
@@ -47,6 +69,7 @@ public struct ProfileViewConfiguration: UIContentConfiguration {
         self.model = model
         self.summaryModel = nil
         self.palette = palette
+        // self.paletteConfig = .init(paletteType: palette)
         self.profileStyle = profileStyle
     }
 
@@ -54,6 +77,7 @@ public struct ProfileViewConfiguration: UIContentConfiguration {
         self.model = nil
         self.summaryModel = model
         self.palette = palette
+        // self.paletteConfig = .init(paletteType: palette)
         self.profileStyle = profileStyle
     }
 
@@ -113,6 +137,7 @@ extension ProfileViewConfiguration {
         public var borderWidth: CGFloat = 1
         /// The border color of the avatar. If not set, the border color from the palette is used. See ``Palette`` . ``Palette/avatar`` .
         /// ``AvatarColors/border``.
+        @available(*, deprecated, renamed: "Palette.Avatar.border", message: "Use Palette.Avatar.border")
         public var borderColor: UIColor? = nil
         /// Length of the avatar. If not set, a suitable length is chosen according to the ``ProfileViewConfiguration/Style``.
         public var avatarLength: CGFloat? = nil
@@ -180,9 +205,26 @@ extension ProfileViewConfiguration {
 extension ProfileViewConfiguration {
     private func configureAsClaim() -> ProfileViewConfiguration {
         var copy = self
+        copy.palette = .custom {
+            switch self.palette {
+            case .light:
+                return self.palette.palette.with(avatarColors: { $0.with(background: .white, tint: .porpoiseGray) })
+            case .dark:
+                return self.palette.palette.with(avatarColors: { $0.with(background: .gravatarBlack, tint: .bovineGray) })
+            case .system:
+                return self.palette.palette.with(avatarColors: {
+                    $0.with(
+                        background: UIColor(light: .white, dark: .gravatarBlack),
+                        tint: UIColor(light: .porpoiseGray, dark: .bovineGray)
+                    )
+                })
+            case .custom(let paletteProvider):
+                return paletteProvider()
+            }
+        }
         copy.profileButtonStyle = .create
         var avatarConfig = AvatarConfiguration()
-        avatarConfig.placeholder = UIImage(named: "empty-profile-avatar")
+        avatarConfig.placeholder = UIImage(named: "empty-profile-avatar")?.withRenderingMode(.alwaysTemplate)
         copy.avatarConfiguration = avatarConfig
         return copy
     }
