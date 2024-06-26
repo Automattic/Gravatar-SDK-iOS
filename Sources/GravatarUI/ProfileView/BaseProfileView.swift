@@ -201,14 +201,18 @@ open class BaseProfileView: UIView, UIContentView {
         return stack
     }()
 
+    private var _paletteType: PaletteType
+
     /// The palette used to set the profile view colors.
     public var paletteType: PaletteType {
-        didSet {
-            var newPaletteType = paletteType
+        get { _paletteType }
+        set {
+            var newValue = newValue
             if let paletteCustomizer {
-                newPaletteType = paletteCustomizer(paletteType)
+                newValue = paletteCustomizer(newValue)
             }
-            refresh(with: newPaletteType)
+            _paletteType = newValue
+            refresh(with: newValue)
         }
     }
 
@@ -240,13 +244,13 @@ open class BaseProfileView: UIView, UIContentView {
         avatarLength: CGFloat? = nil,
         padding: UIEdgeInsets? = nil
     ) {
-        self.paletteType = paletteType ?? .system
+        self._paletteType = paletteType ?? .system
         self.avatarLength = avatarLength ?? Self.avatarLength
         let placeholderDisplayer = ProfileViewPlaceholderDisplayer()
         self.placeholderDisplayer = placeholderDisplayer
         self.activityIndicator = ProfilePlaceholderActivityIndicator(placeholderDisplayer: placeholderDisplayer)
         self.avatarType = (avatarType ?? AvatarType.imageView(UIImageView()))
-        self.avatarProvider = self.avatarType.avatarProvider(avatarLength: self.avatarLength, paletteType: self.paletteType)
+        self.avatarProvider = self.avatarType.avatarProvider(avatarLength: self.avatarLength, paletteType: self._paletteType)
         self.profileButtonStyle = profileButtonStyle ?? self.profileButtonStyle
         super.init(frame: frame)
         self.padding = padding ?? Self.defaultPadding
