@@ -150,7 +150,6 @@ extension Palette {
                     light: light.avatar.border,
                     dark: dark.avatar.border
                 ),
-
                 background: UIColor(
                     light: light.avatar.background,
                     dark: dark.avatar.background
