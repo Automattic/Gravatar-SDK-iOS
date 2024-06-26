@@ -200,7 +200,7 @@ open class BaseProfileView: UIView, UIContentView {
         stack.setContentHuggingPriority(.defaultHigh, for: .horizontal)
         return stack
     }()
-    
+
     /// The palette used to set the profile view colors.
     public var paletteType: PaletteType {
         didSet {
@@ -213,7 +213,7 @@ open class BaseProfileView: UIView, UIContentView {
     }
 
     public var paletteCustomizer: PaletteCustomizer?
-    
+
     private var avatarLength: CGFloat {
         didSet {
             if let avatarProvider = avatarProvider as? DefaultAvatarProvider {

@@ -30,7 +30,7 @@ public struct ProfileViewConfiguration: UIContentConfiguration {
 
     /// The palette to be used to style the view.
     public var palette: PaletteType
-    
+
     public var paletteCustomizer: PaletteCustomizer?
 
     /// Creates a padding space around the content of the profile view.
@@ -186,7 +186,7 @@ extension ProfileViewConfiguration {
 extension ProfileViewConfiguration {
     private func configureAsClaim() -> ProfileViewConfiguration {
         var copy = self
-        copy.paletteCustomizer = { paletteType in
+        copy.paletteCustomizer = { _ in
             .custom {
                 switch self.palette {
                 case .light:
