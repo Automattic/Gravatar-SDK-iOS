@@ -50,7 +50,6 @@ public struct ProfileViewConfiguration: UIContentConfiguration {
         self.model = model
         self.summaryModel = nil
         self.palette = palette
-        // self.paletteConfig = .init(paletteType: palette)
         self.profileStyle = profileStyle
     }
 
@@ -58,7 +57,6 @@ public struct ProfileViewConfiguration: UIContentConfiguration {
         self.model = nil
         self.summaryModel = model
         self.palette = palette
-        // self.paletteConfig = .init(paletteType: palette)
         self.profileStyle = profileStyle
     }
 
