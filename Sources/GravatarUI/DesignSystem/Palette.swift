@@ -106,18 +106,16 @@ public enum PaletteType {
     case custom(() -> Palette)
 
     public var palette: Palette {
-        var result: Palette
         switch self {
         case .light:
-            result = Palette.light
+            Palette.light
         case .dark:
-            result = Palette.dark
+            Palette.dark
         case .system:
-            result = Palette.system
+            Palette.system
         case .custom(let paletteProvider):
-            result = paletteProvider()
+            paletteProvider()
         }
-        return result
     }
 
     public var name: String {
