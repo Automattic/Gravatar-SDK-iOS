@@ -1,6 +1,8 @@
 import Gravatar
 import UIKit
 
+public typealias PaletteCustomizer = (PaletteType) -> PaletteType
+
 /// This class is used as a base class to create different profile view design styles.
 /// > This class is meant to be used as an abstract class. Do not use it on its own.
 ///
@@ -198,14 +200,20 @@ open class BaseProfileView: UIView, UIContentView {
         stack.setContentHuggingPriority(.defaultHigh, for: .horizontal)
         return stack
     }()
-
+    
     /// The palette used to set the profile view colors.
     public var paletteType: PaletteType {
         didSet {
-            refresh(with: paletteType)
+            var newPaletteType = paletteType
+            if let paletteCustomizer {
+                newPaletteType = paletteCustomizer(paletteType)
+            }
+            refresh(with: newPaletteType)
         }
     }
 
+    public var paletteCustomizer: PaletteCustomizer?
+    
     private var avatarLength: CGFloat {
         didSet {
             if let avatarProvider = avatarProvider as? DefaultAvatarProvider {
@@ -386,6 +394,7 @@ open class BaseProfileView: UIView, UIContentView {
     /// Updates the profile view content and palette color with the given configuration.
     /// - Parameter config: A profile view configuration with the desired content and styles to be displayed.
     open func update(with config: ProfileViewConfiguration) {
+        paletteCustomizer = config.paletteCustomizer
         paletteType = config.palette
         padding = config.padding
         isLoading = config.isLoading

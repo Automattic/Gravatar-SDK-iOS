@@ -99,35 +99,7 @@ public struct PlaceholderColors {
     }
 }
 
-public typealias PaletteCustomizer = (PaletteType, Palette) -> Palette
-
-private let paletteCustomizerKey: UnsafeMutableRawPointer = .allocate(byteCount: 1, alignment: MemoryLayout<UInt8>.alignment)
-
-public protocol PaletteProvider {
-    var palette: Palette { get }
-}
-
-public struct PaletteConfig: PaletteProvider {
-    public let paletteType: PaletteType
-    var paletteCustomizer: PaletteCustomizer? = nil
-
-    public init(paletteType: PaletteType) {
-        self.paletteType = paletteType
-    }
-
-    public var palette: Palette {
-        if let paletteCustomizer {
-            return paletteCustomizer(paletteType, paletteType.palette)
-        }
-        return paletteType.palette
-    }
-
-    public mutating func withChanges(_ customizer: PaletteCustomizer?) {
-        self.paletteCustomizer = customizer
-    }
-}
-
-public enum PaletteType: PaletteProvider {
+public enum PaletteType {
     case light
     case dark
     case system

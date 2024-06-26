@@ -30,27 +30,8 @@ public struct ProfileViewConfiguration: UIContentConfiguration {
 
     /// The palette to be used to style the view.
     public var palette: PaletteType
-
-    /*
-     @available(*, deprecated, renamed: "paletteConfig", message: "")
-      /// The palette to be used to style the view.
-      public var palette: PaletteType
-      {
-         set {
-             paletteConfig = .init(paletteType: newValue)
-         }
-
-         get {
-             paletteConfig.paletteType
-         }
-     }
-
-      public var paletteConfig: PaletteConfig {
-         didSet {
-
-         }
-     }
-     */
+    
+    public var paletteCustomizer: PaletteCustomizer?
 
     /// Creates a padding space around the content of the profile view.
     /// To remove all pading, set this to zero.
@@ -205,21 +186,23 @@ extension ProfileViewConfiguration {
 extension ProfileViewConfiguration {
     private func configureAsClaim() -> ProfileViewConfiguration {
         var copy = self
-        copy.palette = .custom {
-            switch self.palette {
-            case .light:
-                return self.palette.palette.with(avatarColors: { $0.with(background: .white, tint: .porpoiseGray) })
-            case .dark:
-                return self.palette.palette.with(avatarColors: { $0.with(background: .gravatarBlack, tint: .bovineGray) })
-            case .system:
-                return self.palette.palette.with(avatarColors: {
-                    $0.with(
-                        background: UIColor(light: .white, dark: .gravatarBlack),
-                        tint: UIColor(light: .porpoiseGray, dark: .bovineGray)
-                    )
-                })
-            case .custom(let paletteProvider):
-                return paletteProvider()
+        copy.paletteCustomizer = { paletteType in
+            .custom {
+                switch self.palette {
+                case .light:
+                    return self.palette.palette.with(avatarColors: { $0.with(background: .white, tint: .porpoiseGray) })
+                case .dark:
+                    return self.palette.palette.with(avatarColors: { $0.with(background: .gravatarBlack, tint: .bovineGray) })
+                case .system:
+                    return self.palette.palette.with(avatarColors: {
+                        $0.with(
+                            background: UIColor(light: .white, dark: .gravatarBlack),
+                            tint: UIColor(light: .porpoiseGray, dark: .bovineGray)
+                        )
+                    })
+                case .custom(let paletteProvider):
+                    return paletteProvider()
+                }
             }
         }
         copy.profileButtonStyle = .create
