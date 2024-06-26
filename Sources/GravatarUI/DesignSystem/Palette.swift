@@ -22,10 +22,20 @@ public struct BackgroundColors {
 public struct AvatarColors {
     public let border: UIColor
     public let background: UIColor
+    public let tint: UIColor?
 
-    public init(border: UIColor, background: UIColor) {
+    public init(border: UIColor, background: UIColor, tint: UIColor? = nil) {
         self.border = border
         self.background = background
+        self.tint = tint
+    }
+
+    public func withReplacing(border: UIColor? = nil, background: UIColor? = nil, tint: UIColor? = nil) -> AvatarColors {
+        AvatarColors(
+            border: border ?? self.border,
+            background: background ?? self.background,
+            tint: tint ?? self.tint
+        )
     }
 }
 
@@ -65,6 +75,18 @@ public struct Palette {
         self.border = border
         self.placeholder = placeholder
         self.preferredUserInterfaceStyle = preferredUserInterfaceStyle
+    }
+
+    public func withReplacing(avatarColors: ((AvatarColors) -> AvatarColors)? = nil) -> Palette {
+        Palette(
+            name: self.name,
+            foreground: self.foreground,
+            background: self.background,
+            avatar: avatarColors?(self.avatar) ?? self.avatar,
+            border: self.border,
+            placeholder: self.placeholder,
+            preferredUserInterfaceStyle: self.preferredUserInterfaceStyle
+        )
     }
 }
 

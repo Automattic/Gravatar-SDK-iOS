@@ -30,6 +30,8 @@ public struct ProfileViewConfiguration: UIContentConfiguration {
 
     /// The palette to be used to style the view.
     public var palette: PaletteType
+    /// A customization block on the PaletteType. Set this if you need to partially alter the current palette.
+    public var paletteCustomizer: PaletteCustomizer?
     /// Creates a padding space around the content of the profile view.
     /// To remove all pading, set this to zero.
     public var padding: UIEdgeInsets = BaseProfileView.defaultPadding
@@ -181,6 +183,34 @@ extension ProfileViewConfiguration {
     private func configureAsClaim() -> ProfileViewConfiguration {
         var copy = self
         copy.profileButtonStyle = .create
+        copy.paletteCustomizer = { paletteType in
+            switch paletteType {
+            case .custom:
+                paletteType
+            case .light:
+                .custom({
+                    paletteType.palette.withReplacing(
+                        avatarColors: { $0.withReplacing(background: .white, tint: .porpoiseGray) }
+                    )
+                })
+            case .dark:
+                .custom({
+                    paletteType.palette.withReplacing(
+                        avatarColors: { $0.withReplacing(background: .gravatarBlack, tint: .bovineGray) }
+                    )
+                })
+            case .system:
+                    .custom({
+                        paletteType.palette.withReplacing(
+                            avatarColors: {
+                                $0.withReplacing(
+                                    background: UIColor(light: .white, dark: .gravatarBlack),
+                                    tint: UIColor(light: .porpoiseGray, dark: .bovineGray)
+                                )
+                            })
+                    })
+            }
+        }
         var avatarConfig = AvatarConfiguration()
         avatarConfig.placeholder = UIImage(named: "empty-profile-avatar")
         copy.avatarConfiguration = avatarConfig
