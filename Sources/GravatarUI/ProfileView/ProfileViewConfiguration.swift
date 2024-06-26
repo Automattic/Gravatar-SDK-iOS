@@ -188,27 +188,28 @@ extension ProfileViewConfiguration {
             case .custom:
                 paletteType
             case .light:
-                .custom({
+                .custom {
                     paletteType.palette.withReplacing(
                         avatarColors: { $0.withReplacing(background: .white, tint: .porpoiseGray) }
                     )
-                })
+                }
             case .dark:
-                .custom({
+                .custom {
                     paletteType.palette.withReplacing(
                         avatarColors: { $0.withReplacing(background: .gravatarBlack, tint: .bovineGray) }
                     )
-                })
+                }
             case .system:
-                    .custom({
-                        paletteType.palette.withReplacing(
-                            avatarColors: {
-                                $0.withReplacing(
-                                    background: UIColor(light: .white, dark: .gravatarBlack),
-                                    tint: UIColor(light: .porpoiseGray, dark: .bovineGray)
-                                )
-                            })
-                    })
+                .custom {
+                    paletteType.palette.withReplacing(
+                        avatarColors: {
+                            $0.withReplacing(
+                                background: UIColor(light: .white, dark: .gravatarBlack),
+                                tint: UIColor(light: .porpoiseGray, dark: .bovineGray)
+                            )
+                        }
+                    )
+                }
             }
         }
         var avatarConfig = AvatarConfiguration()
