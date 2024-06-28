@@ -48,15 +48,21 @@ class BackgroundColorPlaceholderDisplayer<T: UIView>: PlaceholderDisplaying {
 @MainActor
 class AvatarPlaceholderDisplayer<T: UIView>: BackgroundColorPlaceholderDisplayer<T> {
     private var originalBorderWidth: CGFloat = 0
+    private var isShowing: Bool = false
 
     override func showPlaceholder() {
         super.showPlaceholder()
+        // Don't set originalBorderWidth if isShowing is true, otherwise it overrides the original value.
+        guard !isShowing else { return }
+        isShowing = true
         originalBorderWidth = baseView.layer.borderWidth
         baseView.layer.borderWidth = 0
     }
 
     override func hidePlaceholder() {
         super.hidePlaceholder()
+        guard isShowing else { return }
+        isShowing = false
         baseView.layer.borderWidth = originalBorderWidth
     }
 }

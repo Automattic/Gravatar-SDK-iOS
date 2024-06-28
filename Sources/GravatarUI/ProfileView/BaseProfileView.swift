@@ -1,6 +1,8 @@
 import Gravatar
 import UIKit
 
+public typealias PaletteCustomizer = (PaletteType) -> PaletteType
+
 /// This class is used as a base class to create different profile view design styles.
 /// > This class is meant to be used as an abstract class. Do not use it on its own.
 ///
@@ -199,12 +201,22 @@ open class BaseProfileView: UIView, UIContentView {
         return stack
     }()
 
+    private var _paletteType: PaletteType
+
     /// The palette used to set the profile view colors.
     public var paletteType: PaletteType {
-        didSet {
-            refresh(with: paletteType)
+        get { _paletteType }
+        set {
+            var newValue = newValue
+            if let paletteCustomizer {
+                newValue = paletteCustomizer(newValue)
+            }
+            _paletteType = newValue
+            refresh(with: newValue)
         }
     }
+
+    public var paletteCustomizer: PaletteCustomizer?
 
     private var avatarLength: CGFloat {
         didSet {
@@ -232,13 +244,13 @@ open class BaseProfileView: UIView, UIContentView {
         avatarLength: CGFloat? = nil,
         padding: UIEdgeInsets? = nil
     ) {
-        self.paletteType = paletteType ?? .system
+        self._paletteType = paletteType ?? .system
         self.avatarLength = avatarLength ?? Self.avatarLength
         let placeholderDisplayer = ProfileViewPlaceholderDisplayer()
         self.placeholderDisplayer = placeholderDisplayer
         self.activityIndicator = ProfilePlaceholderActivityIndicator(placeholderDisplayer: placeholderDisplayer)
         self.avatarType = (avatarType ?? AvatarType.imageView(UIImageView()))
-        self.avatarProvider = self.avatarType.avatarProvider(avatarLength: self.avatarLength, paletteType: self.paletteType)
+        self.avatarProvider = self.avatarType.avatarProvider(avatarLength: self.avatarLength, paletteType: self._paletteType)
         self.profileButtonStyle = profileButtonStyle ?? self.profileButtonStyle
         super.init(frame: frame)
         self.padding = padding ?? Self.defaultPadding
@@ -386,6 +398,7 @@ open class BaseProfileView: UIView, UIContentView {
     /// Updates the profile view content and palette color with the given configuration.
     /// - Parameter config: A profile view configuration with the desired content and styles to be displayed.
     open func update(with config: ProfileViewConfiguration) {
+        paletteCustomizer = config.paletteCustomizer
         paletteType = config.palette
         padding = config.padding
         isLoading = config.isLoading

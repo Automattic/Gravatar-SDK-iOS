@@ -111,6 +111,14 @@ final class ProfileSummaryViewTests: XCTestCase {
     }
 
     @MainActor
+    func testProfileSummaryViewEmptyStateCustomPalette() throws {
+        let (containerView, cardView) = createViews(model: TestProfileCardModel.summaryCard())
+        cardView.paletteType = .custom(Palette.testPalette)
+        cardView.updateWithClaimProfilePrompt()
+        assertSnapshot(of: containerView, as: .image)
+    }
+
+    @MainActor
     func testProfileSummaryViewCustomAvatarViewImageViewSubview() {
         let (containerView, _) = createViews(
             model: TestProfileCardModel.summaryCard(),
