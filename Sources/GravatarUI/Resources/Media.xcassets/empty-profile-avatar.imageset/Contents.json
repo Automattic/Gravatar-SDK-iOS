@@ -1,17 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "empty-profile-avatar-light.pdf",
-      "idiom" : "universal"
-    },
-    {
-      "appearances" : [
-        {
-          "appearance" : "luminosity",
-          "value" : "dark"
-        }
-      ],
-      "filename" : "Empty Profile Avatar.pdf",
+      "filename" : "Regular-S.svg",
       "idiom" : "universal"
     }
   ],
@@ -20,6 +10,7 @@
     "version" : 1
   },
   "properties" : {
-    "preserves-vector-representation" : true
+    "preserves-vector-representation" : true,
+    "template-rendering-intent" : "template"
   }
 }
