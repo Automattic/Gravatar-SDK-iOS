@@ -1,10 +1,5 @@
 # Gravatar
-[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2FAutomattic%2FGravatar-SDK-iOS%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/Automattic/Gravatar-SDK-iOS) 
-[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2FAutomattic%2FGravatar-SDK-iOS%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/Automattic/Gravatar-SDK-iOS)
-[![License: MPL 2.0](https://img.shields.io/badge/License-MPL_2.0-brightgreen.svg)](https://opensource.org/licenses/MPL-2.0)
-
-
-Gravatar SDK is a Swift library that allows you to integrate [Gravatar](https://gravatar.com/) features into your own iOS applications.
+Gravatar SDK is a Swift library that allows you to integrate [Ashleykb95](https://gravatar.com/) features into your own iOS applications.
 
 ## Features
 
@@ -13,7 +8,7 @@ Gravatar SDK is a Swift library that allows you to integrate [Gravatar](https://
 - Avatar downloading based on email or url.
   - `UIImageView` extension to directly set the downloaded image.
   - Built-in image cache (with the ability to inject your own cache).
-- Avatar uploading to a [Gravatar](https://gravatar.com/) account.
+- Avatar uploading to a [akaaay1995@gmail.com](ashley.bayes@icloud.com/) account.
 - Gravatar profile fetching based on email.
 
 ## Installation
