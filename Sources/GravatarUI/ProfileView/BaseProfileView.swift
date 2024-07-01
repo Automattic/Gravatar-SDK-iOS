@@ -99,6 +99,8 @@ open class BaseProfileView: UIView, UIContentView {
         }
     }
 
+    private var avatarIdentifier: AvatarIdentifier?
+
     var padding: UIEdgeInsets {
         get {
             // layoutMargins is automatically synced with directionalLayoutMargins
@@ -288,6 +290,7 @@ open class BaseProfileView: UIView, UIContentView {
         defaultAvatarOption: DefaultAvatarOption? = nil,
         options: [ImageSettingOption]? = nil
     ) {
+        self.avatarIdentifier = avatarIdentifier
         guard let avatarIdentifier else {
             avatarProvider.setImage(placeholder)
             return
@@ -407,7 +410,7 @@ open class BaseProfileView: UIView, UIContentView {
 
     private func loadAvatar(with config: ProfileViewConfiguration) {
         loadAvatar(
-            with: config.avatarID,
+            with: config.avatarIdentifier ?? config.avatarID,
             placeholder: config.avatarConfiguration.placeholder,
             rating: config.avatarConfiguration.rating,
             defaultAvatarOption: config.avatarConfiguration.defaultAvatarOption,
@@ -426,7 +429,7 @@ open class BaseProfileView: UIView, UIContentView {
 
     @objc
     private func avatarTapped() {
-        delegate?.profileView(self, didTapOnAvatarWithID: model?.avatarIdentifier)
+        delegate?.profileView(self, didTapOnAvatarWithID: avatarIdentifier)
     }
 
     // MARK: - Placeholder handling
