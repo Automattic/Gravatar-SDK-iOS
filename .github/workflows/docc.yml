@@ -3,7 +3,7 @@ name: Deploy Gravatar DocC
 on:
   # Runs on pushes and PRs targeting the default branch
   push:
-    branches: [ "trunk", "etoledom/gh-docs" ]
+    branches: [ "trunk" ]
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
   contents: read
