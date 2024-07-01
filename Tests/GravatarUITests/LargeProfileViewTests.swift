@@ -115,6 +115,13 @@ final class LargeProfileViewTests: XCTestCase {
     }
 
     @MainActor
+    func testLargeProfileViewEmptyStateCustomPalette() throws {
+        let (cardView, containerView) = createViews(paletteType: .custom(Palette.testPalette))
+        cardView.updateWithClaimProfilePrompt()
+        assertSnapshot(of: containerView, as: .image)
+    }
+
+    @MainActor
     func testLargeProfileCustomAvatarViewImageViewSubview() {
         let (cardView, containerView) = createViews(
             paletteType: .light,
