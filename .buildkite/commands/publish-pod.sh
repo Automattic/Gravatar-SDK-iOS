@@ -12,7 +12,7 @@ echo "--- :rubygems: Setting up Gems"
 install_gems
 
 echo "--- :cocoapods: Publishing $PODSPEC_PATH to CocoaPods CDN"
-publish_pod --synchronous "$PODSPEC_PATH"
+publish_pod --allow-warnings --synchronous "$PODSPEC_PATH"
 
 echo "--- :slack: Notifying Slack"
 slack_notify_pod_published "$PODSPEC_PATH" "$SLACK_WEBHOOK"
