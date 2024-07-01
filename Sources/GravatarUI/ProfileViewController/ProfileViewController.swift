@@ -91,6 +91,9 @@ public class ProfileViewController: UIViewController {
     }
 
     public func fetchProfile(profileIdentifier: ProfileIdentifier) {
+        var newConfig = self.configuration
+        newConfig.avatarIdentifier = profileIdentifier.avatarIdentifier
+        self.configuration = newConfig
         Task {
             await viewModel.fetchProfile(profileIdentifier: profileIdentifier)
         }

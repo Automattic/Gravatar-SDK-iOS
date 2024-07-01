@@ -35,7 +35,7 @@ class DemoProfilePresentationStylesViewController: DemoBaseProfileViewController
             }
         }
         else {
-            let viewController = ProfileViewController(configuration: newConfig(), viewModel: .init(), profileIdentifier: profileIdentifier)
+            let viewController = ProfileViewController(configuration: newConfig(profileIdentifier: profileIdentifier), viewModel: .init(), profileIdentifier: profileIdentifier)
             self.profileViewController = viewController
             presentInBottomSheet(viewController)
         }
@@ -74,7 +74,7 @@ class DemoProfilePresentationStylesViewController: DemoBaseProfileViewController
         bottomSheetNavigationViewController?.navigationBar.scrollEdgeAppearance = appearance
     }
     
-    func newConfig() -> ProfileViewConfiguration {
+    func newConfig(profileIdentifier: ProfileIdentifier?) -> ProfileViewConfiguration {
         var config: ProfileViewConfiguration
         switch preferredProfileStyle {
         case .large:
@@ -86,6 +86,7 @@ class DemoProfilePresentationStylesViewController: DemoBaseProfileViewController
         case .summary:
             config = ProfileViewConfiguration.summary(palette: preferredPaletteType)
         }
+        config.avatarIdentifier = profileIdentifier?.avatarIdentifier
         if customizeAvatarSwitchWithLabel.isOn {
             config.avatarConfiguration.borderColor = .green
             config.avatarConfiguration.borderWidth = 3
