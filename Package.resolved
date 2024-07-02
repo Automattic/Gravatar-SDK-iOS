@@ -1,4 +1,5 @@
 {
+  "originHash" : "85a761808437c26b26a29368f9cc9aa509cdd039f95eff656309c72fa6ff2557",
   "pins" : [
     {
       "identity" : "swift-snapshot-testing",
@@ -14,8 +15,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-syntax",
       "state" : {
-        "revision" : "fa8f95c2d536d6620cc2f504ebe8a6167c9fc2dd",
-        "version" : "510.0.1"
+        "revision" : "303e5c5c36d6a558407d364878df131c3546fad8",
+        "version" : "510.0.2"
       }
     },
     {
@@ -23,10 +24,10 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/nicklockwood/SwiftFormat",
       "state" : {
-        "revision" : "9e5d0d588ab6e271fe9887ec3dde21d544d4b080",
-        "version" : "0.53.5"
+        "revision" : "dd989a46d0c6f15c016484bab8afe5e7a67a4022",
+        "version" : "0.54.0"
       }
     }
   ],
-  "version" : 2
+  "version" : 3
 }
