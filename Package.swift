@@ -43,6 +43,7 @@ let package = Package(
         .target(
             name: "GravatarUI",
             dependencies: ["Gravatar"],
+            resources: [.process("Resources")],
             swiftSettings: [
                 .enableExperimentalFeature("StrictConcurrency")
             ]
