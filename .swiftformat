@@ -1,3 +1,5 @@
+--swiftversion 5.10
+
 ## File options
 
 --exclude .build,**/*.docc/**
