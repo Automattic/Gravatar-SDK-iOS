@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import GravatarUI
 
 class MainTableViewController: UITableViewController {
 
@@ -19,6 +20,7 @@ class MainTableViewController: UITableViewController {
         case configuration
         case profileViewController
         case displayRemoteSVG
+        case avatarPicker
     }
     
     private static let reuseID =  "DefaultCell"
@@ -54,6 +56,8 @@ class MainTableViewController: UITableViewController {
             content.text = "Profile View Controller"
         case .displayRemoteSVG:
             content.text = "Display remote SVG"
+        case .avatarPicker:
+            content.text = "Avatar Picker"
         }
         cell.contentConfiguration = content
         return cell
@@ -82,6 +86,8 @@ class MainTableViewController: UITableViewController {
             navigationController?.pushViewController(DemoProfilePresentationStylesViewController(), animated: true)
         case .displayRemoteSVG:
             navigationController?.pushViewController(DemoRemoteSVGViewController(), animated: true)
+        case .avatarPicker:
+            navigationController?.pushViewController(DemoAvatarPickerViewController(), animated: true)
         }
     }
 }

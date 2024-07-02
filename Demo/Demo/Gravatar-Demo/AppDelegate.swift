@@ -5,9 +5,15 @@ import Gravatar
 class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
-        if let apiKey = apiKey {
+        if let apiKey = Secrets.apiKey {
             Task {
-                await Configuration.shared.configure(with: apiKey)
+                await Configuration.shared.configure(
+                    apiKey: apiKey,
+                    auth: .init(
+                        clientID: Secrets.clientID,
+                        clientSecret: Secrets.clientSecret,
+                        redirectURI: Secrets.redirectURI)
+                )
             }
         }
         return true

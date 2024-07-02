@@ -1,9 +1,9 @@
 import UIKit
 
-typealias HTTPHeaderField = (name: String, value: String)
+package typealias HTTPHeaderField = (name: String, value: String)
 
 /// Represents a type which can be used by Gravatar to upload an  image to Gravatar.
-protocol ImageUploader {
+protocol ImageUploader: Sendable {
     /// Uploads an image to be used as the user's Gravatar profile image, and returns the `URLResponse` of the network tasks asynchronously. Throws
     /// `ImageUploadError`.
     /// - Parameters:

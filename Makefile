@@ -15,6 +15,7 @@ OPENAPI_YAML_PATH ?= $(CURRENT_MAKEFILE_DIR)/openapi/spec.yaml
 MODEL_TEMPLATE_PATH ?= $(CURRENT_MAKEFILE_DIR)/openapi
 OUTPUT_DIRECTORY ?= $(CURRENT_MAKEFILE_DIR)/Sources/Gravatar/OpenApi/Generated
 SECRETS_PATH=$(CURRENT_MAKEFILE_DIR)/Demo/Demo/Gravatar-Demo/Secrets.swift
+SECRETS_TEMPLATE_PATH=$(CURRENT_MAKEFILE_DIR)/Demo/Demo/Gravatar-Demo/Secrets.tpl
 
 # Derived values (don't change these).
 CURRENT_MAKEFILE_PATH := $(abspath $(lastword $(MAKEFILE_LIST)))
@@ -80,8 +81,7 @@ update-example-snapshots:
 
 secrets: # Creates the Secrets file in the Demo app.
 	if [ ! -f $(SECRETS_PATH) ]; then \
-		touch $(SECRETS_PATH); \
-		echo "let apiKey: String? = nil" > $(SECRETS_PATH); \
+		cp "$(SECRETS_TEMPLATE_PATH)" "$(SECRETS_PATH)"; \
 	fi
 
 install-and-generate: $(OPENAPI_GENERATOR_CLONE_DIR) # Clones and setup the openapi-generator.

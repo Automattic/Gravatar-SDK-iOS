@@ -1,6 +1,18 @@
 import Foundation
 
+public struct Avatar: Decodable, Sendable {
+    private let image_id: String
+    private let image_url: String
+    package var id: String {
+        image_id
+    }
+    package var url: String {
+        "https://gravatar.com\(image_url)?size=256"
+    }
+}
+
 private let baseURL = URL(string: "https://api.gravatar.com/v3/profiles/")!
+private let avatarsBaseURL = URL(string: "https://api.gravatar.com/v3/me/avatars")!
 
 /// A service to perform Profile related tasks.
 ///
@@ -22,6 +34,13 @@ public struct ProfileService: ProfileFetching, Sendable {
         let url = baseURL.appending(pathComponent: profileID.id)
         let request = await URLRequest(url: url).authorized()
         return try await fetch(with: request)
+    }
+
+    public func fetchAvatars(with token: String) async throws -> [Avatar] {
+        let url = avatarsBaseURL
+        let request = URLRequest(url: url).settingAuthorizationHeaderField(with: token)
+        let (data, _) = try await client.fetchData(with: request)
+        return try data.decode()
     }
 }
 
