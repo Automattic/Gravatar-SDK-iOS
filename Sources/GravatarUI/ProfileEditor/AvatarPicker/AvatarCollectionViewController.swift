@@ -60,8 +60,8 @@ class AvatarCollectionViewController: UICollectionViewController {
     // MARK: - Data source
 
     func append(_ avatars: [AvatarImageModel]) async {
-        avatars.forEach {
-            avatarImageModels[$0.id] = $0
+        for avatar in avatars {
+            avatarImageModels[avatar.id] = avatar
         }
 
         let ids = avatars.map { $0.id }
@@ -75,7 +75,7 @@ class AvatarCollectionViewController: UICollectionViewController {
     }
 
     func append(_ avatars: [AvatarImageModel]) {
-        Task { 
+        Task {
             await append(avatars)
         }
     }

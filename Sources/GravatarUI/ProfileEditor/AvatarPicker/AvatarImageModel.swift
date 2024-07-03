@@ -22,7 +22,7 @@ struct AvatarImageModel: Hashable, Identifiable {
     }
 
     func togglingLoading() -> AvatarImageModel {
-        if case let .remote(url, isLoading) = state {
+        if case .remote(let url, let isLoading) = state {
             return AvatarImageModel(id: id, state: .remote(url: url, isLoading: !isLoading))
         } else {
             return self

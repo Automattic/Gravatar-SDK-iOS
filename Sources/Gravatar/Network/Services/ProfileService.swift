@@ -6,6 +6,7 @@ public struct Avatar: Decodable, Sendable {
     package var id: String {
         image_id
     }
+
     package var url: String {
         "https://gravatar.com\(image_url)?size=256"
     }
@@ -18,7 +19,6 @@ private let identitiesBaseURL = "https://api.gravatar.com/v3/me/identities/"
 private func selectAvatarBaseURL(with profileID: ProfileIdentifier) -> URL? {
     URL(string: "https://api.gravatar.com/v3/me/identities/\(profileID.id)/avatar")
 }
-
 
 /// A service to perform Profile related tasks.
 ///

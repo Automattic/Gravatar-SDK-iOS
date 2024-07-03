@@ -100,13 +100,18 @@ class ToastViewController: UIViewController {
         dismiss(animated: true)
     }
 
+    @available(*, unavailable)
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }
 
 extension ToastViewController: UIViewControllerTransitioningDelegate {
-    func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
+    func presentationController(
+        forPresented presented: UIViewController,
+        presenting: UIViewController?,
+        source: UIViewController
+    ) -> UIPresentationController? {
         return ToastPresentationController(presentedViewController: presented, presenting: presenting)
     }
 }
@@ -151,7 +156,7 @@ class PresentationController: UIPresentationController {
 
 class ToastPresentationController: PresentationController {
     override var frameOfPresentedViewInContainerView: CGRect {
-        guard 
+        guard
             let containerView = containerView,
             let presentedView = presentedView
         else { return .zero }
@@ -167,7 +172,7 @@ class ToastPresentationController: PresentationController {
             height: UIView.layoutFittingCompressedSize.height
         )
         let targetHeight = presentedView.systemLayoutSizeFitting(
-            fittingSize, 
+            fittingSize,
             withHorizontalFittingPriority: .required,
             verticalFittingPriority: .defaultLow
         ).height

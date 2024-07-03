@@ -67,7 +67,7 @@ struct Keychain {
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrAccount as String: key,
-            kSecValueData as String: tokenData
+            kSecValueData as String: tokenData,
         ]
 
         let status = SecItemAdd(query as CFDictionary, nil)
@@ -83,7 +83,7 @@ struct Keychain {
             kSecMatchLimit as String: kSecMatchLimitOne,
             kSecAttrAccount as String: key,
             kSecReturnAttributes as String: true,
-            kSecReturnData as String: true
+            kSecReturnData as String: true,
         ]
 
         var item: CFTypeRef?
@@ -94,8 +94,8 @@ struct Keychain {
             throw KeychainError.unhandledError(status: status, message: message)
         }
 
-        guard 
-            let existingItem = item as? [String : Any],
+        guard
+            let existingItem = item as? [String: Any],
             let passwordData = existingItem[kSecValueData as String] as? Data,
             let password = String(data: passwordData, encoding: .utf8)
         else {
@@ -108,7 +108,7 @@ struct Keychain {
     func deletePassword(with key: String) throws {
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
-            kSecAttrAccount as String: key
+            kSecAttrAccount as String: key,
         ]
         let status = SecItemDelete(query as CFDictionary)
         if status != errSecSuccess && status != errSecItemNotFound {

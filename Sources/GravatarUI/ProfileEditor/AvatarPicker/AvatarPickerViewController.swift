@@ -119,7 +119,7 @@ class AvatarPickerViewController: UIViewController {
     }
 
     func selectImage(with imageID: String) {
-        guard 
+        guard
             let imageModel = collectionViewController.item(with: imageID),
             let indexPath = collectionViewController.indexPath(for: imageModel)
         else { return }
@@ -197,7 +197,7 @@ extension AvatarPickerViewController: UICollectionViewDelegate {
         if selectedImageID == selectedModel.id {
             return false
         }
-        if case let .remote(_, isLoading) = selectedModel.state {
+        if case .remote(_, let isLoading) = selectedModel.state {
             return !isLoading
         }
         return false

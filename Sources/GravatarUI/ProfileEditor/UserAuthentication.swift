@@ -92,6 +92,7 @@ final class WebAuthenticationPresentationContextProvider: NSObject, ASWebAuthent
     init(window: UIWindow) {
         self.window = window
     }
+
     func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
         window
     }

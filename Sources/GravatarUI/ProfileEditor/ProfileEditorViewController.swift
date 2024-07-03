@@ -1,5 +1,5 @@
-import UIKit
 import Gravatar
+import UIKit
 
 /// Base controller to edit a profile, given a profile ID.
 public class ProfileEditorViewController: UITabBarController {
@@ -18,11 +18,12 @@ public class ProfileEditorViewController: UITabBarController {
         self.configuration = configuration
         super.init(nibName: nil, bundle: nil)
     }
-    
+
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     override public func viewDidLoad() {
         super.viewDidLoad()
         let initialController = UIViewController()
@@ -34,7 +35,7 @@ public class ProfileEditorViewController: UITabBarController {
         title = "Editor"
 
         let menu = UIMenu(children: [
-            UIAction(title: "Log out", handler: { [weak self] _ in self?.logout() })
+            UIAction(title: "Log out", handler: { [weak self] _ in self?.logout() }),
         ])
 
         navigationItem.rightBarButtonItem = UIBarButtonItem(
