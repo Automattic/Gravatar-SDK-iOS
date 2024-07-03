@@ -11,22 +11,21 @@ class AvatarCollectionViewController: UICollectionViewController {
 
     private lazy var dataSource: UICollectionViewDiffableDataSource<Section, String> = {
         let cellRegistration = UICollectionView.CellRegistration<AvatarCollectionViewCell, String>() { cell, _, avatarID in
-            let avatarModel = self.avatarImageModels[avatarID]
+            guard let avatarModel = self.avatarImageModels[avatarID] else { return }
 
-            switch avatarModel?.state {
-            case .remote(let url, let isLoading):
-                cell.isLoading = isLoading
+            cell.isLoading = avatarModel.isLoading
+
+            switch avatarModel.source {
+            case .remote(let url):
                 Task {
                     try? await cell.imageView.gravatar.setImage(
-                        with: avatarModel?.url,
+                        with: avatarModel.url,
                         placeholder: UIImage(systemName: "person.circle.fill")
                     )
                 }
             case .local(let image):
                 cell.imageView.image = image
-                cell.isLoading = true
                 return
-            case .none: break
             }
         }
 

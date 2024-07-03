@@ -150,7 +150,7 @@ extension AvatarPickerViewController {
     func fetchAvatars() async {
         do {
             let images = try await ProfileService().fetchAvatars(with: authToken)
-            let models = images.map { AvatarImageModel(id: $0.id, state: .remote(url: $0.url, isLoading: false)) }
+            let models = images.map { AvatarImageModel(id: $0.id, source: .remote(url: $0.url)) }
             await collectionViewController.append(models)
             selectImage(with: selectedImageID)
         } catch {
@@ -194,12 +194,15 @@ extension AvatarPickerViewController {
 extension AvatarPickerViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
         guard let selectedModel = collectionViewController.item(with: indexPath) else { return false }
+
         if selectedImageID == selectedModel.id {
             return false
         }
-        if case .remote(_, let isLoading) = selectedModel.state {
-            return !isLoading
+
+        if case .remote = selectedModel.source {
+            return !selectedModel.isLoading
         }
+
         return false
     }
 
@@ -217,12 +220,13 @@ extension AvatarPickerViewController: UIImagePickerControllerDelegate, UINavigat
         dismiss(animated: true)
         Task {
             let temporaryID = UUID().uuidString
-            let avatarModel = AvatarImageModel(id: temporaryID, state: .local(image: image))
+            let avatarModel = AvatarImageModel(id: temporaryID, source: .local(image: image), isLoading: true)
             await collectionViewController.append([avatarModel])
             guard let indexPath = collectionViewController.indexPath(for: avatarModel) else { return }
             collectionView.selectItem(at: indexPath, animated: true, scrollPosition: .centeredVertically)
             await uploadImage(image)
-            collectionView.visibleCells.compactMap { $0 as? AvatarCollectionViewCell }.forEach { $0.isLoading = false }
+            let notLoadingModel = avatarModel.togglingLoading()
+            collectionViewController.refresItem(with: notLoadingModel)
         }
     }
 }
