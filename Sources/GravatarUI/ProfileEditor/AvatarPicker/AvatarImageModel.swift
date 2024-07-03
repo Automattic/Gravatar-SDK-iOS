@@ -2,7 +2,7 @@ import UIKit
 
 struct AvatarImageModel: Hashable, Identifiable {
     enum State: Hashable {
-        case remote(url: String)
+        case remote(url: String, isLoading: Bool)
         case local(image: UIImage)
     }
 
@@ -10,7 +10,7 @@ struct AvatarImageModel: Hashable, Identifiable {
     let state: State
 
     var url: URL? {
-        guard case .remote(let url) = state else {
+        guard case .remote(let url, _) = state else {
             return nil
         }
         return URL(string: url)
@@ -19,5 +19,19 @@ struct AvatarImageModel: Hashable, Identifiable {
     init(id: String, state: State) {
         self.id = id
         self.state = state
+    }
+
+    func togglingLoading() -> AvatarImageModel {
+        if case let .remote(url, isLoading) = state {
+            return AvatarImageModel(id: id, state: .remote(url: url, isLoading: !isLoading))
+        } else {
+            return self
+        }
+    }
+}
+
+extension ProfileIdentity {
+    var selectedAvatarModel: AvatarImageModel {
+        AvatarImageModel(id: imageId, state: .remote(url: imageUrl, isLoading: false))
     }
 }

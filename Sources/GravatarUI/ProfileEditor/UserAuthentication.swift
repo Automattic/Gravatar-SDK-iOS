@@ -40,7 +40,7 @@ final class UserAuthenticator: Sendable {
 
             guard let callbackURL else { return }
 
-            let code = URLComponents(url: callbackURL, resolvingAgainstBaseURL: true)?
+            let code = URLComponents(url: callbackURL, resolvingAgainstBaseURL: false)?
                 .queryItems?
                 .first { $0.name == "code" }
                 .map { $0.value } ?? nil

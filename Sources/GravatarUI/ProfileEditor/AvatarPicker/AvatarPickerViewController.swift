@@ -8,6 +8,12 @@ class AvatarPickerViewController: UIViewController {
     let email: Email
     let authToken: String
 
+    var selectedImageID: String = "" {
+        didSet {
+            selectImage(with: selectedImageID)
+        }
+    }
+
     let titleLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -103,10 +109,21 @@ class AvatarPickerViewController: UIViewController {
         Task {
             await fetchAvatars()
         }
+        Task {
+            await fetchIdentity()
+        }
     }
 
     override public func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+    }
+
+    func selectImage(with imageID: String) {
+        guard 
+            let imageModel = collectionViewController.item(with: imageID),
+            let indexPath = collectionViewController.indexPath(for: imageModel)
+        else { return }
+        collectionView.selectItem(at: indexPath, animated: true, scrollPosition: .centeredVertically)
     }
 
     func onActionButtonPressed() {
@@ -133,8 +150,31 @@ extension AvatarPickerViewController {
     func fetchAvatars() async {
         do {
             let images = try await ProfileService().fetchAvatars(with: authToken)
-            let models = images.map { AvatarImageModel(id: $0.id, state: .remote(url: $0.url)) }
+            let models = images.map { AvatarImageModel(id: $0.id, state: .remote(url: $0.url, isLoading: false)) }
             await collectionViewController.append(models)
+            selectImage(with: selectedImageID)
+        } catch {
+            print("Error: \(error)")
+        }
+    }
+
+    func fetchIdentity() async {
+        do {
+            let identity = try await ProfileService().fetchIdentity(token: authToken, profileID: .email(email))
+            selectedImageID = identity.imageId
+        } catch {
+            print("Error: \(error)")
+        }
+    }
+
+    func selectAvatar(_ model: AvatarImageModel) async {
+        do {
+            let loadingModel = model.togglingLoading()
+            collectionViewController.refresItem(with: loadingModel)
+            let identity = try await ProfileService().selectAvatar(token: authToken, profileID: .email(email), avatarID: model.id)
+            collectionViewController.refresItem(with: model)
+            selectedImageID = identity.imageId
+            presentAvatarUpdatedToast()
         } catch {
             print("Error: \(error)")
         }
@@ -152,8 +192,22 @@ extension AvatarPickerViewController {
 }
 
 extension AvatarPickerViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
+        guard let selectedModel = collectionViewController.item(with: indexPath) else { return false }
+        if selectedImageID == selectedModel.id {
+            return false
+        }
+        if case let .remote(_, isLoading) = selectedModel.state {
+            return !isLoading
+        }
+        return false
+    }
+
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        presentAvatarUpdatedToast()
+        guard let selectedModel = collectionViewController.item(with: indexPath) else { return }
+        Task {
+            await selectAvatar(selectedModel)
+        }
     }
 }
 

@@ -5,18 +5,20 @@ class AvatarCollectionViewController: UICollectionViewController {
         case main
     }
 
-    private var avatarImageModels: [AvatarImageModel] = []
+    private var avatarImageModels: [String: AvatarImageModel] = [:]
 
-    private var snapshot = NSDiffableDataSourceSnapshot<Section, AvatarImageModel>()
+    private var snapshot = NSDiffableDataSourceSnapshot<Section, String>()
 
-    private lazy var dataSource: UICollectionViewDiffableDataSource<Section, AvatarImageModel> = {
-        let cellRegistration = UICollectionView.CellRegistration<AvatarCollectionViewCell, AvatarImageModel>() { cell, _, avatarModel in
-            switch avatarModel.state {
-            case .remote(let url):
-                cell.isLoading = false
+    private lazy var dataSource: UICollectionViewDiffableDataSource<Section, String> = {
+        let cellRegistration = UICollectionView.CellRegistration<AvatarCollectionViewCell, String>() { cell, _, avatarID in
+            let avatarModel = self.avatarImageModels[avatarID]
+
+            switch avatarModel?.state {
+            case .remote(let url, let isLoading):
+                cell.isLoading = isLoading
                 Task {
                     try? await cell.imageView.gravatar.setImage(
-                        with: avatarModel.url,
+                        with: avatarModel?.url,
                         placeholder: UIImage(systemName: "person.circle.fill")
                     )
                 }
@@ -24,10 +26,11 @@ class AvatarCollectionViewController: UICollectionViewController {
                 cell.imageView.image = image
                 cell.isLoading = true
                 return
+            case .none: break
             }
         }
 
-        return .init(collectionView: collectionView) { (collectionView: UICollectionView, indexPath: IndexPath, item: AvatarImageModel) in
+        return .init(collectionView: collectionView) { (collectionView: UICollectionView, indexPath: IndexPath, item: String) in
             collectionView.dequeueConfiguredReusableCell(
                 using: cellRegistration,
                 for: indexPath,
@@ -57,9 +60,14 @@ class AvatarCollectionViewController: UICollectionViewController {
     // MARK: - Data source
 
     func append(_ avatars: [AvatarImageModel]) async {
-        for avatar in avatars {
-            if !snapshot.itemIdentifiers.contains(where: { item in item.id == avatar.id }) {
-                snapshot.appendItems([avatar])
+        avatars.forEach {
+            avatarImageModels[$0.id] = $0
+        }
+
+        let ids = avatars.map { $0.id }
+        for avatarID in ids {
+            if !snapshot.itemIdentifiers.contains(where: { $0 == avatarID }) {
+                snapshot.appendItems([avatarID])
             }
         }
 
@@ -73,11 +81,28 @@ class AvatarCollectionViewController: UICollectionViewController {
     }
 
     func remove(_ avatarModel: AvatarImageModel) {
-        snapshot.deleteItems([avatarModel])
+        snapshot.deleteItems([avatarModel.id])
         dataSource.apply(snapshot)
     }
 
     func indexPath(for avatar: AvatarImageModel) -> IndexPath? {
-        dataSource.indexPath(for: avatar)
+        dataSource.indexPath(for: avatar.id)
+    }
+
+    func item(with id: String) -> AvatarImageModel? {
+        return avatarImageModels[id]
+    }
+
+    func item(with indexPath: IndexPath) -> AvatarImageModel? {
+        guard let id = dataSource.itemIdentifier(for: indexPath) else {
+            return nil
+        }
+        return avatarImageModels[id]
+    }
+
+    func refresItem(with avatar: AvatarImageModel) {
+        avatarImageModels[avatar.id] = avatar
+        snapshot.reloadItems([avatar.id])
+        dataSource.apply(snapshot)
     }
 }
