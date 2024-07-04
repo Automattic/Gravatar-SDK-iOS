@@ -3,10 +3,10 @@ import SnapshotTesting
 import XCTest
 
 final class ProfileViewActionsTests: XCTestCase {
-    var delegate = TestProfileViewDelegate()
+    var delegate: TestProfileViewDelegate!
 
     override func setUp() async throws {
-        delegate = TestProfileViewDelegate()
+        delegate = await TestProfileViewDelegate()
     }
 
     @MainActor
@@ -93,7 +93,7 @@ final class ProfileViewActionsTests: XCTestCase {
     }
 }
 
-class TestProfileViewDelegate: NSObject, ProfileViewDelegate {
+class TestProfileViewDelegate: NSObject, ProfileViewDelegate, Sendable {
     var profileButtonActions: [(style: ProfileButtonStyle, url: URL?)] = []
     var accountButtonActions: [AccountModel] = []
 
