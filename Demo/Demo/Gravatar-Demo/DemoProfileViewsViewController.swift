@@ -63,7 +63,9 @@ class DemoProfileViewsViewController: DemoBaseProfileViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "Fetch Profile"
-        [emailField, paletteButton, fetchProfileButton, activityIndictorSwitchWithLabel, largeProfileView, largeProfileSummaryView, profileView, profileSummaryView].forEach(rootStackView.addArrangedSubview)
+        for view in [emailField, paletteButton, fetchProfileButton, activityIndictorSwitchWithLabel, largeProfileView, largeProfileSummaryView, profileView, profileSummaryView] {
+            rootStackView.addArrangedSubview(view)
+        }
     }
     
     @objc func toggleLoadingState() {

@@ -73,7 +73,9 @@ class DemoUploadImageViewController: UIViewController {
         title = "Upload Image"
         view.backgroundColor = .white
 
-        [emailField, tokenField, selectImageButton, avatarImageView, uploadImageButton, activityIndicator, resultLabel].forEach(rootStackView.addArrangedSubview)
+        for view in [emailField, tokenField, selectImageButton, avatarImageView, uploadImageButton, activityIndicator, resultLabel] {
+            rootStackView.addArrangedSubview(view)
+        }
         view.addSubview(rootStackView)
 
         NSLayoutConstraint.activate([
