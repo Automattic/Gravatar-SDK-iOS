@@ -96,7 +96,7 @@ struct CachedAsyncImage<Content>: View, Sendable where Content: View {
             Text("empty")
         case .success(let image):
             image
-        case .failure(let error):
+        case .failure:
             Text("failure")
         default:
             Text("failure")
