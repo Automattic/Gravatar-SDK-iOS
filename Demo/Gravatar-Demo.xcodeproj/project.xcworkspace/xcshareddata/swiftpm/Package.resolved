@@ -1,4 +1,5 @@
 {
+  "originHash" : "829ecc0bf847b439cbb46739f35d9014d6ce6f42eaa72db961e1c0c2d202fa8e",
   "pins" : [
     {
       "identity" : "swift-snapshot-testing",
@@ -23,10 +24,10 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/nicklockwood/SwiftFormat",
       "state" : {
-        "revision" : "607c7057e55cf008e3841696ea7083622e36164f",
-        "version" : "0.53.2"
+        "revision" : "dd989a46d0c6f15c016484bab8afe5e7a67a4022",
+        "version" : "0.54.0"
       }
     }
   ],
-  "version" : 2
+  "version" : 3
 }
