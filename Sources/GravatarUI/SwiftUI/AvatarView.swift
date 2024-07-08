@@ -15,7 +15,7 @@ struct AvatarView<LoadingView: View, Content: View>: View {
     private let transaction: Transaction
     private let imageContent: ImageContentBlock
 
-    /// Use this initilizer to fully customize the content `Image`.
+    /// Use this initializer to fully customize the content `Image`.
     init(
         avatarURL: AvatarURL?,
         placeholder: Image?,
@@ -36,7 +36,7 @@ struct AvatarView<LoadingView: View, Content: View>: View {
         self.transaction = transaction
     }
 
-    /// Use this initilizer to create the content `Image` with a given clipShape, borderColor and borderWidth.
+    /// Use this initializer to create the content `Image` with a given clipShape, borderColor and borderWidth.
     init<ClipShape>(
         avatarURL: AvatarURL?,
         placeholder: Image?,
