@@ -20,6 +20,11 @@ public struct ImageDownloadService: ImageDownloader, Sendable {
         self.imageCache = cache ?? ImageCache()
     }
 
+    public init(urlSession: URLSession, cache: ImageCaching? = nil) {
+        self.client = URLSessionHTTPClient(urlSession: urlSession)
+        self.imageCache = cache ?? ImageCache()
+    }
+
     public func fetchImage(with url: URL, forceRefresh: Bool = false, processingMethod: ImageProcessingMethod = .common()) async throws -> ImageDownloadResult {
         let request = URLRequest.imageRequest(url: url, forceRefresh: forceRefresh)
 
