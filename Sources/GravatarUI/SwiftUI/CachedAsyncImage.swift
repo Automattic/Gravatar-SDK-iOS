@@ -7,7 +7,7 @@ struct CachedAsyncImage<Content>: View, Sendable where Content: View {
     @State private var phase: AsyncImagePhase
     @Binding private var forceRefresh: Bool
     @Binding private var isLoading: Bool
-    
+
     private let url: URL?
     private let urlSession: URLSession
     private let scale: CGFloat
@@ -15,7 +15,7 @@ struct CachedAsyncImage<Content>: View, Sendable where Content: View {
     private let content: (AsyncImagePhase) -> Content
     private let cache: ImageCaching
     private let imageDownloader: ImageDownloader
-    
+
     var body: some View {
         content(phase)
             .onChange(of: forceRefresh) { newValue in
@@ -29,7 +29,7 @@ struct CachedAsyncImage<Content>: View, Sendable where Content: View {
                 await load()
             }
     }
-    
+
     init(
         url: URL?,
         cache: ImageCaching = ImageCache.shared,
@@ -51,7 +51,7 @@ struct CachedAsyncImage<Content>: View, Sendable where Content: View {
         self.cache = cache
         self.imageDownloader = ImageDownloadService(urlSession: urlSession, cache: cache)
     }
-    
+
     @Sendable
     private func load() async {
         guard let url else {
@@ -81,8 +81,10 @@ struct CachedAsyncImage<Content>: View, Sendable where Content: View {
 }
 
 #Preview {
-    guard let avatarURL = AvatarURL(with: .email("email@google.com"),
-                                    options: .init(preferredSize: .points(100))) else {
+    guard let avatarURL = AvatarURL(
+        with: .email("email@google.com"),
+        options: .init(preferredSize: .points(100))
+    ) else {
         return Text("Invalid URL")
     }
     return CachedAsyncImage(

@@ -14,7 +14,7 @@ struct AvatarView<LoadingView: View, Content: View>: View {
     private let urlSession: URLSession
     private let transaction: Transaction
     private let imageContent: ImageContentBlock
-    
+
     /// Use this initilizer to fully customize the content `Image`.
     init(
         avatarURL: AvatarURL?,
@@ -35,7 +35,7 @@ struct AvatarView<LoadingView: View, Content: View>: View {
         self.imageContent = imageContent
         self.transaction = transaction
     }
-    
+
     /// Use this initilizer to create the content `Image` with a given clipShape, borderColor and borderWidth.
     init<ClipShape>(
         avatarURL: AvatarURL?,
@@ -66,7 +66,7 @@ struct AvatarView<LoadingView: View, Content: View>: View {
             )
         }
     }
-    
+
     var body: some View {
         CachedAsyncImage(
             url: avatarURL?.url,
@@ -78,7 +78,7 @@ struct AvatarView<LoadingView: View, Content: View>: View {
         ) { phase in
             ZStack {
                 content(for: phase)
-                
+
                 if isLoading {
                     if let loadingView = loadingView?() {
                         loadingView
@@ -87,7 +87,7 @@ struct AvatarView<LoadingView: View, Content: View>: View {
             }
         }
     }
-    
+
     @ViewBuilder
     private func content(for phase: AsyncImagePhase) -> some View {
         switch phase {
@@ -106,8 +106,10 @@ struct AvatarView<LoadingView: View, Content: View>: View {
 }
 
 #Preview {
-    guard let avatarURL = AvatarURL(with: .email("email@google.com"),
-                                    options: .init(preferredSize: .points(100))) else {
+    guard let avatarURL = AvatarURL(
+        with: .email("email@google.com"),
+        options: .init(preferredSize: .points(100))
+    ) else {
         return Text("Invalid URL")
     }
     return AvatarView(
@@ -133,7 +135,7 @@ struct DefaultAvatarContent<ClipShape: Shape>: View {
     var clipShape: ClipShape
     var borderColor: Color
     var borderWidth: CGFloat
-    
+
     var body: some View {
         image
             .resizable()
