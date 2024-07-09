@@ -63,7 +63,9 @@ class DemoProfileViewsViewController: DemoBaseProfileViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "Fetch Profile"
-        [emailField, paletteButton, fetchProfileButton, activityIndictorSwitchWithLabel, largeProfileView, largeProfileSummaryView, profileView, profileSummaryView].forEach(rootStackView.addArrangedSubview)
+        for view in [emailField, paletteButton, fetchProfileButton, activityIndictorSwitchWithLabel, largeProfileView, largeProfileSummaryView, profileView, profileSummaryView] {
+            rootStackView.addArrangedSubview(view)
+        }
     }
     
     @objc func toggleLoadingState() {
@@ -84,6 +86,11 @@ class DemoProfileViewsViewController: DemoBaseProfileViewController {
 
         guard largeProfileView.isLoading == false else { return }
         
+        largeProfileView.loadAvatar(with: .email(email), defaultAvatarOption: .status404, options: [.transition(.fade(0.2))])
+        largeProfileSummaryView.loadAvatar(with: .email(email), defaultAvatarOption: .status404, options: [.transition(.fade(0.2))])
+        profileView.loadAvatar(with: .email(email), defaultAvatarOption: .status404, options: [.transition(.fade(0.2))])
+        profileSummaryView.loadAvatar(with: .email(email), defaultAvatarOption: .status404, options: [.transition(.fade(0.2))])
+        
         updateLoading(isLoading: true)
         let service = ProfileService()
         Task {
@@ -92,16 +99,12 @@ class DemoProfileViewsViewController: DemoBaseProfileViewController {
                 let profile = try await service.fetch(with: identifier)
                 largeProfileView.update(with: profile)
                 largeProfileView.profileButtonStyle = .view
-                largeProfileView.loadAvatar(with: profile.avatarIdentifier, options: [.transition(.fade(0.2))])
                 largeProfileSummaryView.update(with: profile)
                 largeProfileSummaryView.profileButtonStyle = .view
-                largeProfileSummaryView.loadAvatar(with: profile.avatarIdentifier, options: [.transition(.fade(0.2))])
                 profileView.update(with: profile)
                 profileView.profileButtonStyle = .view
-                profileView.loadAvatar(with: profile.avatarIdentifier, options: [.transition(.fade(0.2))])
                 profileSummaryView.update(with: profile)
                 profileSummaryView.profileButtonStyle = .view
-                profileSummaryView.loadAvatar(with: profile.avatarIdentifier, options: [.transition(.fade(0.2))])
             } catch APIError.responseError(reason: let reason) where reason.httpStatusCode == 404 {
                 largeProfileView.updateWithClaimProfilePrompt()
                 largeProfileSummaryView.updateWithClaimProfilePrompt()

@@ -24,10 +24,18 @@ public struct ProfileViewConfiguration: UIContentConfiguration {
     /// The style for the profile view.
     public let profileStyle: Style
     /// The identifier for the avatar image to be loaded in the profile view.
+    @available(
+        *,
+        deprecated,
+        renamed: "avatarIdentifier",
+        message: "Set `avatarIdentifier` explicitly and don't use the model's avatarIdentifier. It's because the `ProfileModel.avatarIdentifier` always refers to the primary email's avatar even if we query the profile with a secondary email."
+    )
     var avatarID: AvatarIdentifier? {
         model?.avatarIdentifier ?? summaryModel?.avatarIdentifier
     }
 
+    /// The identifier for the avatar image to be loaded in the profile view.
+    public var avatarIdentifier: AvatarIdentifier?
     /// The palette to be used to style the view.
     public var palette: PaletteType
     /// A customization block on the PaletteType. Set this if you need to partially alter the current palette.
