@@ -56,22 +56,16 @@ struct AvatarView<LoadingView: View>: View {
     private func content(for phase: AsyncImagePhase) -> some View {
         switch phase {
         case .success(let image):
-            scaledImage(image)
+            image
         case .failure, .empty:
             if let placeholder {
-                scaledImage(placeholder)
+                placeholder
             }
         @unknown default:
             if let placeholder {
-                scaledImage(placeholder)
+                placeholder
             }
         }
-    }
-
-    private func scaledImage(_ image: Image) -> some View {
-        image
-            .resizable()
-            .scaledToFit()
     }
 
     func avatarShape<ClipShape: Shape>(_ shape: ClipShape, borderColor: Color = .clear, borderWidth: CGFloat = 0) -> some View {
@@ -86,7 +80,7 @@ struct AvatarView<LoadingView: View>: View {
 
 #Preview {
     let avatarURL = AvatarURL(
-        with: .email("email@google.com"),
+        with: .email("pinarolguc@gmail.com"),
         options: .init(preferredSize: .points(100))
     )
     return AvatarView(
