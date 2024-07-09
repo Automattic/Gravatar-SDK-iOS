@@ -22,7 +22,9 @@ class DemoProfilePresentationStylesViewController: DemoBaseProfileViewController
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "Profile View Controller"
-        [emailField, profileStylesButton, paletteButton, customizeAvatarSwitchWithLabel, showBottomSheetButton].forEach(rootStackView.addArrangedSubview)
+        for view in [emailField, profileStylesButton, paletteButton, customizeAvatarSwitchWithLabel, showBottomSheetButton] {
+            rootStackView.addArrangedSubview(view)
+        }
         rootStackView.alignment = .center
     }
     

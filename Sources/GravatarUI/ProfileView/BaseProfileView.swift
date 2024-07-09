@@ -490,6 +490,7 @@ open class BaseProfileView: UIView, UIContentView {
 }
 
 /// Methods for managing actions on the profile view.
+@MainActor
 public protocol ProfileViewDelegate: NSObjectProtocol {
     /// Tells the delegate that the profile action button of the view has been tapped.
     ///
