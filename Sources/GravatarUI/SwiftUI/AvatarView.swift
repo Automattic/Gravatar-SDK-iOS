@@ -84,25 +84,6 @@ struct AvatarView<LoadingView: View>: View {
     }
 }
 
-// Default content type
-struct DefaultAvatarContent<ClipShape: Shape>: View {
-    let image: Image
-    var clipShape: ClipShape
-    var borderColor: Color
-    var borderWidth: CGFloat
-
-    var body: some View {
-        image
-            .resizable()
-            .scaledToFit()
-            .clipShape(clipShape)
-            .overlay(
-                clipShape
-                    .stroke(borderColor, lineWidth: borderWidth)
-            )
-    }
-}
-
 #Preview {
     let avatarURL = AvatarURL(
         with: .email("email@google.com"),
