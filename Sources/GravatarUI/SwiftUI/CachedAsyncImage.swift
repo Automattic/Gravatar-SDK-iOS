@@ -3,7 +3,7 @@ import Gravatar
 import SwiftUI
 
 @MainActor
-struct CachedAsyncImage<Content>: View, Sendable where Content: View {
+struct CachedAsyncImage<Content: View>: View {
     @State private var phase: AsyncImagePhase
     @Binding private var forceRefresh: Bool
     @Binding private var isLoading: Bool
