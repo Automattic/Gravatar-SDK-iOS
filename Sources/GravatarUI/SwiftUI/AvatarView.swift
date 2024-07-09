@@ -12,7 +12,7 @@ struct AvatarView<LoadingView: View>: View {
     private let cache: ImageCaching
     private let urlSession: URLSession
     private let transaction: Transaction
-    
+
     init(
         avatarURL: AvatarURL?,
         placeholder: Image?,
@@ -30,7 +30,7 @@ struct AvatarView<LoadingView: View>: View {
         self._forceRefresh = forceRefresh
         self.transaction = transaction
     }
-    
+
     var body: some View {
         CachedAsyncImage(
             url: avatarURL?.url,
@@ -42,7 +42,7 @@ struct AvatarView<LoadingView: View>: View {
         ) { phase in
             ZStack {
                 content(for: phase)
-                
+
                 if isLoading {
                     if let loadingView = loadingView?() {
                         loadingView
@@ -51,7 +51,7 @@ struct AvatarView<LoadingView: View>: View {
             }
         }
     }
-    
+
     @ViewBuilder
     private func content(for phase: AsyncImagePhase) -> some View {
         switch phase {
@@ -73,7 +73,7 @@ struct AvatarView<LoadingView: View>: View {
             .resizable()
             .scaledToFit()
     }
-    
+
     func avatarShape<ClipShape: Shape>(_ shape: ClipShape, borderColor: Color = .clear, borderWidth: CGFloat = 0) -> some View {
         self
             .clipShape(shape)
@@ -90,7 +90,7 @@ struct DefaultAvatarContent<ClipShape: Shape>: View {
     var clipShape: ClipShape
     var borderColor: Color
     var borderWidth: CGFloat
-    
+
     var body: some View {
         image
             .resizable()
@@ -106,7 +106,8 @@ struct DefaultAvatarContent<ClipShape: Shape>: View {
 #Preview {
     let avatarURL = AvatarURL(
         with: .email("email@google.com"),
-        options: .init(preferredSize: .points(100)))
+        options: .init(preferredSize: .points(100))
+    )
     return AvatarView(
         avatarURL: avatarURL,
         placeholder: Image(systemName: "person")
