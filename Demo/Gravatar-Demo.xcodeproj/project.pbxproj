@@ -281,7 +281,6 @@
 /* Begin PBXShellScriptBuildPhase section */
 		49920BD82C3D93E6009E8DCF /* Generate Secrets.swift */ = {
 			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
