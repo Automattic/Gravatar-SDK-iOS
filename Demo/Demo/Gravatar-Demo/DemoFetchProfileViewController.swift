@@ -64,7 +64,9 @@ class DemoFetchProfileViewController: UIViewController {
         title = "Fetch Profile"
         view.backgroundColor = .white
 
-        [segmentedControl, emailField, fetchProfileButton, activityIndicator, profileTextView].forEach(rootStackView.addArrangedSubview)
+        for view in [segmentedControl, emailField, fetchProfileButton, activityIndicator, profileTextView] {
+            rootStackView.addArrangedSubview(view)
+        }
         view.addSubview(rootStackView)
 
         NSLayoutConstraint.activate([
