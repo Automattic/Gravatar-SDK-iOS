@@ -66,6 +66,7 @@ class DemoProfileConfigurationViewController: UITableViewController {
         guard !email.isEmpty else { return }
         
         var config = ProfileViewConfiguration.standard()
+        config.avatarIdentifier = .email(email)
         config.isLoading = true
         models[email] = config
         snapshot.appendItems([email])
@@ -75,6 +76,7 @@ class DemoProfileConfigurationViewController: UITableViewController {
         do {
             let profile = try await service.fetch(with: .email(email))
             models[email] = .standard(model: profile)
+            models[email]?.avatarIdentifier = .email(email)
             snapshot.reloadItems([email])
             await dataSource.apply(snapshot)
         } catch APIError.responseError(let reason) where reason.httpStatusCode == 404 {
