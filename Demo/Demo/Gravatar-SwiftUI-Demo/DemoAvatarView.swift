@@ -49,11 +49,11 @@ struct DemoAvatarView: View {
                     ProgressView()
                         .progressViewStyle(CircularProgressViewStyle())
                 },
-                transaction: Transaction(animation: isAnimated ? .easeInOut(duration: 0.3) : nil),
-                clipShape: RoundedRectangle(cornerRadius: 8),
-                borderColor: .purple,
-                borderWidth: borderWidth
+                transaction: Transaction(animation: isAnimated ? .easeInOut(duration: 0.3) : nil)
             )
+            .avatarShape(RoundedRectangle(cornerRadius: 8),
+                         borderColor: .purple,
+                         borderWidth: borderWidth)
             .foregroundColor(.purple)
             .frame(width: Constants.avatarWidth)
         }
