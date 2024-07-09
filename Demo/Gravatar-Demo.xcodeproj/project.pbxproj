@@ -178,6 +178,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 495775F02B5B34980082812A /* Build configuration list for PBXNativeTarget "Gravatar-Demo" */;
 			buildPhases = (
+				49920BD82C3D93E6009E8DCF /* Generate Secrets.swift */,
 				495775DB2B5B34970082812A /* Sources */,
 				495775DC2B5B34970082812A /* Frameworks */,
 				495775DD2B5B34970082812A /* Resources */,
@@ -276,6 +277,29 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		49920BD82C3D93E6009E8DCF /* Generate Secrets.swift */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/../Makefile",
+			);
+			name = "Generate Secrets.swift";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(SRCROOT)/Demo/Gravatar-Demo/Secrets.swift",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cd \"${SRCROOT}/../\"\nmake secrets\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		495775DB2B5B34970082812A /* Sources */ = {
