@@ -5,15 +5,15 @@ import UIKit
 ///
 /// This is the default type which implements ``ImageUploader``..
 /// Unless specified otherwise, `ImageUploadService` will use a `URLSession` based `HTTPClient`.
-struct ImageUploadService: ImageUploader {
+package struct ImageUploadService: ImageUploader {
     private let client: HTTPClient
 
-    init(client: HTTPClient? = nil) {
+    package init(client: HTTPClient? = nil) {
         self.client = client ?? URLSessionHTTPClient()
     }
 
     @discardableResult
-    func uploadImage(_ image: UIImage, email: Email, accessToken: String, additionalHTTPHeaders: [HTTPHeaderField]?) async throws -> URLResponse {
+    package func uploadImage(_ image: UIImage, email: Email, accessToken: String, additionalHTTPHeaders: [HTTPHeaderField]?) async throws -> URLResponse {
         guard let data = image.pngData() else {
             throw ImageUploadError.cannotConvertImageIntoData
         }

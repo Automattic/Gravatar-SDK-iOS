@@ -37,6 +37,8 @@ public enum RequestErrorReason: Sendable {
 
     /// The input url is empty or `nil`.
     case emptyURL
+
+    case errorCreatingURL
 }
 
 /// Errors thrown by `ImageDownloadService` when fetching an image.

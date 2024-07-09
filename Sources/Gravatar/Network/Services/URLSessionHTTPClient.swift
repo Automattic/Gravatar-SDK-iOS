@@ -15,14 +15,7 @@ struct URLSessionHTTPClient: HTTPClient {
     }
 
     func fetchData(with request: URLRequest) async throws -> (Data, HTTPURLResponse) {
-        let result: (data: Data, response: URLResponse)
-        do {
-            result = try await urlSession.data(for: request)
-        } catch {
-            throw HTTPClientError.URLSessionError(error)
-        }
-        let httpResponse = try validatedHTTPResponse(result.response)
-        return (result.data, httpResponse)
+        return try await performDataTask(with: request)
     }
 
     func uploadData(with request: URLRequest, data: Data) async throws -> HTTPURLResponse {
@@ -33,6 +26,17 @@ struct URLSessionHTTPClient: HTTPClient {
             throw HTTPClientError.URLSessionError(error)
         }
         return try validatedHTTPResponse(result.response)
+    }
+
+    func performDataTask(with request: URLRequest) async throws -> (Data, HTTPURLResponse) {
+        let result: (data: Data, response: URLResponse)
+        do {
+            result = try await urlSession.data(for: request)
+        } catch {
+            throw HTTPClientError.URLSessionError(error)
+        }
+        let httpResponse = try validatedHTTPResponse(result.response)
+        return (result.data, httpResponse)
     }
 }
 
