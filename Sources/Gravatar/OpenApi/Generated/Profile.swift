@@ -29,6 +29,8 @@ public struct Profile: Codable, Hashable, Sendable {
     public private(set) var pronouns: String
     /// A list of links the user has added to their profile. This is only provided in authenticated API requests.
     public private(set) var links: [Link]?
+    /// A list of interests the user has added to their profile. This is only provided in authenticated API requests.
+    public private(set) var interests: [Interest]?
     public private(set) var payments: ProfilePayments?
     public private(set) var contactInfo: ProfileContactInfo?
     /// Additional images a user has uploaded. This is only provided in authenticated API requests.
@@ -55,6 +57,7 @@ public struct Profile: Codable, Hashable, Sendable {
         pronunciation: String,
         pronouns: String,
         links: [Link]? = nil,
+        interests: [Interest]? = nil,
         payments: ProfilePayments? = nil,
         contactInfo: ProfileContactInfo? = nil,
         gallery: [GalleryImage]? = nil,
@@ -75,6 +78,7 @@ public struct Profile: Codable, Hashable, Sendable {
         self.pronunciation = pronunciation
         self.pronouns = pronouns
         self.links = links
+        self.interests = interests
         self.payments = payments
         self.contactInfo = contactInfo
         self.gallery = gallery
@@ -97,6 +101,7 @@ public struct Profile: Codable, Hashable, Sendable {
         case pronunciation
         case pronouns
         case links
+        case interests
         case payments
         case contactInfo = "contact_info"
         case gallery
@@ -122,6 +127,7 @@ public struct Profile: Codable, Hashable, Sendable {
         try container.encode(pronunciation, forKey: .pronunciation)
         try container.encode(pronouns, forKey: .pronouns)
         try container.encodeIfPresent(links, forKey: .links)
+        try container.encodeIfPresent(interests, forKey: .interests)
         try container.encodeIfPresent(payments, forKey: .payments)
         try container.encodeIfPresent(contactInfo, forKey: .contactInfo)
         try container.encodeIfPresent(gallery, forKey: .gallery)
