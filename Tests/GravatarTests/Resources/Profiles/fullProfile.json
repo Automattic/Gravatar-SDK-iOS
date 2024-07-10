@@ -4,12 +4,13 @@
     "profile_url": "https://gravatar.com/notreal",
     "avatar_url": "https://2.gravatar.com/avatar/hashhash",
     "avatar_alt_text": "",
-    "location": "Beach tennis court",
+    "location": "Atlanta GA",
     "description": "I'm a beach tennis player who enjoys the dynamic challenges and camaraderie of the game on the sand. Embracing the strategic aspects, beach tennis has become a fulfilling pastime for me, offering both excitement and a sense of community.\n\nBy Chat GPT.",
     "job_title": "Engineer",
     "company": "A company",
     "verified_accounts": [
         {
+            "service_type": "wordpress",
             "service_label": "WordPress",
             "service_icon": "https://secure.gravatar.com/icons/wordpress.svg",
             "url": "http://notreal.wordpress.com"
@@ -25,6 +26,20 @@
         {
             "label": "Gravatar",
             "url": "https://gravatar.com"
+        }
+    ],
+    "interests": [
+        {
+            "id": 2779,
+            "name": "Beach Tennis"
+        },
+        {
+            "id": 589,
+            "name": "Software Engineering"
+        },
+        {
+            "id": 230,
+            "name": "Music and Audio"
         }
     ],
     "payments": {
@@ -51,7 +66,8 @@
     },
     "gallery": [
         {
-            "url": "https://1.gravatar.com/userimage/133992229/hashhash"
+            "url": "https://1.gravatar.com/userimage/133992229/633cbc8c80ab12275501c908e1a7c33b",
+            "alt_text": ""
         }
     ],
     "number_verified_accounts": 1,
