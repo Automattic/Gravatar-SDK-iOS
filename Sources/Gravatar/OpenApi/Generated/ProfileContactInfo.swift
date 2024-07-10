@@ -16,6 +16,7 @@ public struct ProfileContactInfo: Codable, Hashable, Sendable {
     /// The URL to the user's calendar.
     public private(set) var calendar: String?
 
+    @available(*, deprecated, message: "init will become internal on the next release")
     public init(
         homePhone: String? = nil,
         workPhone: String? = nil,
@@ -32,7 +33,17 @@ public struct ProfileContactInfo: Codable, Hashable, Sendable {
         self.calendar = calendar
     }
 
+    @available(*, deprecated, message: "CodingKeys will become internal on the next release.")
     public enum CodingKeys: String, CodingKey, CaseIterable {
+        case homePhone = "home_phone"
+        case workPhone = "work_phone"
+        case cellPhone = "cell_phone"
+        case email
+        case contactForm = "contact_form"
+        case calendar
+    }
+
+    enum InternalCodingKeys: String, CodingKey, CaseIterable {
         case homePhone = "home_phone"
         case workPhone = "work_phone"
         case cellPhone = "cell_phone"
@@ -44,7 +55,7 @@ public struct ProfileContactInfo: Codable, Hashable, Sendable {
     // Encodable protocol methods
 
     public func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
+        var container = encoder.container(keyedBy: InternalCodingKeys.self)
         try container.encodeIfPresent(homePhone, forKey: .homePhone)
         try container.encodeIfPresent(workPhone, forKey: .workPhone)
         try container.encodeIfPresent(cellPhone, forKey: .cellPhone)
