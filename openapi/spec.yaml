@@ -13,6 +13,21 @@ tags:
   - name: profiles
     description: Operations about user profiles
 components:
+  headers:
+    X-RateLimit-Limit:
+      description: The number of allowed requests in the current period.
+      schema:
+        type: integer
+    X-RateLimit-Remaining:
+      description: The number of remaining requests in the current period.
+      schema:
+        type: integer
+    X-RateLimit-Reset:
+      description: >-
+        The time at which the current rate limit period resets, in Unix
+        timestamp format.
+      schema:
+        type: integer
   schemas:
     Link:
       type: object
@@ -32,6 +47,23 @@ components:
           description: The URL to the link.
           examples:
             - https://example.com
+    Interest:
+      type: object
+      description: An interest the user has added to their profile.
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: integer
+          description: The unique identifier for the interest.
+          examples:
+            - 1
+        name:
+          type: string
+          description: The name of the interest.
+          examples:
+            - Photography
     CryptoWalletAddress:
       type: object
       description: A crypto currency wallet address the user accepts.
@@ -53,10 +85,16 @@ components:
       type: object
       description: A verified account on a user's profile.
       required:
+        - service_type
         - service_label
         - service_icon
         - url
       properties:
+        service_type:
+          type: string
+          description: The type of the service.
+          examples:
+            - tumblr
         service_label:
           type: string
           description: The name of the service.
@@ -87,6 +125,11 @@ components:
           examples:
             - >-
               https://0.gravatar.com/userimage/5/04bbd674f72c703f6335e2e7a00acc9a
+        alt_text:
+          type: string
+          description: The image alt text.
+          examples:
+            - A beautiful sunset
     Profile:
       type: object
       description: A user's profile information.
@@ -180,6 +223,13 @@ components:
             provided in authenticated API requests.
           items:
             $ref: '#/components/schemas/Link'
+        interests:
+          type: array
+          description: >-
+            A list of interests the user has added to their profile. This is
+            only provided in authenticated API requests.
+          items:
+            $ref: '#/components/schemas/Interest'
         payments:
           type: object
           required:
@@ -257,19 +307,27 @@ components:
           examples:
             - 3
         last_profile_edit:
-          type: string
+          type:
+            - string
+            - 'null'
+          nullable: true
           description: >-
             The date and time (UTC) the user last edited their profile. This is
             only provided in authenticated API requests.
           format: date-time
+          pattern: ^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$
           examples:
             - '2021-10-01T12:00:00Z'
         registration_date:
-          type: string
+          type:
+            - string
+            - 'null'
+          nullable: true
           description: >-
             The date the user registered their account. This is only provided in
             authenticated API requests.
           format: date-time
+          pattern: ^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$
           examples:
             - '2021-10-01T12:00:00Z'
   securitySchemes:
@@ -303,10 +361,31 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Profile'
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/X-RateLimit-Limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/X-RateLimit-Remaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/X-RateLimit-Reset'
         '404':
           description: Profile not found
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/X-RateLimit-Limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/X-RateLimit-Remaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/X-RateLimit-Reset'
         '429':
           description: Rate limit exceeded
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/X-RateLimit-Limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/X-RateLimit-Remaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/X-RateLimit-Reset'
         '500':
           description: Internal server error
 security:
