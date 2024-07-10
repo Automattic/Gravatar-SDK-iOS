@@ -37,4 +37,14 @@ extension ProfileIdentifier: Identifiable {
             hashID.id
         }
     }
+
+    // Returns the `AvatarIdentifier` popuplated from `self`.
+    public var avatarIdentifier: AvatarIdentifier {
+        switch self {
+        case .email(let email):
+            AvatarIdentifier.email(email.string)
+        case .hashID(let hashID):
+            AvatarIdentifier.hashID(hashID.string)
+        }
+    }
 }
