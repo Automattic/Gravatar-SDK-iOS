@@ -1,3 +1,10 @@
+## Swift version
+
+# Some rules are applicable only to newer versions of Swift.
+# Any rules applicable to Swift versions that are newer than the version
+# specified here will be disabled.
+--swiftversion 5.10
+
 ## File options
 
 --exclude .build,**/*.docc/**

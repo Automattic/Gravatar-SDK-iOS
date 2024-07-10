@@ -5,6 +5,7 @@
 #   % make help
 
 # Cache
+# No spaces allowed
 SWIFTFORMAT_CACHE = ~/Library/Caches/com.charcoaldesign.swiftformat
 
 # The following values can be changed here, or passed on the command line.
@@ -51,13 +52,13 @@ bundle-install:
 swiftformat: # Automatically find and fixes lint issues
 	swift package plugin \
 		--allow-writing-to-package-directory \
-		--allow-writing-to-directory "$(SWIFTFORMAT_CACHE)" \
+		--allow-writing-to-directory $(SWIFTFORMAT_CACHE) \
 		swiftformat
 
 lint: # Use swiftformat to warn about format issues
 	swift package plugin \
 		--allow-writing-to-package-directory \
-		--allow-writing-to-directory "$(SWIFTFORMAT_CACHE)" \
+		--allow-writing-to-directory $(SWIFTFORMAT_CACHE) \
 		swiftformat \
 		--lint
 

@@ -14,7 +14,7 @@ Pod::Spec.new do |s|
     }
     s.documentation_url = 'https://automattic.github.io/Gravatar-SDK-iOS/'
       
-    s.swift_version     = Gravatar::SWIFT_VERSION
+    s.swift_versions    = Gravatar::SWIFT_VERSIONS
     
     ios_deployment_target = '15.0'
     s.ios.deployment_target = ios_deployment_target
