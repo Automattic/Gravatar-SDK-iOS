@@ -88,7 +88,7 @@ public struct Profile: Codable, Hashable, Sendable {
 
     // NOTE: This init is maintained manually.
     // Avoid deleting this init until the deprecation of is applied.
-    public init(
+    init(
         hash: String,
         displayName: String,
         profileUrl: String,
