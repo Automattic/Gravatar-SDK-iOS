@@ -29,6 +29,8 @@ public struct Profile: Codable, Hashable, Sendable {
     public private(set) var pronouns: String
     /// A list of links the user has added to their profile. This is only provided in authenticated API requests.
     public private(set) var links: [Link]?
+    /// A list of interests the user has added to their profile. This is only provided in authenticated API requests.
+    public private(set) var interests: [Interest]?
     public private(set) var payments: ProfilePayments?
     public private(set) var contactInfo: ProfileContactInfo?
     /// Additional images a user has uploaded. This is only provided in authenticated API requests.
@@ -84,6 +86,52 @@ public struct Profile: Codable, Hashable, Sendable {
         self.registrationDate = registrationDate
     }
 
+    // NOTE: This init is maintained manually.
+    // Avoid deleting this init until the deprecation of is applied.
+    public init(
+        hash: String,
+        displayName: String,
+        profileUrl: String,
+        avatarUrl: String,
+        avatarAltText: String,
+        location: String,
+        description: String,
+        jobTitle: String,
+        company: String,
+        verifiedAccounts: [VerifiedAccount],
+        pronunciation: String,
+        pronouns: String,
+        links: [Link]? = nil,
+        interests: [Interest]? = nil,
+        payments: ProfilePayments? = nil,
+        contactInfo: ProfileContactInfo? = nil,
+        gallery: [GalleryImage]? = nil,
+        numberVerifiedAccounts: Int? = nil,
+        lastProfileEdit: Date? = nil,
+        registrationDate: Date? = nil
+    ) {
+        self.hash = hash
+        self.displayName = displayName
+        self.profileUrl = profileUrl
+        self.avatarUrl = avatarUrl
+        self.avatarAltText = avatarAltText
+        self.location = location
+        self.description = description
+        self.jobTitle = jobTitle
+        self.company = company
+        self.verifiedAccounts = verifiedAccounts
+        self.pronunciation = pronunciation
+        self.pronouns = pronouns
+        self.links = links
+        self.interests = interests
+        self.payments = payments
+        self.contactInfo = contactInfo
+        self.gallery = gallery
+        self.numberVerifiedAccounts = numberVerifiedAccounts
+        self.lastProfileEdit = lastProfileEdit
+        self.registrationDate = registrationDate
+    }
+
     @available(*, deprecated, message: "CodingKeys will become internal on the next release.")
     public enum CodingKeys: String, CodingKey, CaseIterable {
         case hash
@@ -99,6 +147,7 @@ public struct Profile: Codable, Hashable, Sendable {
         case pronunciation
         case pronouns
         case links
+        case interests
         case payments
         case contactInfo = "contact_info"
         case gallery
@@ -121,6 +170,7 @@ public struct Profile: Codable, Hashable, Sendable {
         case pronunciation
         case pronouns
         case links
+        case interests
         case payments
         case contactInfo = "contact_info"
         case gallery
@@ -146,6 +196,7 @@ public struct Profile: Codable, Hashable, Sendable {
         try container.encode(pronunciation, forKey: .pronunciation)
         try container.encode(pronouns, forKey: .pronouns)
         try container.encodeIfPresent(links, forKey: .links)
+        try container.encodeIfPresent(interests, forKey: .interests)
         try container.encodeIfPresent(payments, forKey: .payments)
         try container.encodeIfPresent(contactInfo, forKey: .contactInfo)
         try container.encodeIfPresent(gallery, forKey: .gallery)
