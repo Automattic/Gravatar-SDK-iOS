@@ -74,7 +74,7 @@ struct AvatarView<LoadingView: View>: View {
             .scaledToFit()
     }
 
-    func avatarShape<ClipShape: Shape>(_ shape: ClipShape, borderColor: Color = .clear, borderWidth: CGFloat = 0) -> some View {
+    func avatarShape(_ shape: some Shape, borderColor: Color = .clear, borderWidth: CGFloat = 0) -> some View {
         self
             .clipShape(shape)
             .overlay(
