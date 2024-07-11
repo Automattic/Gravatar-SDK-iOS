@@ -8,12 +8,19 @@ public struct Link: Codable, Hashable, Sendable {
     /// The URL to the link.
     public private(set) var url: String
 
+    @available(*, deprecated, message: "init will become internal on the next release")
     public init(label: String, url: String) {
         self.label = label
         self.url = url
     }
 
+    @available(*, deprecated, message: "CodingKeys will become internal on the next release.")
     public enum CodingKeys: String, CodingKey, CaseIterable {
+        case label
+        case url
+    }
+
+    enum InternalCodingKeys: String, CodingKey, CaseIterable {
         case label
         case url
     }
@@ -21,7 +28,7 @@ public struct Link: Codable, Hashable, Sendable {
     // Encodable protocol methods
 
     public func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
+        var container = encoder.container(keyedBy: InternalCodingKeys.self)
         try container.encode(label, forKey: .label)
         try container.encode(url, forKey: .url)
     }

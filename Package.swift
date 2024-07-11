@@ -20,7 +20,7 @@ let package = Package(
         ),
     ],
     dependencies: [
-        .package(url: "https://github.com/nicklockwood/SwiftFormat", from: "0.53.0"),
+        .package(url: "https://github.com/nicklockwood/SwiftFormat", from: "0.54.0"),
         .package(url: "https://github.com/pointfreeco/swift-snapshot-testing", from: "1.8.1"),
     ],
     targets: [
@@ -43,6 +43,7 @@ let package = Package(
         .target(
             name: "GravatarUI",
             dependencies: ["Gravatar"],
+            resources: [.process("Resources")],
             swiftSettings: [
                 .enableExperimentalFeature("StrictConcurrency")
             ]

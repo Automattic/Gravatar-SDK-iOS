@@ -3,9 +3,6 @@
 echo "--- :rubygems: Setting up Gems"
 install_gems
 
-echo "--- Generate Secrets.swift source file"
-make secrets
-
 echo "--- 🛠 Building Demo (Swift)"
 bundle exec fastlane build_demo scheme:Gravatar-Demo
 

@@ -41,6 +41,7 @@ public struct Profile: Codable, Hashable, Sendable {
     /// The date the user registered their account. This is only provided in authenticated API requests.
     public private(set) var registrationDate: Date?
 
+    @available(*, deprecated, message: "init will become internal on the next release")
     public init(
         hash: String,
         displayName: String,
@@ -83,7 +84,30 @@ public struct Profile: Codable, Hashable, Sendable {
         self.registrationDate = registrationDate
     }
 
+    @available(*, deprecated, message: "CodingKeys will become internal on the next release.")
     public enum CodingKeys: String, CodingKey, CaseIterable {
+        case hash
+        case displayName = "display_name"
+        case profileUrl = "profile_url"
+        case avatarUrl = "avatar_url"
+        case avatarAltText = "avatar_alt_text"
+        case location
+        case description
+        case jobTitle = "job_title"
+        case company
+        case verifiedAccounts = "verified_accounts"
+        case pronunciation
+        case pronouns
+        case links
+        case payments
+        case contactInfo = "contact_info"
+        case gallery
+        case numberVerifiedAccounts = "number_verified_accounts"
+        case lastProfileEdit = "last_profile_edit"
+        case registrationDate = "registration_date"
+    }
+
+    enum InternalCodingKeys: String, CodingKey, CaseIterable {
         case hash
         case displayName = "display_name"
         case profileUrl = "profile_url"
@@ -108,7 +132,7 @@ public struct Profile: Codable, Hashable, Sendable {
     // Encodable protocol methods
 
     public func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
+        var container = encoder.container(keyedBy: InternalCodingKeys.self)
         try container.encode(hash, forKey: .hash)
         try container.encode(displayName, forKey: .displayName)
         try container.encode(profileUrl, forKey: .profileUrl)
