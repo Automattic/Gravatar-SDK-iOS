@@ -4,17 +4,17 @@ import Foundation
 ///
 public struct ProfileContactInfo: Codable, Hashable, Sendable {
     /// The user's home phone number.
-    public private(set) var homePhone: String?
+    public let homePhone: String?
     /// The user's work phone number.
-    public private(set) var workPhone: String?
+    public let workPhone: String?
     /// The user's cell phone number.
-    public private(set) var cellPhone: String?
+    public let cellPhone: String?
     /// The user's email address as provided on the contact section of the profile. Might differ from their account emails.
-    public private(set) var email: String?
+    public let email: String?
     /// The URL to the user's contact form.
-    public private(set) var contactForm: String?
+    public let contactForm: String?
     /// The URL to the user's calendar.
-    public private(set) var calendar: String?
+    public let calendar: String?
 
     @available(*, deprecated, message: "init will become internal on the next release")
     public init(

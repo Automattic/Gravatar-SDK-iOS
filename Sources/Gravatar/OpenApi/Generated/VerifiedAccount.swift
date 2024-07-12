@@ -4,11 +4,11 @@ import Foundation
 ///
 public struct VerifiedAccount: Codable, Hashable, Sendable {
     /// The name of the service.
-    public private(set) var serviceLabel: String
+    public let serviceLabel: String
     /// The URL to the service's icon.
-    public private(set) var serviceIcon: String
+    public let serviceIcon: String
     /// The URL to the user's profile on the service.
-    public private(set) var url: String
+    public let url: String
 
     @available(*, deprecated, message: "init will become internal on the next release")
     public init(serviceLabel: String, serviceIcon: String, url: String) {

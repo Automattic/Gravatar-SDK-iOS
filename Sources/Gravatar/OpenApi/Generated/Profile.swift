@@ -4,42 +4,42 @@ import Foundation
 ///
 public struct Profile: Codable, Hashable, Sendable {
     /// The SHA256 hash of the user's primary email address.
-    public private(set) var hash: String
+    public let hash: String
     /// The user's display name. This is the name that is displayed on their profile.
-    public private(set) var displayName: String
+    public let displayName: String
     /// The full URL for the user's profile.
-    public private(set) var profileUrl: String
+    public let profileUrl: String
     /// The URL for the user's avatar image if it has been set.
-    public private(set) var avatarUrl: String
+    public let avatarUrl: String
     /// The alt text for the user's avatar image if it has been set.
-    public private(set) var avatarAltText: String
+    public let avatarAltText: String
     /// The user's location.
-    public private(set) var location: String
+    public let location: String
     /// The about section on a user's profile.
-    public private(set) var description: String
+    public let description: String
     /// The user's job title.
-    public private(set) var jobTitle: String
+    public let jobTitle: String
     /// The user's current company's name.
-    public private(set) var company: String
+    public let company: String
     /// A list of verified accounts the user has added to their profile. This is limited to a max of 4 in unauthenticated requests.
-    public private(set) var verifiedAccounts: [VerifiedAccount]
+    public let verifiedAccounts: [VerifiedAccount]
     /// The phonetic pronunciation of the user's name.
-    public private(set) var pronunciation: String
+    public let pronunciation: String
     /// The pronouns the user uses.
-    public private(set) var pronouns: String
+    public let pronouns: String
     /// A list of links the user has added to their profile. This is only provided in authenticated API requests.
-    public private(set) var links: [Link]?
-    public private(set) var payments: ProfilePayments?
-    public private(set) var contactInfo: ProfileContactInfo?
+    public let links: [Link]?
+    public let payments: ProfilePayments?
+    public let contactInfo: ProfileContactInfo?
     /// Additional images a user has uploaded. This is only provided in authenticated API requests.
-    public private(set) var gallery: [GalleryImage]?
+    public let gallery: [GalleryImage]?
     /// The number of verified accounts the user has added to their profile. This count includes verified accounts the user is hiding from their profile. This
     /// is only provided in authenticated API requests.
-    public private(set) var numberVerifiedAccounts: Int?
+    public let numberVerifiedAccounts: Int?
     /// The date and time (UTC) the user last edited their profile. This is only provided in authenticated API requests.
-    public private(set) var lastProfileEdit: Date?
+    public let lastProfileEdit: Date?
     /// The date the user registered their account. This is only provided in authenticated API requests.
-    public private(set) var registrationDate: Date?
+    public let registrationDate: Date?
 
     @available(*, deprecated, message: "init will become internal on the next release")
     public init(

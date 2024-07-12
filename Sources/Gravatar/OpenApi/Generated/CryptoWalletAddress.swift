@@ -4,9 +4,9 @@ import Foundation
 ///
 public struct CryptoWalletAddress: Codable, Hashable, Sendable {
     /// The label for the crypto currency.
-    public private(set) var label: String
+    public let label: String
     /// The wallet address for the crypto currency.
-    public private(set) var address: String
+    public let address: String
 
     @available(*, deprecated, message: "init will become internal on the next release")
     public init(label: String, address: String) {

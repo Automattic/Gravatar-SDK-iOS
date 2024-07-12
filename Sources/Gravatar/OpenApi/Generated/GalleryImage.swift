@@ -4,7 +4,7 @@ import Foundation
 ///
 public struct GalleryImage: Codable, Hashable, Sendable {
     /// The URL to the image.
-    public private(set) var url: String
+    public let url: String
 
     @available(*, deprecated, message: "init will become internal on the next release")
     public init(url: String) {

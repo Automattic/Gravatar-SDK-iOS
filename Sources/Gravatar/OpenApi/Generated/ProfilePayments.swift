@@ -4,9 +4,9 @@ import Foundation
 ///
 public struct ProfilePayments: Codable, Hashable, Sendable {
     /// A list of payment URLs the user has added to their profile.
-    public private(set) var links: [Link]
+    public let links: [Link]
     /// A list of crypto currencies the user accepts.
-    public private(set) var cryptoWallets: [CryptoWalletAddress]
+    public let cryptoWallets: [CryptoWalletAddress]
 
     @available(*, deprecated, message: "init will become internal on the next release")
     public init(links: [Link], cryptoWallets: [CryptoWalletAddress]) {

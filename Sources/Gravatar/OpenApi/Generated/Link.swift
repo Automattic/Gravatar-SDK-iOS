@@ -4,9 +4,9 @@ import Foundation
 ///
 public struct Link: Codable, Hashable, Sendable {
     /// The label for the link.
-    public private(set) var label: String
+    public let label: String
     /// The URL to the link.
-    public private(set) var url: String
+    public let url: String
 
     @available(*, deprecated, message: "init will become internal on the next release")
     public init(label: String, url: String) {
