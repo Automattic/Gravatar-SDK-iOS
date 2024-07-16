@@ -6,9 +6,8 @@ class AvatarPickerViewModel: ObservableObject {
     private let profileService: ProfileService = .init()
     private var email: Email?
     private var authToken: String?
-    @Published private(set) var avatarImageModels: [AvatarImageModel]?
+    @Published private(set) var modelState: ModelState?
     @Published private(set) var selectedImageID: String?
-    @Published private(set) var avatarFetchingError: Error?
     @Published private(set) var isAvatarsLoading: Bool = false
     @Published private(set) var selectedAvatarFetchingError: Error?
 
@@ -19,8 +18,8 @@ class AvatarPickerViewModel: ObservableObject {
 
     /// Internal init for previewing purposes. Do not make this public.
     init(avatarImageModels: [AvatarImageModel], selectedImageID: String? = nil) {
-        self.avatarImageModels = avatarImageModels
         self.selectedImageID = selectedImageID
+        self.modelState = .models(avatarImageModels)
     }
 
     func fetchAvatars() async {
@@ -28,16 +27,14 @@ class AvatarPickerViewModel: ObservableObject {
         do {
             isAvatarsLoading = true
             let images = try await profileService.fetchAvatars(with: authToken)
-            avatarFetchingError = nil
             var avatarModels: [AvatarImageModel] = []
             for image in images {
                 avatarModels.append(AvatarImageModel(id: image.id, source: .remote(url: image.url)))
             }
-            avatarImageModels = avatarModels
+            modelState = .models(avatarModels)
             isAvatarsLoading = false
         } catch {
-            avatarFetchingError = error
-            avatarImageModels = nil
+            modelState = .error(error)
             isAvatarsLoading = false
         }
     }
@@ -52,13 +49,6 @@ class AvatarPickerViewModel: ObservableObject {
             selectedAvatarFetchingError = error
             selectedImageID = nil
         }
-    }
-
-    var emptyResult: Bool {
-        if avatarFetchingError == nil, let avatars = avatarImageModels, avatars.count == 0 {
-            return true
-        }
-        return false
     }
 
     func update(email: String) {
@@ -77,6 +67,22 @@ class AvatarPickerViewModel: ObservableObject {
         Task {
             await fetchAvatars()
             await fetchIdentity()
+        }
+    }
+}
+
+extension AvatarPickerViewModel {
+    enum ModelState {
+        case models([AvatarImageModel])
+        case error(Error)
+
+        func isEmpty() -> Bool {
+            switch self {
+            case .models(let models):
+                models.isEmpty
+            default:
+                false
+            }
         }
     }
 }

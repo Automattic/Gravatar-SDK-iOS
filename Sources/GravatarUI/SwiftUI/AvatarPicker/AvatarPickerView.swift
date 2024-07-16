@@ -31,7 +31,7 @@ struct AvatarPickerView: View {
             header()
             errorMessages()
 
-            if let avatarImageModels = model.avatarImageModels {
+            if case .models(let avatarImageModels) = model.modelState {
                 avatarGrid(with: avatarImageModels)
             } else if model.isAvatarsLoading {
                 avatarsLoadingView()
@@ -55,13 +55,15 @@ struct AvatarPickerView: View {
     @ViewBuilder
     private func errorMessages() -> some View {
         VStack(alignment: .center) {
-            if model.emptyResult {
+            switch model.modelState {
+            case .models(let models) where models.isEmpty:
                 errorText("You don't have any avatars yet. Why not start uploading some now?")
-            }
-            if model.avatarFetchingError != nil {
+            case .error:
                 Spacer(minLength: .DS.Padding.large * 2)
                 errorText("Sorry, it seems like something didn't quite work out when getting your avatars.")
                 tryAgainButton()
+            default:
+                EmptyView()
             }
         }
         .foregroundColor(.secondary)
@@ -135,7 +137,13 @@ struct AvatarPickerView: View {
     @ViewBuilder
     private func avatarsLoadingView() -> some View {
         VStack {
-            Spacer(minLength: model.avatarFetchingError != nil ? .DS.Padding.medium : .DS.Padding.large * 2)
+            switch model.modelState {
+            case .error:
+                Spacer(minLength: .DS.Padding.large * 2)
+            default:
+                Spacer(minLength: .DS.Padding.medium)
+            }
+
             ProgressView()
                 .progressViewStyle(
                     CircularProgressViewStyle()
