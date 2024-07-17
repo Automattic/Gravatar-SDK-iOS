@@ -31,7 +31,7 @@ struct AvatarPickerView: View {
             header()
             errorMessages()
 
-            if case .models(let avatarImageModels) = model.modelState {
+            if case .success(let avatarImageModels) = model.avatarsResult {
                 avatarGrid(with: avatarImageModels)
             } else if model.isAvatarsLoading {
                 avatarsLoadingView()
@@ -55,10 +55,10 @@ struct AvatarPickerView: View {
     @ViewBuilder
     private func errorMessages() -> some View {
         VStack(alignment: .center) {
-            switch model.modelState {
-            case .models(let models) where models.isEmpty:
+            switch model.avatarsResult {
+            case .success(let models) where models.isEmpty:
                 errorText("You don't have any avatars yet. Why not start uploading some now?")
-            case .error:
+            case .failure:
                 Spacer(minLength: .DS.Padding.large * 2)
                 errorText("Sorry, it seems like something didn't quite work out when getting your avatars.")
                 tryAgainButton()
@@ -127,7 +127,7 @@ struct AvatarPickerView: View {
                 .shape(
                     RoundedRectangle(cornerRadius: Constants.avatarCornerRadius),
                     borderColor: .accentColor,
-                    borderWidth: model.selectedImageID == avatar.id ? Constants.selectedBorderWidth : 0
+                    borderWidth: model.currentAvatarResult?.value() == avatar.id ? Constants.selectedBorderWidth : 0
                 )
             }
         }
@@ -137,8 +137,8 @@ struct AvatarPickerView: View {
     @ViewBuilder
     private func avatarsLoadingView() -> some View {
         VStack {
-            switch model.modelState {
-            case .error:
+            switch model.avatarsResult {
+            case .failure:
                 Spacer(minLength: .DS.Padding.large * 2)
             default:
                 Spacer(minLength: .DS.Padding.medium)
