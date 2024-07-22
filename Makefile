@@ -15,7 +15,6 @@ OPENAPI_GENERATOR_CLONE_DIR ?= $(CURRENT_MAKEFILE_DIR)/openapi-generator
 OPENAPI_YAML_PATH ?= $(CURRENT_MAKEFILE_DIR)/openapi/spec.yaml
 MODEL_TEMPLATE_PATH ?= $(CURRENT_MAKEFILE_DIR)/openapi
 OUTPUT_DIRECTORY ?= $(CURRENT_MAKEFILE_DIR)/Sources/Gravatar/OpenApi/Generated
-MODEL_DOCS_DIRECTORY ?= $(CURRENT_MAKEFILE_DIR)/Sources/Gravatar/Gravatar.docc/Models
 
 # Derived values (don't change these).
 CURRENT_MAKEFILE_PATH := $(abspath $(lastword $(MAKEFILE_LIST)))
