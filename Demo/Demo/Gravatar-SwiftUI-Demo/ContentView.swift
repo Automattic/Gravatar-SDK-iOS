@@ -8,15 +8,45 @@
 import SwiftUI
 
 struct ContentView: View {
-    var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+    @State var path: [String] = []
+    
+    enum Page: Int, CaseIterable, Identifiable {
+        case avatarView = 0
+        
+        var id: Int {
+            self.rawValue
         }
-        .padding()
+        
+        var title: String {
+            switch self {
+            case .avatarView:
+                "Avatar View"
+            }
+        }
     }
+    
+    var body: some View {
+        NavigationStack(path: $path) {
+            VStack {
+                ForEach(Page.allCases) { page in
+                    Button(page.title) {
+                        path.append(page.title)
+                    }
+                }
+            }
+            .navigationDestination(for: String.self) { value in
+                VStack(spacing: 20) {
+                    switch value {
+                    case Page.avatarView.title:
+                        DemoAvatarView()
+                    default:
+                        Text("-")
+                    }
+                }
+            }
+        }
+    }
+    
 }
 
 #Preview {
