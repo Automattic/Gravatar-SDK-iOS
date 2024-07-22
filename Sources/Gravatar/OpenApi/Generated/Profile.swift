@@ -147,7 +147,6 @@ public struct Profile: Codable, Hashable, Sendable {
         case pronunciation
         case pronouns
         case links
-        case interests
         case payments
         case contactInfo = "contact_info"
         case gallery
@@ -203,5 +202,32 @@ public struct Profile: Codable, Hashable, Sendable {
         try container.encodeIfPresent(numberVerifiedAccounts, forKey: .numberVerifiedAccounts)
         try container.encodeIfPresent(lastProfileEdit, forKey: .lastProfileEdit)
         try container.encodeIfPresent(registrationDate, forKey: .registrationDate)
+    }
+
+    // Decodable protocol methods
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: InternalCodingKeys.self)
+
+        hash = try container.decode(String.self, forKey: .hash)
+        displayName = try container.decode(String.self, forKey: .displayName)
+        profileUrl = try container.decode(String.self, forKey: .profileUrl)
+        avatarUrl = try container.decode(String.self, forKey: .avatarUrl)
+        avatarAltText = try container.decode(String.self, forKey: .avatarAltText)
+        location = try container.decode(String.self, forKey: .location)
+        description = try container.decode(String.self, forKey: .description)
+        jobTitle = try container.decode(String.self, forKey: .jobTitle)
+        company = try container.decode(String.self, forKey: .company)
+        verifiedAccounts = try container.decode([VerifiedAccount].self, forKey: .verifiedAccounts)
+        pronunciation = try container.decode(String.self, forKey: .pronunciation)
+        pronouns = try container.decode(String.self, forKey: .pronouns)
+        links = try container.decodeIfPresent([Link].self, forKey: .links)
+        interests = try container.decodeIfPresent([Interest].self, forKey: .interests)
+        payments = try container.decodeIfPresent(ProfilePayments.self, forKey: .payments)
+        contactInfo = try container.decodeIfPresent(ProfileContactInfo.self, forKey: .contactInfo)
+        gallery = try container.decodeIfPresent([GalleryImage].self, forKey: .gallery)
+        numberVerifiedAccounts = try container.decodeIfPresent(Int.self, forKey: .numberVerifiedAccounts)
+        lastProfileEdit = try container.decodeIfPresent(Date.self, forKey: .lastProfileEdit)
+        registrationDate = try container.decodeIfPresent(Date.self, forKey: .registrationDate)
     }
 }

@@ -23,7 +23,6 @@ public struct GalleryImage: Codable, Hashable, Sendable {
     @available(*, deprecated, message: "CodingKeys will become internal on the next release.")
     public enum CodingKeys: String, CodingKey, CaseIterable {
         case url
-        case altText = "alt_text"
     }
 
     enum InternalCodingKeys: String, CodingKey, CaseIterable {
@@ -37,5 +36,14 @@ public struct GalleryImage: Codable, Hashable, Sendable {
         var container = encoder.container(keyedBy: InternalCodingKeys.self)
         try container.encode(url, forKey: .url)
         try container.encodeIfPresent(altText, forKey: .altText)
+    }
+
+    // Decodable protocol methods
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: InternalCodingKeys.self)
+
+        url = try container.decode(String.self, forKey: .url)
+        altText = try container.decodeIfPresent(String.self, forKey: .altText)
     }
 }

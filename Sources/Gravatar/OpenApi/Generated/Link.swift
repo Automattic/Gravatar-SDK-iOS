@@ -32,4 +32,13 @@ public struct Link: Codable, Hashable, Sendable {
         try container.encode(label, forKey: .label)
         try container.encode(url, forKey: .url)
     }
+
+    // Decodable protocol methods
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: InternalCodingKeys.self)
+
+        label = try container.decode(String.self, forKey: .label)
+        url = try container.decode(String.self, forKey: .url)
+    }
 }

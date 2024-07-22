@@ -31,7 +31,6 @@ public struct VerifiedAccount: Codable, Hashable, Sendable {
 
     @available(*, deprecated, message: "CodingKeys will become internal on the next release.")
     public enum CodingKeys: String, CodingKey, CaseIterable {
-        case serviceType = "service_type"
         case serviceLabel = "service_label"
         case serviceIcon = "service_icon"
         case url
@@ -52,5 +51,16 @@ public struct VerifiedAccount: Codable, Hashable, Sendable {
         try container.encode(serviceLabel, forKey: .serviceLabel)
         try container.encode(serviceIcon, forKey: .serviceIcon)
         try container.encode(url, forKey: .url)
+    }
+
+    // Decodable protocol methods
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: InternalCodingKeys.self)
+
+        serviceType = try container.decode(String.self, forKey: .serviceType)
+        serviceLabel = try container.decode(String.self, forKey: .serviceLabel)
+        serviceIcon = try container.decode(String.self, forKey: .serviceIcon)
+        url = try container.decode(String.self, forKey: .url)
     }
 }

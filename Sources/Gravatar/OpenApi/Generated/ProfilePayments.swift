@@ -32,4 +32,13 @@ public struct ProfilePayments: Codable, Hashable, Sendable {
         try container.encode(links, forKey: .links)
         try container.encode(cryptoWallets, forKey: .cryptoWallets)
     }
+
+    // Decodable protocol methods
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: InternalCodingKeys.self)
+
+        links = try container.decode([Link].self, forKey: .links)
+        cryptoWallets = try container.decode([CryptoWalletAddress].self, forKey: .cryptoWallets)
+    }
 }
