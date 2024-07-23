@@ -25,4 +25,10 @@ Pod::Spec.new do |s|
     }
     s.dependency 'Gravatar', s.version.to_s
     s.ios.framework = 'UIKit'
+
+    # Using the `package` access level for types requires us to pass `-package-name`
+    # as a swift flag, with the same name for each module/pod
+    s.pod_target_xcconfig = {
+      'OTHER_SWIFT_FLAGS' => '-Xfrontend -package-name -Xfrontend gravatar_sdk_ios'
+    }
   end

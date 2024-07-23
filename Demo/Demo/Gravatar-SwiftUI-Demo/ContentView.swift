@@ -12,7 +12,8 @@ struct ContentView: View {
     
     enum Page: Int, CaseIterable, Identifiable {
         case avatarView = 0
-        
+        case avatarPickerView
+
         var id: Int {
             self.rawValue
         }
@@ -21,6 +22,8 @@ struct ContentView: View {
             switch self {
             case .avatarView:
                 "Avatar View"
+            case .avatarPickerView:
+                "Avatar Picker View"
             }
         }
     }
@@ -39,6 +42,8 @@ struct ContentView: View {
                     switch value {
                     case Page.avatarView.title:
                         DemoAvatarView()
+                    case Page.avatarPickerView.title:
+                        DemoAvatarPickerView()
                     default:
                         Text("-")
                     }

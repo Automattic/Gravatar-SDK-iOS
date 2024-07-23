@@ -7,14 +7,14 @@ struct AvatarView<LoadingView: View>: View {
     @ViewBuilder private let loadingView: LoadingViewBlock?
     @Binding private var forceRefresh: Bool
     @State private var isLoading: Bool = false
-    private var avatarURL: AvatarURL?
+    private var url: URL?
     private let placeholder: Image?
     private let cache: ImageCaching
     private let urlSession: URLSession
     private let transaction: Transaction
 
     init(
-        avatarURL: AvatarURL?,
+        url: URL?,
         placeholder: Image?,
         cache: ImageCaching = ImageCache.shared,
         urlSession: URLSession = .shared,
@@ -22,7 +22,7 @@ struct AvatarView<LoadingView: View>: View {
         loadingView: LoadingViewBlock?,
         transaction: Transaction = Transaction()
     ) {
-        self.avatarURL = avatarURL
+        self.url = url
         self.placeholder = placeholder
         self.cache = cache
         self.loadingView = loadingView
@@ -33,7 +33,7 @@ struct AvatarView<LoadingView: View>: View {
 
     var body: some View {
         CachedAsyncImage(
-            url: avatarURL?.url,
+            url: url,
             cache: cache,
             urlSession: urlSession,
             forceRefresh: $forceRefresh,
@@ -56,31 +56,12 @@ struct AvatarView<LoadingView: View>: View {
     private func content(for phase: AsyncImagePhase) -> some View {
         switch phase {
         case .success(let image):
-            scaledImage(image)
+            image.resizable()
         case .failure, .empty:
-            if let placeholder {
-                scaledImage(placeholder)
-            }
+            placeholder?.resizable()
         @unknown default:
-            if let placeholder {
-                scaledImage(placeholder)
-            }
+            placeholder?.resizable()
         }
-    }
-
-    private func scaledImage(_ image: Image) -> some View {
-        image
-            .resizable()
-            .scaledToFit()
-    }
-
-    func avatarShape(_ shape: some Shape, borderColor: Color = .clear, borderWidth: CGFloat = 0) -> some View {
-        self
-            .clipShape(shape)
-            .overlay(
-                shape
-                    .stroke(borderColor, lineWidth: borderWidth)
-            )
     }
 }
 
@@ -90,7 +71,7 @@ struct AvatarView<LoadingView: View>: View {
         options: .init(preferredSize: .points(100))
     )
     return AvatarView(
-        avatarURL: avatarURL,
+        url: avatarURL?.url,
         placeholder: Image(systemName: "person")
             .renderingMode(.template)
             .resizable(),
@@ -100,6 +81,6 @@ struct AvatarView<LoadingView: View>: View {
         },
         transaction: Transaction(animation: .easeInOut(duration: 1))
     )
-    .avatarShape(RoundedRectangle(cornerRadius: 20), borderColor: Color.accentColor, borderWidth: 2)
+    .shape(RoundedRectangle(cornerRadius: 20), borderColor: Color.accentColor, borderWidth: 2)
     .frame(width: 100, height: 100, alignment: .center)
 }
