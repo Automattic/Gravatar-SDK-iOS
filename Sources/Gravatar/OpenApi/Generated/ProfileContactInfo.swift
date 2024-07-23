@@ -63,4 +63,17 @@ public struct ProfileContactInfo: Codable, Hashable, Sendable {
         try container.encodeIfPresent(contactForm, forKey: .contactForm)
         try container.encodeIfPresent(calendar, forKey: .calendar)
     }
+
+    // Decodable protocol methods
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: InternalCodingKeys.self)
+
+        homePhone = try container.decodeIfPresent(String.self, forKey: .homePhone)
+        workPhone = try container.decodeIfPresent(String.self, forKey: .workPhone)
+        cellPhone = try container.decodeIfPresent(String.self, forKey: .cellPhone)
+        email = try container.decodeIfPresent(String.self, forKey: .email)
+        contactForm = try container.decodeIfPresent(String.self, forKey: .contactForm)
+        calendar = try container.decodeIfPresent(String.self, forKey: .calendar)
+    }
 }
