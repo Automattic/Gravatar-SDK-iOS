@@ -7,7 +7,7 @@ struct DemoAvatarPickerView: View {
     @AppStorage("pickerEmail") private var email: String = ""
     @AppStorage("pickerToken") private var token: String = ""
     @State private var isSecure: Bool = true
-
+    
     // You can make this `true` by default to easily test the picker
     @State private var isPresentingPicker: Bool = false
     
@@ -36,8 +36,8 @@ struct DemoAvatarPickerView: View {
                     isPresentingPicker.toggle()
                 }
                 .avatarPickerSheet(isPresented: $isPresentingPicker,
-                                          email: email,
-                                          authToken: token)
+                                   email: email,
+                                   authToken: token)
                 Spacer()
             }
             .padding(.horizontal)
