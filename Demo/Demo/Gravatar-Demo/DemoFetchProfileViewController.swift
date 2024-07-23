@@ -119,6 +119,7 @@ Thumbnail URL: \(profile.avatarUrl)
 Wallets: \(String(describing: profile.payments?.cryptoWallets))
 Last edit: \(String(describing: profile.lastProfileEdit))
 Registration date: \(String(describing: profile.registrationDate))
+Interests: \(String(describing: profile.interests))
 """
     }
 

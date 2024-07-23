@@ -29,6 +29,7 @@
 		914AC0202BDAAC3C005DA4A5 /* DemoRemoteSVGViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914AC01F2BDAAC3C005DA4A5 /* DemoRemoteSVGViewController.swift */; };
 		91956A522B6793AF00BF3CF0 /* SwitchWithLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91956A512B6793AF00BF3CF0 /* SwitchWithLabel.swift */; };
 		91956A542B67943A00BF3CF0 /* DemoUIImageViewExtensionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91956A532B67943A00BF3CF0 /* DemoUIImageViewExtensionViewController.swift */; };
+		91B73B372C404F6E00E7D325 /* DemoAvatarPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91B73B362C404F6E00E7D325 /* DemoAvatarPickerView.swift */; };
 		91E2FB042BC0276E00265E8E /* DemoProfileViewsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91E2FB032BC0276E00265E8E /* DemoProfileViewsViewController.swift */; };
 		91F0B3DD2B62815F0025C4F8 /* MainTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91F0B3DB2B62815F0025C4F8 /* MainTableViewController.swift */; };
 		91F0B3DE2B62815F0025C4F8 /* DemoAvatarDownloadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91F0B3DC2B62815F0025C4F8 /* DemoAvatarDownloadViewController.swift */; };
@@ -58,6 +59,7 @@
 		914AC01F2BDAAC3C005DA4A5 /* DemoRemoteSVGViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoRemoteSVGViewController.swift; sourceTree = "<group>"; };
 		91956A512B6793AF00BF3CF0 /* SwitchWithLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchWithLabel.swift; sourceTree = "<group>"; };
 		91956A532B67943A00BF3CF0 /* DemoUIImageViewExtensionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoUIImageViewExtensionViewController.swift; sourceTree = "<group>"; };
+		91B73B362C404F6E00E7D325 /* DemoAvatarPickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoAvatarPickerView.swift; sourceTree = "<group>"; };
 		91E2FB032BC0276E00265E8E /* DemoProfileViewsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoProfileViewsViewController.swift; sourceTree = "<group>"; };
 		91F0B3DB2B62815F0025C4F8 /* MainTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainTableViewController.swift; sourceTree = "<group>"; };
 		91F0B3DC2B62815F0025C4F8 /* DemoAvatarDownloadViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoAvatarDownloadViewController.swift; sourceTree = "<group>"; };
@@ -99,6 +101,7 @@
 				49C5D60D2B5B33E20067C2A8 /* DemoApp.swift */,
 				49C5D60F2B5B33E20067C2A8 /* ContentView.swift */,
 				9146A7AD2C3BD8F000E07C63 /* DemoAvatarView.swift */,
+				91B73B362C404F6E00E7D325 /* DemoAvatarPickerView.swift */,
 				49C5D6112B5B33E20067C2A8 /* Assets.xcassets */,
 				49C5D6132B5B33E20067C2A8 /* Preview Content */,
 			);
@@ -331,6 +334,7 @@
 			files = (
 				49C5D6102B5B33E20067C2A8 /* ContentView.swift in Sources */,
 				9146A7AE2C3BD8F000E07C63 /* DemoAvatarView.swift in Sources */,
+				91B73B372C404F6E00E7D325 /* DemoAvatarPickerView.swift in Sources */,
 				49C5D60E2B5B33E20067C2A8 /* DemoApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -42,7 +42,7 @@ struct DemoAvatarView: View {
             Toggle("Animated", isOn: $isAnimated)
             
             AvatarView(
-                avatarURL: avatarURL,
+                url: avatarURL?.url,
                 placeholder: Image("profileAvatar").renderingMode(.template),
                 forceRefresh: $forceRefresh,
                 loadingView: {
@@ -51,9 +51,9 @@ struct DemoAvatarView: View {
                 },
                 transaction: Transaction(animation: isAnimated ? .easeInOut(duration: 0.3) : nil)
             )
-            .avatarShape(RoundedRectangle(cornerRadius: 8),
-                         borderColor: .purple,
-                         borderWidth: borderWidth)
+            .shape(RoundedRectangle(cornerRadius: 8),
+                   borderColor: .purple,
+                   borderWidth: borderWidth)
             .foregroundColor(.purple)
             .frame(width: Constants.avatarWidth)
         }
