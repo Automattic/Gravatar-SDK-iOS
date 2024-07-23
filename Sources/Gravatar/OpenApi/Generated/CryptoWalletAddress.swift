@@ -32,4 +32,13 @@ public struct CryptoWalletAddress: Codable, Hashable, Sendable {
         try container.encode(label, forKey: .label)
         try container.encode(address, forKey: .address)
     }
+
+    // Decodable protocol methods
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: InternalCodingKeys.self)
+
+        label = try container.decode(String.self, forKey: .label)
+        address = try container.decode(String.self, forKey: .address)
+    }
 }
