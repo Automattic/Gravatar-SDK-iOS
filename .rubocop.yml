@@ -1,0 +1,27 @@
+AllCops:
+  Exclude:
+    - DerivedData/**/*
+    - vendor/**/*
+  NewCops: enable
+
+Metrics/BlockLength:
+  Exclude: &fastlane
+    - fastlane/Fastfile
+    - fastlane/**/*.rb
+
+Metrics/MethodLength:
+  Max: 30
+  Exclude: *fastlane
+
+Layout/LineLength:
+  Max: 165
+  Exclude: *fastlane
+
+Layout/EmptyLines:
+  Exclude: *fastlane
+
+Style/AsciiComments:
+  Exclude: *fastlane
+
+Style/HashSyntax:
+  EnforcedShorthandSyntax: never
