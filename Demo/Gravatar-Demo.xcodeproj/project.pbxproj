@@ -15,7 +15,6 @@
 		4948C4EE2B61C41800AC4875 /* Gravatar in Frameworks */ = {isa = PBXBuildFile; productRef = 4948C4ED2B61C41800AC4875 /* Gravatar */; };
 		495775E22B5B34970082812A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 495775E12B5B34970082812A /* AppDelegate.swift */; };
 		495775E42B5B34970082812A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 495775E32B5B34970082812A /* SceneDelegate.swift */; };
-		495775EB2B5B34980082812A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 495775EA2B5B34980082812A /* Assets.xcassets */; };
 		495775EE2B5B34980082812A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 495775EC2B5B34980082812A /* LaunchScreen.storyboard */; };
 		497783312BAC8A99008C29F7 /* GravatarUI in Frameworks */ = {isa = PBXBuildFile; productRef = 497783302BAC8A99008C29F7 /* GravatarUI */; };
 		497783332BAC8AA9008C29F7 /* GravatarUI in Frameworks */ = {isa = PBXBuildFile; productRef = 497783322BAC8AA9008C29F7 /* GravatarUI */; };
@@ -25,6 +24,7 @@
 		49C5D6152B5B33E20067C2A8 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 49C5D6142B5B33E20067C2A8 /* Preview Assets.xcassets */; };
 		49EFFB512C5172340086589A /* Gravatar-Swift-Demo.Base.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 49EFFB502C5172340086589A /* Gravatar-Swift-Demo.Base.xcconfig */; };
 		49EFFB532C5172500086589A /* Gravatar-SwiftUI-Demo.Base.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 49EFFB522C5172500086589A /* Gravatar-SwiftUI-Demo.Base.xcconfig */; };
+		49EFFB542C51A47C0086589A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 495775EA2B5B34980082812A /* Assets.xcassets */; };
 		9146A7AE2C3BD8F000E07C63 /* DemoAvatarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9146A7AD2C3BD8F000E07C63 /* DemoAvatarView.swift */; };
 		914AC0192BD7FF08005DA4A5 /* DemoBaseProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914AC0172BD7FF08005DA4A5 /* DemoBaseProfileViewController.swift */; };
 		914AC01A2BD7FF08005DA4A5 /* DemoProfilePresentationStylesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914AC0182BD7FF08005DA4A5 /* DemoProfilePresentationStylesViewController.swift */; };
@@ -275,9 +275,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				49EFFB542C51A47C0086589A /* Assets.xcassets in Resources */,
 				91F0B3E32B6281A60025C4F8 /* Main.storyboard in Resources */,
 				495775EE2B5B34980082812A /* LaunchScreen.storyboard in Resources */,
-				495775EB2B5B34980082812A /* Assets.xcassets in Resources */,
 				49EFFB512C5172340086589A /* Gravatar-Swift-Demo.Base.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
