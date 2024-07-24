@@ -26,9 +26,7 @@ platform :ios do
   end
 
   desc 'Builds the Gravatar-Demo project with a specific scheme'
-  lane :build_demo do |options|
-    scheme = options.fetch(:scheme, 'Gravatar-Demo')
-
+  lane :build_demo do |scheme: 'Gravatar-Demo'|
     # We only need to build for testing to ensure that the project builds.
     # There are no tests in the the Demo apps
     scan(
