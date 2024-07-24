@@ -3,7 +3,7 @@
 default_platform(:ios)
 
 OS = '17.4'
-IPHONE_DEVICE = "iPhone SE (3rd generation) (#{OS})"
+IPHONE_DEVICE = "iPhone SE (3rd generation) (#{OS})".freeze
 
 platform :ios do
   desc 'Builds the project and runs tests'
@@ -34,7 +34,7 @@ platform :ios do
       build_for_testing: true,
       buildlog_path: File.join(__dir__, 'build', 'logs'),
       derived_data_path: File.join(__dir__, 'build', 'derived-data'),
-      disable_package_automatic_updates: true,
+      disable_package_automatic_updates: true
     )
   end
 end
