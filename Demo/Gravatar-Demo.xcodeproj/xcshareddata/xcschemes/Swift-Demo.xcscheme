@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "49C5D6092B5B33E20067C2A8"
-               BuildableName = "Gravatar-SwiftUI-Demo.app"
-               BlueprintName = "Gravatar-SwiftUI-Demo"
+               BlueprintIdentifier = "495775DE2B5B34970082812A"
+               BuildableName = "Swift-Demo.app"
+               BlueprintName = "Swift-Demo"
                ReferencedContainer = "container:Gravatar-Demo.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -43,12 +43,19 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "49C5D6092B5B33E20067C2A8"
-            BuildableName = "Gravatar-SwiftUI-Demo.app"
-            BlueprintName = "Gravatar-SwiftUI-Demo"
+            BlueprintIdentifier = "495775DE2B5B34970082812A"
+            BuildableName = "Swift-Demo.app"
+            BlueprintName = "Swift-Demo"
             ReferencedContainer = "container:Gravatar-Demo.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+      <EnvironmentVariables>
+         <EnvironmentVariable
+            key = "OS_ACTIVITY_MODE"
+            value = "disable"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+      </EnvironmentVariables>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
@@ -56,16 +63,6 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "49C5D6092B5B33E20067C2A8"
-            BuildableName = "Gravatar-SwiftUI-Demo.app"
-            BlueprintName = "Gravatar-SwiftUI-Demo"
-            ReferencedContainer = "container:Gravatar-Demo.xcodeproj">
-         </BuildableReference>
-      </BuildableProductRunnable>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">

@@ -45,13 +45,13 @@
 		3FD4781F2C50D79C0071B8B9 /* Gravatar-Demo.Base.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Gravatar-Demo.Base.xcconfig"; sourceTree = "<group>"; };
 		3FD478202C50D7D50071B8B9 /* Gravatar-SwiftUI-Demo.Base.xconfig.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Gravatar-SwiftUI-Demo.Base.xconfig.xcconfig"; sourceTree = "<group>"; };
 		4948C4E92B61C3FD00AC4875 /* Gravatar-SDK-iOS */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "Gravatar-SDK-iOS"; path = ..; sourceTree = "<group>"; };
-		495775DF2B5B34970082812A /* Gravatar-Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Gravatar-Demo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		495775DF2B5B34970082812A /* Swift-Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Swift-Demo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		495775E12B5B34970082812A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		495775E32B5B34970082812A /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		495775EA2B5B34980082812A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		495775ED2B5B34980082812A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		495775EF2B5B34980082812A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		49C5D60A2B5B33E20067C2A8 /* Gravatar-SwiftUI-Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Gravatar-SwiftUI-Demo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		49C5D60A2B5B33E20067C2A8 /* SwiftUI-Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "SwiftUI-Demo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		49C5D60D2B5B33E20067C2A8 /* DemoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoApp.swift; sourceTree = "<group>"; };
 		49C5D60F2B5B33E20067C2A8 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		49C5D6112B5B33E20067C2A8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -151,8 +151,8 @@
 		49C5D60B2B5B33E20067C2A8 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				49C5D60A2B5B33E20067C2A8 /* Gravatar-SwiftUI-Demo.app */,
-				495775DF2B5B34970082812A /* Gravatar-Demo.app */,
+				49C5D60A2B5B33E20067C2A8 /* SwiftUI-Demo.app */,
+				495775DF2B5B34970082812A /* Swift-Demo.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -186,9 +186,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		495775DE2B5B34970082812A /* Gravatar-Demo */ = {
+		495775DE2B5B34970082812A /* Swift-Demo */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 495775F02B5B34980082812A /* Build configuration list for PBXNativeTarget "Gravatar-Demo" */;
+			buildConfigurationList = 495775F02B5B34980082812A /* Build configuration list for PBXNativeTarget "Swift-Demo" */;
 			buildPhases = (
 				49920BD82C3D93E6009E8DCF /* Generate Secrets.swift */,
 				495775DB2B5B34970082812A /* Sources */,
@@ -199,18 +199,18 @@
 			);
 			dependencies = (
 			);
-			name = "Gravatar-Demo";
+			name = "Swift-Demo";
 			packageProductDependencies = (
 				4948C4EB2B61C41100AC4875 /* Gravatar */,
 				497783302BAC8A99008C29F7 /* GravatarUI */,
 			);
 			productName = "Gravatar-Demo";
-			productReference = 495775DF2B5B34970082812A /* Gravatar-Demo.app */;
+			productReference = 495775DF2B5B34970082812A /* Swift-Demo.app */;
 			productType = "com.apple.product-type.application";
 		};
-		49C5D6092B5B33E20067C2A8 /* Gravatar-SwiftUI-Demo */ = {
+		49C5D6092B5B33E20067C2A8 /* SwiftUI-Demo */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 49C5D6182B5B33E20067C2A8 /* Build configuration list for PBXNativeTarget "Gravatar-SwiftUI-Demo" */;
+			buildConfigurationList = 49C5D6182B5B33E20067C2A8 /* Build configuration list for PBXNativeTarget "SwiftUI-Demo" */;
 			buildPhases = (
 				49C5D6062B5B33E20067C2A8 /* Sources */,
 				49C5D6072B5B33E20067C2A8 /* Frameworks */,
@@ -220,13 +220,13 @@
 			);
 			dependencies = (
 			);
-			name = "Gravatar-SwiftUI-Demo";
+			name = "SwiftUI-Demo";
 			packageProductDependencies = (
 				4948C4ED2B61C41800AC4875 /* Gravatar */,
 				497783322BAC8AA9008C29F7 /* GravatarUI */,
 			);
 			productName = Demo;
-			productReference = 49C5D60A2B5B33E20067C2A8 /* Gravatar-SwiftUI-Demo.app */;
+			productReference = 49C5D60A2B5B33E20067C2A8 /* SwiftUI-Demo.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -262,8 +262,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				495775DE2B5B34970082812A /* Gravatar-Demo */,
-				49C5D6092B5B33E20067C2A8 /* Gravatar-SwiftUI-Demo */,
+				495775DE2B5B34970082812A /* Swift-Demo */,
+				49C5D6092B5B33E20067C2A8 /* SwiftUI-Demo */,
 			);
 		};
 /* End PBXProject section */
@@ -609,7 +609,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		495775F02B5B34980082812A /* Build configuration list for PBXNativeTarget "Gravatar-Demo" */ = {
+		495775F02B5B34980082812A /* Build configuration list for PBXNativeTarget "Swift-Demo" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				495775F12B5B34980082812A /* Debug */,
@@ -627,7 +627,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		49C5D6182B5B33E20067C2A8 /* Build configuration list for PBXNativeTarget "Gravatar-SwiftUI-Demo" */ = {
+		49C5D6182B5B33E20067C2A8 /* Build configuration list for PBXNativeTarget "SwiftUI-Demo" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				49C5D6192B5B33E20067C2A8 /* Debug */,

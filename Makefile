@@ -41,10 +41,10 @@ test: bundle-install
 build-demo: build-demo-swift build-demo-swiftui
 
 build-demo-swift: bundle-install
-	bundle exec fastlane build_demo scheme:Gravatar-Demo
+	bundle exec fastlane build_demo scheme:Swift-Demo
 
 build-demo-swiftui: bundle-install
-	bundle exec fastlane build_demo scheme:Gravatar-SwiftUI-Demo
+	bundle exec fastlane build_demo scheme:SwiftUI-Demo
 
 bundle-install:
 	bundle install
