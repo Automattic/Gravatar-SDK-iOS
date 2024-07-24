@@ -114,7 +114,7 @@
 			path = "Gravatar-SwiftUI-Demo";
 			sourceTree = "<group>";
 		};
-		495775E02B5B34970082812A /* Gravatar-Demo */ = {
+		495775E02B5B34970082812A /* Gravatar-Swift-Demo */ = {
 			isa = PBXGroup;
 			children = (
 				91956A502B67939F00BF3CF0 /* Common */,
@@ -137,7 +137,7 @@
 				495775EF2B5B34980082812A /* Info.plist */,
 				49EFFB502C5172340086589A /* Gravatar-Swift-Demo.Base.xcconfig */,
 			);
-			path = "Gravatar-Demo";
+			path = "Gravatar-Swift-Demo";
 			sourceTree = "<group>";
 		};
 		49C5D6012B5B33E20067C2A8 = {
@@ -163,7 +163,7 @@
 			isa = PBXGroup;
 			children = (
 				3FD4781E2C50D6FD0071B8B9 /* Base.xcconfig */,
-				495775E02B5B34970082812A /* Gravatar-Demo */,
+				495775E02B5B34970082812A /* Gravatar-Swift-Demo */,
 				495775DA2B5B34220082812A /* Gravatar-SwiftUI-Demo */,
 			);
 			path = Demo;
@@ -382,7 +382,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "Demo/Gravatar-Demo/Info.plist";
+				INFOPLIST_FILE = "Demo/Gravatar-Swift-Demo/Info.plist";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -412,7 +412,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "Demo/Gravatar-Demo/Info.plist";
+				INFOPLIST_FILE = "Demo/Gravatar-Swift-Demo/Info.plist";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
