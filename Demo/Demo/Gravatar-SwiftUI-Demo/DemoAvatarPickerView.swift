@@ -1,7 +1,6 @@
 import SwiftUI
 @testable import GravatarUI
 
-@MainActor
 struct DemoAvatarPickerView: View {
     
     @AppStorage("pickerEmail") private var email: String = ""
