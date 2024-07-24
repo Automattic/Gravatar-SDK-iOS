@@ -7,7 +7,9 @@ struct DemoAvatarPickerView: View {
     @AppStorage("pickerEmail") private var email: String = ""
     @AppStorage("pickerToken") private var token: String = ""
     @State private var isSecure: Bool = true
-    @StateObject private var avatarPickerModel = AvatarPickerViewModel(email: .init(""), authToken: "")
+    
+    // You can make this `true` by default to easily test the picker
+    @State private var isPresentingPicker: Bool = false
     
     var body: some View {
         VStack(alignment: .leading, spacing: 5) {
@@ -17,17 +19,11 @@ struct DemoAvatarPickerView: View {
                     .textInputAutocapitalization(.never)
                     .keyboardType(.emailAddress)
                     .disableAutocorrection(true)
-                    .onChange(of: email) { oldValue, newValue in
-                        avatarPickerModel.update(email: email)
-                    }
                 HStack {
                     tokenField()
                         .font(.callout)
                         .textInputAutocapitalization(.never)
                         .disableAutocorrection(true)
-                        .onChange(of: token) { oldValue, newValue in
-                            avatarPickerModel.update(authToken: token)
-                        }
                     Button(action: {
                         isSecure.toggle()
                     }) {
@@ -36,14 +32,15 @@ struct DemoAvatarPickerView: View {
                     }
                 }
                 Divider()
+                Button("Tap to open the Avatar Picker") {
+                    isPresentingPicker.toggle()
+                }
+                .avatarPickerSheet(isPresented: $isPresentingPicker,
+                                   email: email,
+                                   authToken: token)
+                Spacer()
             }
             .padding(.horizontal)
-            
-            AvatarPickerView(model: avatarPickerModel).onAppear() {
-                avatarPickerModel.update(email: email)
-                avatarPickerModel.update(authToken: token)
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
     }
     
