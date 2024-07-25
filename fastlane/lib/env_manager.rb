@@ -9,7 +9,7 @@ require 'fastlane'
 class EnvManager
   @env_path = nil
   @env_example_path = nil
-  @print_error_method = nil
+  @print_error_lambda = nil
 
   # Set up by loading the .env file with the given name.
   #
@@ -18,11 +18,11 @@ class EnvManager
     env_file_name:,
     env_file_folder: File.join(Dir.home, '.a8c-apps'),
     example_env_file_path: 'fastlane/example.env',
-    print_error_method: ->(message) { FastlaneCore::UI.user_error!(message) }
+    print_error_lambda: ->(message) { FastlaneCore::UI.user_error!(message) }
   )
     @env_path = File.join(env_file_folder, env_file_name)
     @env_example_path = example_env_file_path
-    @print_error_method = print_error_method
+    @print_error_lambda = print_error_lambda
 
     # We don't check for @env_path to exist here
     Dotenv.load(@env_path)
@@ -34,14 +34,14 @@ class EnvManager
       message = "Environment variable '#{key}' is not set."
 
       if running_on_ci?
-        @print_error_method.call(message)
+        @print_error_lambda.call(message)
       elsif File.exist?(@env_path)
-        @print_error_method.call("#{message} Consider adding it to #{@env_path}.")
+        @print_error_lambda.call("#{message} Consider adding it to #{@env_path}.")
       else
         env_file_dir = File.dirname(@env_path)
         env_file_name = File.basename(@env_path)
 
-        @print_error_method.call <<~MSG
+        @print_error_lambda.call <<~MSG
           #{env_file_name} not found in #{env_file_dir} while looking for env var #{key}.
 
           Please copy #{@env_example_path} to #{@env_path} and fill in the value for #{key}.
