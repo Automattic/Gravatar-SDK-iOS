@@ -44,6 +44,9 @@
 		1ECAB5062BC984440043A331 /* DemoProfileConfigurationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoProfileConfigurationViewController.swift; sourceTree = "<group>"; };
 		1ED769E62C048D9C00680D78 /* Secrets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Secrets.swift; sourceTree = "<group>"; };
 		3FD4781E2C50D6FD0071B8B9 /* Base.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Base.xcconfig; sourceTree = "<group>"; };
+		3FD478212C51D5CE0071B8B9 /* UIKit-Demo.Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "UIKit-Demo.Release.xcconfig"; sourceTree = "<group>"; };
+		3FD478222C51D7E20071B8B9 /* SwiftUI-Demo.Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "SwiftUI-Demo.Release.xcconfig"; sourceTree = "<group>"; };
+		3FD478232C51D9280071B8B9 /* Enterprise.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Enterprise.xcconfig; sourceTree = "<group>"; };
 		4948C4E92B61C3FD00AC4875 /* Gravatar-SDK-iOS */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "Gravatar-SDK-iOS"; path = ..; sourceTree = "<group>"; };
 		495775DF2B5B34970082812A /* UIKit-Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "UIKit-Demo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		495775E12B5B34970082812A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -110,6 +113,7 @@
 				49C5D6112B5B33E20067C2A8 /* Assets.xcassets */,
 				49C5D6132B5B33E20067C2A8 /* Preview Content */,
 				49EFFB572C51AA3E0086589A /* SwiftUI-Demo.Base.xcconfig */,
+				3FD478222C51D7E20071B8B9 /* SwiftUI-Demo.Release.xcconfig */,
 			);
 			path = "Gravatar-SwiftUI-Demo";
 			sourceTree = "<group>";
@@ -136,6 +140,7 @@
 				495775EC2B5B34980082812A /* LaunchScreen.storyboard */,
 				495775EF2B5B34980082812A /* Info.plist */,
 				49EFFB552C51AA280086589A /* UIKit-Demo.Base.xcconfig */,
+				3FD478212C51D5CE0071B8B9 /* UIKit-Demo.Release.xcconfig */,
 			);
 			path = "Gravatar-UIKit-Demo";
 			sourceTree = "<group>";
@@ -163,6 +168,7 @@
 			isa = PBXGroup;
 			children = (
 				3FD4781E2C50D6FD0071B8B9 /* Base.xcconfig */,
+				3FD478232C51D9280071B8B9 /* Enterprise.xcconfig */,
 				495775E02B5B34970082812A /* Gravatar-UIKit-Demo */,
 				495775DA2B5B34220082812A /* Gravatar-SwiftUI-Demo */,
 			);
@@ -403,7 +409,7 @@
 		};
 		495775F22B5B34980082812A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 49EFFB552C51AA280086589A /* UIKit-Demo.Base.xcconfig */;
+			baseConfigurationReference = 3FD478212C51D5CE0071B8B9 /* UIKit-Demo.Release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -423,7 +429,6 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.automattic.gravatar-sdk-demo-swift";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -585,7 +590,7 @@
 		};
 		49C5D61A2B5B33E20067C2A8 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 49EFFB572C51AA3E0086589A /* SwiftUI-Demo.Base.xcconfig */;
+			baseConfigurationReference = 3FD478222C51D7E20071B8B9 /* SwiftUI-Demo.Release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;

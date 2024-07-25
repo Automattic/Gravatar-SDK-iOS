@@ -1,9 +1,6 @@
-//
-//  SwiftUI-Demo.Release.xcconfig
-//  Gravatar-Demo
-//
-//  Created by Gio Lodi on 25/7/2024.
-//
+#include "./SwiftUI-Demo.Base.xcconfig"
+#include "../Enterprise.xcconfig"
 
-// Configuration settings file format documentation can be found at:
-// https://help.apple.com/xcode/#/dev745c5c974
+// Declared explicitly rather than by building on top of what's defined in Base so it can be read by other tools such as Fastlane
+PRODUCT_BUNDLE_IDENTIFIER = com.automattic.gravatar-sdk-demo-swiftui.prototype-build
+
