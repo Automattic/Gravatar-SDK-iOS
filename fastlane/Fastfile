@@ -5,7 +5,12 @@ default_platform(:ios)
 OS = '17.4'
 IPHONE_DEVICE = "iPhone SE (3rd generation) (#{OS})".freeze
 
+PROJECT_ROOT_FOLDER = File.join(File.dirname(File.expand_path(__dir__)), 'Demo', 'Demo')
+XCCONFIG_PROTOTYPE_BUILD_SWIFTUI = File.join(PROJECT_ROOT_FOLDER, 'Gravatar-SwiftUI-Demo', 'SwiftUI-Demo.Release.xcconfig')
+XCCONFIG_PROTOTYPE_BUILD_UIKIT = File.join(PROJECT_ROOT_FOLDER, 'Gravatar-UIKit-Demo', 'UIKit-Demo.Release.xcconfig')
+
 require_relative 'lib/env_manager'
+require_relative 'lib/code_signing_helpers'
 
 before_all do
   EnvManager.set_up(env_file_name: 'gravatar-sdk-ios')
@@ -41,4 +46,66 @@ platform :ios do
       disable_package_automatic_updates: true
     )
   end
+
+  desc 'Fetches the code signing certificate and provisioning profile for the prototype builds'
+  lane :configure_code_signing do |readonly: true|
+    # Run one call only with multiple bundle ids to authenticate only once.
+    #
+    # While building this for the first time, running dedicated calls for each bundle identifiers with readonly = false resulted in the first working and the second failing with the same error as https://github.com/fastlane/fastlane/issues/21132
+    #
+    # The logs for the second call had:
+    #
+    # Available session is not valid anymore. Continuing with normal login.
+    #
+    # Which suggest the authenticated session from the first call was not carried over to the second.
+    configure_code_signing(
+      bundle_ids: [
+        bundle_id_prototype_build_swiftui!,
+        bundle_id_prototype_build_uikit!
+      ],
+      readonly: readonly
+    )
+  end
+
+  lane :configure_code_signing_prototype_build_swiftui do |readonly: true|
+    configure_code_signing(bundle_ids: [bundle_id_prototype_build_swiftui!], readonly: readonly)
+  end
+
+  lane :configure_code_signing_prototype_build_uikit do |readonly: true|
+    configure_code_signing(bundle_ids: [bundle_id_prototype_build_uikit!], readonly: readonly)
+  end
+end
+
+def configure_code_signing(bundle_ids:, readonly:)
+  EnvManager.require_env_vars!(*CODE_SIGNING_ENV_VARS)
+
+  prompt_user_for_app_store_connect_credentials unless readonly
+
+  sync_code_signing(
+    type: 'enterprise',
+    team_id: team_id_prototype_build!,
+    app_identifier: bundle_ids,
+    readonly: readonly,
+    **CODE_SIGNING_STORAGE_OPTIONS
+  )
+end
+
+def team_id_prototype_build!
+  read_from_xcconfig!(key: 'DEVELOPMENT_TEAM', xcconfig: File.join(PROJECT_ROOT_FOLDER, 'Enterprise.xcconfig'))
+end
+
+def bundle_id_prototype_build_swiftui!
+  read_from_xcconfig!(key: 'PRODUCT_BUNDLE_IDENTIFIER', xcconfig: XCCONFIG_PROTOTYPE_BUILD_SWIFTUI)
+end
+
+def bundle_id_prototype_build_uikit!
+  read_from_xcconfig!(key: 'PRODUCT_BUNDLE_IDENTIFIER', xcconfig: XCCONFIG_PROTOTYPE_BUILD_UIKIT)
+end
+
+def read_from_xcconfig!(key:, xcconfig:)
+  configs = Xcodeproj::Config.new(xcconfig).attributes
+
+  UI.user_error!("Could not find value for #{key} in xcconfig!") unless configs.key?(key)
+
+  configs[key]
 end
