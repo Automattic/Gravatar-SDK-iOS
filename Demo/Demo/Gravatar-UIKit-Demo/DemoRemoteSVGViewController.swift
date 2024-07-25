@@ -1,5 +1,7 @@
+#if DEBUG
+
 import UIKit
-import GravatarUI
+@testable import GravatarUI
 
 class DemoRemoteSVGViewController: UITableViewController {
     
@@ -150,3 +152,5 @@ class SVGImageCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 }
+
+#endif

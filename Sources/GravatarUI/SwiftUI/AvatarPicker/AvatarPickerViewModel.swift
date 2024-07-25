@@ -2,7 +2,7 @@ import Foundation
 import SwiftUI
 
 @MainActor
-public class AvatarPickerViewModel: ObservableObject {
+class AvatarPickerViewModel: ObservableObject {
     private let profileService: ProfileService = .init()
     private var email: Email?
     private var authToken: String?
@@ -10,7 +10,7 @@ public class AvatarPickerViewModel: ObservableObject {
     @Published private(set) var currentAvatarResult: Result<String, Error>?
     @Published private(set) var isAvatarsLoading: Bool = false
 
-    public init(email: Email, authToken: String) {
+    init(email: Email, authToken: String) {
         self.email = email
         self.authToken = authToken
     }
@@ -52,14 +52,14 @@ public class AvatarPickerViewModel: ObservableObject {
         }
     }
 
-    public func update(email: String) {
+    func update(email: String) {
         self.email = .init(email)
         Task {
             await fetchIdentity()
         }
     }
 
-    public func update(authToken: String) {
+    func update(authToken: String) {
         self.authToken = authToken
         refresh()
     }
