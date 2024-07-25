@@ -38,10 +38,10 @@ dev-demo: # Open an xcode project with the package and a demo project
 test: bundle-install
 	bundle exec fastlane test
 
-build-demo: build-demo-swift build-demo-swiftui
+build-demo: build-demo-uikit build-demo-swiftui
 
-build-demo-swift: bundle-install
-	bundle exec fastlane build_demo scheme:Swift-Demo
+build-demo-uikit: bundle-install
+	bundle exec fastlane build_demo scheme:UIKit-Demo
 
 build-demo-swiftui: bundle-install
 	bundle exec fastlane build_demo scheme:SwiftUI-Demo
