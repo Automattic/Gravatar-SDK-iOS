@@ -48,8 +48,19 @@ build-demo-uikit: bundle-install
 build-demo-swiftui: bundle-install
 	bundle exec fastlane build_demo scheme:$(SCHEME_DEMO_SWIFTUI)
 
+build-demo-for-distribution: build-demo-for-distribution-swiftui build-demo-for-distribution-uikit
+
+build-demo-for-distribution-swiftui: fetch-code-signing
+	bundle exec fastlane build_demo_for_distribution scheme:$(SCHEME_DEMO_SWIFTUI)
+
+build-demo-for-distribution-uikit: fetch-code-signing
+	bundle exec fastlane build_demo_for_distribution scheme:$(SCHEME_DEMO_UIKIT)
+
 bundle-install:
 	bundle install
+
+fetch-code-signing: bundle-install
+	bundle exec fastlane configure_code_signing
 
 swiftformat: # Automatically find and fixes lint issues
 	swift package plugin \

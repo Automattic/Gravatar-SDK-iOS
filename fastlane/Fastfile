@@ -110,7 +110,7 @@ def configure_code_signing(bundle_ids:, readonly:)
 end
 
 def team_id_prototype_build!
-  read_from_xcconfig!(key: 'DEVELOPMENT_TEAM', xcconfig: File.join(PROJECT_ROOT_FOLDER, 'Enterprise.xcconfig'))
+  read_from_xcconfig!(key: 'DEVELOPMENT_TEAM', xcconfig: File.join(DEMO_APPS_SOURCES_FOLDER, 'Enterprise.xcconfig'))
 end
 
 def bundle_id_prototype_build_swiftui!
