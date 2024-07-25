@@ -1,3 +1,4 @@
+import Gravatar
 import SwiftUI
 
 @MainActor

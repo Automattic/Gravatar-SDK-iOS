@@ -1,4 +1,5 @@
 import Foundation
+import Gravatar
 import SwiftUI
 
 @MainActor
