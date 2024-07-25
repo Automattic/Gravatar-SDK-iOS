@@ -14,6 +14,13 @@ require_relative 'lib/code_signing_helpers'
 
 before_all do
   EnvManager.set_up(env_file_name: 'gravatar-sdk-ios')
+
+  # Various actions run 'xcodebuild -showBuildSettings ...' which can at times fail, possibly due to networking and SPM resolution.
+  #
+  # Bumping the interval Fastlane waits for xcodebuild to provide output before retrying seems to be an effective workaround.
+  #
+  # See also https://github.com/fastlane/fastlane/issues/20919
+  ENV['FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT'] = '120'
 end
 
 platform :ios do
