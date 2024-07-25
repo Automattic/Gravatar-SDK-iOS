@@ -20,6 +20,8 @@ OUTPUT_DIRECTORY ?= $(CURRENT_MAKEFILE_DIR)/Sources/Gravatar/OpenApi/Generated
 CURRENT_MAKEFILE_PATH := $(abspath $(lastword $(MAKEFILE_LIST)))
 CURRENT_MAKEFILE_DIR := $(patsubst %/,%,$(dir $(CURRENT_MAKEFILE_PATH)))
 
+SCHEME_DEMO_SWIFTUI = SwiftUI-Demo
+SCHEME_DEMO_UIKIT = UIKit-Demo
 
 # If no target is specified, display help
 .DEFAULT_GOAL := help
@@ -41,10 +43,10 @@ test: bundle-install
 build-demo: build-demo-uikit build-demo-swiftui
 
 build-demo-uikit: bundle-install
-	bundle exec fastlane build_demo scheme:UIKit-Demo
+	bundle exec fastlane build_demo scheme:$(SCHEME_DEMO_UIKIT)
 
 build-demo-swiftui: bundle-install
-	bundle exec fastlane build_demo scheme:SwiftUI-Demo
+	bundle exec fastlane build_demo scheme:$(SCHEME_DEMO_SWIFTUI)
 
 bundle-install:
 	bundle install
