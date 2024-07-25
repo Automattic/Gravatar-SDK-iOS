@@ -1,57 +1,42 @@
-//
-//  ContentView.swift
-//  Demo
-//
-//  Created by Andrew Montgomery on 1/19/24.
-//
-
 import SwiftUI
 
 struct ContentView: View {
-    @State var path: [String] = []
-    
-    enum Page: Int, CaseIterable, Identifiable {
-        case avatarView = 0
-        case avatarPickerView
+    enum Page: String, CaseIterable, Identifiable {
+        case avatarView = "Avatar view"
+        case avatarPickerView = "Avatar picker view"
 
         var id: Int {
-            self.rawValue
+            self.rawValue.hashValue
         }
         
         var title: String {
-            switch self {
-            case .avatarView:
-                "Avatar View"
-            case .avatarPickerView:
-                "Avatar Picker View"
-            }
+            rawValue
         }
     }
-    
+
     var body: some View {
-        NavigationStack(path: $path) {
-            VStack {
-                ForEach(Page.allCases) { page in
-                    Button(page.title) {
-                        path.append(page.title)
-                    }
-                }
+        NavigationStack {
+            List(Page.allCases) { page in
+                NavigationLink(page.title, value: page)
             }
-            .navigationDestination(for: String.self) { value in
-                VStack(spacing: 20) {
-                    switch value {
-                    case Page.avatarView.title:
-                        DemoAvatarView()
-                    case Page.avatarPickerView.title:
-                        DemoAvatarPickerView()
-                    default:
-                        Text("-")
-                    }
-                }
+            .listStyle(.plain)
+            .navigationDestination(for: Page.self) { value in
+                pageView(for: value).navigationTitle(value.title)
             }
+            .navigationTitle("Gravatar SwiftUI Demo")
+            .navigationBarTitleDisplayMode(.inline)
         }
     }
-    
+
+    @ViewBuilder
+    func pageView(for page: Page) -> some View {
+        switch page {
+        case .avatarView:
+            DemoAvatarView()
+        case .avatarPickerView:
+            DemoAvatarPickerView()
+        }
+    }
 }
 
 #Preview {
