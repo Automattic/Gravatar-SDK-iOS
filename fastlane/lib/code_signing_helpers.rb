@@ -23,10 +23,3 @@ CODE_SIGNING_ENV_VARS = %w[
   MATCH_S3_SECRET_ACCESS_KEY
   MATCH_PASSWORD
 ].freeze
-
-# Required for app_store_connect_api_key to generate the key information to pass down the call chain.
-ASC_API_KEY_ENV_VARS = %w[
-  APP_STORE_CONNECT_API_KEY_KEY_ID
-  APP_STORE_CONNECT_API_KEY_ISSUER_ID
-  APP_STORE_CONNECT_API_KEY_KEY
-].freeze
