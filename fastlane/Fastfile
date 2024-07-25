@@ -5,9 +5,11 @@ default_platform(:ios)
 OS = '17.4'
 IPHONE_DEVICE = "iPhone SE (3rd generation) (#{OS})".freeze
 
-PROJECT_ROOT_FOLDER = File.join(File.dirname(File.expand_path(__dir__)), 'Demo', 'Demo')
-XCCONFIG_PROTOTYPE_BUILD_SWIFTUI = File.join(PROJECT_ROOT_FOLDER, 'Gravatar-SwiftUI-Demo', 'SwiftUI-Demo.Release.xcconfig')
-XCCONFIG_PROTOTYPE_BUILD_UIKIT = File.join(PROJECT_ROOT_FOLDER, 'Gravatar-UIKit-Demo', 'UIKit-Demo.Release.xcconfig')
+PROJECT_ROOT_FOLDER = File.join(File.dirname(File.expand_path(__dir__)), 'Demo')
+XCODEPROJ_PATH = File.join(PROJECT_ROOT_FOLDER, 'Gravatar-Demo.xcodeproj')
+DEMO_APPS_SOURCES_FOLDER = File.join(PROJECT_ROOT_FOLDER, 'Demo')
+XCCONFIG_PROTOTYPE_BUILD_SWIFTUI = File.join(DEMO_APPS_SOURCES_FOLDER, 'Gravatar-SwiftUI-Demo', 'SwiftUI-Demo.Release.xcconfig')
+XCCONFIG_PROTOTYPE_BUILD_UIKIT = File.join(DEMO_APPS_SOURCES_FOLDER, 'Gravatar-UIKit-Demo', 'UIKit-Demo.Release.xcconfig')
 
 require_relative 'lib/env_manager'
 require_relative 'lib/code_signing_helpers'
@@ -42,7 +44,7 @@ platform :ios do
     # We only need to build for testing to ensure that the project builds.
     # There are no tests in the the Demo apps
     scan(
-      project: 'Demo/Gravatar-Demo.xcodeproj',
+      project: XCODEPROJ_PATH,
       scheme: scheme,
       configuration: 'Debug',
       device: IPHONE_DEVICE,
