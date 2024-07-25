@@ -8,8 +8,8 @@ IPHONE_DEVICE = "iPhone SE (3rd generation) (#{OS})".freeze
 PROJECT_ROOT_FOLDER = File.join(File.dirname(File.expand_path(__dir__)), 'Demo')
 XCODEPROJ_PATH = File.join(PROJECT_ROOT_FOLDER, 'Gravatar-Demo.xcodeproj')
 DEMO_APPS_SOURCES_FOLDER = File.join(PROJECT_ROOT_FOLDER, 'Demo')
-XCCONFIG_PROTOTYPE_BUILD_SWIFTUI = File.join(DEMO_APPS_SOURCES_FOLDER, 'Gravatar-SwiftUI-Demo', 'SwiftUI-Demo.Release.xcconfig')
-XCCONFIG_PROTOTYPE_BUILD_UIKIT = File.join(DEMO_APPS_SOURCES_FOLDER, 'Gravatar-UIKit-Demo', 'UIKit-Demo.Release.xcconfig')
+XCCONFIG_PROTOTYPE_BUILD_SWIFTUI = File.join(DEMO_APPS_SOURCES_FOLDER, 'Gravatar-SwiftUI-Demo', 'Gravatar-SwiftUI-Demo.Release.xcconfig')
+XCCONFIG_PROTOTYPE_BUILD_UIKIT = File.join(DEMO_APPS_SOURCES_FOLDER, 'Gravatar-UIKit-Demo', 'Gravatar-UIKit-Demo.Release.xcconfig')
 
 require_relative 'lib/env_manager'
 require_relative 'lib/code_signing_helpers'
@@ -39,8 +39,8 @@ platform :ios do
     )
   end
 
-  desc 'Builds the Gravatar-Demo project with a specific scheme'
-  lane :build_demo do |scheme: 'Gravatar-Demo'|
+  desc 'Builds the Gravatar-UIKit-Demo project with a specific scheme'
+  lane :build_demo do |scheme: 'Gravatar-UIKit-Demo'|
     # We only need to build for testing to ensure that the project builds.
     # There are no tests in the the Demo apps
     scan(
