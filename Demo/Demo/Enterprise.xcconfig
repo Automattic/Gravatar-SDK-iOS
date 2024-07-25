@@ -1,1 +1,15 @@
+#include "Base.xcconfig"
+
 DEVELOPMENT_TEAM = 99KV9Z6BKV
+
+CODE_SIGN_IDENTITY = Apple Distribution
+
+// Fastlane match uses a common pattern to name provisioning profiles, which allows us use this top-level, centralized definition.
+// Each target + build configuration combination will interpolate its bundle id value in here.
+//
+// Note: This setting works in Xcode and it seems like xcodebuild can also resolve it.
+// But once we add Fastlane's build_app (gym) into the pipeline, the resulting provisioning profile value is not interpolated.
+// As such, we have to re-define the value explicitly in each target.
+//
+// Leaving it here for reference in case the Fastlane will be resolved...
+PROVISIONING_PROFILE_SPECIFIER = match InHouse $PRODUCT_BUNDLE_IDENTIFIER
