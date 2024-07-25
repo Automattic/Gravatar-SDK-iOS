@@ -93,7 +93,7 @@ generate: $(OUTPUT_DIRECTORY) # Generates the open-api model
     -o ./generated \
     -p packageName=Gravatar \
 	--additional-properties=useJsonEncodable=false,readonlyProperties=true && \
-    cp "$(OPENAPI_GENERATOR_CLONE_DIR)"/generated/OpenAPIClient/Classes/OpenAPIs/Models/* "$(OUTPUT_DIRECTORY)" && \
+    rsync -av --delete "$(OPENAPI_GENERATOR_CLONE_DIR)"/generated/OpenAPIClient/Classes/OpenAPIs/Models/ "$(OUTPUT_DIRECTORY)/" && \
     make swiftformat && \
     echo "DONE! 🎉"
 
