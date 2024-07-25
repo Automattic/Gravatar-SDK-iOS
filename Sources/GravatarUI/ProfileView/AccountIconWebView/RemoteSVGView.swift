@@ -8,7 +8,7 @@ public class RemoteSVGButton: UIControl, WKNavigationDelegate {
         case notValidSVG
     }
 
-    public override var isHighlighted: Bool {
+    override public var isHighlighted: Bool {
         didSet {
             webView.alpha = isHighlighted ? 0.8 : 1
             fallbackImageView.alpha = isHighlighted ? 0.8 : 1
