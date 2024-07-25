@@ -1,5 +1,5 @@
 import UIKit
-@testable import GravatarUI
+import GravatarUI
 
 class DemoRemoteSVGViewController: UITableViewController {
     

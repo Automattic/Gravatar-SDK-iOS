@@ -2,7 +2,7 @@ import Gravatar
 import SwiftUI
 
 @MainActor
-struct AvatarPickerView: View {
+public struct AvatarPickerView: View {
     enum Constants {
         static let horizontalPadding: CGFloat = .DS.Padding.double
         static let maxAvatarWidth: CGFloat = 100
@@ -26,7 +26,11 @@ struct AvatarPickerView: View {
 
     @StateObject var model: AvatarPickerViewModel
 
-    var body: some View {
+    public init(model: AvatarPickerViewModel) {
+        _model = StateObject(wrappedValue: model)
+    }
+
+    public var body: some View {
         ScrollView {
             header()
             errorMessages()

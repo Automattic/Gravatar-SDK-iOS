@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-@testable import GravatarUI
+import GravatarUI
 
 struct DemoAvatarView: View {
     enum Constants {

@@ -1,5 +1,5 @@
 import SwiftUI
-@testable import GravatarUI
+import GravatarUI
 
 @MainActor
 struct DemoAvatarPickerView: View {

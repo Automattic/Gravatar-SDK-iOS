@@ -2,13 +2,13 @@ import Gravatar
 import UIKit
 import WebKit
 
-class RemoteSVGButton: UIControl, WKNavigationDelegate {
+public class RemoteSVGButton: UIControl, WKNavigationDelegate {
     private enum HTMLConstructionError: Error {
         case canNotConvertDataToString
         case notValidSVG
     }
 
-    override var isHighlighted: Bool {
+    public override var isHighlighted: Bool {
         didSet {
             webView.alpha = isHighlighted ? 0.8 : 1
             fallbackImageView.alpha = isHighlighted ? 0.8 : 1
@@ -19,6 +19,11 @@ class RemoteSVGButton: UIControl, WKNavigationDelegate {
     private var task: Task<Void, Never>?
     private var iconURL: URL?
     private static let cache: NSCache<NSString, NSString> = .init()
+
+    public init(iconSize: CGSize) {
+        self.iconSize = iconSize
+        super.init()
+    }
 
     private lazy var webView: WKWebView = {
         let webView = WKWebView()
@@ -87,7 +92,7 @@ class RemoteSVGButton: UIControl, WKNavigationDelegate {
 
     private var paletteType: PaletteType = .system
 
-    func refresh(paletteType newPaletteType: PaletteType, shouldReloadURL: Bool = true) {
+    public func refresh(paletteType newPaletteType: PaletteType, shouldReloadURL: Bool = true) {
         self.paletteType = newPaletteType
         fallbackImageView.tintColor = paletteType.palette.foreground.primary
         if let iconURL, shouldReloadURL {
@@ -95,7 +100,7 @@ class RemoteSVGButton: UIControl, WKNavigationDelegate {
         }
     }
 
-    func loadIcon(from url: URL) {
+    public func loadIcon(from url: URL) {
         if url != iconURL && iconURL != nil {
             webView.isHidden = true
         }
@@ -114,7 +119,7 @@ class RemoteSVGButton: UIControl, WKNavigationDelegate {
         }
     }
 
-    nonisolated func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+    public nonisolated func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         Task {
             await showWebView()
         }

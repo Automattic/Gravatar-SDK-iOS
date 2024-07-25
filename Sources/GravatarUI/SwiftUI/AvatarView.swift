@@ -2,9 +2,8 @@ import Gravatar
 import SwiftUI
 
 @MainActor
-struct AvatarView<LoadingView: View>: View {
-    typealias LoadingViewBlock = () -> LoadingView
-    @ViewBuilder private let loadingView: LoadingViewBlock?
+public struct AvatarView<LoadingView: View>: View {
+    @ViewBuilder private let loadingView: (() -> LoadingView)?
     @Binding private var forceRefresh: Bool
     @State private var isLoading: Bool = false
     private var url: URL?
@@ -13,13 +12,13 @@ struct AvatarView<LoadingView: View>: View {
     private let urlSession: URLSession
     private let transaction: Transaction
 
-    init(
+    public init(
         url: URL?,
         placeholder: Image?,
         cache: ImageCaching = ImageCache.shared,
         urlSession: URLSession = .shared,
         forceRefresh: Binding<Bool> = .constant(false),
-        loadingView: LoadingViewBlock?,
+        loadingView: (() -> LoadingView)?,
         transaction: Transaction = Transaction()
     ) {
         self.url = url
@@ -31,7 +30,7 @@ struct AvatarView<LoadingView: View>: View {
         self.transaction = transaction
     }
 
-    var body: some View {
+    public var body: some View {
         CachedAsyncImage(
             url: url,
             cache: cache,
