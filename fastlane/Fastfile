@@ -56,6 +56,16 @@ platform :ios do
     )
   end
 
+  desc 'Builds the demo app from the given scheme for distribution'
+  lane :build_demo_for_distribution do |scheme:|
+    build_app(
+      project: XCODEPROJ_PATH,
+      scheme: scheme,
+      configuration: 'Release',
+      export_method: 'enterprise'
+    )
+  end
+
   desc 'Fetches the code signing certificate and provisioning profile for the prototype builds'
   lane :configure_code_signing do |readonly: true|
     # Run one call only with multiple bundle ids to authenticate only once.
