@@ -18,8 +18,14 @@ CODE_SIGNING_STORAGE_OPTIONS = {
 }.freeze
 
 # Required for sync_code_signing to authenticate with S3.
+#
+# Notice that there are other env vars that Fastlane supports for sync_code_signing (match).
+# In particular, Fastlane supports providing the password to decrypt the repo via MATCH_PASSWORD rather than terminal prompt + keychain.
+# CI environments must set that env var because they are not interactive.
+# However, we don't list it here with the required env var to allow devs to provide the password via the default method, which is also more secure.
+#
+# See also https://docs.fastlane.tools/actions/match/
 CODE_SIGNING_ENV_VARS = %w[
   MATCH_S3_ACCESS_KEY
   MATCH_S3_SECRET_ACCESS_KEY
-  MATCH_PASSWORD
 ].freeze
