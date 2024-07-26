@@ -130,7 +130,7 @@ extension GravatarWrapper where Component: UIImageView {
         }
     }
 
-    /// Downloads the Gravatar profile image and sets it to this UIImageView. Throws ``ImageFetchingComponentError``.
+    /// Downloads the Gravatar profile image and sets it to this UIImageView. Throws `ImageFetchingComponentError` (see `Gravatar` module).
     ///
     /// - Parameters:
     ///   - avatarID: an `AvatarIdentifier`
@@ -139,8 +139,8 @@ extension GravatarWrapper where Component: UIImageView {
     ///   - preferredSize: Preferred "point" size of the image that will be downloaded. If not provided, `layoutIfNeeded()` is called on this view to get its
     /// real bounds and those bounds are used.
     ///   You can get a performance benefit by setting this value since it will avoid the `layoutIfNeeded()` call.
-    ///   - options: A set of options to define image setting behaviour. See ``ImageSettingOption`` for more info.
-    /// - Returns: The ``ImageDownloadResult``.
+    ///   - options: A set of options to define image setting behaviour. See `ImageSettingOption` in the `Gravatar` module for more info.
+    /// - Returns: The `ImageDownloadResult`.
     @discardableResult
     public func setImage(
         avatarID: AvatarIdentifier,
@@ -161,12 +161,13 @@ extension GravatarWrapper where Component: UIImageView {
         return try await setImage(with: gravatarURL, placeholder: placeholder, options: options)
     }
 
-    /// Downloads the image and sets it to this UIImageView. Throws ``ImageFetchingComponentError``.
+    /// Downloads the image and sets it to this UIImageView. Throws `ImageFetchingComponentError` (see `Gravatar` module).
     /// - Parameters:
     ///   - source: URL for the image.
     ///   - placeholder: A placeholder to show while downloading the image.
-    ///   - options: A set of options to define image setting behaviour. See ``ImageSettingOption`` for more info.
-    /// - Returns: The ``ImageDownloadResult``.
+    ///   - options: A set of options to define image setting behaviour. See `ImageSettingOption` in the `Gravatar` module  for more info.
+    /// - Returns: The `ImageDownloadResult`.
+    /// - Throws:`ImageFetchingComponentError`
     @discardableResult
     public func setImage(
         with source: URL?,

@@ -109,10 +109,10 @@ extension ProfileViewConfiguration {
         public var activityIndicatorType: ActivityIndicatorType = .activity
         /// An image to be displayed while an avatar image has not been set.
         public var placeholder: UIImage? = nil
-        /// The maximum rating of the avatar for it to be displayed. See ``Rating`` for more info.
+        /// The maximum rating of the avatar for it to be displayed. See `Rating` in the `Gravatar` module for more info.
         public var rating: Rating? = nil
         /// The avatar style to be displayed when no avatar has been found
-        /// See ``DefaultAvatarOption`` for more info.
+        /// See `DefaultAvatarOption` in the `Gravatar` module for more info.
         public var defaultAvatarOption: DefaultAvatarOption? = nil
         /// Options for fetchingg the avatar image. See ``ImageSettingOption`` for more info.
         public var settingOptions: [ImageSettingOption]? = nil
