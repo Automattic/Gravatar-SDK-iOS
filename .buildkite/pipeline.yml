@@ -80,9 +80,11 @@ steps:
           - ".build/artifacts/*.dSYM.zip"
 
       - label: ":arrow_up: Upload SwiftUI demo to App Center"
-        depends_on: build_swiftui
-        command: "echo '^^^ +++ placeholder'"
+        # TODO: Re-enabled after verified
+        # depends_on: build_swiftui
+        command: .builkite/command/upload-to-appcenter.sh SwiftUI
 
       - label: ":arrow_up: Upload UIKit demo to App Center"
-        depends_on: build_uikit
-        command: "echo '^^^ +++ placeholder'"
+        # TODO: Re-enabled after verified
+        # depends_on: build_uikit
+        command: .builkite/command/upload-to-appcenter.sh UIKit

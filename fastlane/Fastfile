@@ -15,6 +15,11 @@ DEMO_APPS_SOURCES_FOLDER = File.join(PROJECT_ROOT_FOLDER, 'Demo')
 XCCONFIG_PROTOTYPE_BUILD_SWIFTUI = File.join(DEMO_APPS_SOURCES_FOLDER, 'Gravatar-SwiftUI-Demo', 'SwiftUI-Demo.Release.xcconfig')
 XCCONFIG_PROTOTYPE_BUILD_UIKIT = File.join(DEMO_APPS_SOURCES_FOLDER, 'Gravatar-UIKit-Demo', 'UIKit-Demo.Release.xcconfig')
 
+GITHUB_URL = 'https://github.com/Automattic/Gravatar-SDK-iOS'
+
+APPCENTER_OWNER_NAME = 'automattic'
+APPCENTER_OWNER_TYPE = 'organization'
+
 require_relative 'lib/env_manager'
 require_relative 'lib/code_signing_helpers'
 
@@ -75,6 +80,13 @@ platform :ios do
     )
   end
 
+  desc 'Upload the demo app with the given name to App Center'
+  lane :upload_demo_to_appcenter do |name:|
+    UI.user_error!("Unsupported name #{name}") unless %w[SwiftUI UIKit].include? name
+
+    upload_to_appcenter(appcenter_slug: "Gravatar-SDK-Demo-#{name}", app_name: "#{name}-Demo")
+  end
+
   desc 'Fetches the code signing certificate and provisioning profile for the prototype builds'
   lane :configure_code_signing do |readonly: true|
     # Run one call only with multiple bundle ids to authenticate only once.
@@ -116,6 +128,30 @@ def configure_code_signing(bundle_ids:, readonly:)
     app_identifier: bundle_ids,
     readonly: readonly,
     **CODE_SIGNING_STORAGE_OPTIONS
+  )
+end
+
+def upload_to_appcenter(appcenter_slug:, app_name:)
+  EnvManager.require_env_vars!('APPCENTER_API_TOKEN')
+
+  commit = ENV.fetch('BUILDKITE_COMMIT', 'Unknown')
+  pr = ENV.fetch('BUILDKITE_PULL_REQUEST', nil)
+  release_notes = <<~NOTES
+    - Branch: `#{ENV.fetch('BUILDKITE_BRANCH', 'Unknown')}`\n
+    - Commit: [#{commit[0...7]}](#{GITHUB_URL}/commit/#{commit})\n
+    - Pull Request: [##{pr}](#{GITHUB_URL}/pull/#{pr})\n
+  NOTES
+
+  appcenter_upload(
+    api_token: EnvManager.get_required_env!('APPCENTER_API_TOKEN'),
+    owner_name: APPCENTER_OWNER_NAME,
+    owner_type: APPCENTER_OWNER_TYPE,
+    app_name: appcenter_slug,
+    file: File.join(ARTIFACTS_FOLDER, "#{app_name}.ipa"),
+    dsym: File.join(ARTIFACTS_FOLDER, "#{app_name}.app.dSYM.zip"),
+    release_notes: release_notes,
+    destinations: 'Collaborators',
+    notify_testers: false
   )
 end
 
