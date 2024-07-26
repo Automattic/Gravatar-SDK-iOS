@@ -60,5 +60,3 @@ steps:
       - "validate"
       - "lint"
     if: build.tag != null
-    agents:
-      queue: "mac"
