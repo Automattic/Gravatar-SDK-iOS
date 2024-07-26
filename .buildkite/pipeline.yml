@@ -68,16 +68,16 @@ steps:
         depends_on: test
         command: make build-demo-for-distribution-swiftui
         artifacts:
-          - "*.ipa"
-          - "*.dSYM.zip"
+          - ".build/artifacts/*.ipa"
+          - ".build/artifacts/*.dSYM.zip"
 
       - label: ":package: Build UIKit demo"
         key: build_uikit
         depends_on: test
         command: make build-demo-for-distribution-uikit
         artifacts:
-          - "*.ipa"
-          - "*.dSYM.zip"
+          - ".build/artifacts/*.ipa"
+          - ".build/artifacts/*.dSYM.zip"
 
       - label: ":arrow_up: Upload SwiftUI demo to App Center"
         depends_on: build_swiftui

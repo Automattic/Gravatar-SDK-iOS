@@ -9,6 +9,7 @@ PROJECT_ROOT_FOLDER = File.join(File.dirname(File.expand_path(__dir__)), 'Demo')
 BUILD_FOLDER = File.join(__dir__, '.build')
 LOGS_FOLDER = File.join(BUILD_FOLDER, 'logs')
 DERIVED_DATA_FOLDER = File.join(BUILD_FOLDER, 'derived-data')
+ARTIFACTS_FOLDER = File.join(BUILD_FOLDER, 'artifacts')
 XCODEPROJ_PATH = File.join(PROJECT_ROOT_FOLDER, 'Gravatar-Demo.xcodeproj')
 DEMO_APPS_SOURCES_FOLDER = File.join(PROJECT_ROOT_FOLDER, 'Demo')
 XCCONFIG_PROTOTYPE_BUILD_SWIFTUI = File.join(DEMO_APPS_SOURCES_FOLDER, 'Gravatar-SwiftUI-Demo', 'SwiftUI-Demo.Release.xcconfig')
@@ -69,7 +70,8 @@ platform :ios do
       project: XCODEPROJ_PATH,
       scheme: scheme,
       configuration: 'Release',
-      export_method: 'enterprise'
+      export_method: 'enterprise',
+      output_directory: ARTIFACTS_FOLDER
     )
   end
 
