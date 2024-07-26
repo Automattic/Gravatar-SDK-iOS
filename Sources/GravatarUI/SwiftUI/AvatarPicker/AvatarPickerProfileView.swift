@@ -13,11 +13,10 @@ struct AvatarPickerProfileView: View {
         var profileURL: URL?
     }
 
-    @State var avatarIdentifier: AvatarIdentifier?
-    @State var model: Model?
-    @State var isLoading: Bool = false
+    @Binding var avatarIdentifier: AvatarIdentifier?
+    @Binding var model: Model?
+    @Binding var isLoading: Bool
     @StateObject private var placeholderColorManager: ProfileViewPlaceholderColorManager = .init()
-    @Environment(\.colorScheme) var colorScheme: ColorScheme
 
     private(set) var viewProfileAction: ((URL?) -> Void)? = nil
 
@@ -64,7 +63,7 @@ struct AvatarPickerProfileView: View {
     func emptyViews() -> some View {
         VStack(alignment: .leading, spacing: .DS.Padding.half, content: {
             RoundedRectangle(cornerRadius: 12)
-                .frame(width: 200, height: 24)
+                .frame(width: 180, height: 24)
             RoundedRectangle(cornerRadius: 6)
                 .frame(width: 100, height: 12)
             RoundedRectangle(cornerRadius: 6)
@@ -92,19 +91,22 @@ struct AvatarPickerProfileView: View {
 
 #Preview {
     AvatarPickerProfileView(
-        avatarIdentifier: nil,
-        model: .init(
-            displayName: "Shelly Kimbrough",
-            location: "San Antonio, TX",
-            profileURL: URL(string: "https://gravatar.com")
-        )
+        avatarIdentifier: .constant(nil),
+        model: .constant(
+            .init(
+                displayName: "Shelly Kimbrough",
+                location: "San Antonio, TX",
+                profileURL: URL(string: "https://gravatar.com")
+            )
+        ),
+        isLoading: .constant(false)
     )
 }
 
 #Preview("Empty") {
-    AvatarPickerProfileView(model: nil)
+    AvatarPickerProfileView(avatarIdentifier: .constant(nil), model: .constant(nil), isLoading: .constant(false))
 }
 
 #Preview("Empty & Loading") {
-    AvatarPickerProfileView(model: nil, isLoading: true)
+    AvatarPickerProfileView(avatarIdentifier: .constant(nil), model: .constant(nil), isLoading: .constant(true))
 }

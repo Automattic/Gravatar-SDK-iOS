@@ -31,6 +31,8 @@ struct AvatarPickerView: View {
             header()
             errorMessages()
 
+            profileView()
+
             if case .success(let avatarImageModels) = model.avatarsResult {
                 avatarGrid(with: avatarImageModels)
             } else if model.isAvatarsLoading {
@@ -151,6 +153,29 @@ struct AvatarPickerView: View {
                 .controlSize(.regular)
         }
     }
+
+    @ViewBuilder
+    private func profileView() -> some View {
+        VStack(alignment: .leading, content: {
+            AvatarPickerProfileView(
+                avatarIdentifier: $model.avatarIdentifier,
+                model: $model.profileModel,
+                isLoading: $model.isProfileLoading
+            ) { _ in
+                // TODO: Handle the link
+            }.frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.init(
+                    top: .DS.Padding.single,
+                    leading: Constants.horizontalPadding,
+                    bottom: .DS.Padding.single,
+                    trailing: Constants.horizontalPadding
+                ))
+                .background(Color(UIColor.systemBackground))
+                .cornerRadius(4)
+                .shadow(radius: 10)
+        })
+        .padding(Constants.padding)
+    }
 }
 
 #Preview("Existing elements") {
@@ -163,15 +188,50 @@ struct AvatarPickerView: View {
             .init(id: "5", source: .remote(url: "https://gravatar.com/userimage/110207384/96c6950d6d8ce8dd1177a77fe738101e.jpeg?size=256")),
             .init(id: "6", source: .remote(url: "https://gravatar.com/userimage/110207384/4a4f9385b0a6fa5c00342557a098f480.jpeg?size=256")),
         ],
-        selectedImageID: "5"
+        selectedImageID: "5",
+        profileModel: PreviewModel()
     ))
 }
 
 #Preview("Empty elements") {
-    AvatarPickerView(model: .init(avatarImageModels: []))
+    AvatarPickerView(model: .init(avatarImageModels: [], profileModel: nil))
 }
 
 #Preview("Load from network") {
     /// Enter valid email and auth token.
     AvatarPickerView(model: .init(email: .init(""), authToken: ""))
+}
+
+private struct PreviewModel: ProfileSummaryModel {
+    var avatarIdentifier: Gravatar.AvatarIdentifier? {
+        .email("xxx@gmail.com")
+    }
+
+    var displayName: String {
+        "Shelly Kimbrough"
+    }
+
+    var jobTitle: String {
+        "Payroll clerk"
+    }
+
+    var pronunciation: String {
+        "shell-ee"
+    }
+
+    var pronouns: String {
+        "she/her"
+    }
+
+    var location: String {
+        "San Antonio, TX"
+    }
+
+    var profileURL: URL? {
+        URL(string: "https://gravatar.com")
+    }
+
+    var profileEditURL: URL? {
+        URL(string: "https://gravatar.com")
+    }
 }
