@@ -15,7 +15,8 @@ DEMO_APPS_SOURCES_FOLDER = File.join(PROJECT_ROOT_FOLDER, 'Demo')
 XCCONFIG_PROTOTYPE_BUILD_SWIFTUI = File.join(DEMO_APPS_SOURCES_FOLDER, 'Gravatar-SwiftUI-Demo', 'SwiftUI-Demo.Release.xcconfig')
 XCCONFIG_PROTOTYPE_BUILD_UIKIT = File.join(DEMO_APPS_SOURCES_FOLDER, 'Gravatar-UIKit-Demo', 'UIKit-Demo.Release.xcconfig')
 
-GITHUB_URL = 'https://github.com/Automattic/Gravatar-SDK-iOS'
+GITHUB_REPO = 'Automattic/Gravatar-SDK-iOS'
+GITHUB_URL = "https://github.com/#{GITHUB_REPO}".freeze
 
 APPCENTER_OWNER_NAME = 'automattic'
 APPCENTER_OWNER_TYPE = 'organization'
@@ -84,7 +85,13 @@ platform :ios do
   lane :upload_demo_to_appcenter do |name:|
     UI.user_error!("Unsupported name #{name}") unless %w[SwiftUI UIKit].include? name
 
-    upload_to_appcenter(appcenter_slug: "Gravatar-SDK-Demo-#{name}", app_name: "#{name}-Demo")
+    slug = "Gravatar-SDK-Demo-#{name}"
+    upload_to_appcenter(appcenter_slug: slug, app_name: "#{name}-Demo")
+
+    next unless is_ci
+
+    annotate_pr_with_appcenter_link(app_suffix: name)
+    annotate_buildkite_with_appcenter_link(app_suffix: name, appcenter_slug: slug)
   end
 
   desc 'Fetches the code signing certificate and provisioning profile for the prototype builds'
@@ -152,6 +159,38 @@ def upload_to_appcenter(appcenter_slug:, app_name:)
     release_notes: release_notes,
     destinations: 'Collaborators',
     notify_testers: false
+  )
+end
+
+def annotate_pr_with_appcenter_link(app_suffix:)
+  comment_body = prototype_build_details_comment(
+    app_display_name: "Gravatar #{app_suffix} Prototype Build",
+    app_center_org_name: APPCENTER_OWNER_NAME,
+    fold: true
+  )
+
+  comment_on_pr(
+    project: GITHUB_REPO,
+    pr_number: Integer(ENV.fetch('BUILDKITE_PULL_REQUEST', nil)),
+    reuse_identifier: "prototype-build-link-gravtar-#{app_suffix}",
+    body: comment_body
+  )
+end
+
+def annotate_buildkite_with_appcenter_link(app_suffix:, appcenter_slug:)
+  # This is the id of the build on App Center
+  appcenter_id = lane_context.dig(SharedValues::APPCENTER_BUILD_INFORMATION, 'id')
+  # TODO: Decide what to do in terms of build number
+  # version_data = Xcodeproj::Config.new(File.new(VERSION_XCCONFIG_PATH)).to_hash
+  # metadata = version_data.merge(build_type: 'Prototype', 'appcenter:id': appcenter_id)
+  metadata = { build_type: 'Prototype', 'appcenter:id': appcenter_id }
+  appcenter_install_url = "https://install.appcenter.ms/orgs/#{APPCENTER_OWNER_NAME}/apps/#{appcenter_slug}/releases/#{appcenter_id}"
+  list = metadata.map { |k, v| " - **#{k}**: #{v}" }.join("\n")
+
+  buildkite_annotate(
+    context: "appcenter-info-#{appcenter_slug}",
+    style: 'info',
+    message: "Gravatar #{app_suffix} Demo [App Center Build](#{appcenter_install_url}) Info:\n\n#{list}"
   )
 end
 
