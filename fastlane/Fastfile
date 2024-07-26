@@ -6,6 +6,9 @@ OS = '17.4'
 IPHONE_DEVICE = "iPhone SE (3rd generation) (#{OS})".freeze
 
 PROJECT_ROOT_FOLDER = File.join(File.dirname(File.expand_path(__dir__)), 'Demo')
+BUILD_FOLDER = File.join(__dir__, '.build')
+LOGS_FOLDER = File.join(BUILD_FOLDER, 'logs')
+DERIVED_DATA_FOLDER = File.join(BUILD_FOLDER, 'derived-data')
 XCODEPROJ_PATH = File.join(PROJECT_ROOT_FOLDER, 'Gravatar-Demo.xcodeproj')
 DEMO_APPS_SOURCES_FOLDER = File.join(PROJECT_ROOT_FOLDER, 'Demo')
 XCCONFIG_PROTOTYPE_BUILD_SWIFTUI = File.join(DEMO_APPS_SOURCES_FOLDER, 'Gravatar-SwiftUI-Demo', 'SwiftUI-Demo.Release.xcconfig')
@@ -38,8 +41,8 @@ platform :ios do
       device: IPHONE_DEVICE,
       prelaunch_simulator: true,
       clean: true,
-      buildlog_path: File.join(__dir__, '.build', 'logs'),
-      derived_data_path: File.join(__dir__, '.build', 'derived-data')
+      buildlog_path: LOGS_FOLDER,
+      derived_data_path: DERIVED_DATA_FOLDER
     )
   end
 
@@ -54,8 +57,8 @@ platform :ios do
       device: IPHONE_DEVICE,
       clean: true,
       build_for_testing: true,
-      buildlog_path: File.join(__dir__, 'build', 'logs'),
-      derived_data_path: File.join(__dir__, 'build', 'derived-data'),
+      buildlog_path: LOGS_FOLDER,
+      derived_data_path: DERIVED_DATA_FOLDER,
       disable_package_automatic_updates: true
     )
   end
