@@ -1,4 +1,4 @@
-#include "UIKit-Demo.Base.xcconfig"
+#include "Gravatar-UIKit-Demo.Base.xcconfig"
 #include "../Enterprise.xcconfig"
 
 // Declared explicitly rather than by building on top of what's defined in Base so it can be read by other tools such as Fastlane
