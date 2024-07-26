@@ -71,18 +71,23 @@ platform :ios do
   end
 
   desc 'Builds the demo app from the given scheme for distribution'
-  lane :build_demo_for_distribution do |scheme:|
+  lane :build_demo_for_distribution do |scheme:, build_number:|
+    UI.user_error! 'Please pass a build number by calling the lane with build_number:VALUE' if build_number.nil? || build_number.empty?
+
     build_app(
       project: XCODEPROJ_PATH,
       scheme: scheme,
       configuration: 'Release',
       export_method: 'enterprise',
-      output_directory: ARTIFACTS_FOLDER
+      output_directory: ARTIFACTS_FOLDER,
+      xcargs: {
+        CURRENT_PROJECT_VERSION: build_number
+      }
     )
   end
 
   desc 'Upload the demo app with the given name to App Center'
-  lane :upload_demo_to_appcenter do |name:|
+  lane :upload_demo_to_appcenter do |name:, build_number:|
     UI.user_error!("Unsupported name #{name}") unless %w[SwiftUI UIKit].include? name
 
     slug = "Gravatar-SDK-Demo-#{name}"
@@ -91,7 +96,7 @@ platform :ios do
     next unless is_ci
 
     annotate_pr_with_appcenter_link(app_suffix: name)
-    annotate_buildkite_with_appcenter_link(app_suffix: name, appcenter_slug: slug)
+    annotate_buildkite_with_appcenter_link(app_suffix: name, appcenter_slug: slug, build_number: build_number)
   end
 
   desc 'Fetches the code signing certificate and provisioning profile for the prototype builds'
@@ -177,13 +182,14 @@ def annotate_pr_with_appcenter_link(app_suffix:)
   )
 end
 
-def annotate_buildkite_with_appcenter_link(app_suffix:, appcenter_slug:)
+def annotate_buildkite_with_appcenter_link(app_suffix:, appcenter_slug:, build_number:)
   # This is the id of the build on App Center
   appcenter_id = lane_context.dig(SharedValues::APPCENTER_BUILD_INFORMATION, 'id')
-  # TODO: Decide what to do in terms of build number
-  # version_data = Xcodeproj::Config.new(File.new(VERSION_XCCONFIG_PATH)).to_hash
-  # metadata = version_data.merge(build_type: 'Prototype', 'appcenter:id': appcenter_id)
-  metadata = { build_type: 'Prototype', 'appcenter:id': appcenter_id }
+  metadata = {
+    build_type: 'Prototype',
+    'appcenter:id': appcenter_id,
+    build_number: build_number
+  }
   appcenter_install_url = "https://install.appcenter.ms/orgs/#{APPCENTER_OWNER_NAME}/apps/#{appcenter_slug}/releases/#{appcenter_id}"
   list = metadata.map { |k, v| " - **#{k}**: #{v}" }.join("\n")
 

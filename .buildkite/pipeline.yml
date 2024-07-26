@@ -66,7 +66,7 @@ steps:
       - label: ":package: Build SwiftUI demo"
         key: build_swiftui
         depends_on: test
-        command: make build-demo-for-distribution-swiftui
+        command: BUILD_NUMBER=$BUILDKITE_BUILD_NUMBER make build-demo-for-distribution-swiftui
         artifacts:
           - ".build/artifacts/*.ipa"
           - ".build/artifacts/*.dSYM.zip"
@@ -74,7 +74,7 @@ steps:
       - label: ":package: Build UIKit demo"
         key: build_uikit
         depends_on: test
-        command: make build-demo-for-distribution-uikit
+        command: BUILD_NUMBER=$BUILDKITE_BUILD_NUMBER make build-demo-for-distribution-uikit
         artifacts:
           - ".build/artifacts/*.ipa"
           - ".build/artifacts/*.dSYM.zip"
