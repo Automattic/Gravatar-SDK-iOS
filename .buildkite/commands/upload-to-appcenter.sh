@@ -12,4 +12,4 @@ echo "--- :rubygems: Setting up Gems"
 install_gems
 
 echo "--- :hammer_and_wrench: Uploading"
-bundle exec fastlane upload_demo_to_appcenter "$NAME"
+bundle exec fastlane ios upload_demo_to_appcenter name:"$NAME"
