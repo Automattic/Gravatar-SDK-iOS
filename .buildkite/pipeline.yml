@@ -26,7 +26,7 @@ steps:
     command: |
       validate_swift_package
     plugins: [$CI_TOOLKIT]
-  
+
   #################
   # Build Demo
   #################
