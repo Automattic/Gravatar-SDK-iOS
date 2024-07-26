@@ -23,6 +23,10 @@ before_all do
   #
   # See also https://github.com/fastlane/fastlane/issues/20919
   ENV['FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT'] = '120'
+
+  # Fixes known Keychain access issue in CI. No-op on local machines.
+  # See https://docs.fastlane.tools/actions/setup_ci/
+  setup_ci
 end
 
 platform :ios do
