@@ -97,6 +97,7 @@ end
 
 def configure_code_signing(bundle_ids:, readonly:)
   EnvManager.require_env_vars!(*CODE_SIGNING_ENV_VARS)
+  EnvManager.require_env_vars!('MATCH_PASSWORD') if is_ci
 
   prompt_user_for_app_store_connect_credentials unless readonly
 
