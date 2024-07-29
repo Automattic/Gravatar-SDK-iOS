@@ -1,6 +1,6 @@
 @testable import Gravatar
 @testable import GravatarUI
-@testable import TestHelpers
+import TestHelpers
 import XCTest
 
 final class GravatarOptionsTests: XCTestCase {

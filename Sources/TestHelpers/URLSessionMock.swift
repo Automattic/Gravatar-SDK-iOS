@@ -2,7 +2,7 @@ import Foundation
 import Gravatar
 
 package actor URLSessionMock: URLSessionProtocol {
-    static let jsonData = """
+    package static let jsonData = """
     {
         "name": "John",
         "surname": "Appleseed"
@@ -63,11 +63,11 @@ package actor URLSessionMock: URLSessionProtocol {
         self.request = request
     }
 
-    func update(isCancellable: Bool) async {
+    package func update(isCancellable: Bool) async {
         self.isCancellable = isCancellable
     }
 
-    func update(maxDurationSeconds: Double) async {
+    package func update(maxDurationSeconds: Double) async {
         self.maxDurationSeconds = maxDurationSeconds
     }
 }

@@ -14,8 +14,10 @@ package final class TestImageProcessor: ImageProcessor {
     }
 }
 
-final class FailingImageProcessor: ImageProcessor {
-    func process(_: Data) -> UIImage? {
+package final class FailingImageProcessor: ImageProcessor {
+    package func process(_: Data) -> UIImage? {
         nil
     }
+
+    package init() {}
 }
