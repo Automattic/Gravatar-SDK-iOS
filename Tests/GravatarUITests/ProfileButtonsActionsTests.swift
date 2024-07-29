@@ -1,3 +1,4 @@
+import Gravatar
 import GravatarUI
 import SnapshotTesting
 import XCTest

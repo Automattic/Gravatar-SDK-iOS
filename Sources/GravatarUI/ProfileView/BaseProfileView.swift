@@ -291,7 +291,7 @@ open class BaseProfileView: UIView, UIContentView {
     /// - Parameters:
     ///   - avatarIdentifier: The identifier of the avatar to be loaded.
     ///   - placeholder: An image which will be temporarily displayed while the avatar loads.
-    ///   - rating: The maximum avatar rating for the avatar to be displayed. See ``Rating``.
+    ///   - rating: The maximum avatar rating for the avatar to be displayed.  See `Rating` in the `Gravatar` module.
     ///   - defaultAvatarOption: The avatar which the server will return in case that the avatar with the given id is not found, or if the avatar rating is
     /// higher than the specified.
     ///   - options: Options to use when fetching a Gravatar profile image and setting it to the avatar image view.
@@ -512,7 +512,7 @@ public protocol ProfileViewDelegate: NSObjectProtocol {
     /// Tells the delegate that the profile avatar view has been tapped.
     /// - Parameters:
     ///   - view: The profile view informing about the tap.
-    ///   - avatarID: The ID of the avatar tapped. Check out ``AvatarURL`` to create an avatar URL from an `AvatarIdentifier`.
+    ///   - avatarID: The ID of the avatar tapped. Check out `AvatarURL` to create an avatar URL from an `AvatarIdentifier` (see the `Gravatar` module).
     func profileView(_ view: BaseProfileView, didTapOnAvatarWithID avatarID: AvatarIdentifier?)
 }
 
