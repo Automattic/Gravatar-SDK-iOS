@@ -28,41 +28,41 @@ jobs:
     runs-on: macos-14
     steps:
       - name: Checkout 🛎️
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Switch Xcode 🔄
         run: sudo xcode-select --switch /Applications/Xcode_15.4.app
-      - name: Build Gravatar DocC
+
+      - name: Prepare Site
         run: |
-          xcodebuild docbuild -scheme Gravatar \
+          mkdir -p ./_site/$GRAVATAR_URL;
+          mkdir -p ./_site/$GRAVATAR_UI_URL;
+
+      - name: Build Gravatar SDK DocC Archives
+        run: |
+          xcodebuild docbuild -scheme Gravatar-Package \
             -derivedDataPath /tmp/docbuild \
             -destination 'generic/platform=iOS';
+          
+      - name: Process Gravatar DocC
+        run: |
           $(xcrun --find docc) process-archive \
             transform-for-static-hosting /tmp/docbuild/Build/Products/Debug-iphoneos/Gravatar.doccarchive \
-            --hosting-base-path Gravatar-SDK-iOS/$GRAVATAR_URL \
-            --output-path gravatar-docs;
-          echo "<script>window.location.href += \"$GRAVATAR_URL/documentation/gravatar\"</script>" > gravatar-docs/index.html;
-
-      - name: Build GravatarUI DocC
+            --hosting-base-path /Gravatar-SDK-iOS/$GRAVATAR_URL \
+            --output-path ./_site/$GRAVATAR_URL;
+          echo "<script>window.location.href += \"documentation/gravatar\"</script>" > ./_site/$GRAVATAR_URL/index.html;
+      - name: Process GravatarUI DocC
         run: |
-          xcodebuild docbuild -scheme GravatarUI \
-            -derivedDataPath /tmp/docbuild \
-            -destination 'generic/platform=iOS';
           $(xcrun --find docc) process-archive \
             transform-for-static-hosting /tmp/docbuild/Build/Products/Debug-iphoneos/GravatarUI.doccarchive \
-            --hosting-base-path Gravatar-SDK-iOS/$GRAVATAR_UI_URL \
-            --output-path gravatar-ui-docs;
-          echo "<script>window.location.href += \"$GRAVATAR_UI_URL/documentation/gravatar\"</script>" > gravatar-ui-docs/index.html;
-
-      - name: Move generated docs to branch directory
-        run: |
-          mkdir -p ./_site/$GRAVATAR_URL && mv ./gravatar-docs/* ./_site/$GRAVATAR_URL/;
-          mkdir -p ./_site/$GRAVATAR_UI_URL && mv ./gravatar-ui-docs/* ./_site/$GRAVATAR_UI_URL/;
+            --hosting-base-path /Gravatar-SDK-iOS/$GRAVATAR_UI_URL \
+            --output-path ./_site/$GRAVATAR_UI_URL;
+          echo "<script>window.location.href += \"documentation/gravatarui\"</script>" > ./_site/$GRAVATAR_UI_URL/index.html;
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
+        uses: actions/upload-pages-artifact@v3
         with:
           # Upload only docs directory
           path: '_site'
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v1
+        uses: actions/deploy-pages@v4
