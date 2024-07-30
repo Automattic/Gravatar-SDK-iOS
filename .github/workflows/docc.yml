@@ -31,9 +31,9 @@ jobs:
         uses: actions/checkout@v3
       - name: Switch Xcode 🔄
         run: sudo xcode-select --switch /Applications/Xcode_15.4.app
-      - name: Build Gravatar DocC
+      - name: Build Gravatar SDK DocC Archive
         run: |
-          xcodebuild docbuild -scheme Gravatar \
+          xcodebuild docbuild -scheme Gravatar-Package \
             -derivedDataPath /tmp/docbuild \
             -destination 'generic/platform=iOS';
           $(xcrun --find docc) process-archive \
@@ -41,12 +41,16 @@ jobs:
             --hosting-base-path /Gravatar-SDK-iOS/$GRAVATAR_URL \
             --output-path gravatar-docs;
           echo "<script>window.location.href += \"documentation/gravatar\"</script>" > gravatar-docs/index.html;
-
-      - name: Build GravatarUI DocC
+          
+      - name: Process Gravatar DocC
         run: |
-          xcodebuild docbuild -scheme GravatarUI \
-            -derivedDataPath /tmp/docbuild \
-            -destination 'generic/platform=iOS';
+          $(xcrun --find docc) process-archive \
+            transform-for-static-hosting /tmp/docbuild/Build/Products/Debug-iphoneos/Gravatar.doccarchive \
+            --hosting-base-path /Gravatar-SDK-iOS/$GRAVATAR_URL \
+            --output-path gravatar-docs;
+          echo "<script>window.location.href += \"documentation/gravatar\"</script>" > gravatar-docs/index.html;
+      - name: Process GravatarUI DocC
+        run: |
           $(xcrun --find docc) process-archive \
             transform-for-static-hosting /tmp/docbuild/Build/Products/Debug-iphoneos/GravatarUI.doccarchive \
             --hosting-base-path /Gravatar-SDK-iOS/$GRAVATAR_UI_URL \
