@@ -28,7 +28,7 @@ jobs:
     runs-on: macos-14
     steps:
       - name: Checkout 🛎️
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Switch Xcode 🔄
         run: sudo xcode-select --switch /Applications/Xcode_15.4.app
       - name: Build Gravatar SDK DocC Archive
@@ -63,10 +63,10 @@ jobs:
           mkdir -p ./_site/$GRAVATAR_UI_URL && mv ./gravatar-ui-docs/* ./_site/$GRAVATAR_UI_URL/;
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
+        uses: actions/upload-pages-artifact@v3
         with:
           # Upload only docs directory
           path: '_site'
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v1
+        uses: actions/deploy-pages@v4
