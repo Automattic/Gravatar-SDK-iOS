@@ -31,36 +31,32 @@ jobs:
         uses: actions/checkout@v4
       - name: Switch Xcode 🔄
         run: sudo xcode-select --switch /Applications/Xcode_15.4.app
-      - name: Build Gravatar SDK DocC Archive
+
+      - name: Prepare Site
+        run: |
+          mkdir -p ./_site/$GRAVATAR_URL;
+          mkdir -p ./_site/$GRAVATAR_UI_URL;
+
+      - name: Build Gravatar SDK DocC Archives
         run: |
           xcodebuild docbuild -scheme Gravatar-Package \
             -derivedDataPath /tmp/docbuild \
             -destination 'generic/platform=iOS';
-          $(xcrun --find docc) process-archive \
-            transform-for-static-hosting /tmp/docbuild/Build/Products/Debug-iphoneos/Gravatar.doccarchive \
-            --hosting-base-path /Gravatar-SDK-iOS/$GRAVATAR_URL \
-            --output-path gravatar-docs;
-          echo "<script>window.location.href += \"documentation/gravatar\"</script>" > gravatar-docs/index.html;
           
       - name: Process Gravatar DocC
         run: |
           $(xcrun --find docc) process-archive \
             transform-for-static-hosting /tmp/docbuild/Build/Products/Debug-iphoneos/Gravatar.doccarchive \
             --hosting-base-path /Gravatar-SDK-iOS/$GRAVATAR_URL \
-            --output-path gravatar-docs;
-          echo "<script>window.location.href += \"documentation/gravatar\"</script>" > gravatar-docs/index.html;
+            --output-path ./_site/$GRAVATAR_URL;
+          echo "<script>window.location.href += \"documentation/gravatar\"</script>" > ./_site/$GRAVATAR_URL/index.html;
       - name: Process GravatarUI DocC
         run: |
           $(xcrun --find docc) process-archive \
             transform-for-static-hosting /tmp/docbuild/Build/Products/Debug-iphoneos/GravatarUI.doccarchive \
             --hosting-base-path /Gravatar-SDK-iOS/$GRAVATAR_UI_URL \
-            --output-path gravatar-ui-docs;
-          echo "<script>window.location.href += \"documentation/gravatarui\"</script>" > gravatar-ui-docs/index.html;
-
-      - name: Move generated docs to branch directory
-        run: |
-          mkdir -p ./_site/$GRAVATAR_URL && mv ./gravatar-docs/* ./_site/$GRAVATAR_URL/;
-          mkdir -p ./_site/$GRAVATAR_UI_URL && mv ./gravatar-ui-docs/* ./_site/$GRAVATAR_UI_URL/;
+            --output-path ./_site/$GRAVATAR_UI_URL;
+          echo "<script>window.location.href += \"documentation/gravatarui\"</script>" > ./_site/$GRAVATAR_UI_URL/index.html;
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
