@@ -1,23 +1,23 @@
 import UIKit
 
-class ImageHelper {
+package class ImageHelper {
     private init() {}
 
     static let testResourcesDir = "Gravatar_Gravatar-Tests.bundle/ResourceFiles/"
 
-    static var testImage: UIImage {
+    package static var testImage: UIImage {
         image(named: "test", type: "png")!
     }
 
-    static var testImageData: Data {
+    package static var testImageData: Data {
         dataFromImage(named: "test", type: "png")!
     }
 
-    static var placeholderImage: UIImage {
+    package static var placeholderImage: UIImage {
         image(named: "placeholder", type: "png")!
     }
 
-    static var exampleAvatarImage: UIImage {
+    package static var exampleAvatarImage: UIImage {
         image(named: "example_avatar", type: "png")!
     }
 
