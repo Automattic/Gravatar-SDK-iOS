@@ -26,7 +26,11 @@ struct AvatarPickerView: View {
 
     @StateObject var model: AvatarPickerViewModel
 
-    var body: some View {
+    init(model: AvatarPickerViewModel) {
+        _model = StateObject(wrappedValue: model)
+    }
+
+    public var body: some View {
         ScrollView {
             header()
             errorMessages()
