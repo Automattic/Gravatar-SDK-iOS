@@ -15,7 +15,6 @@ protocol ImageUploader: Sendable {
     @discardableResult
     func uploadImage(
         _ image: UIImage,
-        email: Email,
         accessToken: String,
         additionalHTTPHeaders: [HTTPHeaderField]?
     ) async throws -> URLResponse

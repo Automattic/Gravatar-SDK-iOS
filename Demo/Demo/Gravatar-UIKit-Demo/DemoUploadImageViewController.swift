@@ -111,10 +111,12 @@ class DemoUploadImageViewController: UIViewController {
         let service = Gravatar.AvatarService()
         Task {
             do {
-               try await service.upload(image, email: Email(email), accessToken: token)
+               try await service.upload(image, accessToken: token)
+                resultLabel.text = "✅"
             } catch {
                 uploadResult(with: error)
             }
+            activityIndicator.stopAnimating()
         }
     }
 
@@ -131,9 +133,27 @@ class DemoUploadImageViewController: UIViewController {
 
 extension DemoUploadImageViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        guard let image = info[.editedImage] as? UIImage else { return }
-        avatarImageView.image = image
+        guard let image = info[.editedImage] as? UIImage, let rect = info[.cropRect] else { return }
+
+        let squareImage = makeSquare(image)
+        avatarImageView.image = squareImage
 
         dismiss(animated: true)
+    }
+
+    /// Squares the given image by fitting it into a square shape.
+    /// Think of it as the mode "aspect fit".
+    private func makeSquare(_ image: UIImage) -> UIImage {
+        let squareSide = max(image.size.height, image.size.width)
+        let squareSize = CGSize(width: squareSide, height: squareSide)
+        let imageOrigin = CGPoint(x: (squareSide - image.size.width) / 2, y: (squareSide - image.size.height) / 2)
+
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = 1
+        return UIGraphicsImageRenderer(size: squareSize, format: format).image { context in
+            UIColor.black.setFill()
+            context.fill(CGRect(origin: .zero, size: squareSize))
+            image.draw(in: CGRect(origin: imageOrigin, size: image.size))
+        }
     }
 }
