@@ -8,4 +8,3 @@ builder:
     configs:
     - documentation_targets: [Gravatar]
       platform: ios
-      custom_documentation_parameters: [--include-extended-types]

@@ -20,8 +20,8 @@ OUTPUT_DIRECTORY ?= $(CURRENT_MAKEFILE_DIR)/Sources/Gravatar/OpenApi/Generated
 CURRENT_MAKEFILE_PATH := $(abspath $(lastword $(MAKEFILE_LIST)))
 CURRENT_MAKEFILE_DIR := $(patsubst %/,%,$(dir $(CURRENT_MAKEFILE_PATH)))
 
-SCHEME_DEMO_SWIFTUI = SwiftUI-Demo
-SCHEME_DEMO_UIKIT = UIKit-Demo
+SCHEME_DEMO_SWIFTUI = Gravatar-SwiftUI-Demo
+SCHEME_DEMO_UIKIT = Gravatar-UIKit-Demo
 
 # If no target is specified, display help
 .DEFAULT_GOAL := help

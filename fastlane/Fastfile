@@ -12,8 +12,8 @@ DERIVED_DATA_FOLDER = File.join(BUILD_FOLDER, 'derived-data')
 ARTIFACTS_FOLDER = File.join(BUILD_FOLDER, 'artifacts')
 XCODEPROJ_PATH = File.join(PROJECT_ROOT_FOLDER, 'Gravatar-Demo.xcodeproj')
 DEMO_APPS_SOURCES_FOLDER = File.join(PROJECT_ROOT_FOLDER, 'Demo')
-XCCONFIG_PROTOTYPE_BUILD_SWIFTUI = File.join(DEMO_APPS_SOURCES_FOLDER, 'Gravatar-SwiftUI-Demo', 'SwiftUI-Demo.Release.xcconfig')
-XCCONFIG_PROTOTYPE_BUILD_UIKIT = File.join(DEMO_APPS_SOURCES_FOLDER, 'Gravatar-UIKit-Demo', 'UIKit-Demo.Release.xcconfig')
+XCCONFIG_PROTOTYPE_BUILD_SWIFTUI = File.join(DEMO_APPS_SOURCES_FOLDER, 'Gravatar-SwiftUI-Demo', 'Gravatar-SwiftUI-Demo.Release.xcconfig')
+XCCONFIG_PROTOTYPE_BUILD_UIKIT = File.join(DEMO_APPS_SOURCES_FOLDER, 'Gravatar-UIKit-Demo', 'Gravatar-UIKit-Demo.Release.xcconfig')
 
 GITHUB_REPO = 'Automattic/Gravatar-SDK-iOS'
 GITHUB_URL = "https://github.com/#{GITHUB_REPO}".freeze
@@ -54,7 +54,7 @@ platform :ios do
   end
 
   desc 'Builds the Gravatar-Demo project with a specific scheme'
-  lane :build_demo do |scheme: 'Gravatar-Demo'|
+  lane :build_demo do |scheme: 'Gravatar-UIKit-Demo'|
     # We only need to build for testing to ensure that the project builds.
     # There are no tests in the the Demo apps
     scan(

@@ -1,5 +1,5 @@
 import Gravatar
-@testable import TestHelpers
+import TestHelpers
 import XCTest
 
 final class GravatarImageCacheTests: XCTestCase {
