@@ -175,7 +175,7 @@ struct AvatarPickerView: View {
                     trailing: Constants.horizontalPadding
                 ))
                 .background(Color(UIColor.systemBackground))
-                .cornerRadius(4)
+                .cornerRadius(8)
                 .shadow(radius: 10)
         })
         .padding(Constants.padding)
