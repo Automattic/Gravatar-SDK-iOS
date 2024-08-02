@@ -1,0 +1,6 @@
+DEVELOPMENT_TEAM = PZYM8XX95Q
+
+// By default use the code sigining identity for development builds that Automatticians have access to.
+// This is better than using the generic "Apple Development" identity because it prevents Xcode selecting one of the other matching identities in the users' keychain.
+// It can happen that an Automattician has a personal development identity in the Automattic account, but that identity would not be included in the development provisioning profile, and the dev build would fail to code sign.
+CODE_SIGN_IDENTITY = Apple Development: Created via API (886NX39KP6)

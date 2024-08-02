@@ -1,3 +1,5 @@
+#if DEBUG
+
 import UIKit
 @testable import GravatarUI
 
@@ -150,3 +152,5 @@ class SVGImageCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 }
+
+#endif

@@ -1,0 +1,31 @@
+AllCops:
+  Exclude:
+    - DerivedData/**/*
+    - vendor/**/*
+  NewCops: enable
+
+Naming/FileName:
+  Exclude:
+    - "*.podspec"
+
+Metrics/BlockLength:
+  Exclude: &fastlane
+    - fastlane/Fastfile
+    - fastlane/**/*.rb
+
+Metrics/MethodLength:
+  Max: 30
+  Exclude: *fastlane
+
+Layout/LineLength:
+  Max: 165
+  Exclude: *fastlane
+
+Layout/EmptyLines:
+  Exclude: *fastlane
+
+Style/AsciiComments:
+  Exclude: *fastlane
+
+Style/HashSyntax:
+  EnforcedShorthandSyntax: never

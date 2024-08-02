@@ -1,7 +1,7 @@
 import Gravatar
 import GravatarUI
 import SnapshotTesting
-@testable import TestHelpers
+import TestHelpers
 import XCTest
 
 final class ProfileViewSnapshots: XCTestCase {
