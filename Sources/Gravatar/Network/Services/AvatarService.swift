@@ -47,7 +47,7 @@ public struct AvatarService: Sendable {
     @discardableResult
     @available(*, deprecated, renamed: "upload(_:accessToken:)")
     public func upload(_ image: UIImage, email: Email, accessToken: String) async throws -> URLResponse {
-        try await imageUploader.uploadImage(image, accessToken: accessToken, additionalHTTPHeaders: [(name: "Client-Type", value: "ios")])
+        try await imageUploader.uploadImage(image, accessToken: accessToken, additionalHTTPHeaders: [(name: "Client-Type", value: "ios")]).response
     }
 
     /// Uploads an image to be used as the user's Gravatar profile image, and returns the `URLResponse` of the network tasks asynchronously. Throws
@@ -57,7 +57,20 @@ public struct AvatarService: Sendable {
     ///   - accessToken: The authentication token for the user. This is a WordPress.com OAuth2 access token.
     /// - Returns: An asynchronously-delivered `URLResponse` instance, containing the response of the upload network task.
     @discardableResult
-    public func upload(_ image: UIImage, accessToken: String) async throws -> URLResponse {
-        try await imageUploader.uploadImage(image, accessToken: accessToken, additionalHTTPHeaders: [(name: "Client-Type", value: "ios")])
+    public func upload(_ image: UIImage, accessToken: String) async throws -> AvatarModel {
+        let (data, _) = try await imageUploader.uploadImage(image, accessToken: accessToken, additionalHTTPHeaders: [(name: "Client-Type", value: "ios")])
+        do {
+            return try data.decode(keyDecodingStrategy: .convertFromSnakeCase)
+        } catch {
+            throw ImageUploadError.responseError(reason: .unexpected(error))
+        }
     }
+}
+
+// NOTE: This will be replaced by open-api spec
+public struct AvatarModel: Decodable {
+    public let imageId: String
+    public let imageUrl: String
+    public let rating: String
+    public let altText: String
 }

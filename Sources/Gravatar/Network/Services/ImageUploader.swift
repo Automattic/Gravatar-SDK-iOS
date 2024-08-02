@@ -17,5 +17,5 @@ protocol ImageUploader: Sendable {
         _ image: UIImage,
         accessToken: String,
         additionalHTTPHeaders: [HTTPHeaderField]?
-    ) async throws -> URLResponse
+    ) async throws -> (data: Data, response: HTTPURLResponse)
 }

@@ -111,29 +111,19 @@ class DemoUploadImageViewController: UIViewController {
         let service = Gravatar.AvatarService()
         Task {
             do {
-               try await service.upload(image, accessToken: token)
-                resultLabel.text = "✅"
+               let avatarModel = try await service.upload(image, accessToken: token)
+                resultLabel.text = "✅ New avatar id \(avatarModel.imageId)"
             } catch {
-                uploadResult(with: error)
+                resultLabel.text = "Error \((error as NSError).code): \(error.localizedDescription)"
             }
             activityIndicator.stopAnimating()
-        }
-    }
-
-    func uploadResult(with error: Error?) {
-        activityIndicator.stopAnimating()
-        if let error = error as? NSError {
-            print("Error: \(error)")
-            resultLabel.text = "Error \(error.code): \(error.localizedDescription)"
-        } else {
-            resultLabel.text = "Success! 🎉"
         }
     }
 }
 
 extension DemoUploadImageViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        guard let image = info[.editedImage] as? UIImage, let rect = info[.cropRect] else { return }
+        guard let image = info[.editedImage] as? UIImage else { return }
 
         let squareImage = makeSquare(image)
         avatarImageView.image = squareImage

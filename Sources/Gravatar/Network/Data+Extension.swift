@@ -8,7 +8,6 @@ extension Data {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = dateDecodingStrategy
         decoder.keyDecodingStrategy = keyDecodingStrategy
-        let result = try decoder.decode(T.self, from: self)
-        return result
+        return try decoder.decode(T.self, from: self)
     }
 }

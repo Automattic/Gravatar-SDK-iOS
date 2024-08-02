@@ -13,7 +13,7 @@ struct ImageUploadService: ImageUploader {
     }
 
     @discardableResult
-    func uploadImage(_ image: UIImage, accessToken: String, additionalHTTPHeaders: [HTTPHeaderField]?) async throws -> URLResponse {
+    func uploadImage(_ image: UIImage, accessToken: String, additionalHTTPHeaders: [HTTPHeaderField]?) async throws -> (data: Data, response: HTTPURLResponse) {
         guard let data = image.jpegData(compressionQuality: 0.9) else {
             throw ImageUploadError.cannotConvertImageIntoData
         }
@@ -21,15 +21,14 @@ struct ImageUploadService: ImageUploader {
         return try await uploadImage(data: data, accessToken: accessToken, additionalHTTPHeaders: additionalHTTPHeaders)
     }
 
-    private func uploadImage(data: Data, accessToken: String, additionalHTTPHeaders: [HTTPHeaderField]?) async throws -> URLResponse {
+    private func uploadImage(data: Data, accessToken: String, additionalHTTPHeaders: [HTTPHeaderField]?) async throws -> (Data, HTTPURLResponse) {
         let boundary = "\(UUID().uuidString)"
         let request = URLRequest.imageUploadRequest(with: boundary, additionalHTTPHeaders: additionalHTTPHeaders)
             .settingAuthorizationHeaderField(with: accessToken)
         // For the Multipart form/data, we need to send the email address, not the id of the emai address
         let body = imageUploadBody(with: data, boundary: boundary)
         do {
-            let response = try await client.uploadData(with: request, data: body)
-            return response
+            return try await client.uploadData(with: request, data: body)
         } catch let error as HTTPClientError {
             throw ImageUploadError.responseError(reason: error.map())
         } catch {
