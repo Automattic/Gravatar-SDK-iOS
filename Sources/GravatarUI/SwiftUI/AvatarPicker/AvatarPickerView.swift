@@ -217,7 +217,7 @@ struct AvatarPickerView: View {
         }
     }
 
-    AvatarPickerView(model: .init(
+    return AvatarPickerView(model: .init(
         avatarImageModels: [
             .init(id: "1", source: .remote(url: "https://gravatar.com/userimage/110207384/aa5f129a2ec75162cee9a1f0c472356a.jpeg?size=256")),
             .init(id: "2", source: .remote(url: "https://gravatar.com/userimage/110207384/db73834576b01b69dd8da1e29877ca07.jpeg?size=256")),
