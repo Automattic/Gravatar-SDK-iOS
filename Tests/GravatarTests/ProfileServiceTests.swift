@@ -89,4 +89,8 @@ extension Bundle {
     static var fullProfileJsonData: Data? {
         testsBundle.jsonData(forResource: "fullProfile")
     }
+
+    static var imageUploadJsonData: Data? {
+        testsBundle.jsonData(forResource: "avatarUploadResponse")
+    }
 }
