@@ -179,6 +179,40 @@ struct AvatarPickerView: View {
 }
 
 #Preview("Existing elements") {
+    struct PreviewModel: ProfileSummaryModel {
+        var avatarIdentifier: Gravatar.AvatarIdentifier? {
+            .email("xxx@gmail.com")
+        }
+
+        var displayName: String {
+            "Shelly Kimbrough"
+        }
+
+        var jobTitle: String {
+            "Payroll clerk"
+        }
+
+        var pronunciation: String {
+            "shell-ee"
+        }
+
+        var pronouns: String {
+            "she/her"
+        }
+
+        var location: String {
+            "San Antonio, TX"
+        }
+
+        var profileURL: URL? {
+            URL(string: "https://gravatar.com")
+        }
+
+        var profileEditURL: URL? {
+            URL(string: "https://gravatar.com")
+        }
+    }
+
     AvatarPickerView(model: .init(
         avatarImageModels: [
             .init(id: "1", source: .remote(url: "https://gravatar.com/userimage/110207384/aa5f129a2ec75162cee9a1f0c472356a.jpeg?size=256")),
@@ -200,38 +234,4 @@ struct AvatarPickerView: View {
 #Preview("Load from network") {
     /// Enter valid email and auth token.
     AvatarPickerView(model: .init(email: .init(""), authToken: ""))
-}
-
-private struct PreviewModel: ProfileSummaryModel {
-    var avatarIdentifier: Gravatar.AvatarIdentifier? {
-        .email("xxx@gmail.com")
-    }
-
-    var displayName: String {
-        "Shelly Kimbrough"
-    }
-
-    var jobTitle: String {
-        "Payroll clerk"
-    }
-
-    var pronunciation: String {
-        "shell-ee"
-    }
-
-    var pronouns: String {
-        "she/her"
-    }
-
-    var location: String {
-        "San Antonio, TX"
-    }
-
-    var profileURL: URL? {
-        URL(string: "https://gravatar.com")
-    }
-
-    var profileEditURL: URL? {
-        URL(string: "https://gravatar.com")
-    }
 }
