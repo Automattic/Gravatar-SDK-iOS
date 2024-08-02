@@ -55,7 +55,7 @@ public struct AvatarService: Sendable {
     /// - Parameters:
     ///   - image: The image to be uploaded.
     ///   - accessToken: The authentication token for the user. This is a WordPress.com OAuth2 access token.
-    /// - Returns: An asynchronously-delivered `URLResponse` instance, containing the response of the upload network task.
+    /// - Returns: An asynchronously-delivered `AvatarModel` instance, containing data of the newly created avatar.
     @discardableResult
     public func upload(_ image: UIImage, accessToken: String) async throws -> AvatarModel {
         let (data, _) = try await imageUploader.uploadImage(image, accessToken: accessToken, additionalHTTPHeaders: [(name: "Client-Type", value: "ios")])
