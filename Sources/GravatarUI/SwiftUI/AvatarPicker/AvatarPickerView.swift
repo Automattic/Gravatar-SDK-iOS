@@ -33,10 +33,9 @@ struct AvatarPickerView: View {
     public var body: some View {
         ScrollView {
             header()
-            errorMessages()
-
             profileView()
-
+            errorMessages()
+            
             if case .success(let avatarImageModels) = model.avatarsResult {
                 avatarGrid(with: avatarImageModels)
             } else if model.isAvatarsLoading {
@@ -57,13 +56,13 @@ struct AvatarPickerView: View {
         .padding(.init(top: .DS.Padding.double, leading: Constants.horizontalPadding, bottom: .DS.Padding.half, trailing: Constants.horizontalPadding))
         .frame(maxWidth: .infinity, alignment: .leading)
     }
-
+    
     @ViewBuilder
     private func errorMessages() -> some View {
         VStack(alignment: .center) {
             switch model.avatarsResult {
             case .success(let models) where models.isEmpty:
-                errorText("You don't have any avatars yet. Why not start uploading some now?")
+                emptyView()
             case .failure:
                 Spacer(minLength: .DS.Padding.large * 2)
                 errorText("Sorry, it seems like something didn't quite work out when getting your avatars.")
@@ -74,7 +73,57 @@ struct AvatarPickerView: View {
         }
         .foregroundColor(.secondary)
     }
-
+    
+    @ViewBuilder
+    private func emptyView() -> some View {
+        VStack {
+            VStack(alignment: .leading, spacing: 0) {
+                    Text("Let's setup your avatar")
+                        .font(.title2)
+                        .fontWeight(.semibold)
+                        .foregroundColor(Color(UIColor.label))
+                        .padding(.horizontal, 0)
+                        
+                    Text("Choose or upload your favorite avatar images and connect them to your email address.")
+                        .font(.subheadline)
+                
+                VStack(alignment: .center, content: {
+                    Image("setup-avatar-emoji", bundle: .module)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 96, height: 96)
+                        .padding(.vertical, 24)
+                })
+                .frame(maxWidth: .infinity)
+                .padding(.horizontal, 0)
+                uploadButtonRectangular()
+                
+            }
+            .padding(.horizontal, Constants.horizontalPadding)
+            .padding(.vertical, .DS.Padding.double)
+            .shape(RoundedRectangle(cornerRadius: 8), borderColor: Color(UIColor.label).opacity(0.06), borderWidth: 1)
+        }
+        .padding(.horizontal, Constants.horizontalPadding)
+    }
+    
+    @ViewBuilder
+    private func uploadButtonRectangular() -> some View {
+        Button() {
+            // TODO: Add upload code
+        }
+        label: {
+            Text("Upload image")
+                .font(.callout)
+                .fontWeight(.semibold)
+         }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, .DS.Padding.split)
+        .padding(.horizontal, .DS.Padding.double)
+        .background(Color(UIColor.gravatarBlue))
+        .foregroundColor(Color.white)
+        .cornerRadius(5)
+    }
+    
     @ViewBuilder
     private func tryAgainButton() -> some View {
         Button(action: {
