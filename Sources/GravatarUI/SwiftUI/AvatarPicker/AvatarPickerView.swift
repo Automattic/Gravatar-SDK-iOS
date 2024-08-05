@@ -27,10 +27,16 @@ struct AvatarPickerView: View {
 
     @StateObject var model: AvatarPickerViewModel
 
-    var body: some View {
+    init(model: AvatarPickerViewModel) {
+        _model = StateObject(wrappedValue: model)
+    }
+
+    public var body: some View {
         ScrollView {
             header()
             errorMessages()
+
+            profileView()
 
             if case .success(let avatarImageModels) = model.avatarsResult {
                 avatarGrid(with: avatarImageModels)
@@ -175,10 +181,67 @@ struct AvatarPickerView: View {
                 .controlSize(.regular)
         }
     }
+
+    @ViewBuilder
+    private func profileView() -> some View {
+        VStack(alignment: .leading, content: {
+            AvatarPickerProfileView(
+                avatarIdentifier: $model.avatarIdentifier,
+                model: $model.profileModel,
+                isLoading: $model.isProfileLoading
+            ) { _ in
+                // TODO: Handle the link
+            }.frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.init(
+                    top: .DS.Padding.single,
+                    leading: Constants.horizontalPadding,
+                    bottom: .DS.Padding.single,
+                    trailing: Constants.horizontalPadding
+                ))
+                .background(Color(UIColor.systemBackground))
+                .cornerRadius(8)
+                .shadow(radius: 10)
+        })
+        .padding(Constants.padding)
+    }
 }
 
 #Preview("Existing elements") {
-    AvatarPickerView(model: .init(
+    struct PreviewModel: ProfileSummaryModel {
+        var avatarIdentifier: Gravatar.AvatarIdentifier? {
+            .email("xxx@gmail.com")
+        }
+
+        var displayName: String {
+            "Shelly Kimbrough"
+        }
+
+        var jobTitle: String {
+            "Payroll clerk"
+        }
+
+        var pronunciation: String {
+            "shell-ee"
+        }
+
+        var pronouns: String {
+            "she/her"
+        }
+
+        var location: String {
+            "San Antonio, TX"
+        }
+
+        var profileURL: URL? {
+            URL(string: "https://gravatar.com")
+        }
+
+        var profileEditURL: URL? {
+            URL(string: "https://gravatar.com")
+        }
+    }
+
+    return AvatarPickerView(model: .init(
         avatarImageModels: [
             .init(id: "1", source: .remote(url: "https://gravatar.com/userimage/110207384/aa5f129a2ec75162cee9a1f0c472356a.jpeg?size=256")),
             .init(id: "2", source: .remote(url: "https://gravatar.com/userimage/110207384/db73834576b01b69dd8da1e29877ca07.jpeg?size=256")),
@@ -187,12 +250,13 @@ struct AvatarPickerView: View {
             .init(id: "5", source: .remote(url: "https://gravatar.com/userimage/110207384/96c6950d6d8ce8dd1177a77fe738101e.jpeg?size=256")),
             .init(id: "6", source: .remote(url: "https://gravatar.com/userimage/110207384/4a4f9385b0a6fa5c00342557a098f480.jpeg?size=256")),
         ],
-        selectedImageID: "5"
+        selectedImageID: "5",
+        profileModel: PreviewModel()
     ))
 }
 
 #Preview("Empty elements") {
-    AvatarPickerView(model: .init(avatarImageModels: []))
+    AvatarPickerView(model: .init(avatarImageModels: [], profileModel: nil))
 }
 
 #Preview("Load from network") {

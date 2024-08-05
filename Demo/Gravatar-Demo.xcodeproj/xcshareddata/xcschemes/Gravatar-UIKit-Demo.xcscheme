@@ -15,8 +15,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "495775DE2B5B34970082812A"
-               BuildableName = "Gravatar-Demo.app"
-               BlueprintName = "Gravatar-Demo"
+               BuildableName = "Gravatar UIKit.app"
+               BlueprintName = "Gravatar UIKit"
                ReferencedContainer = "container:Gravatar-Demo.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -44,8 +44,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "495775DE2B5B34970082812A"
-            BuildableName = "Gravatar-Demo.app"
-            BlueprintName = "Gravatar-Demo"
+            BuildableName = "Gravatar UIKit.app"
+            BlueprintName = "Gravatar UIKit"
             ReferencedContainer = "container:Gravatar-Demo.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

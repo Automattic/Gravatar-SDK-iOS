@@ -20,6 +20,8 @@ OUTPUT_DIRECTORY ?= $(CURRENT_MAKEFILE_DIR)/Sources/Gravatar/OpenApi/Generated
 CURRENT_MAKEFILE_PATH := $(abspath $(lastword $(MAKEFILE_LIST)))
 CURRENT_MAKEFILE_DIR := $(patsubst %/,%,$(dir $(CURRENT_MAKEFILE_PATH)))
 
+SCHEME_DEMO_SWIFTUI = Gravatar-SwiftUI-Demo
+SCHEME_DEMO_UIKIT = Gravatar-UIKit-Demo
 
 # If no target is specified, display help
 .DEFAULT_GOAL := help
@@ -38,16 +40,27 @@ dev-demo: # Open an xcode project with the package and a demo project
 test: bundle-install
 	bundle exec fastlane test
 
-build-demo: build-demo-swift build-demo-swiftui
+build-demo: build-demo-uikit build-demo-swiftui
 
-build-demo-swift: bundle-install
-	bundle exec fastlane build_demo scheme:Gravatar-Demo
+build-demo-uikit: bundle-install
+	bundle exec fastlane build_demo scheme:$(SCHEME_DEMO_UIKIT)
 
 build-demo-swiftui: bundle-install
-	bundle exec fastlane build_demo scheme:Gravatar-SwiftUI-Demo
+	bundle exec fastlane build_demo scheme:$(SCHEME_DEMO_SWIFTUI)
+
+build-demo-for-distribution: build-demo-for-distribution-swiftui build-demo-for-distribution-uikit
+
+build-demo-for-distribution-swiftui: fetch-code-signing
+	bundle exec fastlane build_demo_for_distribution scheme:$(SCHEME_DEMO_SWIFTUI)
+
+build-demo-for-distribution-uikit: fetch-code-signing
+	bundle exec fastlane build_demo_for_distribution scheme:$(SCHEME_DEMO_UIKIT)
 
 bundle-install:
 	bundle install
+
+fetch-code-signing: bundle-install
+	bundle exec fastlane configure_code_signing
 
 swiftformat: # Automatically find and fixes lint issues
 	swift package plugin \
