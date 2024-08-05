@@ -17,6 +17,13 @@ struct AvatarImageModel: Hashable, Identifiable {
         return URL(string: url)
     }
 
+    var localImage: UIImage? {
+        guard case .local(let image) = source else {
+            return nil
+        }
+        return image
+    }
+
     init(id: String, source: Source, isLoading: Bool = false) {
         self.id = id
         self.source = source

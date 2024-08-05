@@ -4,8 +4,8 @@ import SwiftUI
 @MainActor
 class AvatarPickerViewModel: ObservableObject {
     private let profileService: ProfileService = .init()
-    private var email: Email?
-    private var authToken: String?
+    private var email: Email
+    private var authToken: String
     @Published private(set) var avatarsResult: Result<[AvatarImageModel], Error>?
     @Published private(set) var currentAvatarResult: Result<String, Error>?
     @Published private(set) var isAvatarsLoading: Bool = false
@@ -17,6 +17,8 @@ class AvatarPickerViewModel: ObservableObject {
 
     /// Internal init for previewing purposes. Do not make this public.
     init(avatarImageModels: [AvatarImageModel], selectedImageID: String? = nil) {
+        email = .init("")
+        authToken = ""
         if let selectedImageID {
             self.currentAvatarResult = .success(selectedImageID)
         } else {
@@ -26,7 +28,6 @@ class AvatarPickerViewModel: ObservableObject {
     }
 
     func fetchAvatars() async {
-        guard let authToken else { return }
         do {
             isAvatarsLoading = true
             let images = try await profileService.fetchAvatars(with: authToken)
@@ -43,12 +44,28 @@ class AvatarPickerViewModel: ObservableObject {
     }
 
     func fetchIdentity() async {
-        guard let authToken, let email else { return }
         do {
             let identity = try await profileService.fetchIdentity(token: authToken, profileID: .email(email))
             currentAvatarResult = .success(identity.imageId)
         } catch {
             currentAvatarResult = .failure(error)
+        }
+    }
+
+    func upload(_ image: UIImage) async {
+        let localImageModel = AvatarImageModel(id: "new", source: AvatarImageModel.Source.local(image: image)).togglingLoading()
+        if case .success(let avatarImageModels) = avatarsResult {
+            let newList = [localImageModel] + avatarImageModels
+            avatarsResult = .success(newList)
+        }
+
+        let service = AvatarService()
+        do {
+            let response = try await service.upload(image, email: email, accessToken: authToken)
+            await fetchAvatars()
+            await fetchIdentity()
+        } catch {
+            avatarsResult = .failure(error)
         }
     }
 

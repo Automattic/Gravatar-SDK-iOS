@@ -1,5 +1,6 @@
 import Gravatar
 import SwiftUI
+import PhotosUI
 
 @MainActor
 struct AvatarPickerView: View {
@@ -106,10 +107,33 @@ struct AvatarPickerView: View {
         )]
 
         LazyVGrid(columns: gridItems, spacing: Constants.avatarSpacing) {
+            ImagePicker() {
+                Image(systemName: "plus").font(.system(size: 44, weight: .light))
+                .frame(
+                    minWidth: Constants.minAvatarWidth,
+                    maxWidth: Constants.maxAvatarWidth,
+                    minHeight: Constants.minAvatarWidth,
+                    maxHeight: Constants.maxAvatarWidth
+                )
+                .background(
+                    RoundedRectangle(cornerRadius: Constants.avatarCornerRadius)
+                        .stroke(Color(UIColor.systemGray2), style: StrokeStyle(lineWidth: 2, dash: [7]))
+                )
+                .tint(Color(UIColor.systemGray2))
+            } onImageSelected: { image in
+                print("Selected!")
+                Task {
+                    await model.upload(image)
+                }
+            }
+
             ForEach(avatarImageModels) { avatar in
+//                if case .local(let image) = avatar.source {
+//
+//                }
                 AvatarView(
                     url: avatar.url,
-                    placeholder: nil,
+                    placeholder: avatar.localImage?.image,
                     loadingView: {
                         ProgressView()
                             .progressViewStyle(CircularProgressViewStyle())
@@ -174,4 +198,126 @@ struct AvatarPickerView: View {
 #Preview("Load from network") {
     /// Enter valid email and auth token.
     AvatarPickerView(model: .init(email: .init(""), authToken: ""))
+}
+
+private extension UIImage {
+    var image: Image {
+        Image(uiImage: self)
+    }
+}
+
+import PhotosUI
+
+@available(iOS 17.0, *)
+struct NewImagePicker<Label> : View where Label : View {
+    @State var photoItem: PhotosPickerItem?
+    @ViewBuilder var label: () -> Label
+
+    let onImageSelected: (Image) -> Void
+
+
+    var body: some View {
+        PhotosPicker(selection: $photoItem) {
+            label()
+        }.onChange(of: photoItem) {
+            Task {
+                if let loaded = try? await photoItem?.loadTransferable(type: Image.self) {
+                    onImageSelected(loaded)
+                } else {
+                    print("Failed")
+                }
+            }
+        }
+    }
+}
+
+
+struct ImagePicker<Label> : View where Label : View {
+    @ViewBuilder var label: () -> Label
+
+    let onImageSelected: (UIImage) -> Void
+
+    var body: some View {
+        LegacyImagePicker(label: label, onImageSelected: onImageSelected)
+    }
+}
+
+struct LegacyImagePicker<Label> : View where Label : View {
+    @State var isPresented: Bool = false
+    @ViewBuilder var label: () -> Label
+    let onImageSelected: (UIImage) -> Void
+
+    var body: some View {
+        VStack {
+            Button(action: {
+                isPresented.toggle()
+            }, label: {
+                label()
+            })
+        }
+        .sheet(isPresented: $isPresented, content: {
+            
+            LegacyImagePickerRepresentable { image in
+                onImageSelected(image)
+            }.ignoresSafeArea()
+        })
+    }
+}
+
+
+struct LegacyImagePickerRepresentable: UIViewControllerRepresentable {
+    @Environment(\.presentationMode) private var presentationMode
+
+    let onImageSelected: (UIImage) -> Void
+
+    @State private var selectedUIImage: UIImage? {
+        didSet {
+            if let selectedUIImage {
+                print("LegacyImagePickerRepresentable.selectedImage = \(selectedUIImage)")
+                onImageSelected(selectedUIImage)
+            }
+        }
+    }
+
+    var sourceType: UIImagePickerController.SourceType = .photoLibrary
+
+    func makeUIViewController(context: UIViewControllerRepresentableContext<LegacyImagePickerRepresentable>) -> UIImagePickerController {
+        let imagePicker = UIImagePickerController()
+        imagePicker.allowsEditing = true
+        imagePicker.sourceType = sourceType
+        imagePicker.delegate = context.coordinator
+
+        return imagePicker
+    }
+
+    func updateUIViewController(
+        _ uiViewController: UIImagePickerController,
+        context: UIViewControllerRepresentableContext<LegacyImagePickerRepresentable>
+    ) { }
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(self)
+    }
+
+    final class Coordinator: NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+
+        var parent: LegacyImagePickerRepresentable
+
+        init(_ parent: LegacyImagePickerRepresentable) {
+            self.parent = parent
+        }
+
+        func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+
+            if let image = info[UIImagePickerController.InfoKey.editedImage] as? UIImage {
+                print("Image selected (Edited)")
+                parent.selectedUIImage = image
+            } else if let image = info[UIImagePickerController.InfoKey.editedImage] as? UIImage {
+                parent.selectedUIImage = image
+                print("Image selected")
+            }
+
+            parent.presentationMode.wrappedValue.dismiss()
+        }
+    }
 }
