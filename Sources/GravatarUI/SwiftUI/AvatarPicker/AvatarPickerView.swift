@@ -3,6 +3,27 @@ import SwiftUI
 
 @MainActor
 struct AvatarPickerView: View {
+    private enum Constants {
+        static let horizontalPadding: CGFloat = .DS.Padding.double
+        static let maxAvatarWidth: CGFloat = 100
+        static let minAvatarWidth: CGFloat = 80
+        static let avatarSpacing: CGFloat = 20
+        static let padding: EdgeInsets = .init(
+            top: .DS.Padding.double,
+            leading: horizontalPadding,
+            bottom: .DS.Padding.double,
+            trailing: horizontalPadding
+        )
+        static let errorPadding: EdgeInsets = .init(
+            top: .DS.Padding.double,
+            leading: horizontalPadding * 2,
+            bottom: .DS.Padding.double,
+            trailing: horizontalPadding * 2
+        )
+        static let selectedBorderWidth: CGFloat = .DS.Padding.half
+        static let avatarCornerRadius: CGFloat = .DS.Padding.single
+    }
+
     @StateObject var model: AvatarPickerViewModel
 
     init(model: AvatarPickerViewModel) {
@@ -106,7 +127,7 @@ struct AvatarPickerView: View {
 
         LazyVGrid(columns: gridItems, spacing: Constants.avatarSpacing) {
             ImagePicker {
-                PlusButtonView()
+                PlusButtonView(minSize: Constants.minAvatarWidth, maxSize: Constants.maxAvatarWidth)
             }
 
             ForEach(avatarImageModels) { avatar in
@@ -114,7 +135,8 @@ struct AvatarPickerView: View {
                     url: avatar.url,
                     placeholder: avatar.localImage,
                     loadingView: {
-                        ActivityIndicatorView()
+                        OverlayActivityIndicatorView()
+                            .cornerRadius(Constants.avatarCornerRadius)
                     }
                 )
                 .scaledToFill()
@@ -133,7 +155,8 @@ struct AvatarPickerView: View {
                 )
                 .overlay {
                     if case .local = avatar.source, avatar.isLoading {
-                        ActivityIndicatorView()
+                        OverlayActivityIndicatorView()
+                            .cornerRadius(Constants.avatarCornerRadius)
                     }
                 }
             }
@@ -181,71 +204,6 @@ struct AvatarPickerView: View {
         })
         .padding(Constants.padding)
     }
-}
-
-struct CTAButtonView: View {
-    let titleKey: LocalizedStringKey
-
-    public init(_ key: LocalizedStringKey) {
-        self.titleKey = key
-    }
-
-    public var body: some View {
-        Text(titleKey)
-            .font(.callout).fontWeight(.bold)
-            .frame(maxWidth: .infinity)
-            .foregroundColor(.white)
-            .padding()
-            .background(RoundedRectangle(cornerRadius: 4).fill(Color(uiColor: .gravatarBlue)))
-    }
-}
-
-struct ActivityIndicatorView: View {
-    public var body: some View {
-        ZStack {
-            Rectangle()
-                .fill(.black.opacity(0.3)).cornerRadius(.DS.Padding.single)
-            ProgressView().tint(.white)
-        }
-    }
-}
-
-struct PlusButtonView: View {
-    public var body: some View {
-        Image(systemName: "plus").font(.system(size: 44, weight: .light))
-            .frame(
-                minWidth: Constants.minAvatarWidth,
-                maxWidth: Constants.maxAvatarWidth,
-                minHeight: Constants.minAvatarWidth,
-                maxHeight: Constants.maxAvatarWidth
-            )
-            .background(
-                RoundedRectangle(cornerRadius: Constants.avatarCornerRadius)
-                    .stroke(Color(UIColor.systemGray2), style: StrokeStyle(lineWidth: 2, dash: [7]))
-            )
-            .tint(Color(UIColor.systemGray2))
-    }
-}
-
-private enum Constants {
-    static let horizontalPadding: CGFloat = .DS.Padding.double
-    static let maxAvatarWidth: CGFloat = 100
-    static let minAvatarWidth: CGFloat = 80
-    static let avatarSpacing: CGFloat = 20
-    static let padding: EdgeInsets = .init(
-        top: .DS.Padding.double,
-        leading: horizontalPadding,
-        bottom: .DS.Padding.double,
-        trailing: horizontalPadding
-    )
-    static let errorPadding: EdgeInsets = .init(
-        top: .DS.Padding.double,
-        leading: horizontalPadding * 2,
-        bottom: .DS.Padding.double,
-        trailing: horizontalPadding * 2
-    )
-    static let selectedBorderWidth: CGFloat = .DS.Padding.half
-    static let avatarCornerRadius: CGFloat = .DS.Padding.single
 }
 
 #Preview("Existing elements") {
