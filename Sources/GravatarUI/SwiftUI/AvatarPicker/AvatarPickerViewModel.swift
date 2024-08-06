@@ -97,10 +97,10 @@ class AvatarPickerViewModel: ObservableObject {
 
     func upload(_ image: UIImage) async {
         let squareImage = image.squared()
-        await makeUpload(of: squareImage)
+        await performUpload(of: squareImage)
     }
 
-    private func makeUpload(of squareImage: UIImage) async {
+    private func performUpload(of squareImage: UIImage) async {
         guard let authToken else { return }
 
         let localID = UUID().uuidString
@@ -116,7 +116,8 @@ class AvatarPickerViewModel: ObservableObject {
             let newModel = AvatarImageModel(id: avatar.id, source: .remote(url: avatar.url))
             add(newModel, replacing: localID)
         } catch {
-            avatarsResult = .failure(error)
+            // TODO: Proper error handling.
+            print(error)
         }
     }
 
