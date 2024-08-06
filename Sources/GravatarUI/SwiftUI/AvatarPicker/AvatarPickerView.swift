@@ -23,7 +23,7 @@ struct AvatarPickerView: View {
                 }
             }
             ImagePicker {
-                UploadImageCTAButtonView()
+                CTAButtonView("Upload Avatar")
             }
             .padding(Constants.padding)
         }
@@ -183,9 +183,15 @@ struct AvatarPickerView: View {
     }
 }
 
-struct UploadImageCTAButtonView: View {
+struct CTAButtonView: View {
+    let titleKey: LocalizedStringKey
+
+    public init(_ key: LocalizedStringKey) {
+        self.titleKey = key
+    }
+
     public var body: some View {
-        Text("Upload image")
+        Text(titleKey)
             .font(.callout).fontWeight(.bold)
             .frame(maxWidth: .infinity)
             .foregroundColor(.white)
