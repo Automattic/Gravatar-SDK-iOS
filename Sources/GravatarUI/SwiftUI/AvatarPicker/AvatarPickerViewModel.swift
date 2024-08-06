@@ -96,16 +96,21 @@ class AvatarPickerViewModel: ObservableObject {
     }
 
     func upload(_ image: UIImage) async {
-        guard let authToken else { return }
         let squareImage = image.squared()
+        await makeUpload(of: squareImage)
+    }
+
+    private func makeUpload(of squareImage: UIImage) async {
+        guard let authToken else { return }
+
         let localID = UUID().uuidString
 
-        let localImageModel = AvatarImageModel(id: localID, source: .local(image: image), isLoading: true)
+        let localImageModel = AvatarImageModel(id: localID, source: .local(image: squareImage), isLoading: true)
         add(localImageModel)
 
         let service = AvatarService()
         do {
-            let avatar = try await service.upload(image, accessToken: authToken)
+            let avatar = try await service.upload(squareImage, accessToken: authToken)
             await ImageCache.shared.setEntry(.ready(squareImage), for: avatar.url)
 
             let newModel = AvatarImageModel(id: avatar.id, source: .remote(url: avatar.url))
