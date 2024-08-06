@@ -19,7 +19,8 @@ struct AvatarPickerView: View {
     }
     
     @StateObject var model: AvatarPickerViewModel
-    
+    @Environment(\.colorScheme) var colorScheme: ColorScheme
+
     init(model: AvatarPickerViewModel) {
         _model = StateObject(wrappedValue: model)
     }
@@ -110,7 +111,7 @@ struct AvatarPickerView: View {
             }
             .padding(.horizontal, Constants.horizontalPadding)
             .padding(.vertical, .DS.Padding.double)
-            .shape(RoundedRectangle(cornerRadius: 8), borderColor: Color(UIColor.label).opacity(0.06), borderWidth: 1)
+            .shape(RoundedRectangle(cornerRadius: 8), borderColor: Color(UIColor.label).opacity(colorScheme == .dark ? 0.16 : 0.08), borderWidth: 1)
         }
         .padding(.horizontal, Constants.horizontalPadding)
     }
