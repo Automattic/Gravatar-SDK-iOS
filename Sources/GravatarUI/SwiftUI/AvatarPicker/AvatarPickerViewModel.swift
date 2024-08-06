@@ -85,7 +85,7 @@ class AvatarPickerViewModel: ObservableObject {
     }
 
     func fetchIdentity() async {
-        guard let email, let authToken else { return }
+        guard let authToken, let email else { return }
 
         do {
             let identity = try await profileService.fetchIdentity(token: authToken, profileID: .email(email))
@@ -97,7 +97,7 @@ class AvatarPickerViewModel: ObservableObject {
 
     func upload(_ image: UIImage) async {
         guard let authToken else { return }
-        let squareImage = makeSquare(image)
+        let squareImage = image.squared()
         let localID = UUID().uuidString
 
         let localImageModel = AvatarImageModel(id: localID, source: .local(image: image), isLoading: true)
@@ -105,50 +105,23 @@ class AvatarPickerViewModel: ObservableObject {
 
         let service = AvatarService()
         do {
-            let avatar = try await service.upload(squareImage, accessToken: authToken)
+            let avatar = try await service.upload(image, accessToken: authToken)
             await ImageCache.shared.setEntry(.ready(squareImage), for: avatar.url)
 
             let newModel = AvatarImageModel(id: avatar.id, source: .remote(url: avatar.url))
-            add(newModel, removing: localID)
+            add(newModel, replacing: localID)
         } catch {
             avatarsResult = .failure(error)
         }
     }
 
-    private func add(_ avatarModel: AvatarImageModel, removing imageID: String? = nil) {
+    private func add(_ avatarModel: AvatarImageModel, replacing replacingID: String? = nil) {
         if case .success(var avatarImageModels) = avatarsResult {
-            if let imageID {
-                avatarImageModels.removeAll { $0.id == imageID }
+            if let replacingID {
+                avatarImageModels.removeAll { $0.id == replacingID }
             }
             let newList = [avatarModel] + avatarImageModels
             avatarsResult = .success(newList)
-        }
-    }
-
-    func makeSquare(_ image: UIImage) -> UIImage {
-        let (height, width) = (image.size.height, image.size.width)
-        guard height != width else {
-            return image
-        }
-        let squareSide = {
-            // If there's a side difference of 1~2px in an image smaller then (around) 100px, this will return false.
-            if width != height && (abs(width - height) / min(width, height)) < 0.02 {
-                // Aspect fill
-                return min(height, width)
-            }
-            // Aspect fit
-            return max(height, width)
-        }()
-
-        let squareSize = CGSize(width: squareSide, height: squareSide)
-        let imageOrigin = CGPoint(x: (squareSide - image.size.width) / 2, y: (squareSide - image.size.height) / 2)
-
-        let format = UIGraphicsImageRendererFormat()
-        format.scale = 1
-        return UIGraphicsImageRenderer(size: squareSize, format: format).image { context in
-            UIColor.black.setFill()
-            context.fill(CGRect(origin: .zero, size: squareSize))
-            image.draw(in: CGRect(origin: imageOrigin, size: image.size))
         }
     }
 
@@ -191,6 +164,35 @@ extension Result<[AvatarImageModel], Error> {
             models.isEmpty
         default:
             false
+        }
+    }
+}
+
+extension UIImage {
+    fileprivate func squared() -> UIImage {
+        let (height, width) = (size.height, size.width)
+        guard height != width else {
+            return self
+        }
+        let squareSide = {
+            // If there's a side difference of 1~2px in an image smaller then (around) 100px, this will return false.
+            if width != height && (abs(width - height) / min(width, height)) < 0.02 {
+                // Aspect fill
+                return min(height, width)
+            }
+            // Aspect fit
+            return max(height, width)
+        }()
+
+        let squareSize = CGSize(width: squareSide, height: squareSide)
+        let imageOrigin = CGPoint(x: (squareSide - width) / 2, y: (squareSide - height) / 2)
+
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = 1
+        return UIGraphicsImageRenderer(size: squareSize, format: format).image { context in
+            UIColor.black.setFill()
+            context.fill(CGRect(origin: .zero, size: squareSize))
+            draw(in: CGRect(origin: imageOrigin, size: size))
         }
     }
 }
