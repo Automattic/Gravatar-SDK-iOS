@@ -196,7 +196,7 @@ struct CTAButtonView: View {
             .frame(maxWidth: .infinity)
             .foregroundColor(.white)
             .padding()
-            .background(RoundedRectangle(cornerRadius: 4).fill(Color.gravatarBlue))
+            .background(RoundedRectangle(cornerRadius: 4).fill(Color(uiColor: .gravatarBlue)))
     }
 }
 
@@ -225,10 +225,6 @@ struct PlusButtonView: View {
             )
             .tint(Color(UIColor.systemGray2))
     }
-}
-
-extension Color {
-    static let gravatarBlue = Color(uiColor: UIColor(red: 0.11, green: 0.31, blue: 0.77, alpha: 1.00))
 }
 
 private enum Constants {
