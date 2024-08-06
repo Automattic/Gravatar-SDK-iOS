@@ -14,22 +14,16 @@ struct AvatarPickerView: View {
             bottom: .DS.Padding.double,
             trailing: horizontalPadding
         )
-        static let errorPadding: EdgeInsets = .init(
-            top: .DS.Padding.double,
-            leading: horizontalPadding * 2,
-            bottom: .DS.Padding.double,
-            trailing: horizontalPadding * 2
-        )
         static let selectedBorderWidth: CGFloat = .DS.Padding.half
         static let avatarCornerRadius: CGFloat = .DS.Padding.single
     }
-
+    
     @StateObject var model: AvatarPickerViewModel
-
+    
     init(model: AvatarPickerViewModel) {
         _model = StateObject(wrappedValue: model)
     }
-
+    
     public var body: some View {
         ScrollView {
             header()
@@ -46,7 +40,7 @@ struct AvatarPickerView: View {
             model.refresh()
         }
     }
-
+    
     @ViewBuilder
     private func header() -> some View {
         VStack(alignment: .leading) {
@@ -62,11 +56,19 @@ struct AvatarPickerView: View {
         VStack(alignment: .center) {
             switch model.avatarsResult {
             case .success(let models) where models.isEmpty:
-                emptyView()
+                emptyView(title: "Let's setup your avatar",
+                          subtext: "Choose or upload your favorite avatar images and connect them to your email address.",
+                          image: Image("setup-avatar-emoji", bundle: .module),
+                          actionTitle: "Upload image") {
+                    //TODO: Upload
+                }
             case .failure:
-                Spacer(minLength: .DS.Padding.large * 2)
-                errorText("Sorry, it seems like something didn't quite work out when getting your avatars.")
-                tryAgainButton()
+                emptyView(title: "Ooops",
+                          subtext: "Something went wrong and we couldn’t connect to Gravatar servers.",
+                          image: nil,
+                          actionTitle: "Try again") {
+                    model.refresh()
+                }
             default:
                 EmptyView()
             }
@@ -75,29 +77,36 @@ struct AvatarPickerView: View {
     }
     
     @ViewBuilder
-    private func emptyView() -> some View {
+    private func emptyView(
+        title: String,
+        subtext: String,
+        image: Image?,
+        actionTitle: String,
+        action: @escaping ()->()
+    ) -> some View {
         VStack {
             VStack(alignment: .leading, spacing: 0) {
-                    Text("Let's setup your avatar")
-                        .font(.title2)
-                        .fontWeight(.semibold)
-                        .foregroundColor(Color(UIColor.label))
-                        .padding(.horizontal, 0)
-                        
-                    Text("Choose or upload your favorite avatar images and connect them to your email address.")
-                        .font(.subheadline)
+                Text(title)
+                    .font(.title2)
+                    .fontWeight(.semibold)
+                    .foregroundColor(Color(UIColor.label))
+                    .padding(.init(top: 0, leading: 0, bottom: .DS.Padding.half, trailing: 0))
+                Text(subtext)
+                    .font(.subheadline)
                 
-                VStack(alignment: .center, content: {
-                    Image("setup-avatar-emoji", bundle: .module)
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 96, height: 96)
-                        .padding(.vertical, 24)
-                })
-                .frame(maxWidth: .infinity)
-                .padding(.horizontal, 0)
-                uploadButtonRectangular()
-                
+                if let image {
+                    VStack(alignment: .center, content: {
+                        image
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 96, height: 96)
+                            .padding(.init(top: .DS.Padding.medium, leading: 0, bottom: 0, trailing: 0))
+                    })
+                    .frame(maxWidth: .infinity)
+                    .padding(.horizontal, 0)
+                }
+                largeButton(title: actionTitle, action: action)
+                    .padding(.init(top: .DS.Padding.medium, leading: 0, bottom: 0, trailing: 0))
             }
             .padding(.horizontal, Constants.horizontalPadding)
             .padding(.vertical, .DS.Padding.double)
@@ -107,15 +116,14 @@ struct AvatarPickerView: View {
     }
     
     @ViewBuilder
-    private func uploadButtonRectangular() -> some View {
+    private func largeButton(title: String, action: @escaping ()->()) -> some View {
         Button() {
-            // TODO: Add upload code
-        }
-        label: {
-            Text("Upload image")
+            action()
+        } label: {
+            Text(title)
                 .font(.callout)
                 .fontWeight(.semibold)
-         }
+        }
         .frame(maxWidth: .infinity)
         .padding(.vertical, .DS.Padding.split)
         .padding(.horizontal, .DS.Padding.double)
@@ -125,32 +133,6 @@ struct AvatarPickerView: View {
     }
     
     @ViewBuilder
-    private func tryAgainButton() -> some View {
-        Button(action: {
-            model.refresh()
-        }, label: {
-            VStack {
-                Image(systemName: "arrow.clockwise")
-                    .resizable()
-                    .scaledToFit()
-                    .font(.largeTitle)
-                    .frame(width: .DS.Padding.medium)
-
-                Spacer()
-                Text("Try Again")
-                    .font(.subheadline)
-            }
-        })
-    }
-
-    private func errorText(_ message: String) -> some View {
-        Text(message)
-            .font(.subheadline)
-            .padding(Constants.errorPadding)
-            .multilineTextAlignment(.center)
-    }
-
-    @ViewBuilder
     private func avatarGrid(with avatarImageModels: [AvatarImageModel]) -> some View {
         let gridItems = [GridItem(
             .adaptive(
@@ -159,7 +141,7 @@ struct AvatarPickerView: View {
             ),
             spacing: Constants.avatarSpacing
         )]
-
+        
         LazyVGrid(columns: gridItems, spacing: Constants.avatarSpacing) {
             ForEach(avatarImageModels) { avatar in
                 AvatarView(
@@ -188,17 +170,12 @@ struct AvatarPickerView: View {
         }
         .padding(Constants.padding)
     }
-
+    
     @ViewBuilder
     private func avatarsLoadingView() -> some View {
         VStack {
-            switch model.avatarsResult {
-            case .failure:
-                Spacer(minLength: .DS.Padding.large * 2)
-            default:
-                Spacer(minLength: .DS.Padding.medium)
-            }
-
+            Spacer(minLength: .DS.Padding.large)
+            
             ProgressView()
                 .progressViewStyle(
                     CircularProgressViewStyle()
@@ -206,7 +183,7 @@ struct AvatarPickerView: View {
                 .controlSize(.regular)
         }
     }
-
+    
     @ViewBuilder
     private func profileView() -> some View {
         VStack(alignment: .leading, content: {
@@ -236,36 +213,36 @@ struct AvatarPickerView: View {
         var avatarIdentifier: Gravatar.AvatarIdentifier? {
             .email("xxx@gmail.com")
         }
-
+        
         var displayName: String {
             "Shelly Kimbrough"
         }
-
+        
         var jobTitle: String {
             "Payroll clerk"
         }
-
+        
         var pronunciation: String {
             "shell-ee"
         }
-
+        
         var pronouns: String {
             "she/her"
         }
-
+        
         var location: String {
             "San Antonio, TX"
         }
-
+        
         var profileURL: URL? {
             URL(string: "https://gravatar.com")
         }
-
+        
         var profileEditURL: URL? {
             URL(string: "https://gravatar.com")
         }
     }
-
+    
     return AvatarPickerView(model: .init(
         avatarImageModels: [
             .init(id: "1", source: .remote(url: "https://gravatar.com/userimage/110207384/aa5f129a2ec75162cee9a1f0c472356a.jpeg?size=256")),
