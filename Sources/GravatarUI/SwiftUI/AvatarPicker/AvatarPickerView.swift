@@ -17,20 +17,20 @@ struct AvatarPickerView: View {
         static let selectedBorderWidth: CGFloat = .DS.Padding.half
         static let avatarCornerRadius: CGFloat = .DS.Padding.single
     }
-    
+
     @StateObject var model: AvatarPickerViewModel
     @Environment(\.colorScheme) var colorScheme: ColorScheme
 
     init(model: AvatarPickerViewModel) {
         _model = StateObject(wrappedValue: model)
     }
-    
+
     public var body: some View {
         ScrollView {
             header()
             profileView()
             errorMessages()
-            
+
             if case .success(let avatarImageModels) = model.avatarsResult {
                 avatarGrid(with: avatarImageModels)
             } else if model.isAvatarsLoading {
@@ -41,7 +41,7 @@ struct AvatarPickerView: View {
             model.refresh()
         }
     }
-    
+
     @ViewBuilder
     private func header() -> some View {
         VStack(alignment: .leading) {
@@ -51,23 +51,27 @@ struct AvatarPickerView: View {
         .padding(.init(top: .DS.Padding.double, leading: Constants.horizontalPadding, bottom: .DS.Padding.half, trailing: Constants.horizontalPadding))
         .frame(maxWidth: .infinity, alignment: .leading)
     }
-    
+
     @ViewBuilder
     private func errorMessages() -> some View {
         VStack(alignment: .center) {
             switch model.avatarsResult {
             case .success(let models) where models.isEmpty:
-                emptyView(title: "Let's setup your avatar",
-                          subtext: "Choose or upload your favorite avatar images and connect them to your email address.",
-                          image: Image("setup-avatar-emoji", bundle: .module),
-                          actionTitle: "Upload image") {
-                    //TODO: Upload
+                emptyView(
+                    title: "Let's setup your avatar",
+                    subtext: "Choose or upload your favorite avatar images and connect them to your email address.",
+                    image: Image("setup-avatar-emoji", bundle: .module),
+                    actionTitle: "Upload image"
+                ) {
+                    // TODO: Upload
                 }
             case .failure:
-                emptyView(title: "Ooops",
-                          subtext: "Something went wrong and we couldn’t connect to Gravatar servers.",
-                          image: nil,
-                          actionTitle: "Try again") {
+                emptyView(
+                    title: "Ooops",
+                    subtext: "Something went wrong and we couldn’t connect to Gravatar servers.",
+                    image: nil,
+                    actionTitle: "Try again"
+                ) {
                     model.refresh()
                 }
             default:
@@ -76,14 +80,14 @@ struct AvatarPickerView: View {
         }
         .foregroundColor(.secondary)
     }
-    
+
     @ViewBuilder
     private func emptyView(
         title: String,
         subtext: String,
         image: Image?,
         actionTitle: String,
-        action: @escaping ()->()
+        action: @escaping () -> Void
     ) -> some View {
         VStack {
             VStack(alignment: .leading, spacing: 0) {
@@ -94,7 +98,7 @@ struct AvatarPickerView: View {
                     .padding(.init(top: 0, leading: 0, bottom: .DS.Padding.half, trailing: 0))
                 Text(subtext)
                     .font(.subheadline)
-                
+
                 if let image {
                     VStack(alignment: .center, content: {
                         image
@@ -115,10 +119,10 @@ struct AvatarPickerView: View {
         }
         .padding(.horizontal, Constants.horizontalPadding)
     }
-    
+
     @ViewBuilder
-    private func largeButton(title: String, action: @escaping ()->()) -> some View {
-        Button() {
+    private func largeButton(title: String, action: @escaping () -> Void) -> some View {
+        Button {
             action()
         } label: {
             Text(title)
@@ -132,7 +136,7 @@ struct AvatarPickerView: View {
         .foregroundColor(Color.white)
         .cornerRadius(5)
     }
-    
+
     @ViewBuilder
     private func avatarGrid(with avatarImageModels: [AvatarImageModel]) -> some View {
         let gridItems = [GridItem(
@@ -142,7 +146,7 @@ struct AvatarPickerView: View {
             ),
             spacing: Constants.avatarSpacing
         )]
-        
+
         LazyVGrid(columns: gridItems, spacing: Constants.avatarSpacing) {
             ForEach(avatarImageModels) { avatar in
                 AvatarView(
@@ -171,12 +175,12 @@ struct AvatarPickerView: View {
         }
         .padding(Constants.padding)
     }
-    
+
     @ViewBuilder
     private func avatarsLoadingView() -> some View {
         VStack {
             Spacer(minLength: .DS.Padding.large)
-            
+
             ProgressView()
                 .progressViewStyle(
                     CircularProgressViewStyle()
@@ -184,7 +188,7 @@ struct AvatarPickerView: View {
                 .controlSize(.regular)
         }
     }
-    
+
     @ViewBuilder
     private func profileView() -> some View {
         VStack(alignment: .leading, content: {
@@ -214,36 +218,36 @@ struct AvatarPickerView: View {
         var avatarIdentifier: Gravatar.AvatarIdentifier? {
             .email("xxx@gmail.com")
         }
-        
+
         var displayName: String {
             "Shelly Kimbrough"
         }
-        
+
         var jobTitle: String {
             "Payroll clerk"
         }
-        
+
         var pronunciation: String {
             "shell-ee"
         }
-        
+
         var pronouns: String {
             "she/her"
         }
-        
+
         var location: String {
             "San Antonio, TX"
         }
-        
+
         var profileURL: URL? {
             URL(string: "https://gravatar.com")
         }
-        
+
         var profileEditURL: URL? {
             URL(string: "https://gravatar.com")
         }
     }
-    
+
     return AvatarPickerView(model: .init(
         avatarImageModels: [
             .init(id: "1", source: .remote(url: "https://gravatar.com/userimage/110207384/aa5f129a2ec75162cee9a1f0c472356a.jpeg?size=256")),
