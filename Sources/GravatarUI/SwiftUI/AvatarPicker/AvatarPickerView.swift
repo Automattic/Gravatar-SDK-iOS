@@ -1,30 +1,8 @@
 import Gravatar
 import SwiftUI
-import PhotosUI
 
 @MainActor
 struct AvatarPickerView: View {
-    enum Constants {
-        static let horizontalPadding: CGFloat = .DS.Padding.double
-        static let maxAvatarWidth: CGFloat = 100
-        static let minAvatarWidth: CGFloat = 80
-        static let avatarSpacing: CGFloat = 20
-        static let padding: EdgeInsets = .init(
-            top: .DS.Padding.double,
-            leading: horizontalPadding,
-            bottom: .DS.Padding.double,
-            trailing: horizontalPadding
-        )
-        static let errorPadding: EdgeInsets = .init(
-            top: .DS.Padding.double,
-            leading: horizontalPadding * 2,
-            bottom: .DS.Padding.double,
-            trailing: horizontalPadding * 2
-        )
-        static let selectedBorderWidth: CGFloat = .DS.Padding.half
-        static let avatarCornerRadius: CGFloat = .DS.Padding.single
-    }
-
     @StateObject var model: AvatarPickerViewModel
 
     init(model: AvatarPickerViewModel) {
@@ -32,17 +10,22 @@ struct AvatarPickerView: View {
     }
 
     public var body: some View {
-        ScrollView {
-            header()
-            errorMessages()
+        VStack {
+            ScrollView {
+                header()
+                errorMessages()
+                profileView()
 
-            profileView()
-
-            if case .success(let avatarImageModels) = model.avatarsResult {
-                avatarGrid(with: avatarImageModels)
-            } else if model.isAvatarsLoading {
-                avatarsLoadingView()
+                if case .success(let avatarImageModels) = model.avatarsResult {
+                    avatarGrid(with: avatarImageModels)
+                } else if model.isAvatarsLoading {
+                    avatarsLoadingView()
+                }
             }
+            ImagePicker {
+                UploadImageCTAButtonView()
+            }
+            .padding(Constants.padding)
         }
         .task {
             model.refresh()
@@ -95,6 +78,15 @@ struct AvatarPickerView: View {
         })
     }
 
+    @ViewBuilder
+    private func ImagePicker(label: @escaping () -> some View) -> some View {
+        SystemImagePickerView(label: label) { image in
+            Task {
+                await model.upload(image)
+            }
+        }
+    }
+
     private func errorText(_ message: String) -> some View {
         Text(message)
             .font(.subheadline)
@@ -113,36 +105,16 @@ struct AvatarPickerView: View {
         )]
 
         LazyVGrid(columns: gridItems, spacing: Constants.avatarSpacing) {
-            ImagePicker() {
-                Image(systemName: "plus").font(.system(size: 44, weight: .light))
-                .frame(
-                    minWidth: Constants.minAvatarWidth,
-                    maxWidth: Constants.maxAvatarWidth,
-                    minHeight: Constants.minAvatarWidth,
-                    maxHeight: Constants.maxAvatarWidth
-                )
-                .background(
-                    RoundedRectangle(cornerRadius: Constants.avatarCornerRadius)
-                        .stroke(Color(UIColor.systemGray2), style: StrokeStyle(lineWidth: 2, dash: [7]))
-                )
-                .tint(Color(UIColor.systemGray2))
-            } onImageSelected: { image in
-                print("Selected!")
-                Task {
-                    await model.upload(image)
-                }
+            ImagePicker {
+                PlusButtonView()
             }
 
             ForEach(avatarImageModels) { avatar in
-//                if case .local(let image) = avatar.source {
-//
-//                }
                 AvatarView(
                     url: avatar.url,
-                    placeholder: avatar.localImage?.image,
+                    placeholder: avatar.localImage,
                     loadingView: {
-                        ProgressView()
-                            .progressViewStyle(CircularProgressViewStyle())
+                        ActivityIndicatorView()
                     }
                 )
                 .scaledToFill()
@@ -159,6 +131,11 @@ struct AvatarPickerView: View {
                     borderColor: .accentColor,
                     borderWidth: model.currentAvatarResult?.value() == avatar.id ? Constants.selectedBorderWidth : 0
                 )
+                .overlay {
+                    if case .local = avatar.source, avatar.isLoading {
+                        ActivityIndicatorView()
+                    }
+                }
             }
         }
         .padding(Constants.padding)
@@ -206,6 +183,69 @@ struct AvatarPickerView: View {
     }
 }
 
+struct UploadImageCTAButtonView: View {
+    public var body: some View {
+        Text("Upload image")
+            .font(.callout).fontWeight(.bold)
+            .frame(maxWidth: .infinity)
+            .foregroundColor(.white)
+            .padding()
+            .background(RoundedRectangle(cornerRadius: 4).fill(Color.gravatarBlue))
+    }
+}
+
+struct ActivityIndicatorView: View {
+    public var body: some View {
+        ZStack {
+            Rectangle()
+                .fill(.black.opacity(0.3)).cornerRadius(.DS.Padding.single)
+            ProgressView().tint(.white)
+        }
+    }
+}
+
+struct PlusButtonView: View {
+    public var body: some View {
+        Image(systemName: "plus").font(.system(size: 44, weight: .light))
+            .frame(
+                minWidth: Constants.minAvatarWidth,
+                maxWidth: Constants.maxAvatarWidth,
+                minHeight: Constants.minAvatarWidth,
+                maxHeight: Constants.maxAvatarWidth
+            )
+            .background(
+                RoundedRectangle(cornerRadius: Constants.avatarCornerRadius)
+                    .stroke(Color(UIColor.systemGray2), style: StrokeStyle(lineWidth: 2, dash: [7]))
+            )
+            .tint(Color(UIColor.systemGray2))
+    }
+}
+
+extension Color {
+    static let gravatarBlue = Color(uiColor: UIColor(red: 0.11, green: 0.31, blue: 0.77, alpha: 1.00))
+}
+
+private enum Constants {
+    static let horizontalPadding: CGFloat = .DS.Padding.double
+    static let maxAvatarWidth: CGFloat = 100
+    static let minAvatarWidth: CGFloat = 80
+    static let avatarSpacing: CGFloat = 20
+    static let padding: EdgeInsets = .init(
+        top: .DS.Padding.double,
+        leading: horizontalPadding,
+        bottom: .DS.Padding.double,
+        trailing: horizontalPadding
+    )
+    static let errorPadding: EdgeInsets = .init(
+        top: .DS.Padding.double,
+        leading: horizontalPadding * 2,
+        bottom: .DS.Padding.double,
+        trailing: horizontalPadding * 2
+    )
+    static let selectedBorderWidth: CGFloat = .DS.Padding.half
+    static let avatarCornerRadius: CGFloat = .DS.Padding.single
+}
+
 #Preview("Existing elements") {
     struct PreviewModel: ProfileSummaryModel {
         var avatarIdentifier: Gravatar.AvatarIdentifier? {
@@ -243,6 +283,7 @@ struct AvatarPickerView: View {
 
     return AvatarPickerView(model: .init(
         avatarImageModels: [
+            .init(id: "0", source: .local(image: UIImage()), isLoading: true),
             .init(id: "1", source: .remote(url: "https://gravatar.com/userimage/110207384/aa5f129a2ec75162cee9a1f0c472356a.jpeg?size=256")),
             .init(id: "2", source: .remote(url: "https://gravatar.com/userimage/110207384/db73834576b01b69dd8da1e29877ca07.jpeg?size=256")),
             .init(id: "3", source: .remote(url: "https://gravatar.com/userimage/110207384/3f7095bf2580265d1801d128c6410016.jpeg?size=256")),
@@ -262,126 +303,4 @@ struct AvatarPickerView: View {
 #Preview("Load from network") {
     /// Enter valid email and auth token.
     AvatarPickerView(model: .init(email: .init(""), authToken: ""))
-}
-
-private extension UIImage {
-    var image: Image {
-        Image(uiImage: self)
-    }
-}
-
-import PhotosUI
-
-@available(iOS 17.0, *)
-struct NewImagePicker<Label> : View where Label : View {
-    @State var photoItem: PhotosPickerItem?
-    @ViewBuilder var label: () -> Label
-
-    let onImageSelected: (Image) -> Void
-
-
-    var body: some View {
-        PhotosPicker(selection: $photoItem) {
-            label()
-        }.onChange(of: photoItem) {
-            Task {
-                if let loaded = try? await photoItem?.loadTransferable(type: Image.self) {
-                    onImageSelected(loaded)
-                } else {
-                    print("Failed")
-                }
-            }
-        }
-    }
-}
-
-
-struct ImagePicker<Label> : View where Label : View {
-    @ViewBuilder var label: () -> Label
-
-    let onImageSelected: (UIImage) -> Void
-
-    var body: some View {
-        LegacyImagePicker(label: label, onImageSelected: onImageSelected)
-    }
-}
-
-struct LegacyImagePicker<Label> : View where Label : View {
-    @State var isPresented: Bool = false
-    @ViewBuilder var label: () -> Label
-    let onImageSelected: (UIImage) -> Void
-
-    var body: some View {
-        VStack {
-            Button(action: {
-                isPresented.toggle()
-            }, label: {
-                label()
-            })
-        }
-        .sheet(isPresented: $isPresented, content: {
-            
-            LegacyImagePickerRepresentable { image in
-                onImageSelected(image)
-            }.ignoresSafeArea()
-        })
-    }
-}
-
-
-struct LegacyImagePickerRepresentable: UIViewControllerRepresentable {
-    @Environment(\.presentationMode) private var presentationMode
-
-    let onImageSelected: (UIImage) -> Void
-
-    @State private var selectedUIImage: UIImage? {
-        didSet {
-            if let selectedUIImage {
-                print("LegacyImagePickerRepresentable.selectedImage = \(selectedUIImage)")
-                onImageSelected(selectedUIImage)
-            }
-        }
-    }
-
-    var sourceType: UIImagePickerController.SourceType = .photoLibrary
-
-    func makeUIViewController(context: UIViewControllerRepresentableContext<LegacyImagePickerRepresentable>) -> UIImagePickerController {
-        let imagePicker = UIImagePickerController()
-        imagePicker.allowsEditing = true
-        imagePicker.sourceType = sourceType
-        imagePicker.delegate = context.coordinator
-
-        return imagePicker
-    }
-
-    func updateUIViewController(
-        _ uiViewController: UIImagePickerController,
-        context: UIViewControllerRepresentableContext<LegacyImagePickerRepresentable>
-    ) { }
-
-    func makeCoordinator() -> Coordinator {
-        Coordinator(self)
-    }
-
-    final class Coordinator: NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-
-        var parent: LegacyImagePickerRepresentable
-
-        init(_ parent: LegacyImagePickerRepresentable) {
-            self.parent = parent
-        }
-
-        func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-
-            if let image = info[UIImagePickerController.InfoKey.editedImage] as? UIImage {
-                print("Image selected (Edited)")
-                parent.selectedUIImage = image
-            } else if let image = info[UIImagePickerController.InfoKey.editedImage] as? UIImage {
-                parent.selectedUIImage = image
-                print("Image selected")
-            }
-
-            parent.presentationMode.wrappedValue.dismiss()
-        }
-    }
 }

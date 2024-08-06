@@ -1,3 +1,4 @@
+import SwiftUI
 import UIKit
 
 struct AvatarImageModel: Hashable, Identifiable {
@@ -17,11 +18,11 @@ struct AvatarImageModel: Hashable, Identifiable {
         return URL(string: url)
     }
 
-    var localImage: UIImage? {
+    var localImage: Image? {
         guard case .local(let image) = source else {
             return nil
         }
-        return image
+        return Image(uiImage: image)
     }
 
     init(id: String, source: Source, isLoading: Bool = false) {
