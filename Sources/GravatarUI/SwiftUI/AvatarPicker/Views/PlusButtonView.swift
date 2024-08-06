@@ -5,7 +5,7 @@ struct PlusButtonView: View {
     let cornerRadius: CGFloat
 
     init(minSize: CGFloat, maxSize: CGFloat, cornerRadius: CGFloat = 4) {
-        self.sizeRange = minSize...maxSize
+        self.sizeRange = minSize ... maxSize
         self.cornerRadius = cornerRadius
     }
 
@@ -23,7 +23,6 @@ struct PlusButtonView: View {
                 RoundedRectangle(cornerRadius: cornerRadius)
                     .stroke(Color(UIColor.systemGray2), style: StrokeStyle(lineWidth: 2, dash: [7]))
             )
-
     }
 }
 
