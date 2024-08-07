@@ -3,7 +3,7 @@ import SwiftUI
 
 @MainActor
 struct AvatarPickerView: View {
-    enum Constants {
+    private enum Constants {
         static let horizontalPadding: CGFloat = .DS.Padding.double
         static let maxAvatarWidth: CGFloat = 100
         static let minAvatarWidth: CGFloat = 80
@@ -31,17 +31,22 @@ struct AvatarPickerView: View {
     }
 
     public var body: some View {
-        ScrollView {
-            header()
-            errorMessages()
+        VStack {
+            ScrollView {
+                header()
+                errorMessages()
+                profileView()
 
-            profileView()
-
-            if case .success(let avatarImageModels) = model.avatarsResult {
-                avatarGrid(with: avatarImageModels)
-            } else if model.isAvatarsLoading {
-                avatarsLoadingView()
+                if case .success(let avatarImageModels) = model.avatarsResult {
+                    avatarGrid(with: avatarImageModels)
+                } else if model.isAvatarsLoading {
+                    avatarsLoadingView()
+                }
             }
+            ImagePicker {
+                CTAButtonView("Upload Avatar")
+            }
+            .padding(Constants.padding)
         }
         .task {
             model.refresh()
@@ -94,6 +99,15 @@ struct AvatarPickerView: View {
         })
     }
 
+    @ViewBuilder
+    private func ImagePicker(label: @escaping () -> some View) -> some View {
+        SystemImagePickerView(label: label) { image in
+            Task {
+                await model.upload(image)
+            }
+        }
+    }
+
     private func errorText(_ message: String) -> some View {
         Text(message)
             .font(.subheadline)
@@ -112,10 +126,14 @@ struct AvatarPickerView: View {
         )]
 
         LazyVGrid(columns: gridItems, spacing: Constants.avatarSpacing) {
+            ImagePicker {
+                PlusButtonView(minSize: Constants.minAvatarWidth, maxSize: Constants.maxAvatarWidth)
+            }
+
             ForEach(avatarImageModels) { avatar in
                 AvatarView(
                     url: avatar.url,
-                    placeholder: nil,
+                    placeholder: avatar.localImage,
                     loadingView: {
                         ProgressView()
                             .progressViewStyle(CircularProgressViewStyle())
@@ -135,6 +153,12 @@ struct AvatarPickerView: View {
                     borderColor: .accentColor,
                     borderWidth: model.currentAvatarResult?.value() == avatar.id ? Constants.selectedBorderWidth : 0
                 )
+                .overlay {
+                    if case .local = avatar.source, avatar.isLoading {
+                        OverlayActivityIndicatorView()
+                            .cornerRadius(Constants.avatarCornerRadius)
+                    }
+                }
             }
         }
         .padding(Constants.padding)
@@ -219,6 +243,7 @@ struct AvatarPickerView: View {
 
     return AvatarPickerView(model: .init(
         avatarImageModels: [
+            .init(id: "0", source: .local(image: UIImage()), isLoading: true),
             .init(id: "1", source: .remote(url: "https://gravatar.com/userimage/110207384/aa5f129a2ec75162cee9a1f0c472356a.jpeg?size=256")),
             .init(id: "2", source: .remote(url: "https://gravatar.com/userimage/110207384/db73834576b01b69dd8da1e29877ca07.jpeg?size=256")),
             .init(id: "3", source: .remote(url: "https://gravatar.com/userimage/110207384/3f7095bf2580265d1801d128c6410016.jpeg?size=256")),

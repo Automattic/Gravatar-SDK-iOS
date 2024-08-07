@@ -27,7 +27,7 @@ final class AvatarServiceTests: XCTestCase {
 
         let avatar = try await service.upload(ImageHelper.testImage, accessToken: "AccessToken")
 
-        XCTAssertEqual(avatar.imageId, "6f3eac1c67f970f2a0c2ea8")
+        XCTAssertEqual(avatar.id, "6f3eac1c67f970f2a0c2ea8")
 
         let request = await sessionMock.request
         XCTAssertEqual(request?.url?.absoluteString, "https://api.gravatar.com/v3/me/avatars")

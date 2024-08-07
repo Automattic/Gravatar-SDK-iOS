@@ -93,15 +93,20 @@ package struct ProfileIdentity: Decodable, Sendable {
     package let imageUrl: String
 }
 
-package struct Avatar: Decodable, Sendable {
+public struct Avatar: Decodable, Sendable {
     private let imageId: String
     private let imageUrl: String
 
-    package var id: String {
+    package init(id: String, url: String) {
+        self.imageId = id
+        self.imageUrl = url
+    }
+
+    public var id: String {
         imageId
     }
 
-    package var url: String {
+    public var url: String {
         "https://gravatar.com\(imageUrl)?size=256"
     }
 }
