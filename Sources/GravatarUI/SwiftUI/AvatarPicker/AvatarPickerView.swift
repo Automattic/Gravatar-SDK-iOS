@@ -77,8 +77,10 @@ struct AvatarPickerView: View {
                     subtext: "Session expired for security reasons. Please log in to update your Avatar.",
                     image: nil,
                     actionButton: {
-                        CTAButtonView.withButton(title: "Log in") {
+                        Button {
                             // TODO: Log in
+                        } label: {
+                            CTAButtonView("Log in".localized)
                         }
                     }
                 )
@@ -88,8 +90,10 @@ struct AvatarPickerView: View {
                     subtext: "Something went wrong and we couldn’t connect to Gravatar servers.",
                     image: nil,
                     actionButton: {
-                        CTAButtonView.withButton(title: "Try again") {
+                        Button {
                             model.refresh()
+                        } label: {
+                            CTAButtonView("Try again".localized)
                         }
                     }
                 )

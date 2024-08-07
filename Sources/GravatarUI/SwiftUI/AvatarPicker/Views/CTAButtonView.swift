@@ -18,16 +18,6 @@ struct CTAButtonView: View {
     }
 }
 
-extension CTAButtonView {
-    static func withButton(title: String, action: @escaping () -> Void) -> Button<CTAButtonView> {
-        Button {
-            action()
-        } label: {
-            CTAButtonView(title.localized)
-        }
-    }
-}
-
 #Preview {
     CTAButtonView("I am a button")
         .padding()
