@@ -19,7 +19,6 @@ struct AvatarPickerView: View {
     }
 
     @StateObject var model: AvatarPickerViewModel
-    @Environment(\.colorScheme) var colorScheme: ColorScheme
 
     init(model: AvatarPickerViewModel) {
         _model = StateObject(wrappedValue: model)
