@@ -135,8 +135,8 @@ struct AvatarPickerView: View {
                     url: avatar.url,
                     placeholder: avatar.localImage,
                     loadingView: {
-                        OverlayActivityIndicatorView()
-                            .cornerRadius(Constants.avatarCornerRadius)
+                        ProgressView()
+                            .progressViewStyle(CircularProgressViewStyle())
                     }
                 )
                 .scaledToFill()
