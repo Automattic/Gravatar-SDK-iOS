@@ -1,6 +1,7 @@
 import Foundation
 
 /// Some HTTP status codes we handle
-enum HTTPStatus: Int {
+package enum HTTPStatus: Int {
     case notFound = 404
+    case unauthorized = 401
 }

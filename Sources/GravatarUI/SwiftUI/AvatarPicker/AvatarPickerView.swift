@@ -71,7 +71,7 @@ struct AvatarPickerView: View {
                         }
                     }
                 )
-            case .failure(APIError.responseError(reason: let reason)) where reason.httpStatusCode == 401:
+            case .failure(APIError.responseError(reason: let reason)) where reason.httpStatusCode == HTTPStatus.unauthorized.rawValue:
                 contentLoadingErrorView(
                     title: "Session expired",
                     subtext: "Session expired for security reasons. Please log in to update your Avatar.",
