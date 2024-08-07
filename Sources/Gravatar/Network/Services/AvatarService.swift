@@ -57,7 +57,7 @@ public struct AvatarService: Sendable {
     ///   - accessToken: The authentication token for the user. This is a WordPress.com OAuth2 access token.
     /// - Returns: An asynchronously-delivered `AvatarModel` instance, containing data of the newly created avatar.
     @discardableResult
-    public func upload(_ image: UIImage, accessToken: String) async throws -> AvatarModel {
+    public func upload(_ image: UIImage, accessToken: String) async throws -> Avatar {
         let (data, _) = try await imageUploader.uploadImage(image, accessToken: accessToken, additionalHTTPHeaders: [(name: "Client-Type", value: "ios")])
         do {
             return try data.decode(keyDecodingStrategy: .convertFromSnakeCase)
@@ -65,12 +65,4 @@ public struct AvatarService: Sendable {
             throw ImageUploadError.responseError(reason: .unexpected(error))
         }
     }
-}
-
-// NOTE: This will be replaced by open-api spec
-public struct AvatarModel: Decodable {
-    public let imageId: String
-    public let imageUrl: String
-    public let rating: String
-    public let altText: String
 }

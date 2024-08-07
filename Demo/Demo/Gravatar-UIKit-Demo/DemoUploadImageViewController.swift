@@ -112,7 +112,7 @@ class DemoUploadImageViewController: UIViewController {
         Task {
             do {
                let avatarModel = try await service.upload(image, accessToken: token)
-                resultLabel.text = "✅ New avatar id \(avatarModel.imageId)"
+                resultLabel.text = "✅ New avatar id \(avatarModel.id)"
             } catch {
                 resultLabel.text = "Error \((error as NSError).code): \(error.localizedDescription)"
             }
