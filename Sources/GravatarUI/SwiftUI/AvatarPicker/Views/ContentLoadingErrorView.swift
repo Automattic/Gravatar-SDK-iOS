@@ -1,14 +1,13 @@
 import SwiftUI
 
 struct ContentLoadingErrorView<ActionButton: View>: View {
-
     let title: LocalizedStringKey
     let subtext: LocalizedStringKey
     let image: Image?
     let actionButton: () -> ActionButton
     let innerPadding: EdgeInsets
     @Environment(\.colorScheme) var colorScheme: ColorScheme
-    
+
     var body: some View {
         VStack {
             VStack(alignment: .leading, spacing: 0) {
@@ -19,7 +18,7 @@ struct ContentLoadingErrorView<ActionButton: View>: View {
                     .padding(.init(top: 0, leading: 0, bottom: .DS.Padding.half, trailing: 0))
                 Text(subtext)
                     .font(.subheadline)
-                
+
                 if let image {
                     VStack(alignment: .center, content: {
                         image

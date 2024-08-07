@@ -53,12 +53,12 @@ public struct ProfileService: ProfileFetching, Sendable {
             throw error.apiError()
         }
     }
-    
+
     package func selectAvatar(token: String, profileID: ProfileIdentifier, avatarID: String) async throws -> ProfileIdentity {
         guard let url = selectAvatarBaseURL(with: profileID) else {
             throw APIError.requestError(reason: .urlInitializationFailed)
         }
-        
+
         do {
             var request = URLRequest(url: url).settingAuthorizationHeaderField(with: token)
             request.httpMethod = "POST"
