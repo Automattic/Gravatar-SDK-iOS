@@ -18,6 +18,7 @@ struct ContentLoadingErrorView<ActionButton: View>: View {
                     .padding(.init(top: 0, leading: 0, bottom: .DS.Padding.half, trailing: 0))
                 Text(subtext)
                     .font(.subheadline)
+                    .foregroundColor(Color(UIColor.secondaryLabel))
 
                 if let image {
                     VStack(alignment: .center, content: {
