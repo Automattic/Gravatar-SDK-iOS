@@ -17,6 +17,7 @@ struct AvatarPickerProfileView: View {
     @Binding var model: Model?
     @Binding var isLoading: Bool
     @StateObject private var placeholderColorManager: ProfileViewPlaceholderColorManager = .init()
+    @Environment(\.colorScheme) var colorScheme: ColorScheme
 
     private(set) var viewProfileAction: ((URL?) -> Void)? = nil
 
@@ -44,7 +45,11 @@ struct AvatarPickerProfileView: View {
         .onChange(of: isLoading) { newValue in
             placeholderColorManager.toggleAnimation(newValue)
         }
+        .onChange(of: colorScheme) { newValue in
+            placeholderColorManager.colorScheme = newValue
+        }
         .onAppear {
+            placeholderColorManager.colorScheme = colorScheme
             placeholderColorManager.toggleAnimation(isLoading)
         }
     }

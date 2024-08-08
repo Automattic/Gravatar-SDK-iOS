@@ -5,7 +5,9 @@ import SwiftUI
 class ProfileViewPlaceholderColorManager: ObservableObject {
     @Published private var backgroundColorIndex = 0
     @Published private var shouldAnimatePlaceholderColors = false
-    @Environment(\.colorScheme) var colorScheme: ColorScheme
+
+    // This is `@Published` because we want the observing view to re-render when this changes.
+    @Published var colorScheme: ColorScheme = .light
 
     func toggleAnimation(_ shouldAnimate: Bool) {
         if shouldAnimate {
