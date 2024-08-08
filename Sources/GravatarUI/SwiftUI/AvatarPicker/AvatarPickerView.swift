@@ -29,7 +29,7 @@ struct AvatarPickerView: View {
             profileView()
             ScrollView {
                 errorView()
-                
+
                 if case .success(let avatarImageModels) = model.avatarsResult,
                    !avatarImageModels.isEmpty
                 {
@@ -48,10 +48,9 @@ struct AvatarPickerView: View {
                 }
                 .padding(Constants.padding)
             }
-            
         }
     }
-    
+
     private func header() -> some View {
         VStack(alignment: .leading) {
             Text("Avatars")
