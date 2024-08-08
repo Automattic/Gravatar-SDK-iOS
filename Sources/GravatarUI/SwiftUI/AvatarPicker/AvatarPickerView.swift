@@ -16,9 +16,11 @@ struct AvatarPickerView: View {
         )
         static let selectedBorderWidth: CGFloat = .DS.Padding.half
         static let avatarCornerRadius: CGFloat = .DS.Padding.single
+        static let lightModeShadowColor = Color(uiColor: UIColor.rgba(25, 30, 35, alpha: 0.2))
     }
 
     @StateObject var model: AvatarPickerViewModel
+    @Environment(\.colorScheme) var colorScheme: ColorScheme
 
     init(model: AvatarPickerViewModel) {
         _model = StateObject(wrappedValue: model)
@@ -214,11 +216,28 @@ struct AvatarPickerView: View {
                     bottom: .DS.Padding.single,
                     trailing: Constants.horizontalPadding
                 ))
-                .background(Color(UIColor.systemBackground))
+                .background(profileBackground)
                 .cornerRadius(8)
-                .shadow(radius: 10)
+                .shadow(color: profileShadowColor, radius: profileShadowRadius, y: 3)
         })
         .padding(Constants.padding)
+    }
+
+    @ViewBuilder
+    private var profileBackground: some View {
+        if colorScheme == .dark {
+            Color(UIColor.systemBackground).colorInvert().opacity(0.09)
+        } else {
+            Color(UIColor.systemBackground)
+        }
+    }
+
+    private var profileShadowColor: Color {
+        colorScheme == .light ? Constants.lightModeShadowColor : .clear
+    }
+
+    private var profileShadowRadius: CGFloat {
+        colorScheme == .light ? 30 : 0
     }
 }
 
