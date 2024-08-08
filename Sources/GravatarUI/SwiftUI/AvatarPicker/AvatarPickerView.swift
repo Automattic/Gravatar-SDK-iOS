@@ -80,7 +80,6 @@ struct AvatarPickerView: View {
                 contentLoadingErrorView(
                     title: "Session expired",
                     subtext: "Session expired for security reasons. Please log in to update your Avatar.",
-                    image: nil,
                     actionButton: {
                         Button {
                             // TODO: Log in
@@ -112,7 +111,7 @@ struct AvatarPickerView: View {
     private func contentLoadingErrorView(
         title: String,
         subtext: String,
-        image: Image?,
+        image: Image? = nil,
         actionButton: @escaping () -> some View
     ) -> some View {
         ContentLoadingErrorView(
