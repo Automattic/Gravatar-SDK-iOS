@@ -25,28 +25,33 @@ struct AvatarPickerView: View {
     }
 
     public var body: some View {
-        ScrollView {
+        VStack {
             profileView()
-            errorView()
-
-            if case .success(let avatarImageModels) = model.avatarsResult,
-               !avatarImageModels.isEmpty
-            {
-                header()
-                avatarGrid(with: avatarImageModels)
+            ScrollView {
+                errorView()
+                
+                if case .success(let avatarImageModels) = model.avatarsResult,
+                   !avatarImageModels.isEmpty
+                {
+                    header()
+                    avatarGrid(with: avatarImageModels)
+                } else if model.isAvatarsLoading {
+                    avatarsLoadingView()
+                }
+            }
+            .task {
+                model.refresh()
+            }
+            if model.avatarsResult?.value()?.isEmpty == false {
                 imagePicker {
                     CTAButtonView("Upload image")
                 }
                 .padding(Constants.padding)
-            } else if model.isAvatarsLoading {
-                avatarsLoadingView()
             }
-        }
-        .task {
-            model.refresh()
+            
         }
     }
-
+    
     private func header() -> some View {
         VStack(alignment: .leading) {
             Text("Avatars")
