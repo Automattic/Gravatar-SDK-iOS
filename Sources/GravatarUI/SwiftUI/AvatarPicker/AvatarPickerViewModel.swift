@@ -27,12 +27,14 @@ class AvatarPickerViewModel: ObservableObject {
             updateSelectedAvatarURL()
         }
     }
+
     @Published var selectedAvatarURL: URL?
     @Published private(set) var avatarsResult: Result<AvatarModelList, Error>? {
         didSet {
             updateSelectedAvatarURL()
         }
     }
+
     private var profileResult: Result<ProfileSummaryModel, Error>? {
         didSet {
             switch profileResult {
@@ -163,7 +165,7 @@ class AvatarPickerViewModel: ObservableObject {
     private func add(_ newAvatarModel: AvatarImageModel, replacing replacingID: String? = nil) {
         if case .success(var avatarImageModels) = avatarsResult {
             if let replacingID {
-                avatarImageModels =  avatarImageModels.removingModel(replacingID)
+                avatarImageModels = avatarImageModels.removingModel(replacingID)
             }
             avatarsResult = .success(avatarImageModels.appending(newAvatarModel))
         }
@@ -256,7 +258,6 @@ extension UIImage {
         }
     }
 }
-
 
 /// Struct that manages the models array.
 struct AvatarModelList {
