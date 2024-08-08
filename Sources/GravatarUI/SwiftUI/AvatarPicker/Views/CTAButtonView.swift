@@ -12,7 +12,8 @@ struct CTAButtonView: View {
             .font(.callout).fontWeight(.bold)
             .frame(maxWidth: .infinity)
             .foregroundColor(.white)
-            .padding()
+            .padding(.vertical, .DS.Padding.split)
+            .padding(.horizontal, .DS.Padding.double)
             .background(RoundedRectangle(cornerRadius: 4).fill(Color(uiColor: .gravatarBlue)))
     }
 }
