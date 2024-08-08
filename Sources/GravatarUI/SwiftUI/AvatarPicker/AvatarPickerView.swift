@@ -69,7 +69,7 @@ struct AvatarPickerView: View {
                 contentLoadingErrorView(
                     title: "Let's setup your avatar",
                     subtext: "Choose or upload your favorite avatar images and connect them to your email address.",
-                    image: Image("setup-avatar-emoji", bundle: .module), 
+                    image: Image("setup-avatar-emoji", bundle: .module),
                     actionButton: {
                         imagePicker {
                             CTAButtonView("Upload image")
