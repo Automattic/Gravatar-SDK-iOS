@@ -37,8 +37,8 @@ struct AvatarPickerView: View {
                 errorMessages()
                 profileView()
 
-                if case .success(let avatarImageModels) = model.avatarsResult {
-                    avatarGrid(with: avatarImageModels)
+                if case .success(let avatarImageList) = model.avatarsResult {
+                    avatarGrid(with: avatarImageList.models)
                 } else if model.isAvatarsLoading {
                     avatarsLoadingView()
                 }
@@ -67,7 +67,7 @@ struct AvatarPickerView: View {
     private func errorMessages() -> some View {
         VStack(alignment: .center) {
             switch model.avatarsResult {
-            case .success(let models) where models.isEmpty:
+            case .success(let modelList) where modelList.models.isEmpty:
                 errorText("You don't have any avatars yet. Why not start uploading some now?")
             case .failure:
                 Spacer(minLength: .DS.Padding.large * 2)
@@ -151,13 +151,15 @@ struct AvatarPickerView: View {
                 .shape(
                     RoundedRectangle(cornerRadius: Constants.avatarCornerRadius),
                     borderColor: .accentColor,
-                    borderWidth: model.currentAvatarResult?.value() == avatar.id ? Constants.selectedBorderWidth : 0
+                    borderWidth: model.selectedAvatarID == avatar.id ? Constants.selectedBorderWidth : 0
                 )
                 .overlay {
-                    if case .local = avatar.source, avatar.isLoading {
+                    if avatar.isLoading {
                         OverlayActivityIndicatorView()
                             .cornerRadius(Constants.avatarCornerRadius)
                     }
+                }.onTapGesture {
+                    model.selectAvatar(with: avatar.id)
                 }
             }
         }
@@ -186,7 +188,7 @@ struct AvatarPickerView: View {
     private func profileView() -> some View {
         VStack(alignment: .leading, content: {
             AvatarPickerProfileView(
-                avatarIdentifier: $model.avatarIdentifier,
+                avatarURL: $model.selectedAvatarURL,
                 model: $model.profileModel,
                 isLoading: $model.isProfileLoading
             ) { _ in

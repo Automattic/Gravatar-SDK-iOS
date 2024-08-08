@@ -16,8 +16,23 @@ class AvatarPickerViewModel: ObservableObject {
     }
 
     private var authToken: String?
-    @Published private(set) var avatarsResult: Result<[AvatarImageModel], Error>?
-    @Published private(set) var currentAvatarResult: Result<String, Error>?
+    private var currentAvatarResult: Result<String, Error>? {
+        didSet {
+            selectedAvatarID = currentAvatarResult?.value()
+        }
+    }
+
+    @Published private(set) var selectedAvatarID: String? {
+        didSet {
+            updateSelectedAvatarURL()
+        }
+    }
+    @Published var selectedAvatarURL: URL?
+    @Published private(set) var avatarsResult: Result<AvatarModelList, Error>? {
+        didSet {
+            updateSelectedAvatarURL()
+        }
+    }
     private var profileResult: Result<ProfileSummaryModel, Error>? {
         didSet {
             switch profileResult {
@@ -47,10 +62,36 @@ class AvatarPickerViewModel: ObservableObject {
         } else {
             self.currentAvatarResult = nil
         }
-        self.avatarsResult = .success(avatarImageModels)
+        self.avatarsResult = .success(.init(models: avatarImageModels))
         if let profileModel {
             self.profileResult = .success(profileModel)
         }
+    }
+
+    func selectAvatar(with id: String) {
+        guard let email else { return }
+
+        selectedAvatarID = id
+        Task {
+            defer {
+                toggleLoading(of: id)
+            }
+            do {
+                toggleLoading(of: id)
+                try await postAvatarSelection(with: id, identifier: .email(email))
+            } catch {
+                // TODO: Handle error (Toast?)
+                // Return to previously selected avatar
+                selectedAvatarID = currentAvatarResult?.value()
+                print(error)
+            }
+        }
+    }
+
+    func postAvatarSelection(with avatarID: String, identifier: ProfileIdentifier) async throws {
+        guard let authToken else { return }
+        let response = try await profileService.selectAvatar(token: authToken, profileID: identifier, avatarID: avatarID)
+        currentAvatarResult = .success(response.imageId)
     }
 
     func fetchAvatars() async {
@@ -59,11 +100,9 @@ class AvatarPickerViewModel: ObservableObject {
         do {
             isAvatarsLoading = true
             let images = try await profileService.fetchAvatars(with: authToken)
-            var avatarModels: [AvatarImageModel] = []
-            for image in images {
-                avatarModels.append(AvatarImageModel(id: image.id, source: .remote(url: image.url)))
-            }
-            avatarsResult = .success(avatarModels)
+            let avatarModels = images.map { AvatarImageModel(id: $0.id, source: .remote(url: $0.url)) }
+
+            avatarsResult = .success(.init(models: avatarModels))
             isAvatarsLoading = false
         } catch {
             avatarsResult = .failure(error)
@@ -121,13 +160,28 @@ class AvatarPickerViewModel: ObservableObject {
         }
     }
 
-    private func add(_ avatarModel: AvatarImageModel, replacing replacingID: String? = nil) {
+    private func add(_ newAvatarModel: AvatarImageModel, replacing replacingID: String? = nil) {
         if case .success(var avatarImageModels) = avatarsResult {
             if let replacingID {
-                avatarImageModels.removeAll { $0.id == replacingID }
+                avatarImageModels =  avatarImageModels.removingModel(replacingID)
             }
-            let newList = [avatarModel] + avatarImageModels
-            avatarsResult = .success(newList)
+            avatarsResult = .success(avatarImageModels.appending(newAvatarModel))
+        }
+    }
+
+    private func toggleLoading(of avatarID: String) {
+        if case .success(let avatarModels) = avatarsResult {
+            avatarsResult = .success(avatarModels.togglingLoading(ofID: avatarID))
+        }
+    }
+
+    private func updateSelectedAvatarURL() {
+        if
+            let selectedAvatarID,
+            case .success(let list) = avatarsResult,
+            let selectedModel = list.model(with: selectedAvatarID)
+        {
+            selectedAvatarURL = selectedModel.url
         }
     }
 
@@ -200,5 +254,50 @@ extension UIImage {
             context.fill(CGRect(origin: .zero, size: squareSize))
             draw(in: CGRect(origin: imageOrigin, size: size))
         }
+    }
+}
+
+
+/// Struct that manages the models array.
+struct AvatarModelList {
+    let models: [AvatarImageModel]
+
+    func model(with id: String) -> AvatarImageModel? {
+        models.first { $0.id == id }
+    }
+
+    func index(of id: String) -> Int? {
+        models.firstIndex { $0.id == id }
+    }
+
+    func updatingModel(withID id: String, with newModel: AvatarImageModel) -> Self {
+        guard let currentModel = model(with: id) else { return self }
+        return updatingModel(currentModel, with: newModel)
+    }
+
+    func updatingModel(_ currentModel: AvatarImageModel, with model: AvatarImageModel) -> Self {
+        guard let index = index(of: currentModel.id) else { return self }
+
+        var mutableModels = models
+        mutableModels.replaceSubrange(index ... index, with: [model])
+        return Self(models: mutableModels)
+    }
+
+    func removingModel(_ id: String) -> Self {
+        var mutableModels = models
+        mutableModels.removeAll { $0.id == id }
+        return Self(models: mutableModels)
+    }
+
+    func togglingLoading(ofID id: String) -> Self {
+        guard let imageModel = model(with: id) else {
+            return self
+        }
+        let toggledModel = imageModel.togglingLoading()
+        return updatingModel(imageModel, with: toggledModel)
+    }
+
+    func appending(_ newModel: AvatarImageModel) -> Self {
+        Self(models: [newModel] + models)
     }
 }
