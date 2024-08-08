@@ -25,25 +25,29 @@ struct AvatarPickerView: View {
     }
 
     public var body: some View {
-        ScrollView {
+        VStack {
             profileView()
-            errorView()
+            ScrollView {
+                errorView()
 
-            if case .success(let avatarImageModels) = model.avatarsResult,
-               !avatarImageModels.isEmpty
-            {
-                header()
-                avatarGrid(with: avatarImageModels)
+                if case .success(let avatarImageModels) = model.avatarsResult,
+                   !avatarImageModels.isEmpty
+                {
+                    header()
+                    avatarGrid(with: avatarImageModels)
+                } else if model.isAvatarsLoading {
+                    avatarsLoadingView()
+                }
+            }
+            .task {
+                model.refresh()
+            }
+            if model.avatarsResult?.value()?.isEmpty == false {
                 imagePicker {
                     CTAButtonView("Upload image")
                 }
                 .padding(Constants.padding)
-            } else if model.isAvatarsLoading {
-                avatarsLoadingView()
             }
-        }
-        .task {
-            model.refresh()
         }
     }
 
@@ -65,7 +69,8 @@ struct AvatarPickerView: View {
                 contentLoadingErrorView(
                     title: "Let's setup your avatar",
                     subtext: "Choose or upload your favorite avatar images and connect them to your email address.",
-                    image: Image("setup-avatar-emoji", bundle: .module), actionButton: {
+                    image: Image("setup-avatar-emoji", bundle: .module),
+                    actionButton: {
                         imagePicker {
                             CTAButtonView("Upload image")
                         }
@@ -75,7 +80,6 @@ struct AvatarPickerView: View {
                 contentLoadingErrorView(
                     title: "Session expired",
                     subtext: "Session expired for security reasons. Please log in to update your Avatar.",
-                    image: nil,
                     actionButton: {
                         Button {
                             // TODO: Log in
@@ -107,7 +111,7 @@ struct AvatarPickerView: View {
     private func contentLoadingErrorView(
         title: String,
         subtext: String,
-        image: Image?,
+        image: Image? = nil,
         actionButton: @escaping () -> some View
     ) -> some View {
         ContentLoadingErrorView(
