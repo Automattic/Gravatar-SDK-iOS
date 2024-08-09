@@ -32,11 +32,11 @@ struct AvatarPickerView: View {
             ScrollView {
                 errorView()
 
-                if case .success(let avatarImageModels) = model.avatarsResult,
-                   !avatarImageModels.isEmpty
+                if case .success(let avatarImageModelList) = model.avatarsResult,
+                   !avatarImageModelList.models.isEmpty
                 {
                     header()
-                    avatarGrid(with: avatarImageModels)
+                    avatarGrid(with: avatarImageModelList.models)
                 } else if model.isAvatarsLoading {
                     avatarsLoadingView()
                 }
@@ -44,7 +44,7 @@ struct AvatarPickerView: View {
             .task {
                 model.refresh()
             }
-            if model.avatarsResult?.value()?.isEmpty == false {
+            if model.avatarsResult?.value()?.models.isEmpty == false {
                 imagePicker {
                     CTAButtonView("Upload image")
                 }
@@ -67,7 +67,7 @@ struct AvatarPickerView: View {
     private func errorView() -> some View {
         VStack(alignment: .center) {
             switch model.avatarsResult {
-            case .success(let models) where models.isEmpty:
+            case .success(let modelList) where modelList.models.isEmpty:
                 contentLoadingErrorView(
                     title: "Let's setup your avatar",
                     subtext: "Choose or upload your favorite avatar images and connect them to your email address.",
@@ -175,13 +175,15 @@ struct AvatarPickerView: View {
                 .shape(
                     RoundedRectangle(cornerRadius: Constants.avatarCornerRadius),
                     borderColor: .accentColor,
-                    borderWidth: model.currentAvatarResult?.value() == avatar.id ? Constants.selectedBorderWidth : 0
+                    borderWidth: model.selectedAvatarID == avatar.id ? Constants.selectedBorderWidth : 0
                 )
                 .overlay {
-                    if case .local = avatar.source, avatar.isLoading {
+                    if avatar.isLoading {
                         OverlayActivityIndicatorView()
                             .cornerRadius(Constants.avatarCornerRadius)
                     }
+                }.onTapGesture {
+                    model.selectAvatar(with: avatar.id)
                 }
             }
         }
@@ -204,7 +206,7 @@ struct AvatarPickerView: View {
     private func profileView() -> some View {
         VStack(alignment: .leading, content: {
             AvatarPickerProfileView(
-                avatarIdentifier: $model.avatarIdentifier,
+                avatarURL: $model.selectedAvatarURL,
                 model: $model.profileModel,
                 isLoading: $model.isProfileLoading
             ) { _ in

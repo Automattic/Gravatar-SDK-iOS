@@ -13,24 +13,13 @@ struct AvatarPickerProfileView: View {
         var profileURL: URL?
     }
 
-    @Binding var avatarIdentifier: AvatarIdentifier?
+    @Binding var avatarURL: URL?
     @Binding var model: Model?
     @Binding var isLoading: Bool
     @StateObject private var placeholderColorManager: ProfileViewPlaceholderColorManager = .init()
     @Environment(\.colorScheme) var colorScheme: ColorScheme
 
     private(set) var viewProfileAction: ((URL?) -> Void)? = nil
-
-    private var avatarURL: URL? {
-        guard let avatarIdentifier else { return nil }
-        return AvatarURL(
-            with: avatarIdentifier,
-            options: .init(
-                preferredSize: .points(Constants.avatarLength),
-                defaultAvatarOption: .status404
-            )
-        )?.url
-    }
 
     var body: some View {
         HStack(alignment: .center, spacing: .DS.Padding.single) {
@@ -96,7 +85,7 @@ struct AvatarPickerProfileView: View {
 
 #Preview {
     AvatarPickerProfileView(
-        avatarIdentifier: .constant(nil),
+        avatarURL: .constant(nil),
         model: .constant(
             .init(
                 displayName: "Shelly Kimbrough",
@@ -109,9 +98,9 @@ struct AvatarPickerProfileView: View {
 }
 
 #Preview("Empty") {
-    AvatarPickerProfileView(avatarIdentifier: .constant(nil), model: .constant(nil), isLoading: .constant(false))
+    AvatarPickerProfileView(avatarURL: .constant(nil), model: .constant(nil), isLoading: .constant(false))
 }
 
 #Preview("Empty & Loading") {
-    AvatarPickerProfileView(avatarIdentifier: .constant(nil), model: .constant(nil), isLoading: .constant(true))
+    AvatarPickerProfileView(avatarURL: .constant(nil), model: .constant(nil), isLoading: .constant(true))
 }

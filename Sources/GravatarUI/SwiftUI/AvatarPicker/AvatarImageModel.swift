@@ -31,7 +31,7 @@ struct AvatarImageModel: Hashable, Identifiable {
         self.isLoading = isLoading
     }
 
-    func togglingLoading() -> AvatarImageModel {
-        AvatarImageModel(id: id, source: source, isLoading: !isLoading)
+    func settingLoading(to newLoadingStatus: Bool) -> AvatarImageModel {
+        AvatarImageModel(id: id, source: source, isLoading: newLoadingStatus)
     }
 }
