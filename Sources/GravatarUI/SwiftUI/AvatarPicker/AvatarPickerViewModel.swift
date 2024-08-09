@@ -15,25 +15,18 @@ class AvatarPickerViewModel: ObservableObject {
         }
     }
 
+    private var avatarSelectionTask: Task<(), Never>?
     private var authToken: String?
     private var currentAvatarResult: Result<String, Error>? {
         didSet {
             selectedAvatarID = currentAvatarResult?.value()
-        }
-    }
-
-    @Published private(set) var selectedAvatarID: String? {
-        didSet {
             updateSelectedAvatarURL()
         }
     }
 
+    @Published private(set) var selectedAvatarID: String?
     @Published var selectedAvatarURL: URL?
-    @Published private(set) var avatarsResult: Result<AvatarModelList, Error>? {
-        didSet {
-            updateSelectedAvatarURL()
-        }
-    }
+    @Published private(set) var avatarsResult: Result<AvatarModelList, Error>?
 
     private var profileResult: Result<ProfileSummaryModel, Error>? {
         didSet {
@@ -72,20 +65,23 @@ class AvatarPickerViewModel: ObservableObject {
 
     func selectAvatar(with id: String) {
         guard let email else { return }
+        avatarSelectionTask?.cancel()
 
-        selectedAvatarID = id
-        Task {
+        avatarSelectionTask = Task {
             defer {
                 toggleLoading(of: id)
             }
+            selectedAvatarID = id
             do {
                 toggleLoading(of: id)
                 try await postAvatarSelection(with: id, identifier: .email(email))
+                updateSelectedAvatarURL()
+            } catch APIError.responseError(let reason) where reason.cancelled {
+                // NoOp.
             } catch {
                 // TODO: Handle error (Toast?)
                 // Return to previously selected avatar
                 selectedAvatarID = currentAvatarResult?.value()
-                print(error)
             }
         }
     }
@@ -105,6 +101,7 @@ class AvatarPickerViewModel: ObservableObject {
             let avatarModels = images.map { AvatarImageModel(id: $0.id, source: .remote(url: $0.url)) }
 
             avatarsResult = .success(.init(models: avatarModels))
+            updateSelectedAvatarURL()
             isAvatarsLoading = false
         } catch {
             avatarsResult = .failure(error)
@@ -131,6 +128,7 @@ class AvatarPickerViewModel: ObservableObject {
         do {
             let identity = try await profileService.fetchIdentity(token: authToken, profileID: .email(email))
             currentAvatarResult = .success(identity.imageId)
+            updateSelectedAvatarURL()
         } catch {
             currentAvatarResult = .failure(error)
         }
@@ -163,7 +161,7 @@ class AvatarPickerViewModel: ObservableObject {
     }
 
     private func add(_ newAvatarModel: AvatarImageModel, replacing replacingID: String? = nil) {
-        if case .success(var avatarImageModels) = avatarsResult {
+        if var avatarImageModels = avatarsResult?.value() {
             if let replacingID {
                 avatarImageModels = avatarImageModels.removingModel(replacingID)
             }
@@ -172,7 +170,7 @@ class AvatarPickerViewModel: ObservableObject {
     }
 
     private func toggleLoading(of avatarID: String) {
-        if case .success(let avatarModels) = avatarsResult {
+        if let avatarModels = avatarsResult?.value() {
             avatarsResult = .success(avatarModels.togglingLoading(ofID: avatarID))
         }
     }
@@ -180,8 +178,8 @@ class AvatarPickerViewModel: ObservableObject {
     private func updateSelectedAvatarURL() {
         if
             let selectedAvatarID,
-            case .success(let list) = avatarsResult,
-            let selectedModel = list.model(with: selectedAvatarID)
+            let avatarList = avatarsResult?.value(),
+            let selectedModel = avatarList.model(with: selectedAvatarID)
         {
             selectedAvatarURL = selectedModel.url
         }
@@ -280,7 +278,7 @@ struct AvatarModelList {
         guard let index = index(of: currentModel.id) else { return self }
 
         var mutableModels = models
-        mutableModels.replaceSubrange(index ... index, with: [model])
+        mutableModels[index] = model
         return Self(models: mutableModels)
     }
 
