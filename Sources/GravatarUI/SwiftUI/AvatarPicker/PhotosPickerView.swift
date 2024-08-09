@@ -31,13 +31,10 @@ struct PhotosPickerView<Label>: View where Label: View {
 @available(iOS 16, *)
 extension PhotosPickerItem: @unchecked Sendable {}
 
+@available(iOS 16, *)
 #Preview {
-    if #available(iOS 16, *) {
-        PhotosPickerView {
-            Text("Photo Picker")
-        } onImageSelected: { _ in
-        }
-    } else {
-        Text("Requires iOS 16")
+    PhotosPickerView {
+        Text("Photo Picker")
+    } onImageSelected: { _ in
     }
 }
