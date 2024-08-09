@@ -21,7 +21,7 @@ steps:
   #################
   # Build and Test
   #################
-  - label: "🛠️ Build and Test Swift Package"
+  - label: "📦 Build and Test Swift Package"
     key: "test"
     command: |
       validate_swift_package
@@ -57,7 +57,7 @@ steps:
   ###################
   - group: ":appcenter: Prototype Builds"
     steps:
-      - label: "📦 Build SwiftUI Demo"
+      - label: "🛠️ Build SwiftUI Demo"
         key: build_swiftui
         depends_on: test
         command: BUILD_NUMBER=$BUILDKITE_BUILD_NUMBER make build-demo-for-distribution-swiftui
@@ -70,7 +70,7 @@ steps:
         plugins: [$CI_TOOLKIT]
         command: .buildkite/commands/upload-to-appcenter.sh SwiftUI
 
-      - label: "📦 Build UIKit Demo"
+      - label: "🛠️ Build UIKit Demo"
         key: build_uikit
         depends_on: test
         command: BUILD_NUMBER=$BUILDKITE_BUILD_NUMBER make build-demo-for-distribution-uikit
