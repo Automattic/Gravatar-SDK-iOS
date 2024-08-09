@@ -2,7 +2,7 @@
 
 default_platform(:ios)
 
-OS = '17.4'
+OS = '17.5'
 IPHONE_DEVICE = "iPhone SE (3rd generation) (#{OS})".freeze
 
 PROJECT_ROOT_FOLDER = File.join(File.dirname(File.expand_path(__dir__)), 'Demo')
