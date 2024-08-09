@@ -12,7 +12,7 @@ steps:
   #################
   # Lint Source files
   #################
-  - label: "🧪 Lint"
+  - label: "🕵️ Lint"
     key: "lint"
     command: |
       echo "--- 🛠 Linting"
@@ -21,7 +21,7 @@ steps:
   #################
   # Build and Test
   #################
-  - label: "🧪 Build and Test"
+  - label: "🛠️ Build and Test Swift Package"
     key: "test"
     command: |
       validate_swift_package
@@ -30,7 +30,7 @@ steps:
   ###################
   # Validate Podspec
   ###################
-  - label: "🧪 Validate Podspecs"
+  - label: "🔬 Validate Podspecs"
     key: "validate"
     command: |
       .buildkite/commands/validate-pods.sh
@@ -57,7 +57,7 @@ steps:
   ###################
   - group: ":appcenter: Prototype Builds"
     steps:
-      - label: ":package: Build SwiftUI demo"
+      - label: "📦 Build SwiftUI demo"
         key: build_swiftui
         depends_on: test
         command: BUILD_NUMBER=$BUILDKITE_BUILD_NUMBER make build-demo-for-distribution-swiftui
@@ -65,12 +65,12 @@ steps:
           - ".build/artifacts/*.ipa"
           - ".build/artifacts/*.dSYM.zip"
 
-      - label: ":arrow_up: Upload SwiftUI demo to App Center"
+      - label: "⬆️ Upload SwiftUI demo to App Center"
         depends_on: build_swiftui
         plugins: [$CI_TOOLKIT]
         command: .buildkite/commands/upload-to-appcenter.sh SwiftUI
 
-      - label: ":package: Build UIKit demo"
+      - label: "📦 Build UIKit demo"
         key: build_uikit
         depends_on: test
         command: BUILD_NUMBER=$BUILDKITE_BUILD_NUMBER make build-demo-for-distribution-uikit
@@ -78,7 +78,7 @@ steps:
           - ".build/artifacts/*.ipa"
           - ".build/artifacts/*.dSYM.zip"
 
-      - label: ":arrow_up: Upload UIKit demo to App Center"
+      - label: "⬆️ Upload UIKit demo to App Center"
         depends_on: build_uikit
         plugins: [$CI_TOOLKIT]
         command: .buildkite/commands/upload-to-appcenter.sh UIKit
