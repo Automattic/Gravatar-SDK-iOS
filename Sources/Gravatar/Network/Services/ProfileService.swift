@@ -31,20 +31,27 @@ public struct ProfileService: ProfileFetching, Sendable {
     }
 
     package func fetchAvatars(with token: String) async throws -> [Avatar] {
-        let url = avatarsBaseURL
-        let request = URLRequest(url: url).settingAuthorizationHeaderField(with: token)
-        let (data, _) = try await client.fetchData(with: request)
-        return try data.decode(keyDecodingStrategy: .convertFromSnakeCase)
+        do {
+            let url = avatarsBaseURL
+            let request = URLRequest(url: url).settingAuthorizationHeaderField(with: token)
+            let (data, _) = try await client.fetchData(with: request)
+            return try data.decode(keyDecodingStrategy: .convertFromSnakeCase)
+        } catch {
+            throw error.apiError()
+        }
     }
 
     package func fetchIdentity(token: String, profileID: ProfileIdentifier) async throws -> ProfileIdentity {
         guard let url = URL(string: identitiesBaseURL + profileID.id) else {
             throw APIError.requestError(reason: .urlInitializationFailed)
         }
-
-        let request = URLRequest(url: url).settingAuthorizationHeaderField(with: token)
-        let (data, _) = try await client.fetchData(with: request)
-        return try data.decode(keyDecodingStrategy: .convertFromSnakeCase)
+        do {
+            let request = URLRequest(url: url).settingAuthorizationHeaderField(with: token)
+            let (data, _) = try await client.fetchData(with: request)
+            return try data.decode(keyDecodingStrategy: .convertFromSnakeCase)
+        } catch {
+            throw error.apiError()
+        }
     }
 
     package func selectAvatar(token: String, profileID: ProfileIdentifier, avatarID: String) async throws -> ProfileIdentity {
@@ -52,11 +59,15 @@ public struct ProfileService: ProfileFetching, Sendable {
             throw APIError.requestError(reason: .urlInitializationFailed)
         }
 
-        var request = URLRequest(url: url).settingAuthorizationHeaderField(with: token)
-        request.httpMethod = "POST"
-        request.httpBody = try SelectAvatarBody(avatarId: avatarID).data
-        let (data, _) = try await client.fetchData(with: request)
-        return try data.decode(keyDecodingStrategy: .convertFromSnakeCase)
+        do {
+            var request = URLRequest(url: url).settingAuthorizationHeaderField(with: token)
+            request.httpMethod = "POST"
+            request.httpBody = try SelectAvatarBody(avatarId: avatarID).data
+            let (data, _) = try await client.fetchData(with: request)
+            return try data.decode(keyDecodingStrategy: .convertFromSnakeCase)
+        } catch {
+            throw error.apiError()
+        }
     }
 }
 
@@ -93,15 +104,20 @@ package struct ProfileIdentity: Decodable, Sendable {
     package let imageUrl: String
 }
 
-package struct Avatar: Decodable, Sendable {
+public struct Avatar: Decodable, Sendable {
     private let imageId: String
     private let imageUrl: String
 
-    package var id: String {
+    package init(id: String, url: String) {
+        self.imageId = id
+        self.imageUrl = url
+    }
+
+    public var id: String {
         imageId
     }
 
-    package var url: String {
+    public var url: String {
         "https://gravatar.com\(imageUrl)?size=256"
     }
 }

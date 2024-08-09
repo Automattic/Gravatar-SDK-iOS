@@ -29,6 +29,13 @@ public enum ResponseErrorReason: Sendable {
         }
         return nil
     }
+
+    public var cancelled: Bool {
+        if case .URLSessionError(let error) = self {
+            return (error as NSError).code == -999
+        }
+        return false
+    }
 }
 
 public enum RequestErrorReason: Sendable {

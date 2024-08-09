@@ -25,14 +25,14 @@ struct URLSessionHTTPClient: HTTPClient {
         return (result.data, httpResponse)
     }
 
-    func uploadData(with request: URLRequest, data: Data) async throws -> HTTPURLResponse {
+    func uploadData(with request: URLRequest, data: Data) async throws -> (Data, HTTPURLResponse) {
         let result: (data: Data, response: URLResponse)
         do {
             result = try await urlSession.upload(for: request, from: data)
         } catch {
             throw HTTPClientError.URLSessionError(error)
         }
-        return try validatedHTTPResponse(result.response)
+        return try (result.data, validatedHTTPResponse(result.response))
     }
 }
 

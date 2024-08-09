@@ -32,6 +32,7 @@ extension UIColor {
 extension UIColor {
     // Generated names are from https://colornamer.robertcooper.me/
     static let gravatarBlack: UIColor = .rgba(16, 21, 23)
+    static let gravatarBlue: UIColor = .rgba(29, 79, 196)
     static let snowflakeWhite: UIColor = .rgba(240, 240, 240)
     static let porpoiseGray: UIColor = .rgba(218, 218, 218)
     static let bleachedSilkWhite: UIColor = .rgba(242, 242, 242)

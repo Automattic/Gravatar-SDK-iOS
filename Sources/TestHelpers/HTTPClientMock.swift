@@ -13,7 +13,7 @@ package struct HTTPClientMock: HTTPClient {
         return (session.returnData, session.response)
     }
 
-    package func uploadData(with request: URLRequest, data: Data) async throws -> HTTPURLResponse {
-        session.response
+    package func uploadData(with request: URLRequest, data: Data) async throws -> (Data, HTTPURLResponse) {
+        (session.returnData, session.response)
     }
 }
