@@ -91,7 +91,7 @@ platform :ios do
     UI.user_error!("Unsupported name #{name}") unless %w[SwiftUI UIKit].include? name
 
     slug = "Gravatar-SDK-Demo-#{name}"
-    upload_to_appcenter(appcenter_slug: slug, app_name: "#{name}-Demo")
+    upload_to_appcenter(appcenter_slug: slug, artifact_basename: "Gravatar #{name}")
 
     next unless is_ci
 
@@ -143,7 +143,7 @@ def configure_code_signing(bundle_ids:, readonly:)
   )
 end
 
-def upload_to_appcenter(appcenter_slug:, app_name:)
+def upload_to_appcenter(appcenter_slug:, artifact_basename:)
   EnvManager.require_env_vars!('APPCENTER_API_TOKEN')
 
   commit = ENV.fetch('BUILDKITE_COMMIT', 'Unknown')
@@ -159,8 +159,8 @@ def upload_to_appcenter(appcenter_slug:, app_name:)
     owner_name: APPCENTER_OWNER_NAME,
     owner_type: APPCENTER_OWNER_TYPE,
     app_name: appcenter_slug,
-    file: File.join(ARTIFACTS_FOLDER, "#{app_name}.ipa"),
-    dsym: File.join(ARTIFACTS_FOLDER, "#{app_name}.app.dSYM.zip"),
+    file: File.join(ARTIFACTS_FOLDER, "#{artifact_basename}.ipa"),
+    dsym: File.join(ARTIFACTS_FOLDER, "#{artifact_basename}.app.dSYM.zip"),
     release_notes: release_notes,
     destinations: 'Collaborators',
     notify_testers: false
