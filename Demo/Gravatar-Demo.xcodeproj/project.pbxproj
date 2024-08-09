@@ -23,8 +23,6 @@
 		49C5D6122B5B33E20067C2A8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 49C5D6112B5B33E20067C2A8 /* Assets.xcassets */; };
 		49C5D6152B5B33E20067C2A8 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 49C5D6142B5B33E20067C2A8 /* Preview Assets.xcassets */; };
 		49EFFB542C51A47C0086589A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 495775EA2B5B34980082812A /* Assets.xcassets */; };
-		49EFFB562C51AA280086589A /* Gravatar-UIKit-Demo.Base.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 49EFFB552C51AA280086589A /* Gravatar-UIKit-Demo.Base.xcconfig */; };
-		49EFFB582C51AA3E0086589A /* Gravatar-SwiftUI-Demo.Base.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 49EFFB572C51AA3E0086589A /* Gravatar-SwiftUI-Demo.Base.xcconfig */; };
 		9146A7AE2C3BD8F000E07C63 /* DemoAvatarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9146A7AD2C3BD8F000E07C63 /* DemoAvatarView.swift */; };
 		914AC0192BD7FF08005DA4A5 /* DemoBaseProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914AC0172BD7FF08005DA4A5 /* DemoBaseProfileViewController.swift */; };
 		914AC01A2BD7FF08005DA4A5 /* DemoProfilePresentationStylesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914AC0182BD7FF08005DA4A5 /* DemoProfilePresentationStylesViewController.swift */; };
@@ -45,7 +43,7 @@
 		1ED769E62C048D9C00680D78 /* Secrets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Secrets.swift; sourceTree = "<group>"; };
 		3FD4781E2C50D6FD0071B8B9 /* Base.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Base.xcconfig; sourceTree = "<group>"; };
 		3FD478212C51D5CE0071B8B9 /* Gravatar-UIKit-Demo.Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Gravatar-UIKit-Demo.Release.xcconfig"; sourceTree = "<group>"; };
-		3FD478222C51D7E20071B8B9 /* Gavatar-SwiftUI-Demo.Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Gavatar-SwiftUI-Demo.Release.xcconfig"; sourceTree = "<group>"; };
+		3FD478222C51D7E20071B8B9 /* Gravatar-SwiftUI-Demo.Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Gravatar-SwiftUI-Demo.Release.xcconfig"; sourceTree = "<group>"; };
 		3FD478232C51D9280071B8B9 /* Enterprise.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Enterprise.xcconfig; sourceTree = "<group>"; };
 		4948C4E92B61C3FD00AC4875 /* Gravatar-SDK-iOS */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "Gravatar-SDK-iOS"; path = ..; sourceTree = "<group>"; };
 		495775DF2B5B34970082812A /* Gravatar UIKit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Gravatar UIKit.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -113,7 +111,7 @@
 				49C5D6112B5B33E20067C2A8 /* Assets.xcassets */,
 				49C5D6132B5B33E20067C2A8 /* Preview Content */,
 				49EFFB572C51AA3E0086589A /* Gravatar-SwiftUI-Demo.Base.xcconfig */,
-				3FD478222C51D7E20071B8B9 /* Gavatar-SwiftUI-Demo.Release.xcconfig */,
+				3FD478222C51D7E20071B8B9 /* Gravatar-SwiftUI-Demo.Release.xcconfig */,
 			);
 			path = "Gravatar-SwiftUI-Demo";
 			sourceTree = "<group>";
@@ -281,7 +279,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				49EFFB562C51AA280086589A /* Gravatar-UIKit-Demo.Base.xcconfig in Resources */,
 				49EFFB542C51A47C0086589A /* Assets.xcassets in Resources */,
 				91F0B3E32B6281A60025C4F8 /* Main.storyboard in Resources */,
 				495775EE2B5B34980082812A /* LaunchScreen.storyboard in Resources */,
@@ -293,7 +290,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				49C5D6152B5B33E20067C2A8 /* Preview Assets.xcassets in Resources */,
-				49EFFB582C51AA3E0086589A /* Gravatar-SwiftUI-Demo.Base.xcconfig in Resources */,
 				49C5D6122B5B33E20067C2A8 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -384,7 +380,6 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Demo/Gravatar-UIKit-Demo/Info.plist";
@@ -413,7 +408,6 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Demo/Gravatar-UIKit-Demo/Info.plist";
@@ -562,7 +556,6 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Demo/Gravatar-SwiftUI-Demo/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -587,12 +580,11 @@
 		};
 		49C5D61A2B5B33E20067C2A8 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3FD478222C51D7E20071B8B9 /* Gavatar-SwiftUI-Demo.Release.xcconfig */;
+			baseConfigurationReference = 3FD478222C51D7E20071B8B9 /* Gravatar-SwiftUI-Demo.Release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Demo/Gravatar-SwiftUI-Demo/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;

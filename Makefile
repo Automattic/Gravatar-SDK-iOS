@@ -50,11 +50,21 @@ build-demo-swiftui: bundle-install
 
 build-demo-for-distribution: build-demo-for-distribution-swiftui build-demo-for-distribution-uikit
 
-build-demo-for-distribution-swiftui: fetch-code-signing
-	bundle exec fastlane build_demo_for_distribution scheme:$(SCHEME_DEMO_SWIFTUI)
+build-demo-for-distribution-swiftui: fetch-code-signing check-build-number
+	bundle exec fastlane build_demo_for_distribution \
+		scheme:$(SCHEME_DEMO_SWIFTUI) \
+		build_number:$(BUILD_NUMBER)
 
-build-demo-for-distribution-uikit: fetch-code-signing
-	bundle exec fastlane build_demo_for_distribution scheme:$(SCHEME_DEMO_UIKIT)
+build-demo-for-distribution-uikit: fetch-code-signing check-build-number
+	bundle exec fastlane build_demo_for_distribution \
+		scheme:$(SCHEME_DEMO_UIKIT) \
+		build_number:$(BUILD_NUMBER)
+
+check-build-number:
+ifndef BUILD_NUMBER
+	@echo "BUILD_NUMBER not set in the environment. Will default to 0."
+	override BUILD_NUMBER = 0
+endif
 
 bundle-install:
 	bundle install

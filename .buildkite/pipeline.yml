@@ -26,7 +26,7 @@ steps:
     command: |
       validate_swift_package
     plugins: [$CI_TOOLKIT]
-  
+
   #################
   # Build Demo
   #################
@@ -60,5 +60,31 @@ steps:
       - "validate"
       - "lint"
     if: build.tag != null
-    agents:
-      queue: "mac"
+
+  - group: ":appcenter: Prototype Builds"
+    steps:
+      - label: ":package: Build SwiftUI demo"
+        key: build_swiftui
+        depends_on: test
+        command: BUILD_NUMBER=$BUILDKITE_BUILD_NUMBER make build-demo-for-distribution-swiftui
+        artifact_paths:
+          - ".build/artifacts/*.ipa"
+          - ".build/artifacts/*.dSYM.zip"
+
+      - label: ":arrow_up: Upload SwiftUI demo to App Center"
+        depends_on: build_swiftui
+        plugins: [$CI_TOOLKIT]
+        command: .buildkite/commands/upload-to-appcenter.sh SwiftUI
+
+      - label: ":package: Build UIKit demo"
+        key: build_uikit
+        depends_on: test
+        command: BUILD_NUMBER=$BUILDKITE_BUILD_NUMBER make build-demo-for-distribution-uikit
+        artifact_paths:
+          - ".build/artifacts/*.ipa"
+          - ".build/artifacts/*.dSYM.zip"
+
+      - label: ":arrow_up: Upload UIKit demo to App Center"
+        depends_on: build_uikit
+        plugins: [$CI_TOOLKIT]
+        command: .buildkite/commands/upload-to-appcenter.sh UIKit
