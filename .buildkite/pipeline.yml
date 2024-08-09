@@ -27,15 +27,6 @@ steps:
       validate_swift_package
     plugins: [$CI_TOOLKIT]
 
-  #################
-  # Build Demo
-  #################
-  - label: "🧪 Build Demo Project"
-    key: "test_demo"
-    command: |
-      .buildkite/commands/build-demos.sh
-    plugins: [$CI_TOOLKIT]
-
   ###################
   # Validate Podspec
   ###################
@@ -61,6 +52,9 @@ steps:
       - "lint"
     if: build.tag != null
 
+  ###################
+  # Prototype Builds of Demo Projects
+  ###################
   - group: ":appcenter: Prototype Builds"
     steps:
       - label: ":package: Build SwiftUI demo"
