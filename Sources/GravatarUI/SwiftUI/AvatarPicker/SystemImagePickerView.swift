@@ -7,11 +7,15 @@ struct SystemImagePickerView<Label>: View where Label: View {
     let onImageSelected: (UIImage) -> Void
 
     var body: some View {
-        // NOTE: Here we can choose between legacy and new picker.
-        // So far, the new SwiftUI PhotosPicker only supports Photos library, no camera, and no cropping, so we are only using legacy for now.
-        // The interface (using a Label property as the element to open the picker) is the same as in the new SwiftUI picker,
-        // which will make it easy to change it later on.
-        LegacyImagePicker(label: label, onImageSelected: onImageSelected)
+        if #available(iOS 16, *) {
+            PhotosPickerView(label: label, onImageSelected: onImageSelected)
+        } else {
+            // NOTE: Here we can choose between legacy and new picker.
+            // So far, the new SwiftUI PhotosPicker only supports Photos library, no camera, and no cropping, so we are only using legacy for now.
+            // The interface (using a Label property as the element to open the picker) is the same as in the new SwiftUI picker,
+            // which will make it easy to change it later on.
+            LegacyImagePicker(label: label, onImageSelected: onImageSelected)
+        }
     }
 }
 
