@@ -19,8 +19,10 @@ class AvatarPickerViewModel: ObservableObject {
     private var authToken: String?
     private var currentAvatarResult: Result<String, Error>? {
         didSet {
-            selectedAvatarID = currentAvatarResult?.value()
-            updateSelectedAvatarURL()
+            if let selectedAvatarID = currentAvatarResult?.value() {
+                self.selectedAvatarID = selectedAvatarID
+                updateSelectedAvatarURL()
+            }
         }
     }
 
@@ -64,18 +66,21 @@ class AvatarPickerViewModel: ObservableObject {
     }
 
     func selectAvatar(with id: String) {
-        guard let email else { return }
+        guard 
+            let email,
+            selectedAvatarID != id
+        else { return }
+
         avatarSelectionTask?.cancel()
 
         avatarSelectionTask = Task {
             defer {
-                toggleLoading(of: id)
+                setLoading(to: false, onAvatarWithID: id)
             }
             selectedAvatarID = id
             do {
-                toggleLoading(of: id)
+                setLoading(to: true, onAvatarWithID: id)
                 try await postAvatarSelection(with: id, identifier: .email(email))
-                updateSelectedAvatarURL()
             } catch APIError.responseError(let reason) where reason.cancelled {
                 // NoOp.
             } catch {
@@ -128,7 +133,6 @@ class AvatarPickerViewModel: ObservableObject {
         do {
             let identity = try await profileService.fetchIdentity(token: authToken, profileID: .email(email))
             currentAvatarResult = .success(identity.imageId)
-            updateSelectedAvatarURL()
         } catch {
             currentAvatarResult = .failure(error)
         }
@@ -169,9 +173,9 @@ class AvatarPickerViewModel: ObservableObject {
         }
     }
 
-    private func toggleLoading(of avatarID: String) {
+    private func setLoading(to isLoading: Bool, onAvatarWithID avatarID: String) {
         if let avatarModels = avatarsResult?.value() {
-            avatarsResult = .success(avatarModels.togglingLoading(ofID: avatarID))
+            avatarsResult = .success(avatarModels.settingLoading(to: isLoading, onAvatarWithID: avatarID))
         }
     }
 
@@ -288,11 +292,11 @@ struct AvatarModelList {
         return Self(models: mutableModels)
     }
 
-    func togglingLoading(ofID id: String) -> Self {
+    func settingLoading(to isLoading: Bool, onAvatarWithID id: String) -> Self {
         guard let imageModel = model(with: id) else {
             return self
         }
-        let toggledModel = imageModel.togglingLoading()
+        let toggledModel = imageModel.settingLoading(to: isLoading)
         return updatingModel(imageModel, with: toggledModel)
     }
 
