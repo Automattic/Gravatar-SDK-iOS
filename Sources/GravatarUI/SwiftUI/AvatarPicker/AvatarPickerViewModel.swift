@@ -66,7 +66,7 @@ class AvatarPickerViewModel: ObservableObject {
     }
 
     func selectAvatar(with id: String) {
-        guard 
+        guard
             let email,
             selectedAvatarID != id
         else { return }
