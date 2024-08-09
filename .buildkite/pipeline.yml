@@ -57,7 +57,7 @@ steps:
   ###################
   - group: ":appcenter: Prototype Builds"
     steps:
-      - label: "📦 Build SwiftUI demo"
+      - label: "📦 Build SwiftUI Demo"
         key: build_swiftui
         depends_on: test
         command: BUILD_NUMBER=$BUILDKITE_BUILD_NUMBER make build-demo-for-distribution-swiftui
@@ -65,12 +65,12 @@ steps:
           - ".build/artifacts/*.ipa"
           - ".build/artifacts/*.dSYM.zip"
 
-      - label: "⬆️ Upload SwiftUI demo to App Center"
+      - label: "⬆️ Upload SwiftUI Demo to App Center"
         depends_on: build_swiftui
         plugins: [$CI_TOOLKIT]
         command: .buildkite/commands/upload-to-appcenter.sh SwiftUI
 
-      - label: "📦 Build UIKit demo"
+      - label: "📦 Build UIKit Demo"
         key: build_uikit
         depends_on: test
         command: BUILD_NUMBER=$BUILDKITE_BUILD_NUMBER make build-demo-for-distribution-uikit
@@ -78,7 +78,7 @@ steps:
           - ".build/artifacts/*.ipa"
           - ".build/artifacts/*.dSYM.zip"
 
-      - label: "⬆️ Upload UIKit demo to App Center"
+      - label: "⬆️ Upload UIKit Demo to App Center"
         depends_on: build_uikit
         plugins: [$CI_TOOLKIT]
         command: .buildkite/commands/upload-to-appcenter.sh UIKit
