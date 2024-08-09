@@ -15,7 +15,7 @@ class AvatarPickerViewModel: ObservableObject {
         }
     }
 
-    private var avatarSelectionTask: Task<(), Never>?
+    private var avatarSelectionTask: Task<Void, Never>?
     private var authToken: String?
     private var currentAvatarResult: Result<String, Error>? {
         didSet {
