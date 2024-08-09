@@ -19,7 +19,8 @@ public struct AvatarView<LoadingView: View>: View {
         urlSession: URLSession = .shared,
         forceRefresh: Binding<Bool> = .constant(false),
         loadingView: (() -> LoadingView)?,
-        transaction: Transaction = Transaction()
+        transaction: Transaction = Transaction(),
+        newThing: String
     ) {
         self.url = url
         self.placeholder = placeholder
@@ -78,7 +79,7 @@ public struct AvatarView<LoadingView: View>: View {
             ProgressView()
                 .progressViewStyle(CircularProgressViewStyle())
         },
-        transaction: Transaction(animation: .easeInOut(duration: 1))
+        transaction: Transaction(animation: .easeInOut(duration: 1)), newThing: ""
     )
     .shape(RoundedRectangle(cornerRadius: 20), borderColor: Color.accentColor, borderWidth: 2)
     .frame(width: 100, height: 100, alignment: .center)

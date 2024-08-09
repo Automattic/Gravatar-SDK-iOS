@@ -73,7 +73,7 @@ struct AvatarPickerProfileView: View {
             loadingView: {
                 ProgressView()
                     .progressViewStyle(CircularProgressViewStyle())
-            }
+            }, newThing: ""
         )
         .scaledToFill()
         .frame(width: Constants.avatarLength, height: Constants.avatarLength)
