@@ -66,7 +66,7 @@ public struct ImageSettingOptions: Sendable {
             rating: rating,
             forceRefresh: forceRefresh,
             defaultAvatarOption: defaultAvatarOption,
-            processingMethod: processingMethod
+            processingMethod: processingMethod, newThing: ""
         )
     }
 }

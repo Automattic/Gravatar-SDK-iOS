@@ -26,7 +26,8 @@ public struct ImageDownloadOptions {
         forceRefresh: Bool = false,
         forceDefaultAvatar: Bool? = nil,
         defaultAvatarOption: DefaultAvatarOption? = nil,
-        processingMethod: ImageProcessingMethod = .common()
+        processingMethod: ImageProcessingMethod = .common(),
+        newThing: String
     ) {
         self.forceRefresh = forceRefresh
         self.processingMethod = processingMethod

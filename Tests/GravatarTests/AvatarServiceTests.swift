@@ -12,7 +12,7 @@ final class AvatarServiceTests: XCTestCase {
         let response = HTTPURLResponse.successResponse(with: TestData.urlFromEmail)
         let sessionMock = URLSessionMock(returnData: ImageHelper.testImageData, response: response)
         let service = avatarService(with: sessionMock)
-        let options = ImageDownloadOptions()
+        let options = ImageDownloadOptions(newThing: "")
 
         let imageResponse = try await service.fetch(with: .email(TestData.email), options: options)
         let request = await sessionMock.request
@@ -71,7 +71,7 @@ final class AvatarServiceTests: XCTestCase {
         let cache = TestImageCache()
         let sessionMock = URLSessionMock(returnData: ImageHelper.testImageData, response: HTTPURLResponse.successResponse(with: TestData.urlFromEmail))
         let service = avatarService(with: sessionMock, cache: cache)
-        let options = ImageDownloadOptions(forceRefresh: true)
+        let options = ImageDownloadOptions(forceRefresh: true, newThing: "")
 
         _ = try await service.fetch(with: .email(TestData.email), options: options)
         _ = try await service.fetch(with: .email(TestData.email), options: options)
@@ -89,7 +89,7 @@ final class AvatarServiceTests: XCTestCase {
         let cache = TestImageCache()
         let sessionMock = URLSessionMock(returnData: ImageHelper.testImageData, response: HTTPURLResponse.successResponse(with: TestData.urlFromEmail))
         let service = avatarService(with: sessionMock, cache: cache)
-        let options = ImageDownloadOptions(forceRefresh: false)
+        let options = ImageDownloadOptions(forceRefresh: false, newThing: "")
 
         _ = try await service.fetch(with: .email(TestData.email), options: options)
         _ = try await service.fetch(with: .email(TestData.email), options: options)
@@ -109,7 +109,7 @@ final class AvatarServiceTests: XCTestCase {
         let service = avatarService(with: sessionMock)
         let identifier = "Test"
         let testProcessor = TestImageProcessor(identifier: identifier)
-        let options = ImageDownloadOptions(processingMethod: .custom(processor: testProcessor))
+        let options = ImageDownloadOptions(processingMethod: .custom(processor: testProcessor), newThing: "")
 
         let result = try await service.fetch(with: .email(TestData.email), options: options)
 
@@ -122,7 +122,7 @@ final class AvatarServiceTests: XCTestCase {
         let response = HTTPURLResponse.successResponse(with: URL(string: urlWithQuery)!)
         let sessionMock = URLSessionMock(returnData: ImageHelper.testImageData, response: response)
         let service = avatarService(with: sessionMock)
-        let options = ImageDownloadOptions(defaultAvatarOption: .mysteryPerson)
+        let options = ImageDownloadOptions(defaultAvatarOption: .mysteryPerson, newThing: "")
 
         let imageResponse = try await service.fetch(with: .email(TestData.email), options: options)
         let request = await sessionMock.request

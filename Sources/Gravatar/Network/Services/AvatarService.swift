@@ -28,7 +28,7 @@ public struct AvatarService: Sendable {
     /// - Returns: An asynchronously-delivered Result type containing the image and its URL.
     public func fetch(
         with avatarID: AvatarIdentifier,
-        options: ImageDownloadOptions = ImageDownloadOptions()
+        options: ImageDownloadOptions = ImageDownloadOptions(newThing: "")
     ) async throws -> ImageDownloadResult {
         guard let gravatarURL = AvatarURL(with: avatarID, options: options.avatarQueryOptions)?.url else {
             throw ImageFetchingError.requestError(reason: .urlInitializationFailed)
