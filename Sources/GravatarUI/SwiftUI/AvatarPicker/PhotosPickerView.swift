@@ -1,4 +1,4 @@
-import _PhotosUI_SwiftUI
+import PhotosUI
 import SwiftUI
 
 @available(iOS 16, *)
