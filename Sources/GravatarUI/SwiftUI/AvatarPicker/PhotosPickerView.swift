@@ -18,6 +18,7 @@ struct PhotosPickerView<Label>: View where Label: View {
                    let image = UIImage(data: data)
                 {
                     onImageSelected(image)
+                    selectedItem = nil
                 }
             }
         }
