@@ -84,7 +84,7 @@ class AvatarPickerViewModel: ObservableObject {
             do {
                 setLoading(to: true, onAvatarWithID: id)
                 try await postAvatarSelection(with: id, identifier: .email(email))
-                toastManager.showToast("Avatar updated! May take a few minutes to appear every where.", type: .info)
+                toastManager.showToast("Avatar updated! May take a few minutes to appear everywhere.", type: .info)
             } catch APIError.responseError(let reason) where reason.cancelled {
                 // NoOp.
             } catch {
