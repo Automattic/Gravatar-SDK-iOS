@@ -21,7 +21,6 @@ struct AvatarPickerView: View {
 
     @StateObject var model: AvatarPickerViewModel
     @Environment(\.colorScheme) var colorScheme: ColorScheme
-    @State private var showToast = false
 
     init(model: AvatarPickerViewModel) {
         _model = StateObject(wrappedValue: model)
@@ -247,8 +246,6 @@ struct AvatarPickerView: View {
     private var profileShadowRadius: CGFloat {
         colorScheme == .light ? 30 : 0
     }
-
-    private func showToast(message: String) {}
 }
 
 #Preview("Existing elements") {
