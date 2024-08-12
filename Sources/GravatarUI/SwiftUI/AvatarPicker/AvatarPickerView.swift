@@ -21,35 +21,41 @@ struct AvatarPickerView: View {
 
     @StateObject var model: AvatarPickerViewModel
     @Environment(\.colorScheme) var colorScheme: ColorScheme
+    @State private var showToast = false
 
     init(model: AvatarPickerViewModel) {
         _model = StateObject(wrappedValue: model)
     }
 
     public var body: some View {
-        VStack {
-            profileView()
-            ScrollView {
-                errorView()
+        ZStack {
+            VStack {
+                profileView()
+                ScrollView {
+                    errorView()
 
-                if case .success(let avatarImageModelList) = model.avatarsResult,
-                   !avatarImageModelList.models.isEmpty
-                {
-                    header()
-                    avatarGrid(with: avatarImageModelList.models)
-                } else if model.isAvatarsLoading {
-                    avatarsLoadingView()
+                    if case .success(let avatarImageModelList) = model.avatarsResult,
+                       !avatarImageModelList.models.isEmpty
+                    {
+                        header()
+                        avatarGrid(with: avatarImageModelList.models)
+                    } else if model.isAvatarsLoading {
+                        avatarsLoadingView()
+                    }
+                }
+                .task {
+                    model.refresh()
+                }
+                if model.avatarsResult?.value()?.models.isEmpty == false {
+                    imagePicker {
+                        CTAButtonView("Upload image")
+                    }
+                    .padding(Constants.padding)
                 }
             }
-            .task {
-                model.refresh()
-            }
-            if model.avatarsResult?.value()?.models.isEmpty == false {
-                imagePicker {
-                    CTAButtonView("Upload image")
-                }
-                .padding(Constants.padding)
-            }
+
+            ToastContainerView(toastManager: model.toastManager)
+                .padding(.horizontal, Constants.horizontalPadding * 2)
         }
     }
 
@@ -241,6 +247,8 @@ struct AvatarPickerView: View {
     private var profileShadowRadius: CGFloat {
         colorScheme == .light ? 30 : 0
     }
+
+    private func showToast(message: String) {}
 }
 
 #Preview("Existing elements") {

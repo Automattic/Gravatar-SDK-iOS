@@ -45,11 +45,13 @@ class AvatarPickerViewModel: ObservableObject {
     @Published private(set) var isAvatarsLoading: Bool = false
     @Published var avatarIdentifier: AvatarIdentifier?
     @Published var profileModel: AvatarPickerProfileView.Model?
+    @ObservedObject var toastManager: ToastManager
 
     init(email: Email, authToken: String) {
         self.email = email
         avatarIdentifier = .email(email)
         self.authToken = authToken
+        self.toastManager = ToastManager()
     }
 
     /// Internal init for previewing purposes. Do not make this public.
@@ -63,6 +65,7 @@ class AvatarPickerViewModel: ObservableObject {
         if let profileModel {
             self.profileResult = .success(profileModel)
         }
+        self.toastManager = ToastManager()
     }
 
     func selectAvatar(with id: String) {
@@ -81,6 +84,7 @@ class AvatarPickerViewModel: ObservableObject {
             do {
                 setLoading(to: true, onAvatarWithID: id)
                 try await postAvatarSelection(with: id, identifier: .email(email))
+                toastManager.showToast("Avatar updated! May take a few minutes to appear every where.", type: .info)
             } catch APIError.responseError(let reason) where reason.cancelled {
                 // NoOp.
             } catch {
