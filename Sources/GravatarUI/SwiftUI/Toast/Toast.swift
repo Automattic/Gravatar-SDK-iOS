@@ -39,7 +39,7 @@ struct Toast: View {
 
 #Preview {
     Toast(toast: .init(
-        message: "Avatar updated! May take a few minutes to appear everywhere.",
+        message: "Avatar updated! It may take a few minutes to appear everywhere.",
         type: .info
     )) { _ in
     }
