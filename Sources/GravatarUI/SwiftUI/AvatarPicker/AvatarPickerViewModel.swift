@@ -167,9 +167,8 @@ class AvatarPickerViewModel: ObservableObject {
             return
         }
 
-        let newModel = AvatarImageModel(id: localID, source: .local(image: localImage), isLoading: true, uploadHasFailed: false)
+        let newModel = AvatarImageModel(id: localID, source: .local(image: localImage), isLoading: true)
         grid.updateModel(newModel, with: newModel)
-        grid.append(newModel)
 
         await doUpload(squareImage: localImage, localID: localID, accessToken: authToken)
     }
