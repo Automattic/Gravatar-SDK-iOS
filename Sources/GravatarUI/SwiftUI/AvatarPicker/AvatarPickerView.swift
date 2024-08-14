@@ -24,12 +24,17 @@ struct AvatarPickerView: View {
                 profileView()
                 ScrollView {
                     errorView()
-
-                    if case .success(let avatarImageModelList) = model.avatarsResult,
-                       !avatarImageModelList.models.isEmpty
-                    {
+                    if !model.grid.isEmpty {
                         header()
-                        avatarGrid(with: avatarImageModelList.models)
+                        AvatarGrid(
+                            grid: model.grid,
+                            onAvatarTap: { avatar in
+                                model.selectAvatar(with: avatar.id)
+                            },
+                            onImageSelected: { image in
+                                uploadImage(image)
+                            }
+                        ).padding(Constants.padding)
                     } else if model.isAvatarsLoading {
                         avatarsLoadingView()
                     }
@@ -37,7 +42,7 @@ struct AvatarPickerView: View {
                 .task {
                     model.refresh()
                 }
-                if model.avatarsResult?.value()?.models.isEmpty == false {
+                if model.grid.isEmpty == false {
                     imagePicker {
                         CTAButtonView("Upload image")
                     }
@@ -130,9 +135,13 @@ struct AvatarPickerView: View {
 
     private func imagePicker(label: @escaping () -> some View) -> some View {
         SystemImagePickerView(label: label) { image in
-            Task {
-                await model.upload(image)
-            }
+            uploadImage(image)
+        }
+    }
+
+    private func uploadImage(_ image: UIImage) {
+        Task {
+            await model.upload(image)
         }
     }
 
