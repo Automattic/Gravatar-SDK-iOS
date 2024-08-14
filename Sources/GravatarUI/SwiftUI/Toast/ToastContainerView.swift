@@ -14,6 +14,7 @@ struct ToastContainerView: View {
         }
         .frame(idealWidth: .infinity)
         .animation(.spring(), value: toastManager.toasts)
+        .transition(.opacity.combined(with: .move(edge: .bottom)))
         .edgesIgnoringSafeArea(.bottom)
         .padding(.bottom, .DS.Padding.half)
     }
