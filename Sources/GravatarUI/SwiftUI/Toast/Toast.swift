@@ -20,9 +20,10 @@ struct Toast: View {
             Button {
                 dismissHandler(toast)
             } label: {
-                Text("Got it")
-                    .font(.footnote)
-                    .underline(true)
+                Image(systemName: "xmark")
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(width: 12, height: 12)
             }
         }
         .padding(.horizontal, .DS.Padding.double)

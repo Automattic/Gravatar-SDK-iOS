@@ -60,21 +60,10 @@ struct AvatarGrid: View {
                         OverlayActivityIndicatorView()
                             .cornerRadius(Constants.avatarCornerRadius)
                     } else if avatar.uploadHasFailed {
-                        Button(action: {
+                        DimmingRetryButton {
                             onRetryUpload(avatar)
-                        }, label: {
-                            ZStack {
-                                Rectangle()
-                                    .fill(.black.opacity(0.3))
-                                Image(systemName: "arrow.clockwise")
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fill)
-                                    .frame(width: 20, height: 20)
-                            }
-                            .cornerRadius(Constants.avatarCornerRadius)
-                        })
-                        .frame(width: .infinity, height: .infinity)
-                        .foregroundColor(Color.white)
+                        }
+                        .cornerRadius(Constants.avatarCornerRadius)
                     }
                 }.onTapGesture {
                     onAvatarTap(avatar)
@@ -98,8 +87,7 @@ struct AvatarGrid: View {
             grid.selectAvatar(withID: avatar.id)
         } onImageSelected: { image in
             grid.append(newAvatarModel(image))
-        } onRetryUpload: { avatar in
-            
+        } onRetryUpload: { _ in
         }
         .padding()
         Button("Add avatar cell") {

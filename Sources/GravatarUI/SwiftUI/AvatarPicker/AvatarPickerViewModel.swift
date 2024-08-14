@@ -147,7 +147,7 @@ class AvatarPickerViewModel: ObservableObject {
         let squareImage = image.squared()
         await performUpload(of: squareImage)
     }
-    
+
     private func performUpload(of squareImage: UIImage) async {
         guard let authToken else { return }
 
@@ -188,7 +188,6 @@ class AvatarPickerViewModel: ObservableObject {
             toastManager.showToast("Ooops, there was an error uploading the image.", type: .error)
         }
     }
-
 
     private func updateSelectedAvatarURL() {
         guard let selectedID = selectedAvatarResult?.value() else { return }
@@ -276,4 +275,3 @@ extension AvatarImageModel {
         uploadHasFailed = false
     }
 }
-
