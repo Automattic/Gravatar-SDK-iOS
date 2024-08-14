@@ -28,7 +28,7 @@ class AvatarPickerViewModel: ObservableObject {
     @Published var selectedAvatarURL: URL?
     @Published private(set) var gridResponseStatus: Result<Void, Error>?
 
-    let grid: GridModel = .init(avatars: [])
+    let grid: AvatarGridModel = .init(avatars: [])
 
     private var profileResult: Result<ProfileSummaryModel, Error>? {
         didSet {

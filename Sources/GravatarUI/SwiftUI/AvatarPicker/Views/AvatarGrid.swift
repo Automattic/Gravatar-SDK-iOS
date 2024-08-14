@@ -18,19 +18,17 @@ struct AvatarGrid: View {
         spacing: Constants.avatarSpacing
     )]
 
-    @ObservedObject var grid: GridModel
+    @ObservedObject var grid: AvatarGridModel
 
     let onAvatarTap: (AvatarImageModel) -> Void
-    let onImageSelected: @Sendable (UIImage) async -> Void
+    let onImageSelected: (UIImage) -> Void
 
     var body: some View {
         LazyVGrid(columns: gridItems, spacing: Constants.avatarSpacing) {
             SystemImagePickerView {
                 PlusButtonView(minSize: Constants.minAvatarWidth, maxSize: Constants.maxAvatarWidth)
             } onImageSelected: { image in
-                Task {
-                    await onImageSelected(image)
-                }
+                onImageSelected(image)
             }
 
             ForEach(grid.avatars) { avatar in
@@ -70,11 +68,11 @@ struct AvatarGrid: View {
 }
 
 #Preview {
-    let newAvatarModel: (UIImage?) -> AvatarImageModel = { image in
+    let newAvatarModel: @Sendable (UIImage?) -> AvatarImageModel = { image in
         AvatarImageModel(id: UUID().uuidString, source: .local(image: image ?? UIImage()))
     }
     let initialAvatarCell = newAvatarModel(nil)
-    let grid = GridModel(
+    let grid = AvatarGridModel(
         avatars: [initialAvatarCell]
     )
     grid.selectAvatar(initialAvatarCell)

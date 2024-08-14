@@ -1,7 +1,7 @@
 import Foundation
 
 /// Describes and manages a grid of avatars.
-class GridModel: ObservableObject {
+class AvatarGridModel: ObservableObject {
     @Published var avatars: [AvatarImageModel]
     @Published var selectedAvatar: AvatarImageModel?
 
