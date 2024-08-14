@@ -5,26 +5,18 @@ import SwiftUI
 struct AvatarPickerView: View {
     private enum Constants {
         static let horizontalPadding: CGFloat = .DS.Padding.double
-        static let maxAvatarWidth: CGFloat = 100
-        static let minAvatarWidth: CGFloat = 80
-        static let avatarSpacing: CGFloat = 20
         static let padding: EdgeInsets = .init(
             top: .DS.Padding.double,
             leading: horizontalPadding,
             bottom: .DS.Padding.double,
             trailing: horizontalPadding
         )
-        static let selectedBorderWidth: CGFloat = .DS.Padding.half
-        static let avatarCornerRadius: CGFloat = .DS.Padding.single
         static let lightModeShadowColor = Color(uiColor: UIColor.rgba(25, 30, 35, alpha: 0.2))
     }
 
-    @StateObject var model: AvatarPickerViewModel
-    @Environment(\.colorScheme) var colorScheme: ColorScheme
+    @ObservedObject var model: AvatarPickerViewModel
 
-    init(model: AvatarPickerViewModel) {
-        _model = StateObject(wrappedValue: model)
-    }
+    @Environment(\.colorScheme) var colorScheme: ColorScheme
 
     public var body: some View {
         ZStack {
@@ -32,12 +24,17 @@ struct AvatarPickerView: View {
                 profileView()
                 ScrollView {
                     errorView()
-
-                    if case .success(let avatarImageModelList) = model.avatarsResult,
-                       !avatarImageModelList.models.isEmpty
-                    {
+                    if !model.grid.isEmpty {
                         header()
-                        avatarGrid(with: avatarImageModelList.models)
+                        AvatarGrid(
+                            grid: model.grid,
+                            onAvatarTap: { avatar in
+                                model.selectAvatar(with: avatar.id)
+                            },
+                            onImageSelected: { image in
+                                uploadImage(image)
+                            }
+                        ).padding(Constants.padding)
                     } else if model.isAvatarsLoading {
                         avatarsLoadingView()
                     }
@@ -45,7 +42,7 @@ struct AvatarPickerView: View {
                 .task {
                     model.refresh()
                 }
-                if model.avatarsResult?.value()?.models.isEmpty == false {
+                if model.grid.isEmpty == false {
                     imagePicker {
                         CTAButtonView("Upload image")
                     }
@@ -71,8 +68,8 @@ struct AvatarPickerView: View {
 
     private func errorView() -> some View {
         VStack(alignment: .center) {
-            switch model.avatarsResult {
-            case .success(let modelList) where modelList.models.isEmpty:
+            switch model.gridResponseStatus {
+            case .success where model.grid.isEmpty:
                 contentLoadingErrorView(
                     title: "Let's setup your avatar",
                     subtext: "Choose or upload your favorite avatar images and connect them to your email address.",
@@ -138,61 +135,14 @@ struct AvatarPickerView: View {
 
     private func imagePicker(label: @escaping () -> some View) -> some View {
         SystemImagePickerView(label: label) { image in
-            Task {
-                await model.upload(image)
-            }
+            uploadImage(image)
         }
     }
 
-    @ViewBuilder
-    private func avatarGrid(with avatarImageModels: [AvatarImageModel]) -> some View {
-        let gridItems = [GridItem(
-            .adaptive(
-                minimum: Constants.minAvatarWidth,
-                maximum: Constants.maxAvatarWidth
-            ),
-            spacing: Constants.avatarSpacing
-        )]
-
-        LazyVGrid(columns: gridItems, spacing: Constants.avatarSpacing) {
-            imagePicker {
-                PlusButtonView(minSize: Constants.minAvatarWidth, maxSize: Constants.maxAvatarWidth)
-            }
-
-            ForEach(avatarImageModels) { avatar in
-                AvatarView(
-                    url: avatar.url,
-                    placeholder: avatar.localImage,
-                    loadingView: {
-                        ProgressView()
-                            .progressViewStyle(CircularProgressViewStyle())
-                    }
-                )
-                .scaledToFill()
-                .frame(
-                    minWidth: Constants.minAvatarWidth,
-                    maxWidth: Constants.maxAvatarWidth,
-                    minHeight: Constants.minAvatarWidth,
-                    maxHeight: Constants.maxAvatarWidth
-                )
-                .background(Color(UIColor.secondarySystemBackground))
-                .aspectRatio(1, contentMode: .fill)
-                .shape(
-                    RoundedRectangle(cornerRadius: Constants.avatarCornerRadius),
-                    borderColor: .accentColor,
-                    borderWidth: model.selectedAvatarID == avatar.id ? Constants.selectedBorderWidth : 0
-                )
-                .overlay {
-                    if avatar.isLoading {
-                        OverlayActivityIndicatorView()
-                            .cornerRadius(Constants.avatarCornerRadius)
-                    }
-                }.onTapGesture {
-                    model.selectAvatar(with: avatar.id)
-                }
-            }
+    private func uploadImage(_ image: UIImage) {
+        Task {
+            await model.upload(image)
         }
-        .padding(Constants.padding)
     }
 
     private func avatarsLoadingView() -> some View {
@@ -283,7 +233,7 @@ struct AvatarPickerView: View {
         }
     }
 
-    return AvatarPickerView(model: .init(
+    let model = AvatarPickerViewModel(
         avatarImageModels: [
             .init(id: "0", source: .local(image: UIImage()), isLoading: true),
             .init(id: "1", source: .remote(url: "https://gravatar.com/userimage/110207384/aa5f129a2ec75162cee9a1f0c472356a.jpeg?size=256")),
@@ -295,7 +245,9 @@ struct AvatarPickerView: View {
         ],
         selectedImageID: "5",
         profileModel: PreviewModel()
-    ))
+    )
+
+    return AvatarPickerView(model: model)
 }
 
 #Preview("Empty elements") {
