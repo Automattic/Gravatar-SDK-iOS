@@ -56,7 +56,6 @@ steps:
   # Prototype Builds of Demo Projects
   ###################
   - group: ":appcenter: Prototype Builds"
-    if: build.pull_request.id != null
     steps:
       - label: "🛠️ Build SwiftUI Demo"
         key: build_swiftui
@@ -70,6 +69,7 @@ steps:
         depends_on: build_swiftui
         plugins: [$CI_TOOLKIT]
         command: .buildkite/commands/upload-to-appcenter.sh SwiftUI
+        if: build.pull_request.id != null
 
       - label: "🛠️ Build UIKit Demo"
         key: build_uikit
@@ -83,3 +83,4 @@ steps:
         depends_on: build_uikit
         plugins: [$CI_TOOLKIT]
         command: .buildkite/commands/upload-to-appcenter.sh UIKit
+        if: build.pull_request.id != null
