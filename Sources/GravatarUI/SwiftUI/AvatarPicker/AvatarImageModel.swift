@@ -1,7 +1,7 @@
 import SwiftUI
 import UIKit
 
-struct AvatarImageModel: Hashable, Identifiable {
+struct AvatarImageModel: Hashable, Identifiable, Sendable {
     enum Source: Hashable {
         case remote(url: String)
         case local(image: UIImage)
