@@ -10,11 +10,11 @@ struct ToastContainerView: View {
                 Toast(toast: toast, dismissHandler: { toast in
                     toastManager.removeToast(toast.id)
                 })
+                .transition(.opacity.combined(with: .move(edge: .bottom)))
             }
         }
         .frame(idealWidth: .infinity)
         .animation(.spring(), value: toastManager.toasts)
-        .transition(.opacity.combined(with: .move(edge: .bottom)))
         .edgesIgnoringSafeArea(.bottom)
         .padding(.bottom, .DS.Padding.half)
     }
