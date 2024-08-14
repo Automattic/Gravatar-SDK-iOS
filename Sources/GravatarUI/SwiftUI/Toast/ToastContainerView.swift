@@ -10,7 +10,6 @@ struct ToastContainerView: View {
                 Toast(toast: toast, dismissHandler: { toast in
                     toastManager.removeToast(toast.id)
                 })
-                .frame(width: .infinity)
             }
         }
         .frame(idealWidth: .infinity)
