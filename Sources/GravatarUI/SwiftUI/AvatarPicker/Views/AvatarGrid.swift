@@ -88,6 +88,7 @@ struct AvatarGrid: View {
         } onImageSelected: { image in
             grid.append(newAvatarModel(image))
         } onRetryUpload: { _ in
+            // No op. inside the preview.
         }
         .padding()
         Button("Add avatar cell") {
