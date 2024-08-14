@@ -45,13 +45,12 @@ class AvatarPickerViewModel: ObservableObject {
     @Published private(set) var isAvatarsLoading: Bool = false
     @Published var avatarIdentifier: AvatarIdentifier?
     @Published var profileModel: AvatarPickerProfileView.Model?
-    @ObservedObject var toastManager: ToastManager
+    @ObservedObject var toastManager: ToastManager = .init()
 
     init(email: Email, authToken: String) {
         self.email = email
         avatarIdentifier = .email(email)
         self.authToken = authToken
-        self.toastManager = ToastManager()
     }
 
     /// Internal init for previewing purposes. Do not make this public.
@@ -65,7 +64,6 @@ class AvatarPickerViewModel: ObservableObject {
         if let profileModel {
             self.profileResult = .success(profileModel)
         }
-        self.toastManager = ToastManager()
     }
 
     func selectAvatar(with id: String) {
