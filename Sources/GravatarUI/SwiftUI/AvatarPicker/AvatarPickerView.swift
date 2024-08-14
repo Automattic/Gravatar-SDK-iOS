@@ -19,34 +19,34 @@ struct AvatarPickerView: View {
     @Environment(\.colorScheme) var colorScheme: ColorScheme
 
     public var body: some View {
-        VStack {
-            profileView()
-            ScrollView {
-                errorView()
+        ZStack {
+            VStack {
+                profileView()
+                ScrollView {
+                    errorView()
 
-                if !model.grid.isEmpty {
-                    header()
-                    AvatarGrid(
-                        grid: model.grid,
-                        onAvatarTap: { avatar in
-                            model.selectAvatar(with: avatar.id)
-                        }, onImageSelected: { image in
-                            await model.upload(image)
-                        }
-                    ).padding(Constants.padding)
-                } else if model.isAvatarsLoading {
-                    avatarsLoadingView()
+                    if case .success(let avatarImageModelList) = model.avatarsResult,
+                       !avatarImageModelList.models.isEmpty
+                    {
+                        header()
+                        avatarGrid(with: avatarImageModelList.models)
+                    } else if model.isAvatarsLoading {
+                        avatarsLoadingView()
+                    }
+                }
+                .task {
+                    model.refresh()
+                }
+                if model.avatarsResult?.value()?.models.isEmpty == false {
+                    imagePicker {
+                        CTAButtonView("Upload image")
+                    }
+                    .padding(Constants.padding)
                 }
             }
-            .task {
-                model.refresh()
-            }
-            if model.grid.isEmpty == false {
-                imagePicker {
-                    CTAButtonView("Upload image")
-                }
-                .padding(Constants.padding)
-            }
+
+            ToastContainerView(toastManager: model.toastManager)
+                .padding(.horizontal, Constants.horizontalPadding * 2)
         }
     }
 

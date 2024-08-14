@@ -45,6 +45,7 @@ class AvatarPickerViewModel: ObservableObject {
     @Published private(set) var isAvatarsLoading: Bool = false
     @Published var avatarIdentifier: AvatarIdentifier?
     @Published var profileModel: AvatarPickerProfileView.Model?
+    @ObservedObject var toastManager: ToastManager = .init()
 
     init(email: Email, authToken: String) {
         self.email = email
@@ -90,6 +91,7 @@ class AvatarPickerViewModel: ObservableObject {
         do {
             grid.setLoading(to: true, onAvatarWithID: avatarID)
             let response = try await profileService.selectAvatar(token: authToken, profileID: identifier, avatarID: avatarID)
+            toastManager.showToast("Avatar updated! It may take a few minutes to appear everywhere.", type: .info)
             selectedAvatarResult = .success(response.imageId)
         } catch APIError.responseError(let reason) where reason.cancelled {
             // NoOp.
