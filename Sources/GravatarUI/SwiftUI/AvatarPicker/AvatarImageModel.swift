@@ -43,8 +43,4 @@ struct AvatarImageModel: Hashable, Identifiable, Sendable {
     func settingLoading(to newLoadingStatus: Bool) -> AvatarImageModel {
         AvatarImageModel(id: id, source: source, isLoading: newLoadingStatus, uploadHasFailed: uploadHasFailed)
     }
-
-    func settingUploadHasFailed(to newUploadHasFailed: Bool) -> AvatarImageModel {
-        AvatarImageModel(id: id, source: source, isLoading: isLoading, uploadHasFailed: newUploadHasFailed)
-    }
 }
