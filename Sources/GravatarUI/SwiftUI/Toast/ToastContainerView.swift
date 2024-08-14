@@ -22,7 +22,7 @@ struct ToastContainerView: View {
 
 #Preview {
     VStack {
-        var toastManager = ToastManager()
+        let toastManager = ToastManager()
         ToastContainerView(toastManager: toastManager)
             .frame(width: .infinity)
             .padding(.horizontal, .DS.Padding.medium)
