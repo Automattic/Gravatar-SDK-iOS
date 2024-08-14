@@ -27,29 +27,34 @@ struct AvatarPickerView: View {
     }
 
     public var body: some View {
-        VStack {
-            profileView()
-            ScrollView {
-                errorView()
+        ZStack {
+            VStack {
+                profileView()
+                ScrollView {
+                    errorView()
 
-                if case .success(let avatarImageModelList) = model.avatarsResult,
-                   !avatarImageModelList.models.isEmpty
-                {
-                    header()
-                    avatarGrid(with: avatarImageModelList.models)
-                } else if model.isAvatarsLoading {
-                    avatarsLoadingView()
+                    if case .success(let avatarImageModelList) = model.avatarsResult,
+                       !avatarImageModelList.models.isEmpty
+                    {
+                        header()
+                        avatarGrid(with: avatarImageModelList.models)
+                    } else if model.isAvatarsLoading {
+                        avatarsLoadingView()
+                    }
+                }
+                .task {
+                    model.refresh()
+                }
+                if model.avatarsResult?.value()?.models.isEmpty == false {
+                    imagePicker {
+                        CTAButtonView("Upload image")
+                    }
+                    .padding(Constants.padding)
                 }
             }
-            .task {
-                model.refresh()
-            }
-            if model.avatarsResult?.value()?.models.isEmpty == false {
-                imagePicker {
-                    CTAButtonView("Upload image")
-                }
-                .padding(Constants.padding)
-            }
+
+            ToastContainerView(toastManager: model.toastManager)
+                .padding(.horizontal, Constants.horizontalPadding * 2)
         }
     }
 
