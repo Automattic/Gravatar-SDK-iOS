@@ -156,7 +156,7 @@ class AvatarPickerViewModel: ObservableObject {
         let localImageModel = AvatarImageModel(id: localID, source: .local(image: squareImage), isLoading: true)
         grid.append(localImageModel)
 
-        await doUpload(image: squareImage, localID: localID, accessToken: authToken)
+        await doUpload(squareImage: squareImage, localID: localID, accessToken: authToken)
     }
 
     func retryUpload(of localID: String) async {
@@ -171,19 +171,19 @@ class AvatarPickerViewModel: ObservableObject {
         grid.updateModel(newModel, with: newModel)
         grid.append(newModel)
 
-        await doUpload(image: localImage, localID: localID, accessToken: authToken)
+        await doUpload(squareImage: localImage, localID: localID, accessToken: authToken)
     }
 
-    private func doUpload(image: UIImage, localID: String, accessToken: String) async {
+    private func doUpload(squareImage: UIImage, localID: String, accessToken: String) async {
         let service = AvatarService()
         do {
-            let avatar = try await service.upload(image, accessToken: accessToken)
-            await ImageCache.shared.setEntry(.ready(image), for: avatar.url)
+            let avatar = try await service.upload(squareImage, accessToken: accessToken)
+            await ImageCache.shared.setEntry(.ready(squareImage), for: avatar.url)
 
             let newModel = AvatarImageModel(id: avatar.id, source: .remote(url: avatar.url))
             grid.updateModel(newModel, with: newModel)
         } catch {
-            let newModel = AvatarImageModel(id: localID, source: .local(image: image), isLoading: false, uploadHasFailed: true)
+            let newModel = AvatarImageModel(id: localID, source: .local(image: squareImage), isLoading: false, uploadHasFailed: true)
             grid.updateModel(newModel, with: newModel)
             toastManager.showToast("Ooops, there was an error uploading the image.", type: .error)
         }
