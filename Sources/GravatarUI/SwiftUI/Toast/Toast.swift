@@ -16,7 +16,7 @@ struct Toast: View {
         HStack(spacing: 0) {
             Text(toast.message.localized)
                 .font(.footnote)
-            Spacer(minLength: .DS.Padding.medium)
+            Spacer(minLength: .DS.Padding.double)
             Button {
                 dismissHandler(toast)
             } label: {
