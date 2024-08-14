@@ -56,6 +56,7 @@ steps:
   # Prototype Builds of Demo Projects
   ###################
   - group: ":appcenter: Prototype Builds"
+    if: build.pull_request.id != null
     steps:
       - label: "🛠️ Build SwiftUI Demo"
         key: build_swiftui
