@@ -7,10 +7,10 @@ struct ToastContainerView: View {
         VStack {
             Spacer()
             ForEach(toastManager.toasts) { toast in
-                Toast(toast: toast) { toast in
+                Toast(toast: toast, dismissHandler: { toast in
                     toastManager.removeToast(toast.id)
-                }
-                .frame(width: .infinity)
+                })
+                .transition(.opacity.combined(with: .move(edge: .bottom)))
             }
         }
         .frame(idealWidth: .infinity)
