@@ -166,10 +166,7 @@ class AvatarPickerViewModel: ObservableObject {
         else {
             return
         }
-
-        let newModel = AvatarImageModel(id: localID, source: .local(image: localImage), isLoading: true)
-        grid.updateModel(newModel, with: newModel)
-
+        grid.setLoading(to: true, onAvatarWithID: localID)
         await doUpload(squareImage: localImage, localID: localID, accessToken: authToken)
     }
 
@@ -180,11 +177,11 @@ class AvatarPickerViewModel: ObservableObject {
             await ImageCache.shared.setEntry(.ready(squareImage), for: avatar.url)
 
             let newModel = AvatarImageModel(id: avatar.id, source: .remote(url: avatar.url))
-            grid.updateModel(newModel, with: newModel)
+            grid.replaceModel(withID: localID, with: newModel)
         } catch {
-            let newModel = AvatarImageModel(id: localID, source: .local(image: squareImage), isLoading: false, uploadHasFailed: true)
-            grid.updateModel(newModel, with: newModel)
-            toastManager.showToast("Ooops, there was an error uploading the image.", type: .error)
+            let newModel = AvatarImageModel(id: localID, source: .local(image: squareImage), uploadHasFailed: true)
+            grid.replaceModel(withID: localID, with: newModel)
+            toastManager.showToast("Oops, there was an error uploading the image.", type: .error)
         }
     }
 
