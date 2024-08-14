@@ -22,7 +22,7 @@ struct ToastContainerView: View {
 
 #Preview {
     VStack {
-        var toastManager = ToastManager()
+        let toastManager = ToastManager()
         ToastContainerView(toastManager: toastManager)
             .frame(width: .infinity)
             .padding(.horizontal, .DS.Padding.medium)
@@ -30,6 +30,12 @@ struct ToastContainerView: View {
             toastManager.showToast("Hi! This is a toast! You can show multiple toasts at a time!")
         } label: {
             Text("Show toast!")
+        }
+
+        Button {
+            toastManager.showToast("Hi! This is an error toast! You can show multiple toasts at a time!", type: .error)
+        } label: {
+            Text("Show error toast!")
         }
     }
 }

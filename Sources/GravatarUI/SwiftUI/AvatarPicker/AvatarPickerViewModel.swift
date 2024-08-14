@@ -155,16 +155,38 @@ class AvatarPickerViewModel: ObservableObject {
         let localImageModel = AvatarImageModel(id: localID, source: .local(image: squareImage), isLoading: true)
         add(localImageModel)
 
+        await doUpload(image: squareImage, localID: localID, accessToken: authToken)
+    }
+
+    func retryUpload(of localID: String) async {
+        guard let authToken,
+              let avatarImageModels = avatarsResult?.value(),
+              let model = avatarImageModels.models.first(where: { $0.id == localID }),
+              let localImage = model.localUIImage
+        else {
+            return
+        }
+
+        let newModel = AvatarImageModel(id: localID, source: .local(image: localImage), isLoading: true, uploadHasFailed: false)
+        add(newModel, replacing: localID)
+
+        await doUpload(image: localImage, localID: localID, accessToken: authToken)
+    }
+
+    private func doUpload(image: UIImage, localID: String, accessToken: String) async {
         let service = AvatarService()
         do {
-            let avatar = try await service.upload(squareImage, accessToken: authToken)
-            await ImageCache.shared.setEntry(.ready(squareImage), for: avatar.url)
+            let avatar = try await service.upload(image, accessToken: accessToken)
+            await ImageCache.shared.setEntry(.ready(image), for: avatar.url)
 
             let newModel = AvatarImageModel(id: avatar.id, source: .remote(url: avatar.url))
             add(newModel, replacing: localID)
         } catch {
+            let newModel = AvatarImageModel(id: localID, source: .local(image: image), isLoading: false, uploadHasFailed: true)
+            add(newModel, replacing: localID)
+            toastManager.showToast("Ooops, there was an error uploading the image.", type: .error)
             // TODO: Proper error handling.
-            print(error)
+            // print(error)
         }
     }
 
@@ -237,7 +259,7 @@ extension Result<[AvatarImageModel], Error> {
 }
 
 extension UIImage {
-    fileprivate func squared() -> UIImage {
+    private func squared() -> UIImage {
         let (height, width) = (size.height, size.width)
         guard height != width else {
             return self
@@ -302,6 +324,14 @@ struct AvatarModelList {
         }
         let toggledModel = imageModel.settingLoading(to: isLoading)
         return updatingModel(imageModel, with: toggledModel)
+    }
+
+    func settingUploadFailed(to uploadHasFailed: Bool, onAvatarWithID id: String) -> Self {
+        guard let imageModel = model(with: id) else {
+            return self
+        }
+        let newModel = imageModel.settingUploadHasFailed(to: uploadHasFailed)
+        return updatingModel(imageModel, with: newModel)
     }
 
     func appending(_ newModel: AvatarImageModel) -> Self {

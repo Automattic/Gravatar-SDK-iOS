@@ -186,6 +186,24 @@ struct AvatarPickerView: View {
                     if avatar.isLoading {
                         OverlayActivityIndicatorView()
                             .cornerRadius(Constants.avatarCornerRadius)
+                    } else if avatar.uploadHasFailed {
+                        Button(action: {
+                            Task {
+                                await model.retryUpload(of: avatar.id)
+                            }
+                        }, label: {
+                            ZStack {
+                                Rectangle()
+                                    .fill(.black.opacity(0.3))
+                                Image(systemName: "arrow.clockwise")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fill)
+                                    .frame(width: 20, height: 20)
+                            }
+                            .cornerRadius(Constants.avatarCornerRadius)
+                        })
+                        .frame(width: .infinity, height: .infinity)
+                        .foregroundColor(Color.white)
                     }
                 }.onTapGesture {
                     model.selectAvatar(with: avatar.id)
@@ -292,6 +310,7 @@ struct AvatarPickerView: View {
             .init(id: "4", source: .remote(url: "https://gravatar.com/userimage/110207384/fbbd335e57862e19267679f19b4f9db8.jpeg?size=256")),
             .init(id: "5", source: .remote(url: "https://gravatar.com/userimage/110207384/96c6950d6d8ce8dd1177a77fe738101e.jpeg?size=256")),
             .init(id: "6", source: .remote(url: "https://gravatar.com/userimage/110207384/4a4f9385b0a6fa5c00342557a098f480.jpeg?size=256")),
+            .init(id: "7", source: .local(image: UIImage()), isLoading: false, uploadHasFailed: true),
         ],
         selectedImageID: "5",
         profileModel: PreviewModel()

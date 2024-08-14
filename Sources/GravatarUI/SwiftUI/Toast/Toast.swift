@@ -4,6 +4,8 @@ struct Toast: View {
     private enum Constants {
         static let backgroundLight: Color = .init(uiColor: .rgba(30, 30, 30))
         static let backgroundDark: Color = .init(uiColor: .rgba(225, 225, 225))
+        static let errorBackgroundLight: Color = .init(uiColor: UIColor.errorBackgroundRed)
+        static let errorLineRed: Color = .init(uiColor: UIColor.alertRed)
     }
 
     @Environment(\.colorScheme) var colorScheme: ColorScheme
@@ -26,21 +28,44 @@ struct Toast: View {
         .padding(.horizontal, .DS.Padding.double)
         .padding(.vertical, .DS.Padding.split)
         .background(backgroundColor)
+        .overlay(Rectangle().frame(width: toast.type == .error ? 4 : 0, height: nil, alignment: .leading).foregroundColor(Color.red), alignment: .leading)
         .cornerRadius(4)
-        .foregroundColor(Color(UIColor.systemBackground))
+        .foregroundColor(foregroundColor)
         .shadow(radius: 3, y: 3)
         .zIndex(1)
     }
 
     var backgroundColor: Color {
-        colorScheme == .dark ? Constants.backgroundDark : Constants.backgroundLight
+        switch toast.type {
+        case .info:
+            colorScheme == .dark ? Constants.backgroundDark : Constants.backgroundLight
+        case .error:
+            colorScheme == .dark ? Constants.errorBackgroundLight : Constants.errorBackgroundLight
+        }
+    }
+
+    var foregroundColor: Color {
+        switch toast.type {
+        case .info:
+            Color(UIColor.systemBackground)
+        case .error:
+            colorScheme == .dark ? Color(UIColor.gravatarBlack) : Color(UIColor.gravatarBlack)
+        }
     }
 }
 
 #Preview {
-    Toast(toast: .init(
-        message: "Avatar updated! It may take a few minutes to appear everywhere.",
-        type: .info
-    )) { _ in
+    VStack {
+        Toast(toast: .init(
+            message: "Avatar updated! It may take a few minutes to appear everywhere.",
+            type: .info
+        )) { _ in
+        }
+
+        Toast(toast: .init(
+            message: "Something went wrong.",
+            type: .error
+        )) { _ in
+        }
     }
 }
