@@ -6,10 +6,13 @@ struct HorizontalAvatarGrid: View {
     let onAvatarTap: (AvatarImageModel) -> Void
     let onImageSelected: (UIImage) -> Void
     let onRetryUpload: (AvatarImageModel) -> Void
+    let horizontalInset = .DS.Padding.double - AvatarGridConstants.avatarSpacing
 
     var body: some View {
-        ScrollView(.horizontal, showsIndicators: true) {
+        ScrollView(.horizontal) {
             HStack(spacing: AvatarGridConstants.avatarSpacing) {
+                Spacer(minLength: horizontalInset)
+                    .frame(maxWidth: horizontalInset)
                 ForEach(grid.avatars, id: \.self) { avatar in
                     AvatarPickerAvatarView(
                         avatar: avatar,
@@ -21,16 +24,17 @@ struct HorizontalAvatarGrid: View {
                         onRetryUpload: onRetryUpload
                     )
                 }
+                Spacer(minLength: horizontalInset)
+                    .frame(maxWidth: horizontalInset)
             }
-            .padding()
+            .padding(.horizontal, AvatarGridConstants.selectedBorderWidth / 2)
+            .padding(.top, AvatarGridConstants.selectedBorderWidth / 2)
+            .padding(.bottom, .DS.Padding.double)
         }
     }
 }
 
 #Preview {
-    let newAvatarModel: @Sendable (UIImage?) -> AvatarImageModel = { image in
-        AvatarImageModel(id: UUID().uuidString, source: .local(image: image ?? UIImage()))
-    }
     let grid = AvatarGridModel(
         avatars: [
             .init(id: "1", source: .remote(url: "https://gravatar.com/userimage/110207384/aa5f129a2ec75162cee9a1f0c472356a.jpeg?size=256")),
