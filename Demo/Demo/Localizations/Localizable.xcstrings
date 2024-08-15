@@ -1,0 +1,33 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "" : {
+
+    },
+    "Animated" : {
+
+    },
+    "Border color" : {
+
+    },
+    "Email" : {
+
+    },
+    "Email:" : {
+
+    },
+    "Force refresh" : {
+
+    },
+    "Gravatar SwiftUI Demo" : {
+
+    },
+    "Tap to open the Avatar Picker" : {
+
+    },
+    "Token" : {
+
+    }
+  },
+  "version" : "1.0"
+}
