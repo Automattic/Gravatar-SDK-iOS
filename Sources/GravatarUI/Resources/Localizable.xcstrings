@@ -1,0 +1,117 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "Add avatar cell" : {
+
+    },
+    "Avatars" : {
+
+    },
+    "Choose or upload your favorite avatar images and connect them to your email address." : {
+
+    },
+    "Discover Your Gravatar Card →" : {
+
+    },
+    "empty" : {
+
+    },
+    "failure" : {
+
+    },
+    "Got it" : {
+
+    },
+    "gravatarCreateProfile" : {
+      "comment" : "Title for create profile button in Gravatar profile view",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Claim profile"
+          }
+        }
+      }
+    },
+    "gravatarEditProfile" : {
+      "comment" : "Title for edit profile button in Gravatar profile view",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Edit profile"
+          }
+        }
+      }
+    },
+    "GravatarEmptyProfileAboutMeKey" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Tell the world who you are. Your avatar and bio that follows you across the web."
+          }
+        }
+      }
+    },
+    "GravatarEmptyProfileDisplayNameKey" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Your Name"
+          }
+        }
+      }
+    },
+    "GravatarEmptyProfileInformationKey" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Add your location, pronouns, etc"
+          }
+        }
+      }
+    },
+    "gravatarViewProfile" : {
+      "comment" : "Title for view profile button in Gravatar profile view",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "View profile"
+          }
+        }
+      }
+    },
+    "I am a button" : {
+
+    },
+    "Invalid URL" : {
+
+    },
+    "Ooops" : {
+
+    },
+    "Retry" : {
+
+    },
+    "Show toast!" : {
+
+    },
+    "Something went wrong" : {
+
+    },
+    "Upload image" : {
+
+    }
+  },
+  "version" : "1.0"
+}
