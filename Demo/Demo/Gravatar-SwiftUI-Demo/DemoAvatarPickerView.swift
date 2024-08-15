@@ -10,7 +10,7 @@ struct DemoAvatarPickerView: View {
 
     // You can make this `true` by default to easily test the picker
     @State private var isPresentingPicker: Bool = false
-    
+
     var body: some View {
         VStack(alignment: .leading, spacing: 5) {
             VStack(alignment: .leading, spacing: 5) {
@@ -42,7 +42,6 @@ struct DemoAvatarPickerView: View {
                     }
                     .pickerStyle(MenuPickerStyle())
                 }
-                
                 Button("Tap to open the Avatar Picker") {
                     isPresentingPicker.toggle()
                 }

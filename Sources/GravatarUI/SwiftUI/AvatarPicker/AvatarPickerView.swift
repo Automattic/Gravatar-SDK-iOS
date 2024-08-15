@@ -175,13 +175,11 @@ struct AvatarPickerView: View {
             )
             .padding(.top, .DS.Padding.medium)
             .padding(.bottom, .DS.Padding.double)
-            if model.grid.isEmpty == false {
-                imagePicker {
-                    CTAButtonView("Upload image")
-                }
-                .padding(.horizontal, Constants.horizontalPadding)
-                .padding(.bottom, .DS.Padding.medium)
+            imagePicker {
+                CTAButtonView("Upload image")
             }
+            .padding(.horizontal, Constants.horizontalPadding)
+            .padding(.bottom, .DS.Padding.medium)
         }
     }
 
