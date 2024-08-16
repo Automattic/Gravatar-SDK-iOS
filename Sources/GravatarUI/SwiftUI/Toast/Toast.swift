@@ -29,7 +29,11 @@ struct Toast: View {
         .padding(.horizontal, .DS.Padding.double)
         .padding(.vertical, .DS.Padding.split)
         .background(backgroundColor)
-        .overlay(Rectangle().frame(width: toast.type == .error ? 4 : 0, height: nil, alignment: .leading).foregroundColor(Color.red), alignment: .leading)
+        .overlay(
+            Rectangle()
+                .frame(width: toast.type == .error ? 4 : 0, height: nil, alignment: .leading)
+                .foregroundColor(Color.red), alignment: .leading
+        )
         .cornerRadius(4)
         .foregroundColor(foregroundColor)
         .shadow(radius: 3, y: 3)

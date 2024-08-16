@@ -32,7 +32,7 @@ struct AvatarPickerAvatarView: View {
         )
         .overlay {
             if avatar.isLoading {
-                OverlayActivityIndicatorView()
+                DimmingActivityIndicator()
                     .cornerRadius(AvatarGridConstants.avatarCornerRadius)
             } else if avatar.uploadHasFailed {
                 DimmingRetryButton {
