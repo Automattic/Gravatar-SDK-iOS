@@ -128,6 +128,12 @@ clean:  # Clean everything, including the checkout of swift-openapi-generator.
 	@echo 'Delete checkout of openapi-generator $(OPENAPI_GENERATOR_CLONE_DIR)? [y/N] ' && read ans && [ $${ans:-N} = y ] || (echo "Aborted"; exit 1)
 	rm -rf "$(OPENAPI_GENERATOR_CLONE_DIR)"
 
+export-localizations:  # Exports `en` localizations
+	xcodebuild -project Demo/Gravatar-Demo.xcodeproj clean build \
+		-sdk iphoneos \
+		-exportLocalizations \
+		-localizationPath localizations_export \
+		-exportLanguage en
 
 dump:  # Dump all derived values used by the Makefile.
 	@echo "CURRENT_MAKEFILE_PATH = $(CURRENT_MAKEFILE_PATH)"
