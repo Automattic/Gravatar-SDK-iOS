@@ -57,7 +57,7 @@ struct AvatarGrid: View {
                 )
                 .overlay {
                     if avatar.isLoading {
-                        OverlayActivityIndicatorView()
+                        DimmingActivityIndicator()
                             .cornerRadius(Constants.avatarCornerRadius)
                     } else if avatar.uploadHasFailed {
                         DimmingRetryButton {

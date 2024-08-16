@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct OverlayActivityIndicatorView: View {
+struct DimmingActivityIndicator: View {
     public var body: some View {
         ZStack {
             Rectangle()
@@ -11,6 +11,6 @@ struct OverlayActivityIndicatorView: View {
 }
 
 #Preview {
-    OverlayActivityIndicatorView()
+    DimmingActivityIndicator()
         .frame(width: 80, height: 80)
 }
