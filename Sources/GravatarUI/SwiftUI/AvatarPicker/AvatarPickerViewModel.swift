@@ -144,13 +144,9 @@ class AvatarPickerViewModel: ObservableObject {
     }
 
     func upload(_ image: UIImage) async {
-        let squareImage = image.squared()
-        await performUpload(of: squareImage)
-    }
-
-    private func performUpload(of squareImage: UIImage) async {
         guard let authToken else { return }
 
+        let squareImage = image.squared()
         let localID = UUID().uuidString
 
         let localImageModel = AvatarImageModel(id: localID, source: .local(image: squareImage), isLoading: true)
