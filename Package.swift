@@ -5,6 +5,7 @@ import PackageDescription
 
 let package = Package(
     name: "Gravatar",
+    defaultLocalization: "en",
     platforms: [
         .iOS(.v15),
     ],
