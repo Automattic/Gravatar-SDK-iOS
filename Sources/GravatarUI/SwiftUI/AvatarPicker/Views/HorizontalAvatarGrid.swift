@@ -16,8 +16,8 @@ struct HorizontalAvatarGrid: View {
                 ForEach(grid.avatars, id: \.self) { avatar in
                     AvatarPickerAvatarView(
                         avatar: avatar,
-                        maxLength: 100,
-                        minLength: 100,
+                        maxLength: AvatarGridConstants.maxAvatarWidth,
+                        minLength: AvatarGridConstants.maxAvatarWidth,
                         shouldSelect: {
                             grid.selectedAvatar?.id == avatar.id
                         },
