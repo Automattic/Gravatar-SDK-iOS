@@ -1,1 +1,39 @@
+/* No comment provided by engineer. */
+"Avatars" = "Avatars";
+
+/* No comment provided by engineer. */
+"Choose or upload your favorite avatar images and connect them to your email address." = "Choose or upload your favorite avatar images and connect them to your email address.";
+
+/* No comment provided by engineer. */
+"empty" = "empty";
+
+/* No comment provided by engineer. */
+"failure" = "failure";
+
+/* Title for create profile button in Gravatar profile view */
+"gravatarCreateProfile" = "Claim profile";
+
+/* Title for edit profile button in Gravatar profile view */
+"gravatarEditProfile" = "Edit profile";
+
+/* No comment provided by engineer. */
+"GravatarEmptyProfileAboutMeKey" = "Tell the world who you are. Your avatar and bio that follows you across the web.";
+
+/* No comment provided by engineer. */
+"GravatarEmptyProfileDisplayNameKey" = "Your Name";
+
+/* No comment provided by engineer. */
+"GravatarEmptyProfileInformationKey" = "Add your location, pronouns, etc";
+
+/* Title for view profile button in Gravatar profile view */
+"gravatarViewProfile" = "View profile";
+
+/* No comment provided by engineer. */
+"Invalid URL" = "Invalid URL";
+
+/* No comment provided by engineer. */
+"Show error toast!" = "Show error toast!";
+
+/* No comment provided by engineer. */
+"Show info toast!" = "Show info toast!";
 
