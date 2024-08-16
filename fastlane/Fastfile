@@ -24,6 +24,14 @@ APPCENTER_OWNER_TYPE = 'organization'
 require_relative 'lib/env_manager'
 require_relative 'lib/code_signing_helpers'
 
+########################################################################
+# Imports domain-specific lanes
+########################################################################
+
+import 'lib/lanes/localization.rb'
+
+########################################################################
+
 before_all do
   EnvManager.set_up(env_file_name: 'gravatar-sdk-ios')
 
