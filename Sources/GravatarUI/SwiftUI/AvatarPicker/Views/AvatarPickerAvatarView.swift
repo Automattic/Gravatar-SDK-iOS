@@ -2,6 +2,8 @@ import SwiftUI
 
 struct AvatarPickerAvatarView: View {
     let avatar: AvatarImageModel
+    let maxLength: CGFloat
+    let minLength: CGFloat
     let shouldSelect: () -> Bool
     let onAvatarTap: (AvatarImageModel) -> Void
     let onImageSelected: (UIImage) -> Void
@@ -18,10 +20,10 @@ struct AvatarPickerAvatarView: View {
         )
         .scaledToFill()
         .frame(
-            minWidth: AvatarGridConstants.minAvatarWidth,
-            maxWidth: AvatarGridConstants.maxAvatarWidth,
-            minHeight: AvatarGridConstants.minAvatarWidth,
-            maxHeight: AvatarGridConstants.maxAvatarWidth
+            minWidth: minLength,
+            maxWidth: maxLength,
+            minHeight: minLength,
+            maxHeight: maxLength
         )
         .background(Color(UIColor.secondarySystemBackground))
         .aspectRatio(1, contentMode: .fill)
@@ -48,7 +50,7 @@ struct AvatarPickerAvatarView: View {
 
 #Preview {
     let avatar = AvatarImageModel(id: "1", source: .remote(url: "https://gravatar.com/userimage/110207384/aa5f129a2ec75162cee9a1f0c472356a.jpeg?size=256"))
-    return AvatarPickerAvatarView(avatar: avatar) {
+    return AvatarPickerAvatarView(avatar: avatar, maxLength: AvatarGridConstants.maxAvatarWidth, minLength: AvatarGridConstants.minAvatarWidth) {
         false
     } onAvatarTap: { _ in
 

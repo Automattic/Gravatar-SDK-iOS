@@ -6,16 +6,15 @@ struct HorizontalAvatarGrid: View {
     let onAvatarTap: (AvatarImageModel) -> Void
     let onImageSelected: (UIImage) -> Void
     let onRetryUpload: (AvatarImageModel) -> Void
-    let horizontalInset = .DS.Padding.double - AvatarGridConstants.avatarSpacing
 
     var body: some View {
         ScrollView(.horizontal) {
-            HStack(spacing: AvatarGridConstants.avatarSpacing) {
-                Spacer(minLength: horizontalInset)
-                    .frame(maxWidth: horizontalInset)
+            HStack(spacing: .DS.Padding.single) {
                 ForEach(grid.avatars, id: \.self) { avatar in
                     AvatarPickerAvatarView(
                         avatar: avatar,
+                        maxLength: 100,
+                        minLength: 100,
                         shouldSelect: {
                             grid.selectedAvatar?.id == avatar.id
                         },
@@ -24,10 +23,8 @@ struct HorizontalAvatarGrid: View {
                         onRetryUpload: onRetryUpload
                     )
                 }
-                Spacer(minLength: horizontalInset)
-                    .frame(maxWidth: horizontalInset)
             }
-            .padding(.horizontal, AvatarGridConstants.selectedBorderWidth / 2)
+            .padding(.horizontal, .DS.Padding.double)
             .padding(.top, AvatarGridConstants.selectedBorderWidth / 2)
             .padding(.bottom, .DS.Padding.double)
         }
