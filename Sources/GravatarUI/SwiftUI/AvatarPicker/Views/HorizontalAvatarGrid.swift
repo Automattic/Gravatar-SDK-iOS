@@ -1,15 +1,18 @@
 import SwiftUI
 
 struct HorizontalAvatarGrid: View {
+    private enum Constants {
+        static let avatarSpacing: CGFloat = .DS.Padding.single
+    }
+
     @ObservedObject var grid: AvatarGridModel
 
     let onAvatarTap: (AvatarImageModel) -> Void
-    let onImageSelected: (UIImage) -> Void
     let onRetryUpload: (AvatarImageModel) -> Void
 
     var body: some View {
         ScrollView(.horizontal) {
-            HStack(spacing: .DS.Padding.single) {
+            HStack(spacing: Constants.avatarSpacing) {
                 ForEach(grid.avatars, id: \.self) { avatar in
                     AvatarPickerAvatarView(
                         avatar: avatar,
@@ -19,7 +22,6 @@ struct HorizontalAvatarGrid: View {
                             grid.selectedAvatar?.id == avatar.id
                         },
                         onAvatarTap: onAvatarTap,
-                        onImageSelected: onImageSelected,
                         onRetryUpload: onRetryUpload
                     )
                 }
@@ -44,8 +46,6 @@ struct HorizontalAvatarGrid: View {
 
     return HorizontalAvatarGrid(grid: grid) { avatar in
         grid.selectAvatar(withID: avatar.id)
-    } onImageSelected: { _ in
-        // No op. Inside the preview.
     } onRetryUpload: { _ in
         // No op. Inside the preview.
     }

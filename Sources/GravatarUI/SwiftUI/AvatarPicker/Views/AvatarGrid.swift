@@ -21,7 +21,7 @@ struct AvatarGrid: View {
     @ObservedObject var grid: AvatarGridModel
 
     let onAvatarTap: (AvatarImageModel) -> Void
-    let onImageSelected: (UIImage) -> Void
+    let onImagePickerDidPickImage: (UIImage) -> Void
     let onRetryUpload: (AvatarImageModel) -> Void
 
     var body: some View {
@@ -29,7 +29,7 @@ struct AvatarGrid: View {
             SystemImagePickerView {
                 PlusButtonView(minSize: AvatarGridConstants.minAvatarWidth, maxSize: AvatarGridConstants.maxAvatarWidth)
             } onImageSelected: { image in
-                onImageSelected(image)
+                onImagePickerDidPickImage(image)
             }
 
             ForEach(grid.avatars) { avatar in
@@ -41,7 +41,6 @@ struct AvatarGrid: View {
                         grid.selectedAvatar?.id == avatar.id
                     },
                     onAvatarTap: onAvatarTap,
-                    onImageSelected: onImageSelected,
                     onRetryUpload: onRetryUpload
                 )
             }
@@ -61,7 +60,7 @@ struct AvatarGrid: View {
     return VStack {
         AvatarGrid(grid: grid) { avatar in
             grid.selectAvatar(withID: avatar.id)
-        } onImageSelected: { image in
+        } onImagePickerDidPickImage: { image in
             grid.append(newAvatarModel(image))
         } onRetryUpload: { _ in
             // No op. inside the preview.

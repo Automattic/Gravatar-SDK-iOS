@@ -6,7 +6,6 @@ struct AvatarPickerAvatarView: View {
     let minLength: CGFloat
     let shouldSelect: () -> Bool
     let onAvatarTap: (AvatarImageModel) -> Void
-    let onImageSelected: (UIImage) -> Void
     let onRetryUpload: (AvatarImageModel) -> Void
 
     var body: some View {
@@ -53,8 +52,6 @@ struct AvatarPickerAvatarView: View {
     return AvatarPickerAvatarView(avatar: avatar, maxLength: AvatarGridConstants.maxAvatarWidth, minLength: AvatarGridConstants.minAvatarWidth) {
         false
     } onAvatarTap: { _ in
-
-    } onImageSelected: { _ in
 
     } onRetryUpload: { _ in
     }

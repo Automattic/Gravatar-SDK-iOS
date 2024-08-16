@@ -151,7 +151,7 @@ struct AvatarPickerView: View {
                 onAvatarTap: { avatar in
                     model.selectAvatar(with: avatar.id)
                 },
-                onImageSelected: { image in
+                onImagePickerDidPickImage: { image in
                     uploadImage(image)
                 },
                 onRetryUpload: { avatar in
@@ -165,9 +165,6 @@ struct AvatarPickerView: View {
                 grid: model.grid,
                 onAvatarTap: { avatar in
                     model.selectAvatar(with: avatar.id)
-                },
-                onImageSelected: { image in
-                    uploadImage(image)
                 },
                 onRetryUpload: { avatar in
                     retryUpload(avatar)
