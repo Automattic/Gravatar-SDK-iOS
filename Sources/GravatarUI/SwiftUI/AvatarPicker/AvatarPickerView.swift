@@ -33,6 +33,9 @@ struct AvatarPickerView: View {
                             },
                             onImageSelected: { image in
                                 uploadImage(image)
+                            },
+                            onRetryUpload: { avatar in
+                                retryUpload(avatar)
                             }
                         ).padding(Constants.padding)
                     } else if model.isAvatarsLoading {
@@ -145,6 +148,12 @@ struct AvatarPickerView: View {
         }
     }
 
+    private func retryUpload(_ avatar: AvatarImageModel) {
+        Task {
+            await model.retryUpload(of: avatar.id)
+        }
+    }
+
     private func avatarsLoadingView() -> some View {
         VStack {
             Spacer(minLength: .DS.Padding.large)
@@ -242,6 +251,7 @@ struct AvatarPickerView: View {
             .init(id: "4", source: .remote(url: "https://gravatar.com/userimage/110207384/fbbd335e57862e19267679f19b4f9db8.jpeg?size=256")),
             .init(id: "5", source: .remote(url: "https://gravatar.com/userimage/110207384/96c6950d6d8ce8dd1177a77fe738101e.jpeg?size=256")),
             .init(id: "6", source: .remote(url: "https://gravatar.com/userimage/110207384/4a4f9385b0a6fa5c00342557a098f480.jpeg?size=256")),
+            .init(id: "7", source: .local(image: UIImage()), uploadHasFailed: true),
         ],
         selectedImageID: "5",
         profileModel: PreviewModel()

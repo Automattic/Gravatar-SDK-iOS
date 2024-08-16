@@ -29,7 +29,13 @@ struct ToastContainerView: View {
         Button {
             toastManager.showToast("Hi! This is a toast! You can show multiple toasts at a time!")
         } label: {
-            Text("Show toast!")
+            Text("Show info toast!")
+        }
+
+        Button {
+            toastManager.showToast("Hi! This is a toast! You can show multiple toasts at a time!", type: .error)
+        } label: {
+            Text("Show error toast!")
         }
     }
 }

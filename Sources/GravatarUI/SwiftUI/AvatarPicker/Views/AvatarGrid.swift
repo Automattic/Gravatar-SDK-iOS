@@ -22,6 +22,7 @@ struct AvatarGrid: View {
 
     let onAvatarTap: (AvatarImageModel) -> Void
     let onImageSelected: (UIImage) -> Void
+    let onRetryUpload: (AvatarImageModel) -> Void
 
     var body: some View {
         LazyVGrid(columns: gridItems, spacing: Constants.avatarSpacing) {
@@ -56,8 +57,13 @@ struct AvatarGrid: View {
                 )
                 .overlay {
                     if avatar.isLoading {
-                        OverlayActivityIndicatorView()
+                        DimmingActivityIndicator()
                             .cornerRadius(Constants.avatarCornerRadius)
+                    } else if avatar.uploadHasFailed {
+                        DimmingRetryButton {
+                            onRetryUpload(avatar)
+                        }
+                        .cornerRadius(Constants.avatarCornerRadius)
                     }
                 }.onTapGesture {
                     onAvatarTap(avatar)
@@ -81,7 +87,10 @@ struct AvatarGrid: View {
             grid.selectAvatar(withID: avatar.id)
         } onImageSelected: { image in
             grid.append(newAvatarModel(image))
-        }.padding()
+        } onRetryUpload: { _ in
+            // No op. inside the preview.
+        }
+        .padding()
         Button("Add avatar cell") {
             grid.append(newAvatarModel(nil))
         }

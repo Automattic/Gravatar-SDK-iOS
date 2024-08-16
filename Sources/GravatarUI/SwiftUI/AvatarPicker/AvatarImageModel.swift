@@ -9,6 +9,7 @@ struct AvatarImageModel: Hashable, Identifiable, Sendable {
 
     let id: String
     let isLoading: Bool
+    let uploadHasFailed: Bool
     let source: Source
 
     var url: URL? {
@@ -25,13 +26,21 @@ struct AvatarImageModel: Hashable, Identifiable, Sendable {
         return Image(uiImage: image)
     }
 
-    init(id: String, source: Source, isLoading: Bool = false) {
+    var localUIImage: UIImage? {
+        guard case .local(let image) = source else {
+            return nil
+        }
+        return image
+    }
+
+    init(id: String, source: Source, isLoading: Bool = false, uploadHasFailed: Bool = false) {
         self.id = id
         self.source = source
         self.isLoading = isLoading
+        self.uploadHasFailed = uploadHasFailed
     }
 
     func settingLoading(to newLoadingStatus: Bool) -> AvatarImageModel {
-        AvatarImageModel(id: id, source: source, isLoading: newLoadingStatus)
+        AvatarImageModel(id: id, source: source, isLoading: newLoadingStatus, uploadHasFailed: uploadHasFailed)
     }
 }

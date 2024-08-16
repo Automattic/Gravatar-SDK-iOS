@@ -96,8 +96,7 @@ class AvatarPickerViewModel: ObservableObject {
         } catch APIError.responseError(let reason) where reason.cancelled {
             // NoOp.
         } catch {
-            // TODO: Handle error (Toast?)
-            // Return to previously selected avatar
+            toastManager.showToast("Oops, something didn't quite work out while trying to change your avatar.", type: .error)
             grid.selectAvatar(withID: selectedAvatarResult?.value())
         }
     }
@@ -145,28 +144,40 @@ class AvatarPickerViewModel: ObservableObject {
     }
 
     func upload(_ image: UIImage) async {
-        let squareImage = image.squared()
-        await performUpload(of: squareImage)
-    }
-
-    private func performUpload(of squareImage: UIImage) async {
         guard let authToken else { return }
 
+        let squareImage = image.squared()
         let localID = UUID().uuidString
 
         let localImageModel = AvatarImageModel(id: localID, source: .local(image: squareImage), isLoading: true)
         grid.append(localImageModel)
 
+        await doUpload(squareImage: squareImage, localID: localID, accessToken: authToken)
+    }
+
+    func retryUpload(of localID: String) async {
+        guard let authToken,
+              let model = grid.avatars.first(where: { $0.id == localID }),
+              let localImage = model.localUIImage
+        else {
+            return
+        }
+        grid.setLoading(to: true, onAvatarWithID: localID)
+        await doUpload(squareImage: localImage, localID: localID, accessToken: authToken)
+    }
+
+    private func doUpload(squareImage: UIImage, localID: String, accessToken: String) async {
         let service = AvatarService()
         do {
-            let avatar = try await service.upload(squareImage, accessToken: authToken)
+            let avatar = try await service.upload(squareImage, accessToken: accessToken)
             await ImageCache.shared.setEntry(.ready(squareImage), for: avatar.url)
 
             let newModel = AvatarImageModel(id: avatar.id, source: .remote(url: avatar.url))
-            grid.updateModel(localImageModel, with: newModel)
+            grid.replaceModel(withID: localID, with: newModel)
         } catch {
-            // TODO: Proper error handling.
-            print(error)
+            let newModel = AvatarImageModel(id: localID, source: .local(image: squareImage), uploadHasFailed: true)
+            grid.replaceModel(withID: localID, with: newModel)
+            toastManager.showToast("Oops, there was an error uploading the image.", type: .error)
         }
     }
 
@@ -253,5 +264,6 @@ extension AvatarImageModel {
         id = avatar.id
         source = .remote(url: avatar.url)
         isLoading = false
+        uploadHasFailed = false
     }
 }

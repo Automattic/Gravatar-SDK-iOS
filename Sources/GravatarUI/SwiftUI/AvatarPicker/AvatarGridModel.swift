@@ -22,8 +22,8 @@ class AvatarGridModel: ObservableObject {
         avatars.firstIndex { $0.id == id }
     }
 
-    func updateModel(_ currentModel: AvatarImageModel, with model: AvatarImageModel) {
-        guard let index = index(of: currentModel.id) else { return }
+    func replaceModel(withID id: String, with model: AvatarImageModel) {
+        guard let index = index(of: id) else { return }
         avatars[index] = model
     }
 
@@ -34,7 +34,7 @@ class AvatarGridModel: ObservableObject {
     func setLoading(to isLoading: Bool, onAvatarWithID id: String) {
         guard let imageModel = model(with: id) else { return }
         let toggledModel = imageModel.settingLoading(to: isLoading)
-        updateModel(imageModel, with: toggledModel)
+        replaceModel(withID: id, with: toggledModel)
     }
 
     func append(_ newModel: AvatarImageModel) {
