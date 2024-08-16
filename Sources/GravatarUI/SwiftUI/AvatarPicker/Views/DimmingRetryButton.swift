@@ -18,7 +18,6 @@ struct DimmingRetryButton: View {
                 }
             }
         )
-        .frame(width: .infinity, height: .infinity)
         .foregroundColor(Color.white)
     }
 }
