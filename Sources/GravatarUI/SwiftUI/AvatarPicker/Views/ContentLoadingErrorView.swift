@@ -35,7 +35,7 @@ struct ContentLoadingErrorView<ActionButton: View>: View {
                     .padding(.init(top: .DS.Padding.medium, leading: 0, bottom: 0, trailing: 0))
             }
             .padding(innerPadding)
-            .shape(RoundedRectangle(cornerRadius: 8), borderColor: Color(UIColor.label).opacity(colorScheme == .dark ? 0.16 : 0.08), borderWidth: 1)
+            .avatarPickerBorder(colorScheme: colorScheme)
         }
     }
 }
