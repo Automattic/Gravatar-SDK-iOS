@@ -12,13 +12,8 @@ public enum AvatarPickerContentLayout: String, CaseIterable, Identifiable {
 struct AvatarPickerView: View {
     private enum Constants {
         static let horizontalPadding: CGFloat = .DS.Padding.double
-        static let padding: EdgeInsets = .init(
-            top: .DS.Padding.double,
-            leading: horizontalPadding,
-            bottom: .DS.Padding.double,
-            trailing: horizontalPadding
-        )
         static let lightModeShadowColor = Color(uiColor: UIColor.rgba(25, 30, 35, alpha: 0.2))
+        static let title: String = "Gravatar" // defined here to avoid translations
     }
 
     @ObservedObject var model: AvatarPickerViewModel
@@ -30,7 +25,7 @@ struct AvatarPickerView: View {
     public var body: some View {
         NavigationView {
             ZStack {
-                VStack {
+                VStack(spacing: .DS.Padding.medium) {
                     profileView()
                     ScrollView {
                         errorView()
@@ -48,8 +43,8 @@ struct AvatarPickerView: View {
                 ToastContainerView(toastManager: model.toastManager)
                     .padding(.horizontal, Constants.horizontalPadding * 2)
             }
-            .navigationTitle("Gravatar") // Set the title for the navigation bar
-            .navigationBarTitleDisplayMode(.inline) // Display title inline or large
+            .navigationTitle(Constants.title)
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
@@ -215,12 +210,7 @@ struct AvatarPickerView: View {
             avatarGrid()
         }
         .avatarPickerBorder(colorScheme: colorScheme)
-        .padding(.init(
-            top: .DS.Padding.double,
-            leading: Constants.horizontalPadding,
-            bottom: .DS.Padding.double,
-            trailing: Constants.horizontalPadding
-        ))
+        .padding(.horizontal, Constants.horizontalPadding)
     }
 
     private func avatarsLoadingView() -> some View {
@@ -259,7 +249,8 @@ struct AvatarPickerView: View {
                 .cornerRadius(8)
                 .shadow(color: profileShadowColor, radius: profileShadowRadius, y: 3)
         })
-        .padding(Constants.padding)
+        .padding(.top, .DS.Padding.double)
+        .padding(.horizontal, Constants.horizontalPadding)
     }
 
     @ViewBuilder
