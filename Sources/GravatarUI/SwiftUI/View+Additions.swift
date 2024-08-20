@@ -12,7 +12,11 @@ extension View {
     }
 
     public func avatarPickerSheet(isPresented: Binding<Bool>, email: String, authToken: String, contentLayout: AvatarPickerContentLayout) -> some View {
-        let avatarPickerView = AvatarPickerView(model: AvatarPickerViewModel(email: Email(email), authToken: authToken), contentLayout: contentLayout)
+        let avatarPickerView = AvatarPickerView(
+            model: AvatarPickerViewModel(email: Email(email), authToken: authToken),
+            contentLayout: contentLayout,
+            isPresented: isPresented
+        )
         return modifier(ModalPresentationModifier(isPresented: isPresented, modalView: avatarPickerView))
     }
 

@@ -24,26 +24,55 @@ struct AvatarPickerView: View {
     @ObservedObject var model: AvatarPickerViewModel
     @State var contentLayout: AvatarPickerContentLayout = .vertical
     @Environment(\.colorScheme) var colorScheme: ColorScheme
+    @Binding var isPresented: Bool
+    @State private var safariURL: URL?
 
     public var body: some View {
-        ZStack {
-            VStack {
-                profileView()
-                ScrollView {
-                    errorView()
-                    if !model.grid.isEmpty {
-                        content()
-                    } else if model.isAvatarsLoading {
-                        avatarsLoadingView()
+        NavigationView {
+            ZStack {
+                VStack {
+                    profileView()
+                    ScrollView {
+                        errorView()
+                        if !model.grid.isEmpty {
+                            content()
+                        } else if model.isAvatarsLoading {
+                            avatarsLoadingView()
+                        }
+                    }
+                    .task {
+                        model.refresh()
                     }
                 }
-                .task {
-                    model.refresh()
+
+                ToastContainerView(toastManager: model.toastManager)
+                    .padding(.horizontal, Constants.horizontalPadding * 2)
+            }
+            .navigationTitle("Gravatar") // Set the title for the navigation bar
+            .navigationBarTitleDisplayMode(.inline) // Display title inline or large
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: {
+                        openProfileInSafari()
+                    }) {
+                        Image("gravatar", bundle: .module)
+                            .tint(Color(UIColor.gravatarBlue))
+                    }
+                    .disabled(model.profileModel?.profileURL == nil)
+                }
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button(action: {
+                        isPresented = false
+                    }) {
+                        Text("Done")
+                            .tint(Color(UIColor.gravatarBlue))
+                    }
                 }
             }
-
-            ToastContainerView(toastManager: model.toastManager)
-                .padding(.horizontal, Constants.horizontalPadding * 2)
+        }
+        .sheet(item: $safariURL) { url in
+            SafariView(url: url)
+                .edgesIgnoringSafeArea(.all)
         }
     }
 
@@ -206,6 +235,10 @@ struct AvatarPickerView: View {
         }
     }
 
+    private func openProfileInSafari() {
+        safariURL = model.profileModel?.profileURL
+    }
+
     @ViewBuilder
     private func profileView() -> some View {
         VStack(alignment: .leading, content: {
@@ -213,8 +246,8 @@ struct AvatarPickerView: View {
                 avatarURL: $model.selectedAvatarURL,
                 model: $model.profileModel,
                 isLoading: $model.isProfileLoading
-            ) { _ in
-                // TODO: Handle the link
+            ) {
+                openProfileInSafari()
             }.frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.init(
                     top: .DS.Padding.single,
@@ -297,14 +330,14 @@ struct AvatarPickerView: View {
         profileModel: PreviewModel()
     )
 
-    return AvatarPickerView(model: model, contentLayout: .horizontal)
+    return AvatarPickerView(model: model, contentLayout: .horizontal, isPresented: .constant(true))
 }
 
 #Preview("Empty elements") {
-    AvatarPickerView(model: .init(avatarImageModels: [], profileModel: nil))
+    AvatarPickerView(model: .init(avatarImageModels: [], profileModel: nil), isPresented: .constant(true))
 }
 
 #Preview("Load from network") {
     /// Enter valid email and auth token.
-    AvatarPickerView(model: .init(email: .init(""), authToken: ""))
+    AvatarPickerView(model: .init(email: .init(""), authToken: ""), isPresented: .constant(true))
 }
