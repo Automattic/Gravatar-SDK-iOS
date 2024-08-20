@@ -47,4 +47,5 @@ fastlane/test_output
 
 # Other
 openapi-generator/
-Demo/Demo/Gravatar-Demo/Secrets.swift
+Demo/Demo/Gravatar-UIKit-Demo/Secrets.swift
+Demo/Demo/Gravatar-SwiftUI-Demo/Secrets.swift
