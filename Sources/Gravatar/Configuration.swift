@@ -2,8 +2,24 @@ import Foundation
 
 /// Gravatar API Configuration
 public actor Configuration {
+    public struct OAuthSecrets: Sendable {
+        package let clientID: String
+        package let clientSecret: String
+        package let redirectURI: String
+        package var callbackScheme: String {
+            URLComponents(string: redirectURI)?.scheme ?? ""
+        }
+
+        public init(clientID: String, clientSecret: String, redirectURI: String) {
+            self.clientID = clientID
+            self.clientSecret = clientSecret
+            self.redirectURI = redirectURI
+        }
+    }
+
     /// Authorisation key to gain access to extra features on the Gravatar API.
-    private(set) var apiKey: String?
+    private(set) public var apiKey: String?
+    package private(set) var oauthSecrets: OAuthSecrets?
 
     /// Global configuration instance. Use this instance to configure the usage of the Gravatar API
     public static let shared = Configuration()
@@ -12,7 +28,8 @@ public actor Configuration {
 
     /// Updates the current configuration instance.
     /// - Parameter apiKey: The new authorisation API key.
-    public func configure(with apiKey: String?) {
+    public func configure(with apiKey: String?, oauthSecrets: OAuthSecrets?) {
         self.apiKey = apiKey
+        self.oauthSecrets = oauthSecrets
     }
 }

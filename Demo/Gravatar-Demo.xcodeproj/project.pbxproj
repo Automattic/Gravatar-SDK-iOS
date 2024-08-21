@@ -9,8 +9,10 @@
 /* Begin PBXBuildFile section */
 		1E0087932B63CFFE0012ECEA /* DemoFetchProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E0087922B63CFFE0012ECEA /* DemoFetchProfileViewController.swift */; };
 		1E0087952B63DBCB0012ECEA /* DemoUploadImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E0087942B63DBCB0012ECEA /* DemoUploadImageViewController.swift */; };
+		1E3FA2402C74B8CC002901F2 /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E3FA23F2C74B8CC002901F2 /* Secrets.swift */; };
+		1E3FA2412C74E539002901F2 /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E3FA23F2C74B8CC002901F2 /* Secrets.swift */; };
+		1E3FA2452C75E403002901F2 /* DemoProfileEditorViewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E3FA2442C75E403002901F2 /* DemoProfileEditorViewView.swift */; };
 		1ECAB5072BC984440043A331 /* DemoProfileConfigurationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ECAB5062BC984440043A331 /* DemoProfileConfigurationViewController.swift */; };
-		1ED769E72C048D9C00680D78 /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ED769E62C048D9C00680D78 /* Secrets.swift */; };
 		4948C4EC2B61C41100AC4875 /* Gravatar in Frameworks */ = {isa = PBXBuildFile; productRef = 4948C4EB2B61C41100AC4875 /* Gravatar */; };
 		4948C4EE2B61C41800AC4875 /* Gravatar in Frameworks */ = {isa = PBXBuildFile; productRef = 4948C4ED2B61C41800AC4875 /* Gravatar */; };
 		495775E22B5B34970082812A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 495775E12B5B34970082812A /* AppDelegate.swift */; };
@@ -39,8 +41,10 @@
 /* Begin PBXFileReference section */
 		1E0087922B63CFFE0012ECEA /* DemoFetchProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoFetchProfileViewController.swift; sourceTree = "<group>"; };
 		1E0087942B63DBCB0012ECEA /* DemoUploadImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoUploadImageViewController.swift; sourceTree = "<group>"; };
+		1E3FA23D2C74B7B5002901F2 /* Secrets.tpl */ = {isa = PBXFileReference; lastKnownFileType = text; path = Secrets.tpl; sourceTree = "<group>"; };
+		1E3FA23F2C74B8CC002901F2 /* Secrets.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Secrets.swift; sourceTree = "<group>"; };
+		1E3FA2442C75E403002901F2 /* DemoProfileEditorViewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoProfileEditorViewView.swift; sourceTree = "<group>"; };
 		1ECAB5062BC984440043A331 /* DemoProfileConfigurationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoProfileConfigurationViewController.swift; sourceTree = "<group>"; };
-		1ED769E62C048D9C00680D78 /* Secrets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Secrets.swift; sourceTree = "<group>"; };
 		3FD4781E2C50D6FD0071B8B9 /* Base.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Base.xcconfig; sourceTree = "<group>"; };
 		3FD478212C51D5CE0071B8B9 /* Gravatar-UIKit-Demo.Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Gravatar-UIKit-Demo.Release.xcconfig"; sourceTree = "<group>"; };
 		3FD478222C51D7E20071B8B9 /* Gravatar-SwiftUI-Demo.Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Gravatar-SwiftUI-Demo.Release.xcconfig"; sourceTree = "<group>"; };
@@ -108,6 +112,7 @@
 				49C5D60F2B5B33E20067C2A8 /* ContentView.swift */,
 				9146A7AD2C3BD8F000E07C63 /* DemoAvatarView.swift */,
 				91B73B362C404F6E00E7D325 /* DemoAvatarPickerView.swift */,
+				1E3FA2442C75E403002901F2 /* DemoProfileEditorViewView.swift */,
 				49C5D6112B5B33E20067C2A8 /* Assets.xcassets */,
 				49C5D6132B5B33E20067C2A8 /* Preview Content */,
 				49EFFB572C51AA3E0086589A /* Gravatar-SwiftUI-Demo.Base.xcconfig */,
@@ -121,7 +126,6 @@
 			children = (
 				91956A502B67939F00BF3CF0 /* Common */,
 				495775E12B5B34970082812A /* AppDelegate.swift */,
-				1ED769E62C048D9C00680D78 /* Secrets.swift */,
 				91F0B3E12B6281A60025C4F8 /* Main.storyboard */,
 				495775E32B5B34970082812A /* SceneDelegate.swift */,
 				914AC0172BD7FF08005DA4A5 /* DemoBaseProfileViewController.swift */,
@@ -167,8 +171,10 @@
 			children = (
 				3FD4781E2C50D6FD0071B8B9 /* Base.xcconfig */,
 				3FD478232C51D9280071B8B9 /* Enterprise.xcconfig */,
+				1E3FA23F2C74B8CC002901F2 /* Secrets.swift */,
 				495775E02B5B34970082812A /* Gravatar-UIKit-Demo */,
 				495775DA2B5B34220082812A /* Gravatar-SwiftUI-Demo */,
+				1E3FA23D2C74B7B5002901F2 /* Secrets.tpl */,
 			);
 			path = Demo;
 			sourceTree = "<group>";
@@ -218,6 +224,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 49C5D6182B5B33E20067C2A8 /* Build configuration list for PBXNativeTarget "Gravatar SwiftUI" */;
 			buildPhases = (
+				1E3FA23E2C74B808002901F2 /* ShellScript */,
 				49C5D6062B5B33E20067C2A8 /* Sources */,
 				49C5D6072B5B33E20067C2A8 /* Frameworks */,
 				49C5D6082B5B33E20067C2A8 /* Resources */,
@@ -297,6 +304,25 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		1E3FA23E2C74B808002901F2 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/Demo/Secrets.tpl",
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(SRCROOT)/Demo/Secrets.swift",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "TEMPLATE_PATH=\"${SRCROOT}/Demo/Secrets.tpl\"\nSECRETS_PATH=\"${SRCROOT}/Demo/Secrets.swift\"\n\nif [ ! -f \"${SECRETS_PATH}\" ]; then\n    cp \"${TEMPLATE_PATH}\" \"${SECRETS_PATH}\"\nfi\n";
+		};
 		49920BD82C3D93E6009E8DCF /* Generate Secrets.swift */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -305,16 +331,17 @@
 			inputFileListPaths = (
 			);
 			inputPaths = (
+				"$(SRCROOT)/Demo/Secrets.tpl",
 			);
 			name = "Generate Secrets.swift";
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(SRCROOT)/Demo/Gravatar-Demo/Secrets.swift",
+				"$(SRCROOT)/Demo/Secrets.swift",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "SECRETS_PATH=\"${SRCROOT}/Demo/Gravatar-Demo/Secrets.swift\"\n\nif [ ! -f \"${SECRETS_PATH}\" ]; then\n    echo \"let apiKey: String? = nil\" > \"${SECRETS_PATH}\"\nfi\n";
+			shellScript = "TEMPLATE_PATH=\"${SRCROOT}/Demo/Secrets.tpl\"\nSECRETS_PATH=\"${SRCROOT}/Demo/Secrets.swift\"\n\nif [ ! -f \"${SECRETS_PATH}\" ]; then\n    cp \"${TEMPLATE_PATH}\" \"${SECRETS_PATH}\"\nfi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -324,6 +351,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				91F0B3DD2B62815F0025C4F8 /* MainTableViewController.swift in Sources */,
+				1E3FA2412C74E539002901F2 /* Secrets.swift in Sources */,
 				914AC0192BD7FF08005DA4A5 /* DemoBaseProfileViewController.swift in Sources */,
 				1E0087932B63CFFE0012ECEA /* DemoFetchProfileViewController.swift in Sources */,
 				1E0087952B63DBCB0012ECEA /* DemoUploadImageViewController.swift in Sources */,
@@ -332,7 +360,6 @@
 				914AC01A2BD7FF08005DA4A5 /* DemoProfilePresentationStylesViewController.swift in Sources */,
 				91F0B3DE2B62815F0025C4F8 /* DemoAvatarDownloadViewController.swift in Sources */,
 				91956A542B67943A00BF3CF0 /* DemoUIImageViewExtensionViewController.swift in Sources */,
-				1ED769E72C048D9C00680D78 /* Secrets.swift in Sources */,
 				914AC0202BDAAC3C005DA4A5 /* DemoRemoteSVGViewController.swift in Sources */,
 				495775E42B5B34970082812A /* SceneDelegate.swift in Sources */,
 				1ECAB5072BC984440043A331 /* DemoProfileConfigurationViewController.swift in Sources */,
@@ -345,9 +372,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				49C5D6102B5B33E20067C2A8 /* ContentView.swift in Sources */,
+				1E3FA2402C74B8CC002901F2 /* Secrets.swift in Sources */,
 				9146A7AE2C3BD8F000E07C63 /* DemoAvatarView.swift in Sources */,
 				91B73B372C404F6E00E7D325 /* DemoAvatarPickerView.swift in Sources */,
 				49C5D60E2B5B33E20067C2A8 /* DemoApp.swift in Sources */,
+				1E3FA2452C75E403002901F2 /* DemoProfileEditorViewView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

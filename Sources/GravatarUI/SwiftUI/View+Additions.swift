@@ -16,3 +16,12 @@ extension View {
         return modifier(ModalPresentationModifier(isPresented: isPresented, modalView: avatarPickerView))
     }
 }
+
+@MainActor
+extension View {
+    public func gravatarEditorSheet(isPresented: Binding<Bool>, email: String, entryPoint: ProfileEditorEntryPoint) -> some View {
+        let editor = ProfileEditor(email: .init(email), entryPoint: entryPoint)
+        return modifier(ModalPresentationModifier(isPresented: isPresented, modalView: editor))
+    }
+}
+
