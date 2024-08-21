@@ -5,7 +5,7 @@ import SwiftUI
 @MainActor
 class AvatarPickerViewModel: ObservableObject {
     private let profileService: ProfileService = .init()
-    private var email: Email? {
+    private(set) var email: Email? {
         didSet {
             guard let email else {
                 avatarIdentifier = nil
