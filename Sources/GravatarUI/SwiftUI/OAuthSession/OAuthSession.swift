@@ -29,6 +29,7 @@ public struct OAuthSession: Sendable {
     @discardableResult
     func retrieveAccessToken(with email: Email) async throws -> String {
         guard let secrets = await Configuration.shared.oauthSecrets else {
+            assertionFailure("Trying to retrieve access token without configuring oauth secrets.")
             throw OAuthError.notConfigured
         }
 
@@ -74,9 +75,17 @@ public struct OAuthSession: Sendable {
         var urlComponents = URLComponents(string: "https://public-api.wordpress.com/oauth2/authorize")!
         do {
             urlComponents.queryItems = try params.queryItems
-            guard let finalURL = urlComponents.url else { throw OAuthError.couldNotCreateOAuthURLWithGivenSecrets }
+            guard let finalURL = urlComponents.url else {
+                assertionFailure(
+                    "Error encoding oauth secrets. Check the config in `Configuration.shared.configure(with:oauthSecrets:)` and try again"
+                )
+                throw OAuthError.couldNotCreateOAuthURLWithGivenSecrets
+            }
             return finalURL
         } catch {
+            assertionFailure(
+                "Error encoding oauth secrets. Check the config in `Configuration.shared.configure(with:oauthSecrets:)` and try again"
+            )
             throw OAuthError.couldNotCreateOAuthURLWithGivenSecrets
         }
     }
