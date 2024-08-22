@@ -14,6 +14,8 @@ struct AvatarPickerView: View {
         static let horizontalPadding: CGFloat = .DS.Padding.double
         static let lightModeShadowColor = Color(uiColor: UIColor.rgba(25, 30, 35, alpha: 0.2))
         static let title: String = "Gravatar" // defined here to avoid translations
+        static let vStackVerticalSpacing: CGFloat = .DS.Padding.medium
+        static let emailBottomSpacing: CGFloat = .DS.Padding.double
     }
 
     @ObservedObject var model: AvatarPickerViewModel
@@ -25,7 +27,8 @@ struct AvatarPickerView: View {
     public var body: some View {
         NavigationView {
             ZStack {
-                VStack(spacing: .DS.Padding.medium) {
+                VStack(spacing: 0) {
+                    email()
                     profileView()
                     ScrollView {
                         errorView()
@@ -34,6 +37,8 @@ struct AvatarPickerView: View {
                         } else if model.isAvatarsLoading {
                             avatarsLoadingView()
                         }
+                        Spacer()
+                            .frame(height: Constants.vStackVerticalSpacing)
                     }
                     .task {
                         model.refresh()
@@ -71,12 +76,23 @@ struct AvatarPickerView: View {
         }
     }
 
+    @ViewBuilder
+    private func email() -> some View {
+        if let email = model.email?.rawValue, !email.isEmpty {
+            Text(email)
+                .padding(.bottom, Constants.emailBottomSpacing / 2)
+                .font(.footnote)
+                .foregroundColor(Color(UIColor.secondaryLabel))
+        }
+    }
+
     private func header() -> some View {
         VStack(alignment: .leading) {
             Text("Avatars")
                 .font(.title2.weight(.bold))
             Text("Choose or upload your favorite avatar images and connect them to your email address.")
                 .font(.subheadline)
+                .foregroundColor(Color(UIColor.secondaryLabel))
         }
         .padding(.init(top: .DS.Padding.double, leading: Constants.horizontalPadding, bottom: .DS.Padding.half, trailing: Constants.horizontalPadding))
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -249,7 +265,8 @@ struct AvatarPickerView: View {
                 .cornerRadius(8)
                 .shadow(color: profileShadowColor, radius: profileShadowRadius, y: 3)
         })
-        .padding(.top, .DS.Padding.double)
+        .padding(.top, Constants.emailBottomSpacing / 2)
+        .padding(.bottom, Constants.vStackVerticalSpacing)
         .padding(.horizontal, Constants.horizontalPadding)
     }
 

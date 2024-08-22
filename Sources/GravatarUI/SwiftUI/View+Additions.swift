@@ -20,12 +20,13 @@ extension View {
         return modifier(ModalPresentationModifier(isPresented: isPresented, modalView: avatarPickerView))
     }
 
-    func avatarPickerBorder(colorScheme: ColorScheme) -> some View {
+    func avatarPickerBorder(colorScheme: ColorScheme, borderWidth: CGFloat = 1) -> some View {
         self
             .shape(
                 RoundedRectangle(cornerRadius: 8),
                 borderColor: Color(UIColor.label).opacity(colorScheme == .dark ? 0.16 : 0.08),
-                borderWidth: 1
+                borderWidth: borderWidth
             )
+            .padding(.vertical, borderWidth) // to prevent borders from getting clipped
     }
 }
