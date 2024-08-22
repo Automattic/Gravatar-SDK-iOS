@@ -15,15 +15,15 @@ struct OAuthSession {
     }
 
     func isSession(with email: Email) -> Bool {
-        (try? storage.password(with: email.rawValue) ?? nil) != nil
+        (try? storage.secret(with: email.rawValue) ?? nil) != nil
     }
 
     func deleteSession(with email: Email) {
-        try? storage.deletePassword(with: email.rawValue)
+        try? storage.deleteSecret(with: email.rawValue)
     }
 
     func sessionToken(with email: Email) -> String? {
-        try? storage.password(with: email.rawValue)
+        try? storage.secret(with: email.rawValue)
     }
 
     func authenticate(with email: Email) async throws -> String {
@@ -35,7 +35,7 @@ struct OAuthSession {
             let url = try oauthURL(with: email, secrets: secrets)
             let callbackURL = try await authenticationSession.authenticate(using: url, callbackURLScheme: secrets.callbackScheme)
             let token = try await getToken(from: callbackURL, secrets: secrets)
-            try storage.setPassword(token, for: email.rawValue)
+            try storage.setSecret(token, for: email.rawValue)
             return token
         } catch let error {
             throw OAuthError.from(error: error)
