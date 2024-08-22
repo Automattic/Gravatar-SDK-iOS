@@ -65,6 +65,13 @@ class AvatarPickerViewModel: ObservableObject {
 
         if let profileModel {
             self.profileResult = .success(profileModel)
+            self.profileModel = .init(displayName: profileModel.displayName, location: profileModel.location, profileURL: profileModel.profileURL)
+            switch profileModel.avatarIdentifier {
+            case .email(let email):
+                self.email = email
+            default:
+                break
+            }
         }
     }
 
