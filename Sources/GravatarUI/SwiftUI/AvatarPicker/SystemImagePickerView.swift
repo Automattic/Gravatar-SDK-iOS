@@ -37,7 +37,7 @@ private struct ImagePicker<Label>: View where Label: View {
                 ForEach(SourceType.allCases) { source in
                     Button {
                         sourceType = source
-                        isPresented.toggle()
+                        isPresented = true
                     } label: {
                         SwiftUI.Label(source.localizedTitle, systemImage: source.iconName)
                     }
@@ -49,7 +49,14 @@ private struct ImagePicker<Label>: View where Label: View {
         .sheet(item: $sourceType, content: { source in
             // This allows to present different kind of pickers for different sources.
             switch source {
-            case .camera, .photoLibrary:
+            case .camera:
+                ZStack {
+                    Color.black.ignoresSafeArea(edges: .all)
+                    LegacyImagePickerRepresentable(sourceType: source.map()) { image in
+                        onImageSelected(image)
+                    }
+                }
+            case .photoLibrary:
                 LegacyImagePickerRepresentable(sourceType: source.map()) { image in
                     onImageSelected(image)
                 }.ignoresSafeArea()
