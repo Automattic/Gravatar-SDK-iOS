@@ -28,7 +28,7 @@ public actor Configuration {
 
     /// Updates the current configuration instance.
     /// - Parameter apiKey: The new authorisation API key.
-    public func configure(with apiKey: String?, oauthSecrets: OAuthSecrets?) {
+    public func configure(with apiKey: String?, oauthSecrets: OAuthSecrets? = nil) {
         self.apiKey = apiKey
         self.oauthSecrets = oauthSecrets
     }
