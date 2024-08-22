@@ -42,7 +42,7 @@ struct AvatarPickerView: View {
                         avatarsLoadingView()
                     }
                 }
-                .onAppear() {
+                .onAppear {
                     model.refresh()
                 }
                 if model.grid.isEmpty == false {

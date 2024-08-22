@@ -18,7 +18,7 @@ public actor Configuration {
     }
 
     /// Authorisation key to gain access to extra features on the Gravatar API.
-    private(set) public var apiKey: String?
+    public private(set) var apiKey: String?
     package private(set) var oauthSecrets: OAuthSecrets?
 
     /// Global configuration instance. Use this instance to configure the usage of the Gravatar API

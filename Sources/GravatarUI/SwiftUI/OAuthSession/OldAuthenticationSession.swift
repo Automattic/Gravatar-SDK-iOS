@@ -7,7 +7,7 @@ final class WebAuthenticationPresentationContextProvider: NSObject, ASWebAuthent
 }
 
 struct OldAuthenticationSession: Sendable {
-    let context =  WebAuthenticationPresentationContextProvider()
+    let context = WebAuthenticationPresentationContextProvider()
 
     func authenticate(using url: URL, callbackURLScheme: String) async throws -> URL {
         try await withCheckedThrowingContinuation { continuation in

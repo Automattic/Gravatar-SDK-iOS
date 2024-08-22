@@ -2,13 +2,11 @@
 import XCTest
 
 final class OAuthSessionTests: XCTestCase {
-
     func testOAuth() {
         let mockSession = AuthenticationSessionMock(responseURL: URL(string: "some://url.com?code=someCode")!)
         let oauth = OAuthSession(authenticationSession: mockSession)
     }
 }
-
 
 class AuthenticationSessionMock: AuthenticationSession, @unchecked Sendable {
     let responseURL: URL

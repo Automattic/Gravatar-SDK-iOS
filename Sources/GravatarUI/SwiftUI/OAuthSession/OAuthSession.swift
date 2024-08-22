@@ -38,7 +38,7 @@ public struct OAuthSession: Sendable {
             let token = try await getToken(from: callbackURL, secrets: secrets)
             try storage.setSecret(token, for: email.rawValue)
             return token
-        } catch let error {
+        } catch {
             throw OAuthError.from(error: error)
         }
     }
