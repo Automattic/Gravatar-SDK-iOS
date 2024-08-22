@@ -19,7 +19,7 @@ struct AvatarPickerProfileView: View {
     @StateObject private var placeholderColorManager: ProfileViewPlaceholderColorManager = .init()
     @Environment(\.colorScheme) var colorScheme: ColorScheme
 
-    private(set) var viewProfileAction: ((URL?) -> Void)? = nil
+    private(set) var viewProfileAction: (() -> Void)? = nil
 
     var body: some View {
         HStack(alignment: .center, spacing: .DS.Padding.single) {
@@ -32,8 +32,8 @@ struct AvatarPickerProfileView: View {
                     Text(model.location)
                         .font(.footnote)
                         .foregroundColor(Color(UIColor.secondaryLabel))
-                    Button("Discover Your Gravatar Card →") {
-                        viewProfileAction?(model.profileURL)
+                    Button("View profile →") {
+                        viewProfileAction?()
                     }
                     .font(.footnote)
                     .foregroundColor(Color(UIColor.label))

@@ -12,38 +12,77 @@ public enum AvatarPickerContentLayout: String, CaseIterable, Identifiable {
 struct AvatarPickerView: View {
     private enum Constants {
         static let horizontalPadding: CGFloat = .DS.Padding.double
-        static let padding: EdgeInsets = .init(
-            top: .DS.Padding.double,
-            leading: horizontalPadding,
-            bottom: .DS.Padding.double,
-            trailing: horizontalPadding
-        )
         static let lightModeShadowColor = Color(uiColor: UIColor.rgba(25, 30, 35, alpha: 0.2))
+        static let title: String = "Gravatar" // defined here to avoid translations
+        static let vStackVerticalSpacing: CGFloat = .DS.Padding.medium
+        static let emailBottomSpacing: CGFloat = .DS.Padding.double
     }
 
     @ObservedObject var model: AvatarPickerViewModel
     @State var contentLayout: AvatarPickerContentLayout = .vertical
     @Environment(\.colorScheme) var colorScheme: ColorScheme
+    @Binding var isPresented: Bool
+    @State private var safariURL: URL?
 
     public var body: some View {
-        ZStack {
-            VStack {
-                profileView()
-                ScrollView {
-                    errorView()
-                    if !model.grid.isEmpty {
-                        content()
-                    } else if model.isAvatarsLoading {
-                        avatarsLoadingView()
+        NavigationView {
+            ZStack {
+                VStack(spacing: 0) {
+                    email()
+                    profileView()
+                    ScrollView {
+                        errorView()
+                        if !model.grid.isEmpty {
+                            content()
+                        } else if model.isAvatarsLoading {
+                            avatarsLoadingView()
+                        }
+                        Spacer()
+                            .frame(height: Constants.vStackVerticalSpacing)
+                    }
+                    .task {
+                        model.refresh()
                     }
                 }
-                .task {
-                    model.refresh()
+
+                ToastContainerView(toastManager: model.toastManager)
+                    .padding(.horizontal, Constants.horizontalPadding * 2)
+            }
+            .navigationTitle(Constants.title)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: {
+                        openProfileInSafari()
+                    }) {
+                        Image("gravatar", bundle: .module)
+                            .tint(Color(UIColor.gravatarBlue))
+                    }
+                    .disabled(model.profileModel?.profileURL == nil)
+                }
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button(action: {
+                        isPresented = false
+                    }) {
+                        Text("Done")
+                            .tint(Color(UIColor.gravatarBlue))
+                    }
                 }
             }
+        }
+        .fullScreenCover(item: $safariURL) { url in
+            SafariView(url: url)
+                .edgesIgnoringSafeArea(.all)
+        }
+    }
 
-            ToastContainerView(toastManager: model.toastManager)
-                .padding(.horizontal, Constants.horizontalPadding * 2)
+    @ViewBuilder
+    private func email() -> some View {
+        if let email = model.email?.rawValue, !email.isEmpty {
+            Text(email)
+                .padding(.bottom, Constants.emailBottomSpacing / 2)
+                .font(.footnote)
+                .foregroundColor(Color(UIColor.secondaryLabel))
         }
     }
 
@@ -53,6 +92,7 @@ struct AvatarPickerView: View {
                 .font(.title2.weight(.bold))
             Text("Choose or upload your favorite avatar images and connect them to your email address.")
                 .font(.subheadline)
+                .foregroundColor(Color(UIColor.secondaryLabel))
         }
         .padding(.init(top: .DS.Padding.double, leading: Constants.horizontalPadding, bottom: .DS.Padding.half, trailing: Constants.horizontalPadding))
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -186,12 +226,7 @@ struct AvatarPickerView: View {
             avatarGrid()
         }
         .avatarPickerBorder(colorScheme: colorScheme)
-        .padding(.init(
-            top: .DS.Padding.double,
-            leading: Constants.horizontalPadding,
-            bottom: .DS.Padding.double,
-            trailing: Constants.horizontalPadding
-        ))
+        .padding(.horizontal, Constants.horizontalPadding)
     }
 
     private func avatarsLoadingView() -> some View {
@@ -206,6 +241,10 @@ struct AvatarPickerView: View {
         }
     }
 
+    private func openProfileInSafari() {
+        safariURL = model.profileModel?.profileURL
+    }
+
     @ViewBuilder
     private func profileView() -> some View {
         VStack(alignment: .leading, content: {
@@ -213,8 +252,8 @@ struct AvatarPickerView: View {
                 avatarURL: $model.selectedAvatarURL,
                 model: $model.profileModel,
                 isLoading: $model.isProfileLoading
-            ) { _ in
-                // TODO: Handle the link
+            ) {
+                openProfileInSafari()
             }.frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.init(
                     top: .DS.Padding.single,
@@ -226,7 +265,9 @@ struct AvatarPickerView: View {
                 .cornerRadius(8)
                 .shadow(color: profileShadowColor, radius: profileShadowRadius, y: 3)
         })
-        .padding(Constants.padding)
+        .padding(.top, Constants.emailBottomSpacing / 2)
+        .padding(.bottom, Constants.vStackVerticalSpacing)
+        .padding(.horizontal, Constants.horizontalPadding)
     }
 
     @ViewBuilder
@@ -297,14 +338,14 @@ struct AvatarPickerView: View {
         profileModel: PreviewModel()
     )
 
-    return AvatarPickerView(model: model, contentLayout: .horizontal)
+    return AvatarPickerView(model: model, contentLayout: .horizontal, isPresented: .constant(true))
 }
 
 #Preview("Empty elements") {
-    AvatarPickerView(model: .init(avatarImageModels: [], profileModel: nil))
+    AvatarPickerView(model: .init(avatarImageModels: [], profileModel: nil), isPresented: .constant(true))
 }
 
 #Preview("Load from network") {
     /// Enter valid email and auth token.
-    AvatarPickerView(model: .init(email: .init(""), authToken: ""))
+    AvatarPickerView(model: .init(email: .init(""), authToken: ""), isPresented: .constant(true))
 }
