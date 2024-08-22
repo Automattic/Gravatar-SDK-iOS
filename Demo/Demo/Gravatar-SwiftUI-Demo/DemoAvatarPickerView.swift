@@ -43,7 +43,7 @@ struct DemoAvatarPickerView: View {
                     .pickerStyle(MenuPickerStyle())
                 }
                 Button("Tap to open the Avatar Picker") {
-                    isPresentingPicker.toggle()
+                    isPresentingPicker = true
                 }
                 .avatarPickerSheet(isPresented: $isPresentingPicker,
                                    email: email,
