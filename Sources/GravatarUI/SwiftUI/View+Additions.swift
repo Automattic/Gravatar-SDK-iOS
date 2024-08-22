@@ -11,9 +11,18 @@ extension View {
             )
     }
 
-    public func avatarPickerSheet(isPresented: Binding<Bool>, email: String, authToken: String) -> some View {
-        let avatarPickerView = AvatarPickerView(model: AvatarPickerViewModel(email: Email(email), authToken: authToken))
+    public func avatarPickerSheet(isPresented: Binding<Bool>, email: String, authToken: String, contentLayout: AvatarPickerContentLayout) -> some View {
+        let avatarPickerView = AvatarPickerView(model: AvatarPickerViewModel(email: Email(email), authToken: authToken), contentLayout: contentLayout)
         return modifier(ModalPresentationModifier(isPresented: isPresented, modalView: avatarPickerView))
+    }
+
+    func avatarPickerBorder(colorScheme: ColorScheme) -> some View {
+        self
+            .shape(
+                RoundedRectangle(cornerRadius: 8),
+                borderColor: Color(UIColor.label).opacity(colorScheme == .dark ? 0.16 : 0.08),
+                borderWidth: 1
+            )
     }
 }
 

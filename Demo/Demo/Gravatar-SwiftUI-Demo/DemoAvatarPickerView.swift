@@ -5,11 +5,12 @@ struct DemoAvatarPickerView: View {
     
     @AppStorage("pickerEmail") private var email: String = ""
     @AppStorage("pickerToken") private var token: String = ""
+    @AppStorage("pickerContentLayout") private var contentLayout: AvatarPickerContentLayout = .vertical
     @State private var isSecure: Bool = true
-    
+
     // You can make this `true` by default to easily test the picker
     @State private var isPresentingPicker: Bool = false
-    
+
     var body: some View {
         VStack(alignment: .leading, spacing: 5) {
             VStack(alignment: .leading, spacing: 5) {
@@ -31,12 +32,23 @@ struct DemoAvatarPickerView: View {
                     }
                 }
                 Divider()
+                HStack {
+                    Text("Content Layout")
+                    Spacer()
+                    Picker("Content Layout", selection: $contentLayout) {
+                        ForEach(AvatarPickerContentLayout.allCases) { option in
+                            Text(option.rawValue).tag(option)
+                        }
+                    }
+                    .pickerStyle(MenuPickerStyle())
+                }
                 Button("Tap to open the Avatar Picker") {
                     isPresentingPicker.toggle()
                 }
                 .avatarPickerSheet(isPresented: $isPresentingPicker,
                                    email: email,
-                                   authToken: token)
+                                   authToken: token, 
+                                   contentLayout: contentLayout)
                 Spacer()
             }
             .padding(.horizontal)

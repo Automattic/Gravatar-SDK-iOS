@@ -1,6 +1,13 @@
 import Gravatar
 import SwiftUI
 
+public enum AvatarPickerContentLayout: String, CaseIterable, Identifiable {
+    public var id: Self { self }
+
+    case vertical
+    case horizontal
+}
+
 @MainActor
 struct AvatarPickerView: View {
     private enum Constants {
@@ -15,7 +22,7 @@ struct AvatarPickerView: View {
     }
 
     @ObservedObject var model: AvatarPickerViewModel
-
+    @State var contentLayout: AvatarPickerContentLayout = .vertical
     @Environment(\.colorScheme) var colorScheme: ColorScheme
 
     public var body: some View {
@@ -25,31 +32,13 @@ struct AvatarPickerView: View {
                 ScrollView {
                     errorView()
                     if !model.grid.isEmpty {
-                        header()
-                        AvatarGrid(
-                            grid: model.grid,
-                            onAvatarTap: { avatar in
-                                model.selectAvatar(with: avatar.id)
-                            },
-                            onImageSelected: { image in
-                                uploadImage(image)
-                            },
-                            onRetryUpload: { avatar in
-                                retryUpload(avatar)
-                            }
-                        ).padding(Constants.padding)
+                        content()
                     } else if model.isAvatarsLoading {
                         avatarsLoadingView()
                     }
                 }
                 .onAppear {
                     model.refresh()
-                }
-                if model.grid.isEmpty == false {
-                    imagePicker {
-                        CTAButtonView("Upload image")
-                    }
-                    .padding(Constants.padding)
                 }
             }
 
@@ -152,6 +141,57 @@ struct AvatarPickerView: View {
         Task {
             await model.retryUpload(of: avatar.id)
         }
+    }
+
+    @ViewBuilder
+    private func avatarGrid() -> some View {
+        if contentLayout == .vertical {
+            AvatarGrid(
+                grid: model.grid,
+                onAvatarTap: { avatar in
+                    model.selectAvatar(with: avatar.id)
+                },
+                onImagePickerDidPickImage: { image in
+                    uploadImage(image)
+                },
+                onRetryUpload: { avatar in
+                    retryUpload(avatar)
+                }
+            )
+            .padding(.horizontal, Constants.horizontalPadding)
+            .padding(.vertical, .DS.Padding.medium)
+        } else {
+            HorizontalAvatarGrid(
+                grid: model.grid,
+                onAvatarTap: { avatar in
+                    model.selectAvatar(with: avatar.id)
+                },
+                onRetryUpload: { avatar in
+                    retryUpload(avatar)
+                }
+            )
+            .padding(.top, .DS.Padding.medium)
+            .padding(.bottom, .DS.Padding.double)
+            imagePicker {
+                CTAButtonView("Upload image")
+            }
+            .padding(.horizontal, Constants.horizontalPadding)
+            .padding(.bottom, .DS.Padding.medium)
+        }
+    }
+
+    private func content() -> some View {
+        VStack(spacing: 0) {
+            header()
+            avatarGrid()
+        }
+        .avatarPickerBorder(colorScheme: colorScheme)
+        .padding(.init(
+            top: .DS.Padding.double,
+            leading: Constants.horizontalPadding,
+            bottom: .DS.Padding.double,
+            trailing: Constants.horizontalPadding
+        ))
     }
 
     private func avatarsLoadingView() -> some View {
@@ -257,7 +297,7 @@ struct AvatarPickerView: View {
         profileModel: PreviewModel()
     )
 
-    return AvatarPickerView(model: model)
+    return AvatarPickerView(model: model, contentLayout: .horizontal)
 }
 
 #Preview("Empty elements") {
