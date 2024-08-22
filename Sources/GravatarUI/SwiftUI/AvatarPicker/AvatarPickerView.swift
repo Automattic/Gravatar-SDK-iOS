@@ -70,7 +70,7 @@ struct AvatarPickerView: View {
                 }
             }
         }
-        .sheet(item: $safariURL) { url in
+        .fullScreenCover(item: $safariURL) { url in
             SafariView(url: url)
                 .edgesIgnoringSafeArea(.all)
         }
