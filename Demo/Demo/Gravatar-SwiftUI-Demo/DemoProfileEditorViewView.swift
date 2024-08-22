@@ -7,6 +7,8 @@ struct DemoProfileEditorView: View {
 
     // You can make this `true` by default to easily test the picker
     @State private var isPresentingPicker: Bool = false
+    @State private var hasSession: Bool = false
+    @Environment(\.oauthSession) var oauthSession
 
     var body: some View {
         VStack(spacing: 20) {
@@ -24,9 +26,32 @@ struct DemoProfileEditorView: View {
             Button("Open Profile Editor with OAuth flow") {
                 isPresentingPicker.toggle()
             }
-            .gravatarEditorSheet(isPresented: $isPresentingPicker, email: email, entryPoint: .avatarPicker)
+            .gravatarEditorSheet(
+                isPresented: $isPresentingPicker,
+                email: email,
+                entryPoint: .avatarPicker,
+                onDismiss: {
+                    updateHasSession(with: email)
+                }
+            )
+            if hasSession {
+                Button("Log out") {
+                    oauthSession.deleteSession(with: .init(email))
+                    updateHasSession(with: email)
+                }
+            }
+
             Spacer()
+        }.onAppear() {
+            updateHasSession(with: email)
         }
+        .onChange(of: email) { _, newValue in
+            updateHasSession(with: newValue)
+        }
+    }
+
+    func updateHasSession(with email: String) {
+        hasSession = oauthSession.hasSession(with: .init(email))
     }
 }
 

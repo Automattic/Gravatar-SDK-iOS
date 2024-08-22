@@ -19,9 +19,9 @@ extension View {
 
 @MainActor
 extension View {
-    public func gravatarEditorSheet(isPresented: Binding<Bool>, email: String, entryPoint: ProfileEditorEntryPoint) -> some View {
+    public func gravatarEditorSheet(isPresented: Binding<Bool>, email: String, entryPoint: ProfileEditorEntryPoint, onDismiss: (() -> Void)? = nil) -> some View {
         let editor = ProfileEditor(email: .init(email), entryPoint: entryPoint)
-        return modifier(ModalPresentationModifier(isPresented: isPresented, modalView: editor))
+        return modifier(ModalPresentationModifier(isPresented: isPresented, onDismiss: onDismiss, modalView: editor))
     }
 }
 

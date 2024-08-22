@@ -5,7 +5,7 @@ private struct OAuthSessionKey: EnvironmentKey {
 }
 
 extension EnvironmentValues {
-    var oauthSession: OAuthSession {
+    public var oauthSession: OAuthSession {
         get { self[OAuthSessionKey.self] }
         set { self[OAuthSessionKey.self] = newValue }
     }

@@ -1,6 +1,6 @@
 import AuthenticationServices
 
-struct OAuthSession {
+public struct OAuthSession: Sendable {
     private let storage: SecureStorage
     private let authenticationSession: AuthenticationSession
     private let snakeCaseDecoder: JSONDecoder = {
@@ -14,11 +14,11 @@ struct OAuthSession {
         self.storage = storage
     }
 
-    func isSession(with email: Email) -> Bool {
+    public func hasSession(with email: Email) -> Bool {
         (try? storage.secret(with: email.rawValue) ?? nil) != nil
     }
 
-    func deleteSession(with email: Email) {
+    public func deleteSession(with email: Email) {
         try? storage.deleteSecret(with: email.rawValue)
     }
 
@@ -26,7 +26,8 @@ struct OAuthSession {
         try? storage.secret(with: email.rawValue)
     }
 
-    func authenticate(with email: Email) async throws -> String {
+    @discardableResult
+    func retrieveAccessToken(with email: Email) async throws -> String {
         guard let secrets = await Configuration.shared.oauthSecrets else {
             throw OAuthError.notConfigured
         }
@@ -45,7 +46,7 @@ struct OAuthSession {
     private func getToken(from callbackURL: URL, secrets: Configuration.OAuthSecrets) async throws -> String {
         let queryItems = URLComponents(string: callbackURL.absoluteString)?.queryItems
         guard let code = queryItems?.filter({ $0.name == "code" }).first?.value else {
-            throw OAuthError.couldNotGetCodeFromURL(callbackURL.absoluteString)
+            throw OAuthError.couldNotParseAccessCode(callbackURL.absoluteString)
         }
 
         return try await requestAccessToken(code: code, secrets: secrets)
@@ -96,10 +97,11 @@ struct OAuthSession {
 enum OAuthError: Error {
     case notConfigured
     case couldNotCreateOAuthURLWithGivenSecrets
-    case couldNotGetCodeFromURL(String)
+    case couldNotParseAccessCode(String)
     case oauthResponseError(String)
     case unknown(Error)
     case couldNotStoreToken(Error)
+    case decodingError(Error)
 }
 
 extension OAuthError {
@@ -107,15 +109,17 @@ extension OAuthError {
         switch error {
         case let error as OAuthError:
             return error
+        case let error as Keychain.KeychainError:
+            return .couldNotStoreToken(error)
+        case let error as DecodingError:
+            assertionFailure("Unable to decode the response. Error: \(error.localizedDescription)")
+            return OAuthError.decodingError(error)
         case let error as NSError:
             if error.domain == ASWebAuthenticationSessionErrorDomain {
                 return .oauthResponseError(error.localizedDescription)
             }
             return .unknown(error)
-        case let error as Keychain.KeychainError:
-            return .couldNotStoreToken(error)
         default:
-            print("🛑 Error: \(type(of: error)) - \(error.localizedDescription)")
             return .unknown(error)
         }
     }
