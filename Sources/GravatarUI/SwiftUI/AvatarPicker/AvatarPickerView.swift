@@ -24,6 +24,8 @@ struct AvatarPickerView: View {
     @Binding var isPresented: Bool
     @State private var safariURL: URL?
 
+    var tokenErrorHandler: (() -> Void)?
+
     public var body: some View {
         ZStack {
             VStack(spacing: 0) {
@@ -100,14 +102,22 @@ struct AvatarPickerView: View {
                     }
                 )
             case .failure(APIError.responseError(reason: let reason)) where reason.httpStatusCode == HTTPStatus.unauthorized.rawValue:
+                let buttonTitle = tokenErrorHandler == nil ? "Close" : "Log in"
+                let subtext = tokenErrorHandler == nil ?
+                    "Session expired for security reasons." :
+                    "Session expired for security reasons. Please log in to update your Avatar."
                 contentLoadingErrorView(
                     title: "Session expired",
-                    subtext: "Session expired for security reasons. Please log in to update your Avatar.",
+                    subtext: subtext,
                     actionButton: {
                         Button {
-                            // TODO: Log in
+                            if let tokenErrorHandler {
+                                tokenErrorHandler()
+                            } else {
+                                isPresented = false
+                            }
                         } label: {
-                            CTAButtonView("Log in".localized)
+                            CTAButtonView(buttonTitle.localized)
                         }
                     }
                 )
