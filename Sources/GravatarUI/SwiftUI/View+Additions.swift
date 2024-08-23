@@ -31,13 +31,13 @@ extension View {
             .padding(.vertical, borderWidth) // to prevent borders from getting clipped
     }
 
-    public func gravatarEditorSheet(
+    public func gravatarQuickEditorSheet(
         isPresented: Binding<Bool>,
         email: String,
-        entryPoint: ProfileEditorEntryPoint,
+        scope: QuickEditorScope,
         onDismiss: (() -> Void)? = nil
     ) -> some View {
-        let editor = ProfileEditor(email: .init(email), entryPoint: entryPoint, isPresented: isPresented)
+        let editor = QuickEditor(email: .init(email), scope: scope, isPresented: isPresented)
         return modifier(ModalPresentationModifier(isPresented: isPresented, onDismiss: onDismiss, modalView: editor))
     }
 }
