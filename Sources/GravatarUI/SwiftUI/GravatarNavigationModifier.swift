@@ -1,8 +1,8 @@
 import SwiftUI
 
 struct GravatarNavigationModifier: ViewModifier {
-    @State var title: String
-    @Binding var actionButtonDisabled: Bool
+    var title: String
+    var actionButtonDisabled: Bool
 
     var onActionButtonPressed: (() -> Void)? = nil
     var onDoneButtonPressed: (() -> Void)? = nil
@@ -36,7 +36,7 @@ struct GravatarNavigationModifier: ViewModifier {
 extension View {
     func gravatarNavigation(
         title: String,
-        actionButtonDisabled: Binding<Bool>,
+        actionButtonDisabled: Bool,
         onActionButtonPressed: (() -> Void)? = nil,
         onDoneButtonPressed: (() -> Void)? = nil
     ) -> some View {

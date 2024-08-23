@@ -49,7 +49,7 @@ struct AvatarPickerView: View {
         }
         .gravatarNavigation(
             title: Constants.title,
-            actionButtonDisabled: $model.isProfileLoading,
+            actionButtonDisabled: model.profileModel?.profileURL == nil,
             onActionButtonPressed: {
                 openProfileInSafari()
             },

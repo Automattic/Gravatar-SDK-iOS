@@ -53,9 +53,13 @@ struct ProfileEditor: View {
             } else {
                 ProgressView()
             }
-        }.gravatarNavigation(title: Constants.title, actionButtonDisabled: .constant(true), onDoneButtonPressed: {
-            isPresented = false
-        })
+        }.gravatarNavigation(
+            title: Constants.title,
+            actionButtonDisabled: true,
+            onDoneButtonPressed: {
+                isPresented = false
+            }
+        )
         .task {
             performAuthentication()
         }
