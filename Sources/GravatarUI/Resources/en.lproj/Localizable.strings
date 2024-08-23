@@ -31,20 +31,20 @@
 /* Title appearing in the header of a view that allows users to manage their avatars */
 "AvatarPicker.Header.title" = "Avatars";
 
+/* Text on a sample Gravatar profile, appearing in the place where a Gravatar profile would display your short biography. */
+"ClaimProfile.Label.AboutMe" = "Tell the world who you are. Your avatar and bio that follows you across the web.";
+
+/* Text on a sample Gravatar profile, appearing in the place where your name would normally appear on your Gravatar profile after you claim it. */
+"ClaimProfile.Label.DisplayName" = "Your Name";
+
+/* Text on a sample Gravatar profile, appearing in the place where a Gravatar profile would display information like location, your preferred pronouns, etc. */
+"ClaimProfile.Label.Location" = "Add your location, pronouns, etc";
+
 /* No comment provided by engineer. */
 "empty" = "empty";
 
 /* No comment provided by engineer. */
 "failure" = "failure";
-
-/* No comment provided by engineer. */
-"GravatarEmptyProfileAboutMeKey" = "Tell the world who you are. Your avatar and bio that follows you across the web.";
-
-/* No comment provided by engineer. */
-"GravatarEmptyProfileDisplayNameKey" = "Your Name";
-
-/* No comment provided by engineer. */
-"GravatarEmptyProfileInformationKey" = "Add your location, pronouns, etc";
 
 /* No comment provided by engineer. */
 "Invalid URL" = "Invalid URL";
