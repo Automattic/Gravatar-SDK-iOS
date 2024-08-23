@@ -40,15 +40,6 @@
 /* Text on a sample Gravatar profile, appearing in the place where a Gravatar profile would display information like location, your preferred pronouns, etc. */
 "ClaimProfile.Label.Location" = "Add your location, pronouns, etc";
 
-/* No comment provided by engineer. */
-"empty" = "empty";
-
-/* No comment provided by engineer. */
-"failure" = "failure";
-
-/* No comment provided by engineer. */
-"Invalid URL" = "Invalid URL";
-
 /* Title for a button that allows you to claim a new Gravatar profile */
 "ProfileButton.title.create" = "Claim profile";
 
@@ -57,10 +48,4 @@
 
 /* Title for a button that allows you to view your Gravatar profile */
 "ProfileButton.title.view" = "View profile";
-
-/* No comment provided by engineer. */
-"Show error toast!" = "Show error toast!";
-
-/* No comment provided by engineer. */
-"Show info toast!" = "Show info toast!";
 
