@@ -17,7 +17,8 @@ extension View {
             contentLayout: contentLayout,
             isPresented: isPresented
         )
-        return modifier(ModalPresentationModifier(isPresented: isPresented, modalView: avatarPickerView))
+        let navigationWrapped = NavigationView { avatarPickerView }
+        return modifier(ModalPresentationModifier(isPresented: isPresented, modalView: navigationWrapped))
     }
 
     func avatarPickerBorder(colorScheme: ColorScheme, borderWidth: CGFloat = 1) -> some View {

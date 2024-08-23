@@ -25,51 +25,38 @@ struct AvatarPickerView: View {
     @State private var safariURL: URL?
 
     public var body: some View {
-        NavigationView {
-            ZStack {
-                VStack(spacing: 0) {
-                    email()
-                    profileView()
-                    ScrollView {
-                        errorView()
-                        if !model.grid.isEmpty {
-                            content()
-                        } else if model.isAvatarsLoading {
-                            avatarsLoadingView()
-                        }
-                        Spacer()
-                            .frame(height: Constants.vStackVerticalSpacing)
+        ZStack {
+            VStack(spacing: 0) {
+                email()
+                profileView()
+                ScrollView {
+                    errorView()
+                    if !model.grid.isEmpty {
+                        content()
+                    } else if model.isAvatarsLoading {
+                        avatarsLoadingView()
                     }
-                    .task {
-                        model.refresh()
-                    }
+                    Spacer()
+                        .frame(height: Constants.vStackVerticalSpacing)
                 }
+                .task {
+                    model.refresh()
+                }
+            }
 
-                ToastContainerView(toastManager: model.toastManager)
-                    .padding(.horizontal, Constants.horizontalPadding * 2)
-            }
-            .navigationTitle(Constants.title)
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: {
-                        openProfileInSafari()
-                    }) {
-                        Image("gravatar", bundle: .module)
-                            .tint(Color(UIColor.gravatarBlue))
-                    }
-                    .disabled(model.profileModel?.profileURL == nil)
-                }
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button(action: {
-                        isPresented = false
-                    }) {
-                        Text("Done")
-                            .tint(Color(UIColor.gravatarBlue))
-                    }
-                }
-            }
+            ToastContainerView(toastManager: model.toastManager)
+                .padding(.horizontal, Constants.horizontalPadding * 2)
         }
+        .gravatarNavigation(
+            title: Constants.title,
+            actionButtonDisabled: model.profileModel?.profileURL == nil,
+            onActionButtonPressed: {
+                openProfileInSafari()
+            },
+            onDoneButtonPressed: {
+                isPresented = false
+            }
+        )
         .fullScreenCover(item: $safariURL) { url in
             SafariView(url: url)
                 .edgesIgnoringSafeArea(.all)

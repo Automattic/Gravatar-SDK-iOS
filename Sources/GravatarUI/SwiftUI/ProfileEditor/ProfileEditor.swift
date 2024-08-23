@@ -5,6 +5,10 @@ public enum ProfileEditorEntryPoint {
 }
 
 struct ProfileEditor: View {
+    private enum Constants {
+        static let title: String = "Gravatar" // defined here to avoid translations
+    }
+
     @Environment(\.oauthSession) private var oauthSession
     @State var hasSession: Bool = false
     @State var entryPoint: ProfileEditorEntryPoint
@@ -20,24 +24,43 @@ struct ProfileEditor: View {
     }
 
     var body: some View {
-        VStack {
+        NavigationView {
             if hasSession, let token = oauthSession.sessionToken(with: email) {
-                switch entryPoint {
-                case .avatarPicker:
-                    AvatarPickerView(model: .init(email: email, authToken: token), isPresented: $isPresented)
+                editorView(with: token)
+            } else {
+                noticeView()
+            }
+        }
+    }
+
+    @MainActor
+    func editorView(with token: String) -> some View {
+        switch entryPoint {
+        case .avatarPicker:
+            AvatarPickerView(model: .init(email: email, authToken: token), isPresented: $isPresented)
+        }
+    }
+
+    @MainActor
+    func noticeView() -> some View {
+        VStack {
+            if !isAuthenticating {
+                Button("Authenticate (Future error view)") {
+                    Task {
+                        performAuthentication()
+                    }
                 }
             } else {
-                if !isAuthenticating {
-                    Button("Authenticate (Future error view)") {
-                        Task {
-                            performAuthentication()
-                        }
-                    }
-                } else {
-                    ProgressView()
-                }
+                ProgressView()
             }
-        }.task {
+        }.gravatarNavigation(
+            title: Constants.title,
+            actionButtonDisabled: true,
+            onDoneButtonPressed: {
+                isPresented = false
+            }
+        )
+        .task {
             performAuthentication()
         }
     }
