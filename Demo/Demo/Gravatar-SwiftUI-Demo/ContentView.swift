@@ -1,9 +1,11 @@
 import SwiftUI
+import GravatarUI
 
 struct ContentView: View {
     enum Page: String, CaseIterable, Identifiable {
         case avatarView = "Avatar view"
         case avatarPickerView = "Avatar picker view"
+        case oauth = "Profile editor with oauth"
 
         var id: Int {
             self.rawValue.hashValue
@@ -35,6 +37,8 @@ struct ContentView: View {
             DemoAvatarView()
         case .avatarPickerView:
             DemoAvatarPickerView()
+        case .oauth:
+            DemoProfileEditorView()
         }
     }
 }

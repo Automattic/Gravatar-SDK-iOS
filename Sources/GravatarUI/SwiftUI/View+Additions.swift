@@ -29,4 +29,14 @@ extension View {
             )
             .padding(.vertical, borderWidth) // to prevent borders from getting clipped
     }
+
+    public func gravatarEditorSheet(
+        isPresented: Binding<Bool>,
+        email: String,
+        entryPoint: ProfileEditorEntryPoint,
+        onDismiss: (() -> Void)? = nil
+    ) -> some View {
+        let editor = ProfileEditor(email: .init(email), entryPoint: entryPoint, isPresented: isPresented)
+        return modifier(ModalPresentationModifier(isPresented: isPresented, onDismiss: onDismiss, modalView: editor))
+    }
 }
