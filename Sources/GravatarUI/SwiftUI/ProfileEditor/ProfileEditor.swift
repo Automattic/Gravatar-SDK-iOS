@@ -8,6 +8,7 @@ struct ProfileEditor: View {
     private enum Constants {
         static let title: String = "Gravatar" // defined here to avoid translations
     }
+
     @Environment(\.oauthSession) private var oauthSession
     @State var hasSession: Bool = false
     @State var entryPoint: ProfileEditorEntryPoint
@@ -52,7 +53,7 @@ struct ProfileEditor: View {
             } else {
                 ProgressView()
             }
-        }.gravatarNavigation(title: Constants.title, actionButtonDisabled: .constant(true), onDoneButtonPressed:  {
+        }.gravatarNavigation(title: Constants.title, actionButtonDisabled: .constant(true), onDoneButtonPressed: {
             isPresented = false
         })
         .task {
@@ -72,7 +73,6 @@ struct ProfileEditor: View {
         }
     }
 }
-
 
 #Preview {
     ProfileEditor(email: .init(""), entryPoint: .avatarPicker, isPresented: .constant(true))

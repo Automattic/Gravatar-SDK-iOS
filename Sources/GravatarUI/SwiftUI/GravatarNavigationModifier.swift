@@ -40,11 +40,13 @@ extension View {
         onActionButtonPressed: (() -> Void)? = nil,
         onDoneButtonPressed: (() -> Void)? = nil
     ) -> some View {
-        modifier(GravatarNavigationModifier(
-            title: title,
-            actionButtonDisabled: actionButtonDisabled,
-            onActionButtonPressed: onActionButtonPressed,
-            onDoneButtonPressed: onDoneButtonPressed)
+        modifier(
+            GravatarNavigationModifier(
+                title: title,
+                actionButtonDisabled: actionButtonDisabled,
+                onActionButtonPressed: onActionButtonPressed,
+                onDoneButtonPressed: onDoneButtonPressed
+            )
         )
     }
 }
