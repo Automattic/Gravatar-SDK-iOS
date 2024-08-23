@@ -4,45 +4,6 @@ public enum ProfileEditorEntryPoint {
     case avatarPicker
 }
 
-struct NavigationBarModel {
-    let title: String
-    let actionButtonEnabled: Bool
-}
-
-struct GravatarNavigationView<Content>: View where Content: View {
-    @State var model: NavigationBarModel
-    var content: () -> Content
-    var onActionButtonPressed: (() -> Void)? = nil
-    var onDoneButtonPressed: (() -> Void)? = nil
-
-    var body: some View {
-        NavigationView {
-            content()
-                .navigationTitle(model.title)
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbar {
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        Button(action: {
-                            onActionButtonPressed?()
-                        }) {
-                            Image("gravatar", bundle: .module)
-                                .tint(Color(UIColor.gravatarBlue))
-                        }
-                        .disabled(model.actionButtonEnabled)
-                    }
-                    ToolbarItem(placement: .navigationBarLeading) {
-                        Button(action: {
-                            onDoneButtonPressed?()
-                        }) {
-                            Text("Done")
-                                .tint(Color(UIColor.gravatarBlue))
-                        }
-                    }
-                }
-        }
-    }
-}
-
 struct ProfileEditor: View {
     private enum Constants {
         static let title: String = "Gravatar" // defined here to avoid translations
