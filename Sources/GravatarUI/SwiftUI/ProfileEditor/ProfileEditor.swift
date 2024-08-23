@@ -4,7 +4,49 @@ public enum ProfileEditorEntryPoint {
     case avatarPicker
 }
 
+struct NavigationBarModel {
+    let title: String
+    let actionButtonEnabled: Bool
+}
+
+struct GravatarNavigationView<Content>: View where Content: View {
+    @State var model: NavigationBarModel
+    var content: () -> Content
+    var onActionButtonPressed: (() -> Void)? = nil
+    var onDoneButtonPressed: (() -> Void)? = nil
+
+    var body: some View {
+        NavigationView {
+            content()
+                .navigationTitle(model.title)
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button(action: {
+                            onActionButtonPressed?()
+                        }) {
+                            Image("gravatar", bundle: .module)
+                                .tint(Color(UIColor.gravatarBlue))
+                        }
+                        .disabled(model.actionButtonEnabled)
+                    }
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        Button(action: {
+                            onDoneButtonPressed?()
+                        }) {
+                            Text("Done")
+                                .tint(Color(UIColor.gravatarBlue))
+                        }
+                    }
+                }
+        }
+    }
+}
+
 struct ProfileEditor: View {
+    private enum Constants {
+        static let title: String = "Gravatar" // defined here to avoid translations
+    }
     @Environment(\.oauthSession) private var oauthSession
     @State var hasSession: Bool = false
     @State var entryPoint: ProfileEditorEntryPoint
@@ -20,24 +62,39 @@ struct ProfileEditor: View {
     }
 
     var body: some View {
-        VStack {
+        NavigationView {
             if hasSession, let token = oauthSession.sessionToken(with: email) {
-                switch entryPoint {
-                case .avatarPicker:
-                    AvatarPickerView(model: .init(email: email, authToken: token), isPresented: $isPresented)
+                editorView(with: token)
+            } else {
+                noticeView()
+            }
+        }
+    }
+
+    @MainActor
+    func editorView(with token: String) -> some View {
+        switch entryPoint {
+        case .avatarPicker:
+            AvatarPickerView(model: .init(email: email, authToken: token), isPresented: $isPresented)
+        }
+    }
+
+    @MainActor
+    func noticeView() -> some View {
+        VStack {
+            if !isAuthenticating {
+                Button("Authenticate (Future error view)") {
+                    Task {
+                        performAuthentication()
+                    }
                 }
             } else {
-                if !isAuthenticating {
-                    Button("Authenticate (Future error view)") {
-                        Task {
-                            performAuthentication()
-                        }
-                    }
-                } else {
-                    ProgressView()
-                }
+                ProgressView()
             }
-        }.task {
+        }.gravatarNavigation(title: Constants.title, actionButtonDisabled: .constant(true), onDoneButtonPressed:  {
+            isPresented = false
+        })
+        .task {
             performAuthentication()
         }
     }
@@ -54,6 +111,7 @@ struct ProfileEditor: View {
         }
     }
 }
+
 
 #Preview {
     ProfileEditor(email: .init(""), entryPoint: .avatarPicker, isPresented: .constant(true))
