@@ -11,8 +11,33 @@ extension View {
             )
     }
 
-    public func avatarPickerSheet(isPresented: Binding<Bool>, email: String, authToken: String) -> some View {
-        let avatarPickerView = AvatarPickerView(model: AvatarPickerViewModel(email: Email(email), authToken: authToken))
-        return modifier(ModalPresentationModifier(isPresented: isPresented, modalView: avatarPickerView))
+    public func avatarPickerSheet(isPresented: Binding<Bool>, email: String, authToken: String, contentLayout: AvatarPickerContentLayout) -> some View {
+        let avatarPickerView = AvatarPickerView(
+            model: AvatarPickerViewModel(email: Email(email), authToken: authToken),
+            contentLayout: contentLayout,
+            isPresented: isPresented
+        )
+        let navigationWrapped = NavigationView { avatarPickerView }
+        return modifier(ModalPresentationModifier(isPresented: isPresented, modalView: navigationWrapped))
+    }
+
+    func avatarPickerBorder(colorScheme: ColorScheme, borderWidth: CGFloat = 1) -> some View {
+        self
+            .shape(
+                RoundedRectangle(cornerRadius: 8),
+                borderColor: Color(UIColor.label).opacity(colorScheme == .dark ? 0.16 : 0.08),
+                borderWidth: borderWidth
+            )
+            .padding(.vertical, borderWidth) // to prevent borders from getting clipped
+    }
+
+    public func gravatarQuickEditorSheet(
+        isPresented: Binding<Bool>,
+        email: String,
+        scope: QuickEditorScope,
+        onDismiss: (() -> Void)? = nil
+    ) -> some View {
+        let editor = QuickEditor(email: .init(email), scope: scope, isPresented: isPresented)
+        return modifier(ModalPresentationModifier(isPresented: isPresented, onDismiss: onDismiss, modalView: editor))
     }
 }

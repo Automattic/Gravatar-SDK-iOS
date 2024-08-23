@@ -1,60 +1,75 @@
 import Gravatar
 import SwiftUI
 
+public enum AvatarPickerContentLayout: String, CaseIterable, Identifiable {
+    public var id: Self { self }
+
+    case vertical
+    case horizontal
+}
+
 @MainActor
 struct AvatarPickerView: View {
     private enum Constants {
         static let horizontalPadding: CGFloat = .DS.Padding.double
-        static let padding: EdgeInsets = .init(
-            top: .DS.Padding.double,
-            leading: horizontalPadding,
-            bottom: .DS.Padding.double,
-            trailing: horizontalPadding
-        )
         static let lightModeShadowColor = Color(uiColor: UIColor.rgba(25, 30, 35, alpha: 0.2))
+        static let title: String = "Gravatar" // defined here to avoid translations
+        static let vStackVerticalSpacing: CGFloat = .DS.Padding.medium
+        static let emailBottomSpacing: CGFloat = .DS.Padding.double
     }
 
     @ObservedObject var model: AvatarPickerViewModel
-
+    @State var contentLayout: AvatarPickerContentLayout = .vertical
     @Environment(\.colorScheme) var colorScheme: ColorScheme
+    @Binding var isPresented: Bool
+    @State private var safariURL: URL?
 
     public var body: some View {
         ZStack {
-            VStack {
+            VStack(spacing: 0) {
+                email()
                 profileView()
                 ScrollView {
                     errorView()
                     if !model.grid.isEmpty {
-                        header()
-                        AvatarGrid(
-                            grid: model.grid,
-                            onAvatarTap: { avatar in
-                                model.selectAvatar(with: avatar.id)
-                            },
-                            onImageSelected: { image in
-                                uploadImage(image)
-                            },
-                            onRetryUpload: { avatar in
-                                retryUpload(avatar)
-                            }
-                        ).padding(Constants.padding)
+                        content()
                     } else if model.isAvatarsLoading {
                         avatarsLoadingView()
                     }
+                    Spacer()
+                        .frame(height: Constants.vStackVerticalSpacing)
                 }
                 .task {
                     model.refresh()
-                }
-                if model.grid.isEmpty == false {
-                    imagePicker {
-                        CTAButtonView(TextContent.buttonUploadImage)
-                    }
-                    .padding(Constants.padding)
                 }
             }
 
             ToastContainerView(toastManager: model.toastManager)
                 .padding(.horizontal, Constants.horizontalPadding * 2)
+        }
+        .gravatarNavigation(
+            title: Constants.title,
+            actionButtonDisabled: model.profileModel?.profileURL == nil,
+            onActionButtonPressed: {
+                openProfileInSafari()
+            },
+            onDoneButtonPressed: {
+                isPresented = false
+            }
+        )
+        .fullScreenCover(item: $safariURL) { url in
+            SafariView(url: url)
+                .edgesIgnoringSafeArea(.all)
+        }
+    }
+
+    @ViewBuilder
+    private func email() -> some View {
+        if let email = model.email?.rawValue, !email.isEmpty {
+            Text(email)
+                .padding(.bottom, Constants.emailBottomSpacing / 2)
+                .font(.footnote)
+                .foregroundColor(Color(UIColor.secondaryLabel))
         }
     }
 
@@ -64,6 +79,7 @@ struct AvatarPickerView: View {
                 .font(.title2.weight(.bold))
             Text(TextContent.Header.subtitle)
                 .font(.subheadline)
+                .foregroundColor(Color(UIColor.secondaryLabel))
         }
         .padding(.init(top: .DS.Padding.double, leading: Constants.horizontalPadding, bottom: .DS.Padding.half, trailing: Constants.horizontalPadding))
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -154,6 +170,52 @@ struct AvatarPickerView: View {
         }
     }
 
+    @ViewBuilder
+    private func avatarGrid() -> some View {
+        if contentLayout == .vertical {
+            AvatarGrid(
+                grid: model.grid,
+                onAvatarTap: { avatar in
+                    model.selectAvatar(with: avatar.id)
+                },
+                onImagePickerDidPickImage: { image in
+                    uploadImage(image)
+                },
+                onRetryUpload: { avatar in
+                    retryUpload(avatar)
+                }
+            )
+            .padding(.horizontal, Constants.horizontalPadding)
+            .padding(.vertical, .DS.Padding.medium)
+        } else {
+            HorizontalAvatarGrid(
+                grid: model.grid,
+                onAvatarTap: { avatar in
+                    model.selectAvatar(with: avatar.id)
+                },
+                onRetryUpload: { avatar in
+                    retryUpload(avatar)
+                }
+            )
+            .padding(.top, .DS.Padding.medium)
+            .padding(.bottom, .DS.Padding.double)
+            imagePicker {
+                CTAButtonView("Upload image")
+            }
+            .padding(.horizontal, Constants.horizontalPadding)
+            .padding(.bottom, .DS.Padding.medium)
+        }
+    }
+
+    private func content() -> some View {
+        VStack(spacing: 0) {
+            header()
+            avatarGrid()
+        }
+        .avatarPickerBorder(colorScheme: colorScheme)
+        .padding(.horizontal, Constants.horizontalPadding)
+    }
+
     private func avatarsLoadingView() -> some View {
         VStack {
             Spacer(minLength: .DS.Padding.large)
@@ -166,6 +228,10 @@ struct AvatarPickerView: View {
         }
     }
 
+    private func openProfileInSafari() {
+        safariURL = model.profileModel?.profileURL
+    }
+
     @ViewBuilder
     private func profileView() -> some View {
         VStack(alignment: .leading, content: {
@@ -173,8 +239,8 @@ struct AvatarPickerView: View {
                 avatarURL: $model.selectedAvatarURL,
                 model: $model.profileModel,
                 isLoading: $model.isProfileLoading
-            ) { _ in
-                // TODO: Handle the link
+            ) {
+                openProfileInSafari()
             }.frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.init(
                     top: .DS.Padding.single,
@@ -186,7 +252,9 @@ struct AvatarPickerView: View {
                 .cornerRadius(8)
                 .shadow(color: profileShadowColor, radius: profileShadowRadius, y: 3)
         })
-        .padding(Constants.padding)
+        .padding(.top, Constants.emailBottomSpacing / 2)
+        .padding(.bottom, Constants.vStackVerticalSpacing)
+        .padding(.horizontal, Constants.horizontalPadding)
     }
 
     @ViewBuilder
@@ -335,14 +403,14 @@ private enum TextContent {
         profileModel: PreviewModel()
     )
 
-    return AvatarPickerView(model: model)
+    return AvatarPickerView(model: model, contentLayout: .horizontal, isPresented: .constant(true))
 }
 
 #Preview("Empty elements") {
-    AvatarPickerView(model: .init(avatarImageModels: [], profileModel: nil))
+    AvatarPickerView(model: .init(avatarImageModels: [], profileModel: nil), isPresented: .constant(true))
 }
 
 #Preview("Load from network") {
     /// Enter valid email and auth token.
-    AvatarPickerView(model: .init(email: .init(""), authToken: ""))
+    AvatarPickerView(model: .init(email: .init(""), authToken: ""), isPresented: .constant(true))
 }

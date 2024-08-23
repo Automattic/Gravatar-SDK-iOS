@@ -19,7 +19,7 @@ struct AvatarPickerProfileView: View {
     @StateObject private var placeholderColorManager: ProfileViewPlaceholderColorManager = .init()
     @Environment(\.colorScheme) var colorScheme: ColorScheme
 
-    private(set) var viewProfileAction: ((URL?) -> Void)? = nil
+    private(set) var viewProfileAction: (() -> Void)? = nil
 
     var body: some View {
         HStack(alignment: .center, spacing: .DS.Padding.single) {
@@ -33,7 +33,7 @@ struct AvatarPickerProfileView: View {
                         .font(.footnote)
                         .foregroundColor(Color(UIColor.secondaryLabel))
                     Button(TextContent.buttonViewProfile) {
-                        viewProfileAction?(model.profileURL)
+                        viewProfileAction?()
                     }
                     .font(.footnote)
                     .foregroundColor(Color(UIColor.label))
@@ -88,8 +88,8 @@ struct AvatarPickerProfileView: View {
 private enum TextContent {
     static let buttonViewProfile = NSLocalizedString(
         "AvatarPickerProfile.Button.ViewProfile.title",
-        value: "Discover Your Gravatar Card →",
-        comment: "Title of a button that will take you to your Gravatar card, with an arrow indicating that this action will cause you to leave this view"
+        value: "View profile →",
+        comment: "Title of a button that will take you to your Gravatar profile, with an arrow indicating that this action will cause you to leave this view"
     )
 }
 
