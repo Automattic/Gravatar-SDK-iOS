@@ -36,7 +36,7 @@ extension View {
         entryPoint: ProfileEditorEntryPoint,
         onDismiss: (() -> Void)? = nil
     ) -> some View {
-        let editor = ProfileEditor(email: .init(email), entryPoint: entryPoint)
+        let editor = ProfileEditor(email: .init(email), entryPoint: entryPoint, isPresented: isPresented)
         return modifier(ModalPresentationModifier(isPresented: isPresented, onDismiss: onDismiss, modalView: editor))
     }
 }

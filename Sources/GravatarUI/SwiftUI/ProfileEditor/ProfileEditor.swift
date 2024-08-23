@@ -9,12 +9,14 @@ struct ProfileEditor: View {
     @State var hasSession: Bool = false
     @State var entryPoint: ProfileEditorEntryPoint
     @State var isAuthenticating: Bool = true
+    @Binding var isPresented: Bool
 
     let email: Email
 
-    init(email: Email, entryPoint: ProfileEditorEntryPoint) {
+    init(email: Email, entryPoint: ProfileEditorEntryPoint, isPresented: Binding<Bool>) {
         self.email = email
         self.entryPoint = entryPoint
+        self._isPresented = isPresented
     }
 
     var body: some View {
@@ -22,7 +24,7 @@ struct ProfileEditor: View {
             if hasSession, let token = oauthSession.sessionToken(with: email) {
                 switch entryPoint {
                 case .avatarPicker:
-                    AvatarPickerView(model: .init(email: email, authToken: token))
+                    AvatarPickerView(model: .init(email: email, authToken: token), isPresented: $isPresented)
                 }
             } else {
                 if !isAuthenticating {
@@ -54,5 +56,5 @@ struct ProfileEditor: View {
 }
 
 #Preview {
-    ProfileEditor(email: .init(""), entryPoint: .avatarPicker)
+    ProfileEditor(email: .init(""), entryPoint: .avatarPicker, isPresented: .constant(true))
 }
