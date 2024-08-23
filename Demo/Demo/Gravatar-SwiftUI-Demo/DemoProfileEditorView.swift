@@ -26,10 +26,10 @@ struct DemoProfileEditorView: View {
             Button("Open Profile Editor with OAuth flow") {
                 isPresentingPicker.toggle()
             }
-            .gravatarEditorSheet(
+            .gravatarQuickEditorSheet(
                 isPresented: $isPresentingPicker,
                 email: email,
-                entryPoint: .avatarPicker,
+                scope: .avatarPicker,
                 onDismiss: {
                     updateHasSession(with: email)
                 }

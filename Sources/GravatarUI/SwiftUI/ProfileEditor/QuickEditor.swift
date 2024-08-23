@@ -1,25 +1,25 @@
 import SwiftUI
 
-public enum ProfileEditorEntryPoint {
+public enum QuickEditorScope {
     case avatarPicker
 }
 
-struct ProfileEditor: View {
+struct QuickEditor: View {
     private enum Constants {
         static let title: String = "Gravatar" // defined here to avoid translations
     }
 
     @Environment(\.oauthSession) private var oauthSession
     @State var hasSession: Bool = false
-    @State var entryPoint: ProfileEditorEntryPoint
+    @State var scope: QuickEditorScope
     @State var isAuthenticating: Bool = true
     @Binding var isPresented: Bool
 
     let email: Email
 
-    init(email: Email, entryPoint: ProfileEditorEntryPoint, isPresented: Binding<Bool>) {
+    init(email: Email, scope: QuickEditorScope, isPresented: Binding<Bool>) {
         self.email = email
-        self.entryPoint = entryPoint
+        self.scope = scope
         self._isPresented = isPresented
     }
 
@@ -35,7 +35,7 @@ struct ProfileEditor: View {
 
     @MainActor
     func editorView(with token: String) -> some View {
-        switch entryPoint {
+        switch scope {
         case .avatarPicker:
             AvatarPickerView(model: .init(email: email, authToken: token), isPresented: $isPresented)
         }
@@ -79,5 +79,5 @@ struct ProfileEditor: View {
 }
 
 #Preview {
-    ProfileEditor(email: .init(""), entryPoint: .avatarPicker, isPresented: .constant(true))
+    QuickEditor(email: .init(""), scope: .avatarPicker, isPresented: .constant(true))
 }
