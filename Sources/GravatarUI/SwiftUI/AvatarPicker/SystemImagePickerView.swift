@@ -11,35 +11,91 @@ struct SystemImagePickerView<Label>: View where Label: View {
         // So far, the new SwiftUI PhotosPicker only supports Photos library, no camera, and no cropping, so we are only using legacy for now.
         // The interface (using a Label property as the element to open the picker) is the same as in the new SwiftUI picker,
         // which will make it easy to change it later on.
-        LegacyImagePicker(label: label, onImageSelected: onImageSelected)
+        ImagePicker(label: label, onImageSelected: onImageSelected)
     }
 }
 
-/// UIImagePickerController SwiftUI Representable wrapper.
-struct LegacyImagePicker<Label>: View where Label: View {
+private struct ImagePicker<Label>: View where Label: View {
+    enum SourceType: CaseIterable, Identifiable {
+        case photoLibrary
+        case camera
+
+        var id: Int {
+            self.hashValue
+        }
+    }
+
     @State var isPresented = false
+    @State private var sourceType: SourceType?
+
     @ViewBuilder var label: () -> Label
     let onImageSelected: (UIImage) -> Void
 
     var body: some View {
         VStack {
-            Button(action: {
-                isPresented.toggle()
-            }, label: {
+            Menu {
+                ForEach(SourceType.allCases) { source in
+                    Button {
+                        sourceType = source
+                        isPresented = true
+                    } label: {
+                        SwiftUI.Label(source.localizedTitle, systemImage: source.iconName)
+                    }
+                }
+            } label: {
                 label()
-            })
+            }
         }
-        .sheet(isPresented: $isPresented, content: {
-            LegacyImagePickerRepresentable { image in
-                onImageSelected(image)
-            }.ignoresSafeArea()
+        .sheet(item: $sourceType, content: { source in
+            // This allows to present different kind of pickers for different sources.
+            switch source {
+            case .camera:
+                ZStack {
+                    Color.black.ignoresSafeArea(edges: .all)
+                    LegacyImagePickerRepresentable(sourceType: source.map()) { image in
+                        onImageSelected(image)
+                    }
+                }
+            case .photoLibrary:
+                LegacyImagePickerRepresentable(sourceType: source.map()) { image in
+                    onImageSelected(image)
+                }.ignoresSafeArea()
+            }
         })
+    }
+}
+
+extension ImagePicker.SourceType {
+    var iconName: String {
+        switch self {
+        case .camera:
+            "camera"
+        case .photoLibrary:
+            "photo.on.rectangle.angled"
+        }
+    }
+
+    var localizedTitle: String {
+        switch self {
+        case .photoLibrary:
+            "Chose a Photo"
+        case .camera:
+            "Take Photo"
+        }
+    }
+
+    func map() -> UIImagePickerController.SourceType {
+        switch self {
+        case .photoLibrary: .photoLibrary
+        case .camera: .camera
+        }
     }
 }
 
 struct LegacyImagePickerRepresentable: UIViewControllerRepresentable {
     @Environment(\.presentationMode) private var presentationMode
 
+    var sourceType: UIImagePickerController.SourceType
     let onImageSelected: (UIImage) -> Void
 
     @State private var selectedUIImage: UIImage? {
@@ -49,8 +105,6 @@ struct LegacyImagePickerRepresentable: UIViewControllerRepresentable {
             }
         }
     }
-
-    var sourceType: UIImagePickerController.SourceType = .photoLibrary
 
     func makeUIViewController(context: UIViewControllerRepresentableContext<LegacyImagePickerRepresentable>) -> UIImagePickerController {
         let imagePicker = UIImagePickerController()

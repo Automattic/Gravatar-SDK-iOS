@@ -12,17 +12,22 @@ extension View {
     }
 
     public func avatarPickerSheet(isPresented: Binding<Bool>, email: String, authToken: String, contentLayout: AvatarPickerContentLayout) -> some View {
-        let avatarPickerView = AvatarPickerView(model: AvatarPickerViewModel(email: Email(email), authToken: authToken), contentLayout: contentLayout)
+        let avatarPickerView = AvatarPickerView(
+            model: AvatarPickerViewModel(email: Email(email), authToken: authToken),
+            contentLayout: contentLayout,
+            isPresented: isPresented
+        )
         return modifier(ModalPresentationModifier(isPresented: isPresented, modalView: avatarPickerView))
     }
 
-    func avatarPickerBorder(colorScheme: ColorScheme) -> some View {
+    func avatarPickerBorder(colorScheme: ColorScheme, borderWidth: CGFloat = 1) -> some View {
         self
             .shape(
                 RoundedRectangle(cornerRadius: 8),
                 borderColor: Color(UIColor.label).opacity(colorScheme == .dark ? 0.16 : 0.08),
-                borderWidth: 1
+                borderWidth: borderWidth
             )
+            .padding(.vertical, borderWidth) // to prevent borders from getting clipped
     }
 
     public func gravatarEditorSheet(
