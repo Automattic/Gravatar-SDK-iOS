@@ -8,14 +8,14 @@ protocol SecureStorage: Sendable {
 
 struct Keychain: SecureStorage {
     enum KeychainError: Error {
-        case unexpectedPasswordData
-        case cannotConvertPasswordIntoData
+        case unexpectedSecretData
+        case cannotConvertSecretIntoData
         case unhandledError(status: OSStatus, message: String?)
     }
 
     func setSecret(_ secret: String, for key: String) throws {
         guard let tokenData = secret.data(using: .utf8) else {
-            throw KeychainError.cannotConvertPasswordIntoData
+            throw KeychainError.cannotConvertSecretIntoData
         }
 
         let query: [String: Any] = [
@@ -50,13 +50,13 @@ struct Keychain: SecureStorage {
 
         guard
             let existingItem = item as? [String: Any],
-            let passwordData = existingItem[kSecValueData as String] as? Data,
-            let password = String(data: passwordData, encoding: .utf8)
+            let secretData = existingItem[kSecValueData as String] as? Data,
+            let secret = String(data: secretData, encoding: .utf8)
         else {
-            throw KeychainError.unexpectedPasswordData
+            throw KeychainError.unexpectedSecretData
         }
 
-        return password
+        return secret
     }
 
     func deleteSecret(with key: String) throws {

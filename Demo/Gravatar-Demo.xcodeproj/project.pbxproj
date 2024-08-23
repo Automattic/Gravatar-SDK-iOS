@@ -11,7 +11,7 @@
 		1E0087952B63DBCB0012ECEA /* DemoUploadImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E0087942B63DBCB0012ECEA /* DemoUploadImageViewController.swift */; };
 		1E3FA2402C74B8CC002901F2 /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E3FA23F2C74B8CC002901F2 /* Secrets.swift */; };
 		1E3FA2412C74E539002901F2 /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E3FA23F2C74B8CC002901F2 /* Secrets.swift */; };
-		1E3FA2452C75E403002901F2 /* DemoProfileEditorViewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E3FA2442C75E403002901F2 /* DemoProfileEditorViewView.swift */; };
+		1E3FA2452C75E403002901F2 /* DemoProfileEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E3FA2442C75E403002901F2 /* DemoProfileEditorView.swift */; };
 		1ECAB5072BC984440043A331 /* DemoProfileConfigurationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ECAB5062BC984440043A331 /* DemoProfileConfigurationViewController.swift */; };
 		4948C4EC2B61C41100AC4875 /* Gravatar in Frameworks */ = {isa = PBXBuildFile; productRef = 4948C4EB2B61C41100AC4875 /* Gravatar */; };
 		4948C4EE2B61C41800AC4875 /* Gravatar in Frameworks */ = {isa = PBXBuildFile; productRef = 4948C4ED2B61C41800AC4875 /* Gravatar */; };
@@ -43,7 +43,7 @@
 		1E0087942B63DBCB0012ECEA /* DemoUploadImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoUploadImageViewController.swift; sourceTree = "<group>"; };
 		1E3FA23D2C74B7B5002901F2 /* Secrets.tpl */ = {isa = PBXFileReference; lastKnownFileType = text; path = Secrets.tpl; sourceTree = "<group>"; };
 		1E3FA23F2C74B8CC002901F2 /* Secrets.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Secrets.swift; sourceTree = "<group>"; };
-		1E3FA2442C75E403002901F2 /* DemoProfileEditorViewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoProfileEditorViewView.swift; sourceTree = "<group>"; };
+		1E3FA2442C75E403002901F2 /* DemoProfileEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoProfileEditorView.swift; sourceTree = "<group>"; };
 		1ECAB5062BC984440043A331 /* DemoProfileConfigurationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoProfileConfigurationViewController.swift; sourceTree = "<group>"; };
 		3FD4781E2C50D6FD0071B8B9 /* Base.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Base.xcconfig; sourceTree = "<group>"; };
 		3FD478212C51D5CE0071B8B9 /* Gravatar-UIKit-Demo.Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Gravatar-UIKit-Demo.Release.xcconfig"; sourceTree = "<group>"; };
@@ -112,7 +112,7 @@
 				49C5D60F2B5B33E20067C2A8 /* ContentView.swift */,
 				9146A7AD2C3BD8F000E07C63 /* DemoAvatarView.swift */,
 				91B73B362C404F6E00E7D325 /* DemoAvatarPickerView.swift */,
-				1E3FA2442C75E403002901F2 /* DemoProfileEditorViewView.swift */,
+				1E3FA2442C75E403002901F2 /* DemoProfileEditorView.swift */,
 				49C5D6112B5B33E20067C2A8 /* Assets.xcassets */,
 				49C5D6132B5B33E20067C2A8 /* Preview Content */,
 				49EFFB572C51AA3E0086589A /* Gravatar-SwiftUI-Demo.Base.xcconfig */,
@@ -376,7 +376,7 @@
 				9146A7AE2C3BD8F000E07C63 /* DemoAvatarView.swift in Sources */,
 				91B73B372C404F6E00E7D325 /* DemoAvatarPickerView.swift in Sources */,
 				49C5D60E2B5B33E20067C2A8 /* DemoApp.swift in Sources */,
-				1E3FA2452C75E403002901F2 /* DemoProfileEditorViewView.swift in Sources */,
+				1E3FA2452C75E403002901F2 /* DemoProfileEditorView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

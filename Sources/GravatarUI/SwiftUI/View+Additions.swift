@@ -24,10 +24,7 @@ extension View {
                 borderWidth: 1
             )
     }
-}
 
-@MainActor
-extension View {
     public func gravatarEditorSheet(
         isPresented: Binding<Bool>,
         email: String,
