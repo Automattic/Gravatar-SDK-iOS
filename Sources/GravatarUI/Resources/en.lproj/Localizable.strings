@@ -1,8 +1,35 @@
-/* No comment provided by engineer. */
-"Avatars" = "Avatars";
+/* Title of a button that allows the user to try loading their avatars again */
+"AvatarPicker.ContentLoading.Failure.Retry.ctaButtonTitle" = "Try again";
 
-/* No comment provided by engineer. */
-"Choose or upload your favorite avatar images and connect them to your email address." = "Choose or upload your favorite avatar images and connect them to your email address.";
+/* A message asking the user to try again */
+"AvatarPicker.ContentLoading.Failure.Retry.subtext" = "Something went wrong and we couldn’t connect to Gravatar servers.";
+
+/* Title of a message advising the user that something went wrong while loading their avatars */
+"AvatarPicker.ContentLoading.Failure.Retry.title" = "Ooops";
+
+/* Title of a button that allows the user to log in */
+"AvatarPicker.ContentLoading.Failure.SessionExpired.ctaButtonTitle" = "Login";
+
+/* A message describing the error and advising the user to login again to resolve the issue */
+"AvatarPicker.ContentLoading.Failure.SessionExpired.subtext" = "Session expired for security reasons. Please log in to update your Avatar.";
+
+/* Title of a message advising the user that their login session has expired */
+"AvatarPicker.ContentLoading.Failure.SessionExpired.title" = "Session expired";
+
+/* Title of a button that allow for uploading an image */
+"AvatarPicker.ContentLoading.Success.ctaButtonTitle" = "Upload image";
+
+/* A message describing the actions a user can take to setup their avatar */
+"AvatarPicker.ContentLoading.Success.subtext" = "Choose or upload your favorite avatar images and connect them to your email address.";
+
+/* Title of a message advising the user to setup their avatar */
+"AvatarPicker.ContentLoading.success.title" = "Let's setup your avatar";
+
+/* A message describing the purpose of this view */
+"AvatarPicker.Header.subtitle" = "Choose or upload your favorite avatar images and connect them to your email address.";
+
+/* Title appearing in the header of a view that allows users to manage their avatars */
+"AvatarPicker.Header.title" = "Avatars";
 
 /* No comment provided by engineer. */
 "empty" = "empty";

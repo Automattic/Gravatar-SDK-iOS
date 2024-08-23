@@ -1,9 +1,9 @@
 import SwiftUI
 
 struct CTAButtonView: View {
-    let titleKey: LocalizedStringKey
+    let titleKey: String
 
-    public init(_ key: LocalizedStringKey) {
+    public init(_ key: String) {
         self.titleKey = key
     }
 

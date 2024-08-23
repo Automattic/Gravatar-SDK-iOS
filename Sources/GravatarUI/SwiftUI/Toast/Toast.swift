@@ -14,7 +14,7 @@ struct Toast: View {
 
     var body: some View {
         HStack(spacing: 0) {
-            Text(toast.message.localized)
+            Text(toast.message)
                 .font(.footnote)
             Spacer(minLength: .DS.Padding.double)
             Button {
