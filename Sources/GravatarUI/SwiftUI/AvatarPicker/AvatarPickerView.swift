@@ -103,7 +103,7 @@ struct AvatarPickerView: View {
                 )
             case .failure(APIError.responseError(reason: let reason)) where reason.httpStatusCode == HTTPStatus.unauthorized.rawValue:
                 let buttonTitle = tokenErrorHandler == nil ? "Close" : "Log in"
-                let subtext: LocalizedStringKey = tokenErrorHandler == nil ?
+                let subtext: String = tokenErrorHandler == nil ?
                     "Sorry, it looks like your session has expired. Make sure you're logged in to update your Avatar." :
                     "Session expired for security reasons. Please log in to update your Avatar."
                 contentLoadingErrorView(
