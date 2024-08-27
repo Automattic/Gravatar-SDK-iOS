@@ -109,7 +109,7 @@ struct AvatarPickerView: View {
                     Localized.ContentLoading.Failure.SessionExpired.Close.subtext :
                     Localized.ContentLoading.Failure.SessionExpired.LogIn.subtext
                 contentLoadingErrorView(
-                    title: "Session expired",
+                    title: Localized.ContentLoading.Failure.SessionExpired.title,
                     subtext: subtext,
                     actionButton: {
                         Button {
@@ -331,6 +331,11 @@ extension AvatarPickerView {
 
             enum Failure {
                 enum SessionExpired {
+                    static let title = NSLocalizedString(
+                        "AvatarPicker.ContentLoading.Failure.SessionExpired.title",
+                        value: "Session expired",
+                        comment: "Title of a message advising the user that their login session has expired."
+                    )
                     enum Close {
                         static let buttonTitle = NSLocalizedString(
                             "AvatarPicker.ContentLoading.Failure.SessionExpired.Close.buttonTitle",
