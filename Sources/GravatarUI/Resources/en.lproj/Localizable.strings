@@ -31,8 +31,8 @@
 /* Title appearing in the header of a view that allows users to manage their avatars */
 "AvatarPicker.Header.title" = "Avatars";
 
-/* Title of a button that will take you to your Gravatar card, with an arrow indicating that this action will cause you to leave this view */
-"AvatarPickerProfile.Button.ViewProfile.title" = "Discover Your Gravatar Card →";
+/* Title of a button that will take you to your Gravatar profile, with an arrow indicating that this action will cause you to leave this view */
+"AvatarPickerProfile.Button.ViewProfile.title" = "View profile →";
 
 /* Text on a sample Gravatar profile, appearing in the place where a Gravatar profile would display your short biography. */
 "ClaimProfile.Label.AboutMe" = "Tell the world who you are. Your avatar and bio that follows you across the web.";
