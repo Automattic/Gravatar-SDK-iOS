@@ -102,7 +102,7 @@ struct AvatarPickerView: View {
                     }
                 )
             case .failure(APIError.responseError(reason: let reason)) where reason.httpStatusCode == HTTPStatus.unauthorized.rawValue:
-                let buttonTitle = tokenErrorHandler == nil ? 
+                let buttonTitle = tokenErrorHandler == nil ?
                     Localized.ContentLoading.Failure.SessionExpired.Close.buttonTitle :
                     Localized.ContentLoading.Failure.SessionExpired.LogIn.buttonTitle
                 let subtext: String = tokenErrorHandler == nil ?
@@ -333,7 +333,7 @@ extension AvatarPickerView {
                 enum SessionExpired {
                     enum Close {
                         static let buttonTitle = NSLocalizedString(
-                            "AvatarPicker.ContentLoading.Failure.SessionExpired.Close.title",
+                            "AvatarPicker.ContentLoading.Failure.SessionExpired.Close.buttonTitle",
                             value: "Close",
                             comment: "Title of a button that will close the Avatar Picker, appearing beneath a message that advises the user that their login session has expired."
                         )
@@ -347,7 +347,7 @@ extension AvatarPickerView {
 
                     enum LogIn {
                         static let buttonTitle = NSLocalizedString(
-                            "AvatarPicker.ContentLoading.Failure.SessionExpired.LogIn.title",
+                            "AvatarPicker.ContentLoading.Failure.SessionExpired.LogIn.buttonTitle",
                             value: "Log in",
                             comment: "Title of a button that will begin the process of authenticating the user, appearing beneath a message that advises the user that their login session has expired."
                         )
@@ -357,8 +357,6 @@ extension AvatarPickerView {
                             comment: "A message describing the error and advising the user to login again to resolve the issue"
                         )
                     }
-                    
-                    
                 }
 
                 enum Retry {
