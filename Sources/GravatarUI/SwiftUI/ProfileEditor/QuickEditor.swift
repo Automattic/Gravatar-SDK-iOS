@@ -37,7 +37,14 @@ struct QuickEditor: View {
     func editorView(with token: String) -> some View {
         switch scope {
         case .avatarPicker:
-            AvatarPickerView(model: .init(email: email, authToken: token), isPresented: $isPresented)
+            AvatarPickerView(
+                model: .init(email: email, authToken: token),
+                isPresented: $isPresented,
+                tokenErrorHandler: {
+                    oauthSession.deleteSession(with: email)
+                    performAuthentication()
+                }
+            )
         }
     }
 
