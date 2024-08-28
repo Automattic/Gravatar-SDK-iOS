@@ -14,7 +14,8 @@ public protocol ImageEditorView: View {
 public typealias ImageEditorBlock<ImageEditor: ImageEditorView> = (UIImage, _ editingDidFinish: @escaping (UIImage) -> Void) -> ImageEditor
 
 /// Because of how generics work, the compiler must resolve the image editor's concrete type.
-/// When its value is `nil` though, the compiler can't resolve the concrete type, and it complains. This type here is used to make the compiler happy when the passed value is `nil`.
+/// When its value is `nil` though, the compiler can't resolve the concrete type, and it complains. This type here is used to make the compiler happy when the
+/// passed value is `nil`.
 public struct NoCustomEditor: ImageEditorView {
     public var inputImage: UIImage
     public var editingDidFinish: (UIImage) -> Void
