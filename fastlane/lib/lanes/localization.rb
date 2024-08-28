@@ -55,7 +55,7 @@ platform :ios do
 
     next if skip_commit
 
-    strings_paths = RESOURCES_TO_LOCALIZE .keys.map(&:to_s)
+    strings_paths = RESOURCES_TO_LOCALIZE.keys.map(&:to_s)
     git_add(path: strings_paths)
     git_commit(
       path: strings_paths,
@@ -64,14 +64,24 @@ platform :ios do
     )
   end
 
-  # Generates the `.strings` file, by parsing source code (using `genstrings` under the hood).
+  # Generates the `.strings` files for the base language by parsing source code (using `genstring`).
   #
-  lane :generate_strings_file do |options|
-    generate_strings_file_demo(options)
-    generate_strings_file_sdk(options)
+  lane :generate_strings_file do |skip_commit: false|
+    generate_strings_file_demo
+    generate_strings_file_sdk
+
+    next if skip_commit
+
+    base_locale_strings_paths = RESOURCES_TO_LOCALIZE.keys.map { |resource_path| File.join(resource_path, 'en.lproj', 'Localizable.strings')}
+    git_add(path: base_locale_strings_paths)
+    git_commit(
+      path: base_locale_strings_paths,
+      message: 'Update strings in base locale',
+      allow_nothing_to_commit: true
+    )
   end
 
-  lane :generate_strings_file_demo do |options|
+  lane :generate_strings_file_demo do
     Dir.mktmpdir do |tempdir|
       demo_en_lproj = File.join('Demo', 'Demo', 'Localizations', 'en.lproj')
       ios_generate_strings_file_from_code(
@@ -91,7 +101,7 @@ platform :ios do
     end
   end
 
-  lane :generate_strings_file_sdk do |options|
+  lane :generate_strings_file_sdk do
     Dir.mktmpdir do |tempdir|
       demo_en_lproj = File.join('Sources', 'GravatarUI', 'Resources', 'en.lproj')
       ios_generate_strings_file_from_code(
