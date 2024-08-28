@@ -66,16 +66,19 @@ platform :ios do
 
   # Generates the `.strings` files for the base language by parsing source code (using `genstring`).
   #
-  lane :generate_strings_file do |skip_commit: false|
+  lane :generate_strings do |skip_commit: false|
     generate_strings_file_demo
     generate_strings_file_sdk
 
     next if skip_commit
 
-    base_locale_strings_paths = RESOURCES_TO_LOCALIZE.keys.map { |resource_path| File.join(resource_path, 'en.lproj', 'Localizable.strings')}
-    git_add(path: base_locale_strings_paths)
+    base_localizations = RESOURCES_TO_LOCALIZE.keys.map do |resource_path|
+      File.join(resource_path, 'en.lproj', 'Localizable.strings')
+    end.freeze
+
+    git_add(path: base_localizations)
     git_commit(
-      path: base_locale_strings_paths,
+      path: base_localizations,
       message: 'Update strings in base locale',
       allow_nothing_to_commit: true
     )
