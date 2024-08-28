@@ -11,11 +11,18 @@ extension View {
             )
     }
 
-    public func avatarPickerSheet(isPresented: Binding<Bool>, email: String, authToken: String, contentLayout: AvatarPickerContentLayout) -> some View {
+    public func avatarPickerSheet(
+        isPresented: Binding<Bool>,
+        email: String,
+        authToken: String,
+        contentLayout: AvatarPickerContentLayout,
+        customImageEditor: ImageEditorBlock<some ImageEditorView>? = nil as NoCustomEditorBlock?
+    ) -> some View {
         let avatarPickerView = AvatarPickerView(
             model: AvatarPickerViewModel(email: Email(email), authToken: authToken),
             contentLayout: contentLayout,
-            isPresented: isPresented
+            isPresented: isPresented,
+            customImageEditor: customImageEditor
         )
         let navigationWrapped = NavigationView { avatarPickerView }
         return modifier(ModalPresentationModifier(isPresented: isPresented, modalView: navigationWrapped))
@@ -35,9 +42,10 @@ extension View {
         isPresented: Binding<Bool>,
         email: String,
         scope: QuickEditorScope,
+        customImageEditor: ImageEditorBlock<some ImageEditorView>? = nil as NoCustomEditorBlock?,
         onDismiss: (() -> Void)? = nil
     ) -> some View {
-        let editor = QuickEditor(email: .init(email), scope: scope, isPresented: isPresented)
+        let editor = QuickEditor(email: .init(email), scope: scope, isPresented: isPresented, customImageEditor: customImageEditor)
         return modifier(ModalPresentationModifier(isPresented: isPresented, onDismiss: onDismiss, modalView: editor))
     }
 }

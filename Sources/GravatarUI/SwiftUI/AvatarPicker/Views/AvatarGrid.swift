@@ -9,7 +9,7 @@ enum AvatarGridConstants {
     static let avatarCornerRadius: CGFloat = .DS.Padding.single
 }
 
-struct AvatarGrid: View {
+struct AvatarGrid<ImageEditor: ImageEditorView>: View {
     let gridItems: [GridItem] = [GridItem(
         .adaptive(
             minimum: AvatarGridConstants.minAvatarWidth,
@@ -19,18 +19,22 @@ struct AvatarGrid: View {
     )]
 
     @ObservedObject var grid: AvatarGridModel
-
+    var customImageEditor: ImageEditorBlock<ImageEditor>?
     let onAvatarTap: (AvatarImageModel) -> Void
     let onImagePickerDidPickImage: (UIImage) -> Void
     let onRetryUpload: (AvatarImageModel) -> Void
 
     var body: some View {
         LazyVGrid(columns: gridItems, spacing: AvatarGridConstants.avatarSpacing) {
-            SystemImagePickerView {
-                PlusButtonView(minSize: AvatarGridConstants.minAvatarWidth, maxSize: AvatarGridConstants.maxAvatarWidth)
-            } onImageSelected: { image in
-                onImagePickerDidPickImage(image)
-            }
+            SystemImagePickerView(
+                label: {
+                    PlusButtonView(minSize: AvatarGridConstants.minAvatarWidth, maxSize: AvatarGridConstants.maxAvatarWidth)
+                },
+                customEditor: customImageEditor,
+                onImageSelected: { image in
+                    onImagePickerDidPickImage(image)
+                }
+            )
 
             ForEach(grid.avatars) { avatar in
                 AvatarPickerAvatarView(
@@ -58,7 +62,7 @@ struct AvatarGrid: View {
     )
     grid.selectAvatar(initialAvatarCell)
     return VStack {
-        AvatarGrid(grid: grid) { avatar in
+        AvatarGrid<NoCustomEditor>(grid: grid) { avatar in
             grid.selectAvatar(withID: avatar.id)
         } onImagePickerDidPickImage: { image in
             grid.append(newAvatarModel(image))
