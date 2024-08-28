@@ -121,11 +121,29 @@ struct AvatarPickerView: View {
                         }
                     }
                 )
+            case .failure(APIError.responseError(reason: let reason)) where reason.isURLSessionError:
+                let subtext: String = {
+                    if let reason = reason.urlSessionErrorLocalizedDescription {
+                        reason
+                    } else {
+                        "Something went wrong and we couldn’t connect to Gravatar servers."
+                    }
+                }()
+                contentLoadingErrorView(
+                    title: "Ooops",
+                    subtext: subtext,
+                    actionButton: {
+                        Button {
+                            model.refresh()
+                        } label: {
+                            CTAButtonView("Try again".localized)
+                        }
+                    }
+                )
             case .failure:
                 contentLoadingErrorView(
                     title: "Ooops",
                     subtext: "Something went wrong and we couldn’t connect to Gravatar servers.",
-                    image: nil,
                     actionButton: {
                         Button {
                             model.refresh()
