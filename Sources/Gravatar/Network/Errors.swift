@@ -39,7 +39,7 @@ public enum ResponseErrorReason: Sendable {
 
     public var isURLSessionError: Bool {
         guard case .URLSessionError(let error as NSError) = self else { return false }
-        return  error.domain == NSURLErrorDomain
+        return error.domain == NSURLErrorDomain
     }
 
     public var urlSessionErrorLocalizedDescription: String? {

@@ -122,13 +122,11 @@ struct AvatarPickerView: View {
                     }
                 )
             case .failure(APIError.responseError(reason: let reason)) where reason.isURLSessionError:
-                let subtext: String = {
-                    if let reason = reason.urlSessionErrorLocalizedDescription {
-                        reason
-                    } else {
-                        "Something went wrong and we couldn’t connect to Gravatar servers."
-                    }
-                }()
+                let subtext: String = if let reason = reason.urlSessionErrorLocalizedDescription {
+                    reason
+                } else {
+                    "Something went wrong and we couldn’t connect to Gravatar servers."
+                }
                 contentLoadingErrorView(
                     title: "Ooops",
                     subtext: subtext,
