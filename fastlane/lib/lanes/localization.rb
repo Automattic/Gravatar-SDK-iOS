@@ -1,5 +1,35 @@
 # frozen_string_literal: true
 
+default_platform(:ios)
+
+UI.user_error!('Please run fastlane via `bundle exec`') unless FastlaneCore::Helper.bundler?
+
+GLOTPRESS_PROJECT_BASE_URL = 'https://translate.wordpress.com/projects/gravatar/gravatar-ios-sdk/'
+RESOURCES_TO_LOCALIZE = {
+  File.join('Sources', 'GravatarUI', 'Resources') => "#{GLOTPRESS_PROJECT_BASE_URL}/gravatarui/",
+}.freeze
+
+# List of locales used for the app strings (GlotPress code => `*.lproj` folder name`)
+#
+# TODO: Replace with `LocaleHelper` once provided by release toolkit (https://github.com/wordpress-mobile/release-toolkit/pull/296)
+GLOTPRESS_TO_LPROJ_APP_LOCALE_CODES = {
+  'ar' => 'ar',         # Arabic
+  'de' => 'de',         # German
+  'es' => 'es',         # Spanish
+  'fr' => 'fr',         # French
+  'he' => 'he',         # Hebrew
+  'id' => 'id',         # Indonesian
+  'it' => 'it',         # Italian
+  'ja' => 'ja',         # Japanese
+  'ko' => 'ko',         # Korean
+  'nl' => 'nl',         # Dutch
+  'pt-br' => 'pt-BR',   # Portuguese (Brazil)
+  'ru' => 'ru',         # Russian
+  'sv' => 'sv',         # Swedish
+  'tr' => 'tr',         # Turkish
+  'zh-cn' => 'zh-Hans', # Chinese (China)
+  'zh-tw' => 'zh-Hant'  # Chinese (Taiwan)
+}.freeze
 
 #################################################
 # Lanes
@@ -8,6 +38,32 @@
 # Lanes related to Localization and GlotPress
 #
 platform :ios do
+  # Download the latest localizations from GlotPress and update the SDK accordingly.
+  #
+  # @example Running the lane
+  #          bundle exec fastlane download_localized_strings skip_commit:true
+  #
+  desc 'Downloads localized strings (`.strings`) from GlotPress and commits them'
+  lane :download_localized_strings do |skip_commit: false|
+    RESOURCES_TO_LOCALIZE.each do |res_dir, gp_url|
+      ios_download_strings_files_from_glotpress(
+        project_url: gp_url,
+        locales: GLOTPRESS_TO_LPROJ_APP_LOCALE_CODES,
+        download_dir: res_dir
+      )
+    end
+
+    next if skip_commit
+
+    strings_paths = RESOURCES_TO_LOCALIZE .keys.map(&:to_s)
+    git_add(path: strings_paths)
+    git_commit(
+      path: strings_paths,
+      message: 'Update localizations',
+      allow_nothing_to_commit: true
+    )
+  end
+
     # Generates the `.strings` file, by parsing source code (using `genstrings` under the hood).
     #
     lane :generate_strings_file do |options|
@@ -54,6 +110,8 @@ platform :ios do
         )
       end
     end
+
+
   
     private_lane :utf16_to_utf8 do |options|
       next unless options[:source]
