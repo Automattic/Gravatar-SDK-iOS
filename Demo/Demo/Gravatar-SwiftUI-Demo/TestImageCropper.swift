@@ -32,8 +32,6 @@ struct TestImageCropper: View, ImageEditorView {
 }
 
 #Preview {
-    TestImageCropper(inputImage: UIImage()) { _ in
-        
-    }
+    TestImageCropper(inputImage: UIImage()) { _ in }
 }
 
