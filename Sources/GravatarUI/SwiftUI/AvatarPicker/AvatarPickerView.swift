@@ -77,9 +77,9 @@ struct AvatarPickerView: View {
 
     private func header() -> some View {
         VStack(alignment: .leading) {
-            Text("Avatars")
+            Text(Localized.Header.title)
                 .font(.title2.weight(.bold))
-            Text("Choose or upload your favorite avatar images and connect them to your email address.")
+            Text(Localized.Header.subtitle)
                 .font(.subheadline)
                 .foregroundColor(Color(UIColor.secondaryLabel))
         }
@@ -92,22 +92,24 @@ struct AvatarPickerView: View {
             switch model.gridResponseStatus {
             case .success where model.grid.isEmpty:
                 contentLoadingErrorView(
-                    title: "Let's setup your avatar",
-                    subtext: "Choose or upload your favorite avatar images and connect them to your email address.",
+                    title: Localized.ContentLoading.Success.title,
+                    subtext: Localized.ContentLoading.Success.subtext,
                     image: Image("setup-avatar-emoji", bundle: .module),
                     actionButton: {
                         imagePicker {
-                            CTAButtonView("Upload image")
+                            CTAButtonView(Localized.buttonUploadImage)
                         }
                     }
                 )
             case .failure(APIError.responseError(reason: let reason)) where reason.httpStatusCode == HTTPStatus.unauthorized.rawValue:
-                let buttonTitle = tokenErrorHandler == nil ? "Close" : "Log in"
+                let buttonTitle = tokenErrorHandler == nil ?
+                    Localized.ContentLoading.Failure.SessionExpired.Close.buttonTitle :
+                    Localized.ContentLoading.Failure.SessionExpired.LogIn.buttonTitle
                 let subtext: String = tokenErrorHandler == nil ?
-                    "Sorry, it looks like your session has expired. Make sure you're logged in to update your Avatar." :
-                    "Session expired for security reasons. Please log in to update your Avatar."
+                    Localized.ContentLoading.Failure.SessionExpired.Close.subtext :
+                    Localized.ContentLoading.Failure.SessionExpired.LogIn.subtext
                 contentLoadingErrorView(
-                    title: "Session expired",
+                    title: Localized.ContentLoading.Failure.SessionExpired.title,
                     subtext: subtext,
                     actionButton: {
                         Button {
@@ -117,20 +119,20 @@ struct AvatarPickerView: View {
                                 isPresented = false
                             }
                         } label: {
-                            CTAButtonView(buttonTitle.localized)
+                            CTAButtonView(buttonTitle)
                         }
                     }
                 )
             case .failure:
                 contentLoadingErrorView(
-                    title: "Ooops",
-                    subtext: "Something went wrong and we couldn’t connect to Gravatar servers.",
+                    title: Localized.ContentLoading.Failure.Retry.title,
+                    subtext: Localized.ContentLoading.Failure.Retry.subtext,
                     image: nil,
                     actionButton: {
                         Button {
                             model.refresh()
                         } label: {
-                            CTAButtonView("Try again".localized)
+                            CTAButtonView(Localized.buttonRetry)
                         }
                     }
                 )
@@ -148,8 +150,8 @@ struct AvatarPickerView: View {
         actionButton: @escaping () -> some View
     ) -> some View {
         ContentLoadingErrorView(
-            title: title.localized,
-            subtext: subtext.localized,
+            title: title,
+            subtext: subtext,
             image: image,
             actionButton: actionButton,
             innerPadding: .init(
@@ -284,6 +286,102 @@ struct AvatarPickerView: View {
         colorScheme == .light ? 30 : 0
     }
 }
+
+// MARK: - Localized Strings
+
+extension AvatarPickerView {
+    private enum Localized {
+        static let buttonUploadImage = NSLocalizedString(
+            "AvatarPicker.ContentLoading.Success.ctaButtonTitle",
+            value: "Upload image",
+            comment: "Title of a button that allow for uploading an image"
+        )
+        static let buttonRetry = NSLocalizedString(
+            "AvatarPicker.ContentLoading.Failure.Retry.ctaButtonTitle",
+            value: "Try again",
+            comment: "Title of a button that allows the user to try loading their avatars again"
+        )
+
+        enum Header {
+            static let title = NSLocalizedString(
+                "AvatarPicker.Header.title",
+                value: "Avatars",
+                comment: "Title appearing in the header of a view that allows users to manage their avatars"
+            )
+            static let subtitle = NSLocalizedString(
+                "AvatarPicker.Header.subtitle",
+                value: "Choose or upload your favorite avatar images and connect them to your email address.",
+                comment: "A message describing the purpose of this view"
+            )
+        }
+
+        enum ContentLoading {
+            enum Success {
+                static let title = NSLocalizedString(
+                    "AvatarPicker.ContentLoading.success.title",
+                    value: "Let's setup your avatar",
+                    comment: "Title of a message advising the user to setup their avatar"
+                )
+                static let subtext = NSLocalizedString(
+                    "AvatarPicker.ContentLoading.Success.subtext",
+                    value: "Choose or upload your favorite avatar images and connect them to your email address.",
+                    comment: "A message describing the actions a user can take to setup their avatar"
+                )
+            }
+
+            enum Failure {
+                enum SessionExpired {
+                    static let title = NSLocalizedString(
+                        "AvatarPicker.ContentLoading.Failure.SessionExpired.title",
+                        value: "Session expired",
+                        comment: "Title of a message advising the user that their login session has expired."
+                    )
+                    enum Close {
+                        static let buttonTitle = NSLocalizedString(
+                            "AvatarPicker.ContentLoading.Failure.SessionExpired.Close.buttonTitle",
+                            value: "Close",
+                            comment: "Title of a button that will close the Avatar Picker, appearing beneath a message that advises the user that their login session has expired."
+                        )
+
+                        static let subtext = NSLocalizedString(
+                            "AvatarPicker.ContentLoading.Failure.SessionExpired.Close.subtext",
+                            value: "Sorry, it looks like your session has expired. Make sure you're logged in to update your Avatar.",
+                            comment: "A message describing the error and advising the user to login again to resolve the issue"
+                        )
+                    }
+
+                    enum LogIn {
+                        static let buttonTitle = NSLocalizedString(
+                            "AvatarPicker.ContentLoading.Failure.SessionExpired.LogIn.buttonTitle",
+                            value: "Log in",
+                            comment: "Title of a button that will begin the process of authenticating the user, appearing beneath a message that advises the user that their login session has expired."
+                        )
+                        static let subtext = NSLocalizedString(
+                            "AvatarPicker.ContentLoading.Failure.SessionExpired.LogIn.subtext",
+                            value: "Session expired for security reasons. Please log in to update your Avatar.",
+                            comment: "A message describing the error and advising the user to login again to resolve the issue"
+                        )
+                    }
+                }
+
+                enum Retry {
+                    static let title = NSLocalizedString(
+                        "AvatarPicker.ContentLoading.Failure.Retry.title",
+                        value: "Ooops",
+                        comment: "Title of a message advising the user that something went wrong while loading their avatars"
+                    )
+                    static let subtext = NSLocalizedString(
+                        "AvatarPicker.ContentLoading.Failure.Retry.subtext",
+                        value: "Something went wrong and we couldn’t connect to Gravatar servers.",
+                        comment: "A message asking the user to try again"
+                    )
+                }
+            }
+        }
+    }
+}
+
+// MARK: - Previews
 
 #Preview("Existing elements") {
     struct PreviewModel: ProfileSummaryModel {
