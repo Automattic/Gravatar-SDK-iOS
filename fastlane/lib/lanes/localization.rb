@@ -6,7 +6,7 @@ UI.user_error!('Please run fastlane via `bundle exec`') unless FastlaneCore::Hel
 
 GLOTPRESS_PROJECT_BASE_URL = 'https://translate.wordpress.com/projects/gravatar/gravatar-ios-sdk/'
 RESOURCES_TO_LOCALIZE = {
-  File.join('Sources', 'GravatarUI', 'Resources') => "#{GLOTPRESS_PROJECT_BASE_URL}/gravatarui/",
+  File.join('Sources', 'GravatarUI', 'Resources') => "#{GLOTPRESS_PROJECT_BASE_URL}/gravatarui/"
 }.freeze
 
 # List of locales used for the app strings (GlotPress code => `*.lproj` folder name`)
@@ -92,10 +92,11 @@ platform :ios do
           File.join('Demo', 'Demo', 'Gravatar-UIKit-Demo'),
           File.join('Demo', 'Demo', 'Gravatar-SwiftUI-Demo')
         ],
-        output_dir: tempdir        )
+        output_dir: tempdir
+      )
 
       utf16_strings = File.join(tempdir, 'Localizable.strings')
-      utf8_strings = File.join("..", demo_en_lproj, 'Localizable.strings')
+      utf8_strings = File.join('..', demo_en_lproj, 'Localizable.strings')
 
       utf16_to_utf8(
         source: utf16_strings,
@@ -106,7 +107,7 @@ platform :ios do
 
   lane :generate_strings_file_sdk do
     Dir.mktmpdir do |tempdir|
-      demo_en_lproj = File.join('Sources', 'GravatarUI', 'Resources', 'en.lproj')
+      sdk_en_lproj = File.join('Sources', 'GravatarUI', 'Resources', 'en.lproj')
       ios_generate_strings_file_from_code(
         paths: [
           File.join('Sources', 'GravatarUI')
@@ -115,7 +116,7 @@ platform :ios do
       )
 
       utf16_strings = File.join(tempdir, 'Localizable.strings')
-      utf8_strings = File.join("..", demo_en_lproj, 'Localizable.strings')
+      utf8_strings = File.join('..', sdk_en_lproj, 'Localizable.strings')
 
       utf16_to_utf8(
         source: utf16_strings,
@@ -128,20 +129,20 @@ platform :ios do
 
   private_lane :utf16_to_utf8 do |options|
     next unless options[:source]
-    next unless options[:destination]      
+    next unless options[:destination]
 
     source = options[:source]
     destination = options[:destination]
 
     next unless File.exist?(source)
-    File.open(source, "rb:UTF-16") do |in_file|
-      utf16_content = in_file.read
-      utf8_content = utf16_content.encode("UTF-8")
 
-      File.open(destination, "w:UTF-8") do |out_file|
+    File.open(source, 'rb:UTF-16') do |in_file|
+      utf16_content = in_file.read
+      utf8_content = utf16_content.encode('UTF-8')
+
+      File.open(destination, 'w:UTF-8') do |out_file|
         out_file.write(utf8_content)
       end
     end
   end
 end
-  
