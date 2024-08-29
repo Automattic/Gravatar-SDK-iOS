@@ -123,6 +123,23 @@ struct AvatarPickerView: View {
                         }
                     }
                 )
+            case .failure(APIError.responseError(reason: let reason)) where reason.isURLSessionError:
+                let subtext: String = if let reason = reason.urlSessionErrorLocalizedDescription {
+                    reason
+                } else {
+                    Localized.ContentLoading.Failure.Retry.subtext
+                }
+                contentLoadingErrorView(
+                    title: Localized.ContentLoading.Failure.Retry.title,
+                    subtext: subtext,
+                    actionButton: {
+                        Button {
+                            model.refresh()
+                        } label: {
+                            CTAButtonView(Localized.buttonRetry)
+                        }
+                    }
+                )
             case .failure:
                 contentLoadingErrorView(
                     title: Localized.ContentLoading.Failure.Retry.title,
