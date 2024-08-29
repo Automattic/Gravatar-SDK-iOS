@@ -28,6 +28,25 @@ extension View {
         return modifier(ModalPresentationModifier(isPresented: isPresented, modalView: navigationWrapped))
     }
 
+    @available(iOS 16.0, *)
+    public func avatarPickerSheet(
+        isPresented: Binding<Bool>,
+        email: String,
+        authToken: String,
+        contentLayout: AvatarPickerContentLayout,
+        customImageEditor: ImageEditorBlock<some ImageEditorView>? = nil as NoCustomEditorBlock?,
+        presentationDetents: Set<PresentationDetent>
+    ) -> some View {
+        let avatarPickerView = AvatarPickerView(
+            model: AvatarPickerViewModel(email: Email(email), authToken: authToken),
+            contentLayout: contentLayout,
+            isPresented: isPresented,
+            customImageEditor: customImageEditor
+        )
+        let navigationWrapped = NavigationView { avatarPickerView }
+        return modifier(ModalPresentationModifierWithDetents(isPresented: isPresented, modalView: navigationWrapped, presentationDetents: presentationDetents))
+    }
+
     func avatarPickerBorder(colorScheme: ColorScheme, borderWidth: CGFloat = 1) -> some View {
         self
             .shape(
@@ -47,5 +66,23 @@ extension View {
     ) -> some View {
         let editor = QuickEditor(email: .init(email), scope: scope, isPresented: isPresented, customImageEditor: customImageEditor)
         return modifier(ModalPresentationModifier(isPresented: isPresented, onDismiss: onDismiss, modalView: editor))
+    }
+
+    @available(iOS 16.0, *)
+    public func gravatarQuickEditorSheet(
+        isPresented: Binding<Bool>,
+        email: String,
+        scope: QuickEditorScope,
+        customImageEditor: ImageEditorBlock<some ImageEditorView>? = nil as NoCustomEditorBlock?,
+        presentationDetents: Set<PresentationDetent>,
+        onDismiss: (() -> Void)? = nil
+    ) -> some View {
+        let editor = QuickEditor(email: .init(email), scope: scope, isPresented: isPresented, customImageEditor: customImageEditor)
+        return modifier(ModalPresentationModifierWithDetents(
+            isPresented: isPresented,
+            onDismiss: onDismiss,
+            modalView: editor,
+            presentationDetents: presentationDetents
+        ))
     }
 }
