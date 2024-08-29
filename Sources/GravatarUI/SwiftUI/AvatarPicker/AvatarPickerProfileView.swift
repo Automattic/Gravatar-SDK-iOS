@@ -32,7 +32,7 @@ struct AvatarPickerProfileView: View {
                     Text(model.location)
                         .font(.footnote)
                         .foregroundColor(Color(UIColor.secondaryLabel))
-                    Button("View profile →") {
+                    Button(Localized.viewProfileButtonTitle) {
                         viewProfileAction?()
                     }
                     .font(.footnote)
@@ -82,6 +82,20 @@ struct AvatarPickerProfileView: View {
         .shape(Circle())
     }
 }
+
+// MARK: - Localized Strings
+
+extension AvatarPickerProfileView {
+    private enum Localized {
+        static let viewProfileButtonTitle = NSLocalizedString(
+            "AvatarPickerProfile.Button.ViewProfile.title",
+            value: "View profile →",
+            comment: "Title of a button that will take you to your Gravatar profile, with an arrow indicating that this action will cause you to leave this view"
+        )
+    }
+}
+
+// MARK: - Previews
 
 #Preview {
     AvatarPickerProfileView(

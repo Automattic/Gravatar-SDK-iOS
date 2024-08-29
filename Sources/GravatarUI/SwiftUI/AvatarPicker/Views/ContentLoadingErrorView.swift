@@ -1,8 +1,8 @@
 import SwiftUI
 
 struct ContentLoadingErrorView<ActionButton: View>: View {
-    let title: LocalizedStringKey
-    let subtext: LocalizedStringKey
+    let title: String
+    let subtext: String
     let image: Image?
     let actionButton: () -> ActionButton
     let innerPadding: EdgeInsets

@@ -2,21 +2,21 @@ import UIKit
 
 struct ClaimProfileModel: ProfileModel {
     let description: String = NSLocalizedString(
-        "GravatarEmptyProfileAboutMeKey",
+        "ClaimProfile.Label.AboutMe",
         value: "Tell the world who you are. Your avatar and bio that follows you across the web.",
-        comment: ""
+        comment: "Text on a sample Gravatar profile, appearing in the place where a Gravatar profile would display your short biography."
     )
 
     let location: String = NSLocalizedString(
-        "GravatarEmptyProfileInformationKey",
+        "ClaimProfile.Label.Location",
         value: "Add your location, pronouns, etc",
-        comment: ""
+        comment: "Text on a sample Gravatar profile, appearing in the place where a Gravatar profile would display information like location, your preferred pronouns, etc."
     )
 
     var displayName: String = NSLocalizedString(
-        "GravatarEmptyProfileDisplayNameKey",
+        "ClaimProfile.Label.DisplayName",
         value: "Your Name",
-        comment: ""
+        comment: "Text on a sample Gravatar profile, appearing in the place where your name would normally appear on your Gravatar profile after you claim it."
     )
 
     let accountsList: [any AccountModel] = [GravatarAccountModel(accountURL: URL(string: "https://gravatar.com/profile"))]
