@@ -127,16 +127,16 @@ struct AvatarPickerView: View {
                 let subtext: String = if let reason = reason.urlSessionErrorLocalizedDescription {
                     reason
                 } else {
-                    "Something went wrong and we couldn’t connect to Gravatar servers."
+                    Localized.ContentLoading.Failure.Retry.subtext
                 }
                 contentLoadingErrorView(
-                    title: "Ooops",
+                    title: Localized.ContentLoading.Failure.Retry.title,
                     subtext: subtext,
                     actionButton: {
                         Button {
                             model.refresh()
                         } label: {
-                            CTAButtonView("Try again".localized)
+                            CTAButtonView(Localized.buttonRetry)
                         }
                     }
                 )
