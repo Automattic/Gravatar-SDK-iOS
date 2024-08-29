@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative '../localizable_source'
+
 default_platform(:ios)
 
 UI.user_error!('Please run fastlane via `bundle exec`') unless FastlaneCore::Helper.bundler?
@@ -9,27 +11,19 @@ RESOURCES_TO_LOCALIZE = {
   File.join('Sources', 'GravatarUI', 'Resources') => "#{GLOTPRESS_PROJECT_BASE_URL}/gravatarui/"
 }.freeze
 
-def localizable_source(source_paths:, localization_root:, gp_project:)
-  {
-    source_paths: source_paths,
-    localization_root: localization_root,
-    gp_project: gp_project
-  }
-end
-
 SOURCES_TO_LOCALIZE = [
-  localizable_source(
+  LocalizableSource.new(
     source_paths: [File.join('Sources', 'GravatarUI')],
-    localization_root: File.join('Sources', 'GravatarUI', 'Resources'),
-    gp_project: "#{GLOTPRESS_PROJECT_BASE_URL}/gravatarui/"
+    localizations_root: File.join('Sources', 'GravatarUI', 'Resources'),
+    gp_project_url: "#{GLOTPRESS_PROJECT_BASE_URL}/gravatarui/"
   ),
-  localizable_source(
+  LocalizableSource.new(
     source_paths: [
       File.join('Demo', 'Demo', 'Gravatar-UIKit-Demo'),
       File.join('Demo', 'Demo', 'Gravatar-SwiftUI-Demo')
     ],
-    localization_root: File.join('Demo', 'Demo', 'Localizations'),
-    gp_project: nil  # We don't perform translations for the Demo project yet
+    localizations_root: File.join('Demo', 'Demo', 'Localizations'),
+    gp_project_url: nil   # We don't perform translations for the Demo project yet
   )
 ].freeze
 
@@ -72,18 +66,18 @@ platform :ios do
     paths_to_commit = []
 
     SOURCES_TO_LOCALIZE.each do |source|
-      next if source[:gp_project].nil?
+      next if source.gp_project_url.nil?
 
       ios_download_strings_files_from_glotpress(
-        project_url: source[:gp_project],
+        project_url: source.gp_project_url,
         locales: GLOTPRESS_TO_LPROJ_APP_LOCALE_CODES,
-        download_dir: source[:localization_root]
+        download_dir: source.localizations_root
       )
 
       next if skip_commit
 
-      git_add(path: source[:localization_root])
-      paths_to_commit << source[:localization_root]
+      git_add(path: source.localizations_root)
+      paths_to_commit << source.localizations_root
     end
 
     next if skip_commit
@@ -103,12 +97,12 @@ platform :ios do
     SOURCES_TO_LOCALIZE.each do |source|
       Dir.mktmpdir do |tempdir|
         ios_generate_strings_file_from_code(
-          paths: source[:source_paths],
+          paths: source.source_paths,
           output_dir: tempdir
         )
 
         utf16_strings = File.join(tempdir, 'Localizable.strings')
-        utf8_strings = File.join('..', source[:localization_root], 'en.lproj', 'Localizable.strings')
+        utf8_strings = File.join('..', source.localizations_root, 'en.lproj', 'Localizable.strings')
 
         utf16_to_utf8(
           source: utf16_strings,
@@ -118,8 +112,8 @@ platform :ios do
 
       next if skip_commit
 
-      git_add(path: source[:localization_root])
-      paths_to_commit << source[:localization_root]
+      git_add(path: source.localizations_root)
+      paths_to_commit << source.localizations_root
     end
 
     next if skip_commit
