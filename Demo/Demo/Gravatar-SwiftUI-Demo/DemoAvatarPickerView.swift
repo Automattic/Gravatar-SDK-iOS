@@ -44,7 +44,7 @@ struct DemoAvatarPickerView: View {
                     }
                     .pickerStyle(MenuPickerStyle())
                 }
-                Toggle("Is full height", isOn: $isFullHeight)
+                Toggle("Full height", isOn: $isFullHeight)
                 Toggle("Custom image cropper", isOn: $enableCustomImageCropper)
                 Spacer()
                     .frame(height: 24)
