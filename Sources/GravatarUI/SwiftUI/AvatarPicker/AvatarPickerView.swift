@@ -8,19 +8,10 @@ public enum AvatarPickerContentLayout: String, CaseIterable, Identifiable {
     case horizontal
 }
 
-private enum AvatarPicker {
-    enum Constants {
-        static let horizontalPadding: CGFloat = .DS.Padding.double
-        static let lightModeShadowColor = Color(uiColor: UIColor.rgba(25, 30, 35, alpha: 0.2))
-        static let title: String = "Gravatar" // defined here to avoid translations
-        static let vStackVerticalSpacing: CGFloat = .DS.Padding.medium
-        static let emailBottomSpacing: CGFloat = .DS.Padding.double
-    }
-}
-
 @MainActor
 struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
     fileprivate typealias Constants = AvatarPicker.Constants
+    fileprivate typealias Localized = AvatarPicker.Localized
 
     @ObservedObject var model: AvatarPickerViewModel
     @State var contentLayout: AvatarPickerContentLayout = .vertical
@@ -295,8 +286,16 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
 
 // MARK: - Localized Strings
 
-extension AvatarPickerView {
-    private enum Localized {
+private enum AvatarPicker {
+    enum Constants {
+        static let horizontalPadding: CGFloat = .DS.Padding.double
+        static let lightModeShadowColor = Color(uiColor: UIColor.rgba(25, 30, 35, alpha: 0.2))
+        static let title: String = "Gravatar" // defined here to avoid translations
+        static let vStackVerticalSpacing: CGFloat = .DS.Padding.medium
+        static let emailBottomSpacing: CGFloat = .DS.Padding.double
+    }
+
+    enum Localized {
         static let buttonUploadImage = NSLocalizedString(
             "AvatarPicker.ContentLoading.Success.ctaButtonTitle",
             value: "Upload image",
