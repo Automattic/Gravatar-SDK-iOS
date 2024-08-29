@@ -120,6 +120,9 @@ generate: $(OUTPUT_DIRECTORY) # Generates the open-api model
     make swiftformat && \
     echo "DONE! 🎉"
 
+generate-strings: bundle-install
+	bundle exec fastlane generate_strings_file
+
 clean-generated:  # Delete the output directory used for generated sources.
 	@echo 'Delete entire directory: $(OUTPUT_DIRECTORY)? [y/N] ' && read ans && [ $${ans:-N} = y ] || (echo "Aborted"; exit 1)
 	rm -rf "$(OUTPUT_DIRECTORY)"

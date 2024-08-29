@@ -85,7 +85,7 @@ struct CachedAsyncImage<Content: View>: View {
         with: .email("email@google.com"),
         options: .init(preferredSize: .points(100))
     ) else {
-        return Text("Invalid URL")
+        return Text(verbatim: "Invalid URL")
     }
     return CachedAsyncImage(
         url: avatarURL.url,
@@ -93,13 +93,13 @@ struct CachedAsyncImage<Content: View>: View {
     ) { phase in
         switch phase {
         case .empty:
-            Text("empty")
+            Text(verbatim: "empty")
         case .success(let image):
             image
         case .failure:
-            Text("failure")
+            Text(verbatim: "failure")
         default:
-            Text("failure")
+            Text(verbatim: "failure")
         }
     }
 }

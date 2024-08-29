@@ -1,14 +1,14 @@
 import SwiftUI
 
 struct CTAButtonView: View {
-    let titleKey: LocalizedStringKey
+    let title: String
 
-    public init(_ key: LocalizedStringKey) {
-        self.titleKey = key
+    public init(_ title: String) {
+        self.title = title
     }
 
     public var body: some View {
-        Text(titleKey)
+        Text(title)
             .font(.callout).fontWeight(.bold)
             .frame(maxWidth: .infinity)
             .foregroundColor(.white)
