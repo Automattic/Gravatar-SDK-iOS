@@ -36,6 +36,18 @@ public enum ResponseErrorReason: Sendable {
         }
         return false
     }
+
+    public var isURLSessionError: Bool {
+        guard case .URLSessionError(let error as NSError) = self else { return false }
+        return error.domain == NSURLErrorDomain
+    }
+
+    public var urlSessionErrorLocalizedDescription: String? {
+        if case .URLSessionError(let error as NSError) = self, error.domain == NSURLErrorDomain {
+            return error.localizedDescription
+        }
+        return nil
+    }
 }
 
 public enum RequestErrorReason: Sendable {
