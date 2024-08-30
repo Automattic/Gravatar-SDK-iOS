@@ -20,7 +20,7 @@ SOURCES_TO_LOCALIZE = [
       File.join('Demo', 'Demo', 'Gravatar-SwiftUI-Demo')
     ],
     localizations_root: File.join('Demo', 'Demo', 'Localizations'),
-    gp_project_url: nil   # We don't perform translations for the Demo project yet
+    gp_project_url: nil # We don't perform translations for the Demo project yet
   )
 ].freeze
 
