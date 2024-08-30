@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # LocalizableSource
 #
 # The `LocalizableSource` class represents a localizable source for generating
