@@ -96,12 +96,9 @@ platform :ios do
           output_dir: tempdir
         )
 
-        utf16_strings = File.join(tempdir, 'Localizable.strings')
-        utf8_strings = File.join('..', source.base_localization_strings)
-
-        utf16_to_utf8(
-          source: utf16_strings,
-          destination: utf8_strings
+        process_generated_strings(
+          source: source,
+          generated_strings_dir: tempdir
         )
       end
 
@@ -120,16 +117,51 @@ platform :ios do
     )
   end
 
+  def process_generated_strings(source:, generated_strings_dir:)
+    utf16_string_files = Dir.glob(File.join(generated_strings_dir, "*.strings"))
+
+    utf16_string_files.each do |utf16_file|
+      table_name = File.basename(utf16_file, File.extname(utf16_file))
+
+      utf8_file = File.join('..', source.base_localization_strings(table_name: table_name))
+
+      utf16_to_utf8(
+        source: utf16_file,
+        destination: utf8_file
+      )
+    end
+  end
+
   def utf16_to_utf8(source:, destination:)
     return unless File.exist?(source)
 
-    File.open(source, 'rb:UTF-16') do |in_file|
-      utf16_content = in_file.read
+    File.open(source, 'rb:UTF-16') do |src_file|
+      utf16_content = src_file.read
       utf8_content = utf16_content.encode('UTF-8')
 
-      File.open(destination, 'w:UTF-8') do |out_file|
-        out_file.write(utf8_content)
+      File.open(destination, 'w:UTF-8') do |dest_file|
+        dest_file.write(utf8_content)
       end
     end
   end
+
+  # def utf16_to_utf8(source_paths:, localization_root:, base_locale: 'en')
+  #   # Ensure source_paths is an array even if a single path is passed
+  #   source_paths = [source_paths] unless source_paths.is_a?(Array)
+
+  #   source_paths.each do |source_path|
+  #     filename = File.basename(source_path)
+
+  #     File.open(source_path, 'rb:UTF-16') do |src_file|
+  #       utf16_content = src_file.read
+  #       utf8_content = utf16_content.encode('UTF-8')
+
+  #       dest_path = File.join('..', localizations_root, "#{base_locale}.lproj", filename)
+
+  #       File.open(dest_path, 'w:UTF-8') do |dest_file|
+  #         dest_file.write(utf8_content)
+  #       end
+  #     end
+  #   end
+  # end
 end
