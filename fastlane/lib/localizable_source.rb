@@ -1,40 +1,6 @@
 # frozen_string_literal: true
 
-# LocalizableSource
-#
-# The `LocalizableSource` class represents a localizable source for generating
-# strings and downloading localizations from GlotPress.
-#
-# Attributes:
-# - `@source_paths` [Array<String>]
-#   An array of paths where source files related to localization are stored.
-#   This can include multiple directories where localized resources are kept.
-#
-# - `@localizations_root` [String]
-#   The root directory path where the localization files are stored.
-#   This is the base path that will be combined with specific locale directories
-#   to generate paths to the localization files.
-#
-# - `@gp_project_url` [String, nil]
-#   The URL of the related GlotPress project associated with the localization
-#   files.
-#
-# Methods:
-# - `initialize(source_paths:, localizations_root:, gp_project_url: nil)`:
-#   Creates a new instance of `LocalizableSource`.
-#   - `source_paths`: (Array<String>) An array of paths where source files are located. This argument
-#     is required and cannot be `nil`.
-#   - `localizations_root`: (String) The root path for localization files. This argument is required
-#     and cannot be `nil`.
-#   - `gp_project_url`: (String, nil) The URL to the GlotPress project or similar. This argument is
-#     optional.
-#   - Raises: `ArgumentError` if either `source_paths` or `localizations_root` is `nil`.
-#
-# - `base_localization_strings(base_locale: 'en')`:
-#   Generates the file path to the `Localizable.strings` file for a given locale.
-#   - `base_locale`: (String) The locale code (e.g., 'en', 'fr', 'es') for which to generate the path.
-#     Defaults to `'en'`.
-#   - Returns: (String) The full path to the `Localizable.strings` file for the specified locale.
+# Represents a localizable source for generating strings and downloading localizations from GlotPress.
 #
 # Example:
 #
@@ -51,7 +17,23 @@
 #   # Output: /path/to/localizations/fr.lproj/Localizable.strings
 #
 class LocalizableSource
-  attr_accessor :source_paths, :localizations_root, :gp_project_url
+  # @return [Array<String>] An array of paths where source files related to localization are stored.
+  # This can include multiple directories where localized resources are kept.
+  attr_accessor :source_paths
+
+  # @return [String] The root directory for localization files.
+  attr_accessor :localizations_root
+
+  # @return [String, nil] An optional URL to the translation management system or project repository.
+  # If `nil`, base localization files can be generated, but no localizations can be downloaded.
+  attr_accessor :gp_project_url
+
+  # Initializes a new LocalizableSource instance.
+  #
+  # @param source_paths [Array<String>] The paths to the source files.
+  # @param localizations_root [String] The root directory for localization files.
+  # @param gp_project_url [String, nil] Optional URL to the translation management system or project repository.
+  # @raise [ArgumentError] if source_paths or localizations_root is nil.
 
   def initialize(source_paths:, localizations_root:, gp_project_url: nil)
     raise ArgumentError, 'source_paths cannot be nil' if source_paths.nil?
@@ -63,6 +45,15 @@ class LocalizableSource
   end
 
   def base_localization_strings(table_name: "Localizable", base_locale: 'en')
+  # Constructs the path to the base localization strings file.
+  #
+  # The method combines the localization root directory with the locale and table name to generate the path
+  # to the base localization strings file.
+  #
+  # @param table_name [String] The name of the table for localization strings. Defaults to "Localizable".
+  # @param base_locale [String] The base locale for localization. Defaults to 'en'.
+  # @return [String] The path to the base localization strings file.
+
     File.join(@localizations_root, "#{base_locale}.lproj", "#{table_name}.strings")
   end
 end
