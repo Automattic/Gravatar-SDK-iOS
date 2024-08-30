@@ -1,0 +1,8 @@
+only_rules: # Rules to run
+  - nslocalizedstring_require_bundle
+
+included:
+  - Sources
+
+# If true, SwiftLint will treat all warnings as errors.
+strict: true
