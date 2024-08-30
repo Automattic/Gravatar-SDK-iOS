@@ -118,7 +118,7 @@ platform :ios do
   end
 
   def process_generated_strings(source:, generated_strings_dir:)
-    utf16_string_files = Dir.glob(File.join(generated_strings_dir, "*.strings"))
+    utf16_string_files = Dir.glob(File.join(generated_strings_dir, '*.strings'))
 
     utf16_string_files.each do |utf16_file|
       table_name = File.basename(utf16_file, File.extname(utf16_file))

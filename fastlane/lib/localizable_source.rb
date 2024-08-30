@@ -44,7 +44,6 @@ class LocalizableSource
     @gp_project_url = gp_project_url
   end
 
-  def base_localization_strings(table_name: "Localizable", base_locale: 'en')
   # Constructs the path to the base localization strings file.
   #
   # The method combines the localization root directory with the locale and table name to generate the path
@@ -54,6 +53,7 @@ class LocalizableSource
   # @param base_locale [String] The base locale for localization. Defaults to 'en'.
   # @return [String] The path to the base localization strings file.
 
+  def base_localization_strings(table_name: 'Localizable', base_locale: 'en')
     File.join(@localizations_root, "#{base_locale}.lproj", "#{table_name}.strings")
   end
 end
