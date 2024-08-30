@@ -7,9 +7,6 @@ default_platform(:ios)
 UI.user_error!('Please run fastlane via `bundle exec`') unless FastlaneCore::Helper.bundler?
 
 GLOTPRESS_PROJECT_BASE_URL = 'https://translate.wordpress.com/projects/gravatar/gravatar-ios-sdk/'
-RESOURCES_TO_LOCALIZE = {
-  File.join('Sources', 'GravatarUI', 'Resources') => "#{GLOTPRESS_PROJECT_BASE_URL}/gravatarui/"
-}.freeze
 
 SOURCES_TO_LOCALIZE = [
   LocalizableSource.new(
