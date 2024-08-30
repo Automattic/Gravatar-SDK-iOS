@@ -102,7 +102,7 @@ platform :ios do
         )
 
         utf16_strings = File.join(tempdir, 'Localizable.strings')
-        utf8_strings = File.join('..', source.localizations_root, 'en.lproj', 'Localizable.strings')
+        utf8_strings = File.join('..', source.base_localization_strings)
 
         utf16_to_utf8(
           source: utf16_strings,

@@ -6,4 +6,8 @@ class LocalizableSource
         @localizations_root = localizations_root
         @gp_project_url = gp_project_url
     end
+
+    def base_localization_strings(base_locale: 'en')
+        File.join(@localizations_root, "#{base_locale}.lproj", 'Localizable.strings')
+    end
 end
