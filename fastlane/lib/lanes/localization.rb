@@ -120,14 +120,8 @@ platform :ios do
     )
   end
 
-  private_lane :utf16_to_utf8 do |options|
-    next unless options[:source]
-    next unless options[:destination]
-
-    source = options[:source]
-    destination = options[:destination]
-
-    next unless File.exist?(source)
+  def utf16_to_utf8(source:, destination:)
+    return unless File.exist?(source)
 
     File.open(source, 'rb:UTF-16') do |in_file|
       utf16_content = in_file.read
