@@ -135,33 +135,8 @@ platform :ios do
   def utf16_to_utf8(source:, destination:)
     return unless File.exist?(source)
 
-    File.open(source, 'rb:UTF-16') do |src_file|
-      utf16_content = src_file.read
-      utf8_content = utf16_content.encode('UTF-8')
-
-      File.open(destination, 'w:UTF-8') do |dest_file|
-        dest_file.write(utf8_content)
-      end
-    end
+    utf16_content = File.read(source, mode: 'rb:UTF-16')
+    utf8_content = utf16_content.encode('UTF-8')
+    File.write(destination, utf8_content, mode: 'w:UTF-8')
   end
-
-  # def utf16_to_utf8(source_paths:, localization_root:, base_locale: 'en')
-  #   # Ensure source_paths is an array even if a single path is passed
-  #   source_paths = [source_paths] unless source_paths.is_a?(Array)
-
-  #   source_paths.each do |source_path|
-  #     filename = File.basename(source_path)
-
-  #     File.open(source_path, 'rb:UTF-16') do |src_file|
-  #       utf16_content = src_file.read
-  #       utf8_content = utf16_content.encode('UTF-8')
-
-  #       dest_path = File.join('..', localizations_root, "#{base_locale}.lproj", filename)
-
-  #       File.open(dest_path, 'w:UTF-8') do |dest_file|
-  #         dest_file.write(utf8_content)
-  #       end
-  #     end
-  #   end
-  # end
 end
