@@ -1,9 +1,9 @@
 import PhotosUI
 import SwiftUI
 
-struct SystemImagePickerView<Label>: View where Label: View {
+struct SystemImagePickerView<Label, ImageEditor: ImageEditorView>: View where Label: View {
     @ViewBuilder var label: () -> Label
-
+    var customEditor: ImageEditorBlock<ImageEditor>?
     let onImageSelected: (UIImage) -> Void
 
     var body: some View {
@@ -11,11 +11,11 @@ struct SystemImagePickerView<Label>: View where Label: View {
         // So far, the new SwiftUI PhotosPicker only supports Photos library, no camera, and no cropping, so we are only using legacy for now.
         // The interface (using a Label property as the element to open the picker) is the same as in the new SwiftUI picker,
         // which will make it easy to change it later on.
-        ImagePicker(label: label, onImageSelected: onImageSelected)
+        ImagePicker(label: label, onImageSelected: onImageSelected, customEditor: customEditor)
     }
 }
 
-private struct ImagePicker<Label>: View where Label: View {
+private struct ImagePicker<Label, ImageEditor: ImageEditorView>: View where Label: View {
     enum SourceType: CaseIterable, Identifiable {
         case photoLibrary
         case camera
@@ -30,6 +30,8 @@ private struct ImagePicker<Label>: View where Label: View {
 
     @ViewBuilder var label: () -> Label
     let onImageSelected: (UIImage) -> Void
+    var customEditor: ImageEditorBlock<ImageEditor>?
+    @State var imagePickerSelectedItem: ImagePickerItem?
 
     var body: some View {
         VStack {
@@ -48,20 +50,43 @@ private struct ImagePicker<Label>: View where Label: View {
         }
         .sheet(item: $sourceType, content: { source in
             // This allows to present different kind of pickers for different sources.
-            switch source {
-            case .camera:
-                ZStack {
-                    Color.black.ignoresSafeArea(edges: .all)
-                    LegacyImagePickerRepresentable(sourceType: source.map()) { image in
-                        onImageSelected(image)
+            displayImagePicker(for: source)
+                .sheet(item: $imagePickerSelectedItem, content: { item in
+                    if let customEditor {
+                        customEditor(item.image) { croppedImage in
+                            imagePickerSelectedItem = nil
+                            sourceType = nil
+                            onImageSelected(croppedImage)
+                        }
                     }
-                }
-            case .photoLibrary:
-                LegacyImagePickerRepresentable(sourceType: source.map()) { image in
-                    onImageSelected(image)
-                }.ignoresSafeArea()
-            }
+                })
         })
+    }
+
+    @ViewBuilder
+    private func displayImagePicker(for source: SourceType) -> some View {
+        switch source {
+        case .camera:
+            ZStack {
+                Color.black.ignoresSafeArea(edges: .all)
+                LegacyImagePickerRepresentable(sourceType: source.map(), useBuiltInCropper: customEditor == nil) { item in
+                    pickerDidSelectImage(item)
+                }
+            }
+        case .photoLibrary:
+            LegacyImagePickerRepresentable(sourceType: source.map(), useBuiltInCropper: customEditor == nil) { item in
+                pickerDidSelectImage(item)
+            }.ignoresSafeArea()
+        }
+    }
+
+    private func pickerDidSelectImage(_ item: ImagePickerItem) {
+        if customEditor != nil {
+            imagePickerSelectedItem = item
+        } else {
+            sourceType = nil
+            onImageSelected(item.image)
+        }
     }
 }
 
@@ -96,19 +121,20 @@ struct LegacyImagePickerRepresentable: UIViewControllerRepresentable {
     @Environment(\.presentationMode) private var presentationMode
 
     var sourceType: UIImagePickerController.SourceType
-    let onImageSelected: (UIImage) -> Void
+    var useBuiltInCropper: Bool
+    let onImageSelected: (ImagePickerItem) -> Void
 
-    @State private var selectedUIImage: UIImage? {
+    @State private var pickedImage: ImagePickerItem? {
         didSet {
-            if let selectedUIImage {
-                onImageSelected(selectedUIImage)
+            if let pickedImage {
+                onImageSelected(pickedImage)
             }
         }
     }
 
     func makeUIViewController(context: UIViewControllerRepresentableContext<LegacyImagePickerRepresentable>) -> UIImagePickerController {
         let imagePicker = UIImagePickerController()
-        imagePicker.allowsEditing = true
+        imagePicker.allowsEditing = useBuiltInCropper
         imagePicker.sourceType = sourceType
         imagePicker.delegate = context.coordinator
 
@@ -132,11 +158,21 @@ struct LegacyImagePickerRepresentable: UIViewControllerRepresentable {
         }
 
         func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
-            if let image = info[UIImagePickerController.InfoKey.editedImage] as? UIImage {
-                parent.selectedUIImage = image
+            guard let url = info[UIImagePickerController.InfoKey.imageURL] as? URL else { return }
+            if picker.allowsEditing, let image = info[UIImagePickerController.InfoKey.editedImage] as? UIImage {
+                parent.pickedImage = .init(image: image, url: url)
+            } else if let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
+                parent.pickedImage = .init(image: image, url: url)
             }
-
-            parent.presentationMode.wrappedValue.dismiss()
         }
     }
+}
+
+struct ImagePickerItem: Identifiable {
+    var id: String {
+        url.absoluteString
+    }
+
+    let image: UIImage
+    let url: URL
 }

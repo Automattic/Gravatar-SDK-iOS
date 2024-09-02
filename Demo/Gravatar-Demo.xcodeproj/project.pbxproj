@@ -31,6 +31,7 @@
 		914AC0192BD7FF08005DA4A5 /* DemoBaseProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914AC0172BD7FF08005DA4A5 /* DemoBaseProfileViewController.swift */; };
 		914AC01A2BD7FF08005DA4A5 /* DemoProfilePresentationStylesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914AC0182BD7FF08005DA4A5 /* DemoProfilePresentationStylesViewController.swift */; };
 		914AC0202BDAAC3C005DA4A5 /* DemoRemoteSVGViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914AC01F2BDAAC3C005DA4A5 /* DemoRemoteSVGViewController.swift */; };
+		917DEEC92C7F639F00E43774 /* TestImageCropper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 917DEEC82C7F619100E43774 /* TestImageCropper.swift */; };
 		91956A522B6793AF00BF3CF0 /* SwitchWithLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91956A512B6793AF00BF3CF0 /* SwitchWithLabel.swift */; };
 		91956A542B67943A00BF3CF0 /* DemoUIImageViewExtensionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91956A532B67943A00BF3CF0 /* DemoUIImageViewExtensionViewController.swift */; };
 		91B73B372C404F6E00E7D325 /* DemoAvatarPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91B73B362C404F6E00E7D325 /* DemoAvatarPickerView.swift */; };
@@ -118,6 +119,7 @@
 		914AC0172BD7FF08005DA4A5 /* DemoBaseProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoBaseProfileViewController.swift; sourceTree = "<group>"; };
 		914AC0182BD7FF08005DA4A5 /* DemoProfilePresentationStylesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoProfilePresentationStylesViewController.swift; sourceTree = "<group>"; };
 		914AC01F2BDAAC3C005DA4A5 /* DemoRemoteSVGViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoRemoteSVGViewController.swift; sourceTree = "<group>"; };
+		917DEEC82C7F619100E43774 /* TestImageCropper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestImageCropper.swift; sourceTree = "<group>"; };
 		91956A512B6793AF00BF3CF0 /* SwitchWithLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchWithLabel.swift; sourceTree = "<group>"; };
 		91956A532B67943A00BF3CF0 /* DemoUIImageViewExtensionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoUIImageViewExtensionViewController.swift; sourceTree = "<group>"; };
 		91B73B362C404F6E00E7D325 /* DemoAvatarPickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoAvatarPickerView.swift; sourceTree = "<group>"; };
@@ -168,6 +170,7 @@
 				49C5D6132B5B33E20067C2A8 /* Preview Content */,
 				49EFFB572C51AA3E0086589A /* Gravatar-SwiftUI-Demo.Base.xcconfig */,
 				3FD478222C51D7E20071B8B9 /* Gravatar-SwiftUI-Demo.Release.xcconfig */,
+				917DEEC82C7F619100E43774 /* TestImageCropper.swift */,
 			);
 			path = "Gravatar-SwiftUI-Demo";
 			sourceTree = "<group>";
@@ -454,6 +457,7 @@
 				9146A7AE2C3BD8F000E07C63 /* DemoAvatarView.swift in Sources */,
 				91B73B372C404F6E00E7D325 /* DemoAvatarPickerView.swift in Sources */,
 				49C5D60E2B5B33E20067C2A8 /* DemoApp.swift in Sources */,
+				917DEEC92C7F639F00E43774 /* TestImageCropper.swift in Sources */,
 				1E3FA2452C75E403002901F2 /* DemoProfileEditorView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

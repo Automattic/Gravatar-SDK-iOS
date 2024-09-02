@@ -9,21 +9,16 @@ public enum AvatarPickerContentLayout: String, CaseIterable, Identifiable {
 }
 
 @MainActor
-struct AvatarPickerView: View {
-    private enum Constants {
-        static let horizontalPadding: CGFloat = .DS.Padding.double
-        static let lightModeShadowColor = Color(uiColor: UIColor.rgba(25, 30, 35, alpha: 0.2))
-        static let title: String = "Gravatar" // defined here to avoid translations
-        static let vStackVerticalSpacing: CGFloat = .DS.Padding.medium
-        static let emailBottomSpacing: CGFloat = .DS.Padding.double
-    }
+struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
+    fileprivate typealias Constants = AvatarPicker.Constants
+    fileprivate typealias Localized = AvatarPicker.Localized
 
     @ObservedObject var model: AvatarPickerViewModel
     @State var contentLayout: AvatarPickerContentLayout = .vertical
     @Environment(\.colorScheme) var colorScheme: ColorScheme
     @Binding var isPresented: Bool
     @State private var safariURL: URL?
-
+    var customImageEditor: ImageEditorBlock<ImageEditor>?
     var tokenErrorHandler: (() -> Void)?
 
     public var body: some View {
@@ -182,14 +177,15 @@ struct AvatarPickerView: View {
     }
 
     private func imagePicker(label: @escaping () -> some View) -> some View {
-        SystemImagePickerView(label: label) { image in
+        SystemImagePickerView(label: label, customEditor: customImageEditor) { image in
             uploadImage(image)
         }
     }
 
     private func uploadImage(_ image: UIImage) {
         Task {
-            await model.upload(image)
+            // If there's a custom image editor, it should take care of squaring.
+            await model.upload(image, shouldSquareImage: customImageEditor == nil)
         }
     }
 
@@ -204,6 +200,7 @@ struct AvatarPickerView: View {
         if contentLayout == .vertical {
             AvatarGrid(
                 grid: model.grid,
+                customImageEditor: customImageEditor,
                 onAvatarTap: { avatar in
                     model.selectAvatar(with: avatar.id)
                 },
@@ -306,8 +303,16 @@ struct AvatarPickerView: View {
 
 // MARK: - Localized Strings
 
-extension AvatarPickerView {
-    private enum Localized {
+private enum AvatarPicker {
+    enum Constants {
+        static let horizontalPadding: CGFloat = .DS.Padding.double
+        static let lightModeShadowColor = Color(uiColor: UIColor.rgba(25, 30, 35, alpha: 0.2))
+        static let title: String = "Gravatar" // defined here to avoid translations
+        static let vStackVerticalSpacing: CGFloat = .DS.Padding.medium
+        static let emailBottomSpacing: CGFloat = .DS.Padding.double
+    }
+
+    enum Localized {
         static let buttonUploadImage = NSLocalizedString(
             "AvatarPicker.ContentLoading.Success.ctaButtonTitle",
             bundle: .module,
@@ -463,14 +468,14 @@ extension AvatarPickerView {
         profileModel: PreviewModel()
     )
 
-    return AvatarPickerView(model: model, contentLayout: .horizontal, isPresented: .constant(true))
+    return AvatarPickerView<NoCustomEditor>(model: model, contentLayout: .horizontal, isPresented: .constant(true))
 }
 
 #Preview("Empty elements") {
-    AvatarPickerView(model: .init(avatarImageModels: [], profileModel: nil), isPresented: .constant(true))
+    AvatarPickerView<NoCustomEditor>(model: .init(avatarImageModels: [], profileModel: nil), isPresented: .constant(true))
 }
 
 #Preview("Load from network") {
     /// Enter valid email and auth token.
-    AvatarPickerView(model: .init(email: .init(""), authToken: ""), isPresented: .constant(true))
+    AvatarPickerView<NoCustomEditor>(model: .init(email: .init(""), authToken: ""), isPresented: .constant(true))
 }

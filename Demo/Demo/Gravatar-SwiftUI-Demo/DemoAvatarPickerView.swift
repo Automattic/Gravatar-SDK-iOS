@@ -10,6 +10,7 @@ struct DemoAvatarPickerView: View {
 
     // You can make this `true` by default to easily test the picker
     @State private var isPresentingPicker: Bool = false
+    @State var enableCustomImageCropper: Bool = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 5) {
@@ -42,17 +43,30 @@ struct DemoAvatarPickerView: View {
                     }
                     .pickerStyle(MenuPickerStyle())
                 }
+                Toggle("Custom image cropper", isOn: $enableCustomImageCropper)
+
                 Button("Tap to open the Avatar Picker") {
                     isPresentingPicker = true
                 }
                 .avatarPickerSheet(isPresented: $isPresentingPicker,
                                    email: email,
-                                   authToken: token, 
-                                   contentLayout: contentLayout)
+                                   authToken: token,
+                                   contentLayout: contentLayout,
+                                   customImageEditor: customImageEditor())
                 Spacer()
             }
             .padding(.horizontal)
         }
+    }
+    
+    func customImageEditor() -> ImageEditorBlock<TestImageCropper>? {
+        if enableCustomImageCropper {
+            let block = { image, editingDidFinish in
+                TestImageCropper(inputImage: image, editingDidFinish: editingDidFinish)
+            }
+            return block
+        }
+        return nil as ImageEditorBlock<TestImageCropper>?
     }
     
     @ViewBuilder
