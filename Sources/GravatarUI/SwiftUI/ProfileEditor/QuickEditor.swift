@@ -4,23 +4,26 @@ public enum QuickEditorScope {
     case avatarPicker
 }
 
-struct QuickEditor: View {
-    private enum Constants {
-        static let title: String = "Gravatar" // defined here to avoid translations
-    }
+private enum QuickEditorConstants {
+    static let title: String = "Gravatar" // defined here to avoid translations
+}
+
+struct QuickEditor<ImageEditor: ImageEditorView>: View {
+    fileprivate typealias Constants = QuickEditorConstants
 
     @Environment(\.oauthSession) private var oauthSession
     @State var hasSession: Bool = false
     @State var scope: QuickEditorScope
     @State var isAuthenticating: Bool = true
     @Binding var isPresented: Bool
-
     let email: Email
+    var customImageEditor: ImageEditorBlock<ImageEditor>?
 
-    init(email: Email, scope: QuickEditorScope, isPresented: Binding<Bool>) {
+    init(email: Email, scope: QuickEditorScope, isPresented: Binding<Bool>, customImageEditor: ImageEditorBlock<ImageEditor>? = nil) {
         self.email = email
         self.scope = scope
         self._isPresented = isPresented
+        self.customImageEditor = customImageEditor
     }
 
     var body: some View {
@@ -40,6 +43,7 @@ struct QuickEditor: View {
             AvatarPickerView(
                 model: .init(email: email, authToken: token),
                 isPresented: $isPresented,
+                customImageEditor: customImageEditor,
                 tokenErrorHandler: {
                     oauthSession.deleteSession(with: email)
                     performAuthentication()
@@ -86,5 +90,5 @@ struct QuickEditor: View {
 }
 
 #Preview {
-    QuickEditor(email: .init(""), scope: .avatarPicker, isPresented: .constant(true))
+    QuickEditor<NoCustomEditor>(email: .init(""), scope: .avatarPicker, isPresented: .constant(true))
 }
