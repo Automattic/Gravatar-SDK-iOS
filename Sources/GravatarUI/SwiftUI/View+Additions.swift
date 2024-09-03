@@ -28,7 +28,7 @@ extension View {
         return modifier(ModalPresentationModifier(isPresented: isPresented, modalView: navigationWrapped))
     }
 
-    @available(iOS 16.0, *)
+    @available(iOS 16.4, *)
     public func avatarPickerSheet(
         isPresented: Binding<Bool>,
         email: String,
@@ -68,7 +68,7 @@ extension View {
         return modifier(ModalPresentationModifier(isPresented: isPresented, onDismiss: onDismiss, modalView: editor))
     }
 
-    @available(iOS 16.0, *)
+    @available(iOS 16.4, *)
     public func gravatarQuickEditorSheet(
         isPresented: Binding<Bool>,
         email: String,

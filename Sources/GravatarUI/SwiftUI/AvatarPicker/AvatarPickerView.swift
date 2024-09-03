@@ -25,21 +25,48 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
         ZStack {
             VStack(spacing: 0) {
                 email()
-                profileView()
-                ScrollView {
-                    errorView()
-                    if !model.grid.isEmpty {
-                        content()
-                    } else if model.isAvatarsLoading {
-                        avatarsLoadingView()
+                    .background {
+                        GeometryReader { proxy in
+                            Color.clear.preference(
+                                key: InnerHeightPreferenceKey.self,
+                                value: proxy.size.height
+                            )
+                        }
                     }
-                    Spacer()
-                        .frame(height: Constants.vStackVerticalSpacing)
+                profileView()
+                    .background {
+                        GeometryReader { proxy in
+                            Color.clear.preference(
+                                key: InnerHeightPreferenceKey.self,
+                                value: proxy.size.height
+                            )
+                        }
+                    }
+                ScrollView {
+                    VStack {
+                        errorView()
+                        if !model.grid.isEmpty {
+                            content()
+                        } else if model.isAvatarsLoading {
+                            avatarsLoadingView()
+                        }
+                        Spacer()
+                            .frame(height: Constants.vStackVerticalSpacing)
+                    }
+                    .background {
+                        GeometryReader { proxy in
+                            Color.clear.preference(
+                                key: InnerHeightPreferenceKey.self,
+                                value: proxy.size.height
+                            )
+                        }
+                    }
                 }
                 .task {
                     model.refresh()
                 }
             }
+
 
             ToastContainerView(toastManager: model.toastManager)
                 .padding(.horizontal, Constants.horizontalPadding * 2)

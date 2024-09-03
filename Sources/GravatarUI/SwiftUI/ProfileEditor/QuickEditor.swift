@@ -27,11 +27,21 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
     }
 
     var body: some View {
-        NavigationView {
-            if hasSession, let token = oauthSession.sessionToken(with: email) {
-                editorView(with: token)
-            } else {
-                noticeView()
+        VStack {
+            NavigationView {
+                if hasSession, let token = oauthSession.sessionToken(with: email) {
+                    editorView(with: token)
+                } else {
+                    noticeView()
+                }
+            }
+        }
+        .background {
+            GeometryReader { proxy in
+                Color.clear.preference(
+                    key: InnerHeightPreferenceKey.self,
+                    value: proxy.size.height + 44
+                )
             }
         }
     }

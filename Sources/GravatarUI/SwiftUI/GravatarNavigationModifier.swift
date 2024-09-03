@@ -21,6 +21,7 @@ struct GravatarNavigationModifier: ViewModifier {
                     }
                     .disabled(actionButtonDisabled)
                 }
+                
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button(action: {
                         onDoneButtonPressed?()
