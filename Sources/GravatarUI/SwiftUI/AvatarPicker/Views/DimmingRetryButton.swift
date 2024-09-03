@@ -11,10 +11,10 @@ struct DimmingRetryButton: View {
                 ZStack {
                     Rectangle()
                         .fill(.black.opacity(0.3))
-                    Image(systemName: "arrow.clockwise")
+                    Image(systemName: "exclamationmark.triangle.fill")
                         .resizable()
                         .aspectRatio(contentMode: .fill)
-                        .frame(width: 20, height: 20)
+                        .frame(width: 25, height: 25)
                 }
             }
         )

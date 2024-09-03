@@ -20,6 +20,9 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
     @State private var safariURL: URL?
     var customImageEditor: ImageEditorBlock<ImageEditor>?
     var tokenErrorHandler: (() -> Void)?
+    @State private var uploadError: UploadFailedError?
+    @State private var isUploadErrorDialogPresented: Bool = false
+    @State private var selectedDialogOption: String = ""
 
     public var body: some View {
         ZStack {
@@ -39,6 +42,30 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
                 .task {
                     model.refresh()
                 }
+                .confirmationDialog(Localized.uploadErrorTitle,
+                                    isPresented: $isUploadErrorDialogPresented,
+                                    titleVisibility: .visible,
+                                    presenting: uploadError) { error in
+                    Button(role: .destructive) {
+                        //selectedOption = "Remove"
+                    } label: {
+                        Label("Remove", systemImage: "trash")
+                    }
+
+                    Button {
+                        //selectedOption = "Retry"
+                        retryUpload(error.imageLocalID)
+                    } label: {
+                        Label("Retry", systemImage: "arrow.clockwise")
+                    }
+
+                    Button("Dismiss", role: .cancel) {
+                        //selectedOption = "Cancel"
+                    }
+                } message: { error in
+                    Text(error.reason)
+                }
+
             }
 
             ToastContainerView(toastManager: model.toastManager)
@@ -189,9 +216,9 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
         }
     }
 
-    private func retryUpload(_ avatar: AvatarImageModel) {
+    private func retryUpload(_ id: String) {
         Task {
-            await model.retryUpload(of: avatar.id)
+            await model.retryUpload(of: id)
         }
     }
 
@@ -208,7 +235,9 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
                     uploadImage(image)
                 },
                 onRetryUpload: { avatar in
-                    retryUpload(avatar)
+                    //retryUpload(avatar)
+                    uploadError = avatar.uploadFailedError
+                    isUploadErrorDialogPresented = true
                 }
             )
             .padding(.horizontal, Constants.horizontalPadding)
@@ -220,7 +249,9 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
                     model.selectAvatar(with: avatar.id)
                 },
                 onRetryUpload: { avatar in
-                    retryUpload(avatar)
+                    //retryUpload(avatar)
+                    uploadError = avatar.uploadFailedError
+                    isUploadErrorDialogPresented = true
                 }
             )
             .padding(.top, .DS.Padding.medium)
@@ -313,6 +344,11 @@ private enum AvatarPicker {
     }
 
     enum Localized {
+        static let uploadErrorTitle = NSLocalizedString(
+            "AvatarPicker.Upload.Error.title",
+            value: "Upload has failed.",
+            comment: "The internet connection appears to be offline."
+        )
         static let buttonUploadImage = NSLocalizedString(
             "AvatarPicker.ContentLoading.Success.ctaButtonTitle",
             value: "Upload image",
@@ -449,7 +485,7 @@ private enum AvatarPicker {
             .init(id: "4", source: .remote(url: "https://gravatar.com/userimage/110207384/fbbd335e57862e19267679f19b4f9db8.jpeg?size=256")),
             .init(id: "5", source: .remote(url: "https://gravatar.com/userimage/110207384/96c6950d6d8ce8dd1177a77fe738101e.jpeg?size=256")),
             .init(id: "6", source: .remote(url: "https://gravatar.com/userimage/110207384/4a4f9385b0a6fa5c00342557a098f480.jpeg?size=256")),
-            .init(id: "7", source: .local(image: UIImage()), uploadHasFailed: true),
+            .init(id: "7", source: .local(image: UIImage()), uploadFailedError: .init(imageLocalID: "7", reason: "Oops. Upload has failed.", isRetryable: true)),
         ],
         selectedImageID: "5",
         profileModel: PreviewModel()

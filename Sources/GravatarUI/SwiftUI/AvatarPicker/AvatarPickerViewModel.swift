@@ -181,10 +181,14 @@ class AvatarPickerViewModel: ObservableObject {
 
             let newModel = AvatarImageModel(id: avatar.id, source: .remote(url: avatar.url))
             grid.replaceModel(withID: localID, with: newModel)
-        } catch {
-            let newModel = AvatarImageModel(id: localID, source: .local(image: squareImage), uploadHasFailed: true)
+        
+        } catch ImageUploadError.responseError(reason: let reason) where reason.isURLSessionError {
+            let newModel = AvatarImageModel(id: localID, source: .local(image: squareImage), uploadFailedError: .init(imageLocalID: localID, reason: reason.urlSessionErrorLocalizedDescription ?? "Oops, there was an error uploading the image.", isRetryable: true))
             grid.replaceModel(withID: localID, with: newModel)
-            toastManager.showToast("Oops, there was an error uploading the image.", type: .error)
+            //toastManager.showToast("Oops, there was an error uploading the image.", type: .error)
+        } catch {
+            let newModel = AvatarImageModel(id: localID, source: .local(image: squareImage), uploadFailedError: .init(imageLocalID: localID, reason: "Oops, there was an error uploading the image.", isRetryable: false))
+            grid.replaceModel(withID: localID, with: newModel)
         }
     }
 
@@ -271,6 +275,6 @@ extension AvatarImageModel {
         id = avatar.id
         source = .remote(url: avatar.url)
         isLoading = false
-        uploadHasFailed = false
+        uploadFailedError = nil
     }
 }

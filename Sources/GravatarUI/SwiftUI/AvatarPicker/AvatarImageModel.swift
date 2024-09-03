@@ -1,6 +1,12 @@
 import SwiftUI
 import UIKit
 
+struct UploadFailedError: Hashable {
+    let imageLocalID: String
+    let reason: String
+    let isRetryable: Bool
+}
+
 struct AvatarImageModel: Hashable, Identifiable, Sendable {
     enum Source: Hashable {
         case remote(url: String)
@@ -9,7 +15,7 @@ struct AvatarImageModel: Hashable, Identifiable, Sendable {
 
     let id: String
     let isLoading: Bool
-    let uploadHasFailed: Bool
+    let uploadFailedError: UploadFailedError?
     let source: Source
 
     var url: URL? {
@@ -33,14 +39,14 @@ struct AvatarImageModel: Hashable, Identifiable, Sendable {
         return image
     }
 
-    init(id: String, source: Source, isLoading: Bool = false, uploadHasFailed: Bool = false) {
+    init(id: String, source: Source, isLoading: Bool = false, uploadFailedError: UploadFailedError? = nil) {
         self.id = id
         self.source = source
         self.isLoading = isLoading
-        self.uploadHasFailed = uploadHasFailed
+        self.uploadFailedError = uploadFailedError
     }
 
     func settingLoading(to newLoadingStatus: Bool) -> AvatarImageModel {
-        AvatarImageModel(id: id, source: source, isLoading: newLoadingStatus, uploadHasFailed: uploadHasFailed)
+        AvatarImageModel(id: id, source: source, isLoading: newLoadingStatus, uploadFailedError: uploadFailedError)
     }
 }

@@ -35,7 +35,7 @@ struct AvatarPickerAvatarView: View {
             if avatar.isLoading {
                 DimmingActivityIndicator()
                     .cornerRadius(AvatarGridConstants.avatarCornerRadius)
-            } else if avatar.uploadHasFailed {
+            } else if avatar.uploadFailedError != nil {
                 DimmingRetryButton {
                     onRetryUpload(avatar)
                 }
