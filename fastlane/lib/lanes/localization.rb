@@ -71,12 +71,12 @@ platform :ios do
 
       next if skip_commit
 
-      git_add(path: source.localizations_root)
       paths_to_commit << source.localizations_root
     end
 
     next if skip_commit
 
+    git_add(path: paths_to_commit)
     git_commit(
       path: paths_to_commit,
       message: 'Update localizations',
@@ -104,12 +104,12 @@ platform :ios do
 
       next if skip_commit
 
-      git_add(path: source.localizations_root)
       paths_to_commit << source.localizations_root
     end
 
     next if skip_commit
 
+    git_add(path: paths_to_commit)
     git_commit(
       path: paths_to_commit,
       message: 'Update strings in base locale',
