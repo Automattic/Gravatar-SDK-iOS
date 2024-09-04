@@ -125,18 +125,9 @@ platform :ios do
 
       utf8_file = File.join('..', source.base_localization_strings(table_name: table_name))
 
-      utf16_to_utf8(
-        source: utf16_file,
-        destination: utf8_file
-      )
+      utf16_content = File.read(utf16_file, mode: 'rb:UTF-16')
+      utf8_content = utf16_content.encode('UTF-8')
+      File.write(utf8_file, utf8_content, mode: 'w:UTF-8')
     end
-  end
-
-  def utf16_to_utf8(source:, destination:)
-    return unless File.exist?(source)
-
-    utf16_content = File.read(source, mode: 'rb:UTF-16')
-    utf8_content = utf16_content.encode('UTF-8')
-    File.write(destination, utf8_content, mode: 'w:UTF-8')
   end
 end
