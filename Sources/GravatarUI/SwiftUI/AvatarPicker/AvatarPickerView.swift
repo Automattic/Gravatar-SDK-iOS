@@ -12,6 +12,7 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
     @Binding var isPresented: Bool
     @State private var safariURL: URL?
     @Environment(\.verticalSizeClass) var verticalSizeClass
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass
     var customImageEditor: ImageEditorBlock<ImageEditor>?
     var tokenErrorHandler: (() -> Void)?
 
@@ -43,7 +44,8 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
             ToastContainerView(toastManager: model.toastManager)
                 .padding(.horizontal, Constants.horizontalPadding * 2)
         }
-        .preference(key: SizeClassPreferenceKey.self, value: verticalSizeClass)
+        .preference(key: VerticalSizeClassPreferenceKey.self, value: verticalSizeClass)
+        .preference(key: HorizontalSizeClassPreferenceKey.self, value: horizontalSizeClass)
         .gravatarNavigation(
             title: Constants.title,
             actionButtonDisabled: model.profileModel?.profileURL == nil,
@@ -180,7 +182,9 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
 
     @ViewBuilder
     private func avatarGrid() -> some View {
-        if contentLayoutProvider.contentLayout == .vertical {
+        // Even if the contentLayout is set to horizontal, we show vertical grid for large devices.
+        // Because the system refuses to show a bottom sheet anyway and we end up with half empty horizontal content.
+        if contentLayoutProvider.contentLayout == .vertical || horizontalSizeClass != .compact {
             AvatarGrid(
                 grid: model.grid,
                 customImageEditor: customImageEditor,
