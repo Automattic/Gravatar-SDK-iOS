@@ -2,7 +2,10 @@ import SwiftUI
 import Combine
 
 fileprivate enum ModalPresentationConstants {
-    static let bottomSheetEstimatedMinHeight: CGFloat = 500
+    // An initial estimated height for the bottom sheet in horizontal mode.
+    static let bottomSheetEstimatedHeight: CGFloat = 500
+    // This is the minimum height for the sheet in horizontal mode. Helps us to ignore unnecessary height changes.
+    static let bottomSheetMinHeight: CGFloat = 350
 }
 
 @available(iOS 16.0, *)
@@ -10,7 +13,7 @@ struct ModalPresentationModifierWithDetents<ModalView: View>: ViewModifier {
     fileprivate typealias Constants = ModalPresentationConstants
     @Binding var isPresented: Bool
     @State private var isPresentedInner: Bool
-    @State private var sheetHeight: CGFloat = Constants.bottomSheetEstimatedMinHeight
+    @State private var sheetHeight: CGFloat = Constants.bottomSheetEstimatedHeight
     @State var verticalSizeClass: UserInterfaceSizeClass?
     @State private var presentationDetents: Set<PresentationDetent>
     @State private var prioritizeScrollingOverResizing: Bool = false
@@ -24,7 +27,7 @@ struct ModalPresentationModifierWithDetents<ModalView: View>: ViewModifier {
         self.onDismiss = onDismiss
         self.modalView = modalView
         self.contentLayoutWithPresentation = contentLayout
-        self.presentationDetents = Self.detents(for: contentLayout, intrinsicHeight: Constants.bottomSheetEstimatedMinHeight, verticalSizeClass: nil)
+        self.presentationDetents = Self.detents(for: contentLayout, intrinsicHeight: Constants.bottomSheetEstimatedHeight, verticalSizeClass: nil)
     }
     
     private static func detents(for presentation: AvatarPickerContentLayoutWithPresentation, intrinsicHeight: CGFloat, verticalSizeClass: UserInterfaceSizeClass?) -> Set<PresentationDetent> {
@@ -86,7 +89,7 @@ struct ModalPresentationModifierWithDetents<ModalView: View>: ViewModifier {
                     // Otherwise the view remembers its previous height. And an animation glitch happens
                     // when switching between different presentation styles (especially between horizontal and vertical_large).
                     // Doing the same thing in .onAppear of the "modalView" doesn't give as nice results as this one don't know why.
-                    self.presentationDetents = Self.detents(for: contentLayoutWithPresentation, intrinsicHeight: sheetHeight, verticalSizeClass: verticalSizeClass)
+                    self.presentationDetents = Self.detents(for: contentLayoutWithPresentation, intrinsicHeight: max(sheetHeight, Constants.bottomSheetEstimatedHeight), verticalSizeClass: verticalSizeClass)
                 }
                 isPresentedInner = newValue
             }
@@ -97,10 +100,10 @@ struct ModalPresentationModifierWithDetents<ModalView: View>: ViewModifier {
                 modalView
                     .if(shouldUseIntrinsicSize) { view in
                         view
-                            .frame(minHeight: Constants.bottomSheetEstimatedMinHeight)
+                            .frame(minHeight: Constants.bottomSheetMinHeight)
                     }
                     .onPreferenceChange(InnerHeightPreferenceKey.self) { newHeight in
-                        if newHeight > Constants.bottomSheetEstimatedMinHeight, shouldUseIntrinsicSize {
+                        if newHeight > Constants.bottomSheetMinHeight, shouldUseIntrinsicSize {
                             sheetHeight = newHeight
                         }
                         updateDetents()
@@ -113,7 +116,6 @@ struct ModalPresentationModifierWithDetents<ModalView: View>: ViewModifier {
                     .presentationDetents(presentationDetents)
                     .presentationContentInteraction(shouldPrioritizeScrolling: prioritizeScrollingOverResizing)
             }
-            
     }
 }
 
