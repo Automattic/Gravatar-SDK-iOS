@@ -104,15 +104,7 @@ package struct ProfileIdentity: Decodable, Sendable {
     package let imageUrl: String
 }
 
-public struct Avatar: Decodable, Sendable {
-    private let imageId: String
-    private let imageUrl: String
-
-    package init(id: String, url: String) {
-        self.imageId = id
-        self.imageUrl = url
-    }
-
+extension Avatar {
     public var id: String {
         imageId
     }
