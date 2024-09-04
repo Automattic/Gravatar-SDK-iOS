@@ -234,8 +234,6 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
                     CircularProgressViewStyle()
                 )
                 .controlSize(.regular)
-
-            Spacer(minLength: .DS.Padding.medium)
         }
     }
 
