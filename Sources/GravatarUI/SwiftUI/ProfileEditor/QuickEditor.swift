@@ -35,14 +35,7 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
                     editorView(with: token)
                 } else {
                     noticeView()
-                        .background {
-                            GeometryReader { proxy in
-                                Color.clear.preference(
-                                    key: InnerHeightPreferenceKey.self,
-                                    value: proxy.size.height
-                                )
-                            }
-                        }
+                        .accumulateIntrinsicHeight()
                 }
             }
         }

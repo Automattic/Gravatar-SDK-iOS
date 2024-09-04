@@ -19,23 +19,9 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
         ZStack {
             VStack(spacing: 0) {
                 email()
-                    .background {
-                        GeometryReader { proxy in
-                            Color.clear.preference(
-                                key: InnerHeightPreferenceKey.self,
-                                value: proxy.size.height
-                            )
-                        }
-                    }
+                    .accumulateIntrinsicHeight()
                 profileView()
-                    .background {
-                        GeometryReader { proxy in
-                            Color.clear.preference(
-                                key: InnerHeightPreferenceKey.self,
-                                value: proxy.size.height
-                            )
-                        }
-                    }
+                    .accumulateIntrinsicHeight()
                 ScrollView {
                     VStack {
                         errorView()
@@ -47,14 +33,7 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
                         Spacer()
                             .frame(height: Constants.vStackVerticalSpacing)
                     }
-                    .background {
-                        GeometryReader { proxy in
-                            Color.clear.preference(
-                                key: InnerHeightPreferenceKey.self,
-                                value: proxy.size.height
-                            )
-                        }
-                    }
+                    .accumulateIntrinsicHeight()
                 }
                 .task {
                     model.refresh()
