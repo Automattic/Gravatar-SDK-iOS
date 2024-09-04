@@ -1,23 +1,17 @@
 import Gravatar
 import SwiftUI
 
-public enum AvatarPickerContentLayout: String, CaseIterable, Identifiable {
-    public var id: Self { self }
-
-    case vertical
-    case horizontal
-}
-
 @MainActor
 struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
     fileprivate typealias Constants = AvatarPicker.Constants
     fileprivate typealias Localized = AvatarPicker.Localized
 
     @ObservedObject var model: AvatarPickerViewModel
-    @State var contentLayout: AvatarPickerContentLayout = .vertical
+    var contentLayoutProvider: AvatarPickerContentLayoutProviding = AvatarPickerContentLayout.vertical
     @Environment(\.colorScheme) var colorScheme: ColorScheme
     @Binding var isPresented: Bool
     @State private var safariURL: URL?
+    @Environment(\.verticalSizeClass) var verticalSizeClass
     var customImageEditor: ImageEditorBlock<ImageEditor>?
     var tokenErrorHandler: (() -> Void)?
 
@@ -67,10 +61,10 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
                 }
             }
 
-
             ToastContainerView(toastManager: model.toastManager)
                 .padding(.horizontal, Constants.horizontalPadding * 2)
         }
+        .preference(key: SizeClassPreferenceKey.self, value: verticalSizeClass)
         .gravatarNavigation(
             title: Constants.title,
             actionButtonDisabled: model.profileModel?.profileURL == nil,
@@ -207,7 +201,7 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
 
     @ViewBuilder
     private func avatarGrid() -> some View {
-        if contentLayout == .vertical {
+        if contentLayoutProvider.contentLayout == .vertical {
             AvatarGrid(
                 grid: model.grid,
                 customImageEditor: customImageEditor,
@@ -261,6 +255,8 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
                     CircularProgressViewStyle()
                 )
                 .controlSize(.regular)
+
+            Spacer(minLength: .DS.Padding.medium)
         }
     }
 
@@ -465,7 +461,7 @@ private enum AvatarPicker {
         profileModel: PreviewModel()
     )
 
-    return AvatarPickerView<NoCustomEditor>(model: model, contentLayout: .horizontal, isPresented: .constant(true))
+    return AvatarPickerView<NoCustomEditor>(model: model, contentLayoutProvider: AvatarPickerContentLayout.horizontal, isPresented: .constant(true))
 }
 
 #Preview("Empty elements") {

@@ -18,12 +18,14 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
     @Binding var isPresented: Bool
     let email: Email
     var customImageEditor: ImageEditorBlock<ImageEditor>?
+    var contentLayoutProvider: AvatarPickerContentLayoutProviding
 
-    init(email: Email, scope: QuickEditorScope, isPresented: Binding<Bool>, customImageEditor: ImageEditorBlock<ImageEditor>? = nil) {
+    init(email: Email, scope: QuickEditorScope, isPresented: Binding<Bool>, customImageEditor: ImageEditorBlock<ImageEditor>? = nil, contentLayoutProvider: AvatarPickerContentLayoutProviding = AvatarPickerContentLayout.vertical) {
         self.email = email
         self.scope = scope
         self._isPresented = isPresented
         self.customImageEditor = customImageEditor
+        self.contentLayoutProvider = contentLayoutProvider
     }
 
     var body: some View {
@@ -33,15 +35,15 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
                     editorView(with: token)
                 } else {
                     noticeView()
+                        .background {
+                            GeometryReader { proxy in
+                                Color.clear.preference(
+                                    key: InnerHeightPreferenceKey.self,
+                                    value: proxy.size.height
+                                )
+                            }
+                        }
                 }
-            }
-        }
-        .background {
-            GeometryReader { proxy in
-                Color.clear.preference(
-                    key: InnerHeightPreferenceKey.self,
-                    value: proxy.size.height + 44
-                )
             }
         }
     }
@@ -52,6 +54,7 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
         case .avatarPicker:
             AvatarPickerView(
                 model: .init(email: email, authToken: token),
+                contentLayoutProvider: contentLayoutProvider, 
                 isPresented: $isPresented,
                 customImageEditor: customImageEditor,
                 tokenErrorHandler: {
@@ -100,5 +103,5 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
 }
 
 #Preview {
-    QuickEditor<NoCustomEditor>(email: .init(""), scope: .avatarPicker, isPresented: .constant(true))
+    QuickEditor<NoCustomEditor>(email: .init(""), scope: .avatarPicker, isPresented: .constant(true), contentLayoutProvider: AvatarPickerContentLayoutWithPresentation.vertical(presentationStyle: .large))
 }

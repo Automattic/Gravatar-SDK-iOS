@@ -31,6 +31,14 @@ struct GravatarNavigationModifier: ViewModifier {
                     }
                 }
             }
+            .background {
+                GeometryReader { proxy in
+                    Color.clear.preference(
+                        key: InnerHeightPreferenceKey.self,
+                        value: 56 // navigation bar height
+                    )
+                }
+            }
     }
 }
 

@@ -2,17 +2,38 @@ import SwiftUI
 import GravatarUI
 
 struct DemoAvatarPickerView: View {
+    enum ContentLayoutOptions: String, Identifiable, CaseIterable {
+        var id: String { rawValue }
+        
+        case verticalLarge = "vertical - large"
+        case verticalExpandable = "vertical - expandable"
+        case verticalExpandablePrioritizeScrolling = "vertical - expandable - prioritize scrolling"
+        case horizontal = "horizontal"
+        
+        var contentLayout: AvatarPickerContentLayoutWithPresentation {
+            switch self {
+            case .verticalLarge:
+                    .vertical(presentationStyle: .large)
+            case .verticalExpandable:
+                    .vertical(presentationStyle: .extendableMedium())
+            case .verticalExpandablePrioritizeScrolling:
+                    .vertical(presentationStyle: .extendableMedium(prioritizeScrollingOverResizing: true))
+            case .horizontal:
+                    .horizontal()
+            }
+        }
+    }
     
     @AppStorage("pickerEmail") private var email: String = ""
     @AppStorage("pickerToken") private var token: String = ""
-    @AppStorage("pickerContentLayout") private var contentLayout: AvatarPickerContentLayout = .vertical
+    @AppStorage("pickerContentLayoutOptions") private var contentLayoutOptions: ContentLayoutOptions = .verticalLarge
     @State private var isSecure: Bool = true
 
     // You can make this `true` by default to easily test the picker
     @State private var isPresentingPicker: Bool = false
     @State var enableCustomImageCropper: Bool = false
     @State private var isFullHeight: Bool = false
-
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 5) {
             VStack(alignment: .leading, spacing: 5) {
@@ -37,8 +58,8 @@ struct DemoAvatarPickerView: View {
                 HStack {
                     Text("Content Layout")
                     Spacer()
-                    Picker("Content Layout", selection: $contentLayout) {
-                        ForEach(AvatarPickerContentLayout.allCases) { option in
+                    Picker("Content Layout", selection: $contentLayoutOptions) {
+                        ForEach(ContentLayoutOptions.allCases) { option in
                             Text(option.rawValue).tag(option)
                         }
                     }
@@ -54,9 +75,8 @@ struct DemoAvatarPickerView: View {
                 .avatarPickerSheet(isPresented: $isPresentingPicker,
                                    email: email,
                                    authToken: token,
-                                   contentLayout: contentLayout,
-                                   customImageEditor: customImageEditor(),
-                                   presentationDetents: isFullHeight ? [.large] : [.fraction(0.7)])
+                                   contentLayout: contentLayoutOptions.contentLayout,
+                                   customImageEditor: customImageEditor())
                 Spacer()
             }
             .padding(.horizontal)

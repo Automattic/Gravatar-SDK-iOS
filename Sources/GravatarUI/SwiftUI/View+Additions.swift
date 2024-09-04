@@ -20,7 +20,7 @@ extension View {
     ) -> some View {
         let avatarPickerView = AvatarPickerView(
             model: AvatarPickerViewModel(email: Email(email), authToken: authToken),
-            contentLayout: contentLayout,
+            contentLayoutProvider: contentLayout,
             isPresented: isPresented,
             customImageEditor: customImageEditor
         )
@@ -28,23 +28,22 @@ extension View {
         return modifier(ModalPresentationModifier(isPresented: isPresented, modalView: navigationWrapped))
     }
 
-    @available(iOS 16.4, *)
+    @available(iOS 16.0, *)
     public func avatarPickerSheet(
         isPresented: Binding<Bool>,
         email: String,
         authToken: String,
-        contentLayout: AvatarPickerContentLayout,
-        customImageEditor: ImageEditorBlock<some ImageEditorView>? = nil as NoCustomEditorBlock?,
-        presentationDetents: Set<PresentationDetent>
+        contentLayout: AvatarPickerContentLayoutWithPresentation,
+        customImageEditor: ImageEditorBlock<some ImageEditorView>? = nil as NoCustomEditorBlock?
     ) -> some View {
         let avatarPickerView = AvatarPickerView(
             model: AvatarPickerViewModel(email: Email(email), authToken: authToken),
-            contentLayout: contentLayout,
+            contentLayoutProvider: contentLayout,
             isPresented: isPresented,
             customImageEditor: customImageEditor
         )
         let navigationWrapped = NavigationView { avatarPickerView }
-        return modifier(ModalPresentationModifierWithDetents(isPresented: isPresented, modalView: navigationWrapped, presentationDetents: presentationDetents))
+        return modifier(ModalPresentationModifierWithDetents(isPresented: isPresented, modalView: navigationWrapped, contentLayout: contentLayout))
     }
 
     func avatarPickerBorder(colorScheme: ColorScheme, borderWidth: CGFloat = 1) -> some View {
@@ -68,21 +67,40 @@ extension View {
         return modifier(ModalPresentationModifier(isPresented: isPresented, onDismiss: onDismiss, modalView: editor))
     }
 
-    @available(iOS 16.4, *)
+    @available(iOS 16.0, *)
     public func gravatarQuickEditorSheet(
         isPresented: Binding<Bool>,
         email: String,
         scope: QuickEditorScope,
         customImageEditor: ImageEditorBlock<some ImageEditorView>? = nil as NoCustomEditorBlock?,
-        presentationDetents: Set<PresentationDetent>,
+        contentLayout: AvatarPickerContentLayoutWithPresentation,
         onDismiss: (() -> Void)? = nil
     ) -> some View {
-        let editor = QuickEditor(email: .init(email), scope: scope, isPresented: isPresented, customImageEditor: customImageEditor)
+        let editor = QuickEditor(email: .init(email), scope: scope, isPresented: isPresented, customImageEditor: customImageEditor, contentLayoutProvider: contentLayout)
         return modifier(ModalPresentationModifierWithDetents(
             isPresented: isPresented,
             onDismiss: onDismiss,
             modalView: editor,
-            presentationDetents: presentationDetents
+            contentLayout: contentLayout
         ))
+    }
+    
+    func presentationContentInteraction(shouldPrioritizeScrolling: Bool) -> some View {
+        if #available(iOS 16.4, *) {
+            let behavior: PresentationContentInteraction = shouldPrioritizeScrolling ? .scrolls : .automatic
+            return self
+                .presentationContentInteraction(behavior)
+        } else {
+            return self
+        }
+    }
+    
+    @ViewBuilder
+    func `if`<Content: View>(_ condition: Bool, apply: (Self) -> Content) -> some View {
+        if condition {
+            apply(self)
+        } else {
+            self
+        }
     }
 }
