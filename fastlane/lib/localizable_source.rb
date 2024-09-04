@@ -7,14 +7,15 @@
 #   localizable = LocalizableSource.new(
 #     source_paths: ['/path/to/source1', '/path/to/source2'],
 #     localizations_root: '/path/to/localizations',
+#     base_locale: 'en',
 #     gp_project_url: 'https://example.com/project'
 #   )
 #
 #   puts localizable.base_localization_strings
 #   # Output: /path/to/localizations/en.lproj/Localizable.strings
 #
-#   puts localizable.base_localization_strings(base_locale: 'fr')
-#   # Output: /path/to/localizations/fr.lproj/Localizable.strings
+#   puts localizable.base_localization_strings(table_name: 'Example')
+#   # Output: /path/to/localizations/en.lproj/Example.strings
 #
 class LocalizableSource
   # @return [Array<String>] An array of paths to source files we want to scan for localization are stored.
@@ -24,36 +25,40 @@ class LocalizableSource
   # @return [String] The parent directory containing the `.lproj` folders.
   attr_accessor :localizations_root
 
+  # @return [String] The two-character locale that serves as the base local for localization
+  attr_accessor :base_locale
+
   # @return [String, nil] An optional URL to the translation management system or project repository.
   # If `nil`, base localization files can be generated, but no localizations can be downloaded.
   attr_accessor :gp_project_url
 
+  # @return [String] The path to the `.lproj` director of the base locale.
+  attr_reader :base_localization_root
+
   # Initializes a new LocalizableSource instance.
   #
-  # @param source_paths [Array<String>] The paths to the source files.
-  # @param localizations_root [String] The root directory for localization files.
+  # @param source_paths [Array<String>] The paths to the source files that contain localizable strings.
+  # @param localizations_root [String] The parent directory containing the `.lproj` folders.
+  # @param base_locale [String] The two-character locale that serves as the base local for localization.
   # @param gp_project_url [String, nil] Optional URL to the translation management system or project repository.
   # @raise [ArgumentError] if source_paths or localizations_root is nil.
   #
-  def initialize(source_paths:, localizations_root:, gp_project_url: nil)
+  def initialize(source_paths:, localizations_root:, base_locale: 'en', gp_project_url: nil)
     raise ArgumentError, 'source_paths cannot be nil' if source_paths.nil?
     raise ArgumentError, 'localizations_root cannot be nil' if localizations_root.nil?
 
     @source_paths = source_paths
     @localizations_root = localizations_root
+    @base_locale = base_locale
     @gp_project_url = gp_project_url
+    @base_localization_root = File.join(localizations_root, "#{base_locale}.lproj")
   end
 
-  # Constructs the path to the base localization strings file.
+  # Retrieves a list of all `.strings` files located in the base localization directory.
   #
-  # The method combines the localization root directory with the locale and table name to generate the path
-  # to the base localization strings file.
+  # @return [Array<String>] An array of `.strings` files in the base localization directory.
   #
-  # @param table_name [String] The name of the table for localization strings. Defaults to "Localizable".
-  # @param base_locale [String] The base locale for localization. Defaults to 'en'.
-  # @return [String] The path to the base localization strings file.
-  #
-  def base_localization_strings(table_name: 'Localizable', base_locale: 'en')
-    File.join(@localizations_root, "#{base_locale}.lproj", "#{table_name}.strings")
+  def base_localization_strings_paths
+    Dir.glob(File.join(@base_localization_root, '*.strings'))
   end
 end

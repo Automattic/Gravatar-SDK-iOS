@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'fileutils'
 require_relative '../localizable_source'
 
 default_platform(:ios)
@@ -90,16 +91,13 @@ platform :ios do
     paths_to_commit = []
 
     SOURCES_TO_LOCALIZE.each do |source|
-      Dir.mktmpdir do |tempdir|
-        ios_generate_strings_file_from_code(
-          paths: source.source_paths,
-          output_dir: tempdir
-        )
+      ios_generate_strings_file_from_code(
+        paths: source.source_paths,
+        output_dir: source.base_localization_root
+      )
 
-        process_generated_strings(
-          source: source,
-          generated_strings_dir: tempdir
-        )
+      Dir.chdir('..') do
+        process_generated_strings(source: source)
       end
 
       next if skip_commit
@@ -117,17 +115,52 @@ platform :ios do
     )
   end
 
-  def process_generated_strings(source:, generated_strings_dir:)
-    utf16_string_files = Dir.glob(File.join(generated_strings_dir, '*.strings'))
+  # Processes an `.lproj` directory containing UTF-16 encoded localization `.strings`
+  # files by converting them to UTF-8.
+  #
+  # @param source [LocalizableSource] An object that provides a method `base_localization_strings_paths`
+  #   which returns an array of paths to `.strings` file for the base locale.
+  #
+  # @return [void]
+  #
+  # @example Convert all `.strings` files from UTF-16 to UTF-8.
+  #   process_generated_strings(
+  #     source: LocalizationSource.new(source_paths: ['/source/path'], localizations_root: 'Localizations'),
+  #   )
+  #
+  # @raise [SystemCallError] If reading or writing the files fails due to an IO error.
+  #
+  def process_generated_strings(source:)
+    utf16_strings_paths = source.base_localization_strings_paths
 
-    utf16_string_files.each do |utf16_file|
-      table_name = File.basename(utf16_file, File.extname(utf16_file))
+    Dir.mktmpdir do |tempdir|
+      utf16_strings_paths.each do |strings_file|
+        utf8_strings_path = File.join(tempdir, File.basename(strings_file))
 
-      utf8_file = File.join('..', source.base_localization_strings(table_name: table_name))
+        puts "utf16 file: #{strings_file}"
+        # Convert UTF-16 to UTF-8, using a temp directory
+        begin
+          utf16_content = File.read(strings_file, mode: 'rb:UTF-16')
+          utf8_content = utf16_content.encode('UTF-8')
+          UI.message("Converting: #{strings_file}")
+          File.write(utf8_strings_path, utf8_content, mode: 'w:UTF-8')
+        rescue Encoding::InvalidByteSequenceError
+          # This isn't a UTF-16 file, skip
+          next
+        rescue StandardError => e
+          UI.error("An error occurred: #{e.message}")
+          raise
+        end
 
-      utf16_content = File.read(utf16_file, mode: 'rb:UTF-16')
-      utf8_content = utf16_content.encode('UTF-8')
-      File.write(utf8_file, utf8_content, mode: 'w:UTF-8')
+        puts "The file was converted: #{utf8_strings_path}"
+        # Use the converted file to overwrite the original source
+        begin
+          FileUtils.cp(utf8_strings_path, strings_file)
+        rescue StandardError => e
+          UI.error("An error occurred: #{e.message}")
+          raise
+        end
+      end
     end
   end
 end
