@@ -127,10 +127,8 @@ platform :ios do
   #   )
   #
   def convert_generated_strings(source:)
-    Dir.mktmpdir do |tempdir|
-      source.base_localization_strings_paths.each do |strings_file|
-        convert_file(strings_file: strings_file, tempdir: tempdir)
-      end
+    source.base_localization_strings_paths.each do |strings_file|
+      convert_file(strings_file: strings_file)
     end
   end
 
@@ -138,12 +136,13 @@ platform :ios do
   # before overwriting the original file
   #
   # @param strings_file [String] path to the `.strings` file to convert
-  # @param tempdir [String] path to a temporary directory to be used for the conversion
   # @return [void]
   #
-  def convert_file(strings_file:, tempdir:)
-    utf8_strings_file = convert_file_to_utf8(strings_file: strings_file, tempdir: tempdir)
-    copy_converted_file(utf8_strings_file: utf8_strings_file, original_strings_file: strings_file) unless utf8_strings_file.nil?
+  def convert_file(strings_file:)
+    Dir.mktmpdir do |tempdir|
+      utf8_strings_file = convert_file_to_utf8(strings_file: strings_file, tempdir: tempdir)
+      copy_converted_file(utf8_strings_file: utf8_strings_file, original_strings_file: strings_file) unless utf8_strings_file.nil?
+    end
   end
 
   # Converts a UTF-16 `.strings` file to UTF-8 and writes it to the specified path.
