@@ -16,12 +16,11 @@ extension View {
         isPresented: Binding<Bool>,
         email: String,
         authToken: String,
-        contentLayout: AvatarPickerContentLayout,
         customImageEditor: ImageEditorBlock<some ImageEditorView>? = nil as NoCustomEditorBlock?
     ) -> some View {
         let avatarPickerView = AvatarPickerView(
             model: AvatarPickerViewModel(email: Email(email), authToken: authToken),
-            contentLayoutProvider: contentLayout,
+            contentLayoutProvider: AvatarPickerContentLayout.vertical,
             isPresented: isPresented,
             customImageEditor: customImageEditor
         )
@@ -63,7 +62,6 @@ extension View {
         email: String,
         scope: QuickEditorScope,
         customImageEditor: ImageEditorBlock<some ImageEditorView>? = nil as NoCustomEditorBlock?,
-        contentLayout: AvatarPickerContentLayout,
         onDismiss: (() -> Void)? = nil
     ) -> some View {
         let editor = QuickEditor(
@@ -71,7 +69,7 @@ extension View {
             scope: scope,
             isPresented: isPresented,
             customImageEditor: customImageEditor,
-            contentLayoutProvider: contentLayout
+            contentLayoutProvider: AvatarPickerContentLayout.vertical
         )
         return modifier(ModalPresentationModifier(isPresented: isPresented, onDismiss: onDismiss, modalView: editor))
     }
