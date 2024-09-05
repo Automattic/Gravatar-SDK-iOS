@@ -15,20 +15,22 @@ public enum VerticalContentPresentationStyle: Sendable, Equatable {
 
 /// Presentation styles supported for the horizontially scrolling content.
 public enum HorizontalContentPresentationStyle: String, Sendable, Equatable {
-    /// Represents a bottom sheet with the intrinsic size.
+    /// Represents a bottom sheet with intrinsic height.
     /// There are 2 size classes where this mode is inactive:
     ///  - Compact height: The sheet is displayed in full height.
-    ///  - Regular width: The system determines the size of the sheet and the content is displayed as a verticially scrolling grid.
-    case intrinsicSize
+    ///  - Regular width: The system ignores the intrinsic height and defaults to a full size sheet which is
+    ///  something out of our control so the content is displayed as a verticially scrolling grid.
+    case intrinsicHeight
 }
 
 /// Content layout to use iOS 16.0 +.
 public enum AvatarPickerContentLayoutWithPresentation: AvatarPickerContentLayoutProviding, Equatable {
     /// Displays avatars in a vertcally scrolling grid with the given presentation style. See: ``VerticalContentPresentationStyle``
     case vertical(presentationStyle: VerticalContentPresentationStyle = .large)
+
     /// Displays avatars in a horizontally scrolling grid with the given presentation style. The grid constists of 1 row . See:
     /// ``HorizontalContentPresentationStyle``
-    case horizontal(presentationStyle: HorizontalContentPresentationStyle = .intrinsicSize)
+    case horizontal(presentationStyle: HorizontalContentPresentationStyle = .intrinsicHeight)
 
     // MARK: AvatarPickerContentLayoutProviding
 
