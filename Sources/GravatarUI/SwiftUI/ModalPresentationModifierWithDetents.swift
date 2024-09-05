@@ -36,6 +36,53 @@ struct ModalPresentationModifierWithDetents<ModalView: View>: ViewModifier {
         )
     }
 
+    func body(content: Content) -> some View {
+        content
+            .onChange(of: isPresented) { newValue in
+                if newValue {
+                    // First init the detents and then present. This helps with starting off with the correct state.
+                    // Otherwise the view remembers its previous height. And an animation glitch happens
+                    // when switching between different presentation styles (especially between horizontal and vertical_large).
+                    // Doing the same thing in .onAppear of the "modalView" doesn't give as nice results as this one don't know why.
+                    self.presentationDetents = Self.detents(
+                        for: contentLayoutWithPresentation,
+                        intrinsicHeight: max(sheetHeight, Constants.bottomSheetEstimatedHeight),
+                        verticalSizeClass: verticalSizeClass,
+                        horizontalSizeClass: horizontalSizeClass
+                    )
+                }
+                isPresentedInner = newValue
+            }
+            .onChange(of: isPresentedInner) { newValue in
+                self.isPresented = newValue
+            }
+            .sheet(isPresented: $isPresentedInner, onDismiss: onDismiss) {
+                modalView
+                    .if(shouldUseIntrinsicSize) { view in
+                        view
+                            .frame(minHeight: Constants.bottomSheetMinHeight)
+                    }
+                    .onPreferenceChange(InnerHeightPreferenceKey.self) { newHeight in
+                        if newHeight > Constants.bottomSheetMinHeight, shouldUseIntrinsicSize {
+                            sheetHeight = newHeight
+                        }
+                        updateDetents()
+                    }
+                    .onPreferenceChange(VerticalSizeClassPreferenceKey.self) { newSizeClass in
+                        guard newSizeClass != nil else { return }
+                        self.verticalSizeClass = newSizeClass
+                        updateDetents()
+                    }
+                    .onPreferenceChange(HorizontalSizeClassPreferenceKey.self) { newSizeClass in
+                        guard newSizeClass != nil else { return }
+                        self.horizontalSizeClass = newSizeClass
+                        updateDetents()
+                    }
+                    .presentationDetents(presentationDetents)
+                    .presentationContentInteraction(shouldPrioritizeScrolling: prioritizeScrollOverResize)
+            }
+    }
+
     private static func detents(
         for presentation: AvatarPickerContentLayoutWithPresentation,
         intrinsicHeight: CGFloat,
@@ -95,52 +142,5 @@ struct ModalPresentationModifierWithDetents<ModalView: View>: ViewModifier {
         case .vertical:
             false
         }
-    }
-
-    func body(content: Content) -> some View {
-        content
-            .onChange(of: isPresented) { newValue in
-                if newValue {
-                    // First init the detents and then present. This helps with starting off with the correct state.
-                    // Otherwise the view remembers its previous height. And an animation glitch happens
-                    // when switching between different presentation styles (especially between horizontal and vertical_large).
-                    // Doing the same thing in .onAppear of the "modalView" doesn't give as nice results as this one don't know why.
-                    self.presentationDetents = Self.detents(
-                        for: contentLayoutWithPresentation,
-                        intrinsicHeight: max(sheetHeight, Constants.bottomSheetEstimatedHeight),
-                        verticalSizeClass: verticalSizeClass,
-                        horizontalSizeClass: horizontalSizeClass
-                    )
-                }
-                isPresentedInner = newValue
-            }
-            .onChange(of: isPresentedInner) { newValue in
-                self.isPresented = newValue
-            }
-            .sheet(isPresented: $isPresentedInner, onDismiss: onDismiss) {
-                modalView
-                    .if(shouldUseIntrinsicSize) { view in
-                        view
-                            .frame(minHeight: Constants.bottomSheetMinHeight)
-                    }
-                    .onPreferenceChange(InnerHeightPreferenceKey.self) { newHeight in
-                        if newHeight > Constants.bottomSheetMinHeight, shouldUseIntrinsicSize {
-                            sheetHeight = newHeight
-                        }
-                        updateDetents()
-                    }
-                    .onPreferenceChange(VerticalSizeClassPreferenceKey.self) { newSizeClass in
-                        guard newSizeClass != nil else { return }
-                        self.verticalSizeClass = newSizeClass
-                        updateDetents()
-                    }
-                    .onPreferenceChange(HorizontalSizeClassPreferenceKey.self) { newSizeClass in
-                        guard newSizeClass != nil else { return }
-                        self.horizontalSizeClass = newSizeClass
-                        updateDetents()
-                    }
-                    .presentationDetents(presentationDetents)
-                    .presentationContentInteraction(shouldPrioritizeScrolling: prioritizeScrollOverResize)
-            }
     }
 }
