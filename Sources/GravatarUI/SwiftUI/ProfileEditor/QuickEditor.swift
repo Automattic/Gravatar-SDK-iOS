@@ -35,14 +35,12 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
     }
 
     var body: some View {
-        VStack {
-            NavigationView {
-                if hasSession, let token = oauthSession.sessionToken(with: email) {
-                    editorView(with: token)
-                } else {
-                    noticeView()
-                        .accumulateIntrinsicHeight()
-                }
+        NavigationView {
+            if hasSession, let token = oauthSession.sessionToken(with: email) {
+                editorView(with: token)
+            } else {
+                noticeView()
+                    .accumulateIntrinsicHeight()
             }
         }
     }
