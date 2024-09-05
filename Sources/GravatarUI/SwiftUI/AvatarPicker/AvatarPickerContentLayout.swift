@@ -45,6 +45,7 @@ public enum AvatarPickerContentLayoutWithPresentation: AvatarPickerContentLayout
 }
 
 /// Content layout to use pre iOS 16.0 where the system don't offer different presentation styles for SwiftUI.
+/// Use ``AvatarPickerContentLayoutWithPresentation`` for iOS 16.0 +.
 public enum AvatarPickerContentLayout: String, CaseIterable, Identifiable, AvatarPickerContentLayoutProviding {
     public var id: Self { self }
 
