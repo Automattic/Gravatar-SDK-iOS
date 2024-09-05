@@ -1,7 +1,7 @@
-import SwiftUI
 import Combine
+import SwiftUI
 
-fileprivate enum ModalPresentationConstants {
+private enum ModalPresentationConstants {
     // An initial estimated height for the bottom sheet in horizontal mode.
     static let bottomSheetEstimatedHeight: CGFloat = 500
     // This is the minimum height for the sheet in horizontal mode. Helps us to ignore unnecessary height changes.
@@ -28,10 +28,20 @@ struct ModalPresentationModifierWithDetents<ModalView: View>: ViewModifier {
         self.onDismiss = onDismiss
         self.modalView = modalView
         self.contentLayoutWithPresentation = contentLayout
-        self.presentationDetents = Self.detents(for: contentLayout, intrinsicHeight: Constants.bottomSheetEstimatedHeight, verticalSizeClass: nil, horizontalSizeClass: nil)
+        self.presentationDetents = Self.detents(
+            for: contentLayout,
+            intrinsicHeight: Constants.bottomSheetEstimatedHeight,
+            verticalSizeClass: nil,
+            horizontalSizeClass: nil
+        )
     }
-    
-    private static func detents(for presentation: AvatarPickerContentLayoutWithPresentation, intrinsicHeight: CGFloat, verticalSizeClass: UserInterfaceSizeClass?, horizontalSizeClass: UserInterfaceSizeClass?) -> Set<PresentationDetent> {
+
+    private static func detents(
+        for presentation: AvatarPickerContentLayoutWithPresentation,
+        intrinsicHeight: CGFloat,
+        verticalSizeClass: UserInterfaceSizeClass?,
+        horizontalSizeClass: UserInterfaceSizeClass?
+    ) -> Set<PresentationDetent> {
         switch presentation {
         case .horizontal:
             if verticalSizeClass == .compact || (horizontalSizeClass != nil && horizontalSizeClass != .compact) {
@@ -39,50 +49,54 @@ struct ModalPresentationModifierWithDetents<ModalView: View>: ViewModifier {
                 // also the default value of the detent).
                 // similarly in large devices like iPads, we display it the default way and not try to
                 // show it with intrinsic height. The system ignores it anyway.
-                return .init([.large])
-            }
-            else {
-                return .init([.height(intrinsicHeight)])
+                .init([.large])
+            } else {
+                .init([.height(intrinsicHeight)])
             }
         case .vertical(let presentationStyle):
             switch presentationStyle {
             case .large:
-                return .init([.large])
-            case let .extendableMedium(initialFraction, _):
-                return .init([.fraction(initialFraction), .large])
+                .init([.large])
+            case .extendableMedium(let initialFraction, _):
+                .init([.fraction(initialFraction), .large])
             }
         }
     }
 
     private func updateDetents() {
-        self.presentationDetents = Self.detents(for: contentLayoutWithPresentation, intrinsicHeight: sheetHeight, verticalSizeClass: verticalSizeClass, horizontalSizeClass: horizontalSizeClass)
+        self.presentationDetents = Self.detents(
+            for: contentLayoutWithPresentation,
+            intrinsicHeight: sheetHeight,
+            verticalSizeClass: verticalSizeClass,
+            horizontalSizeClass: horizontalSizeClass
+        )
         switch contentLayoutWithPresentation {
         case .vertical(let presentationStyle):
             switch presentationStyle {
             case .large:
                 break
-            case let .extendableMedium(_, prioritizeScrollingOverResizing):
+            case .extendableMedium(_, let prioritizeScrollingOverResizing):
                 self.prioritizeScrollingOverResizing = prioritizeScrollingOverResizing
             }
         case .horizontal:
             prioritizeScrollingOverResizing = true
         }
     }
-    
+
     private var shouldUseIntrinsicSize: Bool {
         switch contentLayoutWithPresentation {
         case .horizontal:
             switch verticalSizeClass {
             case .compact:
-                return false
+                false
             default:
-                return true
+                true
             }
         case .vertical:
-            return false
+            false
         }
     }
-    
+
     func body(content: Content) -> some View {
         content
             .onChange(of: isPresented) { newValue in
@@ -91,7 +105,12 @@ struct ModalPresentationModifierWithDetents<ModalView: View>: ViewModifier {
                     // Otherwise the view remembers its previous height. And an animation glitch happens
                     // when switching between different presentation styles (especially between horizontal and vertical_large).
                     // Doing the same thing in .onAppear of the "modalView" doesn't give as nice results as this one don't know why.
-                    self.presentationDetents = Self.detents(for: contentLayoutWithPresentation, intrinsicHeight: max(sheetHeight, Constants.bottomSheetEstimatedHeight), verticalSizeClass: verticalSizeClass, horizontalSizeClass: horizontalSizeClass)
+                    self.presentationDetents = Self.detents(
+                        for: contentLayoutWithPresentation,
+                        intrinsicHeight: max(sheetHeight, Constants.bottomSheetEstimatedHeight),
+                        verticalSizeClass: verticalSizeClass,
+                        horizontalSizeClass: horizontalSizeClass
+                    )
                 }
                 isPresentedInner = newValue
             }
@@ -133,7 +152,7 @@ struct InnerHeightPreferenceKey: PreferenceKey {
     }
 }
 
-protocol ValueAccumulatingPreferenceKey: PreferenceKey { }
+protocol ValueAccumulatingPreferenceKey: PreferenceKey {}
 
 extension ValueAccumulatingPreferenceKey {
     static func reduce(value: inout UserInterfaceSizeClass?, nextValue: () -> UserInterfaceSizeClass?) {

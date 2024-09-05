@@ -76,7 +76,13 @@ extension View {
         contentLayout: AvatarPickerContentLayoutWithPresentation,
         onDismiss: (() -> Void)? = nil
     ) -> some View {
-        let editor = QuickEditor(email: .init(email), scope: scope, isPresented: isPresented, customImageEditor: customImageEditor, contentLayoutProvider: contentLayout)
+        let editor = QuickEditor(
+            email: .init(email),
+            scope: scope,
+            isPresented: isPresented,
+            customImageEditor: customImageEditor,
+            contentLayoutProvider: contentLayout
+        )
         return modifier(ModalPresentationModifierWithDetents(
             isPresented: isPresented,
             onDismiss: onDismiss,
@@ -84,7 +90,7 @@ extension View {
             contentLayout: contentLayout
         ))
     }
-    
+
     func presentationContentInteraction(shouldPrioritizeScrolling: Bool) -> some View {
         if #available(iOS 16.4, *) {
             let behavior: PresentationContentInteraction = shouldPrioritizeScrolling ? .scrolls : .automatic
@@ -94,16 +100,16 @@ extension View {
             return self
         }
     }
-    
+
     @ViewBuilder
-    func `if`<Content: View>(_ condition: Bool, apply: (Self) -> Content) -> some View {
+    func `if`(_ condition: Bool, apply: (Self) -> some View) -> some View {
         if condition {
             apply(self)
         } else {
             self
         }
     }
-    
+
     /// Caution: `InnerHeightPreferenceKey` accumulates the values so DO NOT use this on  a View and one of its ancestors at the same time.
     @ViewBuilder
     func accumulateIntrinsicHeight() -> some View {

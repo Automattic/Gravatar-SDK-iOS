@@ -16,7 +16,7 @@ public protocol AvatarPickerContentLayoutProviding: Sendable {
 
 public enum AvatarPickerContentLayout: String, CaseIterable, Identifiable, AvatarPickerContentLayoutProviding {
     public var contentLayout: AvatarPickerContentLayout { self }
-    
+
     public var id: Self { self }
 
     case vertical
@@ -24,10 +24,9 @@ public enum AvatarPickerContentLayout: String, CaseIterable, Identifiable, Avata
 }
 
 public enum AvatarPickerContentLayoutWithPresentation: AvatarPickerContentLayoutProviding, Equatable, Hashable {
-    
     case vertical(presentationStyle: VerticalContentPresentationStyles = .large)
     case horizontal(presentationStyle: HorizontalContentPresentationStyles = .intrinsicSize)
-    
+
     public var contentLayout: AvatarPickerContentLayout {
         switch self {
         case .horizontal:
@@ -36,7 +35,7 @@ public enum AvatarPickerContentLayoutWithPresentation: AvatarPickerContentLayout
             .vertical
         }
     }
-    
+
     public func hash(into hasher: inout Hasher) {
         switch self {
         case .vertical(presentationStyle: let presentationStyle):
