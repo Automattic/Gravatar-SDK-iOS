@@ -115,8 +115,8 @@ platform :ios do
     )
   end
 
-  # Processes an `.lproj` directory containing UTF-16 encoded localization `.strings`
-  # files by converting them to UTF-8.
+  # Processes the base localization `.strings` files of a `LocalizationSource`
+  # converting any UTF-16 encoded localization `.strings` to UTF-8
   #
   # @param source [LocalizableSource] An object that provides a method `base_localization_strings_paths`
   #   which returns an array of paths to `.strings` file for the base locale.
@@ -131,17 +131,14 @@ platform :ios do
   # @raise [SystemCallError] If reading or writing the files fails due to an IO error.
   #
   def process_generated_strings(source:)
-    utf16_strings_paths = source.base_localization_strings_paths
-
     Dir.mktmpdir do |tempdir|
-      utf16_strings_paths.each do |strings_file|
+      source.base_localization_strings_paths.each do |strings_file|
         utf8_strings_path = File.join(tempdir, File.basename(strings_file))
 
-        puts "utf16 file: #{strings_file}"
         # Convert UTF-16 to UTF-8, using a temp directory
         begin
-          utf16_content = File.read(strings_file, mode: 'rb:UTF-16')
-          utf8_content = utf16_content.encode('UTF-8')
+          possible_utf16_content = File.read(strings_file, mode: 'rb:UTF-16')
+          utf8_content = possible_utf16_content.encode('UTF-8')
           UI.message("Converting: #{strings_file}")
           File.write(utf8_strings_path, utf8_content, mode: 'w:UTF-8')
         rescue Encoding::InvalidByteSequenceError
@@ -152,7 +149,6 @@ platform :ios do
           raise
         end
 
-        puts "The file was converted: #{utf8_strings_path}"
         # Use the converted file to overwrite the original source
         begin
           FileUtils.cp(utf8_strings_path, strings_file)
