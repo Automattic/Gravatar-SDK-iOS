@@ -17,7 +17,7 @@ struct ModalPresentationModifierWithDetents<ModalView: View>: ViewModifier {
     @State var verticalSizeClass: UserInterfaceSizeClass?
     @State var horizontalSizeClass: UserInterfaceSizeClass?
     @State private var presentationDetents: Set<PresentationDetent>
-    @State private var prioritizeScrollingOverResizing: Bool = false
+    @State private var prioritizeScrollOverResize: Bool = false
     let onDismiss: (() -> Void)?
     let modalView: ModalView
     var contentLayoutWithPresentation: AvatarPickerContentLayoutWithPresentation
@@ -75,11 +75,11 @@ struct ModalPresentationModifierWithDetents<ModalView: View>: ViewModifier {
             switch presentationStyle {
             case .large:
                 break
-            case .extendableMedium(_, let prioritizeScrollingOverResizing):
-                self.prioritizeScrollingOverResizing = prioritizeScrollingOverResizing
+            case .extendableMedium(_, let prioritizeScrollOverResize):
+                self.prioritizeScrollOverResize = prioritizeScrollOverResize
             }
         case .horizontal:
-            prioritizeScrollingOverResizing = true
+            prioritizeScrollOverResize = true
         }
     }
 
@@ -140,7 +140,7 @@ struct ModalPresentationModifierWithDetents<ModalView: View>: ViewModifier {
                         updateDetents()
                     }
                     .presentationDetents(presentationDetents)
-                    .presentationContentInteraction(shouldPrioritizeScrolling: prioritizeScrollingOverResizing)
+                    .presentationContentInteraction(shouldPrioritizeScrolling: prioritizeScrollOverResize)
             }
     }
 }

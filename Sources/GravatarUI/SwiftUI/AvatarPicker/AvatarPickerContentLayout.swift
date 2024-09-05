@@ -1,33 +1,38 @@
 import Foundation
 import SwiftUI
 
-public enum VerticalContentPresentationStyles: Sendable, Equatable {
+
+/// Presentation styles supported for the verticially scrolling content.
+public enum VerticalContentPresentationStyle: Sendable, Equatable {
+    /// Full height sheet.
     case large
-    case extendableMedium(initialFraction: CGFloat = 0.7, prioritizeScrollingOverResizing: Bool = false)
+
+    /// Medium height sheet that is extendable to full height. In compact height this is inactive and the sheet is displayed as full height.
+    /// - initialFraction: The fractional height of the sheet in its initial state.
+    /// - prioritizeScrollOverResize: A behavior that prioritizes scrolling the content of the sheet when
+    /// swiping, rather than resizing it. Note that this parameter is effective only for iOS 16.4 +.
+    case extendableMedium(initialFraction: CGFloat = 0.7, prioritizeScrollOverResize: Bool = false)
 }
 
-public enum HorizontalContentPresentationStyles: String, Sendable {
+/// Presentation styles supported for the horizontially scrolling content.
+public enum HorizontalContentPresentationStyle: String, Sendable, Equatable {
+    /// Represents a bottom sheet with the intrinsic size.
+    /// There are 2 cases where this mode is inactive:
+    ///  - Compact height: The sheet is displayed in full height.
+    ///  - Regular width: The system determines the size of the sheet and the content is displayed as a verticially scrolling grid.
     case intrinsicSize
 }
 
-public protocol AvatarPickerContentLayoutProviding: Sendable {
-    var contentLayout: AvatarPickerContentLayout { get }
-}
+/// Content layout to use iOS 16.0 +.
+public enum AvatarPickerContentLayoutWithPresentation: AvatarPickerContentLayoutProviding, Equatable {
+    /// Displays avatars in a vertcally scrolling grid with the given presentation style. See: ``VerticalContentPresentationStyle``
+    case vertical(presentationStyle: VerticalContentPresentationStyle = .large)
+    /// Displays avatars in a horizontally scrolling grid with the given presentation style. The grid constists of 1 row . See: ``HorizontalContentPresentationStyle``
+    case horizontal(presentationStyle: HorizontalContentPresentationStyle = .intrinsicSize)
 
-public enum AvatarPickerContentLayout: String, CaseIterable, Identifiable, AvatarPickerContentLayoutProviding {
-    public var contentLayout: AvatarPickerContentLayout { self }
-
-    public var id: Self { self }
-
-    case vertical
-    case horizontal
-}
-
-public enum AvatarPickerContentLayoutWithPresentation: AvatarPickerContentLayoutProviding, Equatable, Hashable {
-    case vertical(presentationStyle: VerticalContentPresentationStyles = .large)
-    case horizontal(presentationStyle: HorizontalContentPresentationStyles = .intrinsicSize)
-
-    public var contentLayout: AvatarPickerContentLayout {
+    // MARK: AvatarPickerContentLayoutProviding
+    
+    var contentLayout: AvatarPickerContentLayout {
         switch self {
         case .horizontal:
             .horizontal
@@ -35,25 +40,24 @@ public enum AvatarPickerContentLayoutWithPresentation: AvatarPickerContentLayout
             .vertical
         }
     }
+}
 
-    public func hash(into hasher: inout Hasher) {
-        switch self {
-        case .vertical(presentationStyle: let presentationStyle):
-            hasher.combine("vertical")
-            switch presentationStyle {
-            case .large:
-                hasher.combine("large")
-            case .extendableMedium(initialFraction: let initialFraction, prioritizeScrollingOverResizing: let prioritizeScrollingOverResizing):
-                hasher.combine("extendableMedium")
-                hasher.combine(initialFraction)
-                hasher.combine(prioritizeScrollingOverResizing)
-            }
-        case .horizontal(presentationStyle: let presentationStyle):
-            hasher.combine("horizontal")
-            switch presentationStyle {
-            case .intrinsicSize:
-                hasher.combine("intrinsicSize")
-            }
-        }
-    }
+/// Content layout to use pre iOS 16.0 where the system don't offer different presentation styles for SwiftUI.
+public enum AvatarPickerContentLayout: String, CaseIterable, Identifiable, AvatarPickerContentLayoutProviding {
+    public var id: Self { self }
+
+    /// Displays avatars in a vertcally scrolling grid.
+    case vertical
+    /// Displays avatars in a horizontally scrolling grid that consists of 1 row.
+    case horizontal
+    
+    // MARK: AvatarPickerContentLayoutProviding
+    
+    var contentLayout: AvatarPickerContentLayout { self }
+}
+
+/// Internal type. This is an abstraction over `AvatarPickerContentLayout` and `AvatarPickerContentLayoutWithPresentation`
+/// to use when all we are interested is to find out if the content is horizontial or vertical.
+protocol AvatarPickerContentLayoutProviding: Sendable {
+    var contentLayout: AvatarPickerContentLayout { get }
 }

@@ -17,7 +17,7 @@ struct DemoAvatarPickerView: View {
             case .verticalExpandable:
                     .vertical(presentationStyle: .extendableMedium())
             case .verticalExpandablePrioritizeScrolling:
-                    .vertical(presentationStyle: .extendableMedium(prioritizeScrollingOverResizing: true))
+                    .vertical(presentationStyle: .extendableMedium(prioritizeScrollOverResize: true))
             case .horizontal:
                     .horizontal()
             }
