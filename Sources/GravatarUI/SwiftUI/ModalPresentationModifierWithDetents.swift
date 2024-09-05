@@ -14,8 +14,8 @@ struct ModalPresentationModifierWithDetents<ModalView: View>: ViewModifier {
     @Binding var isPresented: Bool
     @State private var isPresentedInner: Bool
     @State private var sheetHeight: CGFloat = Constants.bottomSheetEstimatedHeight
-    @State var verticalSizeClass: UserInterfaceSizeClass?
-    @State var horizontalSizeClass: UserInterfaceSizeClass?
+    @State private var verticalSizeClass: UserInterfaceSizeClass?
+    @State private var horizontalSizeClass: UserInterfaceSizeClass?
     @State private var presentationDetents: Set<PresentationDetent>
     @State private var prioritizeScrollOverResize: Bool = false
     let onDismiss: (() -> Void)?
@@ -143,30 +143,4 @@ struct ModalPresentationModifierWithDetents<ModalView: View>: ViewModifier {
                     .presentationContentInteraction(shouldPrioritizeScrolling: prioritizeScrollOverResize)
             }
     }
-}
-
-struct InnerHeightPreferenceKey: PreferenceKey {
-    static let defaultValue: CGFloat = .zero
-    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
-        value += nextValue()
-    }
-}
-
-protocol ValueAccumulatingPreferenceKey: PreferenceKey {}
-
-extension ValueAccumulatingPreferenceKey {
-    static func reduce(value: inout UserInterfaceSizeClass?, nextValue: () -> UserInterfaceSizeClass?) {
-        let next = nextValue()
-        if value == nil {
-            value = next
-        }
-    }
-}
-
-struct VerticalSizeClassPreferenceKey: ValueAccumulatingPreferenceKey {
-    static let defaultValue: UserInterfaceSizeClass? = nil
-}
-
-struct HorizontalSizeClassPreferenceKey: ValueAccumulatingPreferenceKey {
-    static let defaultValue: UserInterfaceSizeClass? = nil
 }
