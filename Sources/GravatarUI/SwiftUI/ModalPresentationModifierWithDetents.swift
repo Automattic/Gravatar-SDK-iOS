@@ -2,9 +2,14 @@ import Combine
 import SwiftUI
 
 private enum ModalPresentationConstants {
-    // An initial estimated height for the bottom sheet in horizontal mode.
-    static let bottomSheetEstimatedHeight: CGFloat = 500
-    // This is the minimum height for the sheet in horizontal mode. Helps us to ignore unnecessary height changes.
+    // Estimated height for the bottom sheet in horizontal mode.
+    // The value is the height of a successfully loading Avatar picker in various iPhone models.
+    // This is just the initial value of the bottom sheet. If the content turns out to be
+    // smaller or bigger, it'll just adjust.
+    static let bottomSheetEstimatedHeight: CGFloat = 538
+
+    // This is the minimum height for the avatar picker bottom sheet in the horizontal mode.
+    // This also helps us to ignore insignificant values published by the `InnerHeightPreferenceKey`.
     static let bottomSheetMinHeight: CGFloat = 350
 }
 
