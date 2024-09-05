@@ -43,7 +43,7 @@ extension View {
             customImageEditor: customImageEditor
         )
         let navigationWrapped = NavigationView { avatarPickerView }
-        return modifier(ModalPresentationModifierWithDetents(isPresented: isPresented, modalView: navigationWrapped, contentLayout: contentLayout))
+        return modifier(AvatarPickerModalPresentationModifier(isPresented: isPresented, modalView: navigationWrapped, contentLayout: contentLayout))
     }
 
     func avatarPickerBorder(colorScheme: ColorScheme, borderWidth: CGFloat = 1) -> some View {
@@ -61,9 +61,16 @@ extension View {
         email: String,
         scope: QuickEditorScope,
         customImageEditor: ImageEditorBlock<some ImageEditorView>? = nil as NoCustomEditorBlock?,
+        contentLayout: AvatarPickerContentLayout,
         onDismiss: (() -> Void)? = nil
     ) -> some View {
-        let editor = QuickEditor(email: .init(email), scope: scope, isPresented: isPresented, customImageEditor: customImageEditor)
+        let editor = QuickEditor(
+            email: .init(email),
+            scope: scope,
+            isPresented: isPresented,
+            customImageEditor: customImageEditor,
+            contentLayoutProvider: contentLayout
+        )
         return modifier(ModalPresentationModifier(isPresented: isPresented, onDismiss: onDismiss, modalView: editor))
     }
 
@@ -83,7 +90,7 @@ extension View {
             customImageEditor: customImageEditor,
             contentLayoutProvider: contentLayout
         )
-        return modifier(ModalPresentationModifierWithDetents(
+        return modifier(AvatarPickerModalPresentationModifier(
             isPresented: isPresented,
             onDismiss: onDismiss,
             modalView: editor,

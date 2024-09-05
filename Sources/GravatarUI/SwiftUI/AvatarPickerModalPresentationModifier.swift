@@ -14,7 +14,7 @@ private enum ModalPresentationConstants {
 }
 
 @available(iOS 16.0, *)
-struct ModalPresentationModifierWithDetents<ModalView: View>: ViewModifier {
+struct AvatarPickerModalPresentationModifier<ModalView: View>: ViewModifier {
     fileprivate typealias Constants = ModalPresentationConstants
     @Binding var isPresented: Bool
     @State private var isPresentedInner: Bool
