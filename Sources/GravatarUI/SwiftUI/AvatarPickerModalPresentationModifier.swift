@@ -60,10 +60,7 @@ struct AvatarPickerModalPresentationModifier<ModalView: View>: ViewModifier {
             }
             .sheet(isPresented: $isPresentedInner, onDismiss: onDismiss) {
                 modalView
-                    .if(shouldUseIntrinsicSize) { view in
-                        view
-                            .frame(minHeight: Constants.bottomSheetMinHeight)
-                    }
+                    .frame(minHeight: Constants.bottomSheetMinHeight)
                     .onPreferenceChange(InnerHeightPreferenceKey.self) { newHeight in
                         if newHeight > Constants.bottomSheetMinHeight, shouldUseIntrinsicSize {
                             sheetHeight = newHeight
