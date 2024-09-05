@@ -24,7 +24,7 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
                 profileView()
                     .accumulateIntrinsicHeight()
                 ScrollView {
-                    VStack {
+                    VStack(spacing: 0) {
                         errorView()
                         if !model.grid.isEmpty {
                             content()
