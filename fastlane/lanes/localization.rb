@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'fileutils'
-require_relative '../localizable_source'
+require_relative '../lib/localizable_source'
 
 default_platform(:ios)
 
@@ -143,7 +143,6 @@ platform :ios do
   #
   def convert_file(strings_file:, tempdir:)
     utf8_strings_file = convert_file_to_utf8(strings_file: strings_file, tempdir: tempdir)
-
     copy_converted_file(utf8_strings_file: utf8_strings_file, original_strings_file: strings_file) unless utf8_strings_file.nil?
   end
 
@@ -151,7 +150,7 @@ platform :ios do
   #
   # @param strings_file [String] the path to the original UTF-16 `.strings` file
   # @param tempdir [String] temp directory for storing the encoded file
-  # @return [Boolean] returns `true` if the conversion succeeds, or `false` if the file is not UTF-16
+  # @return [String, nil] returns the path to the converted file if the conversion succeeds, or `nil` if the file is not UTF-16
   # @raise [StandardError] if a general error occurs during file conversion
   #
   def convert_file_to_utf8(strings_file:, tempdir:)
@@ -171,8 +170,8 @@ platform :ios do
 
   # Copies the UTF-8 converted `.strings` file back to its original location.
   #
-  # @param [String] utf8_strings_file the path to the converted UTF-8 `.strings` file in the temp directory
-  # @param [String] original_strings_file the path to the original file that should be overwritten
+  # @param utf8_strings_file [String] The path to the converted UTF-8 `.strings` file in the temp directory
+  # @param original_strings_file [String] The path to the original file that should be overwritten
   # @return [void]
   # @raise [StandardError] if an error occurs during the copy process
   #
