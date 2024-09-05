@@ -45,7 +45,6 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
                 .padding(.horizontal, Constants.horizontalPadding * 2)
         }
         .preference(key: VerticalSizeClassPreferenceKey.self, value: verticalSizeClass)
-        .preference(key: HorizontalSizeClassPreferenceKey.self, value: horizontalSizeClass)
         .gravatarNavigation(
             title: Constants.title,
             actionButtonDisabled: model.profileModel?.profileURL == nil,

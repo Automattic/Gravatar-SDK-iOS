@@ -15,7 +15,6 @@ struct ModalPresentationModifierWithDetents<ModalView: View>: ViewModifier {
     @State private var isPresentedInner: Bool
     @State private var sheetHeight: CGFloat = Constants.bottomSheetEstimatedHeight
     @State private var verticalSizeClass: UserInterfaceSizeClass?
-    @State private var horizontalSizeClass: UserInterfaceSizeClass?
     @State private var presentationDetents: Set<PresentationDetent>
     @State private var prioritizeScrollOverResize: Bool = false
     let onDismiss: (() -> Void)?
@@ -31,8 +30,7 @@ struct ModalPresentationModifierWithDetents<ModalView: View>: ViewModifier {
         self.presentationDetents = Self.detents(
             for: contentLayout,
             intrinsicHeight: Constants.bottomSheetEstimatedHeight,
-            verticalSizeClass: nil,
-            horizontalSizeClass: nil
+            verticalSizeClass: nil
         )
     }
 
@@ -47,8 +45,7 @@ struct ModalPresentationModifierWithDetents<ModalView: View>: ViewModifier {
                     self.presentationDetents = Self.detents(
                         for: contentLayoutWithPresentation,
                         intrinsicHeight: max(sheetHeight, Constants.bottomSheetEstimatedHeight),
-                        verticalSizeClass: verticalSizeClass,
-                        horizontalSizeClass: horizontalSizeClass
+                        verticalSizeClass: verticalSizeClass
                     )
                 }
                 isPresentedInner = newValue
@@ -73,11 +70,6 @@ struct ModalPresentationModifierWithDetents<ModalView: View>: ViewModifier {
                         self.verticalSizeClass = newSizeClass
                         updateDetents()
                     }
-                    .onPreferenceChange(HorizontalSizeClassPreferenceKey.self) { newSizeClass in
-                        guard newSizeClass != nil else { return }
-                        self.horizontalSizeClass = newSizeClass
-                        updateDetents()
-                    }
                     .presentationDetents(presentationDetents)
                     .presentationContentInteraction(shouldPrioritizeScrolling: prioritizeScrollOverResize)
             }
@@ -86,16 +78,13 @@ struct ModalPresentationModifierWithDetents<ModalView: View>: ViewModifier {
     private static func detents(
         for presentation: AvatarPickerContentLayoutWithPresentation,
         intrinsicHeight: CGFloat,
-        verticalSizeClass: UserInterfaceSizeClass?,
-        horizontalSizeClass: UserInterfaceSizeClass?
+        verticalSizeClass: UserInterfaceSizeClass?
     ) -> Set<PresentationDetent> {
         switch presentation {
         case .horizontal:
-            if verticalSizeClass == .compact || (horizontalSizeClass != nil && horizontalSizeClass != .compact) {
+            if verticalSizeClass == .compact {
                 // in landscape mode where the device height is small we display the full size sheet(which is
                 // also the default value of the detent).
-                // similarly in large devices like iPads, we display it the default way and not try to
-                // show it with intrinsic height. The system ignores it anyway.
                 .init([.large])
             } else {
                 .init([.height(intrinsicHeight)])
@@ -114,8 +103,7 @@ struct ModalPresentationModifierWithDetents<ModalView: View>: ViewModifier {
         self.presentationDetents = Self.detents(
             for: contentLayoutWithPresentation,
             intrinsicHeight: sheetHeight,
-            verticalSizeClass: verticalSizeClass,
-            horizontalSizeClass: horizontalSizeClass
+            verticalSizeClass: verticalSizeClass
         )
         switch contentLayoutWithPresentation {
         case .vertical(let presentationStyle):
