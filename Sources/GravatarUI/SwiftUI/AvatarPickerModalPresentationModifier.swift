@@ -95,7 +95,7 @@ struct AvatarPickerModalPresentationModifier<ModalView: View>: ViewModifier {
             switch presentationStyle {
             case .large:
                 .init([.large])
-            case .extendableMedium(let initialFraction, _):
+            case .expandableMedium(let initialFraction, _):
                 .init([.fraction(initialFraction), .large])
             }
         }
@@ -112,7 +112,7 @@ struct AvatarPickerModalPresentationModifier<ModalView: View>: ViewModifier {
             switch presentationStyle {
             case .large:
                 break
-            case .extendableMedium(_, let prioritizeScrollOverResize):
+            case .expandableMedium(_, let prioritizeScrollOverResize):
                 self.prioritizeScrollOverResize = prioritizeScrollOverResize
             }
         case .horizontal:

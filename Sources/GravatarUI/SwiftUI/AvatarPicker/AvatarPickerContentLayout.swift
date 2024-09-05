@@ -6,11 +6,11 @@ public enum VerticalContentPresentationStyle: Sendable, Equatable {
     /// Full height sheet.
     case large
 
-    /// Medium height sheet that is extendable to full height. In compact height this is inactive and the sheet is displayed as full height.
+    /// Medium height sheet that is expandable to full height. In compact height this is inactive and the sheet is displayed as full height.
     /// - initialFraction: The fractional height of the sheet in its initial state.
     /// - prioritizeScrollOverResize: A behavior that prioritizes scrolling the content of the sheet when
     /// swiping, rather than resizing it. Note that this parameter is effective only for iOS 16.4 +.
-    case extendableMedium(initialFraction: CGFloat = 0.7, prioritizeScrollOverResize: Bool = false)
+    case expandableMedium(initialFraction: CGFloat = 0.7, prioritizeScrollOverResize: Bool = false)
 }
 
 /// Presentation styles supported for the horizontially scrolling content.
