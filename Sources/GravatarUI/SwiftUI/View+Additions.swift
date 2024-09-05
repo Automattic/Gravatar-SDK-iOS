@@ -11,6 +11,7 @@ extension View {
             )
     }
 
+    @available(iOS, deprecated: 16.0, message: "Use the new method that takes in `AvatarPickerContentLayoutWithPresentation` for `contentLayout`.")
     public func avatarPickerSheet(
         isPresented: Binding<Bool>,
         email: String,
@@ -56,6 +57,7 @@ extension View {
             .padding(.vertical, borderWidth) // to prevent borders from getting clipped
     }
 
+    @available(iOS, deprecated: 16.0, message: "Use the new method that takes in `AvatarPickerContentLayoutWithPresentation` for `contentLayout`.")
     public func gravatarQuickEditorSheet(
         isPresented: Binding<Bool>,
         email: String,
