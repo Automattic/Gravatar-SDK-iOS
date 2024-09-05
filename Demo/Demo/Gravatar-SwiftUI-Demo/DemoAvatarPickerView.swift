@@ -32,8 +32,7 @@ struct DemoAvatarPickerView: View {
     // You can make this `true` by default to easily test the picker
     @State private var isPresentingPicker: Bool = false
     @State var enableCustomImageCropper: Bool = false
-    @State private var isFullHeight: Bool = false
-    
+
     var body: some View {
         VStack(alignment: .leading, spacing: 5) {
             VStack(alignment: .leading, spacing: 5) {
@@ -65,10 +64,10 @@ struct DemoAvatarPickerView: View {
                     }
                     .pickerStyle(MenuPickerStyle())
                 }
-                Toggle("Full height", isOn: $isFullHeight)
                 Toggle("Custom image cropper", isOn: $enableCustomImageCropper)
                 Spacer()
                     .frame(height: 24)
+
                 Button("Tap to open the Avatar Picker") {
                     isPresentingPicker = true
                 }

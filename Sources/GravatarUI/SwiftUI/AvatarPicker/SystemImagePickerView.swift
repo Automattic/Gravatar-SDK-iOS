@@ -50,7 +50,7 @@ private struct ImagePicker<Label, ImageEditor: ImageEditorView>: View where Labe
         }
         .sheet(item: $sourceType, content: { source in
             // This allows to present different kind of pickers for different sources.
-            displayPickerOrCamera(source)
+            displayImagePicker(for: source)
                 .sheet(item: $imagePickerSelectedItem, content: { item in
                     if let customEditor {
                         customEditor(item.image) { croppedImage in
@@ -64,7 +64,7 @@ private struct ImagePicker<Label, ImageEditor: ImageEditorView>: View where Labe
     }
 
     @ViewBuilder
-    private func displayPickerOrCamera(_ source: SourceType) -> some View {
+    private func displayImagePicker(for source: SourceType) -> some View {
         switch source {
         case .camera:
             ZStack {
