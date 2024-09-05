@@ -6,7 +6,6 @@ struct GravatarNavigationModifier: ViewModifier {
 
     var onActionButtonPressed: (() -> Void)? = nil
     var onDoneButtonPressed: (() -> Void)? = nil
-    @State var navBarHeight: CGFloat = .zero
 
     func body(content: Content) -> some View {
         content
@@ -34,8 +33,8 @@ struct GravatarNavigationModifier: ViewModifier {
             }
             .background {
                 GeometryReader { geometry in
-                    // Interesting but this works to detect the navigation bar height.
-                    // AFAIU, SwiftUI calculates the safeAreaInsets.top based on the actual visible content area.
+                    // This works to detect the navigation bar height.
+                    // AFAIU, SwiftUI calculates the `safeAreaInsets.top` based on the actual visible content area.
                     // When a NavigationView is present, it accounts for the navigation bar being part of that system-provided safe area.
                     Color.clear.preference(
                         key: InnerHeightPreferenceKey.self,
