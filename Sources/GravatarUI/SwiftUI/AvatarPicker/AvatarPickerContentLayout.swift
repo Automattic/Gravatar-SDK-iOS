@@ -1,7 +1,6 @@
 import Foundation
 import SwiftUI
 
-
 /// Presentation styles supported for the verticially scrolling content.
 public enum VerticalContentPresentationStyle: Sendable, Equatable {
     /// Full height sheet.
@@ -27,11 +26,12 @@ public enum HorizontalContentPresentationStyle: String, Sendable, Equatable {
 public enum AvatarPickerContentLayoutWithPresentation: AvatarPickerContentLayoutProviding, Equatable {
     /// Displays avatars in a vertcally scrolling grid with the given presentation style. See: ``VerticalContentPresentationStyle``
     case vertical(presentationStyle: VerticalContentPresentationStyle = .large)
-    /// Displays avatars in a horizontally scrolling grid with the given presentation style. The grid constists of 1 row . See: ``HorizontalContentPresentationStyle``
+    /// Displays avatars in a horizontally scrolling grid with the given presentation style. The grid constists of 1 row . See:
+    /// ``HorizontalContentPresentationStyle``
     case horizontal(presentationStyle: HorizontalContentPresentationStyle = .intrinsicSize)
 
     // MARK: AvatarPickerContentLayoutProviding
-    
+
     var contentLayout: AvatarPickerContentLayout {
         switch self {
         case .horizontal:
@@ -50,9 +50,9 @@ public enum AvatarPickerContentLayout: String, CaseIterable, Identifiable, Avata
     case vertical
     /// Displays avatars in a horizontally scrolling grid that consists of 1 row.
     case horizontal
-    
+
     // MARK: AvatarPickerContentLayoutProviding
-    
+
     var contentLayout: AvatarPickerContentLayout { self }
 }
 
