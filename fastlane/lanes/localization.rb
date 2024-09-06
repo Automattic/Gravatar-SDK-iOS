@@ -129,21 +129,10 @@ platform :ios do
   def convert_generated_strings(source:)
     Dir.mktmpdir do |tempdir|
       source.base_localization_strings_paths.each do |strings_file|
-        convert_file(strings_file: strings_file, tempdir: tempdir)
+        utf8_strings_file = convert_file_to_utf8(strings_file: strings_file, tempdir: tempdir)
+        FileUtils.cp(utf8_strings_file, strings_file) unless utf8_strings_file.nil?
       end
     end
-  end
-
-  # Converts a file from UTF-16 to UTF-8 using a temp directory to ensure that the conversion is successfull
-  # before overwriting the original file
-  #
-  # @param strings_file [String] path to the `.strings` file to convert
-  # @param tempdir [String] path to a temporary directory to be used for the conversion
-  # @return [void]
-  #
-  def convert_file(strings_file:, tempdir:)
-    utf8_strings_file = convert_file_to_utf8(strings_file: strings_file, tempdir: tempdir)
-    copy_converted_file(utf8_strings_file: utf8_strings_file, original_strings_file: strings_file) unless utf8_strings_file.nil?
   end
 
   # Converts a UTF-16 `.strings` file to UTF-8 and writes it to the specified path.
@@ -155,30 +144,15 @@ platform :ios do
   #
   def convert_file_to_utf8(strings_file:, tempdir:)
     utf8_strings_file = File.join(tempdir, File.basename(strings_file))
-    possible_utf16_content = File.read(strings_file, mode: 'rb:UTF-16')
-    utf8_content = possible_utf16_content.encode('UTF-8')
+    possible_utf16_content = File.read(strings_file, mode: 'rb:BOM|UTF-16')
     UI.message("Converting: #{strings_file}")
-    File.write(utf8_strings_file, utf8_content, mode: 'w:UTF-8')
+    File.write(utf8_strings_file, possible_utf16_content, mode: 'w:UTF-8')
     utf8_strings_file
   rescue Encoding::InvalidByteSequenceError
     UI.message("Skipping non-UTF-16 file: #{strings_file}")
     nil
   rescue StandardError => e
     UI.error("An error occurred during conversion: #{e.message}")
-    raise
-  end
-
-  # Copies the UTF-8 converted `.strings` file back to its original location.
-  #
-  # @param utf8_strings_file [String] The path to the converted UTF-8 `.strings` file in the temp directory
-  # @param original_strings_file [String] The path to the original file that should be overwritten
-  # @return [void]
-  # @raise [StandardError] if an error occurs during the copy process
-  #
-  def copy_converted_file(utf8_strings_file:, original_strings_file:)
-    FileUtils.cp(utf8_strings_file, original_strings_file)
-  rescue StandardError => e
-    UI.error("An error occurred during file copy: #{e.message}")
     raise
   end
 end
