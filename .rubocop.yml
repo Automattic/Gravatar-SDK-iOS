@@ -2,6 +2,7 @@ AllCops:
   Exclude:
     - DerivedData/**/*
     - vendor/**/*
+    - openapi-generator/**/*
   NewCops: enable
 
 Naming/FileName:

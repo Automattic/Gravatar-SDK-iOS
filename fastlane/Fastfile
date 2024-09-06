@@ -28,7 +28,7 @@ require_relative 'lib/code_signing_helpers'
 # Imports domain-specific lanes
 ########################################################################
 
-import 'lib/lanes/localization.rb'
+import 'lanes/localization.rb'
 
 ########################################################################
 

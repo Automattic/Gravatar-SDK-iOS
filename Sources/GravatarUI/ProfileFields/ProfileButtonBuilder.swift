@@ -19,18 +19,21 @@ extension ProfileButtonStyle {
         case .view:
             NSLocalizedString(
                 "ProfileButton.title.view",
+                bundle: .module,
                 value: "View profile",
                 comment: "Title for a button that allows you to view your Gravatar profile"
             )
         case .edit:
             NSLocalizedString(
                 "ProfileButton.title.edit",
+                bundle: .module,
                 value: "Edit profile",
                 comment: "Title for a button that allows you to edit your Gravatar profile"
             )
         case .create:
             NSLocalizedString(
                 "ProfileButton.title.create",
+                bundle: .module,
                 value: "Claim profile",
                 comment: "Title for a button that allows you to claim a new Gravatar profile"
             )
