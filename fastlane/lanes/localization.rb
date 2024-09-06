@@ -97,7 +97,7 @@ platform :ios do
       )
 
       Dir.chdir('..') do
-        convert_generated_strings(source: source)
+        convert_generated_strings!(source: source)
       end
 
       next if skip_commit
@@ -122,11 +122,11 @@ platform :ios do
   # @return [void]
   #
   # @example Convert all `.strings` files from UTF-16 to UTF-8.
-  #   convert_generated_strings(
+  #   convert_generated_strings!(
   #     source: LocalizationSource.new(source_paths: ['/source/path'], localizations_root: 'Localizations'),
   #   )
   #
-  def convert_generated_strings(source:)
+  def convert_generated_strings!(source:)
     Dir.mktmpdir do |tempdir|
       source.base_localization_strings_paths.each do |strings_file|
         utf8_strings_file = convert_file_to_utf8(strings_file: strings_file, tempdir: tempdir)
