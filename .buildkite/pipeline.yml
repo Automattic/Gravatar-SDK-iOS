@@ -63,12 +63,13 @@ steps:
   - group: ":appcenter: Prototype Builds"
     steps:
       - label: ":swift: Setting up Swift Packages"
+        key: setup_spm_cache
         plugins: [$CI_TOOLKIT]
         command: install_swiftpm_dependencies
 
       - label: "🛠️ Build SwiftUI Demo"
         key: build_swiftui
-        depends_on: test
+        depends_on: [test, setup_spm_cache]
         command: BUILD_NUMBER=$BUILDKITE_BUILD_NUMBER make build-demo-for-distribution-swiftui
         artifact_paths:
           - ".build/artifacts/*.ipa"
@@ -82,7 +83,7 @@ steps:
 
       - label: "🛠️ Build UIKit Demo"
         key: build_uikit
-        depends_on: test
+        depends_on: [test, setup_spm_cache]
         command: BUILD_NUMBER=$BUILDKITE_BUILD_NUMBER make build-demo-for-distribution-uikit
         artifact_paths:
           - ".build/artifacts/*.ipa"
