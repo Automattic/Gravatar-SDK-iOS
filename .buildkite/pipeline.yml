@@ -15,8 +15,11 @@ steps:
   - label: "🕵️ Lint"
     key: "lint"
     command: |
+      echo "--- :swift: Setting up Swift Packages"
+      install_swiftpm_dependencies
       echo "--- 🛠 Linting"
       make lint
+    plugins: [$CI_TOOLKIT]
 
   #################
   # Build and Test
@@ -24,6 +27,8 @@ steps:
   - label: "📦 Build and Test Swift Package"
     key: "test"
     command: |
+      echo "--- :swift: Setting up Swift Packages"
+      install_swiftpm_dependencies
       validate_swift_package
     plugins: [$CI_TOOLKIT]
 
@@ -57,6 +62,10 @@ steps:
   ###################
   - group: ":appcenter: Prototype Builds"
     steps:
+      - label: ":swift: Setting up Swift Packages"
+        plugins: [$CI_TOOLKIT]
+        command: install_swiftpm_dependencies
+
       - label: "🛠️ Build SwiftUI Demo"
         key: build_swiftui
         depends_on: test
