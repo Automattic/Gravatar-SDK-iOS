@@ -14,6 +14,7 @@ XCODEPROJ_PATH = File.join(PROJECT_ROOT_FOLDER, 'Gravatar-Demo.xcodeproj')
 DEMO_APPS_SOURCES_FOLDER = File.join(PROJECT_ROOT_FOLDER, 'Demo')
 XCCONFIG_PROTOTYPE_BUILD_SWIFTUI = File.join(DEMO_APPS_SOURCES_FOLDER, 'Gravatar-SwiftUI-Demo', 'Gravatar-SwiftUI-Demo.Release.xcconfig')
 XCCONFIG_PROTOTYPE_BUILD_UIKIT = File.join(DEMO_APPS_SOURCES_FOLDER, 'Gravatar-UIKit-Demo', 'Gravatar-UIKit-Demo.Release.xcconfig')
+COMMON_XCARGS = ['-skipPackagePluginValidation'] # Allow SwiftPM plugins (e.g. swiftlint) called from Xcode to be used on CI without prior manual approval
 
 GITHUB_REPO = 'Automattic/Gravatar-SDK-iOS'
 GITHUB_URL = "https://github.com/#{GITHUB_REPO}".freeze
@@ -53,6 +54,7 @@ platform :ios do
     run_tests(
       package_path: '.',
       scheme: 'Gravatar-Package',
+      xcargs: COMMON_XCARGS,
       device: IPHONE_DEVICE,
       prelaunch_simulator: true,
       clean: true,
@@ -65,10 +67,11 @@ platform :ios do
   lane :build_demo do |scheme: 'Gravatar-UIKit-Demo'|
     # We only need to build for testing to ensure that the project builds.
     # There are no tests in the the Demo apps
-    scan(
+    run_tests(
       project: XCODEPROJ_PATH,
       scheme: scheme,
       configuration: 'Debug',
+      xcargs: COMMON_XCARGS,
       device: IPHONE_DEVICE,
       clean: true,
       build_for_testing: true,
@@ -88,9 +91,10 @@ platform :ios do
       configuration: 'Release',
       export_method: 'enterprise',
       output_directory: ARTIFACTS_FOLDER,
-      xcargs: {
-        CURRENT_PROJECT_VERSION: build_number
-      }
+      xcargs: [
+        "CURRENT_PROJECT_VERSION=#{build_number}",
+        *COMMON_XCARGS
+      ]
     )
   end
 

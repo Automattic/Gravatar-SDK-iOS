@@ -287,7 +287,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 49C5D6182B5B33E20067C2A8 /* Build configuration list for PBXNativeTarget "Gravatar SwiftUI" */;
 			buildPhases = (
-				1E3FA23E2C74B808002901F2 /* ShellScript */,
+				1E3FA23E2C74B808002901F2 /* Generate Secrets.swift */,
 				49C5D6062B5B33E20067C2A8 /* Sources */,
 				49C5D6072B5B33E20067C2A8 /* Frameworks */,
 				49C5D6082B5B33E20067C2A8 /* Resources */,
@@ -385,7 +385,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		1E3FA23E2C74B808002901F2 /* ShellScript */ = {
+		1E3FA23E2C74B808002901F2 /* Generate Secrets.swift */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -395,6 +395,7 @@
 			inputPaths = (
 				"$(SRCROOT)/Demo/Secrets.tpl",
 			);
+			name = "Generate Secrets.swift";
 			outputFileListPaths = (
 			);
 			outputPaths = (

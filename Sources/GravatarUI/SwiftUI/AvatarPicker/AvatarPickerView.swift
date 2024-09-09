@@ -313,29 +313,25 @@ private enum AvatarPicker {
     }
 
     enum Localized {
-        static let buttonUploadImage = NSLocalizedString(
+        static let buttonUploadImage = SDKLocalizedString(
             "AvatarPicker.ContentLoading.Success.ctaButtonTitle",
-            bundle: .module,
             value: "Upload image",
             comment: "Title of a button that allow for uploading an image"
         )
-        static let buttonRetry = NSLocalizedString(
+        static let buttonRetry = SDKLocalizedString(
             "AvatarPicker.ContentLoading.Failure.Retry.ctaButtonTitle",
-            bundle: .module,
             value: "Try again",
             comment: "Title of a button that allows the user to try loading their avatars again"
         )
 
         enum Header {
-            static let title = NSLocalizedString(
+            static let title = SDKLocalizedString(
                 "AvatarPicker.Header.title",
-                bundle: .module,
                 value: "Avatars",
                 comment: "Title appearing in the header of a view that allows users to manage their avatars"
             )
-            static let subtitle = NSLocalizedString(
+            static let subtitle = SDKLocalizedString(
                 "AvatarPicker.Header.subtitle",
-                bundle: .module,
                 value: "Choose or upload your favorite avatar images and connect them to your email address.",
                 comment: "A message describing the purpose of this view"
             )
@@ -343,15 +339,13 @@ private enum AvatarPicker {
 
         enum ContentLoading {
             enum Success {
-                static let title = NSLocalizedString(
+                static let title = SDKLocalizedString(
                     "AvatarPicker.ContentLoading.success.title",
-                    bundle: .module,
                     value: "Let's setup your avatar",
                     comment: "Title of a message advising the user to setup their avatar"
                 )
-                static let subtext = NSLocalizedString(
+                static let subtext = SDKLocalizedString(
                     "AvatarPicker.ContentLoading.Success.subtext",
-                    bundle: .module,
                     value: "Choose or upload your favorite avatar images and connect them to your email address.",
                     comment: "A message describing the actions a user can take to setup their avatar"
                 )
@@ -359,38 +353,33 @@ private enum AvatarPicker {
 
             enum Failure {
                 enum SessionExpired {
-                    static let title = NSLocalizedString(
+                    static let title = SDKLocalizedString(
                         "AvatarPicker.ContentLoading.Failure.SessionExpired.title",
-                        bundle: .module,
                         value: "Session expired",
                         comment: "Title of a message advising the user that their login session has expired."
                     )
                     enum Close {
-                        static let buttonTitle = NSLocalizedString(
+                        static let buttonTitle = SDKLocalizedString(
                             "AvatarPicker.ContentLoading.Failure.SessionExpired.Close.buttonTitle",
-                            bundle: .module,
                             value: "Close",
                             comment: "Title of a button that will close the Avatar Picker, appearing beneath a message that advises the user that their login session has expired."
                         )
 
-                        static let subtext = NSLocalizedString(
+                        static let subtext = SDKLocalizedString(
                             "AvatarPicker.ContentLoading.Failure.SessionExpired.Close.subtext",
-                            bundle: .module,
                             value: "Sorry, it looks like your session has expired. Make sure you're logged in to update your Avatar.",
                             comment: "A message describing the error and advising the user to login again to resolve the issue"
                         )
                     }
 
                     enum LogIn {
-                        static let buttonTitle = NSLocalizedString(
+                        static let buttonTitle = SDKLocalizedString(
                             "AvatarPicker.ContentLoading.Failure.SessionExpired.LogIn.buttonTitle",
-                            bundle: .module,
                             value: "Log in",
                             comment: "Title of a button that will begin the process of authenticating the user, appearing beneath a message that advises the user that their login session has expired."
                         )
-                        static let subtext = NSLocalizedString(
+                        static let subtext = SDKLocalizedString(
                             "AvatarPicker.ContentLoading.Failure.SessionExpired.LogIn.subtext",
-                            bundle: .module,
                             value: "Session expired for security reasons. Please log in to update your Avatar.",
                             comment: "A message describing the error and advising the user to login again to resolve the issue"
                         )
@@ -398,15 +387,13 @@ private enum AvatarPicker {
                 }
 
                 enum Retry {
-                    static let title = NSLocalizedString(
+                    static let title = SDKLocalizedString(
                         "AvatarPicker.ContentLoading.Failure.Retry.title",
-                        bundle: .module,
                         value: "Ooops",
                         comment: "Title of a message advising the user that something went wrong while loading their avatars"
                     )
-                    static let subtext = NSLocalizedString(
+                    static let subtext = SDKLocalizedString(
                         "AvatarPicker.ContentLoading.Failure.Retry.subtext",
-                        bundle: .module,
                         value: "Something went wrong and we couldn’t connect to Gravatar servers.",
                         comment: "A message asking the user to try again"
                     )

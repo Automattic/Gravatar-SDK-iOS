@@ -93,6 +93,8 @@ platform :ios do
     SOURCES_TO_LOCALIZE.each do |source|
       ios_generate_strings_file_from_code(
         paths: source.source_paths,
+        exclude: ['**/SDKLocalizedString.swift'],
+        routines: ['SDKLocalizedString'],
         output_dir: source.base_localization_root
       )
 
