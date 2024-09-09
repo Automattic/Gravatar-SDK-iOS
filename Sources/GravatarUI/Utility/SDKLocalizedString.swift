@@ -1,15 +1,5 @@
 import Foundation
 
-/// Use this to express *intent* on your API that the string you are manipulating / returning is intended to already be localized
-/// and its value to have been provided via a call to `NSLocalizedString` or `SDKLocalizedString`.
-///
-/// Semantically speaking, a method taking or returning a `LocalizedString` is signaling that you can display said UI string
-/// to the end user, without the need to be treated as a key to be localized. The string is expected to already have been localized
-/// at that point of the code, via a call to `NSLocalizedString`, `SDKLocalizedString` or similar upstream in the code.
-///
-/// - Note: Remember though that, as a `typealias`, this won't provide any compile-time guarantee.
-typealias LocalizedString = String
-
 /// Use this function instead of `NSLocalizedString` to reference localized strings **from the library module**.
 ///
 /// You should use this `SDKLocalizedString` method in place of `NSLocalizedString` for all localized strings in the SDK.
@@ -34,6 +24,6 @@ typealias LocalizedString = String
 /// - Returns: A localized version of the string designated by `key` in the table identified by `tableName`.
 ///   If the localized string for `key` cannot be found within the table, `value` is returned.
 ///   (However, `key` is returned instead when `value` is `nil` or the empty string).
-func SDKLocalizedString(_ key: String, tableName: String? = nil, value: String? = nil, comment: String) -> LocalizedString {
+func SDKLocalizedString(_ key: String, tableName: String? = nil, value: String? = nil, comment: String) -> String {
     Bundle.module.localizedString(forKey: key, value: value, table: tableName)
 }
