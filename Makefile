@@ -121,7 +121,10 @@ generate: $(OUTPUT_DIRECTORY) # Generates the open-api model
     echo "DONE! 🎉"
 
 generate-strings: bundle-install
-	bundle exec fastlane generate_strings_file
+	bundle exec fastlane generate_strings
+
+download-strings: bundle-install
+	bundle exec fastlane download_localized_strings
 
 clean-generated:  # Delete the output directory used for generated sources.
 	@echo 'Delete entire directory: $(OUTPUT_DIRECTORY)? [y/N] ' && read ans && [ $${ans:-N} = y ] || (echo "Aborted"; exit 1)
