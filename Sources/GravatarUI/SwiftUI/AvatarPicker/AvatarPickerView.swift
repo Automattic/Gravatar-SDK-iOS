@@ -1,23 +1,18 @@
 import Gravatar
 import SwiftUI
 
-public enum AvatarPickerContentLayout: String, CaseIterable, Identifiable {
-    public var id: Self { self }
-
-    case vertical
-    case horizontal
-}
-
 @MainActor
 struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
     fileprivate typealias Constants = AvatarPicker.Constants
     fileprivate typealias Localized = AvatarPicker.Localized
 
     @ObservedObject var model: AvatarPickerViewModel
-    @State var contentLayout: AvatarPickerContentLayout = .vertical
+    var contentLayoutProvider: AvatarPickerContentLayoutProviding = AvatarPickerContentLayout.vertical
     @Environment(\.colorScheme) var colorScheme: ColorScheme
     @Binding var isPresented: Bool
     @State private var safariURL: URL?
+    @Environment(\.verticalSizeClass) var verticalSizeClass
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass
     var customImageEditor: ImageEditorBlock<ImageEditor>?
     var tokenErrorHandler: (() -> Void)?
 
@@ -25,16 +20,21 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
         ZStack {
             VStack(spacing: 0) {
                 email()
+                    .accumulateIntrinsicHeight()
                 profileView()
+                    .accumulateIntrinsicHeight()
                 ScrollView {
-                    errorView()
-                    if !model.grid.isEmpty {
-                        content()
-                    } else if model.isAvatarsLoading {
-                        avatarsLoadingView()
+                    VStack(spacing: 0) {
+                        errorView()
+                        if !model.grid.isEmpty {
+                            content()
+                        } else if model.isAvatarsLoading {
+                            avatarsLoadingView()
+                        }
+                        Spacer()
+                            .frame(height: Constants.vStackVerticalSpacing)
                     }
-                    Spacer()
-                        .frame(height: Constants.vStackVerticalSpacing)
+                    .accumulateIntrinsicHeight()
                 }
                 .task {
                     model.refresh()
@@ -44,6 +44,7 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
             ToastContainerView(toastManager: model.toastManager)
                 .padding(.horizontal, Constants.horizontalPadding * 2)
         }
+        .preference(key: VerticalSizeClassPreferenceKey.self, value: verticalSizeClass)
         .gravatarNavigation(
             title: Constants.title,
             actionButtonDisabled: model.profileModel?.profileURL == nil,
@@ -197,7 +198,9 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
 
     @ViewBuilder
     private func avatarGrid() -> some View {
-        if contentLayout == .vertical {
+        // Even if the contentLayout is set to horizontal, we show vertical grid for large devices.
+        // Because the system refuses to show a bottom sheet anyway and we end up with half empty horizontal content.
+        if contentLayoutProvider.contentLayout == .vertical || horizontalSizeClass != .compact {
             AvatarGrid(
                 grid: model.grid,
                 customImageEditor: customImageEditor,
@@ -455,7 +458,7 @@ private enum AvatarPicker {
         profileModel: PreviewModel()
     )
 
-    return AvatarPickerView<NoCustomEditor>(model: model, contentLayout: .horizontal, isPresented: .constant(true))
+    return AvatarPickerView<NoCustomEditor>(model: model, contentLayoutProvider: AvatarPickerContentLayout.horizontal, isPresented: .constant(true))
 }
 
 #Preview("Empty elements") {

@@ -30,6 +30,7 @@ struct DemoProfileEditorView: View {
                 isPresented: $isPresentingPicker,
                 email: email,
                 scope: .avatarPicker,
+                contentLayout: AvatarPickerContentLayoutWithPresentation.vertical(),
                 onDismiss: {
                     updateHasSession(with: email)
                 }
