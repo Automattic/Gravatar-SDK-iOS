@@ -51,6 +51,8 @@
 {{/allVars}}
 {{#hasVars}}
 
+{{! DEPRECARED public init }}
+    @available(*, deprecated, message: "init will become internal on the next release")
     {{#nonPublicApi}}internal{{/nonPublicApi}}{{^nonPublicApi}}public{{/nonPublicApi}} init({{#allVars}}{{{name}}}: {{#vendorExtensions.x-null-encodable}}NullEncodable<{{{datatypeWithEnum}}}>{{/vendorExtensions.x-null-encodable}}{{^vendorExtensions.x-null-encodable}}{{{datatypeWithEnum}}}{{#required}}{{#isNullable}}?{{/isNullable}}{{/required}}{{^required}}?{{/required}}{{/vendorExtensions.x-null-encodable}}{{#defaultValue}} = {{#vendorExtensions.x-null-encodable}}{{{vendorExtensions.x-null-encodable-default-value}}}{{/vendorExtensions.x-null-encodable}}{{^vendorExtensions.x-null-encodable}}{{{.}}}{{/vendorExtensions.x-null-encodable}}{{/defaultValue}}{{^defaultValue}}{{^required}} = {{#vendorExtensions.x-null-encodable}}.encodeNull{{/vendorExtensions.x-null-encodable}}{{^vendorExtensions.x-null-encodable}}nil{{/vendorExtensions.x-null-encodable}}{{/required}}{{/defaultValue}}{{^-last}}, {{/-last}}{{/allVars}}) {
         {{#allVars}}
         self.{{{name}}} = {{{name}}}
@@ -58,6 +60,8 @@
     }
 {{/hasVars}}
 
+{{! DEPRECARED public coding keys }}
+    @available(*, deprecated, message: "CodingKeys will become internal on the next release.")
     {{#nonPublicApi}}internal{{/nonPublicApi}}{{^nonPublicApi}}public{{/nonPublicApi}} enum CodingKeys: {{#hasVars}}String, {{/hasVars}}CodingKey, CaseIterable {
         {{#allVars}}
         case {{{name}}}{{#vendorExtensions.x-codegen-escaped-property-name}} = "{{{baseName}}}"{{/vendorExtensions.x-codegen-escaped-property-name}}
@@ -79,10 +83,40 @@
         }
     }{{/additionalPropertiesType}}{{/generateModelAdditionalProperties}}
 
+
+
+{{!----- BEGINNING OF INTERNAL CODING KEYS ------ }}
+{{! When the public CodingKeys get removed, we can rename this one back to "CodingKeys", making it internal }}
+
+    internal enum InternalCodingKeys: {{#hasVars}}String, {{/hasVars}}CodingKey, CaseIterable {
+        {{#allVars}}
+        case {{{name}}}{{#vendorExtensions.x-codegen-escaped-property-name}} = "{{{baseName}}}"{{/vendorExtensions.x-codegen-escaped-property-name}}
+        {{/allVars}}
+    }{{#generateModelAdditionalProperties}}{{#additionalPropertiesType}}
+
+    {{#nonPublicApi}}internal{{/nonPublicApi}}{{^nonPublicApi}}public{{/nonPublicApi}} {{#readonlyProperties}}private(set) {{/readonlyProperties}}var additionalProperties: [String: {{{additionalPropertiesType}}}] = [:]
+
+    {{#nonPublicApi}}internal{{/nonPublicApi}}{{^nonPublicApi}}public{{/nonPublicApi}} subscript(key: String) -> {{{additionalPropertiesType}}}? {
+        get {
+            if let value = additionalProperties[key] {
+                return value
+            }
+            return nil
+        }
+
+        set {
+            additionalProperties[key] = newValue
+        }
+    }{{/additionalPropertiesType}}{{/generateModelAdditionalProperties}}
+
+{{!----- END OF INTERNAL CODING KEYS ------ }}
+
+
+
     // Encodable protocol methods
 
     {{#nonPublicApi}}internal{{/nonPublicApi}}{{^nonPublicApi}}public{{/nonPublicApi}} func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
+        var container = encoder.container(keyedBy: InternalCodingKeys.self)
         {{#allVars}}
         {{#vendorExtensions.x-null-encodable}}
         switch {{{name}}} {
@@ -100,23 +134,23 @@
         try additionalPropertiesContainer.encodeMap(additionalProperties)
         {{/additionalPropertiesType}}
         {{/generateModelAdditionalProperties}}
-    }{{#generateModelAdditionalProperties}}{{#additionalPropertiesType}}
+    }
+
+    {{#generateModelAdditionalProperties}}
 
     // Decodable protocol methods
 
-    {{#nonPublicApi}}internal{{/nonPublicApi}}{{^nonPublicApi}}public{{/nonPublicApi}}{{#objcCompatible}} required{{/objcCompatible}} init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
+    {{#nonPublicApi}}internal{{/nonPublicApi}}{{^nonPublicApi}}public{{/nonPublicApi}} init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: InternalCodingKeys.self)
 
         {{#allVars}}
         {{{name}}} = try container.decode{{#required}}{{#isNullable}}IfPresent{{/isNullable}}{{/required}}{{^required}}IfPresent{{/required}}({{{datatypeWithEnum}}}.self, forKey: .{{{name}}})
         {{/allVars}}
-        var nonAdditionalPropertyKeys = Set<String>()
-        {{#allVars}}
-        nonAdditionalPropertyKeys.insert("{{{baseName}}}")
-        {{/allVars}}
-        let additionalPropertiesContainer = try decoder.container(keyedBy: String.self)
-        additionalProperties = try additionalPropertiesContainer.decodeMap({{{additionalPropertiesType}}}.self, excludedKeys: nonAdditionalPropertyKeys)
-    }{{/additionalPropertiesType}}{{/generateModelAdditionalProperties}}{{^objcCompatible}}{{#useClasses}}{{#vendorExtensions.x-swift-hashable}}
+    }
+    {{/generateModelAdditionalProperties}}
+
+
+    {{^objcCompatible}}{{#useClasses}}{{#vendorExtensions.x-swift-hashable}}
 
     {{#nonPublicApi}}internal{{/nonPublicApi}}{{^nonPublicApi}}public{{/nonPublicApi}} static func == (lhs: {{classname}}, rhs: {{classname}}) -> Bool {
         {{#allVars}}

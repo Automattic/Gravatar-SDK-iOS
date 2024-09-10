@@ -17,6 +17,13 @@ final class AvatarURLTests: XCTestCase {
         XCTAssertFalse(AvatarURL.isAvatarURL(URL(string: "https:/")!))
     }
 
+    func testAvatarURLInitFailsWithBadURL() {
+        let nonAvatarURL = URL(string: "https://0.gravatar.com/205e460b479e2e5b48aec07710c08d50")!
+        let avatarURL = AvatarURL(url: nonAvatarURL)
+
+        XCTAssertNil(avatarURL, "AvatarURL init should return nil when initialized with a URL that doesn't reference an avatar")
+    }
+
     func testAvatarURLWithDifferentPixelSizes() throws {
         XCTAssertEqual(verifiedAvatarURL(options: AvatarQueryOptions(preferredSize: .pixels(24))).url.query, "s=24")
         XCTAssertEqual(verifiedAvatarURL(options: AvatarQueryOptions(preferredSize: .pixels(128))).url.query, "s=128")

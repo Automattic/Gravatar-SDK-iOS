@@ -4,7 +4,7 @@ import UIKit
 /// A service to perform uploading and downloading of avatars.
 ///
 /// An avatar is a profile image of a Gravatar user. See [the avatar docs](https://support.gravatar.com/profiles/avatars/) for more info.
-public struct AvatarService {
+public struct AvatarService: Sendable {
     private let imageDownloader: ImageDownloader
     private let imageUploader: ImageUploader
 
@@ -45,7 +45,24 @@ public struct AvatarService {
     ///   - accessToken: The authentication token for the user. This is a WordPress.com OAuth2 access token.
     /// - Returns: An asynchronously-delivered `URLResponse` instance, containing the response of the upload network task.
     @discardableResult
+    @available(*, deprecated, renamed: "upload(_:accessToken:)")
     public func upload(_ image: UIImage, email: Email, accessToken: String) async throws -> URLResponse {
-        try await imageUploader.uploadImage(image, email: email, accessToken: accessToken, additionalHTTPHeaders: [(name: "Client-Type", value: "ios")])
+        try await imageUploader.uploadImage(image, accessToken: accessToken, additionalHTTPHeaders: [(name: "Client-Type", value: "ios")]).response
+    }
+
+    /// Uploads an image to be used as the user's Gravatar profile image, and returns the `URLResponse` of the network tasks asynchronously. Throws
+    /// ``ImageUploadError``.
+    /// - Parameters:
+    ///   - image: The image to be uploaded.
+    ///   - accessToken: The authentication token for the user. This is a WordPress.com OAuth2 access token.
+    /// - Returns: An asynchronously-delivered `AvatarModel` instance, containing data of the newly created avatar.
+    @discardableResult
+    public func upload(_ image: UIImage, accessToken: String) async throws -> Avatar {
+        let (data, _) = try await imageUploader.uploadImage(image, accessToken: accessToken, additionalHTTPHeaders: [(name: "Client-Type", value: "ios")])
+        do {
+            return try data.decode(keyDecodingStrategy: .convertFromSnakeCase)
+        } catch {
+            throw ImageUploadError.responseError(reason: .unexpected(error))
+        }
     }
 }

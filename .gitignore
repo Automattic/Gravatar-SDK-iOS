@@ -17,6 +17,7 @@ xcuserdata/
 DerivedData
 *.hmap
 *.ipa
+*.dSYM*
 
 # Swift Package Manager
 .build
@@ -33,7 +34,7 @@ Carthage/Build
 # We recommend against adding the Pods directory to your .gitignore. However
 # you should judge for yourself, the pros and cons are mentioned at:
 # https://guides.cocoapods.org/using/using-cocoapods.html#should-i-ignore-the-pods-directory-in-source-control
-# 
+#
 # Note: if you ignore the Pods directory, make sure to uncomment
 # `pod install` in .travis.yml
 #
@@ -46,4 +47,4 @@ fastlane/test_output
 
 # Other
 openapi-generator/
-Demo/Demo/Gravatar-Demo/Secrets.swift
+Demo/Demo/Secrets.swift

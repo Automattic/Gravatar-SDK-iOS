@@ -15,5 +15,5 @@ public protocol HTTPClient: Sendable {
     ///   - request: A URL request object that provides request-specific information such as the URL and cache policy.
     ///   - data: The data to be uploaded.
     /// - Returns: An asynchronously-delivered instance of the returned HTTPURLResponse.
-    func uploadData(with request: URLRequest, data: Data) async throws -> HTTPURLResponse
+    func uploadData(with request: URLRequest, data: Data) async throws -> (Data, HTTPURLResponse)
 }

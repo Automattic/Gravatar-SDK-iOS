@@ -1,21 +1,45 @@
-//
-//  ContentView.swift
-//  Demo
-//
-//  Created by Andrew Montgomery on 1/19/24.
-//
-
 import SwiftUI
+import GravatarUI
 
 struct ContentView: View {
-    var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+    enum Page: String, CaseIterable, Identifiable {
+        case avatarView = "Avatar view"
+        case avatarPickerView = "Avatar picker view"
+        case oauth = "Profile editor with oauth"
+
+        var id: Int {
+            self.rawValue.hashValue
         }
-        .padding()
+        
+        var title: String {
+            rawValue
+        }
+    }
+
+    var body: some View {
+        NavigationStack {
+            List(Page.allCases) { page in
+                NavigationLink(page.title, value: page)
+            }
+            .listStyle(.plain)
+            .navigationDestination(for: Page.self) { value in
+                pageView(for: value).navigationTitle(value.title)
+            }
+            .navigationTitle("Gravatar SwiftUI Demo")
+            .navigationBarTitleDisplayMode(.inline)
+        }
+    }
+
+    @ViewBuilder
+    func pageView(for page: Page) -> some View {
+        switch page {
+        case .avatarView:
+            DemoAvatarView()
+        case .avatarPickerView:
+            DemoAvatarPickerView()
+        case .oauth:
+            DemoProfileEditorView()
+        }
     }
 }
 
