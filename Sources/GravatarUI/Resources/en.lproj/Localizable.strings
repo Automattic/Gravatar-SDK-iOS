@@ -40,6 +40,9 @@
 /* Title of a button that will take you to your Gravatar profile, with an arrow indicating that this action will cause you to leave this view */
 "AvatarPickerProfile.Button.ViewProfile.title" = "View profile →";
 
+/* An message that will appear in a small 'toast' message overlaying the current view */
+"AvatarPickerViewModel.Toast.Error.message" = "Oops, there was an error uploading the image.";
+
 /* Text on a sample Gravatar profile, appearing in the place where a Gravatar profile would display your short biography. */
 "ClaimProfile.Label.AboutMe" = "Tell the world who you are. Your avatar and bio that follows you across the web.";
 
@@ -49,6 +52,18 @@
 /* Text on a sample Gravatar profile, appearing in the place where a Gravatar profile would display information like location, your preferred pronouns, etc. */
 "ClaimProfile.Label.Location" = "Add your location, pronouns, etc";
 
+/* Title of a button that closes the current view */
+"GravatarNavigationModifier.Button.Done.title" = "Done";
+
+/* The 'dark mode' appearance of this app */
+"Palette.Name.dark" = "Dark";
+
+/* The 'light mode' appearance of this app */
+"Palette.Name.light" = "Light";
+
+/* The appearance (light or dark) of this app as configured in the system settings for the device */
+"Palette.Name.system" = "System Default";
+
 /* Title for a button that allows you to claim a new Gravatar profile */
 "ProfileButton.title.create" = "Claim profile";
 
@@ -57,4 +72,10 @@
 
 /* Title for a button that allows you to view your Gravatar profile */
 "ProfileButton.title.view" = "View profile";
+
+/* An option in a menu that will display the camera for taking a picture */
+"SystemImagePickerView.Source.Camera.title" = "Take a Photo";
+
+/* An option in a menu that display the user's Photo Library and allow them to choose a photo from it */
+"SystemImagePickerView.Source.PhotoLibrary.title" = "Choose a Photo";
 
