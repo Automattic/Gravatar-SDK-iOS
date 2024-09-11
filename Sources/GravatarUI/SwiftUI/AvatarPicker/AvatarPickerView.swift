@@ -19,7 +19,7 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
     public var body: some View {
         ZStack {
             VStack(spacing: 0) {
-                email()
+                EmailText(email: model.email)
                     .accumulateIntrinsicHeight()
                 profileView()
                     .accumulateIntrinsicHeight()
@@ -58,16 +58,6 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
         .fullScreenCover(item: $safariURL) { url in
             SafariView(url: url)
                 .edgesIgnoringSafeArea(.all)
-        }
-    }
-
-    @ViewBuilder
-    private func email() -> some View {
-        if let email = model.email?.rawValue, !email.isEmpty {
-            Text(email)
-                .padding(.bottom, Constants.emailBottomSpacing / 2)
-                .font(.footnote)
-                .foregroundColor(Color(UIColor.secondaryLabel))
         }
     }
 
@@ -281,7 +271,7 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
                 .cornerRadius(8)
                 .shadow(color: profileShadowColor, radius: profileShadowRadius, y: 3)
         })
-        .padding(.top, Constants.emailBottomSpacing / 2)
+        .padding(.top, Constants.profileViewTopSpacing / 2)
         .padding(.bottom, Constants.vStackVerticalSpacing)
         .padding(.horizontal, Constants.horizontalPadding)
     }
@@ -312,7 +302,7 @@ private enum AvatarPicker {
         static let lightModeShadowColor = Color(uiColor: UIColor.rgba(25, 30, 35, alpha: 0.2))
         static let title: String = "Gravatar" // defined here to avoid translations
         static let vStackVerticalSpacing: CGFloat = .DS.Padding.medium
-        static let emailBottomSpacing: CGFloat = .DS.Padding.double
+        static let profileViewTopSpacing: CGFloat = .DS.Padding.double
     }
 
     enum Localized {

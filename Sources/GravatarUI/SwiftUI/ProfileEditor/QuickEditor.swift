@@ -66,11 +66,27 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
     func noticeView() -> some View {
         VStack {
             if !isAuthenticating {
-                Button("Authenticate (Future error view)") {
-                    Task {
-                        performAuthentication()
-                    }
-                }
+                EmailText(email: email)
+                ContentLoadingErrorView(
+                    title: "Error",
+                    subtext: "Please try to authenticate again.",
+                    image: nil,
+                    actionButton: {
+                        Button {
+                            performAuthentication()
+                        } label: {
+                            CTAButtonView("Authenticate")
+                        }
+                    },
+                    innerPadding: .init(
+                        top: .DS.Padding.double,
+                        leading: .DS.Padding.double,
+                        bottom: .DS.Padding.double,
+                        trailing: .DS.Padding.double
+                    )
+                )
+                .padding(.horizontal, .DS.Padding.double)
+                Spacer()
             } else {
                 ProgressView()
             }
