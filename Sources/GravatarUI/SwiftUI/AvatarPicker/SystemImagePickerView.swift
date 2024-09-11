@@ -103,9 +103,17 @@ extension ImagePicker.SourceType {
     var localizedTitle: String {
         switch self {
         case .photoLibrary:
-            "Chose a Photo"
+            SDKLocalizedString(
+                "SystemImagePickerView.Source.PhotoLibrary.title",
+                value: "Choose a Photo",
+                comment: "An option in a menu that display the user's Photo Library and allow them to choose a photo from it"
+            )
         case .camera:
-            "Take Photo"
+            SDKLocalizedString(
+                "SystemImagePickerView.Source.Camera.title",
+                value: "Take a Photo",
+                comment: "An option in a menu that will display the camera for taking a picture"
+            )
         }
     }
 

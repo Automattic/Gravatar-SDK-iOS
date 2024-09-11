@@ -26,7 +26,7 @@ struct GravatarNavigationModifier: ViewModifier {
                     Button(action: {
                         onDoneButtonPressed?()
                     }) {
-                        Text("Done")
+                        Text(Localized.doneButtonTitle)
                             .tint(Color(UIColor.gravatarBlue))
                     }
                 }
@@ -42,6 +42,16 @@ struct GravatarNavigationModifier: ViewModifier {
                     )
                 }
             }
+    }
+}
+
+extension GravatarNavigationModifier {
+    private enum Localized {
+        static let doneButtonTitle = SDKLocalizedString(
+            "GravatarNavigationModifier.Button.Done.title",
+            value: "Done",
+            comment: "Title of a button that closes the current view"
+        )
     }
 }
 

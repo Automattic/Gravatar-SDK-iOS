@@ -126,7 +126,7 @@ public enum PaletteType {
 extension Palette {
     static var system: Palette {
         .init(
-            name: "System Default",
+            name: Localized.Name.system,
             foreground: .init(
                 primary: UIColor(
                     light: light.foreground.primary,
@@ -175,7 +175,7 @@ extension Palette {
 
     public static var light: Palette {
         .init(
-            name: "Light",
+            name: Localized.Name.light,
             foreground: .init(
                 primary: .black,
                 primarySlightlyDimmed: .gravatarBlack,
@@ -198,7 +198,7 @@ extension Palette {
 
     static var dark: Palette {
         .init(
-            name: "Dark",
+            name: Localized.Name.dark,
             foreground: .init(
                 primary: .white,
                 primarySlightlyDimmed: .white,
@@ -229,5 +229,27 @@ extension Palette {
             ))
         }
         return colors
+    }
+}
+
+extension Palette {
+    private enum Localized {
+        enum Name {
+            static let system = SDKLocalizedString(
+                "Palette.Name.system",
+                value: "System Default",
+                comment: "The appearance (light or dark) of this app as configured in the system settings for the device"
+            )
+            static let light = SDKLocalizedString(
+                "Palette.Name.light",
+                value: "Light",
+                comment: "The 'light mode' appearance of this app"
+            )
+            static let dark = SDKLocalizedString(
+                "Palette.Name.dark",
+                value: "Dark",
+                comment: "The 'dark mode' appearance of this app"
+            )
+        }
     }
 }

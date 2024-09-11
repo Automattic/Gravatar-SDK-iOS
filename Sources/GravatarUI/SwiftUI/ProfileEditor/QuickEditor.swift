@@ -66,6 +66,7 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
     func noticeView() -> some View {
         VStack {
             if !isAuthenticating {
+                // TODO: Localize Button title
                 Button("Authenticate (Future error view)") {
                     Task {
                         performAuthentication()

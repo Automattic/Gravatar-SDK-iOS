@@ -184,7 +184,7 @@ class AvatarPickerViewModel: ObservableObject {
         } catch {
             let newModel = AvatarImageModel(id: localID, source: .local(image: squareImage), uploadHasFailed: true)
             grid.replaceModel(withID: localID, with: newModel)
-            toastManager.showToast("Oops, there was an error uploading the image.", type: .error)
+            toastManager.showToast(Localized.toastError, type: .error)
         }
     }
 
@@ -223,6 +223,16 @@ class AvatarPickerViewModel: ObservableObject {
             await identity
             await profile
         }
+    }
+}
+
+extension AvatarPickerViewModel {
+    private enum Localized {
+        static let toastError = SDKLocalizedString(
+            "AvatarPickerViewModel.Toast.Error.message",
+            value: "Oops, there was an error uploading the image.",
+            comment: "An message that will appear in a small 'toast' message overlaying the current view"
+        )
     }
 }
 
