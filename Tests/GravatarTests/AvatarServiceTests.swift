@@ -11,7 +11,7 @@ final class AvatarServiceTests: XCTestCase {
     func testFetchImage() async throws {
         let response = HTTPURLResponse.successResponse(with: TestData.urlFromEmail)
         let sessionMock = URLSessionMock(returnData: ImageHelper.testImageData, response: response)
-        let service = avatarService(with: sessionMock)
+        let service = avatarService(with: sessionMock, cache: TestImageCache())
         let options = ImageDownloadOptions()
 
         let imageResponse = try await service.fetch(with: .email(TestData.email), options: options)

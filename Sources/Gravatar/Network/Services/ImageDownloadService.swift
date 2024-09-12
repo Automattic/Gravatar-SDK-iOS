@@ -17,12 +17,12 @@ public struct ImageDownloadService: ImageDownloader, Sendable {
     ///   - cache: A type which will perform image caching operations.
     public init(client: HTTPClient? = nil, cache: ImageCaching? = nil) {
         self.client = client ?? URLSessionHTTPClient()
-        self.imageCache = cache ?? ImageCache()
+        self.imageCache = cache ?? ImageCache.shared
     }
 
     public init(urlSession: URLSession, cache: ImageCaching? = nil) {
         self.client = URLSessionHTTPClient(urlSession: urlSession)
-        self.imageCache = cache ?? ImageCache()
+        self.imageCache = cache ?? ImageCache.shared
     }
 
     public func fetchImage(with url: URL, forceRefresh: Bool = false, processingMethod: ImageProcessingMethod = .common()) async throws -> ImageDownloadResult {

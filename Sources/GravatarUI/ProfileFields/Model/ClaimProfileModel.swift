@@ -1,19 +1,19 @@
 import UIKit
 
 struct ClaimProfileModel: ProfileModel {
-    let description: String = NSLocalizedString(
+    let description: String = SDKLocalizedString(
         "ClaimProfile.Label.AboutMe",
         value: "Tell the world who you are. Your avatar and bio that follows you across the web.",
         comment: "Text on a sample Gravatar profile, appearing in the place where a Gravatar profile would display your short biography."
     )
 
-    let location: String = NSLocalizedString(
+    let location: String = SDKLocalizedString(
         "ClaimProfile.Label.Location",
         value: "Add your location, pronouns, etc",
         comment: "Text on a sample Gravatar profile, appearing in the place where a Gravatar profile would display information like location, your preferred pronouns, etc."
     )
 
-    var displayName: String = NSLocalizedString(
+    var displayName: String = SDKLocalizedString(
         "ClaimProfile.Label.DisplayName",
         value: "Your Name",
         comment: "Text on a sample Gravatar profile, appearing in the place where your name would normally appear on your Gravatar profile after you claim it."
