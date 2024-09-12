@@ -6,7 +6,6 @@ public struct AvatarURL {
     public let url: URL
 
     let options: AvatarQueryOptions
-    let components: URLComponents
 
     public init?(url: URL, options: AvatarQueryOptions = AvatarQueryOptions()) {
         guard
@@ -18,7 +17,6 @@ public struct AvatarURL {
         }
 
         self.canonicalURL = sanitizedURL
-        self.components = components
         self.hash = sanitizedURL.lastPathComponent
         self.options = options
         self.url = url
