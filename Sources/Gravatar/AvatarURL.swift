@@ -12,8 +12,7 @@ public struct AvatarURL {
         guard
             Self.isAvatarURL(url),
             let components = URLComponents(url: url, resolvingAgainstBaseURL: false)?.sanitizingComponents(),
-            let sanitizedURL = components.url,
-            let url = sanitizedURL.addQueryItems(from: options)
+            let sanitizedURL = components.withQueryItems(options.queryItems).url
         else {
             return nil
         }
@@ -48,21 +47,6 @@ extension AvatarURL: Equatable {
 extension String {
     fileprivate static let scheme = "https"
     fileprivate static let baseURL = "https://gravatar.com/avatar/"
-}
-
-extension URL {
-    fileprivate func addQueryItems(from options: AvatarQueryOptions) -> URL? {
-        guard var components = URLComponents(url: self, resolvingAgainstBaseURL: false) else {
-            return nil
-        }
-        components.queryItems = options.queryItems
-
-        if components.queryItems?.isEmpty == true {
-            components.queryItems = nil
-        }
-
-        return components.url
-    }
 }
 
 extension URLComponents {

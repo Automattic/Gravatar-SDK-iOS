@@ -31,6 +31,30 @@ extension URLComponents {
         }
     }
 
+    /// Returns a `URLComponents` with the `queryItems` set.
+    ///
+    /// - Parameters:
+    ///   - queryItems: An array of `URLQueryItem`s
+    ///   - percentEncodedValues: Whether to fully percent-encode values.
+    ///         Setting to `true` will fully encode all non-alpha-numeric characters.
+    ///         Setting to `false` will encode all characters that are not valid in a url query
+    /// - Returns: `URLComponents` with the `queryItems` set with the specified encoding
+    package func withQueryItems(_ queryItems: [URLQueryItem], percentEncodedValues: Bool = true) -> URLComponents {
+        var copy = self
+
+        if queryItems.isEmpty {
+            copy.queryItems = nil
+        } else if percentEncodedValues {
+            copy.setQueryItems(queryItems, queryItemEncodingAllowedCharacters: .alphanumerics)
+        } else {
+            copy.queryItems = queryItems
+        }
+
+        return copy
+    }
+}
+
+extension URLComponents {
     /// Creates a `URLComponents` object from a string and an array `[URLQueryItem]`.
     ///
     /// Use `queryItemEncodingAllowedCharacters` to specify the characters that should be allowed,
@@ -46,7 +70,14 @@ extension URLComponents {
         queryItemEncodingAllowedCharacters: CharacterSet
     ) {
         self.init(string: string)
+        self.queryItems = []
+        self.setQueryItems(queryItems, queryItemEncodingAllowedCharacters: queryItemEncodingAllowedCharacters)
+    }
 
+    private mutating func setQueryItems(
+        _ queryItems: [URLQueryItem],
+        queryItemEncodingAllowedCharacters: CharacterSet
+    ) {
         self.percentEncodedQueryItems = queryItems.map { $0.percentEncoded(withAllowedCharacters: queryItemEncodingAllowedCharacters) }
     }
 }
