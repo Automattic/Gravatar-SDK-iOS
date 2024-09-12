@@ -29,7 +29,7 @@ final class ImageDownloadServiceTests: XCTestCase {
                 XCTFail()
             } catch ImageFetchingError.responseError(reason: .URLSessionError(error: let error)) {
                 XCTAssertNotNil(error as? CancellationError)
-                let entry = await cache.getEntry(with: imageURL.absoluteString)
+                let entry = cache.getEntry(with: imageURL.absoluteString)
                 XCTAssertNil(entry)
             } catch {
                 XCTFail()
@@ -38,7 +38,7 @@ final class ImageDownloadServiceTests: XCTestCase {
 
         let task2 = Task {
             try await Task.sleep(nanoseconds: UInt64(0.05 * 1_000_000_000))
-            await service.cancelTask(for: imageURL)
+            service.cancelTask(for: imageURL)
         }
 
         await task1.value
@@ -65,7 +65,7 @@ final class ImageDownloadServiceTests: XCTestCase {
 
         let task2 = Task {
             try await Task.sleep(nanoseconds: UInt64(0.1 * 1_000_000_000))
-            await service.cancelTask(for: imageURL)
+            service.cancelTask(for: imageURL)
         }
 
         await task1.value
@@ -104,9 +104,9 @@ final class ImageDownloadServiceTests: XCTestCase {
         _ = try await service.fetchImage(with: URL(string: imageURL)!)
         _ = try await service.fetchImage(with: URL(string: imageURL)!)
         let imageResponse = try await service.fetchImage(with: URL(string: imageURL)!)
-        let setImageCallsCount = await cache.setImageCallsCount
-        let setTaskCallCount = await cache.setTaskCallsCount
-        let getImageCallsCount = await cache.getImageCallsCount
+        let setImageCallsCount = cache.setImageCallsCount
+        let setTaskCallCount = cache.setTaskCallsCount
+        let getImageCallsCount = cache.getImageCallsCount
         let request = await sessionMock.request
         let callsCount = await sessionMock.callsCount
         XCTAssertEqual(setImageCallsCount, 1)
