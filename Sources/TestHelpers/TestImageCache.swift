@@ -1,7 +1,7 @@
 import Gravatar
 import UIKit
 
-package actor TestImageCache: ImageCaching {
+package class TestImageCache: ImageCaching, @unchecked Sendable {
     var dict: [String: CacheEntryWrapper] = [:]
 
     package private(set) var getImageCallsCount = 0
@@ -10,7 +10,7 @@ package actor TestImageCache: ImageCaching {
 
     package init() {}
 
-    package func setEntry(_ entry: Gravatar.CacheEntry?, for key: String) async {
+    package func setEntry(_ entry: Gravatar.CacheEntry?, for key: String) {
         guard let entry else {
             dict[key] = nil
             return
@@ -24,7 +24,7 @@ package actor TestImageCache: ImageCaching {
         dict[key] = CacheEntryWrapper(entry)
     }
 
-    package func getEntry(with key: String) async -> Gravatar.CacheEntry? {
+    package func getEntry(with key: String) -> Gravatar.CacheEntry? {
         getImageCallsCount += 1
         return dict[key]?.cacheEntry
     }

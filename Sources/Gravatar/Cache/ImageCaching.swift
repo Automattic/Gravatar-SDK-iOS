@@ -9,7 +9,7 @@ public protocol ImageCaching: Sendable {
     /// - Parameters:
     ///   - image: The cache entry to set.
     ///   - key: The entry's key, used to be found via `.getEntry(key:)`.
-    func setEntry(_ entry: CacheEntry?, for key: String) async
+    func setEntry(_ entry: CacheEntry?, for key: String)
 
     /// Gets a `CacheEntry` from cache for the given key, or nil if none is found.
     ///
@@ -18,7 +18,7 @@ public protocol ImageCaching: Sendable {
     ///
     /// `.inProgress(task)`  is used by the image downloader to check if there's already an ongoing download task for the same image. If yes, the image
     /// downloader  awaits that ask instead of starting a new one.
-    func getEntry(with key: String) async -> CacheEntry?
+    func getEntry(with key: String) -> CacheEntry?
 }
 
 /// The default `ImageCaching` used by this SDK.
