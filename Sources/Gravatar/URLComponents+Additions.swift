@@ -18,7 +18,7 @@ extension URLComponents {
     ///   - percentEncodedValues: Whether to fully percent-encode values.
     ///         Setting to `true` will fully encode all non-alpha-numeric characters.
     ///         Setting to `false` will encode all characters that are not valid in a url query
-    init?(string: String, queryItems: [URLQueryItem], percentEncodedValues: Bool = true) {
+    package init?(string: String, queryItems: [URLQueryItem], percentEncodedValues: Bool = true) {
         if percentEncodedValues {
             self.init(
                 string: string,
@@ -40,7 +40,7 @@ extension URLComponents {
     ///   - string: The URL string
     ///   - queryItems: An array of `URLQueryItems`s
     ///   - queryItemEncodingAllowedCharacters: The character set that should not be percent-encoded
-    init?(
+    private init?(
         string: String,
         queryItems: [URLQueryItem],
         queryItemEncodingAllowedCharacters: CharacterSet
