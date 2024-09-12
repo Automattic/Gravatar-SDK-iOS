@@ -7,7 +7,7 @@ final class ImageDownloadServiceTests: XCTestCase {
         let imageURL = "https://gravatar.com/avatar/HASH"
         let response = HTTPURLResponse.successResponse(with: URL(string: imageURL)!)
         let sessionMock = URLSessionMock(returnData: ImageHelper.testImageData, response: response)
-        let service = imageDownloadService(with: sessionMock)
+        let service = imageDownloadService(with: sessionMock, cache: TestImageCache())
 
         let imageResponse = try await service.fetchImage(with: URL(string: imageURL)!)
         let request = await sessionMock.request
