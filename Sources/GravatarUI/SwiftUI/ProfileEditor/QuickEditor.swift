@@ -68,14 +68,14 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
             if !isAuthenticating {
                 EmailText(email: email)
                 ContentLoadingErrorView(
-                    title: "Error",
-                    subtext: "Please try to authenticate again.",
+                    title: Constants.Localized.LogInError.title,
+                    subtext: Constants.Localized.LogInError.subtext,
                     image: nil,
                     actionButton: {
                         Button {
                             performAuthentication()
                         } label: {
-                            CTAButtonView("Authenticate")
+                            CTAButtonView(Constants.Localized.LogInError.buttonTitle)
                         }
                     },
                     innerPadding: .init(
@@ -111,6 +111,30 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
             }
             hasSession = oauthSession.hasSession(with: email)
             isAuthenticating = false
+        }
+    }
+}
+
+extension QuickEditorConstants {
+    enum Localized {
+        enum LogInError {
+            static let title = SDKLocalizedString(
+                "AvatarPicker.ContentLoading.Failure.LogInError.title",
+                value: "Login required",
+                comment: "Title of a message advising the user that something went wrong while trying to log in."
+            )
+
+            static let buttonTitle = SDKLocalizedString(
+                "AvatarPicker.ContentLoading.Failure.SessionExpired.LogInError.buttonTitle",
+                value: "Log in",
+                comment: "Title of a button that will begin the process of authenticating the user, appearing beneath a message stating that a previous log in attept has failed."
+            )
+
+            static let subtext = SDKLocalizedString(
+                "AvatarPicker.ContentLoading.Failure.SessionExpired.LogInError.subtext",
+                value: "To modify your Gravatar profile, you need to log in first.",
+                comment: "A message describing the error and advising the user to login again to resolve the issue"
+            )
         }
     }
 }
