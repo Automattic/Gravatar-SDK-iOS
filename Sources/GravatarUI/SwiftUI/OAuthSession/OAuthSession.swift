@@ -1,4 +1,5 @@
 import AuthenticationServices
+import Gravatar
 
 public struct OAuthSession: Sendable {
     private let storage: SecureStorage
@@ -71,10 +72,12 @@ public struct OAuthSession: Sendable {
     }
 
     private func oauthURL(with email: Email, secrets: Configuration.OAuthSecrets) throws -> URL {
-        let params = OAuthURLParams(email: email, secrets: secrets)
-        var urlComponents = URLComponents(string: "https://public-api.wordpress.com/oauth2/authorize")!
         do {
-            urlComponents.queryItems = try params.queryItems
+            let queryItems = try OAuthURLParams(email: email, secrets: secrets).queryItems
+            let urlComponents = URLComponents(
+                string: "https://public-api.wordpress.com/oauth2/authorize",
+                queryItems: queryItems
+            )!
             guard let finalURL = urlComponents.url else {
                 assertionFailure(
                     "Error encoding oauth secrets. Check the config in `Configuration.shared.configure(with:oauthSecrets:)` and try again"
@@ -182,7 +185,10 @@ extension Encodable {
             let data = try encoder.encode(self)
             let dictionary = try JSONSerialization.jsonObject(with: data) as? [String: String]
             return dictionary?.map {
-                URLQueryItem(name: $0.key, value: $0.value)
+                print("key: \($0.key) | value: \($0.value)")
+                let queryItem = URLQueryItem(name: $0.key, value: $0.value)
+                print("URLQueryItem: \(queryItem)")
+                return queryItem
             } ?? []
         }
     }
