@@ -78,7 +78,7 @@ public struct ImageDownloadService: ImageDownloader, Sendable {
         }
     }
 
-    public func cancelTask(for url: URL) async {
+    public func cancelTask(for url: URL) {
         if let entry = imageCache.getEntry(with: url.absoluteString) {
             switch entry {
             case .inProgress(let task):

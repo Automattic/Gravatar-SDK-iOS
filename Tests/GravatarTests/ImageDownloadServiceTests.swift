@@ -38,7 +38,7 @@ final class ImageDownloadServiceTests: XCTestCase {
 
         let task2 = Task {
             try await Task.sleep(nanoseconds: UInt64(0.05 * 1_000_000_000))
-            await service.cancelTask(for: imageURL)
+            service.cancelTask(for: imageURL)
         }
 
         await task1.value
@@ -65,7 +65,7 @@ final class ImageDownloadServiceTests: XCTestCase {
 
         let task2 = Task {
             try await Task.sleep(nanoseconds: UInt64(0.1 * 1_000_000_000))
-            await service.cancelTask(for: imageURL)
+            service.cancelTask(for: imageURL)
         }
 
         await task1.value
