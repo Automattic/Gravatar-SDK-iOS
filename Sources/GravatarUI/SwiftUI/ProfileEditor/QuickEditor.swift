@@ -66,11 +66,27 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
     func noticeView() -> some View {
         VStack {
             if !isAuthenticating {
-                Button("Authenticate (Future error view)") {
-                    Task {
-                        performAuthentication()
-                    }
-                }
+                EmailText(email: email)
+                ContentLoadingErrorView(
+                    title: Constants.Localized.LogInError.title,
+                    subtext: Constants.Localized.LogInError.subtext,
+                    image: nil,
+                    actionButton: {
+                        Button {
+                            performAuthentication()
+                        } label: {
+                            CTAButtonView(Constants.Localized.LogInError.buttonTitle)
+                        }
+                    },
+                    innerPadding: .init(
+                        top: .DS.Padding.double,
+                        leading: .DS.Padding.double,
+                        bottom: .DS.Padding.double,
+                        trailing: .DS.Padding.double
+                    )
+                )
+                .padding(.horizontal, .DS.Padding.double)
+                Spacer()
             } else {
                 ProgressView()
             }
@@ -95,6 +111,30 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
             }
             hasSession = oauthSession.hasSession(with: email)
             isAuthenticating = false
+        }
+    }
+}
+
+extension QuickEditorConstants {
+    enum Localized {
+        enum LogInError {
+            static let title = SDKLocalizedString(
+                "AvatarPicker.ContentLoading.Failure.LogInError.title",
+                value: "Login required",
+                comment: "Title of a message advising the user that something went wrong while trying to log in."
+            )
+
+            static let buttonTitle = SDKLocalizedString(
+                "AvatarPicker.ContentLoading.Failure.SessionExpired.LogInError.buttonTitle",
+                value: "Log in",
+                comment: "Title of a button that will begin the process of authenticating the user, appearing beneath a message stating that a previous log in attept has failed."
+            )
+
+            static let subtext = SDKLocalizedString(
+                "AvatarPicker.ContentLoading.Failure.SessionExpired.LogInError.subtext",
+                value: "To modify your Gravatar profile, you need to log in first.",
+                comment: "A message describing the error and advising the user to login again to resolve the issue"
+            )
         }
     }
 }
