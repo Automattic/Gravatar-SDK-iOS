@@ -118,7 +118,7 @@ public struct Avatar: Decodable, Sendable {
     }
 
     public var url: String {
-        "https://gravatar.com\(imageUrl)?size=256"
+        imageUrl
     }
 }
 

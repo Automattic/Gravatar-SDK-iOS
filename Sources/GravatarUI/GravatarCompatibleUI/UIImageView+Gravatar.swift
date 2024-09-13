@@ -124,9 +124,9 @@ extension GravatarWrapper where Component: UIImageView {
         }
     }
 
-    public func cancelImageDownload() async {
+    public func cancelImageDownload() {
         if let sourceURL {
-            await imageDownloader?.cancelTask(for: sourceURL)
+            imageDownloader?.cancelTask(for: sourceURL)
         }
     }
 

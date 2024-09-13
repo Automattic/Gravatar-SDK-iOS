@@ -177,7 +177,7 @@ class AvatarPickerViewModel: ObservableObject {
         let service = AvatarService()
         do {
             let avatar = try await service.upload(squareImage, accessToken: accessToken)
-            await ImageCache.shared.setEntry(.ready(squareImage), for: avatar.url)
+            ImageCache.shared.setEntry(.ready(squareImage), for: avatar.url)
 
             let newModel = AvatarImageModel(id: avatar.id, source: .remote(url: avatar.url))
             grid.replaceModel(withID: localID, with: newModel)
