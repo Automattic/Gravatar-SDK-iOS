@@ -60,6 +60,7 @@ steps:
       - label: "🛠️ Build SwiftUI Demo"
         key: build_swiftui
         depends_on: test
+        plugins: [$CI_TOOLKIT]
         command: |
           install_gems
           BUILD_NUMBER=$BUILDKITE_BUILD_NUMBER make build-demo-for-distribution-swiftui
@@ -76,6 +77,7 @@ steps:
       - label: "🛠️ Build UIKit Demo"
         key: build_uikit
         depends_on: test
+        plugins: [$CI_TOOLKIT]
         command: |
           install_gems
           BUILD_NUMBER=$BUILDKITE_BUILD_NUMBER make build-demo-for-distribution-uikit
