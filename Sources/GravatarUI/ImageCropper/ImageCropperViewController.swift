@@ -1,3 +1,4 @@
+import CoreGraphics
 import UIKit
 
 class ImageCropperViewController: UIViewController, UIScrollViewDelegate {
@@ -6,6 +7,7 @@ class ImageCropperViewController: UIViewController, UIScrollViewDelegate {
         static let backgroundColor = UIColor.black
         static let scrollViewHorizontalPadding: CGFloat = .DS.Padding.medium
         static let cropSize: CGFloat = 320
+        static let maxOutputImageSizeInPixels: CGFloat = 1024
     }
 
     // ScrollView for zooming and panning
@@ -144,39 +146,29 @@ class ImageCropperViewController: UIViewController, UIScrollViewDelegate {
 
     @objc
     func cropWasPressed() {
-        let screenScale = UIScreen.main.scale
+        guard let image = imageView.image?.correctlyOriented else { return }
+
+        let cropFrame = scrollView.frame
         let zoomScale = scrollView.zoomScale
-        let oldSize = inputImage.size
-        let resizeRect = CGRect(x: 0, y: 0, width: oldSize.width * zoomScale, height: oldSize.height * zoomScale)
-        let clippingRect = CGRect(
-            x: scrollView.contentOffset.x * screenScale,
-            y: scrollView.contentOffset.y * screenScale,
-            width: scrollView.frame.width * screenScale,
-            height: scrollView.frame.height * screenScale
+
+        // Calculate the visible content offset in the scroll view (relative to the zoomed content)
+        let contentOffset = scrollView.contentOffset
+
+        // Convert crop frame into the image's coordinate system, adjusted by zoom scale
+        let visibleRect = CGRect(
+            x: (contentOffset.x + cropFrame.origin.x - scrollView.frame.origin.x) / zoomScale,
+            y: (contentOffset.y + cropFrame.origin.y - scrollView.frame.origin.y) / zoomScale,
+            width: cropFrame.width / zoomScale,
+            height: cropFrame.height / zoomScale
         )
 
-        if scrollView.contentOffset.x == 0 &&
-            scrollView.contentOffset.y == 0 &&
-            oldSize.width == clippingRect.width &&
-            oldSize.height == clippingRect.height
-        {
-            onCompletion?(inputImage, false)
-            return
-        }
+        // cropping(to:) can return inequal edges since it adjusts the cropping rect to integral bounds.
+        guard let croppedCGImage = image.cgImage?.cropping(to: visibleRect) else { return }
 
-        // Resize
-        UIGraphicsBeginImageContextWithOptions(resizeRect.size, false, screenScale)
-        inputImage.draw(in: resizeRect)
-        let scaledImage = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
+        let croppedUIImage = UIImage(cgImage: croppedCGImage, scale: UIScreen.main.scale, orientation: .up)
 
-        // Crop
-        guard let clippedImageRef = scaledImage?.cgImage?.cropping(to: clippingRect.integral) else {
-            return
-        }
-
-        let clippedImage = UIImage(cgImage: clippedImageRef, scale: screenScale, orientation: .up)
-        onCompletion?(clippedImage, true)
+        guard let result = croppedUIImage.square(maxLength: Constants.maxOutputImageSizeInPixels) else { return }
+        onCompletion?(result, true)
     }
 
     @objc
@@ -232,5 +224,48 @@ class ImageCropperViewController: UIViewController, UIScrollViewDelegate {
             value: "Cancel",
             comment: "Cancel the crop"
         )
+    }
+}
+
+@MainActor
+extension UIImage {
+    fileprivate func square(maxLength maxLengthInPixels: CGFloat) -> UIImage? {
+        let scale = UIScreen.main.scale
+        let smallerEgde = min(size.width * scale, size.height * scale)
+        let squareEdge = min(maxLengthInPixels, smallerEgde)
+        return downsize(to: .init(width: squareEdge, height: squareEdge))
+    }
+
+    // Resize the UIImage fitting within a specified maximum size.
+    private func downsize(to targetSizeInPixels: CGSize) -> UIImage? {
+        let scale = UIScreen.main.scale
+        let currentSizeInPixels: CGSize = .init(width: size.width * scale, height: size.height * scale)
+        // Downsize if this is not a square (to fix the inequal edges produced by cropping(to:) )
+        // OR if size is bigger than target.
+        guard currentSizeInPixels.width != currentSizeInPixels.height ||
+            targetSizeInPixels.width < currentSizeInPixels.width ||
+            targetSizeInPixels.height < currentSizeInPixels.height
+        else { return self }
+        let newLenght = floor(min(targetSizeInPixels.width, targetSizeInPixels.height))
+        let newSize = CGSize(width: newLenght, height: newLenght)
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = 1
+        let renderer = UIGraphicsImageRenderer(size: newSize, format: format)
+        let resizedImage = renderer.image { _ in
+            self.draw(in: CGRect(origin: .zero, size: newSize))
+        }
+        return resizedImage
+    }
+
+    /// A UIImage instance with corrected orientation.If the instance's orientation is already `.up`, it simply returns the original.
+    fileprivate var correctlyOriented: UIImage? {
+        if imageOrientation == .up { return self }
+
+        UIGraphicsBeginImageContextWithOptions(size, false, scale)
+        draw(in: CGRect(origin: .zero, size: size))
+        let normalizedImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+
+        return normalizedImage
     }
 }
