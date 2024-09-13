@@ -9,10 +9,10 @@ final class URLComponentsTests: XCTestCase {
 
     private static let urlString = "https://example.com"
 
-    private enum FullyEncodedQuery {
+    private enum PlusSignLiteralEncodedQuery {
         static let spaces_query = "spaces=value%20with%20spaces"
         static let plus_sign_query = "plus_signs=value%2Bwith%2Bplus%2Bsigns"
-        static let special_chars = "special_chars=%21%23%24%26%27%28%29%2A%2B%2C%2F%3A%3B%3D%3F%40%5B%5D"
+        static let special_chars = "special_chars=!%23$%26'()*%2B,/:;%3D?@%5B%5D"
 
         static var queryString: String { "\(spaces_query)&\(plus_sign_query)&\(special_chars)" }
         static var url: URL { URL(string: "\(urlString)?\(queryString)")! }
@@ -27,35 +27,18 @@ final class URLComponentsTests: XCTestCase {
         static var url: URL { URL(string: "\(urlString)?\(queryString)")! }
     }
 
-    func testURLComponentsEncodingBehaviorMatchesDefaultBehavior() {
-        var reference = URLComponents(string: Self.urlString)
-        reference?.queryItems = queryItems
+    func testSetQueryItemsWithUrlEncoding() {
+        let components = URLComponents(string: Self.urlString)
+        let sut = components?.withQueryItems(queryItems, plusSignLiteralEncoded: true)
 
-        let sut = URLComponents(string: Self.urlString, queryItems: queryItems, percentEncodedValues: false)
-
-        XCTAssertEqual(sut?.url, reference?.url)
-    }
-
-    func testURLComponentsEncodingBehaviorEncodesSpecialCharacters() {
-        let reference = FullyEncodedQuery.url
-
-        let sut = URLComponents(string: Self.urlString, queryItems: queryItems, percentEncodedValues: true)
+        let reference = PlusSignLiteralEncodedQuery.url
 
         XCTAssertEqual(sut?.url, reference)
     }
 
-    func testSetQueryItemsWithPercentEncoding() {
+    func testSetQueryItemsWithoutUrlEncoding() {
         let components = URLComponents(string: Self.urlString)
-        let sut = components?.withQueryItems(queryItems, percentEncodedValues: true)
-
-        let reference = FullyEncodedQuery.url
-
-        XCTAssertEqual(sut?.url, reference)
-    }
-
-    func testSetQueryItemsWithoutPercentEncoding() {
-        let components = URLComponents(string: Self.urlString)
-        let sut = components?.withQueryItems(queryItems, percentEncodedValues: false)
+        let sut = components?.withQueryItems(queryItems, plusSignLiteralEncoded: false)
 
         let reference = DefaultEncodedQuery.url
 
@@ -64,7 +47,7 @@ final class URLComponentsTests: XCTestCase {
 
     func testSetQueryItemsWithEmptyArray() {
         let components = URLComponents(string: Self.urlString)
-        let sut = components?.withQueryItems([], percentEncodedValues: false)
+        let sut = components?.withQueryItems([], plusSignLiteralEncoded: false)
 
         XCTAssertNotNil(sut)
         XCTAssertNil(sut?.queryItems)
