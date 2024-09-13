@@ -72,7 +72,7 @@ bundle-install:
 fetch-code-signing: bundle-install
 	bundle exec fastlane configure_code_signing
 
-setup-secrets:
+setup-secrets: bundle-install
 	bundle exec fastlane run configure_apply
 
 swiftformat: # Automatically find and fixes lint issues
