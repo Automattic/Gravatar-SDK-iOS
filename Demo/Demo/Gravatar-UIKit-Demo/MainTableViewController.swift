@@ -20,9 +20,10 @@ class MainTableViewController: UITableViewController {
         case profileViewController
         #if DEBUG
         case displayRemoteSVG
+        case imageCropper
         #endif
     }
-    
+
     private static let reuseID =  "DefaultCell"
     
     override func viewDidLoad() {
@@ -57,6 +58,8 @@ class MainTableViewController: UITableViewController {
         #if DEBUG
         case .displayRemoteSVG:
             content.text = "Display remote SVG"
+        case .imageCropper:
+            content.text = "Image Cropper"
         #endif
         }
         cell.contentConfiguration = content
@@ -87,6 +90,8 @@ class MainTableViewController: UITableViewController {
         #if DEBUG
         case .displayRemoteSVG:
             navigationController?.pushViewController(DemoRemoteSVGViewController(), animated: true)
+        case .imageCropper:
+            navigationController?.pushViewController(DemoImageCropperViewController(), animated: true)
         #endif
         }
     }
