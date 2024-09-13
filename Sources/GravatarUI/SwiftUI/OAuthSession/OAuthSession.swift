@@ -155,6 +155,20 @@ private struct OAuthURLParams: Encodable {
     let blogID: String
     let redirectURI: String
     let userEmail: String
+    var scope1: String
+    var scope2: String
+    var scope3: String
+
+    public enum CodingKeys: String, CodingKey, CaseIterable {
+        case clientID
+        case responseType
+        case blogID
+        case redirectURI
+        case userEmail
+        case scope1 = "scope[1]"
+        case scope2 = "scope[2]"
+        case scope3 = "scope[3]"
+    }
 
     init(email: Email, secrets: Configuration.OAuthSecrets) {
         self.clientID = secrets.clientID
@@ -162,6 +176,9 @@ private struct OAuthURLParams: Encodable {
         self.blogID = "0"
         self.redirectURI = secrets.redirectURI
         self.userEmail = email.rawValue
+        self.scope1 = "gravatar-profile:read"
+        self.scope2 = "gravatar-profile:manage"
+        self.scope3 = "auth"
     }
 }
 
