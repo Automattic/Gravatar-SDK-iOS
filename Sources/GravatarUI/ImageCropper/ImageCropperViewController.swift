@@ -227,25 +227,25 @@ class ImageCropperViewController: UIViewController, UIScrollViewDelegate {
 
 @MainActor
 extension UIImage {
-    fileprivate func square(maxLength maxLengthInPixels: CGFloat) -> UIImage? {
+    // Resize the UIImage fitting within a specified maximum size.
+    func square(maxLength maxLengthInPixels: CGFloat) -> UIImage? {
         let scale = UIScreen.main.scale
         let smallerEgde = min(size.width * scale, size.height * scale)
-        let squareEdge = min(maxLengthInPixels, smallerEgde)
-        return downsize(to: .init(width: squareEdge, height: squareEdge))
+        let squareEdge = floor(min(maxLengthInPixels, smallerEgde))
+        return downsize(to: squareEdge)
     }
 
-    // Resize the UIImage fitting within a specified maximum size.
-    private func downsize(to targetSizeInPixels: CGSize) -> UIImage? {
+    // Downsize to targetSquareEdgeInPixels
+    private func downsize(to targetSquareEdgeInPixels: CGFloat) -> UIImage? {
         let scale = UIScreen.main.scale
         let currentSizeInPixels: CGSize = .init(width: size.width * scale, height: size.height * scale)
         // Downsize if this is not a square (to fix the unequal edges produced by cropping(to:) )
         // OR if size is bigger than target.
         guard currentSizeInPixels.width != currentSizeInPixels.height ||
-            targetSizeInPixels.width < currentSizeInPixels.width ||
-            targetSizeInPixels.height < currentSizeInPixels.height
+            targetSquareEdgeInPixels < currentSizeInPixels.width ||
+            targetSquareEdgeInPixels < currentSizeInPixels.height
         else { return self }
-        let newLenght = floor(min(targetSizeInPixels.width, targetSizeInPixels.height))
-        let newSize = CGSize(width: newLenght, height: newLenght)
+        let newSize = CGSize(width: targetSquareEdgeInPixels, height: targetSquareEdgeInPixels)
         let format = UIGraphicsImageRendererFormat()
         format.scale = 1
         let renderer = UIGraphicsImageRenderer(size: newSize, format: format)
