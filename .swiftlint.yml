@@ -1,0 +1,16 @@
+only_rules: # Rules to run
+  - custom_rules
+
+# If true, SwiftLint will treat all warnings as errors.
+strict: true
+
+custom_rules:
+  no_ns_localized_string:
+    included:
+      - "Sources/.*\\.swift"
+    name: "No NSLocalizedString"
+    regex: "NSLocalizedString\\("
+    match_kinds:
+      - identifier
+    message: "Use `SDKLocalizedString()` instead of `NSLocalizedString()`."
+    severity: error

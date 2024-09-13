@@ -41,7 +41,8 @@ jobs:
         run: |
           xcodebuild docbuild -scheme Gravatar-Package \
             -derivedDataPath /tmp/docbuild \
-            -destination 'generic/platform=iOS';
+            -destination 'generic/platform=iOS' \
+            -skipPackagePluginValidation;
           
       - name: Process Gravatar DocC
         run: |
