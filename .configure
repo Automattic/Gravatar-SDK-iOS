@@ -1,7 +1,7 @@
 {
   "project_name": "Gravatar-SDK-iOS",
   "branch": "trunk",
-  "pinned_hash": "21d3c90afdd7adfca9f3a8faab1dd070b1d2395b",
+  "pinned_hash": "1761b0a77a5371f9127c5d0575c90f938d864537",
   "files_to_copy": [
     {
       "file": "iOS/GravatarSDK/Secrets.swift",
@@ -9,5 +9,7 @@
       "encrypt": true
     }
   ],
-  "file_dependencies": []
+  "file_dependencies": [
+
+  ]
 }
