@@ -10,8 +10,9 @@ public struct AvatarURL {
     public init?(url: URL, options: AvatarQueryOptions = AvatarQueryOptions()) {
         guard
             Self.isAvatarURL(url),
-            let components = URLComponents(url: url, resolvingAgainstBaseURL: false)?.sanitizingComponents(),
-            let sanitizedURL = components.withQueryItems(options.queryItems).url
+            let sanitizedComponents = URLComponents(url: url, resolvingAgainstBaseURL: false)?.sanitizingComponents(),
+            let sanitizedURL = sanitizedComponents.url,
+            let fullURL = sanitizedComponents.withQueryItems(options.queryItems).url
         else {
             return nil
         }
@@ -19,7 +20,7 @@ public struct AvatarURL {
         self.canonicalURL = sanitizedURL
         self.hash = sanitizedURL.lastPathComponent
         self.options = options
-        self.url = url
+        self.url = fullURL
     }
 
     public init?(with avatarID: AvatarIdentifier, options: AvatarQueryOptions = AvatarQueryOptions()) {
