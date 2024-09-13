@@ -126,7 +126,7 @@ public enum PaletteType {
 extension Palette {
     static var system: Palette {
         .init(
-            name: "System Default",
+            name: PaletteName.system.rawValue,
             foreground: .init(
                 primary: UIColor(
                     light: light.foreground.primary,
@@ -175,7 +175,7 @@ extension Palette {
 
     public static var light: Palette {
         .init(
-            name: "Light",
+            name: PaletteName.light.rawValue,
             foreground: .init(
                 primary: .black,
                 primarySlightlyDimmed: .gravatarBlack,
@@ -198,7 +198,7 @@ extension Palette {
 
     static var dark: Palette {
         .init(
-            name: "Dark",
+            name: PaletteName.dark.rawValue,
             foreground: .init(
                 primary: .white,
                 primarySlightlyDimmed: .white,
@@ -229,5 +229,11 @@ extension Palette {
             ))
         }
         return colors
+    }
+
+    private enum PaletteName: String {
+        case light = "Light"
+        case dark = "Dark"
+        case system = "System Default"
     }
 }
