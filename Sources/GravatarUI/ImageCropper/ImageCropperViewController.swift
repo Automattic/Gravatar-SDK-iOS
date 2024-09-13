@@ -3,10 +3,8 @@ import UIKit
 
 class ImageCropperViewController: UIViewController, UIScrollViewDelegate {
     private enum Constants {
-        static let overlayColor = UIColor.black.withAlphaComponent(0.2)
         static let backgroundColor = UIColor.black
-        static let scrollViewHorizontalPadding: CGFloat = .DS.Padding.medium
-        static let cropSize: CGFloat = 320
+        static let croperFrameSize: CGFloat = 320
         static let maxOutputImageSizeInPixels: CGFloat = 2048
     }
 
@@ -86,7 +84,7 @@ class ImageCropperViewController: UIViewController, UIScrollViewDelegate {
     }
 
     private func configureConstraints() {
-        let scrollViewWidthConstraint = scrollView.widthAnchor.constraint(equalToConstant: Constants.cropSize)
+        let scrollViewWidthConstraint = scrollView.widthAnchor.constraint(equalToConstant: Constants.croperFrameSize)
         scrollViewWidthConstraint.priority = .defaultLow
 
         NSLayoutConstraint.activate([
@@ -162,7 +160,7 @@ class ImageCropperViewController: UIViewController, UIScrollViewDelegate {
             height: cropFrame.height / zoomScale
         )
 
-        // cropping(to:) can return inequal edges since it adjusts the cropping rect to integral bounds.
+        // cropping(to:) can return unequal edges since it adjusts the cropping rect to integral bounds.
         guard let croppedCGImage = image.cgImage?.cropping(to: visibleRect) else { return }
 
         let croppedUIImage = UIImage(cgImage: croppedCGImage, scale: UIScreen.main.scale, orientation: .up)
@@ -240,7 +238,7 @@ extension UIImage {
     private func downsize(to targetSizeInPixels: CGSize) -> UIImage? {
         let scale = UIScreen.main.scale
         let currentSizeInPixels: CGSize = .init(width: size.width * scale, height: size.height * scale)
-        // Downsize if this is not a square (to fix the inequal edges produced by cropping(to:) )
+        // Downsize if this is not a square (to fix the unequal edges produced by cropping(to:) )
         // OR if size is bigger than target.
         guard currentSizeInPixels.width != currentSizeInPixels.height ||
             targetSizeInPixels.width < currentSizeInPixels.width ||
@@ -257,7 +255,7 @@ extension UIImage {
         return resizedImage
     }
 
-    /// A UIImage instance with corrected orientation.If the instance's orientation is already `.up`, it simply returns the original.
+    /// A UIImage instance with corrected orientation. If the instance's orientation is already `.up`, it simply returns the original.
     fileprivate var correctlyOriented: UIImage? {
         if imageOrientation == .up { return self }
 
