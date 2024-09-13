@@ -179,6 +179,8 @@ class ImageCropperViewController: UIViewController, UIScrollViewDelegate {
         // Update the scrollViewFrame in the overlay view when the layout changes
         let scrollViewFrameInSuperview = scrollView.convert(scrollView.bounds, to: view)
         cropFrameView.scrollViewFrame = scrollViewFrameInSuperview
+
+        centerScrollViewContent()
     }
 
     // MARK: - UIScrollViewDelegate Methods
