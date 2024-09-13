@@ -26,7 +26,9 @@ class DemoImageCropperViewController: UIViewController {
     
     lazy var sizeLabel: UILabel = {
         let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
         label.textColor = UIColor.label
+        label.numberOfLines = 0
         return label
     }()
     
@@ -35,7 +37,7 @@ class DemoImageCropperViewController: UIViewController {
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.axis = .vertical
         stack.spacing = 12
-        stack.distribution = .fillProportionally
+        stack.distribution = .fill
         stack.alignment = .center
         return stack
     }()
@@ -86,13 +88,35 @@ extension DemoImageCropperViewController: PHPickerViewControllerDelegate {
     func showCropper(with image: UIImage) {
         let cropperVC = ImageCropperViewController.wrappedInNavigationViewController(image: image) { image, _ in
             self.croppedImageView.image = image
-            self.sizeLabel.text = "\(image.size.width) x \(image.size.height)"
+            self.sizeLabel.text = "\(image.size.width) x \(image.size.height) - scale: \(image.scale) - \(image.calculateSizeInMB())MB"
             self.dismiss(animated: true)
         } onCancel: {
             self.dismiss(animated: true)
         }
 
         present(cropperVC, animated: true, completion: nil)
+    }
+}
+
+private extension UIImage {
+    // Function to calculate and print the size of the UIImage in megabytes
+    func calculateSizeInMB() -> Double {
+        guard let cgImage = self.cgImage else { return 0.0 }
+        
+        // Get the width and height of the image
+        let width = cgImage.width
+        let height = cgImage.height
+        
+        // Assume 4 bytes per pixel for RGBA (32-bit color depth)
+        let bytesPerPixel = 4
+        
+        // Calculate the total number of bytes
+        let totalBytes = width * height * bytesPerPixel
+        
+        // Convert bytes to megabytes
+        let totalMB = Double(totalBytes) / (1024.0 * 1024.0)
+        
+        return Double(round(100 * totalMB) / 100)
     }
 }
 
