@@ -162,7 +162,7 @@ class ImageCropperViewController: UIViewController, UIScrollViewDelegate {
         // cropping(to:) can return unequal edges since it adjusts the cropping rect to integral bounds.
         guard let croppedCGImage = image.cgImage?.cropping(to: visibleRect) else { return }
 
-        let croppedUIImage = UIImage(cgImage: croppedCGImage, scale: UIScreen.main.scale, orientation: .up)
+        let croppedUIImage = UIImage(cgImage: croppedCGImage, scale: UITraitCollection.current.displayScale, orientation: .up)
 
         guard let result = croppedUIImage.square(maxLength: Constants.maxOutputImageSizeInPixels) else { return }
         onCompletion?(result, true)
@@ -230,7 +230,7 @@ class ImageCropperViewController: UIViewController, UIScrollViewDelegate {
 extension UIImage {
     // Resize the UIImage fitting within a specified maximum size.
     func square(maxLength maxLengthInPixels: CGFloat) -> UIImage? {
-        let scale = UIScreen.main.scale
+        let scale = UITraitCollection.current.displayScale
         let smallerEgde = min(size.width * scale, size.height * scale)
         let squareEdge = floor(min(maxLengthInPixels, smallerEgde))
         return downsize(to: squareEdge)
@@ -238,7 +238,7 @@ extension UIImage {
 
     // Downsize to targetSquareEdgeInPixels
     private func downsize(to targetSquareEdgeInPixels: CGFloat) -> UIImage? {
-        let scale = UIScreen.main.scale
+        let scale = UITraitCollection.current.displayScale
         let currentSizeInPixels: CGSize = .init(width: size.width * scale, height: size.height * scale)
         // Downsize if this is not a square (to fix the unequal edges produced by cropping(to:) )
         // OR if size is bigger than target.
