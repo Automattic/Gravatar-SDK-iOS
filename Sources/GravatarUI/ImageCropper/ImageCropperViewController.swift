@@ -1,4 +1,3 @@
-import CoreGraphics
 import UIKit
 
 class ImageCropperViewController: UIViewController, UIScrollViewDelegate {
