@@ -55,15 +55,6 @@
 /* Title of a button that closes the current view */
 "GravatarNavigationModifier.Button.Done.title" = "Done";
 
-/* The 'dark mode' appearance of this app */
-"Palette.Name.dark" = "Dark";
-
-/* The 'light mode' appearance of this app */
-"Palette.Name.light" = "Light";
-
-/* The appearance (light or dark) of this app as configured in the system settings for the device */
-"Palette.Name.system" = "System Default";
-
 /* Title for a button that allows you to claim a new Gravatar profile */
 "ProfileButton.title.create" = "Claim profile";
 
