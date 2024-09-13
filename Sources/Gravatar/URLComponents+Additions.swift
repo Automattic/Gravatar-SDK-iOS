@@ -15,7 +15,9 @@ extension URLComponents {
         if queryItems.isEmpty {
             copy.queryItems = nil
         } else if urlEncodedValues {
-            copy.percentEncodedQueryItems = queryItems.map { $0.percentEncodedValue(withAllowedCharacters: .restAPI) }
+            copy.percentEncodedQueryItems = queryItems.compactMap { queryItem in
+                queryItem.addingPercentEncoding(withAllowedCharacters: .restAPI)
+            }
         } else {
             copy.queryItems = queryItems
         }
@@ -41,19 +43,22 @@ extension CharacterSet {
 }
 
 extension URLQueryItem {
-    /// Returns a `URLQueryItem` whose value has been percent-encoded for the specified character set.
+    /// Returns a `URLQueryItem?` whose value has been percent-encoded for the specified character set.
     ///
     /// A Percent-encoded `URLQueryItem` should only be assigned to `URLComponents.percentEncodedQueryItems`.
     /// It is a mistake to assign an encoded `URLQueryItem` to `URLComponents.queryItems`.
     /// If a percent-encoded `URLQueryItem` is assigned as a `.queryItem`, the encoded value will be double-encoded.
     ///
     /// - Parameter withAllowedCharacters: The character set that should not be percent-encoded
-    /// - Returns: A `URLQueryItem` configured with the specified encoding
-    fileprivate func percentEncodedValue(withAllowedCharacters: CharacterSet) -> URLQueryItem {
-        var newQueryItem = self
-        newQueryItem.value = value?
-            .addingPercentEncoding(withAllowedCharacters: withAllowedCharacters)
+    /// - Returns: A `URLQueryItem?` configured with the specified encoding, returns `nil` if the `name` cannot be encoded
+    fileprivate func addingPercentEncoding(withAllowedCharacters allowedCharacters: CharacterSet) -> URLQueryItem? {
+        guard let name = name.addingPercentEncoding(withAllowedCharacters: allowedCharacters) else {
+            return nil
+        }
 
-        return newQueryItem
+        let value = value?
+            .addingPercentEncoding(withAllowedCharacters: allowedCharacters)
+
+        return URLQueryItem(name: name, value: value)
     }
 }
