@@ -201,10 +201,7 @@ extension Encodable {
             let data = try encoder.encode(self)
             let dictionary = try JSONSerialization.jsonObject(with: data) as? [String: String]
             return dictionary?.map {
-                print("key: \($0.key) | value: \($0.value)")
-                let queryItem = URLQueryItem(name: $0.key, value: $0.value)
-                print("URLQueryItem: \(queryItem)")
-                return queryItem
+                URLQueryItem(name: $0.key, value: $0.value)
             } ?? []
         }
     }
