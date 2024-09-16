@@ -49,23 +49,32 @@ final class URLComponentsTests: XCTestCase {
 
     func testUrlComponentsEncodesPlusCharInQueryItems() {
         var components = URLComponents(string: Self.urlString)
-        components?.setQueryItems(queryItems, shouldEncodePlusChar: true)
+        components = components?.settingQueryItems(queryItems, shouldEncodePlusChar: true)
 
         XCTAssertEqual(components?.url, PlusCharEncodedQuery.url)
     }
 
     func testUrlComponentsDoesNotEncodePlusCharInQueryItems() {
         var components = URLComponents(string: Self.urlString)
-        components?.setQueryItems(queryItems, shouldEncodePlusChar: false)
+        components = components?.settingQueryItems(queryItems, shouldEncodePlusChar: false)
 
         XCTAssertEqual(components?.url, DefaultEncodedQuery.url)
     }
 
     func testEncodingPlusCharDoesNotAlterQueryItems() {
         var components = URLComponents(string: Self.urlString)
-        components?.setQueryItems(queryItems, shouldEncodePlusChar: true)
+        components = components?.settingQueryItems(queryItems, shouldEncodePlusChar: true)
 
         XCTAssertNotNil(components?.queryItems)
         XCTAssertEqual(components?.queryItems, queryItems)
+    }
+
+    func testAddingEmptyQueryItemsArrayReturnsQueryItemsSetToNil() {
+        let baseComponents = URLComponents(string: Self.urlString)
+        let componentsWithQueryItems = baseComponents?.settingQueryItems(queryItems, shouldEncodePlusChar: true)
+        XCTAssertNotNil(componentsWithQueryItems?.queryItems, "URLComponents object should contain array of URLQueryItems")
+
+        let componentsWithoutQueryItems = componentsWithQueryItems?.settingQueryItems([], shouldEncodePlusChar: true)
+        XCTAssertNil(componentsWithoutQueryItems?.queryItems, "QueryItems should be nil")
     }
 }
