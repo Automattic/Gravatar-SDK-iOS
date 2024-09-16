@@ -55,7 +55,7 @@ extension URL {
         guard var components = URLComponents(url: self, resolvingAgainstBaseURL: false) else {
             return nil
         }
-        components.queryItems = options.queryItems
+        components.setQueryItems(options.queryItems)
 
         if components.queryItems?.isEmpty == true {
             components.queryItems = nil
