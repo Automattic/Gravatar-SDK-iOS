@@ -9,17 +9,17 @@ final class URLComponentsTests: XCTestCase {
             value: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_.~"
         ),
         URLQueryItem(name: "reserved_chars", value: "!*'();:@&=+$,/?%#[]"),
-        URLQueryItem(name: "!*'();:@&=+$,/?%#[]", value: "name_uses_reserved_chars"),
+        URLQueryItem(name: "!*'();:@&=+$,/?%#[] ", value: "name_uses_reserved_chars"),
     ]
 
     private static let urlString = "https://example.com"
 
-    private enum URLEncodedQuery {
+    private enum APIEncodedQuery {
         static let spacesQuery = "spaces=value%20with%20spaces"
         static let plusSignQuery = "plus_signs=value%2Bwith%2Bplus%2Bsigns"
         static let nonReservedChars = "non_reserved_chars=ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_.~"
-        static let reservedChars = "reserved_chars=%21%2A%27%28%29%3B%3A%40%26%3D%2B%24%2C%2F%3F%25%23%5B%5D"
-        static let nameUsesReservedChars = "%21%2A%27%28%29%3B%3A%40%26%3D%2B%24%2C%2F%3F%25%23%5B%5D=name_uses_reserved_chars"
+        static let reservedChars = "reserved_chars=!*'();:@%26%3D%2B$,/?%25%23%5B%5D"
+        static let nameUsesReservedChars = "!*'();:@%26%3D%2B$,/?%25%23%5B%5D%20=name_uses_reserved_chars"
 
         static var queryString: String {
             "\(spacesQuery)&\(plusSignQuery)&\(nonReservedChars)&\(reservedChars)&\(nameUsesReservedChars)"
@@ -33,7 +33,7 @@ final class URLComponentsTests: XCTestCase {
         static let plusSignQuery = "plus_signs=value+with+plus+signs"
         static let nonReservedChars = "non_reserved_chars=ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_.~"
         static let reservedChars = "reserved_chars=!*'();:@%26%3D+$,/?%25%23%5B%5D"
-        static let nameUsesReservedChars = "!*'();:@%26%3D+$,/?%25%23%5B%5D=name_uses_reserved_chars"
+        static let nameUsesReservedChars = "!*'();:@%26%3D+$,/?%25%23%5B%5D%20=name_uses_reserved_chars"
 
         static var queryString: String {
             "\(spacesQuery)&\(plusSignQuery)&\(nonReservedChars)&\(reservedChars)&\(nameUsesReservedChars)"
@@ -64,7 +64,7 @@ final class URLComponentsTests: XCTestCase {
         let components = URLComponents(string: Self.urlString)
         let sut = components?.withQueryItems(queryItems, urlEncodedValues: true)
 
-        let reference = URLEncodedQuery.url
+        let reference = APIEncodedQuery.url
 
         XCTAssertEqual(sut?.url, reference)
     }
@@ -94,15 +94,19 @@ final class URLComponentsTests: XCTestCase {
         XCTAssertNil(sut?.queryItems)
     }
 
-    func testQueryItemsWithNonASCIINameAndValue() throws {
+    func testQueryItemsWithNonASCIINameAndValueDoNotRaiseFatalException() throws {
         let components = URLComponents(string: Self.urlString)
 
         for example in NonASCIIStringExamples.allCases {
-            let exampleString = try XCTUnwrap(example.rawValue)
-            let encodedExample = try XCTUnwrap(example.rawValue.addingPercentEncoding(withAllowedCharacters: .restAPI))
+            let exampleName = try XCTUnwrap(example.rawValue)
+            let exampleValue = try XCTUnwrap(example.rawValue)
 
-            let sut = components?.withQueryItems([URLQueryItem(name: exampleString, value: exampleString)])
-            XCTAssertEqual(sut?.percentEncodedQuery, "\(encodedExample)=\(encodedExample)")
+            let encodedName = try XCTUnwrap(exampleName.addingPercentEncoding(withAllowedCharacters: .urlQueryNameValueAllowedWithLiteralPlusSign))
+            let encodedValue = try XCTUnwrap(exampleValue.addingPercentEncoding(withAllowedCharacters: .urlQueryNameValueAllowedWithLiteralPlusSign))
+            let encodedReferenceQueryString = "\(encodedName)=\(encodedValue)"
+
+            let sut = components?.withQueryItems([URLQueryItem(name: exampleName, value: exampleValue)])
+            XCTAssertEqual(sut?.percentEncodedQuery, encodedReferenceQueryString)
         }
     }
 }
