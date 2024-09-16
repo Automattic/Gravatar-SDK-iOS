@@ -42,6 +42,24 @@ final class URLComponentsTests: XCTestCase {
         static var url: URL { URL(string: "\(urlString)?\(queryString)")! }
     }
 
+    private enum NonASCIIStringExamples: String, CaseIterable {
+        case japanese = "こんにちは世界" // Hello, World
+        case chinese = "你好，世界" // Hello, World
+        case korean = "안녕하세요 세계" // Hello, World
+        case russian = "Привет, мир" // Hello, World
+        case arabic = "مرحبا بالعالم" // Hello, World
+        case greek = "Γειά σου Κόσμε" // Hello, World
+        case hebrew = "שלום עולם" // Hello, World
+        case thai = "สวัสดีชาวโลก" // Hello, World
+        case hindi = "नमस्ते दुनिया" // Hello, World
+        case turkish = "Merhaba Dünya" // Hello, World
+        case polish = "Witaj, świecie" // Hello, World
+        case french = "Ça va bien, merci!" // French phrase with accents, meaning "I’m doing well, thank you!"
+        case spanish = "¡Hola, mundo!" // Spanish phrase with inverted exclamation marks, meaning "Hello, world!"
+        case emoji = "👋🌍" // Wave and globe emoji, representing "Hello, World"
+        case mathematicalSymbols = "∑(n=1)^∞ (1/2)^n = 1" // Mathematical symbols
+    }
+
     func testSetQueryItemsWithPercentEncoding() {
         let components = URLComponents(string: Self.urlString)
         let sut = components?.withQueryItems(queryItems, urlEncodedValues: true)
@@ -74,5 +92,17 @@ final class URLComponentsTests: XCTestCase {
 
         XCTAssertNotNil(sut)
         XCTAssertNil(sut?.queryItems)
+    }
+
+    func testQueryItemsWithNonASCIINameAndValue() throws {
+        let components = URLComponents(string: Self.urlString)
+
+        for example in NonASCIIStringExamples.allCases {
+            let exampleString = try XCTUnwrap(example.rawValue)
+            let encodedExample = try XCTUnwrap(example.rawValue.addingPercentEncoding(withAllowedCharacters: .restAPI))
+
+            let sut = components?.withQueryItems([URLQueryItem(name: exampleString, value: exampleString)])
+            XCTAssertEqual(sut?.percentEncodedQuery, "\(encodedExample)=\(encodedExample)")
+        }
     }
 }

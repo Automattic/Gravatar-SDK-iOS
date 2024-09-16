@@ -37,7 +37,7 @@ extension CharacterSet {
     ///
     /// ## Reserved Characters
     /// `: / ? # [ ] @ ! $ & ' ( ) * + , ; =`
-    fileprivate static var restAPI: CharacterSet {
+    package static var restAPI: CharacterSet {
         .alphanumerics.union(CharacterSet(charactersIn: "-_.~"))
     }
 }
