@@ -14,8 +14,8 @@ final class URLComponentsTests: XCTestCase {
             TestQueryItem(
                 name: "plus_signs",
                 value: "value+with+plus+signs",
-                plusEncodedQueryString: "plus_signs=value%2Bwith%2Bplus%2Bsigns",
-                defaultEncodedQueryString: "plus_signs=value+with+plus+signs"
+                plusEncodedQueryString: "plus_signs=value%2Bwith%2Bplus%2Bsigns", // `+` should be encoded as `%2B`
+                defaultEncodedQueryString: "plus_signs=value+with+plus+signs" // `+` should not be encoded
             ),
             TestQueryItem(
                 name: "non_reserved_chars",
@@ -26,14 +26,14 @@ final class URLComponentsTests: XCTestCase {
             TestQueryItem(
                 name: "reserved_chars",
                 value: "!*'();:@&=+$,/?%#[]",
-                plusEncodedQueryString: "reserved_chars=!*'();:@%26%3D%2B$,/?%25%23%5B%5D",
-                defaultEncodedQueryString: "reserved_chars=!*'();:@%26%3D+$,/?%25%23%5B%5D"
+                plusEncodedQueryString: "reserved_chars=!*'();:@%26%3D%2B$,/?%25%23%5B%5D", // `+` should be encoded as `%2B`
+                defaultEncodedQueryString: "reserved_chars=!*'();:@%26%3D+$,/?%25%23%5B%5D" // `+` should not be encoded
             ),
             TestQueryItem(
                 name: "!*'();:@&=+$,/?%#[] ",
                 value: "name_uses_reserved_chars",
-                plusEncodedQueryString: "!*'();:@%26%3D%2B$,/?%25%23%5B%5D%20=name_uses_reserved_chars",
-                defaultEncodedQueryString: "!*'();:@%26%3D+$,/?%25%23%5B%5D%20=name_uses_reserved_chars"
+                plusEncodedQueryString: "!*'();:@%26%3D%2B$,/?%25%23%5B%5D%20=name_uses_reserved_chars", // `+` should be encoded as `%2B`
+                defaultEncodedQueryString: "!*'();:@%26%3D+$,/?%25%23%5B%5D%20=name_uses_reserved_chars" // `+` should not be encoded
             ),
             TestQueryItem(
                 name: "non_ascii_chars",
