@@ -83,7 +83,7 @@ class ImageCropperViewController: UIViewController, UIScrollViewDelegate {
         setToolbarItems([
             UIBarButtonItem(systemItem: .cancel, primaryAction: cancelAction),
             UIBarButtonItem(systemItem: .flexibleSpace),
-            UIBarButtonItem(systemItem: .done, primaryAction: doneAction)
+            UIBarButtonItem(systemItem: .done, primaryAction: doneAction),
         ], animated: false)
 
         navigationController?.isToolbarHidden = false
