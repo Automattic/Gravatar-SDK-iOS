@@ -1,5 +1,65 @@
-/* Translation-Revision-Date: +0000 */
+/* Translation-Revision-Date: 2024-09-11 16:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: de */
+
+/* Title of a button that allows the user to try loading their avatars again */
+"AvatarPicker.ContentLoading.Failure.Retry.ctaButtonTitle" = "Erneut versuchen";
+
+/* A message asking the user to try again */
+"AvatarPicker.ContentLoading.Failure.Retry.subtext" = "Es ist ein Fehler aufgetreten und wir konnten keine Verbindung zu den Servern von Gravatar herstellen.";
+
+/* Title of a message advising the user that something went wrong while loading their avatars */
+"AvatarPicker.ContentLoading.Failure.Retry.title" = "Ups";
+
+/* Title of a button that will close the Avatar Picker, appearing beneath a message that advises the user that their login session has expired. */
+"AvatarPicker.ContentLoading.Failure.SessionExpired.Close.buttonTitle" = "Schließen";
+
+/* A message describing the error and advising the user to login again to resolve the issue */
+"AvatarPicker.ContentLoading.Failure.SessionExpired.Close.subtext" = "Entschuldigung, deine Sitzung ist anscheinend abgelaufen. Vergewissere dich, dass du angemeldet bist, wenn du deinen Avatar aktualisieren möchtest.";
+
+/* Title of a button that will begin the process of authenticating the user, appearing beneath a message that advises the user that their login session has expired. */
+"AvatarPicker.ContentLoading.Failure.SessionExpired.LogIn.buttonTitle" = "Anmelden";
+
+/* A message describing the error and advising the user to login again to resolve the issue */
+"AvatarPicker.ContentLoading.Failure.SessionExpired.LogIn.subtext" = "Die Sitzung ist aus Sicherheitsgründen abgelaufen. Bitte melde dich an, um deinen Avatar zu aktualisieren.";
+
+/* Title of a message advising the user that their login session has expired. */
+"AvatarPicker.ContentLoading.Failure.SessionExpired.title" = "Sitzung abgelaufen";
+
+/* Title of a button that allow for uploading an image */
+"AvatarPicker.ContentLoading.Success.ctaButtonTitle" = "Bild hochladen";
+
+/* A message describing the actions a user can take to setup their avatar */
+"AvatarPicker.ContentLoading.Success.subtext" = "Wähle deine Lieblingsavatarbilder aus – oder lade sie hoch – und verbinde sie mit deiner E-Mail-Adresse.";
+
+/* Title of a message advising the user to setup their avatar */
+"AvatarPicker.ContentLoading.success.title" = "Richten wir deinen Avatar ein";
+
+/* A message describing the purpose of this view */
+"AvatarPicker.Header.subtitle" = "Wähle deine Lieblingsavatarbilder aus – oder lade sie hoch – und verbinde sie mit deiner E-Mail-Adresse.";
+
+/* Title appearing in the header of a view that allows users to manage their avatars */
+"AvatarPicker.Header.title" = "Avatare";
+
+/* Title of a button that will take you to your Gravatar profile, with an arrow indicating that this action will cause you to leave this view */
+"AvatarPickerProfile.Button.ViewProfile.title" = "Profil anzeigen →";
+
+/* Text on a sample Gravatar profile, appearing in the place where a Gravatar profile would display your short biography. */
+"ClaimProfile.Label.AboutMe" = "Zeig der Welt, wer du bist. Mit einem Avatar und einer Biografie, die dich überall im Web begleiten.";
+
+/* Text on a sample Gravatar profile, appearing in the place where your name would normally appear on your Gravatar profile after you claim it. */
+"ClaimProfile.Label.DisplayName" = "Dein Name";
+
+/* Text on a sample Gravatar profile, appearing in the place where a Gravatar profile would display information like location, your preferred pronouns, etc. */
+"ClaimProfile.Label.Location" = "Ort, Pronomen usw. hinzufügen";
+
+/* Title for a button that allows you to claim a new Gravatar profile */
+"ProfileButton.title.create" = "Profil beanspruchen";
+
+/* Title for a button that allows you to edit your Gravatar profile */
+"ProfileButton.title.edit" = "Profil bearbeiten";
+
+/* Title for a button that allows you to view your Gravatar profile */
+"ProfileButton.title.view" = "Profil anzeigen";
 
