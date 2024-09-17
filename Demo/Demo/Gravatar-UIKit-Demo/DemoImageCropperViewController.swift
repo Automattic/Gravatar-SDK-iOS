@@ -86,7 +86,7 @@ extension DemoImageCropperViewController: PHPickerViewControllerDelegate {
     
     // Show the cropper with the selected image
     func showCropper(with image: UIImage) {
-        let cropperVC = ImageCropperViewController.wrappedInNavigationViewController(image: image) { image, _ in
+        let cropperVC = ImageCropperViewController.wrappedInNavigationViewController(image: image) { image in
             self.croppedImageView.image = image
             self.sizeLabel.text = "\(image.size.width) x \(image.size.height) - scale: \(image.scale) - \(image.calculateSizeInMB())MB"
             self.dismiss(animated: true)
