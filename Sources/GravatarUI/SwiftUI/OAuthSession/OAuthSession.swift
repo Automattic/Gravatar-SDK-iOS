@@ -74,7 +74,7 @@ public struct OAuthSession: Sendable {
         let params = OAuthURLParams(email: email, secrets: secrets)
         var urlComponents = URLComponents(string: "https://public-api.wordpress.com/oauth2/authorize")!
         do {
-            urlComponents.queryItems = try params.queryItems
+            urlComponents = try urlComponents.settingQueryItems(params.queryItems, shouldEncodePlusChar: true)
             guard let finalURL = urlComponents.url else {
                 assertionFailure(
                     "Error encoding oauth secrets. Check the config in `Configuration.shared.configure(with:oauthSecrets:)` and try again"
