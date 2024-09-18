@@ -3,7 +3,7 @@ import SwiftUI
 struct ImageCropper: UIViewControllerRepresentable, ImageEditorView {
     let inputImage: UIImage
     var editingDidFinish: (UIImage) -> Void
-    var onCancel: (() -> Void)
+    var onCancel: () -> Void
 
     typealias UIViewControllerType = UINavigationController
 
