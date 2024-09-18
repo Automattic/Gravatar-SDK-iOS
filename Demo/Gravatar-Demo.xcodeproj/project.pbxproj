@@ -27,6 +27,7 @@
 		49C5D6122B5B33E20067C2A8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 49C5D6112B5B33E20067C2A8 /* Assets.xcassets */; };
 		49C5D6152B5B33E20067C2A8 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 49C5D6142B5B33E20067C2A8 /* Preview Assets.xcassets */; };
 		49EFFB542C51A47C0086589A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 495775EA2B5B34980082812A /* Assets.xcassets */; };
+		9133058E2C91F8D1009F5C0B /* DemoImageCropperViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9133058D2C91F2C8009F5C0B /* DemoImageCropperViewController.swift */; };
 		9146A7AE2C3BD8F000E07C63 /* DemoAvatarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9146A7AD2C3BD8F000E07C63 /* DemoAvatarView.swift */; };
 		914AC0192BD7FF08005DA4A5 /* DemoBaseProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914AC0172BD7FF08005DA4A5 /* DemoBaseProfileViewController.swift */; };
 		914AC01A2BD7FF08005DA4A5 /* DemoProfilePresentationStylesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914AC0182BD7FF08005DA4A5 /* DemoProfilePresentationStylesViewController.swift */; };
@@ -115,6 +116,7 @@
 		49C5D6142B5B33E20067C2A8 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		49EFFB552C51AA280086589A /* Gravatar-UIKit-Demo.Base.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "Gravatar-UIKit-Demo.Base.xcconfig"; sourceTree = "<group>"; };
 		49EFFB572C51AA3E0086589A /* Gravatar-SwiftUI-Demo.Base.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "Gravatar-SwiftUI-Demo.Base.xcconfig"; sourceTree = "<group>"; };
+		9133058D2C91F2C8009F5C0B /* DemoImageCropperViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoImageCropperViewController.swift; sourceTree = "<group>"; };
 		9146A7AD2C3BD8F000E07C63 /* DemoAvatarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoAvatarView.swift; sourceTree = "<group>"; };
 		914AC0172BD7FF08005DA4A5 /* DemoBaseProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoBaseProfileViewController.swift; sourceTree = "<group>"; };
 		914AC0182BD7FF08005DA4A5 /* DemoProfilePresentationStylesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoProfilePresentationStylesViewController.swift; sourceTree = "<group>"; };
@@ -192,6 +194,7 @@
 				91956A532B67943A00BF3CF0 /* DemoUIImageViewExtensionViewController.swift */,
 				914AC01F2BDAAC3C005DA4A5 /* DemoRemoteSVGViewController.swift */,
 				91F0B3DB2B62815F0025C4F8 /* MainTableViewController.swift */,
+				9133058D2C91F2C8009F5C0B /* DemoImageCropperViewController.swift */,
 				495775EA2B5B34980082812A /* Assets.xcassets */,
 				495775EC2B5B34980082812A /* LaunchScreen.storyboard */,
 				495775EF2B5B34980082812A /* Info.plist */,
@@ -446,6 +449,7 @@
 				495775E42B5B34970082812A /* SceneDelegate.swift in Sources */,
 				1ECAB5072BC984440043A331 /* DemoProfileConfigurationViewController.swift in Sources */,
 				91E2FB042BC0276E00265E8E /* DemoProfileViewsViewController.swift in Sources */,
+				9133058E2C91F8D1009F5C0B /* DemoImageCropperViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
