@@ -1,34 +1,28 @@
 import Foundation
 
-public struct ModelError: Codable, Hashable, Sendable {
-    /// The error message
-    public private(set) var error: String
-    /// The error code for the error message
-    public private(set) var code: String
+public struct AssociatedEmail200Response: Codable, Hashable, Sendable {
+    /// Whether the email is associated with a Gravatar account.
+    public private(set) var associated: Bool
 
     @available(*, deprecated, message: "init will become internal on the next release")
-    public init(error: String, code: String) {
-        self.error = error
-        self.code = code
+    public init(associated: Bool) {
+        self.associated = associated
     }
 
     @available(*, deprecated, message: "CodingKeys will become internal on the next release.")
     public enum CodingKeys: String, CodingKey, CaseIterable {
-        case error
-        case code
+        case associated
     }
 
     enum InternalCodingKeys: String, CodingKey, CaseIterable {
-        case error
-        case code
+        case associated
     }
 
     // Encodable protocol methods
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: InternalCodingKeys.self)
-        try container.encode(error, forKey: .error)
-        try container.encode(code, forKey: .code)
+        try container.encode(associated, forKey: .associated)
     }
 
     // Decodable protocol methods
@@ -36,7 +30,6 @@ public struct ModelError: Codable, Hashable, Sendable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: InternalCodingKeys.self)
 
-        error = try container.decode(String.self, forKey: .error)
-        code = try container.decode(String.self, forKey: .code)
+        associated = try container.decode(Bool.self, forKey: .associated)
     }
 }

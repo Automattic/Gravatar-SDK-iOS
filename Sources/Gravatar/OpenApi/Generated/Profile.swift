@@ -30,7 +30,7 @@ public struct Profile: Codable, Hashable, Sendable {
     /// The timezone the user has. This is only provided in authenticated API requests.
     public private(set) var timezone: String?
     /// The languages the user knows. This is only provided in authenticated API requests.
-    public private(set) var languages: [String]?
+    public private(set) var languages: [Language]?
     /// User's first name. This is only provided in authenticated API requests.
     public private(set) var firstName: String?
     /// User's last name. This is only provided in authenticated API requests.
@@ -112,7 +112,7 @@ public struct Profile: Codable, Hashable, Sendable {
         pronunciation: String,
         pronouns: String,
         timezone: String? = nil,
-        languages: [String]? = nil,
+        languages: [Language]? = nil,
         firstName: String? = nil,
         lastName: String? = nil,
         isOrganization: Bool? = nil,
@@ -258,7 +258,7 @@ public struct Profile: Codable, Hashable, Sendable {
         pronunciation = try container.decode(String.self, forKey: .pronunciation)
         pronouns = try container.decode(String.self, forKey: .pronouns)
         timezone = try container.decodeIfPresent(String.self, forKey: .timezone)
-        languages = try container.decodeIfPresent([String].self, forKey: .languages)
+        languages = try container.decodeIfPresent([Language].self, forKey: .languages)
         firstName = try container.decodeIfPresent(String.self, forKey: .firstName)
         lastName = try container.decodeIfPresent(String.self, forKey: .lastName)
         isOrganization = try container.decodeIfPresent(Bool.self, forKey: .isOrganization)

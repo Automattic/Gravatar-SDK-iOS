@@ -10,8 +10,6 @@ public struct Avatar: Codable, Hashable, Sendable {
         case x = "X"
     }
 
-    // THIS IS EDITED
-
     /// Unique identifier for the image.
     public private(set) var imageId: String
     /// Image URL
