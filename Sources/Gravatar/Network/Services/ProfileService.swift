@@ -34,7 +34,7 @@ public struct ProfileService: ProfileFetching, Sendable {
     package func fetchAvatars(with token: String) async throws -> [Avatar] {
         do {
             let url = avatarsBaseURL
-            let request = URLRequest(url: url).settingAuthorization(apiKey: token)
+            let request = URLRequest(url: url).settingAuthorization(bearerToken: token)
             let (data, _) = try await client.fetchData(with: request)
             return try data.decode(keyDecodingStrategy: .convertFromSnakeCase)
         } catch {
@@ -47,7 +47,7 @@ public struct ProfileService: ProfileFetching, Sendable {
             throw APIError.requestError(reason: .urlInitializationFailed)
         }
         do {
-            let request = URLRequest(url: url).settingAuthorization(apiKey: token)
+            let request = URLRequest(url: url).settingAuthorization(bearerToken: token)
             let (data, _) = try await client.fetchData(with: request)
             return try data.decode(keyDecodingStrategy: .convertFromSnakeCase)
         } catch {
@@ -61,7 +61,7 @@ public struct ProfileService: ProfileFetching, Sendable {
         }
 
         do {
-            var request = URLRequest(url: url).settingAuthorization(apiKey: token)
+            var request = URLRequest(url: url).settingAuthorization(bearerToken: token)
             request.httpMethod = "POST"
             request.httpBody = try SelectAvatarBody(avatarId: avatarID).data
             let (data, _) = try await client.fetchData(with: request)

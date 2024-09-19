@@ -8,18 +8,11 @@ extension URLRequest {
         return settingAuthorization(bearerToken: apiKey)
     }
 
-    /// Returns a `URLRequest` with a `Bearer` `Authorization` header set using a provided `apiKey`
-    /// - Returns: `URLRequest` with `Bearer` `Authorization` header set
-    func settingAuthorization(apiKey: String) -> URLRequest {
-        let bearerToken = "Bearer \(apiKey)"
-        return settingAuthorization(bearerToken: bearerToken)
-    }
-
     /// Returns a `URLRequest` with a `Bearer` `Authorization` header set using a provided `bearerToken`
     /// - Returns: `URLRequest` with `Bearer` `Authorization` header set
     func settingAuthorization(bearerToken: String) -> URLRequest {
         var copy = self
-        copy.setValue(bearerToken, forHTTPHeaderField: HeaderField.authorization)
+        copy.setValue("Bearer \(bearerToken)", forHTTPHeaderField: HeaderField.authorization)
         return copy
     }
 
