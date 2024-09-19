@@ -73,6 +73,7 @@ public struct ProfileService: ProfileFetching, Sendable {
 
 extension ProfileService {
     private func fetch(with request: URLRequest) async throws -> Profile {
+        let request = request.settingDefaultAcceptLanguage()
         do {
             let (data, _) = try await client.fetchData(with: request)
             let profileResult: Profile = try data.decode()

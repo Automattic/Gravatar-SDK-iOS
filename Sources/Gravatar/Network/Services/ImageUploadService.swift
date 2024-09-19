@@ -71,6 +71,7 @@ extension URLRequest {
     fileprivate static func imageUploadRequest(with boundary: String, additionalHTTPHeaders: [HTTPHeaderField]?) -> URLRequest {
         let url = URL(string: "https://api.gravatar.com/v3/me/avatars")!
         var request = URLRequest(url: url)
+            .settingDefaultAcceptLanguage()
         request.addValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
         request.httpMethod = "POST"
         additionalHTTPHeaders?.forEach { headerTuple in
