@@ -38,8 +38,16 @@ class ImageCropperViewController: UIViewController, UIScrollViewDelegate {
     }()
 
     let inputImage: UIImage
-    var onCompletion: ((UIImage, Bool) -> Void)?
+    var onCompletion: ((UIImage) -> Void)?
     var onCancel: (() -> Void)?
+
+    lazy var cancelAction = UIAction { [weak self] _ in
+        self?.cancelWasPressed()
+    }
+
+    lazy var doneAction = UIAction { [weak self] _ in
+        self?.cropWasPressed()
+    }
 
     init(image: UIImage) {
         self.inputImage = image
@@ -63,23 +71,32 @@ class ImageCropperViewController: UIViewController, UIScrollViewDelegate {
         configureConstraints()
 
         title = Localized.title
-        navigationItem.rightBarButtonItem = UIBarButtonItem(
-            title: Localized.useButtonTitle,
-            style: .plain,
-            target: self,
-            action: #selector(cropWasPressed)
-        )
-        navigationItem.leftBarButtonItem = UIBarButtonItem(
-            title: Localized.cancelButtonTitle,
-            style: .plain,
-            target: self,
-            action: #selector(cancelWasPressed)
-        )
 
         view.backgroundColor = Constants.backgroundColor
         scrollView.delegate = self
 
         setImageToCrop(image: inputImage)
+        setupToolbar()
+    }
+
+    private func setupToolbar() {
+        setToolbarItems([
+            UIBarButtonItem(systemItem: .cancel, primaryAction: cancelAction),
+            UIBarButtonItem(systemItem: .flexibleSpace),
+            UIBarButtonItem(systemItem: .done, primaryAction: doneAction),
+        ], animated: false)
+
+        navigationController?.isToolbarHidden = false
+
+        let toolBarAppearance = UIToolbarAppearance()
+        toolBarAppearance.backgroundColor = .secondarySystemBackground.resolvedColor(with: .init(userInterfaceStyle: .dark)).withAlphaComponent(0.7)
+        toolBarAppearance.backgroundEffect = nil
+
+        navigationController?.toolbar.compactAppearance = toolBarAppearance
+        navigationController?.toolbar.standardAppearance = toolBarAppearance
+        navigationController?.toolbar.scrollEdgeAppearance = toolBarAppearance
+        navigationController?.toolbar.compactScrollEdgeAppearance = toolBarAppearance
+        navigationController?.toolbar.tintColor = .white
     }
 
     private func configureConstraints() {
@@ -165,7 +182,7 @@ class ImageCropperViewController: UIViewController, UIScrollViewDelegate {
         let croppedUIImage = UIImage(cgImage: croppedCGImage, scale: UITraitCollection.current.displayScale, orientation: .up)
 
         guard let result = croppedUIImage.square(maxLength: Constants.maxOutputImageSizeInPixels) else { return }
-        onCompletion?(result, true)
+        onCompletion?(result)
     }
 
     @objc
@@ -196,7 +213,7 @@ class ImageCropperViewController: UIViewController, UIScrollViewDelegate {
 
     static func wrappedInNavigationViewController(
         image: UIImage,
-        onCompletion: @escaping ((UIImage, Bool) -> Void),
+        onCompletion: @escaping ((UIImage) -> Void),
         onCancel: @escaping (() -> Void)
     ) -> UINavigationController {
         let imageCropController = ImageCropperViewController(image: image)
@@ -212,16 +229,6 @@ class ImageCropperViewController: UIViewController, UIScrollViewDelegate {
             "ImageCropper.title",
             value: "Resize & Crop",
             comment: "Screen title. Resize and crop an image."
-        )
-        static let useButtonTitle = SDKLocalizedString(
-            "ImageCropper.useButtonTitle",
-            value: "Use",
-            comment: "Use the current image"
-        )
-        static let cancelButtonTitle = SDKLocalizedString(
-            "ImageCropper.cropButtonTitle",
-            value: "Cancel",
-            comment: "Cancel the crop"
         )
     }
 }
