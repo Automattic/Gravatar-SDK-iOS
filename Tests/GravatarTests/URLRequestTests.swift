@@ -3,7 +3,6 @@ import XCTest
 
 final class URLRequestTests: XCTestCase {
     private let url = URL(string: "https://fake.url")!
-    private let acceptLanguageHeaderName = "Accept-Language"
     private let mockLanguagePreferencePovider = MockLanguagePreferenceProvider(
         maxPreferredLanguages: 6,
         preferredLanguages: [ // One more than `maxPreferredLanguages`
@@ -24,14 +23,14 @@ final class URLRequestTests: XCTestCase {
         let encoding = "fr"
         let urlRequest = URLRequest(url: url).settingAcceptLanguage(encoding)
 
-        try urlRequest.expect(header: acceptLanguageHeaderName, withValue: encoding)
+        try urlRequest.expect(header: URLRequest.HTTPHeaderName.accceptLanguage, withValue: encoding)
     }
 
     func testSettingAcceptLanguageUsingPreferredLanguages() throws {
         let urlRequest = URLRequest(url: url).settingDefaultAcceptLanguage(languagePreferenceProvider: mockLanguagePreferencePovider)
 
         try urlRequest.expect(
-            header: acceptLanguageHeaderName,
+            header: URLRequest.HTTPHeaderName.accceptLanguage,
             withValue: mockLanguagePreferencePovider.qualityEncodedString
         )
     }
