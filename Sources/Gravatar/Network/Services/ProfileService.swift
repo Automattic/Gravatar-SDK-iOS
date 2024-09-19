@@ -109,7 +109,7 @@ extension Avatar {
     }
 
     public var url: String {
-        "https://gravatar.com\(imageUrl)?size=256"
+        imageUrl
     }
 
     public var isSelected: Bool {

@@ -87,7 +87,7 @@ struct AvatarPickerProfileView: View {
 
 extension AvatarPickerProfileView {
     private enum Localized {
-        static let viewProfileButtonTitle = NSLocalizedString(
+        static let viewProfileButtonTitle = SDKLocalizedString(
             "AvatarPickerProfile.Button.ViewProfile.title",
             value: "View profile →",
             comment: "Title of a button that will take you to your Gravatar profile, with an arrow indicating that this action will cause you to leave this view"

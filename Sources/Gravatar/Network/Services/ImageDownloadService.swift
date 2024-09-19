@@ -17,12 +17,12 @@ public struct ImageDownloadService: ImageDownloader, Sendable {
     ///   - cache: A type which will perform image caching operations.
     public init(client: HTTPClient? = nil, cache: ImageCaching? = nil) {
         self.client = client ?? URLSessionHTTPClient()
-        self.imageCache = cache ?? ImageCache()
+        self.imageCache = cache ?? ImageCache.shared
     }
 
     public init(urlSession: URLSession, cache: ImageCaching? = nil) {
         self.client = URLSessionHTTPClient(urlSession: urlSession)
-        self.imageCache = cache ?? ImageCache()
+        self.imageCache = cache ?? ImageCache.shared
     }
 
     public func fetchImage(with url: URL, forceRefresh: Bool = false, processingMethod: ImageProcessingMethod = .common()) async throws -> ImageDownloadResult {
@@ -39,7 +39,7 @@ public struct ImageDownloadService: ImageDownloader, Sendable {
     }
 
     private func cachedImage(for url: URL) async throws -> UIImage? {
-        guard let entry = await imageCache.getEntry(with: url.absoluteString) else { return nil }
+        guard let entry = imageCache.getEntry(with: url.absoluteString) else { return nil }
         switch entry {
         case .inProgress(let task):
             let image = try await task.value
@@ -50,15 +50,15 @@ public struct ImageDownloadService: ImageDownloader, Sendable {
     }
 
     private func awaitAndCacheImage(from task: Task<UIImage, Error>, cacheKey key: String) async throws -> UIImage {
-        await imageCache.setEntry(.inProgress(task), for: key)
+        imageCache.setEntry(.inProgress(task), for: key)
         let image: UIImage
         do {
             image = try await task.value
         } catch {
-            await imageCache.setEntry(nil, for: key)
+            imageCache.setEntry(nil, for: key)
             throw error
         }
-        await imageCache.setEntry(.ready(image), for: key)
+        imageCache.setEntry(.ready(image), for: key)
         return image
     }
 
@@ -78,13 +78,13 @@ public struct ImageDownloadService: ImageDownloader, Sendable {
         }
     }
 
-    public func cancelTask(for url: URL) async {
-        if let entry = await imageCache.getEntry(with: url.absoluteString) {
+    public func cancelTask(for url: URL) {
+        if let entry = imageCache.getEntry(with: url.absoluteString) {
             switch entry {
             case .inProgress(let task):
                 if !task.isCancelled {
                     task.cancel()
-                    await imageCache.setEntry(nil, for: url.absoluteString)
+                    imageCache.setEntry(nil, for: url.absoluteString)
                 }
             default:
                 break

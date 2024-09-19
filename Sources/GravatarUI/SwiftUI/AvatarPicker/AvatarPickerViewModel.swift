@@ -164,14 +164,14 @@ class AvatarPickerViewModel: ObservableObject {
         let service = AvatarService()
         do {
             let avatar = try await service.upload(squareImage, accessToken: accessToken)
-            await ImageCache.shared.setEntry(.ready(squareImage), for: avatar.url)
+            ImageCache.shared.setEntry(.ready(squareImage), for: avatar.url)
 
             let newModel = AvatarImageModel(id: avatar.id, source: .remote(url: avatar.url))
             grid.replaceModel(withID: localID, with: newModel)
         } catch {
             let newModel = AvatarImageModel(id: localID, source: .local(image: squareImage), uploadHasFailed: true)
             grid.replaceModel(withID: localID, with: newModel)
-            toastManager.showToast("Oops, there was an error uploading the image.", type: .error)
+            toastManager.showToast(Localized.toastError, type: .error)
         }
     }
 
@@ -206,6 +206,16 @@ class AvatarPickerViewModel: ObservableObject {
             await avatars
             await profile
         }
+    }
+}
+
+extension AvatarPickerViewModel {
+    private enum Localized {
+        static let toastError = SDKLocalizedString(
+            "AvatarPickerViewModel.Toast.Error.message",
+            value: "Oops, there was an error uploading the image.",
+            comment: "An message that will appear in a small 'toast' message overlaying the current view"
+        )
     }
 }
 

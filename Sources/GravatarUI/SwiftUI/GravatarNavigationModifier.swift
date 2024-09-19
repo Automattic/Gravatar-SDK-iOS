@@ -21,15 +21,37 @@ struct GravatarNavigationModifier: ViewModifier {
                     }
                     .disabled(actionButtonDisabled)
                 }
+
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button(action: {
                         onDoneButtonPressed?()
                     }) {
-                        Text("Done")
+                        Text(Localized.doneButtonTitle)
                             .tint(Color(UIColor.gravatarBlue))
                     }
                 }
             }
+            .background {
+                GeometryReader { geometry in
+                    // This works to detect the navigation bar height.
+                    // AFAIU, SwiftUI calculates the `safeAreaInsets.top` based on the actual visible content area.
+                    // When a NavigationView is present, it accounts for the navigation bar being part of that system-provided safe area.
+                    Color.clear.preference(
+                        key: InnerHeightPreferenceKey.self,
+                        value: geometry.safeAreaInsets.top
+                    )
+                }
+            }
+    }
+}
+
+extension GravatarNavigationModifier {
+    private enum Localized {
+        static let doneButtonTitle = SDKLocalizedString(
+            "GravatarNavigationModifier.Button.Done.title",
+            value: "Done",
+            comment: "Title of a button that closes the current view"
+        )
     }
 }
 

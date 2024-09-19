@@ -50,12 +50,12 @@ build-demo-swiftui: bundle-install
 
 build-demo-for-distribution: build-demo-for-distribution-swiftui build-demo-for-distribution-uikit
 
-build-demo-for-distribution-swiftui: fetch-code-signing check-build-number
+build-demo-for-distribution-swiftui: fetch-code-signing check-build-number setup-secrets
 	bundle exec fastlane build_demo_for_distribution \
 		scheme:$(SCHEME_DEMO_SWIFTUI) \
 		build_number:$(BUILD_NUMBER)
 
-build-demo-for-distribution-uikit: fetch-code-signing check-build-number
+build-demo-for-distribution-uikit: fetch-code-signing check-build-number setup-secrets
 	bundle exec fastlane build_demo_for_distribution \
 		scheme:$(SCHEME_DEMO_UIKIT) \
 		build_number:$(BUILD_NUMBER)
@@ -71,6 +71,9 @@ bundle-install:
 
 fetch-code-signing: bundle-install
 	bundle exec fastlane configure_code_signing
+
+setup-secrets: bundle-install
+	bundle exec fastlane run configure_apply
 
 swiftformat: # Automatically find and fixes lint issues
 	swift package plugin \
@@ -121,7 +124,10 @@ generate: $(OUTPUT_DIRECTORY) # Generates the open-api model
     echo "DONE! 🎉"
 
 generate-strings: bundle-install
-	bundle exec fastlane generate_strings_file
+	bundle exec fastlane generate_strings
+
+download-strings: bundle-install
+	bundle exec fastlane download_localized_strings
 
 clean-generated:  # Delete the output directory used for generated sources.
 	@echo 'Delete entire directory: $(OUTPUT_DIRECTORY)? [y/N] ' && read ans && [ $${ans:-N} = y ] || (echo "Aborted"; exit 1)

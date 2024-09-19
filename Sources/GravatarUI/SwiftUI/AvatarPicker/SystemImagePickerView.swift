@@ -53,14 +53,24 @@ private struct ImagePicker<Label, ImageEditor: ImageEditorView>: View where Labe
             displayImagePicker(for: source)
                 .sheet(item: $imagePickerSelectedItem, content: { item in
                     if let customEditor {
-                        customEditor(item.image) { croppedImage in
-                            imagePickerSelectedItem = nil
-                            sourceType = nil
-                            onImageSelected(croppedImage)
+                        customEditor(item.image) { editedImage in
+                            self.onImageEdited(editedImage)
                         }
+                    } else {
+                        ImageCropper(inputImage: item.image) { croppedImage in
+                            self.onImageEdited(croppedImage)
+                        } onCancel: {
+                            imagePickerSelectedItem = nil
+                        }.ignoresSafeArea()
                     }
                 })
         })
+    }
+
+    private func onImageEdited(_ image: UIImage) {
+        imagePickerSelectedItem = nil
+        sourceType = nil
+        onImageSelected(image)
     }
 
     @ViewBuilder
@@ -69,24 +79,19 @@ private struct ImagePicker<Label, ImageEditor: ImageEditorView>: View where Labe
         case .camera:
             ZStack {
                 Color.black.ignoresSafeArea(edges: .all)
-                LegacyImagePickerRepresentable(sourceType: source.map(), useBuiltInCropper: customEditor == nil) { item in
+                LegacyImagePickerRepresentable(sourceType: source.map()) { item in
                     pickerDidSelectImage(item)
                 }
             }
         case .photoLibrary:
-            LegacyImagePickerRepresentable(sourceType: source.map(), useBuiltInCropper: customEditor == nil) { item in
+            LegacyImagePickerRepresentable(sourceType: source.map()) { item in
                 pickerDidSelectImage(item)
             }.ignoresSafeArea()
         }
     }
 
     private func pickerDidSelectImage(_ item: ImagePickerItem) {
-        if customEditor != nil {
-            imagePickerSelectedItem = item
-        } else {
-            sourceType = nil
-            onImageSelected(item.image)
-        }
+        imagePickerSelectedItem = item
     }
 }
 
@@ -103,9 +108,17 @@ extension ImagePicker.SourceType {
     var localizedTitle: String {
         switch self {
         case .photoLibrary:
-            "Chose a Photo"
+            SDKLocalizedString(
+                "SystemImagePickerView.Source.PhotoLibrary.title",
+                value: "Choose a Photo",
+                comment: "An option in a menu that display the user's Photo Library and allow them to choose a photo from it"
+            )
         case .camera:
-            "Take Photo"
+            SDKLocalizedString(
+                "SystemImagePickerView.Source.Camera.title",
+                value: "Take a Photo",
+                comment: "An option in a menu that will display the camera for taking a picture"
+            )
         }
     }
 
@@ -121,7 +134,6 @@ struct LegacyImagePickerRepresentable: UIViewControllerRepresentable {
     @Environment(\.presentationMode) private var presentationMode
 
     var sourceType: UIImagePickerController.SourceType
-    var useBuiltInCropper: Bool
     let onImageSelected: (ImagePickerItem) -> Void
 
     @State private var pickedImage: ImagePickerItem? {
@@ -134,7 +146,6 @@ struct LegacyImagePickerRepresentable: UIViewControllerRepresentable {
 
     func makeUIViewController(context: UIViewControllerRepresentableContext<LegacyImagePickerRepresentable>) -> UIImagePickerController {
         let imagePicker = UIImagePickerController()
-        imagePicker.allowsEditing = useBuiltInCropper
         imagePicker.sourceType = sourceType
         imagePicker.delegate = context.coordinator
 
