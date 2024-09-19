@@ -34,8 +34,12 @@ extension URLRequest {
     /// See the [Accept-Language HTTP header documentation](https://tools.ietf.org/html/rfc7231#section-5.3.5).
     ///
     /// - Returns: `URLRequest` with the `Accept-Language` header set to the user's preferred languages
-    func settingDefaultAcceptLanguage() -> URLRequest {
-        settingAcceptLanguage(Locale.preferredLanguages.prefix(6).qualityEncoded())
+    func settingDefaultAcceptLanguage(languagePreferenceProvider: LanguagePreferenceProvider = SystemLanguagePreferenceProvider()) -> URLRequest {
+        settingAcceptLanguage(
+            languagePreferenceProvider.preferredLanguages.prefix(
+                languagePreferenceProvider.maxPreferredLanguages
+            ).qualityEncoded()
+        )
     }
 
     /// Retruns a `URLRequest` with the `Client-Type` header set to the provided `value`
@@ -98,5 +102,17 @@ extension Collection<String> {
             let qValue = 1.0 - (Double(index) * 0.1) // Decrease the q-value for each encoding
             return index == 0 ? encoding : "\(encoding);q=\(qValue)"
         }.joined(separator: ", ")
+    }
+}
+
+protocol LanguagePreferenceProvider {
+    var preferredLanguages: [String] { get }
+    var maxPreferredLanguages: Int { get }
+}
+
+struct SystemLanguagePreferenceProvider: LanguagePreferenceProvider {
+    var maxPreferredLanguages = 6
+    var preferredLanguages: [String] {
+        Locale.preferredLanguages
     }
 }
