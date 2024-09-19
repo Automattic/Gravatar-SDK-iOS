@@ -1,6 +1,11 @@
 import Foundation
 
 extension URLRequest {
+    func settingAuthorization() async -> URLRequest {
+        guard let key = await Configuration.shared.apiKey else { return self }
+        return self.settingAuthorizationHeaderField(with: key)
+    }
+
     func settingAuthorizationHeaderField(with token: String) -> URLRequest {
         self.settingHeader(value: "Bearer \(token)", forHTTPHeaderField: HTTPHeaderName.authorization)
     }

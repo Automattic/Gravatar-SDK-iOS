@@ -19,6 +19,26 @@ final class URLRequestTests: XCTestCase {
     private let preferredLanguages = ["en", "fr", "jp", "quenyan", "sindarin", "dwarven"]
     private let qualityEncodedReference = "en, fr;q=0.9, jp;q=0.8, quenyan;q=0.7, sindarin;q=0.6, dwarven;q=0.5"
 
+    func testSettingAuthorizationWithToken() throws {
+        let token = "fake-token"
+
+        let urlRequest = URLRequest(url: url).settingAuthorizationHeaderField(with: token)
+
+        try urlRequest.expect(header: URLRequest.HTTPHeaderName.authorization, withValue: "Bearer \(token)")
+    }
+
+    func testSettingAuthorizationWithConfiguredAPIKey() async throws {
+        let apiKey = "fakeapikey"
+        await Configuration.shared.configure(with: apiKey)
+
+        let urlRequest = await URLRequest(url: url).settingAuthorization()
+
+        try urlRequest.expect(
+            header: URLRequest.HTTPHeaderName.authorization,
+            withValue: "Bearer \(apiKey)"
+        )
+    }
+
     func testSettingAcceptLanguageToFrench() throws {
         let encoding = "fr"
         let urlRequest = URLRequest(url: url).settingAcceptLanguage(encoding)

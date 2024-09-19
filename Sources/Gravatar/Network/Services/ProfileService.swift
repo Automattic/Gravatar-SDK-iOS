@@ -26,7 +26,7 @@ public struct ProfileService: ProfileFetching, Sendable {
 
     public func fetch(with profileID: ProfileIdentifier) async throws -> Profile {
         let url = baseURL.appending(pathComponent: profileID.id)
-        let request = await URLRequest(url: url).authorized()
+        let request = await URLRequest(url: url).settingAuthorization()
         return try await fetch(with: request)
     }
 
@@ -81,20 +81,6 @@ extension ProfileService {
         } catch {
             throw error.apiError()
         }
-    }
-}
-
-extension URLRequest {
-    private enum HeaderField: String {
-        case authorization = "Authorization"
-    }
-
-    fileprivate func authorized() async -> URLRequest {
-        guard let key = await Configuration.shared.apiKey else { return self }
-        let bearerKey = "Bearer \(key)"
-        var copy = self
-        copy.setValue(bearerKey, forHTTPHeaderField: HeaderField.authorization.rawValue)
-        return copy
     }
 }
 
