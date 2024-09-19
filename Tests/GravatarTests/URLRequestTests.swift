@@ -16,6 +16,9 @@ final class URLRequestTests: XCTestCase {
             "mordor",
         ]
     )
+    private let contentTypeValue = "multipart/form-data; boundary=a-fake-boundary"
+    private let preferredLanguages = ["en", "fr", "jp", "quenyan", "sindarin", "dwarven"]
+    private let qualityEncodedReference = "en, fr;q=0.9, jp;q=0.8, quenyan;q=0.7, sindarin;q=0.6, dwarven;q=0.5"
 
     func testSettingAcceptLanguageToFrench() throws {
         let encoding = "fr"
@@ -34,8 +37,6 @@ final class URLRequestTests: XCTestCase {
     }
 
     func testQualityEncoding() {
-        let preferredLanguages = ["en", "fr", "jp", "quenyan", "sindarin", "dwarven"]
-        let qualityEncodedReference = "en, fr;q=0.9, jp;q=0.8, quenyan;q=0.7, sindarin;q=0.6, dwarven;q=0.5"
         XCTAssertEqual(preferredLanguages.qualityEncoded(), qualityEncodedReference)
     }
 }
