@@ -25,6 +25,7 @@ struct ImageUploadService: ImageUploader {
         let boundary = "\(UUID().uuidString)"
         let request = URLRequest.imageUploadRequest(with: boundary, additionalHTTPHeaders: additionalHTTPHeaders)
             .settingAuthorization(bearerToken: accessToken)
+            .settingDefaultAcceptLanguage()
         // For the Multipart form/data, we need to send the email address, not the id of the emai address
         let body = imageUploadBody(with: data, boundary: boundary)
         do {
@@ -71,7 +72,6 @@ extension URLRequest {
     fileprivate static func imageUploadRequest(with boundary: String, additionalHTTPHeaders: [HTTPHeaderField]?) -> URLRequest {
         let url = URL(string: "https://api.gravatar.com/v3/me/avatars")!
         var request = URLRequest(url: url)
-            .settingDefaultAcceptLanguage()
         request.addValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
         request.httpMethod = "POST"
         additionalHTTPHeaders?.forEach { headerTuple in
