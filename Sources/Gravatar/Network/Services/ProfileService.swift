@@ -26,14 +26,15 @@ public struct ProfileService: ProfileFetching, Sendable {
 
     public func fetch(with profileID: ProfileIdentifier) async throws -> Profile {
         let url = baseURL.appending(pathComponent: profileID.id)
-        let request = await URLRequest(url: url).authorized()
+        let request = await URLRequest(url: url)
+            .settingAuthorization()
         return try await fetch(with: request)
     }
 
     package func fetchAvatars(with token: String) async throws -> [Avatar] {
         do {
             let url = avatarsBaseURL
-            let request = URLRequest(url: url).settingAuthorizationHeaderField(with: token)
+            let request = URLRequest(url: url).settingAuthorization(apiKey: token)
             let (data, _) = try await client.fetchData(with: request)
             return try data.decode(keyDecodingStrategy: .convertFromSnakeCase)
         } catch {
@@ -46,7 +47,7 @@ public struct ProfileService: ProfileFetching, Sendable {
             throw APIError.requestError(reason: .urlInitializationFailed)
         }
         do {
-            let request = URLRequest(url: url).settingAuthorizationHeaderField(with: token)
+            let request = URLRequest(url: url).settingAuthorization(apiKey: token)
             let (data, _) = try await client.fetchData(with: request)
             return try data.decode(keyDecodingStrategy: .convertFromSnakeCase)
         } catch {
@@ -60,7 +61,7 @@ public struct ProfileService: ProfileFetching, Sendable {
         }
 
         do {
-            var request = URLRequest(url: url).settingAuthorizationHeaderField(with: token)
+            var request = URLRequest(url: url).settingAuthorization(apiKey: token)
             request.httpMethod = "POST"
             request.httpBody = try SelectAvatarBody(avatarId: avatarID).data
             let (data, _) = try await client.fetchData(with: request)
@@ -80,20 +81,6 @@ extension ProfileService {
         } catch {
             throw error.apiError()
         }
-    }
-}
-
-extension URLRequest {
-    private enum HeaderField: String {
-        case authorization = "Authorization"
-    }
-
-    fileprivate func authorized() async -> URLRequest {
-        guard let key = await Configuration.shared.apiKey else { return self }
-        let bearerKey = "Bearer \(key)"
-        var copy = self
-        copy.setValue(bearerKey, forHTTPHeaderField: HeaderField.authorization.rawValue)
-        return copy
     }
 }
 
