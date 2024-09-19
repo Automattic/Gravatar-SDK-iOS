@@ -36,14 +36,6 @@ struct URLSessionHTTPClient: HTTPClient {
     }
 }
 
-extension URLRequest {
-    func settingAuthorizationHeaderField(with token: String) -> URLRequest {
-        var requestCopy = self
-        requestCopy.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        return requestCopy
-    }
-}
-
 private func validatedHTTPResponse(_ response: URLResponse) throws -> HTTPURLResponse {
     guard let httpResponse = response as? HTTPURLResponse else {
         throw HTTPClientError.invalidURLResponseError(response)
