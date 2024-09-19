@@ -34,24 +34,11 @@ public struct ProfileService: ProfileFetching, Sendable {
             let url = avatarsBaseURLComponents.settingQueryItems([.init(name: "selected_email", value: id.id)]).url!
             let request = URLRequest(url: url).settingAuthorizationHeaderField(with: token)
             let (data, _) = try await client.fetchData(with: request)
-            return try data.decode(keyDecodingStrategy: .convertFromSnakeCase)
+            return try data.decode()
         } catch {
             throw error.apiError()
         }
     }
-
-//    package func fetchIdentity(token: String, profileID: ProfileIdentifier) async throws -> ProfileIdentity {
-//        guard let url = URL(string: identitiesBaseURL + profileID.id) else {
-//            throw APIError.requestError(reason: .urlInitializationFailed)
-//        }
-//        do {
-//            let request = URLRequest(url: url).settingAuthorizationHeaderField(with: token)
-//            let (data, _) = try await client.fetchData(with: request)
-//            return try data.decode(keyDecodingStrategy: .convertFromSnakeCase)
-//        } catch {
-//            throw error.apiError()
-//        }
-//    }
 
     package func selectAvatar(token: String, profileID: ProfileIdentifier, avatarID: String) async throws -> ProfileIdentity {
         guard let url = selectAvatarBaseURL(with: profileID) else {
