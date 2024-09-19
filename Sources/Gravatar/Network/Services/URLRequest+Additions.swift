@@ -3,11 +3,11 @@ import Foundation
 extension URLRequest {
     func settingAuthorization() async -> URLRequest {
         guard let key = await Configuration.shared.apiKey else { return self }
-        return self.settingAuthorizationHeaderField(with: key)
+        return self.settingAuthorization(bearerToken: key)
     }
 
-    func settingAuthorizationHeaderField(with token: String) -> URLRequest {
-        self.settingHeader(value: "Bearer \(token)", forHTTPHeaderField: HTTPHeaderName.authorization)
+    func settingAuthorization(bearerToken: String) -> URLRequest {
+        self.settingHeader(value: "Bearer \(bearerToken)", forHTTPHeaderField: HTTPHeaderName.authorization)
     }
 
     /// Returns a `URLRequest` with the `Accept-Language` header set using the provided `value`

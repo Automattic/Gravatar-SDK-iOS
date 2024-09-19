@@ -22,7 +22,7 @@ final class URLRequestTests: XCTestCase {
     func testSettingAuthorizationWithToken() throws {
         let token = "fake-token"
 
-        let urlRequest = URLRequest(url: url).settingAuthorizationHeaderField(with: token)
+        let urlRequest = URLRequest(url: url).settingAuthorization(bearerToken: token)
 
         try urlRequest.expect(header: URLRequest.HTTPHeaderName.authorization, withValue: "Bearer \(token)")
     }
