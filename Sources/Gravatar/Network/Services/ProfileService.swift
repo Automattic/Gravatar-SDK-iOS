@@ -1,8 +1,7 @@
 import Foundation
 
 private let baseURL = URL(string: "https://api.gravatar.com/v3/profiles/")!
-private let avatarsBaseURL = URL(string: "https://api.gravatar.com/v3/me/avatars")!
-private let identitiesBaseURL = "https://api.gravatar.com/v3/me/identities/"
+private let avatarsBaseURLComponents = URLComponents(string: "https://api.gravatar.com/v3/me/avatars")!
 
 private func selectAvatarBaseURL(with profileID: ProfileIdentifier) -> URL? {
     URL(string: "https://api.gravatar.com/v3/me/identities/\(profileID.id)/avatar")
@@ -30,9 +29,9 @@ public struct ProfileService: ProfileFetching, Sendable {
         return try await fetch(with: request)
     }
 
-    package func fetchAvatars(with token: String) async throws -> [Avatar] {
+    package func fetchAvatars(with token: String, id: ProfileIdentifier) async throws -> [Avatar] {
         do {
-            let url = avatarsBaseURL
+            let url = avatarsBaseURLComponents.settingQueryItems([.init(name: "selected_email", value: id.id)]).url!
             let request = URLRequest(url: url).settingAuthorizationHeaderField(with: token)
             let (data, _) = try await client.fetchData(with: request)
             return try data.decode(keyDecodingStrategy: .convertFromSnakeCase)
@@ -41,18 +40,18 @@ public struct ProfileService: ProfileFetching, Sendable {
         }
     }
 
-    package func fetchIdentity(token: String, profileID: ProfileIdentifier) async throws -> ProfileIdentity {
-        guard let url = URL(string: identitiesBaseURL + profileID.id) else {
-            throw APIError.requestError(reason: .urlInitializationFailed)
-        }
-        do {
-            let request = URLRequest(url: url).settingAuthorizationHeaderField(with: token)
-            let (data, _) = try await client.fetchData(with: request)
-            return try data.decode(keyDecodingStrategy: .convertFromSnakeCase)
-        } catch {
-            throw error.apiError()
-        }
-    }
+//    package func fetchIdentity(token: String, profileID: ProfileIdentifier) async throws -> ProfileIdentity {
+//        guard let url = URL(string: identitiesBaseURL + profileID.id) else {
+//            throw APIError.requestError(reason: .urlInitializationFailed)
+//        }
+//        do {
+//            let request = URLRequest(url: url).settingAuthorizationHeaderField(with: token)
+//            let (data, _) = try await client.fetchData(with: request)
+//            return try data.decode(keyDecodingStrategy: .convertFromSnakeCase)
+//        } catch {
+//            throw error.apiError()
+//        }
+//    }
 
     package func selectAvatar(token: String, profileID: ProfileIdentifier, avatarID: String) async throws -> ProfileIdentity {
         guard let url = selectAvatarBaseURL(with: profileID) else {
@@ -111,6 +110,10 @@ extension Avatar {
 
     public var url: String {
         "https://gravatar.com\(imageUrl)?size=256"
+    }
+
+    public var isSelected: Bool {
+        selected == true
     }
 }
 

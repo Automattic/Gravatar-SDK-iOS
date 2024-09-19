@@ -59,7 +59,7 @@ class AvatarPickerViewModel: ObservableObject {
             self.selectedAvatarResult = .success(selectedImageID)
         }
 
-        grid.avatars = avatarImageModels
+        grid.setAvatars(avatarImageModels)
         grid.selectAvatar(withID: selectedImageID)
         gridResponseStatus = .success(())
 
@@ -109,14 +109,13 @@ class AvatarPickerViewModel: ObservableObject {
     }
 
     func fetchAvatars() async {
-        guard let authToken else { return }
+        guard let authToken, let email else { return }
 
         do {
             isAvatarsLoading = true
-            let images = try await profileService.fetchAvatars(with: authToken)
-
-            grid.avatars = images.map(AvatarImageModel.init)
-            updateSelectedAvatarURL()
+            let images = try await profileService.fetchAvatars(with: authToken, id: .email(email))
+            grid.setAvatars(images.map(AvatarImageModel.init))
+            selectedAvatarURL = grid.selectedAvatar?.url
             isAvatarsLoading = false
             gridResponseStatus = .success(())
         } catch {
@@ -135,18 +134,6 @@ class AvatarPickerViewModel: ObservableObject {
         } catch {
             profileResult = .failure(error)
             isProfileLoading = false
-        }
-    }
-
-    func fetchIdentity() async {
-        guard let authToken, let email else { return }
-
-        do {
-            let identity = try await profileService.fetchIdentity(token: authToken, profileID: .email(email))
-            selectedAvatarResult = .success(identity.imageId)
-            grid.selectAvatar(withID: identity.imageId)
-        } catch {
-            selectedAvatarResult = .failure(error)
         }
     }
 
@@ -198,10 +185,8 @@ class AvatarPickerViewModel: ObservableObject {
         self.email = .init(email)
         Task {
             // parallel child tasks
-            async let identity: () = fetchIdentity()
             async let profile: () = fetchProfile()
 
-            await identity
             await profile
         }
     }
@@ -215,12 +200,10 @@ class AvatarPickerViewModel: ObservableObject {
         Task {
             // We want them to be parallel child tasks so they don't wait each other.
             async let avatars: () = fetchAvatars()
-            async let identity: () = fetchIdentity()
             async let profile: () = fetchProfile()
 
             // We need to await them otherwise network requests can be cancelled.
             await avatars
-            await identity
             await profile
         }
     }
@@ -272,5 +255,6 @@ extension AvatarImageModel {
         source = .remote(url: avatar.url)
         isLoading = false
         uploadHasFailed = false
+        isSelected = avatar.isSelected
     }
 }

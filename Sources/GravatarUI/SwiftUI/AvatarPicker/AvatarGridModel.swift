@@ -2,7 +2,7 @@ import Foundation
 
 /// Describes and manages a grid of avatars.
 class AvatarGridModel: ObservableObject {
-    @Published var avatars: [AvatarImageModel]
+    @Published private(set) var avatars: [AvatarImageModel]
     @Published var selectedAvatar: AvatarImageModel?
 
     var isEmpty: Bool {
@@ -51,5 +51,12 @@ class AvatarGridModel: ObservableObject {
             return
         }
         selectedAvatar = model(with: selectedID)
+    }
+
+    func setAvatars(_ avatars: [AvatarImageModel]) {
+        self.avatars = avatars
+        if let selected = avatars.first(where: { $0.isSelected }) {
+            selectAvatar(selected)
+        }
     }
 }

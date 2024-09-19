@@ -11,6 +11,7 @@ struct AvatarImageModel: Hashable, Identifiable, Sendable {
     let isLoading: Bool
     let uploadHasFailed: Bool
     let source: Source
+    let isSelected: Bool
 
     var url: URL? {
         guard case .remote(let url) = source else {
@@ -33,11 +34,12 @@ struct AvatarImageModel: Hashable, Identifiable, Sendable {
         return image
     }
 
-    init(id: String, source: Source, isLoading: Bool = false, uploadHasFailed: Bool = false) {
+    init(id: String, source: Source, isLoading: Bool = false, uploadHasFailed: Bool = false, isSelected: Bool = false) {
         self.id = id
         self.source = source
         self.isLoading = isLoading
         self.uploadHasFailed = uploadHasFailed
+        self.isSelected = isSelected
     }
 
     func settingLoading(to newLoadingStatus: Bool) -> AvatarImageModel {
