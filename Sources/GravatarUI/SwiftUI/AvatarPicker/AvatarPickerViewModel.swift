@@ -95,9 +95,9 @@ class AvatarPickerViewModel: ObservableObject {
             grid.setState(to: .loaded, onAvatarWithID: avatarID)
         }
         grid.selectAvatar(withID: avatarID)
+        grid.setState(to: .loading, onAvatarWithID: avatarID)
 
         do {
-            grid.setState(to: .loaded, onAvatarWithID: avatarID)
             let response = try await profileService.selectAvatar(token: authToken, profileID: identifier, avatarID: avatarID)
             toastManager.showToast("Avatar updated! It may take a few minutes to appear everywhere.", type: .info)
             selectedAvatarResult = .success(response.imageId)
@@ -116,7 +116,10 @@ class AvatarPickerViewModel: ObservableObject {
             isAvatarsLoading = true
             let images = try await profileService.fetchAvatars(with: authToken, id: .email(email))
             grid.setAvatars(images.map(AvatarImageModel.init))
-            selectedAvatarURL = grid.selectedAvatar?.url
+            if let selectedAvatar = grid.selectedAvatar {
+                selectedAvatarURL = selectedAvatar.url
+                selectedAvatarResult = .success(selectedAvatar.id)
+            }
             isAvatarsLoading = false
             gridResponseStatus = .success(())
         } catch {

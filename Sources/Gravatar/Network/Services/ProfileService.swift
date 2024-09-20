@@ -3,8 +3,8 @@ import Foundation
 private let baseURL = URL(string: "https://api.gravatar.com/v3/profiles/")!
 private let avatarsBaseURLComponents = URLComponents(string: "https://api.gravatar.com/v3/me/avatars")!
 
-private func selectAvatarBaseURL(with profileID: ProfileIdentifier) -> URL? {
-    URL(string: "https://api.gravatar.com/v3/me/identities/\(profileID.id)/avatar")
+private func selectAvatarBaseURL(with avatarID: String) -> URL? {
+    URL(string: "https://api.gravatar.com/v3/me/avatars/\(avatarID)/email")
 }
 
 /// A service to perform Profile related tasks.
@@ -42,17 +42,17 @@ public struct ProfileService: ProfileFetching, Sendable {
         }
     }
 
-    package func selectAvatar(token: String, profileID: ProfileIdentifier, avatarID: String) async throws -> ProfileIdentity {
-        guard let url = selectAvatarBaseURL(with: profileID) else {
+    package func selectAvatar(token: String, profileID: ProfileIdentifier, avatarID: String) async throws -> Avatar {
+        guard let url = selectAvatarBaseURL(with: avatarID) else {
             throw APIError.requestError(reason: .urlInitializationFailed)
         }
 
         do {
             var request = URLRequest(url: url).settingAuthorizationHeaderField(with: token)
             request.httpMethod = "POST"
-            request.httpBody = try SelectAvatarBody(avatarId: avatarID).data
+            request.httpBody = try SelectAvatarBody(emailHash: profileID.id).data
             let (data, _) = try await client.fetchData(with: request)
-            return try data.decode(keyDecodingStrategy: .convertFromSnakeCase)
+            return try data.decode()
         } catch {
             throw error.apiError()
         }
@@ -85,13 +85,6 @@ extension URLRequest {
     }
 }
 
-package struct ProfileIdentity: Decodable, Sendable {
-    package let emailHash: String
-    package let rating: String
-    package let imageId: String
-    package let imageUrl: String
-}
-
 extension Avatar {
     public var id: String {
         imageId
@@ -107,10 +100,10 @@ extension Avatar {
 }
 
 private struct SelectAvatarBody: Encodable, Sendable {
-    private let avatarId: String
+    private let emailHash: String
 
-    init(avatarId: String) {
-        self.avatarId = avatarId
+    init(emailHash: String) {
+        self.emailHash = emailHash
     }
 
     var data: Data {
