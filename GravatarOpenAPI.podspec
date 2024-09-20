@@ -3,9 +3,9 @@
 require_relative 'version'
 
 Pod::Spec.new do |s|
-  s.name             = 'Gravatar'
+  s.name = 'GravatarOpenAPI'
   s.version          = Gravatar::VERSION
-  s.summary          = 'A convient library for accessing the Gravatar API'
+  s.summary          = 'A library containing OpenAPI generated types'
 
   s.homepage         = 'https://gravatar.com'
   s.license          = { type: 'Mozilla Public License v2', file: 'LICENSE.md' }
@@ -19,12 +19,9 @@ Pod::Spec.new do |s|
   s.swift_versions    = Gravatar::SWIFT_VERSIONS
 
   ios_deployment_target = '15.0'
-
   s.ios.deployment_target = ios_deployment_target
 
-  s.source_files = 'Sources/Gravatar/**/*.swift'
-
-  s.dependency 'GravatarOpenAPI', s.version.to_s
+  s.source_files = 'Sources/GravatarOpenAPI/**/*.swift'
 
   # Using the `package` access level for types requires us to pass `-package-name`
   # as a swift flag, with the same name for each module/pod
