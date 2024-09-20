@@ -31,7 +31,9 @@ public struct ProfileService: ProfileFetching, Sendable {
 
     package func fetchAvatars(with token: String, id: ProfileIdentifier) async throws -> [Avatar] {
         do {
-            let url = avatarsBaseURLComponents.settingQueryItems([.init(name: "selected_email", value: id.id)]).url!
+            guard let url = avatarsBaseURLComponents.settingQueryItems([.init(name: "selected_email", value: id.id)]).url else {
+                throw APIError.requestError(reason: .urlInitializationFailed)
+            }
             let request = URLRequest(url: url).settingAuthorizationHeaderField(with: token)
             let (data, _) = try await client.fetchData(with: request)
             return try data.decode()
