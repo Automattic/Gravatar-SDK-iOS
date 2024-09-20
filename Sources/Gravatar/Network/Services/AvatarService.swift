@@ -60,15 +60,17 @@ public struct AvatarService: Sendable {
     public func upload(_ image: UIImage, accessToken: String) async throws -> Avatar {
         do {
             let (data, _) = try await imageUploader.uploadImage(image, accessToken: accessToken, additionalHTTPHeaders: [(name: "Client-Type", value: "ios")])
-            return try data.decode(keyDecodingStrategy: .convertFromSnakeCase)
+            return try data.decode()
 
         } catch ImageUploadError.responseError(reason: let reason) where reason.httpStatusCode == 400 {
             guard let data = reason.errorData, let error: ModelError = try? data.decode() else {
                 throw ImageUploadError.responseError(reason: reason)
             }
             throw error
-        } catch {
+        } catch let error as DecodingError {
             throw ImageUploadError.responseError(reason: .unexpected(error))
+        } catch {
+            throw error
         }
     }
 }

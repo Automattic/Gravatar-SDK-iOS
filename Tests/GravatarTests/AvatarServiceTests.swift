@@ -40,8 +40,8 @@ final class AvatarServiceTests: XCTestCase {
 
     func testUploadImageError() async throws {
         let responseCode = 408
-        let successResponse = HTTPURLResponse.errorResponse(code: responseCode)
-        let sessionMock = URLSessionMock(returnData: "Error".data(using: .utf8)!, response: successResponse)
+        let errorResponse = HTTPURLResponse.errorResponse(code: responseCode)
+        let sessionMock = URLSessionMock(returnData: "Error".data(using: .utf8)!, response: errorResponse)
         let service = avatarService(with: sessionMock)
 
         do {

@@ -71,7 +71,7 @@ extension ImageFetchingError: Equatable {
 extension ResponseErrorReason: Equatable {
     public static func == (lhs: ResponseErrorReason, rhs: ResponseErrorReason) -> Bool {
         switch (lhs, rhs) {
-        case (.invalidHTTPStatusCode(let response1), .invalidHTTPStatusCode(let response2)):
+        case (.invalidHTTPStatusCode(let response1, _), .invalidHTTPStatusCode(let response2, _)):
             response1.statusCode == response2.statusCode
         case (.URLSessionError, .URLSessionError):
             true
