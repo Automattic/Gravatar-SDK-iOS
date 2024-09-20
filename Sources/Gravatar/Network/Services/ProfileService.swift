@@ -26,14 +26,18 @@ public struct ProfileService: ProfileFetching, Sendable {
 
     public func fetch(with profileID: ProfileIdentifier) async throws -> Profile {
         let url = baseURL.appending(pathComponent: profileID.id)
-        let request = await URLRequest(url: url).authorized()
+        let request = await URLRequest(url: url)
+            .authorized()
+            .settingDefaultAcceptLanguage()
         return try await fetch(with: request)
     }
 
     package func fetchAvatars(with token: String) async throws -> [Avatar] {
         do {
             let url = avatarsBaseURL
-            let request = URLRequest(url: url).settingAuthorizationHeaderField(with: token)
+            let request = URLRequest(url: url)
+                .settingAuthorizationHeaderField(with: token)
+                .settingDefaultAcceptLanguage()
             let (data, _) = try await client.fetchData(with: request)
             return try data.decode(keyDecodingStrategy: .convertFromSnakeCase)
         } catch {
@@ -46,7 +50,9 @@ public struct ProfileService: ProfileFetching, Sendable {
             throw APIError.requestError(reason: .urlInitializationFailed)
         }
         do {
-            let request = URLRequest(url: url).settingAuthorizationHeaderField(with: token)
+            let request = URLRequest(url: url)
+                .settingAuthorizationHeaderField(with: token)
+                .settingDefaultAcceptLanguage()
             let (data, _) = try await client.fetchData(with: request)
             return try data.decode(keyDecodingStrategy: .convertFromSnakeCase)
         } catch {
@@ -60,7 +66,9 @@ public struct ProfileService: ProfileFetching, Sendable {
         }
 
         do {
-            var request = URLRequest(url: url).settingAuthorizationHeaderField(with: token)
+            var request = URLRequest(url: url)
+                .settingAuthorizationHeaderField(with: token)
+                .settingDefaultAcceptLanguage()
             request.httpMethod = "POST"
             request.httpBody = try SelectAvatarBody(avatarId: avatarID).data
             let (data, _) = try await client.fetchData(with: request)

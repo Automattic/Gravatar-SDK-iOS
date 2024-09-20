@@ -24,6 +24,7 @@ struct ImageUploadService: ImageUploader {
     private func uploadImage(data: Data, accessToken: String, additionalHTTPHeaders: [HTTPHeaderField]?) async throws -> (Data, HTTPURLResponse) {
         let boundary = "\(UUID().uuidString)"
         let request = URLRequest.imageUploadRequest(with: boundary, additionalHTTPHeaders: additionalHTTPHeaders)
+            .settingDefaultAcceptLanguage()
             .settingAuthorizationHeaderField(with: accessToken)
         // For the Multipart form/data, we need to send the email address, not the id of the emai address
         let body = imageUploadBody(with: data, boundary: boundary)

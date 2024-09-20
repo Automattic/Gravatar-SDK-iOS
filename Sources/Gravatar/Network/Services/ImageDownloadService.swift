@@ -95,7 +95,12 @@ public struct ImageDownloadService: ImageDownloader, Sendable {
 
 extension URLRequest {
     fileprivate static func imageRequest(url: URL, forceRefresh: Bool) -> URLRequest {
-        var request = forceRefresh ? URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData) : URLRequest(url: url)
+        var request = URLRequest(url: url).settingDefaultAcceptLanguage()
+
+        if forceRefresh {
+            request.cachePolicy = .reloadIgnoringLocalCacheData
+        }
+
         request.httpShouldHandleCookies = false
         request.addValue("image/*", forHTTPHeaderField: "Accept")
         return request
