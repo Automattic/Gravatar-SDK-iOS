@@ -9,9 +9,11 @@
 SWIFTFORMAT_CACHE = ~/Library/Caches/com.charcoaldesign.swiftformat
 
 # The following values can be changed here, or passed on the command line.
+OPENAPI_GENERATOR_INTERNAL_MODELS = # Colon separated list, no spaces. Leave empty if all models should be public
 OPENAPI_GENERATOR_GIT_URL ?= https://github.com/openapitools/openapi-generator
 OPENAPI_GENERATOR_GIT_TAG ?= v7.5.0
 OPENAPI_GENERATOR_CLONE_DIR ?= $(CURRENT_MAKEFILE_DIR)/openapi-generator
+OPENAPI_GENERATOR_GENERATED_DIR ?= $(OPENAPI_GENERATOR_CLONE_DIR)/generated
 OPENAPI_YAML_PATH ?= $(CURRENT_MAKEFILE_DIR)/openapi/spec.yaml
 MODEL_TEMPLATE_PATH ?= $(CURRENT_MAKEFILE_DIR)/openapi
 OUTPUT_DIRECTORY ?= $(CURRENT_MAKEFILE_DIR)/Sources/Gravatar/OpenApi/Generated
@@ -105,18 +107,33 @@ install-and-generate: $(OPENAPI_GENERATOR_CLONE_DIR) # Clones and setup the open
 	"$(OPENAPI_GENERATOR_CLONE_DIR)"/run-in-docker.sh mvn package
 	make generate
 
+OPENAPI_GENERATOR_OPTS = -t templates -g swift5 -p packageName=Gravatar
+OPENAPI_GENERATOR_ADDITIONAL_PROPS_PUBLIC = useJsonEncodable=false,readonlyProperties=true
+OPENAPI_GENERATOR_ADDITIONAL_PROPS_INTERNAL = $(OPENAPI_GENERATOR_ADDITIONAL_PROPS_PUBLIC),nonPublicApi=true
+
 generate: $(OUTPUT_DIRECTORY) # Generates the open-api model
+	@echo "Preparing the environment"
 	cp "$(OPENAPI_YAML_PATH)" "$(OPENAPI_GENERATOR_CLONE_DIR)"/openapi.yaml
 	mkdir -p "$(OPENAPI_GENERATOR_CLONE_DIR)"/templates
 	cp "$(MODEL_TEMPLATE_PATH)"/*.mustache "$(OPENAPI_GENERATOR_CLONE_DIR)"/templates/
+
+	@echo "Building public models"
 	"$(OPENAPI_GENERATOR_CLONE_DIR)"/run-in-docker.sh generate -i openapi.yaml \
     --global-property models \
-    -t templates \
-    -g swift5 \
-    -o ./generated \
-    -p packageName=Gravatar \
-	--additional-properties=useJsonEncodable=false,readonlyProperties=true && \
-    rsync -av --delete "$(OPENAPI_GENERATOR_CLONE_DIR)"/generated/OpenAPIClient/Classes/OpenAPIs/Models/ "$(OUTPUT_DIRECTORY)/" && \
+	$(OPENAPI_GENERATOR_OPTS) \
+	-o ./generated \
+	--additional-properties=$(OPENAPI_GENERATOR_ADDITIONAL_PROPS_PUBLIC) || exit 1
+
+ifneq ($(OPENAPI_GENERATOR_INTERNAL_MODELS),) # If we have a list of internal models, generate them
+	@echo "Building internal models"
+	"$(OPENAPI_GENERATOR_CLONE_DIR)"/run-in-docker.sh generate -i openapi.yaml \
+	--global-property models=$(OPENAPI_GENERATOR_INTERNAL_MODELS) \
+	$(OPENAPI_GENERATOR_OPTS) \
+	-o ./generated \
+	--additional-properties=$(OPENAPI_GENERATOR_ADDITIONAL_PROPS_INTERNAL) || exit 1
+endif
+
+	rsync -av --delete "$(OPENAPI_GENERATOR_GENERATED_DIR)"/OpenAPIClient/Classes/OpenAPIs/Models/ "$(OUTPUT_DIRECTORY)/" && \
     make swiftformat && \
     echo "DONE! 🎉"
 
