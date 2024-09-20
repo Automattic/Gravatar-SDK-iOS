@@ -11,9 +11,9 @@ public typealias Link = GravatarOpenAPI.Link
 public typealias ProfileContactInfo = GravatarOpenAPI.ProfileContactInfo
 public typealias ProfilePayments = GravatarOpenAPI.ProfilePayments
 public typealias VerifiedAccount = GravatarOpenAPI.VerifiedAccount
+public typealias ModelError = GravatarOpenAPI.ModelError
 
 // MARK: - Package Generated Types
 
 package typealias AssociatedEmail200Response = GravatarOpenAPI.AssociatedEmail200Response
-package typealias ModelError = GravatarOpenAPI.ModelError
 package typealias SetEmailAvatarRequest = GravatarOpenAPI.SetEmailAvatarRequest
