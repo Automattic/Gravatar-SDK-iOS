@@ -2,7 +2,7 @@ import Foundation
 
 /// Common errors for all HTTP operations.
 enum HTTPClientError: Error {
-    case invalidHTTPStatusCodeError(HTTPURLResponse)
+    case invalidHTTPStatusCodeError(HTTPURLResponse, Data)
     case invalidURLResponseError(URLResponse)
     case URLSessionError(Error)
 }
@@ -21,7 +21,7 @@ struct URLSessionHTTPClient: HTTPClient {
         } catch {
             throw HTTPClientError.URLSessionError(error)
         }
-        let httpResponse = try validatedHTTPResponse(result.response)
+        let httpResponse = try validatedHTTPResponse(result.response, data: result.data)
         return (result.data, httpResponse)
     }
 
@@ -32,7 +32,7 @@ struct URLSessionHTTPClient: HTTPClient {
         } catch {
             throw HTTPClientError.URLSessionError(error)
         }
-        return try (result.data, validatedHTTPResponse(result.response))
+        return try (result.data, validatedHTTPResponse(result.response, data: result.data))
     }
 }
 
@@ -44,12 +44,12 @@ extension URLRequest {
     }
 }
 
-private func validatedHTTPResponse(_ response: URLResponse) throws -> HTTPURLResponse {
+private func validatedHTTPResponse(_ response: URLResponse, data: Data) throws -> HTTPURLResponse {
     guard let httpResponse = response as? HTTPURLResponse else {
         throw HTTPClientError.invalidURLResponseError(response)
     }
     if isErrorResponse(httpResponse) {
-        throw HTTPClientError.invalidHTTPStatusCodeError(httpResponse)
+        throw HTTPClientError.invalidHTTPStatusCodeError(httpResponse, data)
     }
     return httpResponse
 }
@@ -63,8 +63,8 @@ extension HTTPClientError {
         switch self {
         case .URLSessionError(let error):
             .URLSessionError(error: error)
-        case .invalidHTTPStatusCodeError(let response):
-            .invalidHTTPStatusCode(response: response)
+        case .invalidHTTPStatusCodeError(let response, let data):
+            .invalidHTTPStatusCode(response: response, data: data)
         case .invalidURLResponseError(let response):
             .invalidURLResponse(response: response)
         }

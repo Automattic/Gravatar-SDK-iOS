@@ -31,9 +31,9 @@ class AvatarGridModel: ObservableObject {
         avatars.removeAll { $0.id == id }
     }
 
-    func setLoading(to isLoading: Bool, onAvatarWithID id: String) {
+    func setState(to state: AvatarImageModel.State, onAvatarWithID id: String) {
         guard let imageModel = model(with: id) else { return }
-        let toggledModel = imageModel.settingLoading(to: isLoading)
+        let toggledModel = imageModel.settingStatus(to: state)
         replaceModel(withID: id, with: toggledModel)
     }
 
@@ -58,5 +58,9 @@ class AvatarGridModel: ObservableObject {
         if let selected = avatars.first(where: { $0.isSelected }) {
             selectAvatar(selected)
         }
+    }
+
+    func deleteModel(_ avatar: AvatarImageModel) {
+        avatars.removeAll { $0 == avatar }
     }
 }
