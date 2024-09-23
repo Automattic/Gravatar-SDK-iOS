@@ -6,10 +6,13 @@ public enum ResponseErrorReason: Sendable {
     case URLSessionError(error: Error)
 
     /// The response contains an invalid HTTP status code. By default, status code >= 400 is recognized as invalid.
-    case invalidHTTPStatusCode(response: HTTPURLResponse)
+    case invalidHTTPStatusCode(response: HTTPURLResponse, data: Data)
 
     /// The response is not a `HTTPURLResponse`.
     case invalidURLResponse(response: URLResponse)
+
+    ///
+    case invalidRequest(error: ModelError)
 
     /// An unexpected error has occurred.
     case unexpected(Error)
@@ -24,8 +27,15 @@ public enum ResponseErrorReason: Sendable {
 
     // If self is a `.invalidHTTPStatusCode` returns the HTTP statusCode from the response. Otherwise returns `nil`.
     public var httpStatusCode: Int? {
-        if case .invalidHTTPStatusCode(let response) = self {
+        if case .invalidHTTPStatusCode(let response, _) = self {
             return response.statusCode
+        }
+        return nil
+    }
+
+    public var errorData: Data? {
+        if case .invalidHTTPStatusCode(_, let data) = self {
+            return data
         }
         return nil
     }

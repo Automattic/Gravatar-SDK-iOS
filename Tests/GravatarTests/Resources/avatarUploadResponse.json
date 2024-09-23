@@ -1,9 +1,7 @@
 {
-  "image_id": "6f3eac1c67f970f2a0c2ea8",
-  "image_url": "/userimage/000000001/6f3eac1c67f970f2a0c2ea8.jpeg",
-  "is_cropped": false,
-  "format": 0,
-  "rating": "G",
-  "updated_date": "",
-  "altText": "John Appleseed's avatar"
+    "image_id": "6f3eac1c67f970f2a0c2ea8",
+    "image_url": "https://2.gravatar.com/userimage/133992/9862792c5653946c?size=512",
+    "rating": "G",
+    "updated_date": "2024-09-19T11:46:04Z",
+    "alt_text": "John Appleseed's avatar"
 }

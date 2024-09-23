@@ -27,6 +27,16 @@ public struct Profile: Codable, Hashable, Sendable {
     public private(set) var pronunciation: String
     /// The pronouns the user uses.
     public private(set) var pronouns: String
+    /// The timezone the user has. This is only provided in authenticated API requests.
+    public private(set) var timezone: String?
+    /// The languages the user knows. This is only provided in authenticated API requests.
+    public private(set) var languages: [Language]?
+    /// User's first name. This is only provided in authenticated API requests.
+    public private(set) var firstName: String?
+    /// User's last name. This is only provided in authenticated API requests.
+    public private(set) var lastName: String?
+    /// Whether user is an organization. This is only provided in authenticated API requests.
+    public private(set) var isOrganization: Bool?
     /// A list of links the user has added to their profile. This is only provided in authenticated API requests.
     public private(set) var links: [Link]?
     /// A list of interests the user has added to their profile. This is only provided in authenticated API requests.
@@ -87,7 +97,7 @@ public struct Profile: Codable, Hashable, Sendable {
     }
 
     // NOTE: This init is maintained manually.
-    // Avoid deleting this init until the deprecation of is applied.
+    // Avoid deleting this init until the deprecation is applied.
     init(
         hash: String,
         displayName: String,
@@ -101,6 +111,11 @@ public struct Profile: Codable, Hashable, Sendable {
         verifiedAccounts: [VerifiedAccount],
         pronunciation: String,
         pronouns: String,
+        timezone: String? = nil,
+        languages: [Language]? = nil,
+        firstName: String? = nil,
+        lastName: String? = nil,
+        isOrganization: Bool? = nil,
         links: [Link]? = nil,
         interests: [Interest]? = nil,
         payments: ProfilePayments? = nil,
@@ -122,6 +137,11 @@ public struct Profile: Codable, Hashable, Sendable {
         self.verifiedAccounts = verifiedAccounts
         self.pronunciation = pronunciation
         self.pronouns = pronouns
+        self.timezone = timezone
+        self.languages = languages
+        self.firstName = firstName
+        self.lastName = lastName
+        self.isOrganization = isOrganization
         self.links = links
         self.interests = interests
         self.payments = payments
@@ -146,7 +166,13 @@ public struct Profile: Codable, Hashable, Sendable {
         case verifiedAccounts = "verified_accounts"
         case pronunciation
         case pronouns
+        case timezone
+        case languages
+        case firstName = "first_name"
+        case lastName = "last_name"
+        case isOrganization = "is_organization"
         case links
+        case interests
         case payments
         case contactInfo = "contact_info"
         case gallery
@@ -168,6 +194,11 @@ public struct Profile: Codable, Hashable, Sendable {
         case verifiedAccounts = "verified_accounts"
         case pronunciation
         case pronouns
+        case timezone
+        case languages
+        case firstName = "first_name"
+        case lastName = "last_name"
+        case isOrganization = "is_organization"
         case links
         case interests
         case payments
@@ -194,6 +225,11 @@ public struct Profile: Codable, Hashable, Sendable {
         try container.encode(verifiedAccounts, forKey: .verifiedAccounts)
         try container.encode(pronunciation, forKey: .pronunciation)
         try container.encode(pronouns, forKey: .pronouns)
+        try container.encodeIfPresent(timezone, forKey: .timezone)
+        try container.encodeIfPresent(languages, forKey: .languages)
+        try container.encodeIfPresent(firstName, forKey: .firstName)
+        try container.encodeIfPresent(lastName, forKey: .lastName)
+        try container.encodeIfPresent(isOrganization, forKey: .isOrganization)
         try container.encodeIfPresent(links, forKey: .links)
         try container.encodeIfPresent(interests, forKey: .interests)
         try container.encodeIfPresent(payments, forKey: .payments)
@@ -221,6 +257,11 @@ public struct Profile: Codable, Hashable, Sendable {
         verifiedAccounts = try container.decode([VerifiedAccount].self, forKey: .verifiedAccounts)
         pronunciation = try container.decode(String.self, forKey: .pronunciation)
         pronouns = try container.decode(String.self, forKey: .pronouns)
+        timezone = try container.decodeIfPresent(String.self, forKey: .timezone)
+        languages = try container.decodeIfPresent([Language].self, forKey: .languages)
+        firstName = try container.decodeIfPresent(String.self, forKey: .firstName)
+        lastName = try container.decodeIfPresent(String.self, forKey: .lastName)
+        isOrganization = try container.decodeIfPresent(Bool.self, forKey: .isOrganization)
         links = try container.decodeIfPresent([Link].self, forKey: .links)
         interests = try container.decodeIfPresent([Interest].self, forKey: .interests)
         payments = try container.decodeIfPresent(ProfilePayments.self, forKey: .payments)

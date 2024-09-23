@@ -7,6 +7,7 @@ struct AvatarPickerAvatarView: View {
     let shouldSelect: () -> Bool
     let onAvatarTap: (AvatarImageModel) -> Void
     let onRetryUpload: (AvatarImageModel) -> Void
+    let onDeleteFailed: (AvatarImageModel) -> Void
 
     var body: some View {
         AvatarView(
@@ -32,12 +33,17 @@ struct AvatarPickerAvatarView: View {
             borderWidth: shouldSelect() ? AvatarGridConstants.selectedBorderWidth : 0
         )
         .overlay {
-            if avatar.isLoading {
+            if avatar.state == .loading {
                 DimmingActivityIndicator()
                     .cornerRadius(AvatarGridConstants.avatarCornerRadius)
-            } else if avatar.uploadHasFailed {
+            } else if avatar.state == .retry {
                 DimmingRetryButton {
                     onRetryUpload(avatar)
+                }
+                .cornerRadius(AvatarGridConstants.avatarCornerRadius)
+            } else if avatar.state == .error {
+                DimmingErrorButton {
+                    onDeleteFailed(avatar)
                 }
                 .cornerRadius(AvatarGridConstants.avatarCornerRadius)
             }
@@ -52,7 +58,7 @@ struct AvatarPickerAvatarView: View {
     return AvatarPickerAvatarView(avatar: avatar, maxLength: AvatarGridConstants.maxAvatarWidth, minLength: AvatarGridConstants.minAvatarWidth) {
         false
     } onAvatarTap: { _ in
-
     } onRetryUpload: { _ in
+    } onDeleteFailed: { _ in
     }
 }

@@ -9,6 +9,7 @@ struct HorizontalAvatarGrid: View {
 
     let onAvatarTap: (AvatarImageModel) -> Void
     let onRetryUpload: (AvatarImageModel) -> Void
+    let onDeleteFailed: (AvatarImageModel) -> Void
 
     var body: some View {
         ScrollView(.horizontal) {
@@ -22,7 +23,8 @@ struct HorizontalAvatarGrid: View {
                             grid.selectedAvatar?.id == avatar.id
                         },
                         onAvatarTap: onAvatarTap,
-                        onRetryUpload: onRetryUpload
+                        onRetryUpload: onRetryUpload,
+                        onDeleteFailed: onDeleteFailed
                     )
                 }
             }
@@ -47,6 +49,8 @@ struct HorizontalAvatarGrid: View {
     return HorizontalAvatarGrid(grid: grid) { avatar in
         grid.selectAvatar(withID: avatar.id)
     } onRetryUpload: { _ in
+        // No op. Inside the preview.
+    } onDeleteFailed: { _ in
         // No op. Inside the preview.
     }
 }

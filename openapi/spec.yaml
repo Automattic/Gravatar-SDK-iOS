@@ -12,6 +12,8 @@ servers:
 tags:
   - name: profiles
     description: Operations about user profiles
+  - name: avatars
+    description: Operations about user avatars
 components:
   headers:
     X-RateLimit-Limit:
@@ -29,6 +31,56 @@ components:
       schema:
         type: integer
   schemas:
+    Avatar:
+      type: object
+      description: An avatar that the user has already uploaded to their Gravatar account.
+      required:
+        - image_id
+        - image_url
+        - rating
+        - updated_date
+        - alt_text
+      properties:
+        image_id:
+          type: string
+          description: Unique identifier for the image.
+          examples:
+            - 38be15a98a2bbc40df69172a2a8349
+        image_url:
+          type: string
+          description: Image URL
+          examples:
+            - >-
+              https://gravatar.com/userimage/252014526/d38bele5a98a2bbc40df69172a2a8348.jpeg
+        rating:
+          type: string
+          description: Rating associated with the image.
+          enum:
+            - G
+            - PG
+            - R
+            - X
+        updated_date:
+          type: string
+          format: date-time
+          description: Date and time when the image was last updated.
+          pattern: ^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$
+          examples:
+            - '2021-10-01T12:00:00Z'
+        alt_text:
+          type: string
+          description: Alternative text description of the image.
+          examples:
+            - >-
+              Gravatar's avatar image. Gravatar is a service for providing
+              globally unique avatars.
+        selected:
+          type: boolean
+          description: >-
+            Whether the image is currently selected as the provided selected
+            email's avatar.
+          examples:
+            - true
     Link:
       type: object
       description: A link the user has added to their profile.
@@ -130,6 +182,37 @@ components:
           description: The image alt text.
           examples:
             - A beautiful sunset
+    Language:
+      type: object
+      description: >-
+        The languages the user knows. This is only provided in authenticated API
+        requests.
+      required:
+        - code
+        - name
+        - is_primary
+        - order
+      properties:
+        code:
+          type: string
+          description: The language code.
+          examples:
+            - en
+        name:
+          type: string
+          description: The language name.
+          examples:
+            - English
+        is_primary:
+          type: boolean
+          description: Whether the language is the user's primary language.
+          examples:
+            - true
+        order:
+          type: integer
+          description: The order of the language in the user's profile.
+          examples:
+            - 1
     Profile:
       type: object
       description: A user's profile information.
@@ -216,6 +299,41 @@ components:
           description: The pronouns the user uses.
           examples:
             - She/They
+        timezone:
+          type: string
+          description: >-
+            The timezone the user has. This is only provided in authenticated
+            API requests.
+          examples:
+            - Europe/Bratislava
+        languages:
+          type: array
+          description: >-
+            The languages the user knows. This is only provided in authenticated
+            API requests.
+          items:
+            $ref: '#/components/schemas/Language'
+        first_name:
+          type: string
+          description: >-
+            User's first name. This is only provided in authenticated API
+            requests.
+          examples:
+            - Alex
+        last_name:
+          type: string
+          description: >-
+            User's last name. This is only provided in authenticated API
+            requests.
+          examples:
+            - Morgan
+        is_organization:
+          type: boolean
+          description: >-
+            Whether user is an organization. This is only provided in
+            authenticated API requests.
+          examples:
+            - false
         links:
           type: array
           description: >-
@@ -330,6 +448,18 @@ components:
           pattern: ^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$
           examples:
             - '2021-10-01T12:00:00Z'
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          description: The error message
+        code:
+          type: string
+          description: The error code for the error message
+      required:
+        - error
+        - code
   securitySchemes:
     apiKey:
       type: http
@@ -337,6 +467,14 @@ components:
       description: >-
         Bearer token to authenticate the request. Full profile information is
         only available in authenticated requests.
+    oauth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: https://public-api.wordpress.com/oauth2/authorize
+          tokenUrl: https://public-api.wordpress.com/oauth2/token
+          scopes: {}
+      description: WordPress OAuth token to authenticate the request.
 paths:
   /profiles/{profileIdentifier}:
     get:
@@ -354,6 +492,8 @@ paths:
             slug.
           schema:
             type: string
+      security:
+        - apiKey: []
       responses:
         '200':
           description: Successful response
@@ -388,5 +528,143 @@ paths:
               $ref: '#/components/headers/X-RateLimit-Reset'
         '500':
           description: Internal server error
-security:
-  - apiKey: []
+  /me/associated-email:
+    get:
+      summary: Check if the email is associated with the authenticated user
+      description: >-
+        Checks if the provided email address is associated with the
+        authenticated user.
+      tags:
+        - profiles
+      operationId: associatedEmail
+      security:
+        - oauth: []
+      parameters:
+        - name: email_hash
+          in: query
+          required: true
+          description: The hash of the email address to check.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The email is associated with the authenticated user
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - associated
+                properties:
+                  associated:
+                    type: boolean
+                    description: Whether the email is associated with a Gravatar account.
+                    examples:
+                      - true
+  /me/avatars:
+    get:
+      summary: List avatars
+      description: Retrieves a list of available avatars for the authenticated user.
+      tags:
+        - avatars
+      operationId: getAvatars
+      security:
+        - oauth: []
+      parameters:
+        - name: selected_email
+          in: query
+          description: >-
+            The email address used to determine which avatar is selected. The
+            'selected' attribute in the avatar list will be set to 'true' for
+            the avatar associated with this email.
+          schema:
+            type: string
+            default: null
+      responses:
+        '200':
+          description: Successful retrieval of avatars
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Avatar'
+    post:
+      summary: Upload new avatar image
+      description: Uploads a new avatar image for the authenticated user.
+      tags:
+        - avatars
+      operationId: uploadAvatar
+      security:
+        - oauth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: string
+                  format: binary
+                  description: The avatar image file
+              required:
+                - data
+      responses:
+        '200':
+          description: Avatar uploaded successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Avatar'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                uncropped_image:
+                  value:
+                    error: Only square images are accepted
+                    code: uncropped_image
+                unsupported_image:
+                  value:
+                    error: Unsupported image type
+                    code: unsupported_image
+  /me/avatars/{imageId}/email:
+    post:
+      summary: Set avatar for the hashed email
+      description: Sets the avatar for the provided email hash.
+      tags:
+        - avatars
+      parameters:
+        - name: imageId
+          in: path
+          description: Image ID of the avatar to set as the provided hashed email avatar.
+          required: true
+          schema:
+            type: string
+      operationId: setEmailAvatar
+      requestBody:
+        description: Avatar selection details
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email_hash:
+                  type: string
+                  description: The email SHA256 hash to set the avatar for.
+                  examples:
+                    - >-
+                      31c5543c1734d25c7206f5fd591525d0295bec6fe84ff82f946a34fe970a1e66
+              required:
+                - email_hash
+      security:
+        - oauth: []
+      responses:
+        '204':
+          description: Avatar successfully set
+

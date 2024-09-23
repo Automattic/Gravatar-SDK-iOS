@@ -7,10 +7,17 @@ struct AvatarImageModel: Hashable, Identifiable, Sendable {
         case local(image: UIImage)
     }
 
+    enum State {
+        case loaded
+        case loading
+        case retry
+        case error
+    }
+
     let id: String
-    let isLoading: Bool
-    let uploadHasFailed: Bool
     let source: Source
+    let isSelected: Bool
+    let state: State
 
     var url: URL? {
         guard case .remote(let url) = source else {
@@ -33,14 +40,14 @@ struct AvatarImageModel: Hashable, Identifiable, Sendable {
         return image
     }
 
-    init(id: String, source: Source, isLoading: Bool = false, uploadHasFailed: Bool = false) {
+    init(id: String, source: Source, state: State = .loaded, isSelected: Bool = false) {
         self.id = id
         self.source = source
-        self.isLoading = isLoading
-        self.uploadHasFailed = uploadHasFailed
+        self.state = state
+        self.isSelected = isSelected
     }
 
-    func settingLoading(to newLoadingStatus: Bool) -> AvatarImageModel {
-        AvatarImageModel(id: id, source: source, isLoading: newLoadingStatus, uploadHasFailed: uploadHasFailed)
+    func settingStatus(to newStatus: State) -> AvatarImageModel {
+        AvatarImageModel(id: id, source: source, state: newStatus)
     }
 }

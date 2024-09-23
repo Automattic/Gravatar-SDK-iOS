@@ -19,7 +19,7 @@ actor TestImageFetcher: ImageDownloader {
             switch result {
             case .fail:
                 let response = HTTPURLResponse(url: url, statusCode: 404, httpVersion: nil, headerFields: nil)!
-                throw ImageFetchingError.responseError(reason: .invalidHTTPStatusCode(response: response))
+                throw ImageFetchingError.responseError(reason: .invalidHTTPStatusCode(response: response, data: "".data(using: .utf8)!))
             case .success:
                 return ImageDownloadResult(image: ImageHelper.testImage, sourceURL: URL(string: url.absoluteString)!)
             }

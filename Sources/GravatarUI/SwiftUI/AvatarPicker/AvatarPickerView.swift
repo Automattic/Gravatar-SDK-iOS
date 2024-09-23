@@ -186,6 +186,12 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
         }
     }
 
+    private func deleteFailedUpload(_ avatar: AvatarImageModel) {
+        withAnimation {
+            model.deleteFailed(avatar)
+        }
+    }
+
     @ViewBuilder
     private func avatarGrid() -> some View {
         // Even if the contentLayout is set to horizontal, we show vertical grid for large devices.
@@ -202,6 +208,9 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
                 },
                 onRetryUpload: { avatar in
                     retryUpload(avatar)
+                },
+                onDeleteFailed: { avatar in
+                    deleteFailedUpload(avatar)
                 }
             )
             .padding(.horizontal, Constants.horizontalPadding)
@@ -214,6 +223,9 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
                 },
                 onRetryUpload: { avatar in
                     retryUpload(avatar)
+                },
+                onDeleteFailed: { avatar in
+                    deleteFailedUpload(avatar)
                 }
             )
             .padding(.top, .DS.Padding.medium)
@@ -435,14 +447,15 @@ private enum AvatarPicker {
 
     let model = AvatarPickerViewModel(
         avatarImageModels: [
-            .init(id: "0", source: .local(image: UIImage()), isLoading: true),
+            .init(id: "0", source: .local(image: UIImage()), state: .loading),
             .init(id: "1", source: .remote(url: "https://gravatar.com/userimage/110207384/aa5f129a2ec75162cee9a1f0c472356a.jpeg?size=256")),
             .init(id: "2", source: .remote(url: "https://gravatar.com/userimage/110207384/db73834576b01b69dd8da1e29877ca07.jpeg?size=256")),
             .init(id: "3", source: .remote(url: "https://gravatar.com/userimage/110207384/3f7095bf2580265d1801d128c6410016.jpeg?size=256")),
             .init(id: "4", source: .remote(url: "https://gravatar.com/userimage/110207384/fbbd335e57862e19267679f19b4f9db8.jpeg?size=256")),
             .init(id: "5", source: .remote(url: "https://gravatar.com/userimage/110207384/96c6950d6d8ce8dd1177a77fe738101e.jpeg?size=256")),
             .init(id: "6", source: .remote(url: "https://gravatar.com/userimage/110207384/4a4f9385b0a6fa5c00342557a098f480.jpeg?size=256")),
-            .init(id: "7", source: .local(image: UIImage()), uploadHasFailed: true),
+            .init(id: "7", source: .local(image: UIImage()), state: .retry),
+            .init(id: "8", source: .local(image: UIImage()), state: .error),
         ],
         selectedImageID: "5",
         profileModel: PreviewModel()
