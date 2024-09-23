@@ -17,7 +17,7 @@ extension View {
         email: String,
         authToken: String,
         customImageEditor: ImageEditorBlock<some ImageEditorView>? = nil as NoCustomEditorBlock?,
-        imageSquaring: ImageSquaringStrategy = .default
+        imageSquaring: ImageSquaringStrategy? = .default
     ) -> some View {
         let avatarPickerView = AvatarPickerView(
             model: AvatarPickerViewModel(email: Email(email), authToken: authToken),
@@ -37,7 +37,7 @@ extension View {
         authToken: String,
         contentLayout: AvatarPickerContentLayoutWithPresentation,
         customImageEditor: ImageEditorBlock<some ImageEditorView>? = nil as NoCustomEditorBlock?,
-        imageSquaring: ImageSquaringStrategy = .default
+        imageSquaring: ImageSquaringStrategy? = .default
     ) -> some View {
         let avatarPickerView = AvatarPickerView(
             model: AvatarPickerViewModel(email: Email(email), authToken: authToken),
