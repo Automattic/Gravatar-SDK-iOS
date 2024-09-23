@@ -9,7 +9,7 @@ extension ImageSquaringStrategy {
     public var strategy: ImageSquaring {
         switch self {
         case .default:
-            DefaultImageCropper()
+            DefaultImageSquarer()
         case .custom(cropper: let cropper):
             cropper
         }
@@ -20,7 +20,7 @@ public protocol ImageSquaring: Sendable {
     func squared(_ image: UIImage) -> UIImage
 }
 
-struct DefaultImageCropper: ImageSquaring {
+struct DefaultImageSquarer: ImageSquaring {
     func squared(_ image: UIImage) -> UIImage {
         image.squared()
     }
