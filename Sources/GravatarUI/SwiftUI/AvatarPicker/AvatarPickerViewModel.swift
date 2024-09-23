@@ -145,6 +145,7 @@ class AvatarPickerViewModel: ObservableObject {
         guard let authToken else { return }
 
         let squareImage = imageSquaring?.strategy.squared(image) ?? image
+        assert(squareImage.isSquare(), "Image must be squared before uploading: \(squareImage.size.height) x \(squareImage.size.width)")
         let localID = UUID().uuidString
 
         let localImageModel = AvatarImageModel(id: localID, source: .local(image: squareImage), state: .loading)
