@@ -141,10 +141,10 @@ class AvatarPickerViewModel: ObservableObject {
         }
     }
 
-    func upload(_ image: UIImage, shouldSquareImage: Bool) async {
+    func uploadImage(_ image: UIImage, imageSquaring: ImageSquaringStrategy?) async {
         guard let authToken else { return }
 
-        let squareImage = shouldSquareImage ? image.squared() : image
+        let squareImage = imageSquaring?.strategy.squared(image) ?? image
         let localID = UUID().uuidString
 
         let localImageModel = AvatarImageModel(id: localID, source: .local(image: squareImage), state: .loading)
@@ -238,35 +238,6 @@ extension Result<[AvatarImageModel], Error> {
             models.isEmpty
         default:
             false
-        }
-    }
-}
-
-extension UIImage {
-    fileprivate func squared() -> UIImage {
-        let (height, width) = (size.height, size.width)
-        guard height != width else {
-            return self
-        }
-        let squareSide = {
-            // If there's a side difference of 1~2px in an image smaller then (around) 100px, this will return false.
-            if width != height && (abs(width - height) / min(width, height)) < 0.02 {
-                // Aspect fill
-                return min(height, width)
-            }
-            // Aspect fit
-            return max(height, width)
-        }()
-
-        let squareSize = CGSize(width: squareSide, height: squareSide)
-        let imageOrigin = CGPoint(x: (squareSide - width) / 2, y: (squareSide - height) / 2)
-
-        let format = UIGraphicsImageRendererFormat()
-        format.scale = 1
-        return UIGraphicsImageRenderer(size: squareSize, format: format).image { context in
-            UIColor.black.setFill()
-            context.fill(CGRect(origin: .zero, size: squareSize))
-            draw(in: CGRect(origin: imageOrigin, size: size))
         }
     }
 }

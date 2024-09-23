@@ -16,13 +16,15 @@ extension View {
         isPresented: Binding<Bool>,
         email: String,
         authToken: String,
-        customImageEditor: ImageEditorBlock<some ImageEditorView>? = nil as NoCustomEditorBlock?
+        customImageEditor: ImageEditorBlock<some ImageEditorView>? = nil as NoCustomEditorBlock?,
+        imageSquaring: ImageSquaringStrategy = .default
     ) -> some View {
         let avatarPickerView = AvatarPickerView(
             model: AvatarPickerViewModel(email: Email(email), authToken: authToken),
             contentLayoutProvider: AvatarPickerContentLayout.vertical,
             isPresented: isPresented,
-            customImageEditor: customImageEditor
+            customImageEditor: customImageEditor,
+            imageSquaring: imageSquaring
         )
         let navigationWrapped = NavigationView { avatarPickerView }
         return modifier(ModalPresentationModifier(isPresented: isPresented, modalView: navigationWrapped))
@@ -34,13 +36,15 @@ extension View {
         email: String,
         authToken: String,
         contentLayout: AvatarPickerContentLayoutWithPresentation,
-        customImageEditor: ImageEditorBlock<some ImageEditorView>? = nil as NoCustomEditorBlock?
+        customImageEditor: ImageEditorBlock<some ImageEditorView>? = nil as NoCustomEditorBlock?,
+        imageSquaring: ImageSquaringStrategy = .default
     ) -> some View {
         let avatarPickerView = AvatarPickerView(
             model: AvatarPickerViewModel(email: Email(email), authToken: authToken),
             contentLayoutProvider: contentLayout,
             isPresented: isPresented,
-            customImageEditor: customImageEditor
+            customImageEditor: customImageEditor,
+            imageSquaring: imageSquaring
         )
         let navigationWrapped = NavigationView { avatarPickerView }
         return modifier(AvatarPickerModalPresentationModifier(isPresented: isPresented, modalView: navigationWrapped, contentLayout: contentLayout))
