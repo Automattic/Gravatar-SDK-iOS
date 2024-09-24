@@ -177,7 +177,7 @@ class AvatarPickerViewModel: ObservableObject {
             let newModel = AvatarImageModel(id: avatar.id, source: .remote(url: avatar.url))
             grid.replaceModel(withID: localID, with: newModel)
         } catch ImageUploadError.responseError(reason: let .invalidHTTPStatusCode(response, errorPayload)) where response.statusCode == 400 {
-            // If the status code is 400 then it means we got a validation error about this image and the operation is not retriable.
+            // If the status code is 400 then it means we got a validation error about this image and the operation is not suitable for retrying.
             handleUploadError(
                 imageID: localID,
                 squareImage: squareImage,
