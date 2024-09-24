@@ -79,5 +79,5 @@
 /* The title of the retry button on the upload error dialog. */
 "AvatarPicker.Upload.Error.Retry.title" = "Retry";
 
-/* The title of the dismiss button on the upload error dialog. */
-"AvatarPicker.Upload.Error.Dismiss.title" = "Dismiss";
+/* The title of the dismiss button on a confirmation dialog. */
+"AvatarPicker.Dismiss.title" = "Dismiss";

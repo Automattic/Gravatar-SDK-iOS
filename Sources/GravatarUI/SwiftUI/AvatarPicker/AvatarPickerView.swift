@@ -354,9 +354,9 @@ private enum AvatarPicker {
             comment: "The title of the retry button on the upload error dialog."
         )
         static let dismissButtonTitle = SDKLocalizedString(
-            "AvatarPicker.Upload.Error.Dismiss.title",
+            "AvatarPicker.Dismiss.title",
             value: "Dismiss",
-            comment: "The title of the dismiss button on the upload error dialog."
+            comment: "The title of the dismiss button on a confirmation dialog."
         )
         static let buttonUploadImage = SDKLocalizedString(
             "AvatarPicker.ContentLoading.Success.ctaButtonTitle",
