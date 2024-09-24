@@ -164,8 +164,8 @@ class AvatarPickerViewModel: ObservableObject {
         await doUpload(squareImage: localImage, localID: localID, accessToken: authToken)
     }
 
-    func deleteFailed(_ avatar: AvatarImageModel) {
-        grid.deleteModel(avatar)
+    func deleteFailed(_ id: String) {
+        grid.deleteModel(id)
     }
 
     private func doUpload(squareImage: UIImage, localID: String, accessToken: String) async {
@@ -176,15 +176,38 @@ class AvatarPickerViewModel: ObservableObject {
 
             let newModel = AvatarImageModel(id: avatar.id, source: .remote(url: avatar.url))
             grid.replaceModel(withID: localID, with: newModel)
-        } catch let error as ModelError {
-            let newModel = AvatarImageModel(id: localID, source: .local(image: squareImage), state: .error)
-            grid.replaceModel(withID: localID, with: newModel)
-            toastManager.showToast(error.error, type: .error)
+        } catch ImageUploadError.responseError(reason: let .invalidHTTPStatusCode(response, errorPayload)) where response.statusCode == 400 {
+            // If the status code is 400 then it means we got a validation error about this image and the operation is not retriable.
+            handleUploadError(
+                imageID: localID,
+                squareImage: squareImage,
+                supportsRetry: false,
+                errorMessage: errorPayload?.message ?? Localized.genericUploadError
+            )
+        } catch ImageUploadError.responseError(reason: let reason) where reason.urlSessionErrorLocalizedDescription != nil {
+            handleUploadError(
+                imageID: localID,
+                squareImage: squareImage,
+                supportsRetry: true,
+                errorMessage: reason.urlSessionErrorLocalizedDescription ?? Localized.genericUploadError
+            )
         } catch {
-            let newModel = AvatarImageModel(id: localID, source: .local(image: squareImage), state: .retry)
-            grid.replaceModel(withID: localID, with: newModel)
-            toastManager.showToast(Localized.toastError, type: .error)
+            handleUploadError(
+                imageID: localID,
+                squareImage: squareImage,
+                supportsRetry: true,
+                errorMessage: Localized.genericUploadError
+            )
         }
+    }
+
+    private func handleUploadError(imageID: String, squareImage: UIImage, supportsRetry: Bool, errorMessage: String) {
+        let newModel = AvatarImageModel(
+            id: imageID,
+            source: .local(image: squareImage),
+            state: .error(supportsRetry: supportsRetry, errorMessage: errorMessage)
+        )
+        grid.replaceModel(withID: imageID, with: newModel)
     }
 
     private func updateSelectedAvatarURL() {
@@ -223,10 +246,10 @@ class AvatarPickerViewModel: ObservableObject {
 
 extension AvatarPickerViewModel {
     private enum Localized {
-        static let toastError = SDKLocalizedString(
-            "AvatarPickerViewModel.Toast.Error.message",
+        static let genericUploadError = SDKLocalizedString(
+            "AvatarPickerViewModel.Upload.Error.message",
             value: "Oops, there was an error uploading the image.",
-            comment: "An message that will appear in a small 'toast' message overlaying the current view"
+            comment: "A generic error message to show on an error dialog when the upload fails."
         )
     }
 }

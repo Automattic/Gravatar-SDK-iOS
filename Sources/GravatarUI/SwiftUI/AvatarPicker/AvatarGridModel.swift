@@ -60,7 +60,7 @@ class AvatarGridModel: ObservableObject {
         }
     }
 
-    func deleteModel(_ avatar: AvatarImageModel) {
-        avatars.removeAll { $0 == avatar }
+    func deleteModel(_ id: String) {
+        avatars.removeAll { $0.id == id }
     }
 }
