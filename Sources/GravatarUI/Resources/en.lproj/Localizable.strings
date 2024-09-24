@@ -40,8 +40,8 @@
 /* Title of a button that will take you to your Gravatar profile, with an arrow indicating that this action will cause you to leave this view */
 "AvatarPickerProfile.Button.ViewProfile.title" = "View profile →";
 
-/* An message that will appear in a small 'toast' message overlaying the current view */
-"AvatarPickerViewModel.Toast.Error.message" = "Oops, there was an error uploading the image.";
+/* A generic error message to show on an error dialog when the upload fails. */
+"AvatarPickerViewModel.Upload.Error.message" = "Oops, there was an error uploading the image.";
 
 /* Text on a sample Gravatar profile, appearing in the place where a Gravatar profile would display your short biography. */
 "ClaimProfile.Label.AboutMe" = "Tell the world who you are. Your avatar and bio that follows you across the web.";
@@ -70,3 +70,14 @@
 /* An option in a menu that display the user's Photo Library and allow them to choose a photo from it */
 "SystemImagePickerView.Source.PhotoLibrary.title" = "Choose a Photo";
 
+/* The title of the upload error dialog. */
+"AvatarPicker.Upload.Error.title" = "Upload has failed.";
+
+/* The title of the remove button on the upload error dialog. */
+"AvatarPicker.Upload.Error.Remove.title" = "Remove";
+
+/* The title of the retry button on the upload error dialog. */
+"AvatarPicker.Upload.Error.Retry.title" = "Retry";
+
+/* The title of the dismiss button on the upload error dialog. */
+"AvatarPicker.Upload.Error.Dismiss.title" = "Dismiss";
