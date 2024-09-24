@@ -1,6 +1,8 @@
 import Foundation
 
+/// A representation of the `access_token` metadata returned from an OAuth2 'Implicit OAuth' authorization response
 struct AccessToken {
+    /// The `access_token`
     let token: String
 }
 
