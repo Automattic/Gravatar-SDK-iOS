@@ -45,29 +45,11 @@ public struct OAuthSession: Sendable {
     }
 
     private func getToken(from callbackURL: URL, secrets: Configuration.OAuthSecrets) async throws -> String {
-        let queryItems = URLComponents(string: callbackURL.absoluteString)?.queryItems
-        guard let code = queryItems?.filter({ $0.name == "code" }).first?.value else {
+        guard let accessToken = AccessToken(from: callbackURL) else {
             throw OAuthError.couldNotParseAccessCode(callbackURL.absoluteString)
         }
 
-        return try await requestAccessToken(code: code, secrets: secrets)
-    }
-
-    private func requestAccessToken(code: String, secrets: Configuration.OAuthSecrets) async throws -> String {
-        do {
-            let request = try accessTokenRequest(with: code, secrets: secrets)
-            let (data, response) = try await URLSession.shared.data(for: request)
-
-            if let httpResponse = (response as? HTTPURLResponse), httpResponse.statusCode >= 400 {
-                let error = try snakeCaseDecoder.decode(RemoteOAuthError.self, from: data)
-                throw OAuthError.oauthResponseError(error.errorDescription)
-            } else {
-                let auth = try snakeCaseDecoder.decode(OAuthResponse.self, from: data)
-                return auth.accessToken
-            }
-        } catch {
-            throw error
-        }
+        return accessToken.accessToken
     }
 
     private func oauthURL(with email: Email, secrets: Configuration.OAuthSecrets) throws -> URL {
@@ -88,18 +70,6 @@ public struct OAuthSession: Sendable {
             )
             throw OAuthError.couldNotCreateOAuthURLWithGivenSecrets
         }
-    }
-
-    private func accessTokenRequest(with code: String, secrets: Configuration.OAuthSecrets) throws -> URLRequest {
-        let tokenURL = URL(string: "https://public-api.wordpress.com/oauth2/token")!
-        let params = AccessTokenRequestParams(secrets: secrets, code: code)
-
-        var request = URLRequest(url: tokenURL)
-        request.httpMethod = "POST"
-        request.addValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-        request.httpBody = try params.queryItems.string?.data(using: .utf8)
-
-        return request
     }
 }
 
@@ -172,7 +142,7 @@ private struct OAuthURLParams: Encodable {
 
     init(email: Email, secrets: Configuration.OAuthSecrets) {
         self.clientID = secrets.clientID
-        self.responseType = "code"
+        self.responseType = "token"
         self.blogID = "0"
         self.redirectURI = secrets.redirectURI
         self.userEmail = email.rawValue
