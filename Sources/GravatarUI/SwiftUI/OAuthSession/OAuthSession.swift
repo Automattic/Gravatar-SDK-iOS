@@ -49,7 +49,7 @@ public struct OAuthSession: Sendable {
             throw OAuthError.couldNotParseAccessCode(callbackURL.absoluteString)
         }
 
-        return accessToken.accessToken
+        return accessToken.token
     }
 
     private func oauthURL(with email: Email, secrets: Configuration.OAuthSecrets) throws -> URL {

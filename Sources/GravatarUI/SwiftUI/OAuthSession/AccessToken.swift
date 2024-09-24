@@ -1,9 +1,7 @@
 import Foundation
 
 struct AccessToken {
-    let accessToken: String
-    let expiresIn: Int?
-    let tokenType: String?
+    let token: String
 }
 
 extension AccessToken {
@@ -28,13 +26,7 @@ extension AccessToken {
         // Extract required access_token
         guard let accessToken = parameters["access_token"] else { return nil }
 
-        // Extract optional expires_in and token_type
-        let expiresIn = parameters["expires_in"].flatMap { Int($0) }
-        let tokenType = parameters["token_type"]
-
         // Initialize the AccessToken with extracted values
-        self.accessToken = accessToken
-        self.expiresIn = expiresIn
-        self.tokenType = tokenType
+        self.token = accessToken
     }
 }
