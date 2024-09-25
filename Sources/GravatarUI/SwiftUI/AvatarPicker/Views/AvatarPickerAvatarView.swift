@@ -1,13 +1,18 @@
 import SwiftUI
 
+struct FailedUploadInfo {
+    let avatarLocalID: String
+    let supportsRetry: Bool
+    let errorMessage: String
+}
+
 struct AvatarPickerAvatarView: View {
     let avatar: AvatarImageModel
     let maxLength: CGFloat
     let minLength: CGFloat
     let shouldSelect: () -> Bool
     let onAvatarTap: (AvatarImageModel) -> Void
-    let onRetryUpload: (AvatarImageModel) -> Void
-    let onDeleteFailed: (AvatarImageModel) -> Void
+    let onFailedUploadTapped: (FailedUploadInfo) -> Void
 
     var body: some View {
         AvatarView(
@@ -33,19 +38,23 @@ struct AvatarPickerAvatarView: View {
             borderWidth: shouldSelect() ? AvatarGridConstants.selectedBorderWidth : 0
         )
         .overlay {
-            if avatar.state == .loading {
+            switch avatar.state {
+            case .loading:
                 DimmingActivityIndicator()
                     .cornerRadius(AvatarGridConstants.avatarCornerRadius)
-            } else if avatar.state == .retry {
-                DimmingRetryButton {
-                    onRetryUpload(avatar)
-                }
-                .cornerRadius(AvatarGridConstants.avatarCornerRadius)
-            } else if avatar.state == .error {
+            case .error(let supportsRetry, let errorMessage):
                 DimmingErrorButton {
-                    onDeleteFailed(avatar)
+                    onFailedUploadTapped(
+                        .init(
+                            avatarLocalID: avatar.id,
+                            supportsRetry: supportsRetry,
+                            errorMessage: errorMessage
+                        )
+                    )
                 }
                 .cornerRadius(AvatarGridConstants.avatarCornerRadius)
+            case .loaded:
+                EmptyView()
             }
         }.onTapGesture {
             onAvatarTap(avatar)
@@ -58,7 +67,6 @@ struct AvatarPickerAvatarView: View {
     return AvatarPickerAvatarView(avatar: avatar, maxLength: AvatarGridConstants.maxAvatarWidth, minLength: AvatarGridConstants.minAvatarWidth) {
         false
     } onAvatarTap: { _ in
-    } onRetryUpload: { _ in
-    } onDeleteFailed: { _ in
+    } onFailedUploadTapped: { _ in
     }
 }
