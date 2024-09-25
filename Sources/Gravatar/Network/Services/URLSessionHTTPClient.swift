@@ -65,13 +65,8 @@ extension HTTPClientError {
             return .URLSessionError(error: error)
         case .invalidHTTPStatusCodeError(let response, let data):
             if response.statusCode == 400 {
-                do {
-                    let error: ModelError = try data.decode()
-                    return .invalidHTTPStatusCode(response: response, errorPayload: error)
-                } catch {
-                    // if parsing the error fails then return invalidHTTPStatusCode without the payload.
-                    return .invalidHTTPStatusCode(response: response)
-                }
+                let error: ModelError? = try? data.decode()
+                return .invalidHTTPStatusCode(response: response, errorPayload: error)
             } else {
                 return .invalidHTTPStatusCode(response: response)
             }
