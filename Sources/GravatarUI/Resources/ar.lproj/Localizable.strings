@@ -1,5 +1,65 @@
-/* Translation-Revision-Date: +0000 */
+/* Translation-Revision-Date: 2024-09-12 11:54:03+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
+
+/* Title of a button that allows the user to try loading their avatars again */
+"AvatarPicker.ContentLoading.Failure.Retry.ctaButtonTitle" = "المحاولة مجددًا";
+
+/* A message asking the user to try again */
+"AvatarPicker.ContentLoading.Failure.Retry.subtext" = "حدث خطأ وتعذر علينا الاتصال بخوادم جرافتار.";
+
+/* Title of a message advising the user that something went wrong while loading their avatars */
+"AvatarPicker.ContentLoading.Failure.Retry.title" = "عفوًا";
+
+/* Title of a button that will close the Avatar Picker, appearing beneath a message that advises the user that their login session has expired. */
+"AvatarPicker.ContentLoading.Failure.SessionExpired.Close.buttonTitle" = "إغلاق";
+
+/* A message describing the error and advising the user to login again to resolve the issue */
+"AvatarPicker.ContentLoading.Failure.SessionExpired.Close.subtext" = "عذرًا، يبدو أن جلستك قد انتهت صلاحيتها. تأكد من تسجيلك الدخول لتحديث صورتك الرمزية.";
+
+/* Title of a button that will begin the process of authenticating the user, appearing beneath a message that advises the user that their login session has expired. */
+"AvatarPicker.ContentLoading.Failure.SessionExpired.LogIn.buttonTitle" = "تسجيل الدخول";
+
+/* A message describing the error and advising the user to login again to resolve the issue */
+"AvatarPicker.ContentLoading.Failure.SessionExpired.LogIn.subtext" = "انتهت صلاحية الجلسة لأسباب تتعلق بالأمان. يرجى تسجيل الدخول لتحديث صورتك الرمزية.";
+
+/* Title of a message advising the user that their login session has expired. */
+"AvatarPicker.ContentLoading.Failure.SessionExpired.title" = "انتهت صلاحية الجلسة";
+
+/* Title of a button that allow for uploading an image */
+"AvatarPicker.ContentLoading.Success.ctaButtonTitle" = "رفع صورة";
+
+/* A message describing the actions a user can take to setup their avatar */
+"AvatarPicker.ContentLoading.Success.subtext" = "اختر الصور الرمزية التي تفضِّلها أو ارفعها، واربطها بعنوان بريدك الإلكتروني.";
+
+/* Title of a message advising the user to setup their avatar */
+"AvatarPicker.ContentLoading.success.title" = "لنقم بإعداد الأفاتار الخاص بك";
+
+/* A message describing the purpose of this view */
+"AvatarPicker.Header.subtitle" = "اختر الصور الرمزية التي تفضِّلها أو ارفعها، واربطها بعنوان بريدك الإلكتروني.";
+
+/* Title appearing in the header of a view that allows users to manage their avatars */
+"AvatarPicker.Header.title" = "الصور الرمزية";
+
+/* Title of a button that will take you to your Gravatar profile, with an arrow indicating that this action will cause you to leave this view */
+"AvatarPickerProfile.Button.ViewProfile.title" = "عرض الملف الشخصي ←";
+
+/* Text on a sample Gravatar profile, appearing in the place where a Gravatar profile would display your short biography. */
+"ClaimProfile.Label.AboutMe" = "أخبر العالم مَن أنت. صورتك الرمزية وسيرتك الذاتية التي تتبعك عبر الويب.";
+
+/* Text on a sample Gravatar profile, appearing in the place where your name would normally appear on your Gravatar profile after you claim it. */
+"ClaimProfile.Label.DisplayName" = "اسمك";
+
+/* Text on a sample Gravatar profile, appearing in the place where a Gravatar profile would display information like location, your preferred pronouns, etc. */
+"ClaimProfile.Label.Location" = "إضافة موقعك وضمائرك وما إلى ذلك";
+
+/* Title for a button that allows you to claim a new Gravatar profile */
+"ProfileButton.title.create" = "المطالبة بالملف الشخصي";
+
+/* Title for a button that allows you to edit your Gravatar profile */
+"ProfileButton.title.edit" = "تحرير الملف الشخصي";
+
+/* Title for a button that allows you to view your Gravatar profile */
+"ProfileButton.title.view" = "عرض الملف الشخصي";
 
