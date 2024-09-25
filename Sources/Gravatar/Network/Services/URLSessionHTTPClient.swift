@@ -62,11 +62,16 @@ extension HTTPClientError {
     func map() -> ResponseErrorReason {
         switch self {
         case .URLSessionError(let error):
-            .URLSessionError(error: error)
+            return .URLSessionError(error: error)
         case .invalidHTTPStatusCodeError(let response, let data):
-            .invalidHTTPStatusCode(response: response, data: data)
+            if response.statusCode == 400 {
+                let error: ModelError? = try? data.decode()
+                return .invalidHTTPStatusCode(response: response, errorPayload: error)
+            } else {
+                return .invalidHTTPStatusCode(response: response)
+            }
         case .invalidURLResponseError(let response):
-            .invalidURLResponse(response: response)
+            return .invalidURLResponse(response: response)
         }
     }
 }
