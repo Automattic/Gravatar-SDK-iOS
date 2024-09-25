@@ -13,6 +13,8 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
     @State private var safariURL: URL?
     @Environment(\.verticalSizeClass) var verticalSizeClass
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
+    @State private var uploadError: FailedUploadInfo?
+    @State private var isUploadErrorDialogPresented: Bool = false
     var customImageEditor: ImageEditorBlock<ImageEditor>?
     var tokenErrorHandler: (() -> Void)?
 
@@ -38,6 +40,28 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
                 }
                 .task {
                     model.refresh()
+                }
+                .confirmationDialog(
+                    Localized.uploadErrorTitle,
+                    isPresented: $isUploadErrorDialogPresented,
+                    titleVisibility: .visible,
+                    presenting: uploadError
+                ) { error in
+                    Button(role: .destructive) {
+                        deleteFailedUpload(error.avatarLocalID)
+                    } label: {
+                        Label(Localized.removeButtonTitle, systemImage: "trash")
+                    }
+                    if error.supportsRetry {
+                        Button {
+                            retryUpload(error.avatarLocalID)
+                        } label: {
+                            Label(Localized.retryButtonTitle, systemImage: "arrow.clockwise")
+                        }
+                    }
+                    Button(Localized.dismissButtonTitle, role: .cancel) {}
+                } message: { error in
+                    Text(error.errorMessage)
                 }
             }
 
@@ -180,15 +204,15 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
         }
     }
 
-    private func retryUpload(_ avatar: AvatarImageModel) {
+    private func retryUpload(_ id: String) {
         Task {
-            await model.retryUpload(of: avatar.id)
+            await model.retryUpload(of: id)
         }
     }
 
-    private func deleteFailedUpload(_ avatar: AvatarImageModel) {
+    private func deleteFailedUpload(_ id: String) {
         withAnimation {
-            model.deleteFailed(avatar)
+            model.deleteFailed(id)
         }
     }
 
@@ -206,11 +230,9 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
                 onImagePickerDidPickImage: { image in
                     uploadImage(image)
                 },
-                onRetryUpload: { avatar in
-                    retryUpload(avatar)
-                },
-                onDeleteFailed: { avatar in
-                    deleteFailedUpload(avatar)
+                onFailedUploadTapped: { failedUploadInfo in
+                    uploadError = failedUploadInfo
+                    isUploadErrorDialogPresented = true
                 }
             )
             .padding(.horizontal, Constants.horizontalPadding)
@@ -221,11 +243,9 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
                 onAvatarTap: { avatar in
                     model.selectAvatar(with: avatar.id)
                 },
-                onRetryUpload: { avatar in
-                    retryUpload(avatar)
-                },
-                onDeleteFailed: { avatar in
-                    deleteFailedUpload(avatar)
+                onFailedUploadTapped: { failedUploadInfo in
+                    uploadError = failedUploadInfo
+                    isUploadErrorDialogPresented = true
                 }
             )
             .padding(.top, .DS.Padding.medium)
@@ -318,6 +338,26 @@ private enum AvatarPicker {
     }
 
     enum Localized {
+        static let uploadErrorTitle = SDKLocalizedString(
+            "AvatarPicker.Upload.Error.title",
+            value: "Upload has failed",
+            comment: "The title of the upload error dialog."
+        )
+        static let removeButtonTitle = SDKLocalizedString(
+            "AvatarPicker.Upload.Error.Remove.title",
+            value: "Remove",
+            comment: "The title of the remove button on the upload error dialog."
+        )
+        static let retryButtonTitle = SDKLocalizedString(
+            "AvatarPicker.Upload.Error.Retry.title",
+            value: "Retry",
+            comment: "The title of the retry button on the upload error dialog."
+        )
+        static let dismissButtonTitle = SDKLocalizedString(
+            "AvatarPicker.Dismiss.title",
+            value: "Dismiss",
+            comment: "The title of the dismiss button on a confirmation dialog."
+        )
         static let buttonUploadImage = SDKLocalizedString(
             "AvatarPicker.ContentLoading.Success.ctaButtonTitle",
             value: "Upload image",
@@ -454,8 +494,8 @@ private enum AvatarPicker {
             .init(id: "4", source: .remote(url: "https://gravatar.com/userimage/110207384/fbbd335e57862e19267679f19b4f9db8.jpeg?size=256")),
             .init(id: "5", source: .remote(url: "https://gravatar.com/userimage/110207384/96c6950d6d8ce8dd1177a77fe738101e.jpeg?size=256")),
             .init(id: "6", source: .remote(url: "https://gravatar.com/userimage/110207384/4a4f9385b0a6fa5c00342557a098f480.jpeg?size=256")),
-            .init(id: "7", source: .local(image: UIImage()), state: .retry),
-            .init(id: "8", source: .local(image: UIImage()), state: .error),
+            .init(id: "7", source: .local(image: UIImage()), state: .error(supportsRetry: true, errorMessage: "Something went wrong.")),
+            .init(id: "8", source: .local(image: UIImage()), state: .error(supportsRetry: false, errorMessage: "Something went wrong.")),
         ],
         selectedImageID: "5",
         profileModel: PreviewModel()
