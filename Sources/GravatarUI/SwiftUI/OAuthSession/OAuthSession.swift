@@ -36,7 +36,7 @@ public struct OAuthSession: Sendable {
         do {
             let url = try oauthURL(with: email, secrets: secrets)
             let callbackURL = try await authenticationSession.authenticate(using: url, callbackURLScheme: secrets.callbackScheme)
-            let token = try await tokenResponse(from: callbackURL).token
+            let token = try tokenResponse(from: callbackURL).token
             try storage.setSecret(token, for: email.rawValue)
             return token
         } catch {
@@ -44,7 +44,7 @@ public struct OAuthSession: Sendable {
         }
     }
 
-    private func tokenResponse(from callbackURL: URL) async throws -> AccessToken {
+    private func tokenResponse(from callbackURL: URL) throws -> AccessToken {
         guard let accessToken = AccessToken(from: callbackURL) else {
             throw OAuthError.couldNotParseAccessCode(callbackURL.absoluteString)
         }
