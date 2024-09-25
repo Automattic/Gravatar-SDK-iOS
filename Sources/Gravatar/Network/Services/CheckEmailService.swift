@@ -1,14 +1,12 @@
 import Foundation
 
 package struct CheckTokenAuthorizationService: Sendable {
-    
     private let client: HTTPClient
 
     package init(session: URLSession? = nil) {
         if let session {
             self.client = URLSessionHTTPClient(urlSession: session)
-        }
-        else {
+        } else {
             self.client = URLSessionHTTPClient()
         }
     }
@@ -17,7 +15,7 @@ package struct CheckTokenAuthorizationService: Sendable {
     /// - Parameters:
     ///   - token: WordPress.com access token.
     ///   - email: Email to check.
-    package func isToken(_ token: String, authorizedFor email: Email) async throws -> Bool  {
+    package func isToken(_ token: String, authorizedFor email: Email) async throws -> Bool {
         var urlComponents = ServiceConfig.v3BaseURLComponents
         urlComponents.path = "/me/associated-email"
         urlComponents.queryItems = [

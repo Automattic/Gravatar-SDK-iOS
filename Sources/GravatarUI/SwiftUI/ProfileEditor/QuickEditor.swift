@@ -127,13 +127,13 @@ extension QuickEditorConstants {
     enum ErrorView {
         static func title(for oauthError: OAuthError?) -> String {
             switch oauthError {
-            case .loggedInWithWrongEmail(_):
+            case .loggedInWithWrongEmail:
                 Localized.WrongEmailError.title
             default:
                 Localized.LogInError.title
             }
         }
-        
+
         static func subtext(for oauthError: OAuthError?) -> String {
             switch oauthError {
             case .loggedInWithWrongEmail(let email):
@@ -142,12 +142,12 @@ extension QuickEditorConstants {
                 Localized.LogInError.subtext
             }
         }
-        
+
         static func buttonTitle(for oauthError: OAuthError?) -> String {
             Localized.LogInError.buttonTitle
         }
     }
-    
+
     enum Localized {
         enum WrongEmailError {
             static let title = SDKLocalizedString(
@@ -161,6 +161,7 @@ extension QuickEditorConstants {
                 comment: "A message describing the error and advising the user to login again to resolve the issue"
             )
         }
+
         enum LogInError {
             static let title = SDKLocalizedString(
                 "AvatarPicker.ContentLoading.Failure.LogInError.title",
