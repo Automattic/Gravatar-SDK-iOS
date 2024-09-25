@@ -71,7 +71,7 @@
 "SystemImagePickerView.Source.PhotoLibrary.title" = "Choose a Photo";
 
 /* The title of the upload error dialog. */
-"AvatarPicker.Upload.Error.title" = "Upload has failed.";
+"AvatarPicker.Upload.Error.title" = "Upload has failed";
 
 /* The title of the remove button on the upload error dialog. */
 "AvatarPicker.Upload.Error.Remove.title" = "Remove";

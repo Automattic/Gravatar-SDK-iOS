@@ -340,7 +340,7 @@ private enum AvatarPicker {
     enum Localized {
         static let uploadErrorTitle = SDKLocalizedString(
             "AvatarPicker.Upload.Error.title",
-            value: "Upload has failed.",
+            value: "Upload has failed",
             comment: "The title of the upload error dialog."
         )
         static let removeButtonTitle = SDKLocalizedString(
