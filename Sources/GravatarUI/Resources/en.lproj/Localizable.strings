@@ -70,3 +70,5 @@
 /* An option in a menu that display the user's Photo Library and allow them to choose a photo from it */
 "SystemImagePickerView.Source.PhotoLibrary.title" = "Choose a Photo";
 
+/* A message describing the error and advising the user to login again with the given email to resolve the issue. */
+"AvatarPicker.ContentLoading.Failure.WrongEmailError.subtext" = "It looks like you used the wrong email to log in. Please try again using %@ this time. Thanks!";
