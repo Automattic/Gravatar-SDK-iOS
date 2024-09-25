@@ -1,5 +1,65 @@
-/* Translation-Revision-Date: +0000 */
+/* Translation-Revision-Date: 2024-09-12 09:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_CN */
+
+/* Title of a button that allows the user to try loading their avatars again */
+"AvatarPicker.ContentLoading.Failure.Retry.ctaButtonTitle" = "重试";
+
+/* A message asking the user to try again */
+"AvatarPicker.ContentLoading.Failure.Retry.subtext" = "出现错误，我们无法连接到 Gravatar 服务器。";
+
+/* Title of a message advising the user that something went wrong while loading their avatars */
+"AvatarPicker.ContentLoading.Failure.Retry.title" = "哎呀";
+
+/* Title of a button that will close the Avatar Picker, appearing beneath a message that advises the user that their login session has expired. */
+"AvatarPicker.ContentLoading.Failure.SessionExpired.Close.buttonTitle" = "关闭";
+
+/* A message describing the error and advising the user to login again to resolve the issue */
+"AvatarPicker.ContentLoading.Failure.SessionExpired.Close.subtext" = "很抱歉，您的会话似乎已过期。 请确保您已登录，以便更新您的头像。";
+
+/* Title of a button that will begin the process of authenticating the user, appearing beneath a message that advises the user that their login session has expired. */
+"AvatarPicker.ContentLoading.Failure.SessionExpired.LogIn.buttonTitle" = "登录";
+
+/* A message describing the error and advising the user to login again to resolve the issue */
+"AvatarPicker.ContentLoading.Failure.SessionExpired.LogIn.subtext" = "出于安全原因，会话已过期。 请登录以更新您的头像。";
+
+/* Title of a message advising the user that their login session has expired. */
+"AvatarPicker.ContentLoading.Failure.SessionExpired.title" = "会话已过期";
+
+/* Title of a button that allow for uploading an image */
+"AvatarPicker.ContentLoading.Success.ctaButtonTitle" = "上传图片";
+
+/* A message describing the actions a user can take to setup their avatar */
+"AvatarPicker.ContentLoading.Success.subtext" = "选择或上传您最喜欢的头像图片，并将它们与您的电子邮件地址相关联。";
+
+/* Title of a message advising the user to setup their avatar */
+"AvatarPicker.ContentLoading.success.title" = "让我们来设置您的头像";
+
+/* A message describing the purpose of this view */
+"AvatarPicker.Header.subtitle" = "选择或上传您最喜欢的头像图片，并将它们与您的电子邮件地址相关联。";
+
+/* Title appearing in the header of a view that allows users to manage their avatars */
+"AvatarPicker.Header.title" = "头像";
+
+/* Title of a button that will take you to your Gravatar profile, with an arrow indicating that this action will cause you to leave this view */
+"AvatarPickerProfile.Button.ViewProfile.title" = "查看个人资料 →";
+
+/* Text on a sample Gravatar profile, appearing in the place where a Gravatar profile would display your short biography. */
+"ClaimProfile.Label.AboutMe" = "让大家认识您。 应用于整个网络的头像和简介。";
+
+/* Text on a sample Gravatar profile, appearing in the place where your name would normally appear on your Gravatar profile after you claim it. */
+"ClaimProfile.Label.DisplayName" = "您的姓名";
+
+/* Text on a sample Gravatar profile, appearing in the place where a Gravatar profile would display information like location, your preferred pronouns, etc. */
+"ClaimProfile.Label.Location" = "添加您的位置、性别代词等信息";
+
+/* Title for a button that allows you to claim a new Gravatar profile */
+"ProfileButton.title.create" = "申请个人资料";
+
+/* Title for a button that allows you to edit your Gravatar profile */
+"ProfileButton.title.edit" = "编辑个人资料";
+
+/* Title for a button that allows you to view your Gravatar profile */
+"ProfileButton.title.view" = "查看个人资料";
 

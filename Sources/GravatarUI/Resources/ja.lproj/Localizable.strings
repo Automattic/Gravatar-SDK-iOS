@@ -1,5 +1,65 @@
-/* Translation-Revision-Date: +0000 */
+/* Translation-Revision-Date: 2024-09-11 09:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
+
+/* Title of a button that allows the user to try loading their avatars again */
+"AvatarPicker.ContentLoading.Failure.Retry.ctaButtonTitle" = "再試行";
+
+/* A message asking the user to try again */
+"AvatarPicker.ContentLoading.Failure.Retry.subtext" = "問題が発生したため、Gravatar サーバーに接続できませんでした。";
+
+/* Title of a message advising the user that something went wrong while loading their avatars */
+"AvatarPicker.ContentLoading.Failure.Retry.title" = "エラーが発生しました";
+
+/* Title of a button that will close the Avatar Picker, appearing beneath a message that advises the user that their login session has expired. */
+"AvatarPicker.ContentLoading.Failure.SessionExpired.Close.buttonTitle" = "閉じる";
+
+/* A message describing the error and advising the user to login again to resolve the issue */
+"AvatarPicker.ContentLoading.Failure.SessionExpired.Close.subtext" = "セッションが期限切れになっているようです。 アバターを更新するには、ログインしていることを確認してください。";
+
+/* Title of a button that will begin the process of authenticating the user, appearing beneath a message that advises the user that their login session has expired. */
+"AvatarPicker.ContentLoading.Failure.SessionExpired.LogIn.buttonTitle" = "ログイン";
+
+/* A message describing the error and advising the user to login again to resolve the issue */
+"AvatarPicker.ContentLoading.Failure.SessionExpired.LogIn.subtext" = "セキュリティ上の理由でセッションの有効期限が切れました。 ログインしてアバターを更新してください。";
+
+/* Title of a message advising the user that their login session has expired. */
+"AvatarPicker.ContentLoading.Failure.SessionExpired.title" = "セッションの有効期限が切れました";
+
+/* Title of a button that allow for uploading an image */
+"AvatarPicker.ContentLoading.Success.ctaButtonTitle" = "画像をアップロード";
+
+/* A message describing the actions a user can take to setup their avatar */
+"AvatarPicker.ContentLoading.Success.subtext" = "お気に入りのアバター画像を選択またはアップロードして、メールアドレスに連携します。";
+
+/* Title of a message advising the user to setup their avatar */
+"AvatarPicker.ContentLoading.success.title" = "アバターを設定しましょう";
+
+/* A message describing the purpose of this view */
+"AvatarPicker.Header.subtitle" = "お気に入りのアバター画像を選択またはアップロードして、メールアドレスに連携します。";
+
+/* Title appearing in the header of a view that allows users to manage their avatars */
+"AvatarPicker.Header.title" = "アバター";
+
+/* Title of a button that will take you to your Gravatar profile, with an arrow indicating that this action will cause you to leave this view */
+"AvatarPickerProfile.Button.ViewProfile.title" = "プロフィールを表示→";
+
+/* Text on a sample Gravatar profile, appearing in the place where a Gravatar profile would display your short biography. */
+"ClaimProfile.Label.AboutMe" = "あなたのことを紹介しましょう。 ウェブ全体であなたを表すアバターとプロフィールです。";
+
+/* Text on a sample Gravatar profile, appearing in the place where your name would normally appear on your Gravatar profile after you claim it. */
+"ClaimProfile.Label.DisplayName" = "あなたの名前";
+
+/* Text on a sample Gravatar profile, appearing in the place where a Gravatar profile would display information like location, your preferred pronouns, etc. */
+"ClaimProfile.Label.Location" = "場所や代名詞などを追加";
+
+/* Title for a button that allows you to claim a new Gravatar profile */
+"ProfileButton.title.create" = "プロフィールを取得";
+
+/* Title for a button that allows you to edit your Gravatar profile */
+"ProfileButton.title.edit" = "プロフィールを編集";
+
+/* Title for a button that allows you to view your Gravatar profile */
+"ProfileButton.title.view" = "プロフィールを表示";
 
