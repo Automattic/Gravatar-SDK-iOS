@@ -16,8 +16,8 @@ package struct CheckTokenAuthorizationService: Sendable {
     ///   - token: WordPress.com access token.
     ///   - email: Email to check.
     package func isToken(_ token: String, authorizedFor email: Email) async throws -> Bool {
-        var urlComponents = ServiceConfig.v3BaseURLComponents
-        urlComponents.path = "/me/associated-email"
+        var urlComponents = APIConfig.baseURLComponents
+        urlComponents.path = "/v3/me/associated-email"
         urlComponents.queryItems = [
             URLQueryItem(name: "email_hash", value: email.hashID.id),
         ]
