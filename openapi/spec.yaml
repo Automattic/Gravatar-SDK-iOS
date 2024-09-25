@@ -49,6 +49,7 @@ components:
         image_url:
           type: string
           description: Image URL
+          format: uri
           examples:
             - >-
               https://gravatar.com/userimage/252014526/d38bele5a98a2bbc40df69172a2a8348.jpeg
@@ -450,6 +451,7 @@ components:
             - '2021-10-01T12:00:00Z'
     Error:
       type: object
+      description: An error response from the API.
       properties:
         error:
           type: string
@@ -571,12 +573,12 @@ paths:
       security:
         - oauth: []
       parameters:
-        - name: selected_email
+        - name: selected_email_hash
           in: query
           description: >-
-            The email address used to determine which avatar is selected. The
-            'selected' attribute in the avatar list will be set to 'true' for
-            the avatar associated with this email.
+            The sha256 hash of the email address used to determine which avatar
+            is selected. The 'selected' attribute in the avatar list will be set
+            to 'true' for the avatar associated with this email.
           schema:
             type: string
             default: null
@@ -667,4 +669,3 @@ paths:
       responses:
         '204':
           description: Avatar successfully set
-
