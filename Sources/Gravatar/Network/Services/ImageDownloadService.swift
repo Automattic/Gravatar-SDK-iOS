@@ -4,7 +4,7 @@ import UIKit
 ///
 /// This is the default type which implements ``ImageDownloader``..
 /// Unless specified otherwise, `ImageDownloadService` will use a `URLSession` based `HTTPClient`, and a in-memory image cache.
-public struct ImageDownloadService: ImageDownloader, Sendable {
+public actor ImageDownloadService: ImageDownloader, Sendable {
     private let client: HTTPClient
     let imageCache: ImageCaching
 
