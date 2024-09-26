@@ -34,7 +34,9 @@ public struct ImageDownloadService: ImageDownloader, Sendable {
         let task = Task<UIImage, Error> {
             try await fetchAndProcessImage(request: request, processor: processingMethod.processor)
         }
+        try Task.checkCancellation()
         let image = try await awaitAndCacheImage(from: task, cacheKey: url.absoluteString)
+        try Task.checkCancellation()
         return ImageDownloadResult(image: image, sourceURL: url)
     }
 
@@ -77,25 +79,14 @@ public struct ImageDownloadService: ImageDownloader, Sendable {
             throw ImageFetchingError.responseError(reason: .unexpected(error))
         }
     }
-
-    public func cancelTask(for url: URL) {
-        if let entry = imageCache.getEntry(with: url.absoluteString) {
-            switch entry {
-            case .inProgress(let task):
-                if !task.isCancelled {
-                    task.cancel()
-                    imageCache.setEntry(nil, for: url.absoluteString)
-                }
-            default:
-                break
-            }
-        }
-    }
 }
 
 extension URLRequest {
     fileprivate static func imageRequest(url: URL, forceRefresh: Bool) -> URLRequest {
-        var request = forceRefresh ? URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData) : URLRequest(url: url)
+        var request = forceRefresh ? URLRequest(url: url, cachePolicy: .reloadIgnoringLocalAndRemoteCacheData) : URLRequest(url: url)
+        if forceRefresh {
+            request.setValue("no-cache, no-store, max-age=0", forHTTPHeaderField: "Cache-Control")
+        }
         request.httpShouldHandleCookies = false
         request.addValue("image/*", forHTTPHeaderField: "Accept")
         return request

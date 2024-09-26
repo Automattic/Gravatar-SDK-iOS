@@ -18,6 +18,7 @@ class DemoUIImageViewExtensionViewController: UIViewController {
         textField.placeholder = "Enter Gravatar email"
         textField.autocapitalizationType = .none
         textField.keyboardType = .emailAddress
+        textField.text = "p8914704@gmail.com"
         return textField
     }()
     
@@ -135,11 +136,12 @@ class DemoUIImageViewExtensionViewController: UIViewController {
 
         present(controller, animated: true)
     }
+    var task: Task<Void, Never>?
 
     @objc private func fetchAvatarButtonHandler() {
         let options = setupOptions()
         let placeholderImage: UIImage? = showPlaceholderSwitchWithLabel.isOn ? UIImage(named: "placeholder") : nil
-        Task {
+        task = Task {
             do {
                 let result = try await avatarImageView.gravatar.setImage(
                     avatarID: .email(emailInputField.text ?? ""),
@@ -150,7 +152,6 @@ class DemoUIImageViewExtensionViewController: UIViewController {
                 print("success!")
                 print("result url: \(result.sourceURL)")
                 print("retrived Image point size: \(result.image.size)")
-                
             } catch {
                 print(error)
             }
@@ -158,9 +159,7 @@ class DemoUIImageViewExtensionViewController: UIViewController {
     }
     
     @objc private func cancelOngoingButtonHandler() {
-        Task {
-            await avatarImageView.gravatar.cancelImageDownload()
-        }
+        task?.cancel()
     }
     
     private func setupOptions() -> [ImageSettingOption] {
