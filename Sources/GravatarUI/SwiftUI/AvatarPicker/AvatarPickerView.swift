@@ -251,7 +251,7 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
             .padding(.top, .DS.Padding.medium)
             .padding(.bottom, .DS.Padding.double)
             imagePicker {
-                CTAButtonView("Upload image")
+                CTAButtonView(Localized.buttonUploadImage)
             }
             .padding(.horizontal, Constants.horizontalPadding)
             .padding(.bottom, .DS.Padding.medium)

@@ -1,5 +1,7 @@
 import Foundation
 
+/// An error response from the API.
+///
 public struct ModelError: Codable, Hashable, Sendable {
     /// The error message
     public private(set) var error: String
