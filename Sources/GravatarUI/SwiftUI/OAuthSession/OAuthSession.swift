@@ -37,6 +37,9 @@ public struct OAuthSession: Sendable {
             let url = try oauthURL(with: email, secrets: secrets)
             let callbackURL = try await authenticationSession.authenticate(using: url, callbackURLScheme: secrets.callbackScheme)
             let token = try tokenResponse(from: callbackURL).token
+            guard try await CheckTokenAuthorizationService().isToken(token, authorizedFor: email) else {
+                throw OAuthError.loggedInWithWrongEmail(email: email.rawValue)
+            }
             try storage.setSecret(token, for: email.rawValue)
             return token
         } catch {
@@ -81,6 +84,7 @@ enum OAuthError: Error {
     case unknown(Error)
     case couldNotStoreToken(Error)
     case decodingError(Error)
+    case loggedInWithWrongEmail(email: String)
 }
 
 extension OAuthError {
