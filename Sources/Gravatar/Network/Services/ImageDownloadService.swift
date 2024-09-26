@@ -35,7 +35,10 @@ public actor ImageDownloadService: ImageDownloader, Sendable {
             try await fetchAndProcessImage(request: request, processor: processingMethod.processor)
         }
         try Task.checkCancellation()
-        let image = try await awaitAndCacheImage(from: task, cacheKey: url.absoluteString)
+        // Create `.inProgress` entry before we await to prevent re-entrancy issues
+        let cacheKey = url.absoluteString
+        imageCache.setEntry(.inProgress(task), for: cacheKey)
+        let image = try await awaitAndCacheImage(from: task, cacheKey: cacheKey)
         try Task.checkCancellation()
         return ImageDownloadResult(image: image, sourceURL: url)
     }
@@ -52,7 +55,6 @@ public actor ImageDownloadService: ImageDownloader, Sendable {
     }
 
     private func awaitAndCacheImage(from task: Task<UIImage, Error>, cacheKey key: String) async throws -> UIImage {
-        imageCache.setEntry(.inProgress(task), for: key)
         let image: UIImage
         do {
             image = try await task.value
