@@ -83,10 +83,7 @@ public actor ImageDownloadService: ImageDownloader, Sendable {
 
 extension URLRequest {
     fileprivate static func imageRequest(url: URL, forceRefresh: Bool) -> URLRequest {
-        var request = forceRefresh ? URLRequest(url: url, cachePolicy: .reloadIgnoringLocalAndRemoteCacheData) : URLRequest(url: url)
-        if forceRefresh {
-            request.setValue("no-cache, no-store, max-age=0", forHTTPHeaderField: "Cache-Control")
-        }
+        var request = forceRefresh ? URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData) : URLRequest(url: url)
         request.httpShouldHandleCookies = false
         request.addValue("image/*", forHTTPHeaderField: "Accept")
         return request
