@@ -28,6 +28,8 @@
 		49C5D6152B5B33E20067C2A8 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 49C5D6142B5B33E20067C2A8 /* Preview Assets.xcassets */; };
 		49EFFB542C51A47C0086589A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 495775EA2B5B34980082812A /* Assets.xcassets */; };
 		9133058E2C91F8D1009F5C0B /* DemoImageCropperViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9133058D2C91F2C8009F5C0B /* DemoImageCropperViewController.swift */; };
+		9133DF1C2CA54D7A0028196F /* QELayoutOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9133DF1A2CA54D1B0028196F /* QELayoutOptions.swift */; };
+		9133DF1F2CA552280028196F /* QEContentLayoutPickerRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9133DF1D2CA54E080028196F /* QEContentLayoutPickerRow.swift */; };
 		9146A7AE2C3BD8F000E07C63 /* DemoAvatarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9146A7AD2C3BD8F000E07C63 /* DemoAvatarView.swift */; };
 		914AC0192BD7FF08005DA4A5 /* DemoBaseProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914AC0172BD7FF08005DA4A5 /* DemoBaseProfileViewController.swift */; };
 		914AC01A2BD7FF08005DA4A5 /* DemoProfilePresentationStylesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914AC0182BD7FF08005DA4A5 /* DemoProfilePresentationStylesViewController.swift */; };
@@ -117,6 +119,8 @@
 		49EFFB552C51AA280086589A /* Gravatar-UIKit-Demo.Base.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "Gravatar-UIKit-Demo.Base.xcconfig"; sourceTree = "<group>"; };
 		49EFFB572C51AA3E0086589A /* Gravatar-SwiftUI-Demo.Base.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "Gravatar-SwiftUI-Demo.Base.xcconfig"; sourceTree = "<group>"; };
 		9133058D2C91F2C8009F5C0B /* DemoImageCropperViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoImageCropperViewController.swift; sourceTree = "<group>"; };
+		9133DF1A2CA54D1B0028196F /* QELayoutOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QELayoutOptions.swift; sourceTree = "<group>"; };
+		9133DF1D2CA54E080028196F /* QEContentLayoutPickerRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QEContentLayoutPickerRow.swift; sourceTree = "<group>"; };
 		9146A7AD2C3BD8F000E07C63 /* DemoAvatarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoAvatarView.swift; sourceTree = "<group>"; };
 		914AC0172BD7FF08005DA4A5 /* DemoBaseProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoBaseProfileViewController.swift; sourceTree = "<group>"; };
 		914AC0182BD7FF08005DA4A5 /* DemoProfilePresentationStylesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoProfilePresentationStylesViewController.swift; sourceTree = "<group>"; };
@@ -172,6 +176,8 @@
 				49C5D6132B5B33E20067C2A8 /* Preview Content */,
 				49EFFB572C51AA3E0086589A /* Gravatar-SwiftUI-Demo.Base.xcconfig */,
 				3FD478222C51D7E20071B8B9 /* Gravatar-SwiftUI-Demo.Release.xcconfig */,
+				9133DF1A2CA54D1B0028196F /* QELayoutOptions.swift */,
+				9133DF1D2CA54E080028196F /* QEContentLayoutPickerRow.swift */,
 				917DEEC82C7F619100E43774 /* TestImageCropper.swift */,
 			);
 			path = "Gravatar-SwiftUI-Demo";
@@ -457,6 +463,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9133DF1C2CA54D7A0028196F /* QELayoutOptions.swift in Sources */,
 				49C5D6102B5B33E20067C2A8 /* ContentView.swift in Sources */,
 				1E3FA2402C74B8CC002901F2 /* Secrets.swift in Sources */,
 				9146A7AE2C3BD8F000E07C63 /* DemoAvatarView.swift in Sources */,
@@ -464,6 +471,7 @@
 				49C5D60E2B5B33E20067C2A8 /* DemoApp.swift in Sources */,
 				917DEEC92C7F639F00E43774 /* TestImageCropper.swift in Sources */,
 				1E3FA2452C75E403002901F2 /* DemoProfileEditorView.swift in Sources */,
+				9133DF1F2CA552280028196F /* QEContentLayoutPickerRow.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

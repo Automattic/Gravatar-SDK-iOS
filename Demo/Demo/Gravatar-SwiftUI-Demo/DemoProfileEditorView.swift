@@ -4,7 +4,7 @@ import GravatarUI
 struct DemoProfileEditorView: View {
 
     @AppStorage("pickerEmail") private var email: String = ""
-
+    @AppStorage("pickerContentLayoutOptions") private var contentLayoutOptions: QELayoutOptions = .verticalLarge
     // You can make this `true` by default to easily test the picker
     @State private var isPresentingPicker: Bool = false
     @State private var hasSession: Bool = false
@@ -20,7 +20,7 @@ struct DemoProfileEditorView: View {
                     .disableAutocorrection(true)
 
                 Divider()
-
+                QEContentLayoutPickerRow(contentLayoutOptions: $contentLayoutOptions)
             }
             .padding(.horizontal)
             Button("Open Profile Editor with OAuth flow") {
@@ -30,7 +30,7 @@ struct DemoProfileEditorView: View {
                 isPresented: $isPresentingPicker,
                 email: email,
                 scope: .avatarPicker,
-                contentLayout: .horizontal(),
+                contentLayout: contentLayoutOptions.contentLayout,
                 onDismiss: {
                     updateHasSession(with: email)
                 }
@@ -57,5 +57,5 @@ struct DemoProfileEditorView: View {
 }
 
 #Preview {
-    DemoAvatarPickerView()
+    DemoProfileEditorView()
 }

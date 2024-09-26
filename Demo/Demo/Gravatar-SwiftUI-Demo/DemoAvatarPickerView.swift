@@ -2,31 +2,9 @@ import SwiftUI
 import GravatarUI
 
 struct DemoAvatarPickerView: View {
-    enum ContentLayoutOptions: String, Identifiable, CaseIterable {
-        var id: String { rawValue }
-        
-        case verticalLarge = "vertical - large"
-        case verticalExpandable = "vertical - expandable"
-        case verticalExpandablePrioritizeScrolling = "vertical - expandable - prioritize scrolling"
-        case horizontal = "horizontal"
-        
-        var contentLayout: AvatarPickerContentLayoutWithPresentation {
-            switch self {
-            case .verticalLarge:
-                    .vertical(presentationStyle: .large)
-            case .verticalExpandable:
-                    .vertical(presentationStyle: .expandableMedium())
-            case .verticalExpandablePrioritizeScrolling:
-                    .vertical(presentationStyle: .expandableMedium(prioritizeScrollOverResize: true))
-            case .horizontal:
-                    .horizontal()
-            }
-        }
-    }
-    
     @AppStorage("pickerEmail") private var email: String = ""
     @AppStorage("pickerToken") private var token: String = ""
-    @AppStorage("pickerContentLayoutOptions") private var contentLayoutOptions: ContentLayoutOptions = .verticalLarge
+    @AppStorage("pickerContentLayoutOptions") private var contentLayoutOptions: QELayoutOptions = .verticalLarge
     @State private var isSecure: Bool = true
 
     // You can make this `true` by default to easily test the picker
@@ -54,16 +32,8 @@ struct DemoAvatarPickerView: View {
                     }
                 }
                 Divider()
-                HStack {
-                    Text("Content Layout")
-                    Spacer()
-                    Picker("Content Layout", selection: $contentLayoutOptions) {
-                        ForEach(ContentLayoutOptions.allCases) { option in
-                            Text(option.rawValue).tag(option)
-                        }
-                    }
-                    .pickerStyle(MenuPickerStyle())
-                }
+                QEContentLayoutPickerRow(contentLayoutOptions: $contentLayoutOptions)
+
                 Toggle("Custom image cropper", isOn: $enableCustomImageCropper)
                 Spacer()
                     .frame(height: 24)
