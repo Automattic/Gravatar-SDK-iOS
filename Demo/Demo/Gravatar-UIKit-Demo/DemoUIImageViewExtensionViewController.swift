@@ -18,7 +18,6 @@ class DemoUIImageViewExtensionViewController: UIViewController {
         textField.placeholder = "Enter Gravatar email"
         textField.autocapitalizationType = .none
         textField.keyboardType = .emailAddress
-        textField.text = "p8914704@gmail.com"
         return textField
     }()
     
