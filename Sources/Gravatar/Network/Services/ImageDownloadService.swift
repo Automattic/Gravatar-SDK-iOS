@@ -31,13 +31,17 @@ public actor ImageDownloadService: ImageDownloader, Sendable {
         if !forceRefresh, let image = try await cachedImage(for: url) {
             return ImageDownloadResult(image: image, sourceURL: url)
         }
+
         let task = Task<UIImage, Error> {
             try await fetchAndProcessImage(request: request, processor: processingMethod.processor)
         }
+
         try Task.checkCancellation()
+
         // Create `.inProgress` entry before we await to prevent re-entrancy issues
         let cacheKey = url.absoluteString
         imageCache.setEntry(.inProgress(task), for: cacheKey)
+
         let image = try await awaitAndCacheImage(from: task, cacheKey: cacheKey)
         try Task.checkCancellation()
         return ImageDownloadResult(image: image, sourceURL: url)
