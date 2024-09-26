@@ -2,28 +2,6 @@ import SwiftUI
 import GravatarUI
 
 struct DemoAvatarPickerView: View {
-    enum ContentLayoutOptions: String, Identifiable, CaseIterable {
-        var id: String { rawValue }
-        
-        case verticalLarge = "vertical - large"
-        case verticalExpandable = "vertical - expandable"
-        case verticalExpandablePrioritizeScrolling = "vertical - expandable - prioritize scrolling"
-        case horizontal = "horizontal"
-        
-        var contentLayout: AvatarPickerContentLayoutWithPresentation {
-            switch self {
-            case .verticalLarge:
-                    .vertical(presentationStyle: .large)
-            case .verticalExpandable:
-                    .vertical(presentationStyle: .expandableMedium())
-            case .verticalExpandablePrioritizeScrolling:
-                    .vertical(presentationStyle: .expandableMedium(prioritizeScrollOverResize: true))
-            case .horizontal:
-                    .horizontal()
-            }
-        }
-    }
-    
     @AppStorage("pickerEmail") private var email: String = ""
     @AppStorage("pickerToken") private var token: String = ""
     @AppStorage("pickerContentLayoutOptions") private var contentLayoutOptions: ContentLayoutOptions = .verticalLarge
