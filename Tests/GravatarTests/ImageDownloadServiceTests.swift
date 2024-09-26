@@ -58,33 +58,45 @@ final class ImageDownloadServiceTests: XCTestCase {
     func testSimultaneousFetchShouldOnlyTriggerOneNetworkRequest() async throws {
         let imageURL = URL(string: "https://example.com/image.png")!
 
-        let response = HTTPURLResponse.successResponse(with: imageURL)
-
         let mockImageData = UIImage(systemName: "iphone.gen2")!.pngData()!
-        let sessionMock = URLSessionMock(returnData: mockImageData, response: response)
+
+        let sessionMock = URLSessionMock(
+            returnData: mockImageData,
+            response: HTTPURLResponse.successResponse(with: imageURL)
+        )
+
         let cache = TestImageCache()
         let service = imageDownloadService(with: sessionMock, cache: cache)
 
-        let expectation = XCTestExpectation(description: "First image fetch should complete.")
+        let expectation = XCTestExpectation(description: "Image fetches should complete")
 
         // When
-        // Start two simultaneous fetches
+        // Start simultaneous fetches
         let fetchTask1 = Task { try await service.fetchImage(with: imageURL, forceRefresh: false) }
         let fetchTask2 = Task { try await service.fetchImage(with: imageURL, forceRefresh: false) }
+        let fetchTask3 = Task { try await service.fetchImage(with: imageURL, forceRefresh: false) }
+        let fetchTask4 = Task { try await service.fetchImage(with: imageURL, forceRefresh: false) }
+        let fetchTask5 = Task { try await service.fetchImage(with: imageURL, forceRefresh: false) }
 
         // Then
         let result1 = try await fetchTask1.value
         let result2 = try await fetchTask2.value
+        let result3 = try await fetchTask3.value
+        let result4 = try await fetchTask4.value
+        let result5 = try await fetchTask5.value
 
         expectation.fulfill()
         await fulfillment(of: [expectation], timeout: 0.5)
 
-        // Assert that both fetches return the same image
+        // Assert that all fetches return the same image
         XCTAssertEqual(result1.image.pngData(), mockImageData)
         XCTAssertEqual(result2.image.pngData(), mockImageData)
+        XCTAssertEqual(result3.image.pngData(), mockImageData)
+        XCTAssertEqual(result4.image.pngData(), mockImageData)
+        XCTAssertEqual(result5.image.pngData(), mockImageData)
 
-        // Assert that the image was returned twice
-        XCTAssertEqual(cache.messageCount(type: .get), 2)
+        // Assert that all fetches attempted to read from the cache
+        XCTAssertEqual(cache.messageCount(type: .get), 5)
 
         // Assert that only one fetch set an `.inProgress` CacheEntry
         XCTAssertEqual(cache.messageCount(type: .inProgress), 1)
