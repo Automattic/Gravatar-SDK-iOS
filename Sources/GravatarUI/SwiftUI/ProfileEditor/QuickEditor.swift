@@ -15,6 +15,7 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
     @State var hasSession: Bool = false
     @State var scope: QuickEditorScope
     @State var isAuthenticating: Bool = true
+    @State var oauthError: OAuthError?
     @Binding var isPresented: Bool
     let email: Email
     var customImageEditor: ImageEditorBlock<ImageEditor>?
@@ -68,14 +69,14 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
             if !isAuthenticating {
                 EmailText(email: email)
                 ContentLoadingErrorView(
-                    title: Constants.Localized.LogInError.title,
-                    subtext: Constants.Localized.LogInError.subtext,
+                    title: Constants.ErrorView.title(for: oauthError),
+                    subtext: Constants.ErrorView.subtext(for: oauthError),
                     image: nil,
                     actionButton: {
                         Button {
                             performAuthentication()
                         } label: {
-                            CTAButtonView(Constants.Localized.LogInError.buttonTitle)
+                            CTAButtonView(Constants.ErrorView.buttonTitle(for: oauthError))
                         }
                     },
                     innerPadding: .init(
@@ -106,8 +107,15 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
     func performAuthentication() {
         Task {
             isAuthenticating = true
+            oauthError = nil
             if !oauthSession.hasSession(with: email) {
-                _ = try? await oauthSession.retrieveAccessToken(with: email)
+                do {
+                    _ = try await oauthSession.retrieveAccessToken(with: email)
+                } catch let error as OAuthError {
+                    oauthError = error
+                } catch {
+                    // No op.
+                }
             }
             hasSession = oauthSession.hasSession(with: email)
             isAuthenticating = false
@@ -116,7 +124,44 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
 }
 
 extension QuickEditorConstants {
+    enum ErrorView {
+        static func title(for oauthError: OAuthError?) -> String {
+            switch oauthError {
+            case .loggedInWithWrongEmail:
+                Localized.WrongEmailError.title
+            default:
+                Localized.LogInError.title
+            }
+        }
+
+        static func subtext(for oauthError: OAuthError?) -> String {
+            switch oauthError {
+            case .loggedInWithWrongEmail(let email):
+                String(format: Localized.WrongEmailError.subtext, email)
+            default:
+                Localized.LogInError.subtext
+            }
+        }
+
+        static func buttonTitle(for oauthError: OAuthError?) -> String {
+            Localized.LogInError.buttonTitle
+        }
+    }
+
     enum Localized {
+        enum WrongEmailError {
+            static let title = SDKLocalizedString(
+                "AvatarPicker.ContentLoading.Failure.Retry.title",
+                value: "Ooops",
+                comment: "Title of a message advising the user that something went wrong while loading their avatars"
+            )
+            static let subtext = SDKLocalizedString(
+                "AvatarPicker.ContentLoading.Failure.WrongEmailError.subtext",
+                value: "It looks like you used the wrong email to log in. Please try again using %@ this time. Thanks!",
+                comment: "A message describing the error and advising the user to login again to resolve the issue"
+            )
+        }
+
         enum LogInError {
             static let title = SDKLocalizedString(
                 "AvatarPicker.ContentLoading.Failure.LogInError.title",
