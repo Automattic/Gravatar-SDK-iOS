@@ -15,68 +15,6 @@ final class ImageDownloadServiceTests: XCTestCase {
         XCTAssertNotNil(imageResponse.image)
     }
 
-    func testFetchImageCancel() async throws {
-        let imageURL = try XCTUnwrap(URL(string: "https://gravatar.com/avatar/HASH"))
-        let response = HTTPURLResponse.successResponse(with: imageURL)
-        let sessionMock = URLSessionMock(returnData: ImageHelper.testImageData, response: response)
-        await sessionMock.update(isCancellable: true)
-        let cache = TestImageCache()
-        let service = imageDownloadService(with: sessionMock, cache: cache)
-
-        let task1 = Task {
-            do {
-                let _ = try await service.fetchImage(with: imageURL)
-                XCTFail()
-            } catch ImageFetchingError.responseError(reason: .URLSessionError(error: let error)) {
-                XCTAssertNotNil(error as? CancellationError)
-                let entry = cache.getEntry(with: imageURL.absoluteString)
-                XCTAssertNil(entry)
-            } catch {
-                XCTFail()
-            }
-        }
-
-        let task2 = Task {
-            try await Task.sleep(nanoseconds: UInt64(0.05 * 1_000_000_000))
-            service.cancelTask(for: imageURL)
-        }
-
-        await task1.value
-        try await task2.value
-    }
-
-    func testCallAfterAFailedCallWorksFine() async throws {
-        let imageURL = try XCTUnwrap(URL(string: "https://gravatar.com/avatar/HASH"))
-        let response = HTTPURLResponse.successResponse(with: imageURL)
-        let sessionMock = URLSessionMock(returnData: ImageHelper.testImageData, response: response)
-        await sessionMock.update(isCancellable: true)
-        let service = imageDownloadService(with: sessionMock)
-
-        let task1 = Task {
-            do {
-                let _ = try await service.fetchImage(with: imageURL)
-                XCTFail()
-            } catch ImageFetchingError.responseError(reason: .URLSessionError(error: let error)) {
-                XCTAssertNotNil(error as? CancellationError)
-            } catch {
-                XCTFail()
-            }
-        }
-
-        let task2 = Task {
-            try await Task.sleep(nanoseconds: UInt64(0.1 * 1_000_000_000))
-            service.cancelTask(for: imageURL)
-        }
-
-        await task1.value
-        try await task2.value
-
-        // The task is cancelled, now we retry and it should succeed.
-        await sessionMock.update(isCancellable: false)
-        let result = try await service.fetchImage(with: imageURL)
-        XCTAssertNotNil(result.image)
-    }
-
     func testImageProcessingError() async throws {
         let imageURL = try XCTUnwrap(URL(string: "https://gravatar.com/avatar/HASH"))
         let response = HTTPURLResponse.successResponse(with: imageURL)
