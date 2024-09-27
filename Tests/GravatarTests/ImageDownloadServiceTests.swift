@@ -99,10 +99,10 @@ final class ImageDownloadServiceTests: XCTestCase {
         XCTAssertEqual(cache.messageCount(type: .get), 5)
 
         // Assert that only one fetch set an `.inProgress` CacheEntry
-        XCTAssertEqual(cache.messageCount(type: .inProgress), 1)
+        XCTAssertEqual(cache.messageCount(type: .inProgress, forKey: imageURL.absoluteString), 1)
 
         // Assert that only one fetch set an `.ready` CacheEntry
-        XCTAssertEqual(cache.messageCount(type: .ready), 1)
+        XCTAssertEqual(cache.messageCount(type: .ready, forKey: imageURL.absoluteString), 1)
     }
 }
 

@@ -54,4 +54,10 @@ package final class TestImageCache: ImageCaching, @unchecked Sendable {
             cacheMessages.filter { $0.operation == type }.count
         }
     }
+
+    package func messageCount(type: CacheMessageType, forKey key: String) -> Int {
+        accessQueue.sync {
+            cacheMessages.filter { $0.operation == type && $0.key == key }.count
+        }
+    }
 }
