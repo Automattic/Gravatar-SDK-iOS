@@ -124,8 +124,6 @@ final class ImageDownloadServiceTests: XCTestCase {
         let cache = TestImageCache()
         let service = imageDownloadService(with: sessionMock, cache: cache)
 
-        let expectation = XCTestExpectation(description: "Image fetches should complete")
-
         // When
         // Start simultaneous fetches
         let fetchTask1 = Task { try await service.fetchImage(with: imageURL, forceRefresh: false) }
@@ -140,9 +138,6 @@ final class ImageDownloadServiceTests: XCTestCase {
         let result3 = try await fetchTask3.value
         let result4 = try await fetchTask4.value
         let result5 = try await fetchTask5.value
-
-        expectation.fulfill()
-        await fulfillment(of: [expectation], timeout: 0.5)
 
         // Assert that all fetches return the same image
         XCTAssertEqual(result1.image.pngData(), mockImageData)
