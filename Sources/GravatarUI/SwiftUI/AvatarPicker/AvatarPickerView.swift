@@ -6,7 +6,7 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
     fileprivate typealias Constants = AvatarPicker.Constants
     fileprivate typealias Localized = AvatarPicker.Localized
 
-    @ObservedObject var model: AvatarPickerViewModel
+    @StateObject var model: AvatarPickerViewModel
     var contentLayoutProvider: AvatarPickerContentLayoutProviding = AvatarPickerContentLayout.vertical
     @Environment(\.colorScheme) var colorScheme: ColorScheme
     @Binding var isPresented: Bool

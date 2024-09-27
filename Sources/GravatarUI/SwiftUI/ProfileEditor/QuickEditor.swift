@@ -1,6 +1,6 @@
 import SwiftUI
 
-public enum QuickEditorScope {
+public enum QuickEditorScope: Sendable {
     case avatarPicker
 }
 
