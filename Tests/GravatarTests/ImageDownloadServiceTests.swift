@@ -65,6 +65,9 @@ final class ImageDownloadServiceTests: XCTestCase {
             response: HTTPURLResponse.successResponse(with: imageURL)
         )
 
+        // Simulate download tasks that have a longer duration
+        await sessionMock.update(isCancellable: true)
+
         let cache = TestImageCache()
         let service = imageDownloadService(with: sessionMock, cache: cache)
 
