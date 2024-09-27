@@ -1,7 +1,7 @@
 import Gravatar
 import UIKit
 
-package class TestImageCache: ImageCaching, @unchecked Sendable {
+package final class TestImageCache: ImageCaching, @unchecked Sendable {
     let imageCache = ImageCache()
 
     package typealias CacheMessage = (operation: CacheMessageType, key: String)
