@@ -14,9 +14,9 @@ package class TestImageCache: ImageCaching, @unchecked Sendable {
         case get
     }
 
-    package private(set) var getImageCallsCount = 0
-    package private(set) var setImageCallsCount = 0
-    package private(set) var setTaskCallsCount = 0
+    package var getImageCallsCount: Int { messageCount(type: .get) }
+    package var setImageCallsCount: Int { messageCount(type: .ready) }
+    package var setTaskCallsCount: Int { messageCount(type: .inProgress) }
 
     // Serial queue to synchronize access to shared mutable state
     private let accessQueue = DispatchQueue(label: "com.testImageCache.accessQueue")
@@ -34,10 +34,8 @@ package class TestImageCache: ImageCaching, @unchecked Sendable {
             }
             switch entry {
             case .inProgress:
-                setTaskCallsCount += 1
                 message = (operation: .inProgress, key: key)
             case .ready:
-                setImageCallsCount += 1
                 message = (operation: .ready, key: key)
             }
             imageCache.setEntry(entry, for: key)
@@ -46,7 +44,6 @@ package class TestImageCache: ImageCaching, @unchecked Sendable {
 
     package func getEntry(with key: String) -> Gravatar.CacheEntry? {
         accessQueue.sync {
-            getImageCallsCount += 1
             cacheMessages.append(CacheMessage(operation: .get, key: key))
             return imageCache.getEntry(with: key)
         }
