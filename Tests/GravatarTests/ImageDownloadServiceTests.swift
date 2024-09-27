@@ -15,46 +15,6 @@ final class ImageDownloadServiceTests: XCTestCase {
         XCTAssertNotNil(imageResponse.image)
     }
 
-    func testImageProcessingError() async throws {
-        let imageURL = try XCTUnwrap(URL(string: "https://gravatar.com/avatar/HASH"))
-        let response = HTTPURLResponse.successResponse(with: imageURL)
-        let sessionMock = URLSessionMock(returnData: ImageHelper.testImageData, response: response)
-        let cache = TestImageCache()
-        let service = imageDownloadService(with: sessionMock, cache: cache)
-
-        do {
-            _ = try await service.fetchImage(with: imageURL, processingMethod: .custom(processor: FailingImageProcessor()))
-            XCTFail()
-        } catch ImageFetchingError.imageProcessorFailed {
-            // success
-        } catch {
-            XCTFail()
-        }
-    }
-
-    func testFetchCatchedImageWithURL() async throws {
-        let imageURL = "https://gravatar.com/avatar/HASH"
-        let response = HTTPURLResponse.successResponse(with: URL(string: imageURL)!)
-        let sessionMock = URLSessionMock(returnData: ImageHelper.testImageData, response: response)
-        let cache = TestImageCache()
-        let service = imageDownloadService(with: sessionMock, cache: cache)
-
-        _ = try await service.fetchImage(with: URL(string: imageURL)!)
-        _ = try await service.fetchImage(with: URL(string: imageURL)!)
-        let imageResponse = try await service.fetchImage(with: URL(string: imageURL)!)
-        let setImageCallsCount = cache.setImageCallsCount
-        let setTaskCallCount = cache.setTaskCallsCount
-        let getImageCallsCount = cache.getImageCallsCount
-        let request = await sessionMock.request
-        let callsCount = await sessionMock.callsCount
-        XCTAssertEqual(setImageCallsCount, 1)
-        XCTAssertEqual(setTaskCallCount, 1)
-        XCTAssertEqual(getImageCallsCount, 3)
-        XCTAssertEqual(callsCount, 1)
-        XCTAssertEqual(request?.url?.absoluteString, "https://gravatar.com/avatar/HASH")
-        XCTAssertNotNil(imageResponse.image)
-    }
-
     func testFetchImageCancel() async throws {
         let imageURL = try XCTUnwrap(URL(string: "https://gravatar.com/avatar/HASH"))
         let response = HTTPURLResponse.successResponse(with: imageURL)
@@ -106,6 +66,46 @@ final class ImageDownloadServiceTests: XCTestCase {
         await sessionMock.update(error: nil)
         let result = try await service.fetchImage(with: imageURL)
         XCTAssertNotNil(result.image)
+    }
+
+    func testImageProcessingError() async throws {
+        let imageURL = try XCTUnwrap(URL(string: "https://gravatar.com/avatar/HASH"))
+        let response = HTTPURLResponse.successResponse(with: imageURL)
+        let sessionMock = URLSessionMock(returnData: ImageHelper.testImageData, response: response)
+        let cache = TestImageCache()
+        let service = imageDownloadService(with: sessionMock, cache: cache)
+
+        do {
+            _ = try await service.fetchImage(with: imageURL, processingMethod: .custom(processor: FailingImageProcessor()))
+            XCTFail()
+        } catch ImageFetchingError.imageProcessorFailed {
+            // success
+        } catch {
+            XCTFail()
+        }
+    }
+
+    func testFetchCatchedImageWithURL() async throws {
+        let imageURL = "https://gravatar.com/avatar/HASH"
+        let response = HTTPURLResponse.successResponse(with: URL(string: imageURL)!)
+        let sessionMock = URLSessionMock(returnData: ImageHelper.testImageData, response: response)
+        let cache = TestImageCache()
+        let service = imageDownloadService(with: sessionMock, cache: cache)
+
+        _ = try await service.fetchImage(with: URL(string: imageURL)!)
+        _ = try await service.fetchImage(with: URL(string: imageURL)!)
+        let imageResponse = try await service.fetchImage(with: URL(string: imageURL)!)
+        let setImageCallsCount = cache.setImageCallsCount
+        let setTaskCallCount = cache.setTaskCallsCount
+        let getImageCallsCount = cache.getImageCallsCount
+        let request = await sessionMock.request
+        let callsCount = await sessionMock.callsCount
+        XCTAssertEqual(setImageCallsCount, 1)
+        XCTAssertEqual(setTaskCallCount, 1)
+        XCTAssertEqual(getImageCallsCount, 3)
+        XCTAssertEqual(callsCount, 1)
+        XCTAssertEqual(request?.url?.absoluteString, "https://gravatar.com/avatar/HASH")
+        XCTAssertNotNil(imageResponse.image)
     }
 
     func testSimultaneousFetchShouldOnlyTriggerOneNetworkRequest() async throws {
