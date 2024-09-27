@@ -101,7 +101,7 @@ final class ImageDownloadServiceTests: XCTestCase {
 
         await task1.value
 
-        // The task is cancelled, now we retry and it should succeed.
+        // The task has failed, now we retry and it should succeed.
         await sessionMock.update(isCancellable: false)
         await sessionMock.update(error: nil)
         let result = try await service.fetchImage(with: imageURL)
