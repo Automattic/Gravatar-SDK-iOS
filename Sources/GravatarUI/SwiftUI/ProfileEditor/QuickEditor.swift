@@ -52,8 +52,7 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
         case .avatarPicker:
             AvatarPickerView(
                 model: .init(email: email, authToken: token),
-                contentLayoutProvider: contentLayoutProvider,
-                isPresented: $isPresented,
+                isPresented: $isPresented, contentLayoutProvider: contentLayoutProvider,
                 customImageEditor: customImageEditor,
                 tokenErrorHandler: {
                     oauthSession.deleteSession(with: email)
