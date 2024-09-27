@@ -55,6 +55,59 @@ final class ImageDownloadServiceTests: XCTestCase {
         XCTAssertNotNil(imageResponse.image)
     }
 
+    func testFetchImageCancel() async throws {
+        let imageURL = try XCTUnwrap(URL(string: "https://gravatar.com/avatar/HASH"))
+        let response = HTTPURLResponse.successResponse(with: imageURL)
+        let sessionMock = URLSessionMock(returnData: ImageHelper.testImageData, response: response)
+        await sessionMock.update(isCancellable: true)
+        let cache = TestImageCache()
+        let service = imageDownloadService(with: sessionMock, cache: cache)
+
+        let task1 = Task {
+            do {
+                let _ = try await service.fetchImage(with: imageURL)
+                XCTFail()
+            } catch {
+                XCTAssertNotNil(error as? CancellationError)
+                let entry = cache.getEntry(with: imageURL.absoluteString)
+                XCTAssertNil(entry)
+            }
+        }
+
+        try await Task.sleep(nanoseconds: UInt64(0.05 * 1_000_000_000))
+        task1.cancel()
+
+        await task1.value
+    }
+
+    func testCallAfterAFailedCallWorksFine() async throws {
+        let cache = TestImageCache()
+
+        let imageURL = try XCTUnwrap(URL(string: "https://gravatar.com/avatar/HASH"))
+        let response = HTTPURLResponse.successResponse(with: imageURL)
+        let sessionMock = URLSessionMock(returnData: ImageHelper.testImageData, response: response, error: NSError(domain: "test", code: 1))
+        await sessionMock.update(isCancellable: true)
+        let service = imageDownloadService(with: sessionMock, cache: cache)
+        let task1 = Task {
+            do {
+                let _ = try await service.fetchImage(with: imageURL)
+                XCTFail()
+            } catch {
+                XCTAssertNotNil(error)
+                let entry = cache.getEntry(with: imageURL.absoluteString)
+                XCTAssertNil(entry)
+            }
+        }
+
+        await task1.value
+
+        // The task is cancelled, now we retry and it should succeed.
+        await sessionMock.update(isCancellable: false)
+        await sessionMock.update(error: nil)
+        let result = try await service.fetchImage(with: imageURL)
+        XCTAssertNotNil(result.image)
+    }
+
     func testSimultaneousFetchShouldOnlyTriggerOneNetworkRequest() async throws {
         let imageURL = URL(string: "https://example.com/image.png")!
 

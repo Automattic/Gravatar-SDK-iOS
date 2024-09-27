@@ -29,14 +29,13 @@ public actor ImageDownloadService: ImageDownloader, Sendable {
         let request = URLRequest.imageRequest(url: url, forceRefresh: forceRefresh)
 
         if !forceRefresh, let image = try await cachedImage(for: url) {
+            try Task.checkCancellation()
             return ImageDownloadResult(image: image, sourceURL: url)
         }
 
         let task = Task<UIImage, Error> {
             try await fetchAndProcessImage(request: request, processor: processingMethod.processor)
         }
-
-        try Task.checkCancellation()
 
         // Create `.inProgress` entry before we await to prevent re-entrancy issues
         let cacheKey = url.absoluteString
@@ -52,6 +51,7 @@ public actor ImageDownloadService: ImageDownloader, Sendable {
         switch entry {
         case .inProgress(let task):
             let image = try await task.value
+            try Task.checkCancellation()
             return image
         case .ready(let image):
             return image
@@ -62,6 +62,7 @@ public actor ImageDownloadService: ImageDownloader, Sendable {
         let image: UIImage
         do {
             image = try await task.value
+            try Task.checkCancellation()
         } catch {
             imageCache.setEntry(nil, for: key)
             throw error
@@ -73,6 +74,7 @@ public actor ImageDownloadService: ImageDownloader, Sendable {
     private func fetchAndProcessImage(request: URLRequest, processor: ImageProcessor) async throws -> UIImage {
         do {
             let (data, _) = try await client.fetchData(with: request)
+            try Task.checkCancellation()
             guard let image = processor.process(data) else {
                 throw ImageFetchingError.imageProcessorFailed
             }
