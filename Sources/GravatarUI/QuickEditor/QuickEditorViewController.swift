@@ -33,7 +33,7 @@ public final class QuickEditorViewController: UIViewController {
         isPresented: isPresented,
         customImageEditor: nil as NoCustomEditorBlock?, 
         contentLayoutProvider: avatarPickerConfiguration.contentLayout
-    ), onHeichtChange: { [weak self] newHeight in
+    ), onHeightChange: { [weak self] newHeight in
         self?.updateHeight(with: newHeight)
     })
 
@@ -85,13 +85,13 @@ public final class QuickEditorViewController: UIViewController {
     func updateHeight(with newHeight: CGFloat) {
         switch avatarPickerConfiguration.contentLayout {
         case .vertical(let presentationStyle):
-            verticalLayout(with: presentationStyle, newHeight: newHeight)
+            verticalLayout(with: presentationStyle)
         case .horizontal:
             setupSheet(with: newHeight)
         }
     }
 
-    func verticalLayout(with layout: VerticalContentPresentationStyle, newHeight: CGFloat) {
+    func verticalLayout(with layout: VerticalContentPresentationStyle) {
         switch layout {
         case .large:
             setupSheet(detents: [.large()])
@@ -136,10 +136,10 @@ public final class QuickEditorViewController: UIViewController {
 
 /// UIHostingController subclass which reads the InnerHeightPreferenceKey changes
 private class InnerHeightUIHostingController: UIHostingController<AnyView> {
-    let onHeichtChange: (CGFloat) -> Void
+    let onHeightChange: (CGFloat) -> Void
 
-    init<V: View>(rootView: V, onHeichtChange: @escaping (CGFloat) -> Void) {
-        self.onHeichtChange = onHeichtChange
+    init<V: View>(rootView: V, onHeightChange: @escaping (CGFloat) -> Void) {
+        self.onHeightChange = onHeightChange
         weak var weakSelf: InnerHeightUIHostingController?
         super.init(rootView: AnyView(rootView
             .onPreferenceChange(InnerHeightPreferenceKey.self) {
@@ -154,6 +154,6 @@ private class InnerHeightUIHostingController: UIHostingController<AnyView> {
     }
 
     private var _innerSwiftUIContentHeight: CGFloat = 0 {
-        didSet { onHeichtChange(_innerSwiftUIContentHeight) }
+        didSet { onHeightChange(_innerSwiftUIContentHeight) }
     }
 }
