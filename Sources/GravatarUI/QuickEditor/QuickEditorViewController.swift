@@ -1,8 +1,8 @@
-import UIKit
 import SwiftUI
+import UIKit
 
 /// Configuration which will be applied to the avatar picker screen.
-public struct AvatarPickerConfiguration : Sendable{
+public struct AvatarPickerConfiguration: Sendable {
     let contentLayout: AvatarPickerContentLayoutWithPresentation
 
     public init(contentLayout: AvatarPickerContentLayoutWithPresentation) {
@@ -21,22 +21,23 @@ public final class QuickEditorViewController: UIViewController, ModalPresentatio
     let avatarPickerConfiguration: AvatarPickerConfiguration
 
     private lazy var isPresented: Binding<Bool> = Binding {
-        return true
+        true
     } set: { isPresented in
         guard !isPresented else { return }
         self.dismiss(animated: true)
     }
+
     var verticalSizeClass: UserInterfaceSizeClass?
     var sheetHeight: CGFloat = QEModalPresentationConstants.bottomSheetEstimatedHeight
     var contentLayoutWithPresentation: AvatarPickerContentLayoutWithPresentation {
         avatarPickerConfiguration.contentLayout
     }
-    
+
     private lazy var quickEditor: InnerHeightUIHostingController = .init(rootView: QuickEditor(
         email: email,
         scope: scope,
         isPresented: isPresented,
-        customImageEditor: nil as NoCustomEditorBlock?, 
+        customImageEditor: nil as NoCustomEditorBlock?,
         contentLayoutProvider: avatarPickerConfiguration.contentLayout
     ), onHeightChange: { [weak self] newHeight in
         guard let self else { return }
@@ -69,11 +70,11 @@ public final class QuickEditorViewController: UIViewController, ModalPresentatio
         fatalError("init(coder:) has not been implemented")
     }
 
-    public override func encode(with coder: NSCoder) {
+    override public func encode(with coder: NSCoder) {
         coder.encodeConditionalObject(email, forKey: "kQEEmial")
     }
 
-    public override func viewDidLoad() {
+    override public func viewDidLoad() {
         super.viewDidLoad()
         quickEditor.willMove(toParent: self)
         addChild(quickEditor)
@@ -89,13 +90,13 @@ public final class QuickEditorViewController: UIViewController, ModalPresentatio
         updateDetents()
     }
 
-    public override func viewWillAppear(_ animated: Bool) {
+    override public func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         if navigationController != nil {
             assertionFailure("This View Controller should be presented modally, without wrapping it in a Navigation Controller.")
         }
     }
-    
+
     func updateDetents() {
         if let sheet = sheetPresentationController {
             sheet.animateChanges {
@@ -110,34 +111,37 @@ public final class QuickEditorViewController: UIViewController, ModalPresentatio
     }
 }
 
-
 /// UIHostingController subclass which reads the InnerHeightPreferenceKey changes
 private class InnerHeightUIHostingController: UIHostingController<AnyView> {
     let onHeightChange: (CGFloat) -> Void
     let onVerticalSizeClassChange: (UserInterfaceSizeClass?) -> Void
 
-    init<V: View>(rootView: V, onHeightChange: @escaping (CGFloat) -> Void, onVerticalSizeClassChange: @escaping (UserInterfaceSizeClass?) -> Void) {
+    init(rootView: some View, onHeightChange: @escaping (CGFloat) -> Void, onVerticalSizeClassChange: @escaping (UserInterfaceSizeClass?) -> Void) {
         self.onHeightChange = onHeightChange
         self.onVerticalSizeClassChange = onVerticalSizeClassChange
         weak var weakSelf: InnerHeightUIHostingController?
-        super.init(rootView: AnyView(rootView
-            .onPreferenceChange(InnerHeightPreferenceKey.self) {
-                weakSelf?._innerSwiftUIContentHeight = $0
-            }
-            .onPreferenceChange(VerticalSizeClassPreferenceKey.self) { newSizeClass in
-                weakSelf?._innerVerticalSizeClass = newSizeClass
-            }
+        super.init(rootView: AnyView(
+            rootView
+                .onPreferenceChange(InnerHeightPreferenceKey.self) {
+                    weakSelf?._innerSwiftUIContentHeight = $0
+                }
+                .onPreferenceChange(VerticalSizeClassPreferenceKey.self) { newSizeClass in
+                    weakSelf?._innerVerticalSizeClass = newSizeClass
+                }
         ))
         weakSelf = self
     }
 
-    @objc required dynamic init?(coder aDecoder: NSCoder) {
+    @available(*, unavailable)
+    @objc
+    dynamic required init?(coder aDecoder: NSCoder) {
         fatalError()
     }
 
     private var _innerSwiftUIContentHeight: CGFloat = 0 {
         didSet { onHeightChange(_innerSwiftUIContentHeight) }
     }
+
     private var _innerVerticalSizeClass: UserInterfaceSizeClass? = nil {
         didSet { onVerticalSizeClassChange(_innerVerticalSizeClass) }
     }

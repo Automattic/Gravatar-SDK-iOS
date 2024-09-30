@@ -42,7 +42,7 @@ public enum AvatarPickerContentLayoutWithPresentation: AvatarPickerContentLayout
             .vertical
         }
     }
-    
+
     var prioritizeScrollOverResize: Bool {
         switch self {
         case .vertical(.expandableMedium(_, let prioritizeScrollOverResize)):

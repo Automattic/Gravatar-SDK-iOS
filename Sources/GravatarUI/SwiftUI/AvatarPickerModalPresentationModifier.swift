@@ -97,7 +97,7 @@ extension ModalPresentationWithIntrinsicSize {
     func shouldAcceptHeight(_ newHeight: CGFloat) -> Bool {
         newHeight > QEModalPresentationConstants.bottomSheetMinHeight && shouldUseIntrinsicSize
     }
-    
+
     var shouldUseIntrinsicSize: Bool {
         switch contentLayoutWithPresentation {
         case .horizontal:

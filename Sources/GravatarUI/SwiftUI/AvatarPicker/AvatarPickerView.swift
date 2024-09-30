@@ -68,7 +68,6 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
                 }
             }
 
-
             ToastContainerView(toastManager: model.toastManager)
                 .padding(.horizontal, Constants.horizontalPadding * 2)
         }

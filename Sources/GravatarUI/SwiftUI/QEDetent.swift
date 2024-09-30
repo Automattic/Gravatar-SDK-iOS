@@ -7,7 +7,7 @@ enum QEDetent {
     case large
     case fraction(CGFloat)
     case height(CGFloat)
-    
+
     static func detents(
         for presentation: AvatarPickerContentLayoutWithPresentation,
         intrinsicHeight: CGFloat,
@@ -25,39 +25,37 @@ enum QEDetent {
         case .vertical(let presentationStyle):
             switch presentationStyle {
             case .large:
-                    .init([.large])
+                .init([.large])
             case .expandableMedium(let initialFraction, _):
-                    .init([.fraction(initialFraction), .large])
+                .init([.fraction(initialFraction), .large])
             }
         }
     }
-    
+
     @MainActor
     func toUISheetDetent() -> UISheetPresentationController.Detent {
         switch self {
         case .large:
-            return UISheetPresentationController.Detent.large()
+            UISheetPresentationController.Detent.large()
         case .medium:
-            return UISheetPresentationController.Detent.medium()
+            UISheetPresentationController.Detent.medium()
         case .fraction(let value):
             if #available(iOS 16.0, *) {
-                return UISheetPresentationController.Detent.custom { context in
-                    return value * context.maximumDetentValue
+                UISheetPresentationController.Detent.custom { context in
+                    value * context.maximumDetentValue
                 }
-            }
-            else {
-                return UISheetPresentationController.Detent.medium()
+            } else {
+                UISheetPresentationController.Detent.medium()
             }
         case .height(let value):
             if #available(iOS 16.0, *) {
-                return .custom { _ in value }
-            }
-            else {
-                return .large()
+                .custom { _ in value }
+            } else {
+                .large()
             }
         }
     }
-    
+
     @available(iOS 16.0, *)
     func toSheetDetent() -> PresentationDetent {
         switch self {
@@ -73,18 +71,18 @@ enum QEDetent {
     }
 }
 
-extension Array where Element == QEDetent {
+extension [QEDetent] {
     @MainActor
     func map() -> [UISheetPresentationController.Detent] {
-        self.map() { element in
+        self.map { element in
             element.toUISheetDetent()
         }
     }
-    
+
     @available(iOS 16.0, *)
     func map() -> Set<PresentationDetent> {
         Set(
-            self.map() { element in
+            self.map { element in
                 element.toSheetDetent()
             }
         )
