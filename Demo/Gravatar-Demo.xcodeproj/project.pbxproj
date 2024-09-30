@@ -38,6 +38,7 @@
 		917DEEC92C7F639F00E43774 /* TestImageCropper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 917DEEC82C7F619100E43774 /* TestImageCropper.swift */; };
 		91956A522B6793AF00BF3CF0 /* SwitchWithLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91956A512B6793AF00BF3CF0 /* SwitchWithLabel.swift */; };
 		91956A542B67943A00BF3CF0 /* DemoUIImageViewExtensionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91956A532B67943A00BF3CF0 /* DemoUIImageViewExtensionViewController.swift */; };
+		919C70552CAA8A090036B03C /* QELayoutOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9133DF1A2CA54D1B0028196F /* QELayoutOptions.swift */; };
 		91B73B372C404F6E00E7D325 /* DemoAvatarPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91B73B362C404F6E00E7D325 /* DemoAvatarPickerView.swift */; };
 		91E2FB042BC0276E00265E8E /* DemoProfileViewsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91E2FB032BC0276E00265E8E /* DemoProfileViewsViewController.swift */; };
 		91F0B3DD2B62815F0025C4F8 /* MainTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91F0B3DB2B62815F0025C4F8 /* MainTableViewController.swift */; };
@@ -458,6 +459,7 @@
 				914AC0202BDAAC3C005DA4A5 /* DemoRemoteSVGViewController.swift in Sources */,
 				495775E42B5B34970082812A /* SceneDelegate.swift in Sources */,
 				1ECAB5072BC984440043A331 /* DemoProfileConfigurationViewController.swift in Sources */,
+				919C70552CAA8A090036B03C /* QELayoutOptions.swift in Sources */,
 				91E2FB042BC0276E00265E8E /* DemoProfileViewsViewController.swift in Sources */,
 				9133058E2C91F8D1009F5C0B /* DemoImageCropperViewController.swift in Sources */,
 			);

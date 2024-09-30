@@ -110,25 +110,3 @@ extension Email {
             && (string[dotIndex...].count > 2)
     }
 }
-
-enum QELayoutOptions: String, Identifiable, CaseIterable {
-    var id: String { rawValue }
-
-    case verticalLarge = "vertical - large"
-    case verticalExpandable = "vertical - expandable"
-    case verticalExpandablePrioritizeScrolling = "vertical - expandable - prioritize scrolling"
-    case horizontal = "horizontal"
-
-    var contentLayout: AvatarPickerContentLayoutWithPresentation {
-        switch self {
-        case .verticalLarge:
-                .vertical(presentationStyle: .large)
-        case .verticalExpandable:
-                .vertical(presentationStyle: .expandableMedium())
-        case .verticalExpandablePrioritizeScrolling:
-                .vertical(presentationStyle: .expandableMedium(prioritizeScrollOverResize: true))
-        case .horizontal:
-                .horizontal()
-        }
-    }
-}
