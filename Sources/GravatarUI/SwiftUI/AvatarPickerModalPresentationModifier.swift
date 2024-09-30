@@ -1,7 +1,7 @@
 import Combine
 import SwiftUI
 
-private enum ModalPresentationConstants {
+enum QEModalPresentationConstants {
     // Estimated height for the bottom sheet in horizontal mode.
     // The value is the height of a successfully loading Avatar picker in various iPhone models.
     // This is just the initial value of the bottom sheet. If the content turns out to be
@@ -14,12 +14,12 @@ private enum ModalPresentationConstants {
 }
 
 @available(iOS 16.0, *)
-struct AvatarPickerModalPresentationModifier<ModalView: View>: ViewModifier {
-    fileprivate typealias Constants = ModalPresentationConstants
+struct AvatarPickerModalPresentationModifier<ModalView: View>: ViewModifier, ModalPresentationWithIntrinsicSize {
+    fileprivate typealias Constants = QEModalPresentationConstants
     @Binding var isPresented: Bool
     @State private var isPresentedInner: Bool
     @State private var sheetHeight: CGFloat = Constants.bottomSheetEstimatedHeight
-    @State private var verticalSizeClass: UserInterfaceSizeClass?
+    @State private(set) var verticalSizeClass: UserInterfaceSizeClass?
     @State private var presentationDetents: Set<PresentationDetent>
     @State private var prioritizeScrollOverResize: Bool = false
     let onDismiss: (() -> Void)?
@@ -32,11 +32,11 @@ struct AvatarPickerModalPresentationModifier<ModalView: View>: ViewModifier {
         self.onDismiss = onDismiss
         self.modalView = modalView
         self.contentLayoutWithPresentation = contentLayout
-        self.presentationDetents = Self.detents(
+        self.presentationDetents = QEDetent.detents(
             for: contentLayout,
             intrinsicHeight: Constants.bottomSheetEstimatedHeight,
             verticalSizeClass: nil
-        )
+        ).map()
     }
 
     func body(content: Content) -> some View {
@@ -47,11 +47,11 @@ struct AvatarPickerModalPresentationModifier<ModalView: View>: ViewModifier {
                     // Otherwise the view remembers its previous height. And an animation glitch happens
                     // when switching between different presentation styles (especially between horizontal and vertical_large).
                     // Doing the same thing in .onAppear of the "modalView" doesn't give as nice results as this one don't know why.
-                    self.presentationDetents = Self.detents(
+                    self.presentationDetents = QEDetent.detents(
                         for: contentLayoutWithPresentation,
                         intrinsicHeight: max(sheetHeight, Constants.bottomSheetEstimatedHeight),
                         verticalSizeClass: verticalSizeClass
-                    )
+                    ).map()
                 }
                 isPresentedInner = newValue
             }
@@ -62,7 +62,7 @@ struct AvatarPickerModalPresentationModifier<ModalView: View>: ViewModifier {
                 modalView
                     .frame(minHeight: Constants.bottomSheetMinHeight)
                     .onPreferenceChange(InnerHeightPreferenceKey.self) { newHeight in
-                        if newHeight > Constants.bottomSheetMinHeight, shouldUseIntrinsicSize {
+                        if shouldAcceptHeight(newHeight) {
                             sheetHeight = newHeight
                         }
                         updateDetents()
@@ -77,50 +77,28 @@ struct AvatarPickerModalPresentationModifier<ModalView: View>: ViewModifier {
             }
     }
 
-    private static func detents(
-        for presentation: AvatarPickerContentLayoutWithPresentation,
-        intrinsicHeight: CGFloat,
-        verticalSizeClass: UserInterfaceSizeClass?
-    ) -> Set<PresentationDetent> {
-        switch presentation {
-        case .horizontal:
-            if verticalSizeClass == .compact {
-                // in landscape mode where the device height is small we display the full size sheet(which is
-                // also the default value of the detent).
-                .init([.large])
-            } else {
-                .init([.height(intrinsicHeight)])
-            }
-        case .vertical(let presentationStyle):
-            switch presentationStyle {
-            case .large:
-                .init([.large])
-            case .expandableMedium(let initialFraction, _):
-                .init([.fraction(initialFraction), .large])
-            }
-        }
-    }
-
     private func updateDetents() {
-        self.presentationDetents = Self.detents(
+        self.presentationDetents = QEDetent.detents(
             for: contentLayoutWithPresentation,
             intrinsicHeight: sheetHeight,
             verticalSizeClass: verticalSizeClass
-        )
-        switch contentLayoutWithPresentation {
-        case .vertical(let presentationStyle):
-            switch presentationStyle {
-            case .large:
-                break
-            case .expandableMedium(_, let prioritizeScrollOverResize):
-                self.prioritizeScrollOverResize = prioritizeScrollOverResize
-            }
-        case .horizontal:
-            prioritizeScrollOverResize = true
-        }
+        ).map()
+        self.prioritizeScrollOverResize = contentLayoutWithPresentation.prioritizeScrollOverResize
     }
+}
 
-    private var shouldUseIntrinsicSize: Bool {
+@MainActor
+protocol ModalPresentationWithIntrinsicSize {
+    var contentLayoutWithPresentation: AvatarPickerContentLayoutWithPresentation { get }
+    var verticalSizeClass: UserInterfaceSizeClass? { get }
+}
+
+extension ModalPresentationWithIntrinsicSize {
+    func shouldAcceptHeight(_ newHeight: CGFloat) -> Bool {
+        newHeight > QEModalPresentationConstants.bottomSheetMinHeight && shouldUseIntrinsicSize
+    }
+    
+    var shouldUseIntrinsicSize: Bool {
         switch contentLayoutWithPresentation {
         case .horizontal:
             switch verticalSizeClass {

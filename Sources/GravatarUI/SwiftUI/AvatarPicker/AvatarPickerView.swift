@@ -282,7 +282,7 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
                 .controlSize(.regular)
 
             Spacer()
-        }.frame(height: 310)
+        }
     }
 
     private func openProfileInSafari() {
