@@ -37,6 +37,7 @@
 		917DEEC92C7F639F00E43774 /* TestImageCropper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 917DEEC82C7F619100E43774 /* TestImageCropper.swift */; };
 		91956A522B6793AF00BF3CF0 /* SwitchWithLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91956A512B6793AF00BF3CF0 /* SwitchWithLabel.swift */; };
 		91956A542B67943A00BF3CF0 /* DemoUIImageViewExtensionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91956A532B67943A00BF3CF0 /* DemoUIImageViewExtensionViewController.swift */; };
+		919C70572CAAF28E0036B03C /* QEColorSchemePickerRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 919C70562CAAF28E0036B03C /* QEColorSchemePickerRow.swift */; };
 		91B73B372C404F6E00E7D325 /* DemoAvatarPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91B73B362C404F6E00E7D325 /* DemoAvatarPickerView.swift */; };
 		91E2FB042BC0276E00265E8E /* DemoProfileViewsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91E2FB032BC0276E00265E8E /* DemoProfileViewsViewController.swift */; };
 		91F0B3DD2B62815F0025C4F8 /* MainTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91F0B3DB2B62815F0025C4F8 /* MainTableViewController.swift */; };
@@ -128,6 +129,7 @@
 		917DEEC82C7F619100E43774 /* TestImageCropper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestImageCropper.swift; sourceTree = "<group>"; };
 		91956A512B6793AF00BF3CF0 /* SwitchWithLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchWithLabel.swift; sourceTree = "<group>"; };
 		91956A532B67943A00BF3CF0 /* DemoUIImageViewExtensionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoUIImageViewExtensionViewController.swift; sourceTree = "<group>"; };
+		919C70562CAAF28E0036B03C /* QEColorSchemePickerRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QEColorSchemePickerRow.swift; sourceTree = "<group>"; };
 		91B73B362C404F6E00E7D325 /* DemoAvatarPickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoAvatarPickerView.swift; sourceTree = "<group>"; };
 		91E2FB032BC0276E00265E8E /* DemoProfileViewsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoProfileViewsViewController.swift; sourceTree = "<group>"; };
 		91F0B3DB2B62815F0025C4F8 /* MainTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainTableViewController.swift; sourceTree = "<group>"; };
@@ -178,6 +180,7 @@
 				3FD478222C51D7E20071B8B9 /* Gravatar-SwiftUI-Demo.Release.xcconfig */,
 				9133DF1A2CA54D1B0028196F /* QELayoutOptions.swift */,
 				9133DF1D2CA54E080028196F /* QEContentLayoutPickerRow.swift */,
+				919C70562CAAF28E0036B03C /* QEColorSchemePickerRow.swift */,
 				917DEEC82C7F619100E43774 /* TestImageCropper.swift */,
 			);
 			path = "Gravatar-SwiftUI-Demo";
@@ -464,6 +467,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9133DF1C2CA54D7A0028196F /* QELayoutOptions.swift in Sources */,
+				919C70572CAAF28E0036B03C /* QEColorSchemePickerRow.swift in Sources */,
 				49C5D6102B5B33E20067C2A8 /* ContentView.swift in Sources */,
 				1E3FA2402C74B8CC002901F2 /* Secrets.swift in Sources */,
 				9146A7AE2C3BD8F000E07C63 /* DemoAvatarView.swift in Sources */,

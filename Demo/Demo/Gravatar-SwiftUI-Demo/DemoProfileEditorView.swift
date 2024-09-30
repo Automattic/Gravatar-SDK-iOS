@@ -8,6 +8,7 @@ struct DemoProfileEditorView: View {
     // You can make this `true` by default to easily test the picker
     @State private var isPresentingPicker: Bool = false
     @State private var hasSession: Bool = false
+    @State private var selectedScheme: ColorScheme? = nil // nil means it will use the system default
     @Environment(\.oauthSession) var oauthSession
 
     var body: some View {
@@ -18,9 +19,12 @@ struct DemoProfileEditorView: View {
                     .textInputAutocapitalization(.never)
                     .keyboardType(.emailAddress)
                     .disableAutocorrection(true)
-
                 Divider()
+
                 QEContentLayoutPickerRow(contentLayoutOptions: $contentLayoutOptions)
+                Divider()
+
+                QEColorSchemePickerRow(selectedScheme: $selectedScheme)
             }
             .padding(.horizontal)
             Button("Open Profile Editor with OAuth flow") {
@@ -43,12 +47,14 @@ struct DemoProfileEditorView: View {
             }
 
             Spacer()
-        }.onAppear() {
+        }
+        .onAppear() {
             updateHasSession(with: email)
         }
         .onChange(of: email) { _, newValue in
             updateHasSession(with: newValue)
         }
+        .preferredColorScheme(selectedScheme)
     }
 
     func updateHasSession(with email: String) {
