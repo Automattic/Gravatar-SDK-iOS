@@ -13,7 +13,7 @@ struct URLSessionHTTPClient: HTTPClient {
     init(urlSession: URLSessionProtocol? = nil) {
         let configuration = URLSessionConfiguration.default
         configuration.httpAdditionalHeaders = [
-            "Accept" : "application/json"
+            "Accept": "application/json",
         ]
         self.urlSession = urlSession ?? URLSession(configuration: configuration)
     }
