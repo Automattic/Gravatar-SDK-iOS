@@ -33,7 +33,7 @@ enum QEDetent {
     }
 
     @MainActor
-    func toUISheetDetent() -> UISheetPresentationController.Detent {
+    fileprivate func toUISheetDetent() -> UISheetPresentationController.Detent {
         switch self {
         case .large:
             UISheetPresentationController.Detent.large()
@@ -57,7 +57,7 @@ enum QEDetent {
     }
 
     @available(iOS 16.0, *)
-    func toSheetDetent() -> PresentationDetent {
+    fileprivate func toSheetDetent() -> PresentationDetent {
         switch self {
         case .large:
             .large
