@@ -16,6 +16,7 @@ final class DemoQuickEditorViewController: UIViewController {
         field.translatesAutoresizingMaskIntoConstraints = false
         field.textContentType = .emailAddress
         field.keyboardType = .emailAddress
+        field.autocapitalizationType = .none
         field.borderStyle = .roundedRect
         field.placeholder = "email"
         field.delegate = self
