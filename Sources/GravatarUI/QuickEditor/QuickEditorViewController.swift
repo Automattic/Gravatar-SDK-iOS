@@ -62,8 +62,8 @@ final class QuickEditorViewController: UIViewController, ModalPresentationWithIn
         scope: QuickEditorScope,
         avatarPickerConfiguration: AvatarPickerConfiguration? = nil,
         token: String? = nil,
-        onDismiss: (() -> Void)? = nil)
-    {
+        onDismiss: (() -> Void)? = nil
+    ) {
         self.email = email
         self.scope = scope
         self.avatarPickerConfiguration = avatarPickerConfiguration ?? .default
