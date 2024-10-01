@@ -461,7 +461,6 @@ components:
           description: The error code for the error message
       required:
         - error
-        - code
   securitySchemes:
     apiKey:
       type: http
@@ -669,3 +668,13 @@ paths:
       responses:
         '204':
           description: Avatar successfully set
+        '401':
+          description: Unauthorized request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                unauthorized:
+                  value:
+                    error: You are not authorized to perform this action.
