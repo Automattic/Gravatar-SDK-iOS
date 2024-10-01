@@ -91,7 +91,15 @@ public actor ImageDownloadService: ImageDownloader, Sendable {
 
 extension URLRequest {
     fileprivate static func imageRequest(url: URL, forceRefresh: Bool) -> URLRequest {
-        var request = forceRefresh ? URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData) : URLRequest(url: url)
+        var request = forceRefresh ? URLRequest(url: url, cachePolicy: .reloadIgnoringLocalAndRemoteCacheData) : URLRequest(url: url)
+        if forceRefresh, let url = request.url, url.isGravatarURL {
+            var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false)
+            // Gravatar doesn't support cache control headers. So we add a random query parameter to
+            // bypass the backend cache and get the latest image.
+            // Remove this if Gravatar starts to support cache control headers.
+            urlComponents?.queryItems?.append(.init(name: "_", value: "\(NSDate().timeIntervalSince1970)"))
+            request.url = urlComponents?.url
+        }
         request.httpShouldHandleCookies = false
         request.addValue("image/*", forHTTPHeaderField: "Accept")
         return request
