@@ -8,7 +8,7 @@ struct DemoProfileEditorView: View {
     // You can make this `true` by default to easily test the picker
     @State private var isPresentingPicker: Bool = false
     @State private var hasSession: Bool = false
-    @State private var selectedScheme: ColorScheme? = nil // nil means it will use the system default
+    @State private var selectedScheme: UIUserInterfaceStyle = .unspecified
     @Environment(\.oauthSession) var oauthSession
 
     var body: some View {
@@ -54,7 +54,7 @@ struct DemoProfileEditorView: View {
         .onChange(of: email) { _, newValue in
             updateHasSession(with: newValue)
         }
-        .preferredColorScheme(selectedScheme)
+        .preferredColorScheme(ColorScheme(selectedScheme))
     }
 
     func updateHasSession(with email: String) {
