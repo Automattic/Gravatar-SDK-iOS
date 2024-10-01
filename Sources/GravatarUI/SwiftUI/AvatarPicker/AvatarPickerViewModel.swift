@@ -104,7 +104,7 @@ class AvatarPickerViewModel: ObservableObject {
         } catch APIError.responseError(let reason) where reason.cancelled {
             // NoOp.
         } catch {
-            toastManager.showToast("Oops, something didn't quite work out while trying to change your avatar.", type: .error)
+            toastManager.showToast(Localized.genericAvatarSelectionError, type: .error)
             grid.selectAvatar(withID: selectedAvatarResult?.value())
         }
     }
@@ -250,6 +250,12 @@ extension AvatarPickerViewModel {
             "AvatarPickerViewModel.Upload.Error.message",
             value: "Oops, there was an error uploading the image.",
             comment: "A generic error message to show on an error dialog when the upload fails."
+        )
+
+        static let genericAvatarSelectionError = SDKLocalizedString(
+            "AvatarPickerViewModel.Select.Error.message",
+            value: "Oops, something didn't quite work out while trying to change your avatar.",
+            comment: "A generic error message to show on an error dialog when selecting an avatar fails."
         )
     }
 }
