@@ -14,17 +14,22 @@ public struct AvatarPickerConfiguration: Sendable {
     )
 }
 
-public final class QuickEditorViewController: UIViewController, ModalPresentationWithIntrinsicSize {
+final class QuickEditorViewController: UIViewController, ModalPresentationWithIntrinsicSize {
     let email: Email
     let scope: QuickEditorScope
-
+    let token: String?
     let avatarPickerConfiguration: AvatarPickerConfiguration
+
+    var onDismiss: (() -> Void)? = nil
 
     private lazy var isPresented: Binding<Bool> = Binding {
         true
     } set: { isPresented in
-        guard !isPresented else { return }
-        self.dismiss(animated: true)
+        Task { @MainActor in
+            guard !isPresented else { return }
+            self.dismiss(animated: true)
+            self.onDismiss?()
+        }
     }
 
     var verticalSizeClass: UserInterfaceSizeClass?
@@ -36,6 +41,7 @@ public final class QuickEditorViewController: UIViewController, ModalPresentatio
     private lazy var quickEditor: InnerHeightUIHostingController = .init(rootView: QuickEditor(
         email: email,
         scope: scope,
+        token: token,
         isPresented: isPresented,
         customImageEditor: nil as NoCustomEditorBlock?,
         contentLayoutProvider: avatarPickerConfiguration.contentLayout
@@ -51,18 +57,19 @@ public final class QuickEditorViewController: UIViewController, ModalPresentatio
         self.updateDetents()
     })
 
-    public init(email: Email, scope: QuickEditorScope, avatarPickerConfiguration: AvatarPickerConfiguration? = nil) {
+    init(
+        email: Email,
+        scope: QuickEditorScope,
+        avatarPickerConfiguration: AvatarPickerConfiguration? = nil,
+        token: String? = nil,
+        onDismiss: (() -> Void)? = nil)
+    {
         self.email = email
         self.scope = scope
         self.avatarPickerConfiguration = avatarPickerConfiguration ?? .default
+        self.token = token
+        self.onDismiss = onDismiss
         super.init(nibName: nil, bundle: nil)
-    }
-
-    required init?(coder: NSCoder, email: Email, scope: QuickEditorScope, avatarPickerConfiguration: AvatarPickerConfiguration? = nil) {
-        self.email = email
-        self.scope = scope
-        self.avatarPickerConfiguration = avatarPickerConfiguration ?? .default
-        super.init(coder: coder)
     }
 
     @available(*, unavailable)
@@ -70,12 +77,9 @@ public final class QuickEditorViewController: UIViewController, ModalPresentatio
         fatalError("init(coder:) has not been implemented")
     }
 
-    override public func encode(with coder: NSCoder) {
-        coder.encodeConditionalObject(email, forKey: "kQEEmial")
-    }
-
-    override public func viewDidLoad() {
+    override func viewDidLoad() {
         super.viewDidLoad()
+
         quickEditor.willMove(toParent: self)
         addChild(quickEditor)
         view.addSubview(quickEditor.view)
@@ -90,7 +94,7 @@ public final class QuickEditorViewController: UIViewController, ModalPresentatio
         updateDetents()
     }
 
-    override public func viewWillAppear(_ animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         if navigationController != nil {
             assertionFailure("This View Controller should be presented modally, without wrapping it in a Navigation Controller.")
@@ -144,5 +148,43 @@ private class InnerHeightUIHostingController: UIHostingController<AnyView> {
 
     private var _innerVerticalSizeClass: UserInterfaceSizeClass? = nil {
         didSet { onVerticalSizeClassChange(_innerVerticalSizeClass) }
+    }
+}
+
+public struct QuickEditorPresenter {
+    let email: Email
+    let scope: QuickEditorScope
+    let avatarPickerConfiguration: AvatarPickerConfiguration
+    let token: String?
+
+    public init(
+        email: Email,
+        scope: QuickEditorScope,
+        avatarPickerConfiguration: AvatarPickerConfiguration? = nil,
+        token: String? = nil
+    ) {
+        self.email = email
+        self.scope = scope
+        self.avatarPickerConfiguration = avatarPickerConfiguration ?? .default
+        self.token = token
+    }
+
+    @MainActor
+    public func present(
+        in parent: UIViewController,
+        animated: Bool = true,
+        completion: (() -> Void)? = nil,
+        onDismiss: @escaping () -> Void
+    ) {
+        let quickEditor = QuickEditorViewController(
+            email: email,
+            scope: scope,
+            avatarPickerConfiguration: avatarPickerConfiguration,
+            token: token,
+            onDismiss: onDismiss
+        )
+        configure?(quickEditor)
+        quickEditor.onDismiss = onDismiss
+        parent.present(quickEditor, animated: animated, completion: completion)
     }
 }

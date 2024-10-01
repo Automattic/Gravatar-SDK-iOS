@@ -18,12 +18,14 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
     @State var oauthError: OAuthError?
     @Binding var isPresented: Bool
     let email: Email
+    let token: String?
     var customImageEditor: ImageEditorBlock<ImageEditor>?
     var contentLayoutProvider: AvatarPickerContentLayoutProviding
 
     init(
         email: Email,
         scope: QuickEditorScope,
+        token: String? = nil,
         isPresented: Binding<Bool>,
         customImageEditor: ImageEditorBlock<ImageEditor>? = nil,
         contentLayoutProvider: AvatarPickerContentLayoutProviding = AvatarPickerContentLayout.vertical
@@ -33,11 +35,14 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
         self._isPresented = isPresented
         self.customImageEditor = customImageEditor
         self.contentLayoutProvider = contentLayoutProvider
+        self.token = token
     }
 
     var body: some View {
         NavigationView {
-            if hasSession, let token = oauthSession.sessionToken(with: email) {
+            if let token {
+                editorView(with: token)
+            } else if hasSession, let token = oauthSession.sessionToken(with: email) {
                 editorView(with: token)
             } else {
                 noticeView()

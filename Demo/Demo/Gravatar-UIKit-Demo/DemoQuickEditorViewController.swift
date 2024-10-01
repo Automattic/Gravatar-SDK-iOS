@@ -11,6 +11,15 @@ final class DemoQuickEditorViewController: UIViewController {
         }
     }
 
+    var savedToken: String? {
+        get {
+            UserDefaults.standard.string(forKey: "QETokenKey")
+        }
+        set {
+            UserDefaults.standard.setValue(newValue, forKey: "QETokenKey")
+        }
+    }
+
     lazy var emailField: UITextField = {
         let field = UITextField()
         field.translatesAutoresizingMaskIntoConstraints = false
@@ -23,6 +32,37 @@ final class DemoQuickEditorViewController: UIViewController {
         field.text = savedEmail
         return field
     }()
+
+    lazy var tokenField: UITextField = {
+        let field = UITextField()
+        let showButton = UIButton(type: .custom, primaryAction: UIAction { action in
+            field.isSecureTextEntry = !field.isSecureTextEntry
+            (action.sender as? UIButton)?.isSelected = !field.isSecureTextEntry
+
+        })
+        showButton.tintColor = .systemGray
+        showButton.setImage(UIImage(systemName: "eye"), for: .normal)
+        showButton.setImage(UIImage(systemName: "eye.slash"), for: .selected)
+
+        field.rightView = showButton
+        field.rightViewMode = .always
+
+        field.translatesAutoresizingMaskIntoConstraints = false
+        field.isSecureTextEntry = true
+
+        field.autocapitalizationType = .none
+        field.borderStyle = .roundedRect
+        field.placeholder = "Token (optional)"
+        field.text = savedToken
+        field.delegate = self
+        return field
+    }()
+
+    var token: String? {
+        guard let token = tokenField.text, !token.isEmpty else { return nil }
+        savedToken = token
+        return token
+    }
 
     var selectedLayout: QELayoutOptions = .horizontal {
         didSet {
@@ -48,6 +88,32 @@ final class DemoQuickEditorViewController: UIViewController {
         present(sheet, animated: true)
     }
 
+    lazy var logoutButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setTitle("Logout", for: .normal)
+        button.addAction(UIAction { [weak self] _ in self?.logout() }, for: .touchUpInside)
+        updateLogoutButton(button)
+        return button
+    }()
+
+    func updateLogoutButton(_ button: UIButton? = nil) {
+        guard let savedEmail else { return }
+        let session = OAuthSession()
+        let button = button ?? logoutButton
+        UIView.animate {
+            button.isHidden = !session.hasSession(with: Email(savedEmail))
+            button.alpha = button.isHidden ? 0 : 1
+        }
+    }
+
+    func logout() {
+        guard let savedEmail else { return }
+        let session = OAuthSession()
+        session.deleteSession(with: Email(savedEmail))
+        updateLogoutButton()
+    }
+
     lazy var showButton: UIButton = {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -58,7 +124,7 @@ final class DemoQuickEditorViewController: UIViewController {
     }()
 
     lazy var rootStackView: UIStackView = {
-        let stackView = UIStackView(arrangedSubviews: [emailField, layoutButton, showButton])
+        let stackView = UIStackView(arrangedSubviews: [emailField, tokenField, layoutButton, logoutButton, showButton])
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical
         stackView.spacing = 12
@@ -81,18 +147,30 @@ final class DemoQuickEditorViewController: UIViewController {
     func presentQuickEditor() {
         guard let email = emailField.text else { return }
         savedEmail = email
-        let quickEditor = QuickEditorViewController(
+        var presenter = QuickEditorPresenter(
             email: Email(email),
             scope: .avatarPicker,
-            avatarPickerConfiguration: AvatarPickerConfiguration(contentLayout: selectedLayout.contentLayout)
+            avatarPickerConfiguration: AvatarPickerConfiguration(contentLayout: selectedLayout.contentLayout),
+            token: token
         )
-        present(quickEditor, animated: true)
+
+        presenter.present(in: self, onDismiss: { [weak self] in
+            self?.updateLogoutButton()
+        })
     }
 }
 
 extension DemoQuickEditorViewController: UITextFieldDelegate {
     func textFieldDidChangeSelection(_ textField: UITextField) {
-        showButton.isEnabled = Email(textField.text ?? "").isValid
+        if textField == emailField {
+            showButton.isEnabled = Email(textField.text ?? "").isValid
+        }
+    }
+
+    func textFieldDidEndEditing(_ textField: UITextField, reason: UITextField.DidEndEditingReason) {
+        if textField == tokenField {
+            savedToken = textField.text
+        }
     }
 }
 
