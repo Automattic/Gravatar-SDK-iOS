@@ -103,6 +103,8 @@ class AvatarPickerViewModel: ObservableObject {
             selectedAvatarResult = .success(response.imageId)
         } catch APIError.responseError(let reason) where reason.cancelled {
             // NoOp.
+        } catch APIError.responseError(let .invalidHTTPStatusCode(_, errorPayload)) {
+            toastManager.showToast(errorPayload?.message ?? Localized.genericAvatarSelectionError, type: .error)
         } catch {
             toastManager.showToast(Localized.genericAvatarSelectionError, type: .error)
             grid.selectAvatar(withID: selectedAvatarResult?.value())
