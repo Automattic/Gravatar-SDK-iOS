@@ -4,7 +4,7 @@ import UIKit
 ///
 /// This is the default type which implements ``ImageDownloader``..
 /// Unless specified otherwise, `ImageDownloadService` will use a `URLSession` based `HTTPClient`, and a in-memory image cache.
-public struct ImageDownloadService: ImageDownloader, Sendable {
+public actor ImageDownloadService: ImageDownloader, Sendable {
     private let client: HTTPClient
     let imageCache: ImageCaching
 
@@ -29,12 +29,20 @@ public struct ImageDownloadService: ImageDownloader, Sendable {
         let request = URLRequest.imageRequest(url: url, forceRefresh: forceRefresh)
 
         if !forceRefresh, let image = try await cachedImage(for: url) {
+            try Task.checkCancellation()
             return ImageDownloadResult(image: image, sourceURL: url)
         }
+
         let task = Task<UIImage, Error> {
             try await fetchAndProcessImage(request: request, processor: processingMethod.processor)
         }
-        let image = try await awaitAndCacheImage(from: task, cacheKey: url.absoluteString)
+
+        // Create `.inProgress` entry before we await to prevent re-entrancy issues
+        let cacheKey = url.absoluteString
+        imageCache.setEntry(.inProgress(task), for: cacheKey)
+
+        let image = try await awaitAndCacheImage(from: task, cacheKey: cacheKey)
+        try Task.checkCancellation()
         return ImageDownloadResult(image: image, sourceURL: url)
     }
 
@@ -43,6 +51,7 @@ public struct ImageDownloadService: ImageDownloader, Sendable {
         switch entry {
         case .inProgress(let task):
             let image = try await task.value
+            try Task.checkCancellation()
             return image
         case .ready(let image):
             return image
@@ -50,10 +59,10 @@ public struct ImageDownloadService: ImageDownloader, Sendable {
     }
 
     private func awaitAndCacheImage(from task: Task<UIImage, Error>, cacheKey key: String) async throws -> UIImage {
-        imageCache.setEntry(.inProgress(task), for: key)
         let image: UIImage
         do {
             image = try await task.value
+            try Task.checkCancellation()
         } catch {
             imageCache.setEntry(nil, for: key)
             throw error
@@ -65,6 +74,7 @@ public struct ImageDownloadService: ImageDownloader, Sendable {
     private func fetchAndProcessImage(request: URLRequest, processor: ImageProcessor) async throws -> UIImage {
         do {
             let (data, _) = try await client.fetchData(with: request)
+            try Task.checkCancellation()
             guard let image = processor.process(data) else {
                 throw ImageFetchingError.imageProcessorFailed
             }
@@ -75,20 +85,6 @@ public struct ImageDownloadService: ImageDownloader, Sendable {
             throw error
         } catch {
             throw ImageFetchingError.responseError(reason: .unexpected(error))
-        }
-    }
-
-    public func cancelTask(for url: URL) {
-        if let entry = imageCache.getEntry(with: url.absoluteString) {
-            switch entry {
-            case .inProgress(let task):
-                if !task.isCancelled {
-                    task.cancel()
-                    imageCache.setEntry(nil, for: url.absoluteString)
-                }
-            default:
-                break
-            }
         }
     }
 }
