@@ -147,7 +147,7 @@ final class DemoQuickEditorViewController: UIViewController {
     func presentQuickEditor() {
         guard let email = emailField.text else { return }
         savedEmail = email
-        var presenter = QuickEditorPresenter(
+        let presenter = QuickEditorPresenter(
             email: Email(email),
             scope: .avatarPicker,
             avatarPickerConfiguration: AvatarPickerConfiguration(contentLayout: selectedLayout.contentLayout),

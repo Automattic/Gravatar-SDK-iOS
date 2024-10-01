@@ -183,7 +183,6 @@ public struct QuickEditorPresenter {
             token: token,
             onDismiss: onDismiss
         )
-        configure?(quickEditor)
         quickEditor.onDismiss = onDismiss
         parent.present(quickEditor, animated: animated, completion: completion)
     }
