@@ -10,8 +10,12 @@ enum HTTPClientError: Error {
 struct URLSessionHTTPClient: HTTPClient {
     private let urlSession: URLSessionProtocol
 
-    init(urlSession: URLSessionProtocol = URLSession(configuration: .default)) {
-        self.urlSession = urlSession
+    init(urlSession: URLSessionProtocol? = nil) {
+        let configuration = URLSessionConfiguration.default
+        configuration.httpAdditionalHeaders = [
+            "Accept": "application/json",
+        ]
+        self.urlSession = urlSession ?? URLSession(configuration: configuration)
     }
 
     func fetchData(with request: URLRequest) async throws -> (Data, HTTPURLResponse) {

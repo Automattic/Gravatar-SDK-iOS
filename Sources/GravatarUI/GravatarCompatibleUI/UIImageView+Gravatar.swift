@@ -124,12 +124,6 @@ extension GravatarWrapper where Component: UIImageView {
         }
     }
 
-    public func cancelImageDownload() {
-        if let sourceURL {
-            imageDownloader?.cancelTask(for: sourceURL)
-        }
-    }
-
     /// Downloads the Gravatar profile image and sets it to this UIImageView. Throws ``ImageFetchingComponentError``.
     ///
     /// - Parameters:
