@@ -10,19 +10,19 @@ struct QEColorSchemePickerRow: View {
         case dark
         case system
         
-        var colorScheme: ColorScheme? {
+        var colorScheme: UIUserInterfaceStyle {
             switch self {
             case .light:
                 .light
             case .dark:
                 .dark
             case .system:
-                nil
+                .unspecified
             }
         }
     }
-    
-    @Binding var selectedScheme: ColorScheme?
+
+    @Binding var selectedScheme: UIUserInterfaceStyle
     @State private var options: Options = .system
     
     var body: some View {
@@ -44,5 +44,5 @@ struct QEColorSchemePickerRow: View {
 }
 
 #Preview {
-    QEColorSchemePickerRow(selectedScheme: .constant(nil))
+    QEColorSchemePickerRow(selectedScheme: .constant(.unspecified))
 }
