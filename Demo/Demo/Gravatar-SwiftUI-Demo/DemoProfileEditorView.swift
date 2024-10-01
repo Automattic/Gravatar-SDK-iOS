@@ -39,7 +39,6 @@ struct DemoProfileEditorView: View {
                     updateHasSession(with: email)
                 }
             )
-            .preferredColorScheme(ColorScheme(selectedScheme))
             if hasSession {
                 Button("Log out") {
                     oauthSession.deleteSession(with: .init(email))
@@ -55,6 +54,7 @@ struct DemoProfileEditorView: View {
         .onChange(of: email) { _, newValue in
             updateHasSession(with: newValue)
         }
+        .preferredColorScheme(ColorScheme(selectedScheme))
     }
 
     func updateHasSession(with email: String) {
