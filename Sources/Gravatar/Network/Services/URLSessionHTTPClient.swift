@@ -68,7 +68,7 @@ extension HTTPClientError {
         case .URLSessionError(let error):
             return .URLSessionError(error: error)
         case .invalidHTTPStatusCodeError(let response, let data):
-            if response.statusCode == 400 {
+            if response.statusCode >= 400 {
                 let error: ModelError? = try? data.decode()
                 return .invalidHTTPStatusCode(response: response, errorPayload: error)
             } else {
