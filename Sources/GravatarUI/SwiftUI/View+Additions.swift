@@ -20,8 +20,8 @@ extension View {
     ) -> some View {
         let avatarPickerView = AvatarPickerView(
             model: AvatarPickerViewModel(email: Email(email), authToken: authToken),
-            contentLayoutProvider: AvatarPickerContentLayout.vertical,
             isPresented: isPresented,
+            contentLayoutProvider: AvatarPickerContentLayout.vertical,
             customImageEditor: customImageEditor
         )
         let navigationWrapped = NavigationView { avatarPickerView }
@@ -38,8 +38,8 @@ extension View {
     ) -> some View {
         let avatarPickerView = AvatarPickerView(
             model: AvatarPickerViewModel(email: Email(email), authToken: authToken),
-            contentLayoutProvider: contentLayout,
             isPresented: isPresented,
+            contentLayoutProvider: contentLayout,
             customImageEditor: customImageEditor
         )
         let navigationWrapped = NavigationView { avatarPickerView }
