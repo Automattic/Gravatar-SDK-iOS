@@ -104,10 +104,12 @@ class AvatarPickerViewModel: ObservableObject {
         } catch APIError.responseError(let reason) where reason.cancelled {
             // NoOp.
         } catch APIError.responseError(let .invalidHTTPStatusCode(response, errorPayload)) {
-            toastManager.showToast(errorPayload?.message ?? Localized.genericAvatarSelectionError, type: .error)
             // Reconstruct the original error so we can pass it to the handler
             let thrownError = APIError.responseError(reason: .invalidHTTPStatusCode(response: response, errorPayload: errorPayload))
-            handleSessionError(error: thrownError)
+            handleSessionError(
+                error: thrownError,
+                errorMessage: errorPayload?.message ?? Localized.genericAvatarSelectionError
+            )
         } catch {
             toastManager.showToast(Localized.genericAvatarSelectionError, type: .error)
             grid.selectAvatar(withID: selectedAvatarResult?.value())
@@ -191,10 +193,12 @@ class AvatarPickerViewModel: ObservableObject {
             )
         } catch ImageUploadError.responseError(reason: let .invalidHTTPStatusCode(response, errorPayload)) where response.statusCode == 401 {
             // If the status code is 401, then it means the token is not valid and we should prompt the user accordingly.
-            toastManager.showToast(errorPayload?.message ?? Localized.genericUploadError, type: .error)
             // Reconstruct the thrown error so we can pass it to the handler
             let thrownError = ImageUploadError.responseError(reason: .invalidHTTPStatusCode(response: response, errorPayload: errorPayload))
-            handleSessionError(error: thrownError)
+            handleSessionError(
+                error: thrownError,
+                errorMessage: errorPayload?.message ?? Localized.genericUploadError
+            )
         } catch ImageUploadError.responseError(reason: let reason) where reason.urlSessionErrorLocalizedDescription != nil {
             handleUploadError(
                 imageID: localID,
@@ -221,7 +225,10 @@ class AvatarPickerViewModel: ObservableObject {
         grid.replaceModel(withID: imageID, with: newModel)
     }
 
-    private func handleSessionError(error: Error) {
+    private func handleSessionError(error: Error, errorMessage: String? = nil) {
+        if let errorMessage {
+            toastManager.showToast(errorMessage, type: .error)
+        }
         self.grid.setAvatars([])
         self.gridResponseStatus = .failure(error)
     }
