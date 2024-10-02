@@ -4,7 +4,7 @@ class ImageCropperViewController: UIViewController, UIScrollViewDelegate {
     private enum Constants {
         static let backgroundColor = UIColor.black
         static let croperFrameSize: CGFloat = 320
-        static let maxOutputImageSizeInPixels: CGFloat = 1536
+        static let maxOutputImageSizeInPixels: CGFloat = 1280
     }
 
     // ScrollView for zooming and panning
