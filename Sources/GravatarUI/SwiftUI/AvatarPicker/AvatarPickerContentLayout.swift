@@ -42,6 +42,15 @@ public enum AvatarPickerContentLayoutWithPresentation: AvatarPickerContentLayout
             .vertical
         }
     }
+
+    var prioritizeScrollOverResize: Bool {
+        switch self {
+        case .vertical(.expandableMedium(_, let prioritizeScrollOverResize)):
+            prioritizeScrollOverResize
+        default:
+            false
+        }
+    }
 }
 
 /// Content layout to use pre iOS 16.0 where the system don't offer different presentation styles for SwiftUI.

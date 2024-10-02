@@ -12,6 +12,7 @@
 		1E3FA2402C74B8CC002901F2 /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E3FA23F2C74B8CC002901F2 /* Secrets.swift */; };
 		1E3FA2412C74E539002901F2 /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E3FA23F2C74B8CC002901F2 /* Secrets.swift */; };
 		1E3FA2452C75E403002901F2 /* DemoProfileEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E3FA2442C75E403002901F2 /* DemoProfileEditorView.swift */; };
+		1EA26DE22CA5677700AACF58 /* DemoQuickEditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E93D3C82CA566D90085139A /* DemoQuickEditorViewController.swift */; };
 		1ECAB5072BC984440043A331 /* DemoProfileConfigurationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ECAB5062BC984440043A331 /* DemoProfileConfigurationViewController.swift */; };
 		49018E2D2C8110C600B1207D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 49018E2B2C8110C600B1207D /* Localizable.strings */; };
 		49018E2E2C8110C600B1207D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 49018E2B2C8110C600B1207D /* Localizable.strings */; };
@@ -37,6 +38,7 @@
 		917DEEC92C7F639F00E43774 /* TestImageCropper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 917DEEC82C7F619100E43774 /* TestImageCropper.swift */; };
 		91956A522B6793AF00BF3CF0 /* SwitchWithLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91956A512B6793AF00BF3CF0 /* SwitchWithLabel.swift */; };
 		91956A542B67943A00BF3CF0 /* DemoUIImageViewExtensionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91956A532B67943A00BF3CF0 /* DemoUIImageViewExtensionViewController.swift */; };
+		919C70552CAA8A090036B03C /* QELayoutOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9133DF1A2CA54D1B0028196F /* QELayoutOptions.swift */; };
 		919C70572CAAF28E0036B03C /* QEColorSchemePickerRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 919C70562CAAF28E0036B03C /* QEColorSchemePickerRow.swift */; };
 		91B73B372C404F6E00E7D325 /* DemoAvatarPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91B73B362C404F6E00E7D325 /* DemoAvatarPickerView.swift */; };
 		91E2FB042BC0276E00265E8E /* DemoProfileViewsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91E2FB032BC0276E00265E8E /* DemoProfileViewsViewController.swift */; };
@@ -51,6 +53,7 @@
 		1E3FA23D2C74B7B5002901F2 /* Secrets.tpl */ = {isa = PBXFileReference; lastKnownFileType = text; path = Secrets.tpl; sourceTree = "<group>"; };
 		1E3FA23F2C74B8CC002901F2 /* Secrets.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Secrets.swift; sourceTree = "<group>"; };
 		1E3FA2442C75E403002901F2 /* DemoProfileEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoProfileEditorView.swift; sourceTree = "<group>"; };
+		1E93D3C82CA566D90085139A /* DemoQuickEditorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoQuickEditorViewController.swift; sourceTree = "<group>"; };
 		1ECAB5062BC984440043A331 /* DemoProfileConfigurationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoProfileConfigurationViewController.swift; sourceTree = "<group>"; };
 		3FD4781E2C50D6FD0071B8B9 /* Base.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Base.xcconfig; sourceTree = "<group>"; };
 		3FD478212C51D5CE0071B8B9 /* Gravatar-UIKit-Demo.Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Gravatar-UIKit-Demo.Release.xcconfig"; sourceTree = "<group>"; };
@@ -204,6 +207,7 @@
 				914AC01F2BDAAC3C005DA4A5 /* DemoRemoteSVGViewController.swift */,
 				91F0B3DB2B62815F0025C4F8 /* MainTableViewController.swift */,
 				9133058D2C91F2C8009F5C0B /* DemoImageCropperViewController.swift */,
+				1E93D3C82CA566D90085139A /* DemoQuickEditorViewController.swift */,
 				495775EA2B5B34980082812A /* Assets.xcassets */,
 				495775EC2B5B34980082812A /* LaunchScreen.storyboard */,
 				495775EF2B5B34980082812A /* Info.plist */,
@@ -450,6 +454,7 @@
 				1E0087932B63CFFE0012ECEA /* DemoFetchProfileViewController.swift in Sources */,
 				1E0087952B63DBCB0012ECEA /* DemoUploadImageViewController.swift in Sources */,
 				495775E22B5B34970082812A /* AppDelegate.swift in Sources */,
+				1EA26DE22CA5677700AACF58 /* DemoQuickEditorViewController.swift in Sources */,
 				91956A522B6793AF00BF3CF0 /* SwitchWithLabel.swift in Sources */,
 				914AC01A2BD7FF08005DA4A5 /* DemoProfilePresentationStylesViewController.swift in Sources */,
 				91F0B3DE2B62815F0025C4F8 /* DemoAvatarDownloadViewController.swift in Sources */,
@@ -457,6 +462,7 @@
 				914AC0202BDAAC3C005DA4A5 /* DemoRemoteSVGViewController.swift in Sources */,
 				495775E42B5B34970082812A /* SceneDelegate.swift in Sources */,
 				1ECAB5072BC984440043A331 /* DemoProfileConfigurationViewController.swift in Sources */,
+				919C70552CAA8A090036B03C /* QELayoutOptions.swift in Sources */,
 				91E2FB042BC0276E00265E8E /* DemoProfileViewsViewController.swift in Sources */,
 				9133058E2C91F8D1009F5C0B /* DemoImageCropperViewController.swift in Sources */,
 			);

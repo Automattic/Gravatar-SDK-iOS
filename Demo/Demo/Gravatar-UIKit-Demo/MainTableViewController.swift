@@ -18,6 +18,7 @@ class MainTableViewController: UITableViewController {
         case profileCard
         case configuration
         case profileViewController
+        case quickEditor
         #if DEBUG
         case displayRemoteSVG
         case imageCropper
@@ -55,6 +56,8 @@ class MainTableViewController: UITableViewController {
             content.text = "Profile Card Configuration"
         case .profileViewController:
             content.text = "Profile View Controller"
+        case .quickEditor:
+            content.text = "Quick Editor"
         #if DEBUG
         case .displayRemoteSVG:
             content.text = "Display remote SVG"
@@ -87,6 +90,8 @@ class MainTableViewController: UITableViewController {
             show(DemoProfileConfigurationViewController(style: .insetGrouped), sender: nil)
         case .profileViewController:
             navigationController?.pushViewController(DemoProfilePresentationStylesViewController(), animated: true)
+        case .quickEditor:
+            navigationController?.pushViewController(DemoQuickEditorViewController(), animated: true)
         #if DEBUG
         case .displayRemoteSVG:
             navigationController?.pushViewController(DemoRemoteSVGViewController(), animated: true)

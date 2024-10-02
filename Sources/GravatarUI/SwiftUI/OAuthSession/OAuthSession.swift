@@ -14,6 +14,11 @@ public struct OAuthSession: Sendable {
         self.storage = storage
     }
 
+    public init() {
+        self.authenticationSession = OldAuthenticationSession()
+        self.storage = Keychain()
+    }
+
     public func hasSession(with email: Email) -> Bool {
         (try? storage.secret(with: email.rawValue) ?? nil) != nil
     }
