@@ -176,13 +176,12 @@ final class DemoQuickEditorViewController: UIViewController {
         savedEmail = email
         let presenter = QuickEditorPresenter(
             email: Email(email),
-            scope: .avatarPicker,
+            scope: .avatarPicker(AvatarPickerConfiguration(contentLayout: selectedLayout.contentLayout)),
             configuration: .init(
-                interfaceStyle: customColorScheme,
-                avatarPickerConfiguration: AvatarPickerConfiguration(contentLayout: selectedLayout.contentLayout)
+                interfaceStyle: customColorScheme
             ),
-            token: token)
-
+            token: token
+        )
         presenter.present(in: self, onDismiss: { [weak self] in
             self?.updateLogoutButton()
         })

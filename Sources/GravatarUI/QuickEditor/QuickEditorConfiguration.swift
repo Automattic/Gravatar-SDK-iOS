@@ -2,16 +2,13 @@ import UIKit
 
 public class QuickEditorConfiguration {
     let interfaceStyle: UIUserInterfaceStyle
-    let avatarPickerConfiguration: AvatarPickerConfiguration
 
     static var `default`: QuickEditorConfiguration { .init() }
 
     public init(
-        interfaceStyle: UIUserInterfaceStyle? = nil,
-        avatarPickerConfiguration: AvatarPickerConfiguration? = nil
+        interfaceStyle: UIUserInterfaceStyle? = nil
     ) {
         self.interfaceStyle = interfaceStyle ?? .unspecified
-        self.avatarPickerConfiguration = avatarPickerConfiguration ?? .default
     }
 }
 

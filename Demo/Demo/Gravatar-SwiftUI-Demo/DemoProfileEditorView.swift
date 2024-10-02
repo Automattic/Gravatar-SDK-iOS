@@ -33,8 +33,7 @@ struct DemoProfileEditorView: View {
             .gravatarQuickEditorSheet(
                 isPresented: $isPresentingPicker,
                 email: email,
-                scope: .avatarPicker,
-                contentLayout: contentLayoutOptions.contentLayout,
+                scope: .avatarPicker(.init(contentLayout: contentLayoutOptions.contentLayout)),
                 onDismiss: {
                     updateHasSession(with: email)
                 }

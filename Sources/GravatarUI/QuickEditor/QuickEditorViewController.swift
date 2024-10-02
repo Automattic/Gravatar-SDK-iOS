@@ -3,7 +3,7 @@ import UIKit
 
 final class QuickEditorViewController: UIViewController, ModalPresentationWithIntrinsicSize {
     let email: Email
-    let scope: QuickEditorScope
+    let scope: QuickEditorScopeWithConfiguration
     let token: String?
     let configuration: QuickEditorConfiguration
 
@@ -22,12 +22,15 @@ final class QuickEditorViewController: UIViewController, ModalPresentationWithIn
     var verticalSizeClass: UserInterfaceSizeClass?
     var sheetHeight: CGFloat = QEModalPresentationConstants.bottomSheetEstimatedHeight
     var contentLayoutWithPresentation: AvatarPickerContentLayoutWithPresentation {
-        configuration.avatarPickerConfiguration.contentLayout
+        switch scope {
+        case .avatarPicker(let config):
+            config.contentLayout
+        }
     }
 
     private lazy var quickEditor: InnerHeightUIHostingController = .init(rootView: QuickEditor(
         email: email,
-        scope: scope,
+        scope: scope.simpleScope,
         token: token,
         isPresented: isPresented,
         customImageEditor: nil as NoCustomEditorBlock?,
@@ -46,7 +49,7 @@ final class QuickEditorViewController: UIViewController, ModalPresentationWithIn
 
     init(
         email: Email,
-        scope: QuickEditorScope,
+        scope: QuickEditorScopeWithConfiguration,
         configuration: QuickEditorConfiguration? = nil,
         token: String? = nil,
         onDismiss: (() -> Void)? = nil
@@ -140,13 +143,13 @@ private class InnerHeightUIHostingController: UIHostingController<AnyView> {
 
 public struct QuickEditorPresenter {
     let email: Email
-    let scope: QuickEditorScope
+    let scope: QuickEditorScopeWithConfiguration
     let configuration: QuickEditorConfiguration
     let token: String?
 
     public init(
         email: Email,
-        scope: QuickEditorScope,
+        scope: QuickEditorScopeWithConfiguration,
         configuration: QuickEditorConfiguration? = nil,
         token: String? = nil
     ) {

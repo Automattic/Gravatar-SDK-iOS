@@ -56,7 +56,7 @@ extension View {
             .padding(.vertical, borderWidth) // to prevent borders from getting clipped
     }
 
-    @available(iOS, deprecated: 16.0, message: "Use the new method that takes in `AvatarPickerContentLayoutWithPresentation` for `contentLayout`.")
+    @available(iOS, deprecated: 16.0, message: "Use the new method that takes in `QuickEditorScopeWithConfiguration`.")
     public func gravatarQuickEditorSheet(
         isPresented: Binding<Bool>,
         email: String,
@@ -78,24 +78,26 @@ extension View {
     public func gravatarQuickEditorSheet(
         isPresented: Binding<Bool>,
         email: String,
-        scope: QuickEditorScope,
+        scope: QuickEditorScopeWithConfiguration,
         customImageEditor: ImageEditorBlock<some ImageEditorView>? = nil as NoCustomEditorBlock?,
-        contentLayout: AvatarPickerContentLayoutWithPresentation,
         onDismiss: (() -> Void)? = nil
     ) -> some View {
-        let editor = QuickEditor(
-            email: .init(email),
-            scope: scope,
-            isPresented: isPresented,
-            customImageEditor: customImageEditor,
-            contentLayoutProvider: contentLayout
-        )
-        return modifier(AvatarPickerModalPresentationModifier(
-            isPresented: isPresented,
-            onDismiss: onDismiss,
-            modalView: editor,
-            contentLayout: contentLayout
-        ))
+        switch scope {
+        case .avatarPicker(let config):
+            let editor = QuickEditor(
+                email: .init(email),
+                scope: scope.simpleScope,
+                isPresented: isPresented,
+                customImageEditor: customImageEditor,
+                contentLayoutProvider: config.contentLayout
+            )
+            return modifier(AvatarPickerModalPresentationModifier(
+                isPresented: isPresented,
+                onDismiss: onDismiss,
+                modalView: editor,
+                contentLayout: config.contentLayout
+            ))
+        }
     }
 
     func presentationContentInteraction(shouldPrioritizeScrolling: Bool) -> some View {

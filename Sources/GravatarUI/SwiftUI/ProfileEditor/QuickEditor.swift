@@ -4,6 +4,17 @@ public enum QuickEditorScope: Sendable {
     case avatarPicker
 }
 
+public enum QuickEditorScopeWithConfiguration: Sendable {
+    case avatarPicker(AvatarPickerConfiguration)
+    
+    var simpleScope: QuickEditorScope {
+        switch self {
+        case .avatarPicker(_):
+            .avatarPicker
+        }
+    }
+}
+
 private enum QuickEditorConstants {
     static let title: String = "Gravatar" // defined here to avoid translations
 }
