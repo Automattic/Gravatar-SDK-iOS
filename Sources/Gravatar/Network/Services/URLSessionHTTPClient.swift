@@ -52,14 +52,10 @@ private func validatedHTTPResponse(_ response: URLResponse, data: Data) throws -
     guard let httpResponse = response as? HTTPURLResponse else {
         throw HTTPClientError.invalidURLResponseError(response)
     }
-    if isErrorResponse(httpResponse) {
+    if httpResponse.isError {
         throw HTTPClientError.invalidHTTPStatusCodeError(httpResponse, data)
     }
     return httpResponse
-}
-
-private func isErrorResponse(_ response: HTTPURLResponse) -> Bool {
-    response.statusCode >= 400 && response.statusCode < 600
 }
 
 extension HTTPClientError {
@@ -68,7 +64,7 @@ extension HTTPClientError {
         case .URLSessionError(let error):
             return .URLSessionError(error: error)
         case .invalidHTTPStatusCodeError(let response, let data):
-            if response.statusCode >= 400 {
+            if response.isClientError {
                 let error: ModelError? = try? data.decode()
                 return .invalidHTTPStatusCode(response: response, errorPayload: error)
             } else {
