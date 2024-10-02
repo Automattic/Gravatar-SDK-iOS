@@ -1,7 +1,7 @@
 import Foundation
 
-public struct AssociatedEmail200Response: Codable, Hashable, Sendable {
-    /// Whether the email is associated with a Gravatar account.
+public struct AssociatedResponse: Codable, Hashable, Sendable {
+    /// Whether the entity is associated with the account.
     public private(set) var associated: Bool
 
     @available(*, deprecated, message: "init will become internal on the next release")
