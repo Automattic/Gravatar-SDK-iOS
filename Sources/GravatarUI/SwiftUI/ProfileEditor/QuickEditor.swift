@@ -1,6 +1,6 @@
 import SwiftUI
 
-public enum QuickEditorScope {
+public enum QuickEditorScope: Sendable {
     case avatarPicker
 }
 
@@ -18,12 +18,14 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
     @State var oauthError: OAuthError?
     @Binding var isPresented: Bool
     let email: Email
+    let token: String?
     var customImageEditor: ImageEditorBlock<ImageEditor>?
     var contentLayoutProvider: AvatarPickerContentLayoutProviding
 
     init(
         email: Email,
         scope: QuickEditorScope,
+        token: String? = nil,
         isPresented: Binding<Bool>,
         customImageEditor: ImageEditorBlock<ImageEditor>? = nil,
         contentLayoutProvider: AvatarPickerContentLayoutProviding = AvatarPickerContentLayout.vertical
@@ -33,11 +35,14 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
         self._isPresented = isPresented
         self.customImageEditor = customImageEditor
         self.contentLayoutProvider = contentLayoutProvider
+        self.token = token
     }
 
     var body: some View {
         NavigationView {
-            if hasSession, let token = oauthSession.sessionToken(with: email) {
+            if let token {
+                editorView(with: token)
+            } else if hasSession, let token = oauthSession.sessionToken(with: email) {
                 editorView(with: token)
             } else {
                 noticeView()
@@ -52,8 +57,8 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
         case .avatarPicker:
             AvatarPickerView(
                 model: .init(email: email, authToken: token),
-                contentLayoutProvider: contentLayoutProvider,
                 isPresented: $isPresented,
+                contentLayoutProvider: contentLayoutProvider,
                 customImageEditor: customImageEditor,
                 tokenErrorHandler: {
                     oauthSession.deleteSession(with: email)
@@ -107,14 +112,16 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
     func performAuthentication() {
         Task {
             isAuthenticating = true
-            oauthError = nil
             if !oauthSession.hasSession(with: email) {
                 do {
                     _ = try await oauthSession.retrieveAccessToken(with: email)
+                    oauthError = nil
+                } catch OAuthError.oauthResponseError(_, let code) where code == .canceledLogin {
+                    // ignore the error if the user has cancelled the operation.
                 } catch let error as OAuthError {
                     oauthError = error
                 } catch {
-                    // No op.
+                    oauthError = nil
                 }
             }
             hasSession = oauthSession.hasSession(with: email)

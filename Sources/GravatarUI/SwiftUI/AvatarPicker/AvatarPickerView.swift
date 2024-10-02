@@ -6,15 +6,18 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
     fileprivate typealias Constants = AvatarPicker.Constants
     fileprivate typealias Localized = AvatarPicker.Localized
 
-    @ObservedObject var model: AvatarPickerViewModel
-    var contentLayoutProvider: AvatarPickerContentLayoutProviding = AvatarPickerContentLayout.vertical
     @Environment(\.colorScheme) var colorScheme: ColorScheme
-    @Binding var isPresented: Bool
-    @State private var safariURL: URL?
     @Environment(\.verticalSizeClass) var verticalSizeClass
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
+
+    @StateObject var model: AvatarPickerViewModel
+    @Binding var isPresented: Bool
+
+    @State private var safariURL: URL?
     @State private var uploadError: FailedUploadInfo?
     @State private var isUploadErrorDialogPresented: Bool = false
+
+    var contentLayoutProvider: AvatarPickerContentLayoutProviding = AvatarPickerContentLayout.vertical
     var customImageEditor: ImageEditorBlock<ImageEditor>?
     var tokenErrorHandler: (() -> Void)?
 
@@ -276,6 +279,8 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
                     CircularProgressViewStyle()
                 )
                 .controlSize(.regular)
+
+            Spacer()
         }
     }
 
@@ -501,7 +506,7 @@ private enum AvatarPicker {
         profileModel: PreviewModel()
     )
 
-    return AvatarPickerView<NoCustomEditor>(model: model, contentLayoutProvider: AvatarPickerContentLayout.horizontal, isPresented: .constant(true))
+    return AvatarPickerView<NoCustomEditor>(model: model, isPresented: .constant(true), contentLayoutProvider: AvatarPickerContentLayout.horizontal)
 }
 
 #Preview("Empty elements") {

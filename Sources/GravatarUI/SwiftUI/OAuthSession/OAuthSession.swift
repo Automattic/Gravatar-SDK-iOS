@@ -14,6 +14,11 @@ public struct OAuthSession: Sendable {
         self.storage = storage
     }
 
+    public init() {
+        self.authenticationSession = OldAuthenticationSession()
+        self.storage = Keychain()
+    }
+
     public func hasSession(with email: Email) -> Bool {
         (try? storage.secret(with: email.rawValue) ?? nil) != nil
     }
@@ -80,7 +85,7 @@ enum OAuthError: Error {
     case notConfigured
     case couldNotCreateOAuthURLWithGivenSecrets
     case couldNotParseAccessCode(String)
-    case oauthResponseError(String)
+    case oauthResponseError(String, ASWebAuthenticationSessionError.Code?)
     case unknown(Error)
     case couldNotStoreToken(Error)
     case decodingError(Error)
@@ -99,7 +104,7 @@ extension OAuthError {
             return OAuthError.decodingError(error)
         case let error as NSError:
             if error.domain == ASWebAuthenticationSessionErrorDomain {
-                return .oauthResponseError(error.localizedDescription)
+                return .oauthResponseError(error.localizedDescription, ASWebAuthenticationSessionError.Code(rawValue: error.code))
             }
             return .unknown(error)
         default:
