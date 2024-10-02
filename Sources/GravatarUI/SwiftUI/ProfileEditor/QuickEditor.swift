@@ -112,14 +112,16 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
     func performAuthentication() {
         Task {
             isAuthenticating = true
-            oauthError = nil
             if !oauthSession.hasSession(with: email) {
                 do {
                     _ = try await oauthSession.retrieveAccessToken(with: email)
+                    oauthError = nil
+                } catch OAuthError.oauthResponseError(_, let code) where code == .canceledLogin {
+                    // ignore the error if the user has cancelled the operation.
                 } catch let error as OAuthError {
                     oauthError = error
                 } catch {
-                    // No op.
+                    oauthError = nil
                 }
             }
             hasSession = oauthSession.hasSession(with: email)
