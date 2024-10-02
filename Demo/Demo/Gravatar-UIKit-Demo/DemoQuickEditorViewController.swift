@@ -88,6 +88,25 @@ final class DemoQuickEditorViewController: UIViewController {
         present(sheet, animated: true)
     }
 
+    lazy var colorSchemeLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "Prefered color scheme:"
+        return label
+    }()
+
+    lazy var schemeToggle: UISegmentedControl = {
+        let control = UISegmentedControl(items: [
+            UIAction.init(title: "System") { _ in self.customColorScheme = .unspecified },
+            UIAction.init(title: "Light") { _ in self.customColorScheme = .light },
+            UIAction.init(title: "Dark") { _ in self.customColorScheme = .dark },
+        ])
+        control.selectedSegmentIndex = 0
+        return control
+    }()
+
+    var customColorScheme: UIUserInterfaceStyle = .unspecified
+
     lazy var logoutButton: UIButton = {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -124,7 +143,15 @@ final class DemoQuickEditorViewController: UIViewController {
     }()
 
     lazy var rootStackView: UIStackView = {
-        let stackView = UIStackView(arrangedSubviews: [emailField, tokenField, layoutButton, logoutButton, showButton])
+        let stackView = UIStackView(arrangedSubviews: [
+            emailField,
+            tokenField,
+            colorSchemeLabel,
+            schemeToggle,
+            layoutButton,
+            logoutButton,
+            showButton
+        ])
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical
         stackView.spacing = 12
@@ -150,9 +177,11 @@ final class DemoQuickEditorViewController: UIViewController {
         let presenter = QuickEditorPresenter(
             email: Email(email),
             scope: .avatarPicker,
-            avatarPickerConfiguration: AvatarPickerConfiguration(contentLayout: selectedLayout.contentLayout),
-            token: token
-        )
+            configuration: .init(
+                interfaceStyle: customColorScheme,
+                avatarPickerConfiguration: AvatarPickerConfiguration(contentLayout: selectedLayout.contentLayout)
+            ),
+            token: token)
 
         presenter.present(in: self, onDismiss: { [weak self] in
             self?.updateLogoutButton()
