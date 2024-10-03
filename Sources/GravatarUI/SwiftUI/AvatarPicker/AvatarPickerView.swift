@@ -114,8 +114,8 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
                         }
                     }
                 )
-            case .failure(APIError.responseError(reason: let reason)) where reason.httpStatusCode == HTTPStatus.unauthorized.rawValue,
-                 .failure(ImageUploadError.responseError(reason: let reason)) where reason.httpStatusCode == HTTPStatus.unauthorized.rawValue:
+            case .failure(APIError.responseError(reason: let reason)) where reason.httpStatusCode.isStatus(.unauthorized),
+                 .failure(ImageUploadError.responseError(reason: let reason)) where reason.httpStatusCode.isStatus(.unauthorized):
                 let buttonTitle = tokenErrorHandler == nil ?
                     Localized.ContentLoading.Failure.SessionExpired.Close.buttonTitle :
                     Localized.ContentLoading.Failure.SessionExpired.LogIn.buttonTitle
