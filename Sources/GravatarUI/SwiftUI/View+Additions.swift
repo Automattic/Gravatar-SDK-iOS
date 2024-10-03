@@ -56,11 +56,11 @@ extension View {
             .padding(.vertical, borderWidth) // to prevent borders from getting clipped
     }
 
-    @available(iOS, deprecated: 16.0, message: "Use the new method that takes in `QuickEditorScopeWithConfiguration`.")
+    @available(iOS, deprecated: 16.0, message: "Use the new method that takes in `QuickEditorScope`.")
     public func gravatarQuickEditorSheet(
         isPresented: Binding<Bool>,
         email: String,
-        scope: QuickEditorScope,
+        scope: QuickEditorScopeType,
         customImageEditor: ImageEditorBlock<some ImageEditorView>? = nil as NoCustomEditorBlock?,
         onDismiss: (() -> Void)? = nil
     ) -> some View {
@@ -78,7 +78,7 @@ extension View {
     public func gravatarQuickEditorSheet(
         isPresented: Binding<Bool>,
         email: String,
-        scope: QuickEditorScopeWithConfiguration,
+        scope: QuickEditorScope,
         customImageEditor: ImageEditorBlock<some ImageEditorView>? = nil as NoCustomEditorBlock?,
         onDismiss: (() -> Void)? = nil
     ) -> some View {
@@ -86,7 +86,7 @@ extension View {
         case .avatarPicker(let config):
             let editor = QuickEditor(
                 email: .init(email),
-                scope: scope.simpleScope,
+                scope: scope.scopeType,
                 isPresented: isPresented,
                 customImageEditor: customImageEditor,
                 contentLayoutProvider: config.contentLayout
