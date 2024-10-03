@@ -449,6 +449,16 @@ components:
           pattern: ^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$
           examples:
             - '2021-10-01T12:00:00Z'
+    AssociatedResponse:
+      type: object
+      required:
+        - associated
+      properties:
+        associated:
+          type: boolean
+          description: Whether the entity is associated with the account.
+          examples:
+            - true
     Error:
       type: object
       description: An error response from the API.
@@ -476,6 +486,46 @@ components:
           tokenUrl: https://public-api.wordpress.com/oauth2/token
           scopes: {}
       description: WordPress OAuth token to authenticate the request.
+  responses:
+    not_authorized:
+      description: Not Authorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            unauthorized:
+              value:
+                error: You are not authorized to perform this action
+    insufficient_scope:
+      description: Insufficient Scope
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            insufficient_scope:
+              value:
+                code: insufficient_scope
+                error: The provided token does not contain the required scope for this request.
+    rate_limit_exceeded:
+      description: Rate Limit Exceeded
+      headers:
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/X-RateLimit-Limit'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/X-RateLimit-Remaining'
+        X-RateLimit-Reset:
+          $ref: '#/components/headers/X-RateLimit-Reset'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            rate_limit_exceeded:
+              value:
+                error: Rate limit exceeded
+                code: rate_limit_exceeded
 paths:
   /profiles/{profileIdentifier}:
     get:
@@ -519,14 +569,7 @@ paths:
             X-RateLimit-Reset:
               $ref: '#/components/headers/X-RateLimit-Reset'
         '429':
-          description: Rate limit exceeded
-          headers:
-            X-RateLimit-Limit:
-              $ref: '#/components/headers/X-RateLimit-Limit'
-            X-RateLimit-Remaining:
-              $ref: '#/components/headers/X-RateLimit-Remaining'
-            X-RateLimit-Reset:
-              $ref: '#/components/headers/X-RateLimit-Reset'
+          $ref: '#/components/responses/rate_limit_exceeded'
         '500':
           description: Internal server error
   /me/associated-email:
@@ -554,14 +597,11 @@ paths:
             application/json:
               schema:
                 type: object
-                required:
-                  - associated
-                properties:
-                  associated:
-                    type: boolean
-                    description: Whether the email is associated with a Gravatar account.
-                    examples:
-                      - true
+                $ref: '#/components/schemas/AssociatedResponse'
+        '401':
+          $ref: '#/components/responses/not_authorized'
+        '403':
+          $ref: '#/components/responses/insufficient_scope'
   /me/avatars:
     get:
       summary: List avatars
@@ -590,6 +630,10 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Avatar'
+        '401':
+          $ref: '#/components/responses/not_authorized'
+        '403':
+          $ref: '#/components/responses/insufficient_scope'
     post:
       summary: Upload new avatar image
       description: Uploads a new avatar image for the authenticated user.
@@ -633,6 +677,10 @@ paths:
                   value:
                     error: Unsupported image type
                     code: unsupported_image
+        '401':
+          $ref: '#/components/responses/not_authorized'
+        '403':
+          $ref: '#/components/responses/insufficient_scope'
   /me/avatars/{imageId}/email:
     post:
       summary: Set avatar for the hashed email
@@ -669,12 +717,6 @@ paths:
         '204':
           description: Avatar successfully set
         '401':
-          description: Unauthorized request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                unauthorized:
-                  value:
-                    error: You are not authorized to perform this action.
+          $ref: '#/components/responses/not_authorized'
+        '403':
+          $ref: '#/components/responses/insufficient_scope'
