@@ -112,6 +112,7 @@ generate: $(OUTPUT_DIRECTORY) # Generates the open-api model
 	cp "$(OPENAPI_YAML_PATH)" "$(OPENAPI_GENERATOR_CLONE_DIR)"/openapi.yaml
 	mkdir -p "$(OPENAPI_GENERATOR_CLONE_DIR)"/templates
 	cp "$(MODEL_TEMPLATE_PATH)"/*.mustache "$(OPENAPI_GENERATOR_CLONE_DIR)"/templates/
+	rm -rf "$(OPENAPI_GENERATOR_CLONE_DIR)"/generated/OpenAPIClient/Classes/OpenAPIs/Models/*
 	"$(OPENAPI_GENERATOR_CLONE_DIR)"/run-in-docker.sh generate -i openapi.yaml \
     --global-property models \
     -t templates \

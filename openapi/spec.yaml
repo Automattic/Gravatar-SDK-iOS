@@ -449,6 +449,16 @@ components:
           pattern: ^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$
           examples:
             - '2021-10-01T12:00:00Z'
+    AssociatedResponse:
+      type: object
+      required:
+        - associated
+      properties:
+        associated:
+          type: boolean
+          description: Whether the entity is associated with the account.
+          examples:
+            - true
     Error:
       type: object
       description: An error response from the API.
@@ -555,14 +565,7 @@ paths:
             application/json:
               schema:
                 type: object
-                required:
-                  - associated
-                properties:
-                  associated:
-                    type: boolean
-                    description: Whether the email is associated with a Gravatar account.
-                    examples:
-                      - true
+                $ref: '#/components/schemas/AssociatedResponse'
   /me/avatars:
     get:
       summary: List avatars

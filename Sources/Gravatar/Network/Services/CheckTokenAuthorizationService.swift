@@ -28,7 +28,7 @@ package struct CheckTokenAuthorizationService: Sendable {
         request.httpMethod = "GET"
         do {
             let (data, _) = try await client.fetchData(with: request)
-            let result: AssociatedEmail200Response = try data.decode()
+            let result: AssociatedResponse = try data.decode()
             return result.associated
         } catch {
             throw error.apiError()
