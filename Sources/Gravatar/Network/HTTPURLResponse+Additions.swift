@@ -1,18 +1,31 @@
 import Foundation
 
 extension HTTPURLResponse {
+    package func hasStatus(_ status: HTTPStatus) -> Bool {
+        HTTPStatus(rawValue: statusCode) == status
+    }
+
     /// Whether the status code is an error of any kind (`4xx` or `5xx`)
     package var isError: Bool {
-        isClientError || isServerError
+        is4xxError || is5xxError
     }
 
-    /// Whether the status code is a client error code: `4xx`
-    package var isClientError: Bool {
-        statusCode >= 400 && statusCode < 500
+    /// Whether a status code is a `Client Error` status code (`4xx`)
+    package var is4xxError: Bool {
+        guard let status = HTTPStatus(rawValue: self.statusCode) else { return false }
+        return status.is4xxError
     }
 
-    /// Whether the status code is a client error code: `5xx`
-    package var isServerError: Bool {
-        statusCode >= 500 && statusCode < 600
+    /// Whether a status code is a `Server Error` status code (`5xx`)
+    package var is5xxError: Bool {
+        guard let status = HTTPStatus(rawValue: self.statusCode) else { return false }
+        return status.is5xxError
+    }
+}
+
+extension Int? {
+    package func isStatus(_ status: HTTPStatus) -> Bool {
+        guard let self else { return false }
+        return status.rawValue == self
     }
 }

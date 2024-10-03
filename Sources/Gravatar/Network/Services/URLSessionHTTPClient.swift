@@ -64,7 +64,7 @@ extension HTTPClientError {
         case .URLSessionError(let error):
             return .URLSessionError(error: error)
         case .invalidHTTPStatusCodeError(let response, let data):
-            if response.isClientError {
+            if response.is4xxError {
                 let error: ModelError? = try? data.decode()
                 return .invalidHTTPStatusCode(response: response, errorPayload: error)
             } else {
