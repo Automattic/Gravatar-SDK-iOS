@@ -17,7 +17,7 @@ extension View {
         email: String,
         authToken: String,
         customImageEditor: ImageEditorBlock<some ImageEditorView>? = nil as NoCustomEditorBlock?,
-        avatarUpdatedHandler: ((Avatar) -> Void)? = nil
+        avatarUpdatedHandler: (() -> Void)? = nil
     ) -> some View {
         let avatarPickerView = AvatarPickerView(
             model: AvatarPickerViewModel(email: Email(email), authToken: authToken),
@@ -37,7 +37,7 @@ extension View {
         authToken: String,
         contentLayout: AvatarPickerContentLayout,
         customImageEditor: ImageEditorBlock<some ImageEditorView>? = nil as NoCustomEditorBlock?,
-        avatarUpdatedHandler: ((Avatar) -> Void)? = nil
+        avatarUpdatedHandler: (() -> Void)? = nil
     ) -> some View {
         let avatarPickerView = AvatarPickerView(
             model: AvatarPickerViewModel(email: Email(email), authToken: authToken),
@@ -66,7 +66,7 @@ extension View {
         email: String,
         scope: QuickEditorScopeType,
         customImageEditor: ImageEditorBlock<some ImageEditorView>? = nil as NoCustomEditorBlock?,
-        avatarUpdatedHandler: ((Avatar) -> Void)? = nil,
+        avatarUpdatedHandler: (() -> Void)? = nil,
         onDismiss: (() -> Void)? = nil
     ) -> some View {
         let editor = QuickEditor(
@@ -86,7 +86,7 @@ extension View {
         email: String,
         scope: QuickEditorScope,
         customImageEditor: ImageEditorBlock<some ImageEditorView>? = nil as NoCustomEditorBlock?,
-        avatarUpdatedHandler: ((Avatar) -> Void)? = nil,
+        avatarUpdatedHandler: (() -> Void)? = nil,
         onDismiss: (() -> Void)? = nil
     ) -> some View {
         switch scope {

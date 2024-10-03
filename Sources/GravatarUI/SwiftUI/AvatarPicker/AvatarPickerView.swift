@@ -20,7 +20,7 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
     var contentLayoutProvider: AvatarPickerContentLayoutProviding = AvatarPickerContentLayoutType.vertical
     var customImageEditor: ImageEditorBlock<ImageEditor>?
     var tokenErrorHandler: (() -> Void)?
-    var avatarUpdatedHandler: ((Avatar) -> Void)?
+    var avatarUpdatedHandler: (() -> Void)?
 
     public var body: some View {
         ZStack {
@@ -264,8 +264,8 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
 
     func selectAvatar(with id: String) {
         Task {
-            if let avatar = await model.selectAvatar(with: id) {
-                avatarUpdatedHandler?(avatar)
+            if await model.selectAvatar(with: id) != nil {
+                avatarUpdatedHandler?()
             }
         }
     }

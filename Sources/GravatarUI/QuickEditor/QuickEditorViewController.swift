@@ -6,7 +6,7 @@ final class QuickEditorViewController: UIViewController, ModalPresentationWithIn
     let scope: QuickEditorScope
     let token: String?
     let configuration: QuickEditorConfiguration
-    let onAvatarUpdated: ((Avatar) -> Void)?
+    let onAvatarUpdated: (() -> Void)?
     let onDismiss: (() -> Void)?
 
     private lazy var isPresented: Binding<Bool> = Binding {
@@ -53,7 +53,7 @@ final class QuickEditorViewController: UIViewController, ModalPresentationWithIn
         scope: QuickEditorScope,
         configuration: QuickEditorConfiguration? = nil,
         token: String? = nil,
-        onAvatarUpdated: ((Avatar) -> Void)? = nil,
+        onAvatarUpdated: (() -> Void)? = nil,
         onDismiss: (() -> Void)? = nil
     ) {
         self.email = email
@@ -167,7 +167,7 @@ public struct QuickEditorPresenter {
         in parent: UIViewController,
         animated: Bool = true,
         completion: (() -> Void)? = nil,
-        onAvatarUpdated: ((Avatar) -> Void)? = nil,
+        onAvatarUpdated: (() -> Void)? = nil,
         onDismiss: @escaping () -> Void
     ) {
         let quickEditor = QuickEditorViewController(

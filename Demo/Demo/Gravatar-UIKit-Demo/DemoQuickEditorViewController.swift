@@ -171,7 +171,7 @@ final class DemoQuickEditorViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = .secondarySystemBackground
         view.addSubview(rootStackView)
         NSLayoutConstraint.activate([
             rootStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -194,8 +194,8 @@ final class DemoQuickEditorViewController: UIViewController {
             ),
             token: token
         )
-        presenter.present(in: self, onAvatarUpdated: { [weak self] avatar in
-            self?.profileSummaryView.loadAvatar(avatar)
+        presenter.present(in: self, onAvatarUpdated: { [weak self] in
+            self?.profileSummaryView.loadAvatar(with: .email(email), options: [.forceRefresh])
         } , onDismiss: { [weak self] in
             self?.updateLogoutButton()
         })

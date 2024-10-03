@@ -320,29 +320,6 @@ open class BaseProfileView: UIView, UIContentView {
         }
     }
 
-    public func loadAvatar(
-        _ avatar: Avatar,
-        placeholder: UIImage? = nil,
-        rating: Rating? = nil,
-        defaultAvatarOption: DefaultAvatarOption? = nil,
-        options: [ImageSettingOption]? = nil
-    ) {
-        guard let avatarURL = URL(string: avatar.url) else {
-            avatarProvider.setImage(placeholder)
-            return
-        }
-        let pointsSize: ImageSize = .points(avatarLength)
-        let downloadOptions = ImageSettingOptions(options: options).deriveDownloadOptions(
-            garavatarRating: rating,
-            preferredSize: pointsSize,
-            defaultAvatarOption: defaultAvatarOption
-        )
-
-        Task {
-            try await avatarProvider.setImage(with: avatarURL, placeholder: placeholder, options: options)
-        }
-    }
-
     func refresh(with paletteType: PaletteType) {
         avatarProvider.refresh(with: paletteType)
         backgroundColor = paletteType.palette.background.primary

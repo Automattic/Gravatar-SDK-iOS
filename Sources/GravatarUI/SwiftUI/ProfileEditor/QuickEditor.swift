@@ -33,7 +33,7 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
     let token: String?
     var customImageEditor: ImageEditorBlock<ImageEditor>?
     var contentLayoutProvider: AvatarPickerContentLayoutProviding
-    var avatarUpdatedHandler: ((Avatar) -> Void)?
+    var avatarUpdatedHandler: (() -> Void)?
 
     init(
         email: Email,
@@ -42,7 +42,7 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
         isPresented: Binding<Bool>,
         customImageEditor: ImageEditorBlock<ImageEditor>? = nil,
         contentLayoutProvider: AvatarPickerContentLayoutProviding = AvatarPickerContentLayoutType.vertical,
-        avatarUpdatedHandler: ((Avatar) -> Void)? = nil
+        avatarUpdatedHandler: (() -> Void)? = nil
     ) {
         self.email = email
         self.scope = scope
