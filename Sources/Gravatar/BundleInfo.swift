@@ -1,6 +1,6 @@
 import Foundation
 
-struct BundleInfo {
+enum BundleInfo {
     public static var sdkVersion: String? {
         getInfoValue(forKey: "CFBundleShortVersionString") as? String
     }
