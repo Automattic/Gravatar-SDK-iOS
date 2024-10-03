@@ -21,7 +21,7 @@ final class QuickEditorViewController: UIViewController, ModalPresentationWithIn
 
     var verticalSizeClass: UserInterfaceSizeClass?
     var sheetHeight: CGFloat = QEModalPresentationConstants.bottomSheetEstimatedHeight
-    var contentLayoutWithPresentation: AvatarPickerContentLayoutWithPresentation {
+    var contentLayoutWithPresentation: AvatarPickerContentLayout {
         switch scope {
         case .avatarPicker(let config):
             config.contentLayout

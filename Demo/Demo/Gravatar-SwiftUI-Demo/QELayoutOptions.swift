@@ -9,7 +9,7 @@ enum QELayoutOptions: String, Identifiable, CaseIterable {
     case verticalExpandablePrioritizeScrolling = "vertical - expandable - prioritize scrolling"
     case horizontal = "horizontal"
     
-    var contentLayout: AvatarPickerContentLayoutWithPresentation {
+    var contentLayout: AvatarPickerContentLayout {
         switch self {
         case .verticalLarge:
                 .vertical(presentationStyle: .large)

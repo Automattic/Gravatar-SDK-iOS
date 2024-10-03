@@ -39,7 +39,7 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
         token: String? = nil,
         isPresented: Binding<Bool>,
         customImageEditor: ImageEditorBlock<ImageEditor>? = nil,
-        contentLayoutProvider: AvatarPickerContentLayoutProviding = AvatarPickerContentLayout.vertical
+        contentLayoutProvider: AvatarPickerContentLayoutProviding = AvatarPickerContentLayoutType.vertical
     ) {
         self.email = email
         self.scope = scope
@@ -207,6 +207,6 @@ extension QuickEditorConstants {
         email: .init(""),
         scope: .avatarPicker,
         isPresented: .constant(true),
-        contentLayoutProvider: AvatarPickerContentLayoutWithPresentation.vertical(presentationStyle: .large)
+        contentLayoutProvider: AvatarPickerContentLayout.vertical(presentationStyle: .large)
     )
 }

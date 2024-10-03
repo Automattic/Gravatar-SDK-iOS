@@ -24,9 +24,9 @@ struct AvatarPickerModalPresentationModifier<ModalView: View>: ViewModifier, Mod
     @State private var prioritizeScrollOverResize: Bool = false
     let onDismiss: (() -> Void)?
     let modalView: ModalView
-    var contentLayoutWithPresentation: AvatarPickerContentLayoutWithPresentation
+    var contentLayoutWithPresentation: AvatarPickerContentLayout
 
-    init(isPresented: Binding<Bool>, onDismiss: (() -> Void)? = nil, modalView: ModalView, contentLayout: AvatarPickerContentLayoutWithPresentation) {
+    init(isPresented: Binding<Bool>, onDismiss: (() -> Void)? = nil, modalView: ModalView, contentLayout: AvatarPickerContentLayout) {
         self._isPresented = isPresented
         self.isPresentedInner = isPresented.wrappedValue
         self.onDismiss = onDismiss
@@ -89,7 +89,7 @@ struct AvatarPickerModalPresentationModifier<ModalView: View>: ViewModifier, Mod
 
 @MainActor
 protocol ModalPresentationWithIntrinsicSize {
-    var contentLayoutWithPresentation: AvatarPickerContentLayoutWithPresentation { get }
+    var contentLayoutWithPresentation: AvatarPickerContentLayout { get }
     var verticalSizeClass: UserInterfaceSizeClass? { get }
 }
 

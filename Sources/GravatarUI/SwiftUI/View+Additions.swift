@@ -11,7 +11,7 @@ extension View {
             )
     }
 
-    @available(iOS, deprecated: 16.0, message: "Use the new method that takes in `AvatarPickerContentLayoutWithPresentation` for `contentLayout`.")
+    @available(iOS, deprecated: 16.0, message: "Use the new method that takes in `AvatarPickerContentLayout` for `contentLayout`.")
     public func avatarPickerSheet(
         isPresented: Binding<Bool>,
         email: String,
@@ -21,7 +21,7 @@ extension View {
         let avatarPickerView = AvatarPickerView(
             model: AvatarPickerViewModel(email: Email(email), authToken: authToken),
             isPresented: isPresented,
-            contentLayoutProvider: AvatarPickerContentLayout.vertical,
+            contentLayoutProvider: AvatarPickerContentLayoutType.vertical,
             customImageEditor: customImageEditor
         )
         let navigationWrapped = NavigationView { avatarPickerView }
@@ -33,7 +33,7 @@ extension View {
         isPresented: Binding<Bool>,
         email: String,
         authToken: String,
-        contentLayout: AvatarPickerContentLayoutWithPresentation,
+        contentLayout: AvatarPickerContentLayout,
         customImageEditor: ImageEditorBlock<some ImageEditorView>? = nil as NoCustomEditorBlock?
     ) -> some View {
         let avatarPickerView = AvatarPickerView(
@@ -69,7 +69,7 @@ extension View {
             scope: scope,
             isPresented: isPresented,
             customImageEditor: customImageEditor,
-            contentLayoutProvider: AvatarPickerContentLayout.vertical
+            contentLayoutProvider: AvatarPickerContentLayoutType.vertical
         )
         return modifier(ModalPresentationModifier(isPresented: isPresented, onDismiss: onDismiss, modalView: editor))
     }

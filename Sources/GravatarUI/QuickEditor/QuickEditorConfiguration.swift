@@ -14,9 +14,9 @@ public class QuickEditorConfiguration {
 
 /// Configuration which will be applied to the avatar picker screen.
 public struct AvatarPickerConfiguration: Sendable {
-    let contentLayout: AvatarPickerContentLayoutWithPresentation
+    let contentLayout: AvatarPickerContentLayout
 
-    public init(contentLayout: AvatarPickerContentLayoutWithPresentation) {
+    public init(contentLayout: AvatarPickerContentLayout) {
         self.contentLayout = contentLayout
     }
 
