@@ -7,10 +7,10 @@ public enum QuickEditorScopeType: Sendable {
 
 public enum QuickEditorScope: Sendable {
     case avatarPicker(AvatarPickerConfiguration)
-    
+
     var scopeType: QuickEditorScopeType {
         switch self {
-        case .avatarPicker(_):
+        case .avatarPicker:
             .avatarPicker
         }
     }
