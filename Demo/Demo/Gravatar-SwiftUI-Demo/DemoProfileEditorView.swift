@@ -11,6 +11,14 @@ struct DemoProfileEditorView: View {
     @State private var selectedScheme: UIUserInterfaceStyle = .unspecified
     @Environment(\.oauthSession) var oauthSession
 
+    @State var profileModel: ProfileModel? = nil
+    @State var avatarID: AvatarIdentifier? = nil {
+        didSet {
+            avatarRefreshTrigger.trigger()
+        }
+    }
+    @State var avatarRefreshTrigger: RefreshTrigger = .init()
+
     var body: some View {
         VStack(spacing: 20) {
             VStack(alignment: .leading, spacing: 5) {
@@ -21,6 +29,7 @@ struct DemoProfileEditorView: View {
                     .disableAutocorrection(true)
                 Divider()
 
+                ProfileSummary(profileModel: $profileModel, avatarID: $avatarID, trigger: $avatarRefreshTrigger).frame(height: 160)
                 QEContentLayoutPickerRow(contentLayoutOptions: $contentLayoutOptions)
                 Divider()
 
@@ -34,6 +43,9 @@ struct DemoProfileEditorView: View {
                 isPresented: $isPresentingPicker,
                 email: email,
                 scope: .avatarPicker(.init(contentLayout: contentLayoutOptions.contentLayout)),
+                avatarUpdatedHandler: {
+                    avatarRefreshTrigger.trigger()
+                },
                 onDismiss: {
                     updateHasSession(with: email)
                 }
@@ -49,11 +61,23 @@ struct DemoProfileEditorView: View {
         }
         .onAppear() {
             updateHasSession(with: email)
+            requestProfile()
         }
         .onChange(of: email) { _, newValue in
             updateHasSession(with: newValue)
+            requestProfile()
         }
         .preferredColorScheme(ColorScheme(selectedScheme))
+    }
+
+    func requestProfile() {
+        Task {
+            let service = ProfileService()
+            let profile = try await service.fetch(with: .email(email))
+            print("Profile found")
+            self.profileModel = profile
+            self.avatarID = profile.avatarIdentifier
+        }
     }
 
     func updateHasSession(with email: String) {
@@ -63,4 +87,31 @@ struct DemoProfileEditorView: View {
 
 #Preview {
     DemoProfileEditorView()
+}
+
+struct ProfileSummary: UIViewRepresentable {
+    @Binding var profileModel: ProfileModel?
+    @Binding var avatarID: AvatarIdentifier?
+    @Binding var trigger: RefreshTrigger
+
+    func makeUIView(context: Context) -> GravatarUI.ProfileSummaryView {
+        let pageViewController = ProfileSummaryView()
+        return pageViewController
+    }
+    
+    func updateUIView(_ uiView: GravatarUI.ProfileSummaryView, context: Context) {
+        trigger.onTrigger = {
+            uiView.loadAvatar(with: avatarID, options: [.forceRefresh])
+        }
+
+        uiView.update(with: profileModel)
+    }
+}
+
+class RefreshTrigger: ObservableObject {
+    var onTrigger: (() -> Void)?
+
+    func trigger() {
+        onTrigger?()
+    }
 }
