@@ -1,5 +1,6 @@
 import SwiftUI
 
+@available(iOS, deprecated: 16.0, renamed: "QuickEditorScope")
 public enum QuickEditorScopeType: Sendable {
     case avatarPicker
 }
