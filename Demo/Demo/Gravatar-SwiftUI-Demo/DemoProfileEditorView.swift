@@ -74,7 +74,6 @@ struct DemoProfileEditorView: View {
         Task {
             let service = ProfileService()
             let profile = try await service.fetch(with: .email(email))
-            print("Profile found")
             self.profileModel = profile
             self.avatarID = profile.avatarIdentifier
         }

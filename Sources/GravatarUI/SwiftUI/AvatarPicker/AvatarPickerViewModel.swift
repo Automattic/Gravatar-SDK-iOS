@@ -102,7 +102,6 @@ class AvatarPickerViewModel: ObservableObject {
         do {
             let response = try await profileService.selectAvatar(token: authToken, profileID: identifier, avatarID: avatarID)
 
-
             toastManager.showToast("Avatar updated! It may take a few minutes to appear everywhere.", type: .info)
 
             selectedAvatarResult = .success(response.imageId)
