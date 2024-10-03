@@ -17,7 +17,7 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
     @State private var uploadError: FailedUploadInfo?
     @State private var isUploadErrorDialogPresented: Bool = false
 
-    var contentLayoutProvider: AvatarPickerContentLayoutProviding = AvatarPickerContentLayout.vertical
+    var contentLayoutProvider: AvatarPickerContentLayoutProviding = AvatarPickerContentLayoutType.vertical
     var customImageEditor: ImageEditorBlock<ImageEditor>?
     var tokenErrorHandler: (() -> Void)?
 
@@ -506,7 +506,7 @@ private enum AvatarPicker {
         profileModel: PreviewModel()
     )
 
-    return AvatarPickerView<NoCustomEditor>(model: model, isPresented: .constant(true), contentLayoutProvider: AvatarPickerContentLayout.horizontal)
+    return AvatarPickerView<NoCustomEditor>(model: model, isPresented: .constant(true), contentLayoutProvider: AvatarPickerContentLayoutType.horizontal)
 }
 
 #Preview("Empty elements") {

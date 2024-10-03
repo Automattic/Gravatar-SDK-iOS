@@ -21,13 +21,16 @@ final class QuickEditorViewController: UIViewController, ModalPresentationWithIn
 
     var verticalSizeClass: UserInterfaceSizeClass?
     var sheetHeight: CGFloat = QEModalPresentationConstants.bottomSheetEstimatedHeight
-    var contentLayoutWithPresentation: AvatarPickerContentLayoutWithPresentation {
-        configuration.avatarPickerConfiguration.contentLayout
+    var contentLayoutWithPresentation: AvatarPickerContentLayout {
+        switch scope {
+        case .avatarPicker(let config):
+            config.contentLayout
+        }
     }
 
     private lazy var quickEditor: InnerHeightUIHostingController = .init(rootView: QuickEditor(
         email: email,
-        scope: scope,
+        scope: scope.scopeType,
         token: token,
         isPresented: isPresented,
         customImageEditor: nil as NoCustomEditorBlock?,

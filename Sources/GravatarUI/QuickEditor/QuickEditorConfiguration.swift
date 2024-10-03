@@ -2,24 +2,21 @@ import UIKit
 
 public class QuickEditorConfiguration {
     let interfaceStyle: UIUserInterfaceStyle
-    let avatarPickerConfiguration: AvatarPickerConfiguration
 
     static var `default`: QuickEditorConfiguration { .init() }
 
     public init(
-        interfaceStyle: UIUserInterfaceStyle? = nil,
-        avatarPickerConfiguration: AvatarPickerConfiguration? = nil
+        interfaceStyle: UIUserInterfaceStyle? = nil
     ) {
         self.interfaceStyle = interfaceStyle ?? .unspecified
-        self.avatarPickerConfiguration = avatarPickerConfiguration ?? .default
     }
 }
 
 /// Configuration which will be applied to the avatar picker screen.
 public struct AvatarPickerConfiguration: Sendable {
-    let contentLayout: AvatarPickerContentLayoutWithPresentation
+    let contentLayout: AvatarPickerContentLayout
 
-    public init(contentLayout: AvatarPickerContentLayoutWithPresentation) {
+    public init(contentLayout: AvatarPickerContentLayout) {
         self.contentLayout = contentLayout
     }
 
