@@ -14,6 +14,9 @@ struct URLSessionHTTPClient: HTTPClient {
         let configuration = URLSessionConfiguration.default
         configuration.httpAdditionalHeaders = [
             "Accept": "application/json",
+            "X-Platform": "ios",
+            "X-SDK-Version": Info.sdkVersion ?? "",
+            "X-Source": Info.appName ?? "",
         ]
         self.urlSession = urlSession ?? URLSession(configuration: configuration)
     }
