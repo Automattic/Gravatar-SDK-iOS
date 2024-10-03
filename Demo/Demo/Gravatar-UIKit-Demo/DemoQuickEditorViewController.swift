@@ -70,6 +70,14 @@ final class DemoQuickEditorViewController: UIViewController {
         }
     }
 
+    lazy var profileSummaryView: ProfileSummaryView = {
+        let view = ProfileSummaryView(frame: .zero, paletteType: .system, profileButtonStyle: .edit)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.avatarActivityIndicatorType = .activity
+//        view.delegate = self
+        return view
+    }()
+
     lazy var layoutButton: UIButton = {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -146,6 +154,7 @@ final class DemoQuickEditorViewController: UIViewController {
         let stackView = UIStackView(arrangedSubviews: [
             emailField,
             tokenField,
+            profileSummaryView,
             colorSchemeLabel,
             schemeToggle,
             layoutButton,
@@ -169,6 +178,9 @@ final class DemoQuickEditorViewController: UIViewController {
             rootStackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             rootStackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
         ])
+        if let savedEmail {
+            fetchProfile(with: savedEmail)
+        }
     }
 
     func presentQuickEditor() {
@@ -182,7 +194,9 @@ final class DemoQuickEditorViewController: UIViewController {
             ),
             token: token
         )
-        presenter.present(in: self, onDismiss: { [weak self] in
+        presenter.present(in: self, onAvatarUpdated: { [weak self] avatar in
+            self?.profileSummaryView.loadAvatar(avatar)
+        } , onDismiss: { [weak self] in
             self?.updateLogoutButton()
         })
     }
@@ -190,8 +204,21 @@ final class DemoQuickEditorViewController: UIViewController {
 
 extension DemoQuickEditorViewController: UITextFieldDelegate {
     func textFieldDidChangeSelection(_ textField: UITextField) {
-        if textField == emailField {
-            showButton.isEnabled = Email(textField.text ?? "").isValid
+        if textField == emailField, let emailText = textField.text, Email(emailText).isValid {
+            fetchProfile(with: emailText)
+            showButton.isEnabled = true
+        } else {
+            showButton.isEnabled = false
+        }
+    }
+
+    func fetchProfile(with email: String) {
+        Task {
+            let email = Email(email)
+            let service = ProfileService()
+            profileSummaryView.loadAvatar(with: .email(email))
+            let profile = try? await service.fetch(with: .email(email))
+            profileSummaryView.update(with: profile)
         }
     }
 
