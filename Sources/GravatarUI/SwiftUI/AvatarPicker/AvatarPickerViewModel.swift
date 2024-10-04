@@ -104,7 +104,7 @@ class AvatarPickerViewModel: ObservableObject {
         } catch APIError.responseError(let reason) where reason.cancelled {
             // NoOp.
         } catch {
-            toastManager.showToast(Localized.avatarUpdateSuccess, type: .error)
+            toastManager.showToast(Localized.avatarUpdateFail, type: .error)
             grid.selectAvatar(withID: selectedAvatarResult?.value())
         }
     }
