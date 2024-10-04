@@ -6,10 +6,10 @@ struct ModelError: Codable, Hashable, Sendable {
     /// The error message
     private(set) var error: String
     /// The error code for the error message
-    private(set) var code: String
+    private(set) var code: String?
 
     @available(*, deprecated, message: "init will become internal on the next release")
-    init(error: String, code: String) {
+    init(error: String, code: String? = nil) {
         self.error = error
         self.code = code
     }
@@ -30,7 +30,7 @@ struct ModelError: Codable, Hashable, Sendable {
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: InternalCodingKeys.self)
         try container.encode(error, forKey: .error)
-        try container.encode(code, forKey: .code)
+        try container.encodeIfPresent(code, forKey: .code)
     }
 
     // Decodable protocol methods
@@ -39,6 +39,6 @@ struct ModelError: Codable, Hashable, Sendable {
         let container = try decoder.container(keyedBy: InternalCodingKeys.self)
 
         error = try container.decode(String.self, forKey: .error)
-        code = try container.decode(String.self, forKey: .code)
+        code = try container.decodeIfPresent(String.self, forKey: .code)
     }
 }
