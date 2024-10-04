@@ -6,10 +6,10 @@ public struct ModelError: Codable, Hashable, Sendable {
     /// The error message
     public private(set) var error: String
     /// The error code for the error message
-    public private(set) var code: String?
+    private(set) var code: String?
 
     @available(*, deprecated, message: "init will become internal on the next release")
-    public init(error: String, code: String? = nil) {
+    init(error: String, code: String? = nil) {
         self.error = error
         self.code = code
     }
