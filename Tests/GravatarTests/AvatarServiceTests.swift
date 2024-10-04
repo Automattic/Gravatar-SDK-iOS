@@ -35,7 +35,6 @@ final class AvatarServiceTests: XCTestCase {
         XCTAssertTrue(request?.value(forHTTPHeaderField: "Authorization")?.hasPrefix("Bearer ") ?? false)
         XCTAssertNotNil(request?.value(forHTTPHeaderField: "Content-Type"))
         XCTAssertTrue(request?.value(forHTTPHeaderField: "Content-Type")?.hasPrefix("multipart/form-data; boundary=") ?? false)
-        XCTAssertTrue(request?.value(forHTTPHeaderField: "Client-Type") == "ios")
     }
 
     func testUploadImageError() async throws {

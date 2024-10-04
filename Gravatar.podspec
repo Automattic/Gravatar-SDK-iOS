@@ -23,6 +23,9 @@ Pod::Spec.new do |s|
   s.ios.deployment_target = ios_deployment_target
 
   s.source_files = 'Sources/Gravatar/**/*.swift'
+  s.resource_bundles = {
+    'Gravatar' => ['Sources/Gravatar/Resources/*.plist']
+  }
 
   # Using the `package` access level for types requires us to pass `-package-name`
   # as a swift flag, with the same name for each module/pod
