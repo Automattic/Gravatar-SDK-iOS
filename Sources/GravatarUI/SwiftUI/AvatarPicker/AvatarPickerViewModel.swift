@@ -99,12 +99,12 @@ class AvatarPickerViewModel: ObservableObject {
 
         do {
             let response = try await profileService.selectAvatar(token: authToken, profileID: identifier, avatarID: avatarID)
-            toastManager.showToast("Avatar updated! It may take a few minutes to appear everywhere.", type: .info)
+            toastManager.showToast(Localized.avatarUpdateSuccess, type: .info)
             selectedAvatarResult = .success(response.imageId)
         } catch APIError.responseError(let reason) where reason.cancelled {
             // NoOp.
         } catch {
-            toastManager.showToast("Oops, something didn't quite work out while trying to change your avatar.", type: .error)
+            toastManager.showToast(Localized.avatarUpdateSuccess, type: .error)
             grid.selectAvatar(withID: selectedAvatarResult?.value())
         }
     }
@@ -250,6 +250,16 @@ extension AvatarPickerViewModel {
             "AvatarPickerViewModel.Upload.Error.message",
             value: "Oops, there was an error uploading the image.",
             comment: "A generic error message to show on an error dialog when the upload fails."
+        )
+        static let avatarUpdateSuccess = SDKLocalizedString(
+            "AvatarPickerViewModel.Update.Success",
+            value: "Avatar updated! It may take a few minutes to appear everywhere.",
+            comment: "A success message to show when the user picks a different avatar."
+        )
+        static let avatarUpdateFail = SDKLocalizedString(
+            "AvatarPickerViewModel.Update.Fail",
+            value: "Oops, something didn't quite work out while trying to change your avatar.",
+            comment: "An error message to show when the user's attempt to picks a different avatar fails."
         )
     }
 }
