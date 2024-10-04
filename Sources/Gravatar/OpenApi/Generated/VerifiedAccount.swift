@@ -11,22 +11,28 @@ public struct VerifiedAccount: Codable, Hashable, Sendable {
     public private(set) var serviceIcon: String
     /// The URL to the user's profile on the service.
     public private(set) var url: String
-
-    @available(*, deprecated, message: "init will become internal on the next release")
-    public init(serviceLabel: String, serviceIcon: String, url: String) {
-        self.serviceLabel = serviceLabel
-        self.serviceIcon = serviceIcon
-        self.url = url
-        self.serviceType = ""
-    }
+    /// Whether the verified account is hidden from the user's profile.
+    public private(set) var isHidden: Bool
 
     // NOTE: This init is maintained manually.
     // Avoid deleting this init until the deprecation of is applied.
-    init(serviceType: String, serviceLabel: String, serviceIcon: String, url: String) {
+    @available(*, deprecated, message: "init will become internal on the next release")
+    public init(serviceLabel: String, serviceIcon: String, url: String) {
+        self.init(
+            serviceType: "",
+            serviceLabel: serviceLabel,
+            serviceIcon: serviceIcon,
+            url: url,
+            isHidden: false
+        )
+    }
+
+    init(serviceType: String, serviceLabel: String, serviceIcon: String, url: String, isHidden: Bool) {
         self.serviceType = serviceType
         self.serviceLabel = serviceLabel
         self.serviceIcon = serviceIcon
         self.url = url
+        self.isHidden = isHidden
     }
 
     @available(*, deprecated, message: "CodingKeys will become internal on the next release.")
@@ -41,6 +47,7 @@ public struct VerifiedAccount: Codable, Hashable, Sendable {
         case serviceLabel = "service_label"
         case serviceIcon = "service_icon"
         case url
+        case isHidden = "is_hidden"
     }
 
     // Encodable protocol methods
@@ -51,6 +58,7 @@ public struct VerifiedAccount: Codable, Hashable, Sendable {
         try container.encode(serviceLabel, forKey: .serviceLabel)
         try container.encode(serviceIcon, forKey: .serviceIcon)
         try container.encode(url, forKey: .url)
+        try container.encode(isHidden, forKey: .isHidden)
     }
 
     // Decodable protocol methods
@@ -62,5 +70,6 @@ public struct VerifiedAccount: Codable, Hashable, Sendable {
         serviceLabel = try container.decode(String.self, forKey: .serviceLabel)
         serviceIcon = try container.decode(String.self, forKey: .serviceIcon)
         url = try container.decode(String.self, forKey: .url)
+        isHidden = try container.decode(Bool.self, forKey: .isHidden)
     }
 }
