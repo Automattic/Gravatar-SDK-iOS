@@ -104,9 +104,9 @@ class AvatarPickerViewModel: ObservableObject {
             selectedAvatarResult = .success(response.imageId)
         } catch APIError.responseError(let reason) where reason.cancelled {
             // NoOp.
-        } catch APIError.responseError(let .invalidHTTPStatusCode(response, errorPayload)) {
             // Reconstruct the original error so we can pass it to the handler
             let thrownError = APIError.responseError(reason: .invalidHTTPStatusCode(response: response, errorPayload: errorPayload))
+        } catch APIError.responseError(let .invalidHTTPStatusCode(response, errorPayload)) where response.statusCode == 401 {
             handleUnrecoverableClientError(
                 errorMessage: errorPayload?.message ?? Localized.avatarUpdateFail,
                 response: response,
