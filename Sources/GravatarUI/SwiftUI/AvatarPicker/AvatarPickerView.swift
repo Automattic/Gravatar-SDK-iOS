@@ -20,6 +20,7 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
     var contentLayoutProvider: AvatarPickerContentLayoutProviding = AvatarPickerContentLayoutType.vertical
     var customImageEditor: ImageEditorBlock<ImageEditor>?
     var tokenErrorHandler: (() -> Void)?
+    var avatarUpdatedHandler: (() -> Void)?
 
     public var body: some View {
         ZStack {
@@ -228,7 +229,7 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
                 grid: model.grid,
                 customImageEditor: customImageEditor,
                 onAvatarTap: { avatar in
-                    model.selectAvatar(with: avatar.id)
+                    selectAvatar(with: avatar.id)
                 },
                 onImagePickerDidPickImage: { image in
                     uploadImage(image)
@@ -244,7 +245,7 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
             HorizontalAvatarGrid(
                 grid: model.grid,
                 onAvatarTap: { avatar in
-                    model.selectAvatar(with: avatar.id)
+                    selectAvatar(with: avatar.id)
                 },
                 onFailedUploadTapped: { failedUploadInfo in
                     uploadError = failedUploadInfo
@@ -258,6 +259,14 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
             }
             .padding(.horizontal, Constants.horizontalPadding)
             .padding(.bottom, .DS.Padding.medium)
+        }
+    }
+
+    func selectAvatar(with id: String) {
+        Task {
+            if await model.selectAvatar(with: id) != nil {
+                avatarUpdatedHandler?()
+            }
         }
     }
 

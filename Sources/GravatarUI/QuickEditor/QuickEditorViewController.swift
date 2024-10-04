@@ -6,8 +6,8 @@ final class QuickEditorViewController: UIViewController, ModalPresentationWithIn
     let scope: QuickEditorScope
     let token: String?
     let configuration: QuickEditorConfiguration
-
-    var onDismiss: (() -> Void)? = nil
+    let onAvatarUpdated: (() -> Void)?
+    let onDismiss: (() -> Void)?
 
     private lazy var isPresented: Binding<Bool> = Binding {
         true
@@ -34,7 +34,8 @@ final class QuickEditorViewController: UIViewController, ModalPresentationWithIn
         token: token,
         isPresented: isPresented,
         customImageEditor: nil as NoCustomEditorBlock?,
-        contentLayoutProvider: contentLayoutWithPresentation
+        contentLayoutProvider: contentLayoutWithPresentation,
+        avatarUpdatedHandler: onAvatarUpdated
     ), onHeightChange: { [weak self] newHeight in
         guard let self else { return }
         if self.shouldAcceptHeight(newHeight) {
@@ -52,6 +53,7 @@ final class QuickEditorViewController: UIViewController, ModalPresentationWithIn
         scope: QuickEditorScope,
         configuration: QuickEditorConfiguration? = nil,
         token: String? = nil,
+        onAvatarUpdated: (() -> Void)? = nil,
         onDismiss: (() -> Void)? = nil
     ) {
         self.email = email
@@ -59,6 +61,7 @@ final class QuickEditorViewController: UIViewController, ModalPresentationWithIn
         self.configuration = configuration ?? .default
         self.token = token
         self.onDismiss = onDismiss
+        self.onAvatarUpdated = onAvatarUpdated
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -164,6 +167,7 @@ public struct QuickEditorPresenter {
         in parent: UIViewController,
         animated: Bool = true,
         completion: (() -> Void)? = nil,
+        onAvatarUpdated: (() -> Void)? = nil,
         onDismiss: @escaping () -> Void
     ) {
         let quickEditor = QuickEditorViewController(
@@ -171,11 +175,11 @@ public struct QuickEditorPresenter {
             scope: scope,
             configuration: configuration,
             token: token,
+            onAvatarUpdated: onAvatarUpdated,
             onDismiss: onDismiss
         )
 
         quickEditor.overrideUserInterfaceStyle = configuration.interfaceStyle
-        quickEditor.onDismiss = onDismiss
         parent.present(quickEditor, animated: animated, completion: completion)
     }
 }
