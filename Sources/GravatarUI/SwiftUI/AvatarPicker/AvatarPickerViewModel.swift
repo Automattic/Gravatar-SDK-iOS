@@ -75,7 +75,7 @@ class AvatarPickerViewModel: ObservableObject {
         }
     }
 
-    func selectAvatar(with id: String) async -> Avatar? {
+    func selectAvatar(with id: String, shouldAddDelay: Bool) async -> Avatar? {
         guard
             let email,
             let authToken,
@@ -86,13 +86,13 @@ class AvatarPickerViewModel: ObservableObject {
         avatarSelectionTask?.cancel()
 
         avatarSelectionTask = Task {
-            await postAvatarSelection(with: id, authToken: authToken, identifier: .email(email))
+            await postAvatarSelection(with: id, authToken: authToken, identifier: .email(email), shouldAddDelay: shouldAddDelay)
         }
 
         return await avatarSelectionTask?.value
     }
 
-    func postAvatarSelection(with avatarID: String, authToken: String, identifier: ProfileIdentifier) async -> Avatar? {
+    func postAvatarSelection(with avatarID: String, authToken: String, identifier: ProfileIdentifier, shouldAddDelay: Bool) async -> Avatar? {
         defer {
             grid.setState(to: .loaded, onAvatarWithID: avatarID)
         }
@@ -101,7 +101,13 @@ class AvatarPickerViewModel: ObservableObject {
 
         do {
             let response = try await profileService.selectAvatar(token: authToken, profileID: identifier, avatarID: avatarID)
-
+            if shouldAddDelay {
+                // Delay to wait until the server has updated the selected avatar before updating the UI.
+                // Without the delay the cache busting remains insufficient to capture the new avatar.
+                // With less than 800 ms, we can still see the issue.
+                // Hopefully, we can remove this delay soon.
+                try await Task.sleep(nanoseconds: UInt64(0.8 * 1_000_000_000))
+            }
             toastManager.showToast("Avatar updated! It may take a few minutes to appear everywhere.", type: .info)
 
             selectedAvatarResult = .success(response.imageId)

@@ -264,7 +264,7 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
 
     func selectAvatar(with id: String) {
         Task {
-            if await model.selectAvatar(with: id) != nil {
+            if await model.selectAvatar(with: id, shouldAddDelay: avatarUpdatedHandler != nil) != nil {
                 avatarUpdatedHandler?()
             }
         }
