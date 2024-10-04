@@ -33,6 +33,7 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
     let token: String?
     var customImageEditor: ImageEditorBlock<ImageEditor>?
     var contentLayoutProvider: AvatarPickerContentLayoutProviding
+    var avatarUpdatedHandler: (() -> Void)?
 
     init(
         email: Email,
@@ -40,7 +41,8 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
         token: String? = nil,
         isPresented: Binding<Bool>,
         customImageEditor: ImageEditorBlock<ImageEditor>? = nil,
-        contentLayoutProvider: AvatarPickerContentLayoutProviding = AvatarPickerContentLayoutType.vertical
+        contentLayoutProvider: AvatarPickerContentLayoutProviding = AvatarPickerContentLayoutType.vertical,
+        avatarUpdatedHandler: (() -> Void)? = nil
     ) {
         self.email = email
         self.scope = scope
@@ -48,6 +50,7 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
         self.customImageEditor = customImageEditor
         self.contentLayoutProvider = contentLayoutProvider
         self.token = token
+        self.avatarUpdatedHandler = avatarUpdatedHandler
     }
 
     var body: some View {
@@ -75,7 +78,8 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
                 tokenErrorHandler: {
                     oauthSession.deleteSession(with: email)
                     performAuthentication()
-                }
+                },
+                avatarUpdatedHandler: avatarUpdatedHandler
             )
         }
     }
