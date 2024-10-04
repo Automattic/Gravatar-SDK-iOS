@@ -1,6 +1,7 @@
 import AuthenticationServices
 
 public struct OAuthSession: Sendable {
+    private static let tokenExpiredPrefix = "EXPIRED_"
     private let storage: SecureStorage
     private let authenticationSession: AuthenticationSession
     private let snakeCaseDecoder: JSONDecoder = {
@@ -21,6 +22,23 @@ public struct OAuthSession: Sendable {
 
     public func hasSession(with email: Email) -> Bool {
         (try? storage.secret(with: email.rawValue) ?? nil) != nil
+    }
+
+    func hasValidSession(with email: Email) -> Bool {
+        guard let token = try? storage.secret(with: email.rawValue) else {
+            return false
+        }
+        return !token.hasPrefix(Self.tokenExpiredPrefix)
+    }
+
+    func markSessionAsExpired(with email: Email) {
+        guard let token = sessionToken(with: email), !token.hasPrefix(Self.tokenExpiredPrefix) else { return }
+        overrideToken("\(Self.tokenExpiredPrefix)\(token)", for: email)
+    }
+
+    func overrideToken(_ token: String, for email: Email) {
+        deleteSession(with: email)
+        try? storage.setSecret(token, for: email.rawValue)
     }
 
     public func deleteSession(with email: Email) {
@@ -45,7 +63,7 @@ public struct OAuthSession: Sendable {
             guard try await CheckTokenAuthorizationService().isToken(token, authorizedFor: email) else {
                 throw OAuthError.loggedInWithWrongEmail(email: email.rawValue)
             }
-            try storage.setSecret(token, for: email.rawValue)
+            overrideToken(token, for: email)
             return token
         } catch {
             throw OAuthError.from(error: error)

@@ -57,7 +57,7 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
         NavigationView {
             if let token {
                 editorView(with: token)
-            } else if hasSession, let token = oauthSession.sessionToken(with: email) {
+            } else if let token = oauthSession.sessionToken(with: email) {
                 editorView(with: token)
             } else {
                 noticeView()
@@ -76,7 +76,7 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
                 contentLayoutProvider: contentLayoutProvider,
                 customImageEditor: customImageEditor,
                 tokenErrorHandler: {
-                    oauthSession.deleteSession(with: email)
+                    oauthSession.markSessionAsExpired(with: email)
                     performAuthentication()
                 },
                 avatarUpdatedHandler: avatarUpdatedHandler
@@ -128,7 +128,7 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
     func performAuthentication() {
         Task {
             isAuthenticating = true
-            if !oauthSession.hasSession(with: email) {
+            if !oauthSession.hasValidSession(with: email) {
                 do {
                     _ = try await oauthSession.retrieveAccessToken(with: email)
                     oauthError = nil
@@ -140,7 +140,7 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
                     oauthError = nil
                 }
             }
-            hasSession = oauthSession.hasSession(with: email)
+            hasSession = oauthSession.hasValidSession(with: email)
             isAuthenticating = false
         }
     }
