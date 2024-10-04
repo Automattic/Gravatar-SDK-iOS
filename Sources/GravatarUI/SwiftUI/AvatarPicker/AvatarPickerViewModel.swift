@@ -15,7 +15,7 @@ class AvatarPickerViewModel: ObservableObject {
         }
     }
 
-    private var avatarSelectionTask: Task<Avatar?, Never>?
+    private var avatarSelectionTask: Task<Void, Never>?
     private var authToken: String?
     private var selectedAvatarResult: Result<String, Error>? {
         didSet {
@@ -75,24 +75,22 @@ class AvatarPickerViewModel: ObservableObject {
         }
     }
 
-    func selectAvatar(with id: String) async -> Avatar? {
+    func selectAvatar(with id: String) {
         guard
             let email,
             let authToken,
             grid.selectedAvatar?.id != id,
             grid.model(with: id)?.state == .loaded
-        else { return nil }
+        else { return }
 
         avatarSelectionTask?.cancel()
 
         avatarSelectionTask = Task {
             await postAvatarSelection(with: id, authToken: authToken, identifier: .email(email))
         }
-
-        return await avatarSelectionTask?.value
     }
 
-    func postAvatarSelection(with avatarID: String, authToken: String, identifier: ProfileIdentifier) async -> Avatar? {
+    func postAvatarSelection(with avatarID: String, authToken: String, identifier: ProfileIdentifier) async {
         defer {
             grid.setState(to: .loaded, onAvatarWithID: avatarID)
         }
@@ -101,18 +99,15 @@ class AvatarPickerViewModel: ObservableObject {
 
         do {
             let response = try await profileService.selectAvatar(token: authToken, profileID: identifier, avatarID: avatarID)
-
-            toastManager.showToast("Avatar updated! It may take a few minutes to appear everywhere.", type: .info)
+            toastManager.showToast(Localized.avatarUpdateSuccess, type: .info)
 
             selectedAvatarResult = .success(response.imageId)
-            return response
         } catch APIError.responseError(let reason) where reason.cancelled {
             // NoOp.
         } catch {
-            toastManager.showToast("Oops, something didn't quite work out while trying to change your avatar.", type: .error)
+            toastManager.showToast(Localized.avatarUpdateFail, type: .error)
             grid.selectAvatar(withID: selectedAvatarResult?.value())
         }
-        return nil
     }
 
     func fetchAvatars() async {
@@ -256,6 +251,16 @@ extension AvatarPickerViewModel {
             "AvatarPickerViewModel.Upload.Error.message",
             value: "Oops, there was an error uploading the image.",
             comment: "A generic error message to show on an error dialog when the upload fails."
+        )
+        static let avatarUpdateSuccess = SDKLocalizedString(
+            "AvatarPickerViewModel.Update.Success",
+            value: "Avatar updated! It may take a few minutes to appear everywhere.",
+            comment: "This confirmation message shows when the user picks a different avatar."
+        )
+        static let avatarUpdateFail = SDKLocalizedString(
+            "AvatarPickerViewModel.Update.Fail",
+            value: "Oops, something didn't quite work out while trying to change your avatar.",
+            comment: "This error message shows when the user attempts to pick a different avatar and fails."
         )
     }
 }
