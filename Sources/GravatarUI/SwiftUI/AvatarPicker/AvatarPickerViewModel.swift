@@ -105,10 +105,9 @@ class AvatarPickerViewModel: ObservableObject {
         } catch APIError.responseError(let reason) where reason.cancelled {
             // NoOp.
         } catch APIError.responseError(let .invalidHTTPStatusCode(response, errorPayload)) {
-            toastManager.showToast(errorPayload?.message ?? Localized.avatarUpdateFail, type: .error)
             // Reconstruct the original error so we can pass it to the handler
             let thrownError = APIError.responseError(reason: .invalidHTTPStatusCode(response: response, errorPayload: errorPayload))
-            handleSelectionError(error: thrownError)
+            handleClientError(error: thrownError, errorMessage: errorPayload?.message ?? Localized.avatarUpdateFail)
         } catch {
             toastManager.showToast(Localized.avatarUpdateFail, type: .error)
             grid.selectAvatar(withID: selectedAvatarResult?.value())
@@ -216,7 +215,10 @@ class AvatarPickerViewModel: ObservableObject {
         grid.replaceModel(withID: imageID, with: newModel)
     }
 
-    private func handleSelectionError(error: Error) {
+    private func handleClientError(error: Error, errorMessage: String? = nil) {
+        if let errorMessage {
+            toastManager.showToast(errorMessage, type: .error)
+        }
         self.grid.setAvatars([])
         self.gridResponseStatus = .failure(error)
     }
