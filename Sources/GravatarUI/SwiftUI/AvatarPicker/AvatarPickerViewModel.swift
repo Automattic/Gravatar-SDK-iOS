@@ -100,6 +100,7 @@ class AvatarPickerViewModel: ObservableObject {
         do {
             let response = try await profileService.selectAvatar(token: authToken, profileID: identifier, avatarID: avatarID)
             toastManager.showToast(Localized.avatarUpdateSuccess, type: .info)
+
             selectedAvatarResult = .success(response.imageId)
         } catch APIError.responseError(let reason) where reason.cancelled {
             // NoOp.
