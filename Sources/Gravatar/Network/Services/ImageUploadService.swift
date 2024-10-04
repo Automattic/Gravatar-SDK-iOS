@@ -14,7 +14,7 @@ struct ImageUploadService: ImageUploader {
 
     @discardableResult
     func uploadImage(_ image: UIImage, accessToken: String, additionalHTTPHeaders: [HTTPHeaderField]?) async throws -> (data: Data, response: HTTPURLResponse) {
-        guard let data = image.jpegData(compressionQuality: 0.9) else {
+        guard let data = image.jpegData(compressionQuality: 0.8) else {
             throw ImageUploadError.cannotConvertImageIntoData
         }
 

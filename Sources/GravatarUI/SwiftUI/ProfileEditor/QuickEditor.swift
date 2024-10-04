@@ -1,7 +1,19 @@
 import SwiftUI
 
-public enum QuickEditorScope: Sendable {
+@available(iOS, deprecated: 16.0, renamed: "QuickEditorScope")
+public enum QuickEditorScopeType: Sendable {
     case avatarPicker
+}
+
+public enum QuickEditorScope: Sendable {
+    case avatarPicker(AvatarPickerConfiguration)
+
+    var scopeType: QuickEditorScopeType {
+        switch self {
+        case .avatarPicker:
+            .avatarPicker
+        }
+    }
 }
 
 private enum QuickEditorConstants {
@@ -13,7 +25,7 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
 
     @Environment(\.oauthSession) private var oauthSession
     @State var hasSession: Bool = false
-    @State var scope: QuickEditorScope
+    @State var scope: QuickEditorScopeType
     @State var isAuthenticating: Bool = true
     @State var oauthError: OAuthError?
     @Binding var isPresented: Bool
@@ -21,14 +33,16 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
     let token: String?
     var customImageEditor: ImageEditorBlock<ImageEditor>?
     var contentLayoutProvider: AvatarPickerContentLayoutProviding
+    var avatarUpdatedHandler: (() -> Void)?
 
     init(
         email: Email,
-        scope: QuickEditorScope,
+        scope: QuickEditorScopeType,
         token: String? = nil,
         isPresented: Binding<Bool>,
         customImageEditor: ImageEditorBlock<ImageEditor>? = nil,
-        contentLayoutProvider: AvatarPickerContentLayoutProviding = AvatarPickerContentLayout.vertical
+        contentLayoutProvider: AvatarPickerContentLayoutProviding = AvatarPickerContentLayoutType.vertical,
+        avatarUpdatedHandler: (() -> Void)? = nil
     ) {
         self.email = email
         self.scope = scope
@@ -36,6 +50,7 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
         self.customImageEditor = customImageEditor
         self.contentLayoutProvider = contentLayoutProvider
         self.token = token
+        self.avatarUpdatedHandler = avatarUpdatedHandler
     }
 
     var body: some View {
@@ -63,7 +78,8 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
                 tokenErrorHandler: {
                     oauthSession.deleteSession(with: email)
                     performAuthentication()
-                }
+                },
+                avatarUpdatedHandler: avatarUpdatedHandler
             )
         }
     }
@@ -196,6 +212,6 @@ extension QuickEditorConstants {
         email: .init(""),
         scope: .avatarPicker,
         isPresented: .constant(true),
-        contentLayoutProvider: AvatarPickerContentLayoutWithPresentation.vertical(presentationStyle: .large)
+        contentLayoutProvider: AvatarPickerContentLayout.vertical(presentationStyle: .large)
     )
 }

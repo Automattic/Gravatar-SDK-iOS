@@ -17,9 +17,10 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
     @State private var uploadError: FailedUploadInfo?
     @State private var isUploadErrorDialogPresented: Bool = false
 
-    var contentLayoutProvider: AvatarPickerContentLayoutProviding = AvatarPickerContentLayout.vertical
+    var contentLayoutProvider: AvatarPickerContentLayoutProviding = AvatarPickerContentLayoutType.vertical
     var customImageEditor: ImageEditorBlock<ImageEditor>?
     var tokenErrorHandler: (() -> Void)?
+    var avatarUpdatedHandler: (() -> Void)?
 
     public var body: some View {
         ZStack {
@@ -228,7 +229,7 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
                 grid: model.grid,
                 customImageEditor: customImageEditor,
                 onAvatarTap: { avatar in
-                    model.selectAvatar(with: avatar.id)
+                    selectAvatar(with: avatar.id)
                 },
                 onImagePickerDidPickImage: { image in
                     uploadImage(image)
@@ -244,7 +245,7 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
             HorizontalAvatarGrid(
                 grid: model.grid,
                 onAvatarTap: { avatar in
-                    model.selectAvatar(with: avatar.id)
+                    selectAvatar(with: avatar.id)
                 },
                 onFailedUploadTapped: { failedUploadInfo in
                     uploadError = failedUploadInfo
@@ -258,6 +259,22 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
             }
             .padding(.horizontal, Constants.horizontalPadding)
             .padding(.bottom, .DS.Padding.medium)
+        }
+    }
+
+    func selectAvatar(with id: String) {
+        Task {
+            if await model.selectAvatar(with: id) != nil {
+                if let avatarUpdatedHandler {
+                    // Delay to wait until the server has updated the selected avatar before updating the UI.
+                    // Without the delay the cache busting remains insufficient to capture the new avatar.
+                    // With less than 800 ms, we can still see the issue.
+                    // Hopefully, we can remove this delay soon.
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+                        avatarUpdatedHandler()
+                    }
+                }
+            }
         }
     }
 
@@ -506,7 +523,7 @@ private enum AvatarPicker {
         profileModel: PreviewModel()
     )
 
-    return AvatarPickerView<NoCustomEditor>(model: model, isPresented: .constant(true), contentLayoutProvider: AvatarPickerContentLayout.horizontal)
+    return AvatarPickerView<NoCustomEditor>(model: model, isPresented: .constant(true), contentLayoutProvider: AvatarPickerContentLayoutType.horizontal)
 }
 
 #Preview("Empty elements") {

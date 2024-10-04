@@ -9,7 +9,7 @@ enum QEDetent {
     case height(CGFloat)
 
     static func detents(
-        for presentation: AvatarPickerContentLayoutWithPresentation,
+        for presentation: AvatarPickerContentLayout,
         intrinsicHeight: CGFloat,
         verticalSizeClass: UserInterfaceSizeClass?
     ) -> [QEDetent] {

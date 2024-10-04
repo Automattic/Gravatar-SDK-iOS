@@ -1,26 +1,13 @@
 import SwiftUI
 import UIKit
 
-/// Configuration which will be applied to the avatar picker screen.
-public struct AvatarPickerConfiguration: Sendable {
-    let contentLayout: AvatarPickerContentLayoutWithPresentation
-
-    public init(contentLayout: AvatarPickerContentLayoutWithPresentation) {
-        self.contentLayout = contentLayout
-    }
-
-    static let `default` = AvatarPickerConfiguration(
-        contentLayout: .horizontal(presentationStyle: .intrinsicHeight)
-    )
-}
-
 final class QuickEditorViewController: UIViewController, ModalPresentationWithIntrinsicSize {
     let email: Email
     let scope: QuickEditorScope
     let token: String?
-    let avatarPickerConfiguration: AvatarPickerConfiguration
-
-    var onDismiss: (() -> Void)? = nil
+    let configuration: QuickEditorConfiguration
+    let onAvatarUpdated: (() -> Void)?
+    let onDismiss: (() -> Void)?
 
     private lazy var isPresented: Binding<Bool> = Binding {
         true
@@ -34,17 +21,21 @@ final class QuickEditorViewController: UIViewController, ModalPresentationWithIn
 
     var verticalSizeClass: UserInterfaceSizeClass?
     var sheetHeight: CGFloat = QEModalPresentationConstants.bottomSheetEstimatedHeight
-    var contentLayoutWithPresentation: AvatarPickerContentLayoutWithPresentation {
-        avatarPickerConfiguration.contentLayout
+    var contentLayoutWithPresentation: AvatarPickerContentLayout {
+        switch scope {
+        case .avatarPicker(let config):
+            config.contentLayout
+        }
     }
 
     private lazy var quickEditor: InnerHeightUIHostingController = .init(rootView: QuickEditor(
         email: email,
-        scope: scope,
+        scope: scope.scopeType,
         token: token,
         isPresented: isPresented,
         customImageEditor: nil as NoCustomEditorBlock?,
-        contentLayoutProvider: avatarPickerConfiguration.contentLayout
+        contentLayoutProvider: contentLayoutWithPresentation,
+        avatarUpdatedHandler: onAvatarUpdated
     ), onHeightChange: { [weak self] newHeight in
         guard let self else { return }
         if self.shouldAcceptHeight(newHeight) {
@@ -60,15 +51,17 @@ final class QuickEditorViewController: UIViewController, ModalPresentationWithIn
     init(
         email: Email,
         scope: QuickEditorScope,
-        avatarPickerConfiguration: AvatarPickerConfiguration? = nil,
+        configuration: QuickEditorConfiguration? = nil,
         token: String? = nil,
+        onAvatarUpdated: (() -> Void)? = nil,
         onDismiss: (() -> Void)? = nil
     ) {
         self.email = email
         self.scope = scope
-        self.avatarPickerConfiguration = avatarPickerConfiguration ?? .default
+        self.configuration = configuration ?? .default
         self.token = token
         self.onDismiss = onDismiss
+        self.onAvatarUpdated = onAvatarUpdated
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -105,12 +98,12 @@ final class QuickEditorViewController: UIViewController, ModalPresentationWithIn
         if let sheet = sheetPresentationController {
             sheet.animateChanges {
                 sheet.detents = QEDetent.detents(
-                    for: avatarPickerConfiguration.contentLayout,
+                    for: contentLayoutWithPresentation,
                     intrinsicHeight: sheetHeight,
                     verticalSizeClass: verticalSizeClass
                 ).map()
             }
-            sheet.prefersScrollingExpandsWhenScrolledToEdge = !avatarPickerConfiguration.contentLayout.prioritizeScrollOverResize
+            sheet.prefersScrollingExpandsWhenScrolledToEdge = !contentLayoutWithPresentation.prioritizeScrollOverResize
         }
     }
 }
@@ -154,18 +147,18 @@ private class InnerHeightUIHostingController: UIHostingController<AnyView> {
 public struct QuickEditorPresenter {
     let email: Email
     let scope: QuickEditorScope
-    let avatarPickerConfiguration: AvatarPickerConfiguration
+    let configuration: QuickEditorConfiguration
     let token: String?
 
     public init(
         email: Email,
         scope: QuickEditorScope,
-        avatarPickerConfiguration: AvatarPickerConfiguration? = nil,
+        configuration: QuickEditorConfiguration? = nil,
         token: String? = nil
     ) {
         self.email = email
         self.scope = scope
-        self.avatarPickerConfiguration = avatarPickerConfiguration ?? .default
+        self.configuration = configuration ?? .default
         self.token = token
     }
 
@@ -174,16 +167,19 @@ public struct QuickEditorPresenter {
         in parent: UIViewController,
         animated: Bool = true,
         completion: (() -> Void)? = nil,
+        onAvatarUpdated: (() -> Void)? = nil,
         onDismiss: @escaping () -> Void
     ) {
         let quickEditor = QuickEditorViewController(
             email: email,
             scope: scope,
-            avatarPickerConfiguration: avatarPickerConfiguration,
+            configuration: configuration,
             token: token,
+            onAvatarUpdated: onAvatarUpdated,
             onDismiss: onDismiss
         )
-        quickEditor.onDismiss = onDismiss
+
+        quickEditor.overrideUserInterfaceStyle = configuration.interfaceStyle
         parent.present(quickEditor, animated: animated, completion: completion)
     }
 }

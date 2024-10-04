@@ -99,7 +99,8 @@ class AvatarPickerViewModel: ObservableObject {
 
         do {
             let response = try await profileService.selectAvatar(token: authToken, profileID: identifier, avatarID: avatarID)
-            toastManager.showToast("Avatar updated! It may take a few minutes to appear everywhere.", type: .info)
+            toastManager.showToast(Localized.avatarUpdateSuccess, type: .info)
+
             selectedAvatarResult = .success(response.imageId)
         } catch APIError.responseError(let reason) where reason.cancelled {
             // NoOp.
@@ -109,7 +110,7 @@ class AvatarPickerViewModel: ObservableObject {
             let thrownError = APIError.responseError(reason: .invalidHTTPStatusCode(response: response, errorPayload: errorPayload))
             handleSelectionError(error: thrownError)
         } catch {
-            toastManager.showToast(Localized.genericAvatarSelectionError, type: .error)
+            toastManager.showToast(Localized.avatarUpdateFail, type: .error)
             grid.selectAvatar(withID: selectedAvatarResult?.value())
         }
     }
@@ -261,11 +262,15 @@ extension AvatarPickerViewModel {
             value: "Oops, there was an error uploading the image.",
             comment: "A generic error message to show on an error dialog when the upload fails."
         )
-
-        static let genericAvatarSelectionError = SDKLocalizedString(
-            "AvatarPickerViewModel.Select.Error.message",
+        static let avatarUpdateSuccess = SDKLocalizedString(
+            "AvatarPickerViewModel.Update.Success",
+            value: "Avatar updated! It may take a few minutes to appear everywhere.",
+            comment: "This confirmation message shows when the user picks a different avatar."
+        )
+        static let avatarUpdateFail = SDKLocalizedString(
+            "AvatarPickerViewModel.Update.Fail",
             value: "Oops, something didn't quite work out while trying to change your avatar.",
-            comment: "A generic error message to show on an error dialog when selecting an avatar fails."
+            comment: "This error message shows when the user attempts to pick a different avatar and fails."
         )
     }
 }

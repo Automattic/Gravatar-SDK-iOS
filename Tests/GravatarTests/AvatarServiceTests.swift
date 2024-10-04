@@ -1,4 +1,4 @@
-@testable import Gravatar
+import Gravatar
 import TestHelpers
 import XCTest
 
@@ -35,7 +35,6 @@ final class AvatarServiceTests: XCTestCase {
         XCTAssertTrue(request?.value(forHTTPHeaderField: "Authorization")?.hasPrefix("Bearer ") ?? false)
         XCTAssertNotNil(request?.value(forHTTPHeaderField: "Content-Type"))
         XCTAssertTrue(request?.value(forHTTPHeaderField: "Content-Type")?.hasPrefix("multipart/form-data; boundary=") ?? false)
-        XCTAssertTrue(request?.value(forHTTPHeaderField: "Client-Type") == "ios")
     }
 
     func testUploadImageError() async throws {
@@ -132,7 +131,6 @@ final class AvatarServiceTests: XCTestCase {
 }
 
 private func avatarService(with session: URLSessionProtocol, cache: ImageCaching? = nil) -> AvatarService {
-    let client = URLSessionHTTPClient(urlSession: session)
-    let service = AvatarService(client: client, cache: cache)
+    let service = AvatarService(session: session, cache: cache)
     return service
 }
