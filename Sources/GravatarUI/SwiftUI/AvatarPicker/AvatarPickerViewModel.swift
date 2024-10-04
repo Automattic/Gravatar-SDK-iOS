@@ -105,7 +105,7 @@ class AvatarPickerViewModel: ObservableObject {
         } catch APIError.responseError(let reason) where reason.cancelled {
             // NoOp.
         } catch APIError.responseError(let .invalidHTTPStatusCode(response, errorPayload)) {
-            toastManager.showToast(errorPayload?.message ?? Localized.genericAvatarSelectionError, type: .error)
+            toastManager.showToast(errorPayload?.message ?? Localized.avatarUpdateFail, type: .error)
             // Reconstruct the original error so we can pass it to the handler
             let thrownError = APIError.responseError(reason: .invalidHTTPStatusCode(response: response, errorPayload: errorPayload))
             handleSelectionError(error: thrownError)
