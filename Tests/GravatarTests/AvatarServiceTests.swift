@@ -1,4 +1,4 @@
-@testable import Gravatar
+import Gravatar
 import TestHelpers
 import XCTest
 
@@ -131,7 +131,6 @@ final class AvatarServiceTests: XCTestCase {
 }
 
 private func avatarService(with session: URLSessionProtocol, cache: ImageCaching? = nil) -> AvatarService {
-    let client = URLSessionHTTPClient(urlSession: session)
-    let service = AvatarService(client: client, cache: cache)
+    let service = AvatarService(session: session, cache: cache)
     return service
 }

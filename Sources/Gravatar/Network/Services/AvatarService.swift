@@ -20,6 +20,18 @@ public struct AvatarService: Sendable {
         self.imageUploader = ImageUploadService(client: client)
     }
 
+    /// Creates a new `AvatarService`
+    ///
+    /// Optionally, you can pass a custom type conforming to ``URLSessionProtocol``.
+    /// Similarly, you can pass a custom type conforming to ``ImageCaching`` to use your custom caching system.
+    /// - Parameters:
+    ///   - session: A type which will perform basic networking operations. By default, a properly configured URLSession instance will be used.
+    ///   - cache: A type which will perform image caching operations.
+    public init(session: URLSessionProtocol? = nil, cache: ImageCaching? = nil) {
+        let client = URLSessionHTTPClient(urlSession: session)
+        self.init(client: client, cache: cache)
+    }
+
     /// Fetches a Gravatar user profile image using an `AvatarId`, and delivers the image asynchronously. See also: ``ImageDownloadService`` to
     /// download the avatar via URL.
     /// - Parameters:
