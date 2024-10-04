@@ -47,7 +47,7 @@ public struct AvatarService: Sendable {
     @discardableResult
     @available(*, deprecated, renamed: "upload(_:accessToken:)")
     public func upload(_ image: UIImage, email: Email, accessToken: String) async throws -> URLResponse {
-        try await imageUploader.uploadImage(image, accessToken: accessToken, additionalHTTPHeaders: [(name: "Client-Type", value: "ios")]).response
+        try await imageUploader.uploadImage(image, accessToken: accessToken, additionalHTTPHeaders: nil).response
     }
 
     /// Uploads an image to be used as the user's Gravatar profile image, and returns the `URLResponse` of the network tasks asynchronously. Throws
@@ -59,7 +59,7 @@ public struct AvatarService: Sendable {
     @discardableResult
     public func upload(_ image: UIImage, accessToken: String) async throws -> Avatar {
         do {
-            let (data, _) = try await imageUploader.uploadImage(image, accessToken: accessToken, additionalHTTPHeaders: [(name: "Client-Type", value: "ios")])
+            let (data, _) = try await imageUploader.uploadImage(image, accessToken: accessToken, additionalHTTPHeaders: nil)
             return try data.decode()
         } catch let error as ImageUploadError {
             throw error
