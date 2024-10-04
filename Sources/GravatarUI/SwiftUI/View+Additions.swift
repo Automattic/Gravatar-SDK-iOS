@@ -16,13 +16,15 @@ extension View {
         isPresented: Binding<Bool>,
         email: String,
         authToken: String,
-        customImageEditor: ImageEditorBlock<some ImageEditorView>? = nil as NoCustomEditorBlock?
+        customImageEditor: ImageEditorBlock<some ImageEditorView>? = nil as NoCustomEditorBlock?,
+        avatarUpdatedHandler: (() -> Void)? = nil
     ) -> some View {
         let avatarPickerView = AvatarPickerView(
             model: AvatarPickerViewModel(email: Email(email), authToken: authToken),
             isPresented: isPresented,
             contentLayoutProvider: AvatarPickerContentLayoutType.vertical,
-            customImageEditor: customImageEditor
+            customImageEditor: customImageEditor,
+            avatarUpdatedHandler: avatarUpdatedHandler
         )
         let navigationWrapped = NavigationView { avatarPickerView }
         return modifier(ModalPresentationModifier(isPresented: isPresented, modalView: navigationWrapped))
@@ -34,13 +36,15 @@ extension View {
         email: String,
         authToken: String,
         contentLayout: AvatarPickerContentLayout,
-        customImageEditor: ImageEditorBlock<some ImageEditorView>? = nil as NoCustomEditorBlock?
+        customImageEditor: ImageEditorBlock<some ImageEditorView>? = nil as NoCustomEditorBlock?,
+        avatarUpdatedHandler: (() -> Void)? = nil
     ) -> some View {
         let avatarPickerView = AvatarPickerView(
             model: AvatarPickerViewModel(email: Email(email), authToken: authToken),
             isPresented: isPresented,
             contentLayoutProvider: contentLayout,
-            customImageEditor: customImageEditor
+            customImageEditor: customImageEditor,
+            avatarUpdatedHandler: avatarUpdatedHandler
         )
         let navigationWrapped = NavigationView { avatarPickerView }
         return modifier(AvatarPickerModalPresentationModifier(isPresented: isPresented, modalView: navigationWrapped, contentLayout: contentLayout))
@@ -62,6 +66,7 @@ extension View {
         email: String,
         scope: QuickEditorScopeType,
         customImageEditor: ImageEditorBlock<some ImageEditorView>? = nil as NoCustomEditorBlock?,
+        avatarUpdatedHandler: (() -> Void)? = nil,
         onDismiss: (() -> Void)? = nil
     ) -> some View {
         let editor = QuickEditor(
@@ -69,7 +74,8 @@ extension View {
             scope: scope,
             isPresented: isPresented,
             customImageEditor: customImageEditor,
-            contentLayoutProvider: AvatarPickerContentLayoutType.vertical
+            contentLayoutProvider: AvatarPickerContentLayoutType.vertical,
+            avatarUpdatedHandler: avatarUpdatedHandler
         )
         return modifier(ModalPresentationModifier(isPresented: isPresented, onDismiss: onDismiss, modalView: editor))
     }
@@ -80,6 +86,7 @@ extension View {
         email: String,
         scope: QuickEditorScope,
         customImageEditor: ImageEditorBlock<some ImageEditorView>? = nil as NoCustomEditorBlock?,
+        avatarUpdatedHandler: (() -> Void)? = nil,
         onDismiss: (() -> Void)? = nil
     ) -> some View {
         switch scope {
@@ -89,7 +96,8 @@ extension View {
                 scope: scope.scopeType,
                 isPresented: isPresented,
                 customImageEditor: customImageEditor,
-                contentLayoutProvider: config.contentLayout
+                contentLayoutProvider: config.contentLayout,
+                avatarUpdatedHandler: avatarUpdatedHandler
             )
             return modifier(AvatarPickerModalPresentationModifier(
                 isPresented: isPresented,
