@@ -12,9 +12,14 @@ SWIFTFORMAT_CACHE = ~/Library/Caches/com.charcoaldesign.swiftformat
 OPENAPI_GENERATOR_GIT_URL ?= https://github.com/openapitools/openapi-generator
 OPENAPI_GENERATOR_GIT_TAG ?= v7.5.0
 OPENAPI_GENERATOR_CLONE_DIR ?= $(CURRENT_MAKEFILE_DIR)/openapi-generator
+
+OPENAPI_PROJECT_NAME ?= GravatarOpenAPIClient
+OPENAPI_DIR ?= $(CURRENT_MAKEFILE_DIR)/openapi
+OPENAPI_GENERATED_DIR ?= $(CURRENT_MAKEFILE_DIR)/openapi/$(OPENAPI_PROJECT_NAME)
+
 OPENAPI_YAML_PATH ?= $(CURRENT_MAKEFILE_DIR)/openapi/spec.yaml
 MODEL_TEMPLATE_PATH ?= $(CURRENT_MAKEFILE_DIR)/openapi
-OUTPUT_DIRECTORY ?= $(CURRENT_MAKEFILE_DIR)/Sources/Gravatar/OpenApi/Generated
+OUTPUT_DIRECTORY ?= $(CURRENT_MAKEFILE_DIR)/OpenAPIClient
 
 # Derived values (don't change these).
 CURRENT_MAKEFILE_PATH := $(abspath $(lastword $(MAKEFILE_LIST)))
@@ -109,18 +114,15 @@ install-and-generate: $(OPENAPI_GENERATOR_CLONE_DIR) # Clones and setup the open
 	make generate
 
 generate: $(OUTPUT_DIRECTORY) # Generates the open-api model
-	cp "$(OPENAPI_YAML_PATH)" "$(OPENAPI_GENERATOR_CLONE_DIR)"/openapi.yaml
-	mkdir -p "$(OPENAPI_GENERATOR_CLONE_DIR)"/templates
-	cp "$(MODEL_TEMPLATE_PATH)"/*.mustache "$(OPENAPI_GENERATOR_CLONE_DIR)"/templates/
-	rm -rf "$(OPENAPI_GENERATOR_CLONE_DIR)"/generated/OpenAPIClient/Classes/OpenAPIs/Models/*
-	"$(OPENAPI_GENERATOR_CLONE_DIR)"/run-in-docker.sh generate -i openapi.yaml \
-    --global-property models \
-    -t templates \
-    -g swift5 \
-    -o ./generated \
-    -p packageName=Gravatar \
-	--additional-properties=useJsonEncodable=false,readonlyProperties=true && \
-    rsync -av --delete "$(OPENAPI_GENERATOR_CLONE_DIR)"/generated/OpenAPIClient/Classes/OpenAPIs/Models/ "$(OUTPUT_DIRECTORY)/" && \
+	rm -rf "$(OPENAPI_GENERATED_DIR)/*" && \
+	docker run --rm \
+	-v ${OPENAPI_DIR}:/local openapitools/openapi-generator-cli:"$(OPENAPI_GENERATOR_GIT_TAG)" generate \
+	-i /local/openapi.yaml \
+	-o /local/GravatarOpenAPIClient \
+	-t /local/templates \
+	-g swift5 \
+	-p packageName=Gravatar \
+	--additional-properties=useJsonEncodable=false,readonlyProperties=true,projectName=OpenAPIClient,useSPMFileStructure=true && \
     make swiftformat && \
     echo "DONE! 🎉"
 
