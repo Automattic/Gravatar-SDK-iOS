@@ -15,7 +15,7 @@ public struct AvatarService: Sendable {
     /// - Parameters:
     ///   - client: A type which will perform basic networking operations.
     ///   - cache: A type which will perform image caching operations.
-    public init(client: HTTPClient? = nil, cache: ImageCaching? = nil) {
+    public init(client: HTTPClient, cache: ImageCaching? = nil) {
         self.imageDownloader = ImageDownloadService(client: client, cache: cache)
         self.imageUploader = ImageUploadService(client: client)
     }

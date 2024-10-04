@@ -1,4 +1,4 @@
-public protocol AvatarType {
+public protocol AvatarType: Sendable {
     var url: String { get }
     var id: String { get }
 }
