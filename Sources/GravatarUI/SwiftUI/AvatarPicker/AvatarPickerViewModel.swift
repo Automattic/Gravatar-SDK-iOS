@@ -254,12 +254,12 @@ extension AvatarPickerViewModel {
         static let avatarUpdateSuccess = SDKLocalizedString(
             "AvatarPickerViewModel.Update.Success",
             value: "Avatar updated! It may take a few minutes to appear everywhere.",
-            comment: "A success message to show when the user picks a different avatar."
+            comment: "This confirmation message shows when the user picks a different avatar."
         )
         static let avatarUpdateFail = SDKLocalizedString(
             "AvatarPickerViewModel.Update.Fail",
             value: "Oops, something didn't quite work out while trying to change your avatar.",
-            comment: "An error message to show when the user's attempt to picks a different avatar fails."
+            comment: "This error message shows when the user attempts to pick a different avatar and fails."
         )
     }
 }
