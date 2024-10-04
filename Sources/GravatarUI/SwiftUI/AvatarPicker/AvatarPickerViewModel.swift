@@ -189,6 +189,14 @@ class AvatarPickerViewModel: ObservableObject {
                 supportsRetry: false,
                 errorMessage: errorPayload?.message ?? Localized.genericUploadError
             )
+        } catch ImageUploadError.responseError(reason: let .invalidHTTPStatusCode(response, errorPayload)) where response.statusCode == 401 {
+            // If the status code is 401, then it means the token is not valid and we should prompt the user accordingly.
+            // Reconstruct the thrown error so we can pass it to the handler
+            let thrownError = ImageUploadError.responseError(reason: .invalidHTTPStatusCode(response: response, errorPayload: errorPayload))
+            handleClientError(
+                error: thrownError,
+                errorMessage: errorPayload?.message ?? Localized.genericUploadError
+            )
         } catch ImageUploadError.responseError(reason: let reason) where reason.urlSessionErrorLocalizedDescription != nil {
             handleUploadError(
                 imageID: localID,
