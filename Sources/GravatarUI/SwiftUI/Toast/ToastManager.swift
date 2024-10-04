@@ -4,7 +4,7 @@ import SwiftUI
 class ToastManager: ObservableObject {
     @Published var toasts: [ToastItem] = []
 
-    func showToast(_ message: String, type: ToastType = .info, stackingBehavior: ToastStackingBehavior = .dismissExistingWithSameMessage) {
+    func showToast(_ message: String, type: ToastType = .info, stackingBehavior: ToastStackingBehavior = .avoidStackingWithSameMessage) {
         let toast = ToastItem(message: message, type: type, stackingBehavior: stackingBehavior)
         dismissExistingIfNeeded(upcomingToast: toast)
         toasts.append(toast)
@@ -16,9 +16,9 @@ class ToastManager: ObservableObject {
     func dismissExistingIfNeeded(upcomingToast: ToastItem) {
         toasts.filter { item in
             switch upcomingToast.stackingBehavior {
-            case .dismissExistingWithSameMessage:
+            case .avoidStackingWithSameMessage:
                 upcomingToast.message == item.message
-            case .doNotDismiss:
+            case .alwaysStack:
                 false
             }
         }.forEach { element in
@@ -45,10 +45,10 @@ enum ToastType: Int {
 }
 
 enum ToastStackingBehavior: Equatable {
-    /// Dismisses the toast with the same message before showing the new one.
-    case dismissExistingWithSameMessage
-    /// Doesn't dismiss.
-    case doNotDismiss
+    /// Dismiss the toast with the same message before showing the new one.
+    case avoidStackingWithSameMessage
+    /// Stack the message without dismissing the existing ones.
+    case alwaysStack
 }
 
 struct ToastItem: Identifiable, Equatable {

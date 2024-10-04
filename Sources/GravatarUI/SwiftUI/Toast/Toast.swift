@@ -64,14 +64,14 @@ struct Toast: View {
         Toast(toast: .init(
             message: "Avatar updated! It may take a few minutes to appear everywhere.",
             type: .info,
-            stackingBehavior: .dismissExistingWithSameMessage
+            stackingBehavior: .avoidStackingWithSameMessage
         )) { _ in
         }
 
         Toast(toast: .init(
             message: "Something went wrong.",
             type: .error,
-            stackingBehavior: .doNotDismiss
+            stackingBehavior: .alwaysStack
         )) { _ in
         }
     }
