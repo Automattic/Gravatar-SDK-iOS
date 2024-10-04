@@ -105,11 +105,7 @@ class AvatarPickerViewModel: ObservableObject {
         } catch APIError.responseError(let reason) where reason.cancelled {
             // NoOp.
         } catch APIError.responseError(let .invalidHTTPStatusCode(response, errorPayload)) where response.statusCode == HTTPStatus.unauthorized.rawValue {
-            handleUnrecoverableClientError(
-                errorMessage: errorPayload?.message ?? Localized.avatarUpdateFail,
-                response: response,
-                errorPayload: errorPayload
-            )
+            handleUnrecoverableClientError(APIError.responseError(reason: .invalidHTTPStatusCode(response: response, errorPayload: errorPayload)))
         } catch {
             toastManager.showToast(Localized.avatarUpdateFail, type: .error)
             grid.selectAvatar(withID: selectedAvatarResult?.value())
@@ -186,7 +182,7 @@ class AvatarPickerViewModel: ObservableObject {
         } catch ImageUploadError.responseError(reason: let .invalidHTTPStatusCode(response, errorPayload))
             where response.statusCode == HTTPStatus.badRequest.rawValue
         {
-            // If the status code is 400 then it means we got a validation error about this image and the operation is not suitable for retrying.
+            // If the status code is 400 (bad request) then it means we got a validation error about this image and the operation is not suitable for retrying.
             handleUploadError(
                 imageID: localID,
                 squareImage: squareImage,
@@ -196,12 +192,8 @@ class AvatarPickerViewModel: ObservableObject {
         } catch ImageUploadError.responseError(reason: let .invalidHTTPStatusCode(response, errorPayload))
             where response.statusCode == HTTPStatus.unauthorized.rawValue
         {
-            // If the status code is 401, then it means the token is not valid and we should prompt the user accordingly.
-            handleUnrecoverableClientError(
-                errorMessage: errorPayload?.message ?? Localized.genericUploadError,
-                response: response,
-                errorPayload: errorPayload
-            )
+            // If the status code is 401 (unauthorized), then it means the token is not valid and we should prompt the user accordingly.
+            handleUnrecoverableClientError(APIError.responseError(reason: .invalidHTTPStatusCode(response: response, errorPayload: errorPayload)))
         } catch ImageUploadError.responseError(reason: let reason) where reason.urlSessionErrorLocalizedDescription != nil {
             handleUploadError(
                 imageID: localID,
@@ -228,20 +220,9 @@ class AvatarPickerViewModel: ObservableObject {
         grid.replaceModel(withID: imageID, with: newModel)
     }
 
-    private func handleUnrecoverableClientError(errorMessage: String? = nil, response: HTTPURLResponse, errorPayload: APIErrorPayload? = nil) {
-        if let errorMessage {
-            toastManager.showToast(errorMessage, type: .error)
-        }
-
+    private func handleUnrecoverableClientError(_ error: Error) {
         self.grid.setAvatars([])
-        self.gridResponseStatus = .failure(
-            APIError.responseError(
-                reason: .invalidHTTPStatusCode(
-                    response: response,
-                    errorPayload: errorPayload
-                )
-            )
-        )
+        self.gridResponseStatus = .failure(error)
     }
 
     private func updateSelectedAvatarURL() {
