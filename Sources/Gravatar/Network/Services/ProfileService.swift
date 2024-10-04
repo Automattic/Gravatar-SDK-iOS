@@ -85,20 +85,6 @@ extension URLRequest {
     }
 }
 
-extension Avatar {
-    public var id: String {
-        imageId
-    }
-
-    public var url: String {
-        imageUrl
-    }
-
-    public var isSelected: Bool {
-        selected == true
-    }
-}
-
 private struct SelectAvatarBody: Encodable, Sendable {
     private let emailHash: String
 
