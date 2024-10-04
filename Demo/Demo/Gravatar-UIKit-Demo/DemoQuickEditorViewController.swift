@@ -74,7 +74,6 @@ final class DemoQuickEditorViewController: UIViewController {
         let view = ProfileSummaryView(frame: .zero, paletteType: .system, profileButtonStyle: .edit)
         view.translatesAutoresizingMaskIntoConstraints = false
         view.avatarActivityIndicatorType = .activity
-//        view.delegate = self
         return view
     }()
 
