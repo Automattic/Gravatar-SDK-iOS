@@ -84,3 +84,9 @@
 
 /* The title of the dismiss button on a confirmation dialog. */
 "AvatarPicker.Dismiss.title" = "Dismiss";
+
+/* This confirmation message shows when the user picks a different avatar. */
+"AvatarPickerViewModel.Update.Success" = "Avatar updated! It may take a few minutes to appear everywhere.";
+
+/* This error message shows when the user attempts to pick a different avatar and fails. */
+"AvatarPickerViewModel.Update.Fail" = "Oops, something didn't quite work out while trying to change your avatar.";
