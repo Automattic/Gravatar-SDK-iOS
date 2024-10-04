@@ -104,7 +104,7 @@ class AvatarPickerViewModel: ObservableObject {
             selectedAvatarResult = .success(response.imageId)
         } catch APIError.responseError(let reason) where reason.cancelled {
             // NoOp.
-        } catch APIError.responseError(let .invalidHTTPStatusCode(response, errorPayload)) where response.statusCode == 401 {
+        } catch APIError.responseError(let .invalidHTTPStatusCode(response, errorPayload)) where response.statusCode == HTTPStatus.unauthorized.rawValue {
             handleUnrecoverableClientError(
                 errorMessage: errorPayload?.message ?? Localized.avatarUpdateFail,
                 response: response,
@@ -183,7 +183,9 @@ class AvatarPickerViewModel: ObservableObject {
 
             let newModel = AvatarImageModel(id: avatar.id, source: .remote(url: avatar.url))
             grid.replaceModel(withID: localID, with: newModel)
-        } catch ImageUploadError.responseError(reason: let .invalidHTTPStatusCode(response, errorPayload)) where response.statusCode == 400 {
+        } catch ImageUploadError.responseError(reason: let .invalidHTTPStatusCode(response, errorPayload))
+            where response.statusCode == HTTPStatus.badRequest.rawValue
+        {
             // If the status code is 400 then it means we got a validation error about this image and the operation is not suitable for retrying.
             handleUploadError(
                 imageID: localID,
@@ -191,7 +193,9 @@ class AvatarPickerViewModel: ObservableObject {
                 supportsRetry: false,
                 errorMessage: errorPayload?.message ?? Localized.genericUploadError
             )
-        } catch ImageUploadError.responseError(reason: let .invalidHTTPStatusCode(response, errorPayload)) where response.statusCode == 401 {
+        } catch ImageUploadError.responseError(reason: let .invalidHTTPStatusCode(response, errorPayload))
+            where response.statusCode == HTTPStatus.unauthorized.rawValue
+        {
             // If the status code is 401, then it means the token is not valid and we should prompt the user accordingly.
             handleUnrecoverableClientError(
                 errorMessage: errorPayload?.message ?? Localized.genericUploadError,
