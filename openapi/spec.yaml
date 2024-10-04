@@ -142,6 +142,7 @@ components:
         - service_label
         - service_icon
         - url
+        - is_hidden
       properties:
         service_type:
           type: string
@@ -165,6 +166,11 @@ components:
           format: uri
           examples:
             - https://example.tumblr.com/
+        is_hidden:
+          type: boolean
+          description: Whether the verified account is hidden from the user's profile.
+          examples:
+            - false
     GalleryImage:
       type: object
       description: A gallery image a user has uploaded.
@@ -507,7 +513,9 @@ components:
             insufficient_scope:
               value:
                 code: insufficient_scope
-                error: The provided token does not contain the required scope for this request.
+                error: >-
+                  The provided token does not contain the required scope for
+                  this request.
     rate_limit_exceeded:
       description: Rate Limit Exceeded
       headers:
@@ -569,6 +577,7 @@ paths:
             X-RateLimit-Reset:
               $ref: '#/components/headers/X-RateLimit-Reset'
         '429':
+          description: Rate limit exceeded
           $ref: '#/components/responses/rate_limit_exceeded'
         '500':
           description: Internal server error
@@ -599,8 +608,10 @@ paths:
                 type: object
                 $ref: '#/components/schemas/AssociatedResponse'
         '401':
+          description: Not Authorized
           $ref: '#/components/responses/not_authorized'
         '403':
+          description: Insufficient Scope
           $ref: '#/components/responses/insufficient_scope'
   /me/avatars:
     get:
@@ -631,8 +642,10 @@ paths:
                 items:
                   $ref: '#/components/schemas/Avatar'
         '401':
+          description: Not Authorized
           $ref: '#/components/responses/not_authorized'
         '403':
+          description: Insufficient Scope
           $ref: '#/components/responses/insufficient_scope'
     post:
       summary: Upload new avatar image
@@ -678,8 +691,10 @@ paths:
                     error: Unsupported image type
                     code: unsupported_image
         '401':
+          description: Not Authorized
           $ref: '#/components/responses/not_authorized'
         '403':
+          description: Insufficient Scope
           $ref: '#/components/responses/insufficient_scope'
   /me/avatars/{imageId}/email:
     post:
@@ -717,6 +732,8 @@ paths:
         '204':
           description: Avatar successfully set
         '401':
+          description: Not Authorized
           $ref: '#/components/responses/not_authorized'
         '403':
+          description: Insufficient Scope
           $ref: '#/components/responses/insufficient_scope'
