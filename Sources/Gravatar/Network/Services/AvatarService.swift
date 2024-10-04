@@ -84,8 +84,7 @@ public struct AvatarService: Sendable {
     func upload(_ image: UIImage, accessToken: String) async throws -> Avatar {
         do {
             let (data, _) = try await imageUploader.uploadImage(image, accessToken: accessToken, additionalHTTPHeaders: nil)
-            let avatar: Avatar = try data.decode()
-            return avatar
+            return try data.decode()
         } catch let error as ImageUploadError {
             throw error
         } catch {
