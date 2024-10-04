@@ -275,7 +275,7 @@ extension AvatarPickerViewModel {
         static let imageTooBigError = SDKLocalizedString(
             "AvatarPicker.Upload.Error.ImageTooBig.Error",
             value: "The provided image exceeds the maximum size: 10MB",
-            comment: "Error message to show when if the upload fails because the image is too big."
+            comment: "Error message to show when the upload fails because the image is too big."
         )
     }
 }

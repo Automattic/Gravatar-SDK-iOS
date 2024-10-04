@@ -91,5 +91,5 @@
 /* This error message shows when the user attempts to pick a different avatar and fails. */
 "AvatarPickerViewModel.Update.Fail" = "Oops, something didn't quite work out while trying to change your avatar.";
 
-/* Error message to show when if the upload fails because the image is too big. */
+/* Error message to show when the upload fails because the image is too big. */
 "AvatarPicker.Upload.Error.ImageTooBig.Error" = "The provided image exceeds the maximum size: 10MB";
