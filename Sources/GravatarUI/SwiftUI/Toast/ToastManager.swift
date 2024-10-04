@@ -4,11 +4,25 @@ import SwiftUI
 class ToastManager: ObservableObject {
     @Published var toasts: [ToastItem] = []
 
-    func showToast(_ message: String, type: ToastType = .info) {
-        let toast = ToastItem(message: message, type: type)
+    func showToast(_ message: String, type: ToastType = .info, stackingBehavior: ToastStackingBehavior = .dismissExistingWithSameMessage) {
+        let toast = ToastItem(message: message, type: type, stackingBehavior: stackingBehavior)
+        dismissExistingIfNeeded(upcomingToast: toast)
         toasts.append(toast)
         DispatchQueue.main.asyncAfter(deadline: .now() + calculateToastDuration(for: message)) {
             self.removeToast(toast.id)
+        }
+    }
+
+    func dismissExistingIfNeeded(upcomingToast: ToastItem) {
+        toasts.filter { item in
+            switch upcomingToast.stackingBehavior {
+            case .dismissExistingWithSameMessage:
+                upcomingToast.message == item.message
+            case .doNotDismiss:
+                false
+            }
+        }.forEach { element in
+            removeToast(element.id)
         }
     }
 
@@ -30,8 +44,16 @@ enum ToastType: Int {
     case error
 }
 
+enum ToastStackingBehavior: Equatable {
+    /// Dismisses the toast with the same message before showing the new one.
+    case dismissExistingWithSameMessage
+    /// Doesn't dismiss.
+    case doNotDismiss
+}
+
 struct ToastItem: Identifiable, Equatable {
     let id: UUID = .init()
     let message: String
     let type: ToastType
+    let stackingBehavior: ToastStackingBehavior
 }
