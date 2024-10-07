@@ -1,5 +1,5 @@
 @testable import Gravatar
-@testable import TestHelpers
+import TestHelpers
 import XCTest
 
 final class ProfileServiceTests: XCTestCase {
@@ -88,5 +88,9 @@ extension Bundle {
 
     static var fullProfileJsonData: Data? {
         testsBundle.jsonData(forResource: "fullProfile")
+    }
+
+    static var imageUploadJsonData: Data? {
+        testsBundle.jsonData(forResource: "avatarUploadResponse")
     }
 }

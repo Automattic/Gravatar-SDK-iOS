@@ -1,0 +1,65 @@
+/* Translation-Revision-Date: 2024-09-11 11:54:03+0000 */
+/* Plural-Forms: nplurals=2; plural=n > 1; */
+/* Generator: GlotPress/2.4.0-alpha */
+/* Language: fr */
+
+/* Title of a button that allows the user to try loading their avatars again */
+"AvatarPicker.ContentLoading.Failure.Retry.ctaButtonTitle" = "Réessayer";
+
+/* A message asking the user to try again */
+"AvatarPicker.ContentLoading.Failure.Retry.subtext" = "Un problème est survenu et nous n’avons pas pu nous connecter aux serveurs Gravatar.";
+
+/* Title of a message advising the user that something went wrong while loading their avatars */
+"AvatarPicker.ContentLoading.Failure.Retry.title" = "Oups";
+
+/* Title of a button that will close the Avatar Picker, appearing beneath a message that advises the user that their login session has expired. */
+"AvatarPicker.ContentLoading.Failure.SessionExpired.Close.buttonTitle" = "Fermer";
+
+/* A message describing the error and advising the user to login again to resolve the issue */
+"AvatarPicker.ContentLoading.Failure.SessionExpired.Close.subtext" = "Malheureusement, il semblerait que votre session ait expiré. Assurez-vous d’être connecté(e) pour mettre à jour votre avatar.";
+
+/* Title of a button that will begin the process of authenticating the user, appearing beneath a message that advises the user that their login session has expired. */
+"AvatarPicker.ContentLoading.Failure.SessionExpired.LogIn.buttonTitle" = "Se connecter";
+
+/* A message describing the error and advising the user to login again to resolve the issue */
+"AvatarPicker.ContentLoading.Failure.SessionExpired.LogIn.subtext" = "La session a expiré pour des raisons de sécurité. Veuillez vous connecter pour mettre à jour votre avatar.";
+
+/* Title of a message advising the user that their login session has expired. */
+"AvatarPicker.ContentLoading.Failure.SessionExpired.title" = "La session a expiré";
+
+/* Title of a button that allow for uploading an image */
+"AvatarPicker.ContentLoading.Success.ctaButtonTitle" = "Charger une image";
+
+/* A message describing the actions a user can take to setup their avatar */
+"AvatarPicker.ContentLoading.Success.subtext" = "Choisissez ou chargez vos images d’avatar favorites et connectez-les à votre adresse e-mail.";
+
+/* Title of a message advising the user to setup their avatar */
+"AvatarPicker.ContentLoading.success.title" = "Configurons votre avatar";
+
+/* A message describing the purpose of this view */
+"AvatarPicker.Header.subtitle" = "Choisissez ou chargez vos images d’avatar favorites et connectez-les à votre adresse e-mail.";
+
+/* Title appearing in the header of a view that allows users to manage their avatars */
+"AvatarPicker.Header.title" = "Avatars";
+
+/* Title of a button that will take you to your Gravatar profile, with an arrow indicating that this action will cause you to leave this view */
+"AvatarPickerProfile.Button.ViewProfile.title" = "Afficher le profil →";
+
+/* Text on a sample Gravatar profile, appearing in the place where a Gravatar profile would display your short biography. */
+"ClaimProfile.Label.AboutMe" = "Faites savoir au monde qui vous êtes. Votre avatar et votre bio qui vous suivent partout sur le Web.";
+
+/* Text on a sample Gravatar profile, appearing in the place where your name would normally appear on your Gravatar profile after you claim it. */
+"ClaimProfile.Label.DisplayName" = "Votre nom";
+
+/* Text on a sample Gravatar profile, appearing in the place where a Gravatar profile would display information like location, your preferred pronouns, etc. */
+"ClaimProfile.Label.Location" = "Ajoutez votre emplacement, vos pronoms, etc.";
+
+/* Title for a button that allows you to claim a new Gravatar profile */
+"ProfileButton.title.create" = "Demander un profil";
+
+/* Title for a button that allows you to edit your Gravatar profile */
+"ProfileButton.title.edit" = "Modifier le profil";
+
+/* Title for a button that allows you to view your Gravatar profile */
+"ProfileButton.title.view" = "Afficher le profil";
+

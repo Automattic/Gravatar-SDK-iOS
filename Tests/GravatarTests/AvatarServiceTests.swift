@@ -1,5 +1,5 @@
-@testable import Gravatar
-@testable import TestHelpers
+import Gravatar
+import TestHelpers
 import XCTest
 
 final class AvatarServiceTests: XCTestCase {
@@ -22,33 +22,29 @@ final class AvatarServiceTests: XCTestCase {
 
     func testUploadImage() async throws {
         let successResponse = HTTPURLResponse.successResponse()
-        let sessionMock = URLSessionMock(returnData: "Success".data(using: .utf8)!, response: successResponse)
+        let sessionMock = URLSessionMock(returnData: Bundle.imageUploadJsonData!, response: successResponse)
         let service = avatarService(with: sessionMock)
 
-        try await service.upload(ImageHelper.testImage, email: Email("some@email.com"), accessToken: "AccessToken")
-        let data = await sessionMock.uploadData
-        let uploadData = try XCTUnwrap(data)
-        XCTAssertTrue(
-            String(data: uploadData, encoding: .isoLatin1)!.contains("some@email.com"),
-            "Multipart form data should use the raw email address instead of its hash"
-        )
+        let avatar = try await service.upload(ImageHelper.testImage, accessToken: "AccessToken")
+
+        XCTAssertEqual(avatar.id, "6f3eac1c67f970f2a0c2ea8")
+
         let request = await sessionMock.request
-        XCTAssertEqual(request?.url?.absoluteString, "https://api.gravatar.com/v1/upload-image")
+        XCTAssertEqual(request?.url?.absoluteString, "https://api.gravatar.com/v3/me/avatars")
         XCTAssertNotNil(request?.value(forHTTPHeaderField: "Authorization"))
         XCTAssertTrue(request?.value(forHTTPHeaderField: "Authorization")?.hasPrefix("Bearer ") ?? false)
         XCTAssertNotNil(request?.value(forHTTPHeaderField: "Content-Type"))
-        XCTAssertTrue(request?.value(forHTTPHeaderField: "Content-Type")?.hasPrefix("multipart/form-data; boundary=Boundary") ?? false)
-        XCTAssertTrue(request?.value(forHTTPHeaderField: "Client-Type") == "ios")
+        XCTAssertTrue(request?.value(forHTTPHeaderField: "Content-Type")?.hasPrefix("multipart/form-data; boundary=") ?? false)
     }
 
     func testUploadImageError() async throws {
         let responseCode = 408
-        let successResponse = HTTPURLResponse.errorResponse(code: responseCode)
-        let sessionMock = URLSessionMock(returnData: "Error".data(using: .utf8)!, response: successResponse)
+        let errorResponse = HTTPURLResponse.errorResponse(code: responseCode)
+        let sessionMock = URLSessionMock(returnData: "Error".data(using: .utf8)!, response: errorResponse)
         let service = avatarService(with: sessionMock)
 
         do {
-            try await service.upload(ImageHelper.testImage, email: Email("some@email.com"), accessToken: "AccessToken")
+            try await service.upload(ImageHelper.testImage, accessToken: "AccessToken")
             XCTFail("This should throw an error")
         } catch ImageUploadError.responseError(reason: let reason) where reason.httpStatusCode == responseCode {
             // Expected error has occurred.
@@ -63,7 +59,7 @@ final class AvatarServiceTests: XCTestCase {
         let service = avatarService(with: sessionMock)
 
         do {
-            try await service.upload(UIImage(), email: Email("some@email.com"), accessToken: "AccessToken")
+            try await service.upload(UIImage(), accessToken: "AccessToken")
             XCTFail("This should throw an error")
         } catch let error as ImageUploadError {
             XCTAssertEqual(error, ImageUploadError.cannotConvertImageIntoData)
@@ -80,8 +76,8 @@ final class AvatarServiceTests: XCTestCase {
         _ = try await service.fetch(with: .email(TestData.email), options: options)
         _ = try await service.fetch(with: .email(TestData.email), options: options)
 
-        let setImageCallsCount = await cache.setImageCallsCount
-        let getImageCallsCount = await cache.getImageCallsCount
+        let setImageCallsCount = cache.setImageCallsCount
+        let getImageCallsCount = cache.getImageCallsCount
         let callsCount = await sessionMock.callsCount
         XCTAssertEqual(getImageCallsCount, 0, "We should not hit the cache")
         XCTAssertEqual(setImageCallsCount, 3, "We should have cached the image on every forced refresh")
@@ -98,8 +94,8 @@ final class AvatarServiceTests: XCTestCase {
         _ = try await service.fetch(with: .email(TestData.email), options: options)
         _ = try await service.fetch(with: .email(TestData.email), options: options)
 
-        let setImageCallsCount = await cache.setImageCallsCount
-        let getImageCallsCount = await cache.getImageCallsCount
+        let setImageCallsCount = cache.setImageCallsCount
+        let getImageCallsCount = cache.getImageCallsCount
         let callsCount = await sessionMock.callsCount
         XCTAssertEqual(getImageCallsCount, 3, "We should hit the cache")
         XCTAssertEqual(setImageCallsCount, 1, "We should save once to the cache")
@@ -135,7 +131,6 @@ final class AvatarServiceTests: XCTestCase {
 }
 
 private func avatarService(with session: URLSessionProtocol, cache: ImageCaching? = nil) -> AvatarService {
-    let client = URLSessionHTTPClient(urlSession: session)
-    let service = AvatarService(client: client, cache: cache)
+    let service = AvatarService(session: session, cache: cache)
     return service
 }

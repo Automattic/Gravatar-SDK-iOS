@@ -14,8 +14,4 @@ public protocol ImageDownloader: Sendable {
         forceRefresh: Bool,
         processingMethod: ImageProcessingMethod
     ) async throws -> ImageDownloadResult
-
-    /// Cancels the download task for the given `URL`.
-    /// - Parameter url: `URL` of the download task.
-    func cancelTask(for url: URL) async
 }

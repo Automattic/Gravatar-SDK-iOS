@@ -2,7 +2,7 @@ import Foundation
 
 /// Common errors for all HTTP operations.
 enum HTTPClientError: Error {
-    case invalidHTTPStatusCodeError(HTTPURLResponse)
+    case invalidHTTPStatusCodeError(HTTPURLResponse, Data)
     case invalidURLResponseError(URLResponse)
     case URLSessionError(Error)
 }
@@ -10,8 +10,15 @@ enum HTTPClientError: Error {
 struct URLSessionHTTPClient: HTTPClient {
     private let urlSession: URLSessionProtocol
 
-    init(urlSession: URLSessionProtocol = URLSession(configuration: .default)) {
-        self.urlSession = urlSession
+    init(urlSession: URLSessionProtocol? = nil) {
+        let configuration = URLSessionConfiguration.default
+        configuration.httpAdditionalHeaders = [
+            "Accept": "application/json",
+            "X-Platform": "ios",
+            "X-SDK-Version": BundleInfo.sdkVersion ?? "",
+            "X-Source": BundleInfo.appName ?? "",
+        ]
+        self.urlSession = urlSession ?? URLSession(configuration: configuration)
     }
 
     func fetchData(with request: URLRequest) async throws -> (Data, HTTPURLResponse) {
@@ -21,18 +28,18 @@ struct URLSessionHTTPClient: HTTPClient {
         } catch {
             throw HTTPClientError.URLSessionError(error)
         }
-        let httpResponse = try validatedHTTPResponse(result.response)
+        let httpResponse = try validatedHTTPResponse(result.response, data: result.data)
         return (result.data, httpResponse)
     }
 
-    func uploadData(with request: URLRequest, data: Data) async throws -> HTTPURLResponse {
+    func uploadData(with request: URLRequest, data: Data) async throws -> (Data, HTTPURLResponse) {
         let result: (data: Data, response: URLResponse)
         do {
             result = try await urlSession.upload(for: request, from: data)
         } catch {
             throw HTTPClientError.URLSessionError(error)
         }
-        return try validatedHTTPResponse(result.response)
+        return try (result.data, validatedHTTPResponse(result.response, data: result.data))
     }
 }
 
@@ -44,12 +51,12 @@ extension URLRequest {
     }
 }
 
-private func validatedHTTPResponse(_ response: URLResponse) throws -> HTTPURLResponse {
+private func validatedHTTPResponse(_ response: URLResponse, data: Data) throws -> HTTPURLResponse {
     guard let httpResponse = response as? HTTPURLResponse else {
         throw HTTPClientError.invalidURLResponseError(response)
     }
     if isErrorResponse(httpResponse) {
-        throw HTTPClientError.invalidHTTPStatusCodeError(httpResponse)
+        throw HTTPClientError.invalidHTTPStatusCodeError(httpResponse, data)
     }
     return httpResponse
 }
@@ -62,11 +69,16 @@ extension HTTPClientError {
     func map() -> ResponseErrorReason {
         switch self {
         case .URLSessionError(let error):
-            .URLSessionError(error: error)
-        case .invalidHTTPStatusCodeError(let response):
-            .invalidHTTPStatusCode(response: response)
+            return .URLSessionError(error: error)
+        case .invalidHTTPStatusCodeError(let response, let data):
+            if response.statusCode == 400 {
+                let error: ModelError? = try? data.decode()
+                return .invalidHTTPStatusCode(response: response, errorPayload: error)
+            } else {
+                return .invalidHTTPStatusCode(response: response)
+            }
         case .invalidURLResponseError(let response):
-            .invalidURLResponse(response: response)
+            return .invalidURLResponse(response: response)
         }
     }
 }

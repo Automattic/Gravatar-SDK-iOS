@@ -1,6 +1,17 @@
 import Foundation
 import Gravatar
 
+extension Result {
+    func value() -> Success? {
+        switch self {
+        case .success(let value):
+            value
+        default:
+            nil
+        }
+    }
+}
+
 extension Result<ImageDownloadResult, ImageFetchingError> {
     func map() -> Result<ImageDownloadResult, ImageFetchingComponentError> {
         switch self {

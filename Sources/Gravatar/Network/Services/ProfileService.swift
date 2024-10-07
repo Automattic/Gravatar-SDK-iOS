@@ -1,6 +1,11 @@
 import Foundation
 
 private let baseURL = URL(string: "https://api.gravatar.com/v3/profiles/")!
+private let avatarsBaseURLComponents = URLComponents(string: "https://api.gravatar.com/v3/me/avatars")!
+
+private func selectAvatarBaseURL(with avatarID: String) -> URL? {
+    URL(string: "https://api.gravatar.com/v3/me/avatars/\(avatarID)/email")
+}
 
 /// A service to perform Profile related tasks.
 ///
@@ -22,6 +27,35 @@ public struct ProfileService: ProfileFetching, Sendable {
         let url = baseURL.appending(pathComponent: profileID.id)
         let request = await URLRequest(url: url).authorized()
         return try await fetch(with: request)
+    }
+
+    package func fetchAvatars(with token: String, id: ProfileIdentifier) async throws -> [Avatar] {
+        do {
+            guard let url = avatarsBaseURLComponents.settingQueryItems([.init(name: "selected_email_hash", value: id.id)]).url else {
+                throw APIError.requestError(reason: .urlInitializationFailed)
+            }
+            let request = URLRequest(url: url).settingAuthorizationHeaderField(with: token)
+            let (data, _) = try await client.fetchData(with: request)
+            return try data.decode()
+        } catch {
+            throw error.apiError()
+        }
+    }
+
+    package func selectAvatar(token: String, profileID: ProfileIdentifier, avatarID: String) async throws -> Avatar {
+        guard let url = selectAvatarBaseURL(with: avatarID) else {
+            throw APIError.requestError(reason: .urlInitializationFailed)
+        }
+
+        do {
+            var request = URLRequest(url: url).settingAuthorizationHeaderField(with: token)
+            request.httpMethod = "POST"
+            request.httpBody = try SelectAvatarBody(emailHash: profileID.id).data
+            let (data, _) = try await client.fetchData(with: request)
+            return try data.decode()
+        } catch {
+            throw error.apiError()
+        }
     }
 }
 
@@ -48,5 +82,21 @@ extension URLRequest {
         var copy = self
         copy.setValue(bearerKey, forHTTPHeaderField: HeaderField.authorization.rawValue)
         return copy
+    }
+}
+
+private struct SelectAvatarBody: Encodable, Sendable {
+    private let emailHash: String
+
+    init(emailHash: String) {
+        self.emailHash = emailHash
+    }
+
+    var data: Data {
+        get throws {
+            let encoder = JSONEncoder()
+            encoder.keyEncodingStrategy = .convertToSnakeCase
+            return try encoder.encode(self)
+        }
     }
 }

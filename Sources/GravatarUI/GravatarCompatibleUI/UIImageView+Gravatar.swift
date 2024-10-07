@@ -4,21 +4,24 @@ import UIKit
 
 // MARK: - Associated Object
 
-private let taskIdentifierKey: UnsafeMutableRawPointer = .allocate(byteCount: 1, alignment: MemoryLayout<UInt8>.alignment)
-private let indicatorKey: UnsafeMutableRawPointer = .allocate(byteCount: 1, alignment: MemoryLayout<UInt8>.alignment)
-private let indicatorTypeKey: UnsafeMutableRawPointer = .allocate(byteCount: 1, alignment: MemoryLayout<UInt8>.alignment)
-private let placeholderKey: UnsafeMutableRawPointer = .allocate(byteCount: 1, alignment: MemoryLayout<UInt8>.alignment)
-private let imageTaskKey: UnsafeMutableRawPointer = .allocate(byteCount: 1, alignment: MemoryLayout<UInt8>.alignment)
-private let dataTaskKey: UnsafeMutableRawPointer = .allocate(byteCount: 1, alignment: MemoryLayout<UInt8>.alignment)
-private let imageDownloaderKey: UnsafeMutableRawPointer = .allocate(byteCount: 1, alignment: MemoryLayout<UInt8>.alignment)
-private let sourceURLKey: UnsafeMutableRawPointer = .allocate(byteCount: 1, alignment: MemoryLayout<UInt8>.alignment)
+@MainActor
+private enum AssociatedObjKeys {
+    static let taskIdentifierKey: UnsafeMutableRawPointer = .allocate(byteCount: 1, alignment: MemoryLayout<UInt8>.alignment)
+    static let indicatorKey: UnsafeMutableRawPointer = .allocate(byteCount: 1, alignment: MemoryLayout<UInt8>.alignment)
+    static let indicatorTypeKey: UnsafeMutableRawPointer = .allocate(byteCount: 1, alignment: MemoryLayout<UInt8>.alignment)
+    static let placeholderKey: UnsafeMutableRawPointer = .allocate(byteCount: 1, alignment: MemoryLayout<UInt8>.alignment)
+    static let imageTaskKey: UnsafeMutableRawPointer = .allocate(byteCount: 1, alignment: MemoryLayout<UInt8>.alignment)
+    static let dataTaskKey: UnsafeMutableRawPointer = .allocate(byteCount: 1, alignment: MemoryLayout<UInt8>.alignment)
+    static let imageDownloaderKey: UnsafeMutableRawPointer = .allocate(byteCount: 1, alignment: MemoryLayout<UInt8>.alignment)
+    static let sourceURLKey: UnsafeMutableRawPointer = .allocate(byteCount: 1, alignment: MemoryLayout<UInt8>.alignment)
+}
 
 @MainActor
 extension GravatarWrapper where Component: UIImageView {
     /// Describes which indicator type is going to be used. Default is `.none`, which means no activity indicator will be shown.
     public var activityIndicatorType: ActivityIndicatorType {
         get {
-            getAssociatedObject(component, indicatorTypeKey) ?? .none
+            getAssociatedObject(component, AssociatedObjKeys.indicatorTypeKey) ?? .none
         }
 
         set {
@@ -30,14 +33,14 @@ extension GravatarWrapper where Component: UIImageView {
             case .custom(let indicator):
                 activityIndicator = indicator
             }
-            setRetainedAssociatedObject(component, indicatorTypeKey, newValue)
+            setRetainedAssociatedObject(component, AssociatedObjKeys.indicatorTypeKey, newValue)
         }
     }
 
     /// The activityIndicator to show during network operations .
     public private(set) var activityIndicator: ActivityIndicatorProvider? {
         get {
-            let box: Box<ActivityIndicatorProvider>? = getAssociatedObject(component, indicatorKey)
+            let box: Box<ActivityIndicatorProvider>? = getAssociatedObject(component, AssociatedObjKeys.indicatorKey)
             return box?.value
         }
 
@@ -73,57 +76,51 @@ extension GravatarWrapper where Component: UIImageView {
                 newIndicator.view.isHidden = true
             }
 
-            setRetainedAssociatedObject(component, indicatorKey, newValue.map(Box.init))
+            setRetainedAssociatedObject(component, AssociatedObjKeys.indicatorKey, newValue.map(Box.init))
         }
     }
 
     /// A `Placeholder` will be shown in the imageview until the download completes.
     public private(set) var placeholder: UIImage? {
-        get { getAssociatedObject(component, placeholderKey) }
+        get { getAssociatedObject(component, AssociatedObjKeys.placeholderKey) }
         set {
             if let newPlaceholder = newValue {
                 component.image = newPlaceholder
             } else {
                 component.image = nil
             }
-            setRetainedAssociatedObject(component, placeholderKey, newValue)
+            setRetainedAssociatedObject(component, AssociatedObjKeys.placeholderKey, newValue)
         }
     }
 
     public private(set) var sourceURL: URL? {
         get {
-            getAssociatedObject(component, sourceURLKey)
+            getAssociatedObject(component, AssociatedObjKeys.sourceURLKey)
         }
         set {
-            setRetainedAssociatedObject(component, sourceURLKey, newValue)
+            setRetainedAssociatedObject(component, AssociatedObjKeys.sourceURLKey, newValue)
         }
     }
 
     public private(set) var taskIdentifier: UInt? {
         get {
-            let box: Box<UInt>? = getAssociatedObject(component, taskIdentifierKey)
+            let box: Box<UInt>? = getAssociatedObject(component, AssociatedObjKeys.taskIdentifierKey)
             return box?.value
         }
         set {
             let box = newValue.map { Box($0) }
-            setRetainedAssociatedObject(component, taskIdentifierKey, box)
+            setRetainedAssociatedObject(component, AssociatedObjKeys.taskIdentifierKey, box)
         }
     }
 
     public private(set) var imageDownloader: ImageDownloader? {
         get {
-            let box: Box<ImageDownloader>? = getAssociatedObject(component, imageDownloaderKey)
+            let box: Box<ImageDownloader>? = getAssociatedObject(component, AssociatedObjKeys.imageDownloaderKey)
             return box?.value
         }
         set {
             let box = newValue.map { Box($0) }
-            setRetainedAssociatedObject(component, imageDownloaderKey, box)
-        }
-    }
-
-    public func cancelImageDownload() async {
-        if let sourceURL {
-            await imageDownloader?.cancelTask(for: sourceURL)
+            setRetainedAssociatedObject(component, AssociatedObjKeys.imageDownloaderKey, box)
         }
     }
 
