@@ -141,7 +141,7 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
                     oauthError = nil
                 }
             }
-            fetchedToken = oauthSession.sessionToken(with: email)
+            fetchedToken = oauthSession.sessionToken(with: email)?.token
             isAuthenticating = false
         }
     }
