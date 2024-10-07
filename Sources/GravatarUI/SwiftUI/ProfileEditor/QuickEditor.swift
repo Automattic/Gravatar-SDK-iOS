@@ -24,13 +24,12 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
     fileprivate typealias Constants = QuickEditorConstants
 
     @Environment(\.oauthSession) private var oauthSession
-    @State var fetchedToken: String?
     @State var scope: QuickEditorScopeType
     @State var isAuthenticating: Bool = true
     @State var oauthError: OAuthError?
     @Binding var isPresented: Bool
     let email: Email
-    let token: String?
+    @State var token: String?
     var customImageEditor: ImageEditorBlock<ImageEditor>?
     var contentLayoutProvider: AvatarPickerContentLayoutProviding
     var avatarUpdatedHandler: (() -> Void)?
@@ -55,13 +54,19 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
 
     var body: some View {
         NavigationView {
-            if let token {
-                editorView(with: token)
-            } else if let token = fetchedToken {
-                editorView(with: token)
+            if !isAuthenticating {
+                // Expired token error UI is presented by the Avatar Picker for now.
+                // We need to keep Avatar Picker presented for this error.
+                if let token, case .expiredToken = oauthError {
+                    editorView(with: token)
+                } else if let token {
+                    editorView(with: token)
+                } else {
+                    noticeView()
+                        .accumulateIntrinsicHeight()
+                }
             } else {
-                noticeView()
-                    .accumulateIntrinsicHeight()
+                ProgressView()
             }
         }
     }
@@ -76,7 +81,7 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
                 contentLayoutProvider: contentLayoutProvider,
                 customImageEditor: customImageEditor,
                 tokenErrorHandler: {
-                    oauthSession.markSessionAsExpired(with: email)
+                    oauthError = .expiredToken
                     performAuthentication()
                 },
                 avatarUpdatedHandler: avatarUpdatedHandler
@@ -87,31 +92,27 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
     @MainActor
     func noticeView() -> some View {
         VStack {
-            if !isAuthenticating {
-                EmailText(email: email)
-                ContentLoadingErrorView(
-                    title: Constants.ErrorView.title(for: oauthError),
-                    subtext: Constants.ErrorView.subtext(for: oauthError),
-                    image: nil,
-                    actionButton: {
-                        Button {
-                            performAuthentication()
-                        } label: {
-                            CTAButtonView(Constants.ErrorView.buttonTitle(for: oauthError))
-                        }
-                    },
-                    innerPadding: .init(
-                        top: .DS.Padding.double,
-                        leading: .DS.Padding.double,
-                        bottom: .DS.Padding.double,
-                        trailing: .DS.Padding.double
-                    )
+            EmailText(email: email)
+            ContentLoadingErrorView(
+                title: Constants.ErrorView.title(for: oauthError),
+                subtext: Constants.ErrorView.subtext(for: oauthError),
+                image: nil,
+                actionButton: {
+                    Button {
+                        performAuthentication()
+                    } label: {
+                        CTAButtonView(Constants.ErrorView.buttonTitle(for: oauthError))
+                    }
+                },
+                innerPadding: .init(
+                    top: .DS.Padding.double,
+                    leading: .DS.Padding.double,
+                    bottom: .DS.Padding.double,
+                    trailing: .DS.Padding.double
                 )
-                .padding(.horizontal, .DS.Padding.double)
-                Spacer()
-            } else {
-                ProgressView()
-            }
+            )
+            .padding(.horizontal, .DS.Padding.double)
+            Spacer()
         }.gravatarNavigation(
             title: Constants.title,
             actionButtonDisabled: true,
@@ -120,7 +121,10 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
             }
         )
         .task {
-            performAuthentication()
+            if oauthError == nil {
+                performAuthentication()
+            }
+
         }
     }
 
@@ -128,9 +132,12 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
     func performAuthentication() {
         Task {
             isAuthenticating = true
-            if !oauthSession.hasValidSession(with: email) {
+            if let token = oauthSession.sessionToken(with: email), oauthError == nil {
+                self.token = token
+            } else {
                 do {
-                    _ = try await oauthSession.retrieveAccessToken(with: email)
+                    let token = try await oauthSession.retrieveAccessToken(with: email)
+                    self.token = token
                     oauthError = nil
                 } catch OAuthError.oauthResponseError(_, let code) where code == .canceledLogin {
                     // ignore the error if the user has cancelled the operation.
@@ -140,7 +147,6 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
                     oauthError = nil
                 }
             }
-            fetchedToken = oauthSession.sessionToken(with: email)
             isAuthenticating = false
         }
     }
