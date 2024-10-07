@@ -10,7 +10,7 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
     @Environment(\.verticalSizeClass) var verticalSizeClass
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
 
-    @ObservedObject var model: AvatarPickerViewModel
+    @StateObject var model: AvatarPickerViewModel
     @Binding var isPresented: Bool
 
     @State private var safariURL: URL?
