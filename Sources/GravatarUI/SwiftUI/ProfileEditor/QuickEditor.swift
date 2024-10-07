@@ -24,13 +24,12 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
     fileprivate typealias Constants = QuickEditorConstants
 
     @Environment(\.oauthSession) private var oauthSession
-    @State var fetchedToken: String?
+    @State var token: String?
     @State var scope: QuickEditorScopeType
     @State var isAuthenticating: Bool = true
     @State var oauthError: OAuthError?
     @Binding var isPresented: Bool
     let email: Email
-    let token: String?
     var customImageEditor: ImageEditorBlock<ImageEditor>?
     var contentLayoutProvider: AvatarPickerContentLayoutProviding
     var avatarUpdatedHandler: (() -> Void)?
@@ -57,8 +56,6 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
         NavigationView {
             if let token {
                 editorView(with: token)
-            } else if let token = fetchedToken {
-                editorView(with: token)
             } else {
                 noticeView()
                     .accumulateIntrinsicHeight()
@@ -72,7 +69,7 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
         case .avatarPicker:
             AvatarPickerView(
                 email: email,
-                authToken: $fetchedToken,
+                authToken: $token,
                 isPresented: $isPresented,
                 contentLayoutProvider: contentLayoutProvider,
                 customImageEditor: customImageEditor,
@@ -141,7 +138,7 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
                     oauthError = nil
                 }
             }
-            fetchedToken = oauthSession.sessionToken(with: email)?.token
+            token = oauthSession.sessionToken(with: email)?.token
             isAuthenticating = false
         }
     }
