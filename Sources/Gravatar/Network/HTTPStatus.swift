@@ -6,4 +6,5 @@ package enum HTTPStatus: Int {
     case unauthorized = 401
     case forbidden = 403
     case notFound = 404
+    case payloadTooLarge = 413
 }
