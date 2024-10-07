@@ -28,7 +28,7 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
     @State var isAuthenticating: Bool = true
     @State var oauthError: OAuthError?
     @Binding var isPresented: Bool
-    @StateObject private var model: AvatarPickerViewModel
+    @StateObject var model: AvatarPickerViewModel
 
     let email: Email
     let token: String?
