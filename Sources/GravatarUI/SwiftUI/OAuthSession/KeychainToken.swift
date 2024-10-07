@@ -10,7 +10,6 @@ struct KeychainToken: Codable {
             let decodedToken = try decoder.decode(KeychainToken.self, from: data)
             self = decodedToken
         } catch {
-            print("Failed to decode token: \(error)")
             return nil
         }
     }
@@ -25,7 +24,6 @@ struct KeychainToken: Codable {
             let data = try encoder.encode(self)
             return data
         } catch {
-            print("Failed to encode token: \(error)")
             return nil
         }
     }
