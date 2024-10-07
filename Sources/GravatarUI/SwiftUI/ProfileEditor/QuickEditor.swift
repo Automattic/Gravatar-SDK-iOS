@@ -24,7 +24,7 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
     fileprivate typealias Constants = QuickEditorConstants
 
     @Environment(\.oauthSession) private var oauthSession
-    @State var hasSession: Bool = false
+    @State var fetchedToken: String?
     @State var scope: QuickEditorScopeType
     @State var isAuthenticating: Bool = true
     @State var oauthError: OAuthError?
@@ -57,7 +57,7 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
         NavigationView {
             if let token {
                 editorView(with: token)
-            } else if let token = oauthSession.sessionToken(with: email) {
+            } else if let token = fetchedToken {
                 editorView(with: token)
             } else {
                 noticeView()
@@ -140,7 +140,7 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
                     oauthError = nil
                 }
             }
-            hasSession = oauthSession.hasValidSession(with: email)
+            fetchedToken = oauthSession.sessionToken(with: email)
             isAuthenticating = false
         }
     }
