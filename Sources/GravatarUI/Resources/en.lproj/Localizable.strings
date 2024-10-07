@@ -52,6 +52,9 @@
 /* Title appearing in the header of a view that allows users to manage their avatars */
 "AvatarPicker.Header.title" = "Avatars";
 
+/* Error message to show when the upload fails because the image is too big. */
+"AvatarPicker.Upload.Error.ImageTooBig.Error" = "The provided image exceeds the maximum size: 10MB";
+
 /* The title of the remove button on the upload error dialog. */
 "AvatarPicker.Upload.Error.Remove.title" = "Remove";
 
