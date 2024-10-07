@@ -177,13 +177,23 @@ class AvatarPickerViewModel: ObservableObject {
 
             let newModel = AvatarImageModel(id: avatar.id, source: .remote(url: avatar.url))
             grid.replaceModel(withID: localID, with: newModel)
-        } catch ImageUploadError.responseError(reason: let .invalidHTTPStatusCode(response, errorPayload)) where response.statusCode == 400 {
+        } catch ImageUploadError.responseError(reason: let .invalidHTTPStatusCode(response, errorPayload))
+            where response.statusCode == HTTPStatus.badRequest.rawValue || response.statusCode == HTTPStatus.payloadTooLarge.rawValue
+        {
+            let message: String = {
+                if response.statusCode == HTTPStatus.payloadTooLarge.rawValue {
+                    // The error response comes back as an HTML document for 413, which is unexpected.
+                    // Until BE starts to send the json, we'll handle 413 on the client side.
+                    return Localized.imageTooBigError
+                }
+                return errorPayload?.message ?? Localized.genericUploadError
+            }()
             // If the status code is 400 then it means we got a validation error about this image and the operation is not suitable for retrying.
             handleUploadError(
                 imageID: localID,
                 squareImage: squareImage,
                 supportsRetry: false,
-                errorMessage: errorPayload?.message ?? Localized.genericUploadError
+                errorMessage: message
             )
         } catch ImageUploadError.responseError(reason: let reason) where reason.urlSessionErrorLocalizedDescription != nil {
             handleUploadError(
@@ -261,6 +271,11 @@ extension AvatarPickerViewModel {
             "AvatarPickerViewModel.Update.Fail",
             value: "Oops, something didn't quite work out while trying to change your avatar.",
             comment: "This error message shows when the user attempts to pick a different avatar and fails."
+        )
+        static let imageTooBigError = SDKLocalizedString(
+            "AvatarPicker.Upload.Error.ImageTooBig.Error",
+            value: "The provided image exceeds the maximum size: 10MB",
+            comment: "Error message to show when the upload fails because the image is too big."
         )
     }
 }
