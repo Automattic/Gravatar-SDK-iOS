@@ -71,7 +71,8 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
         switch scope {
         case .avatarPicker:
             AvatarPickerView(
-                model: .init(email: email, authToken: token),
+                email: email,
+                authToken: $fetchedToken,
                 isPresented: $isPresented,
                 contentLayoutProvider: contentLayoutProvider,
                 customImageEditor: customImageEditor,
