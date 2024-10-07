@@ -16,7 +16,7 @@ class AvatarPickerViewModel: ObservableObject {
     }
 
     private var avatarSelectionTask: Task<Avatar?, Never>?
-    @Published private var authToken: String?
+    private var authToken: String?
     private var selectedAvatarResult: Result<String, Error>? {
         didSet {
             if selectedAvatarResult?.value() != nil {
