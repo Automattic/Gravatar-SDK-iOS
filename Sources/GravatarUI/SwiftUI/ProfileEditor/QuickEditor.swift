@@ -24,11 +24,12 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
     fileprivate typealias Constants = QuickEditorConstants
 
     @Environment(\.oauthSession) private var oauthSession
-    @State var fetchedToken: String?
     @State var scope: QuickEditorScopeType
     @State var isAuthenticating: Bool = true
     @State var oauthError: OAuthError?
     @Binding var isPresented: Bool
+    @StateObject var model: AvatarPickerViewModel
+
     let email: Email
     let token: String?
     var customImageEditor: ImageEditorBlock<ImageEditor>?
@@ -51,13 +52,14 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
         self.contentLayoutProvider = contentLayoutProvider
         self.token = token
         self.avatarUpdatedHandler = avatarUpdatedHandler
+        self._model = StateObject(wrappedValue: AvatarPickerViewModel(email: email, authToken: token))
     }
 
     var body: some View {
         NavigationView {
             if let token {
                 editorView(with: token)
-            } else if let token = fetchedToken {
+            } else if let token = model.authToken {
                 editorView(with: token)
             } else {
                 noticeView()
@@ -71,7 +73,7 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
         switch scope {
         case .avatarPicker:
             AvatarPickerView(
-                model: .init(email: email, authToken: token),
+                model: model,
                 isPresented: $isPresented,
                 contentLayoutProvider: contentLayoutProvider,
                 customImageEditor: customImageEditor,
@@ -140,7 +142,8 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
                     oauthError = nil
                 }
             }
-            fetchedToken = oauthSession.sessionToken(with: email)
+            let fetchedToken = oauthSession.sessionToken(with: email)
+            model.update(authToken: fetchedToken)
             isAuthenticating = false
         }
     }

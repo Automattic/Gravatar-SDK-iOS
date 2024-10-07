@@ -16,7 +16,7 @@ class AvatarPickerViewModel: ObservableObject {
     }
 
     private var avatarSelectionTask: Task<Void, Never>?
-    @Published private var authToken: String?
+    private(set) var authToken: String?
     private var selectedAvatarResult: Result<String, Error>? {
         didSet {
             if selectedAvatarResult?.value() != nil {
@@ -47,7 +47,7 @@ class AvatarPickerViewModel: ObservableObject {
     @Published var profileModel: AvatarPickerProfileView.Model?
     @ObservedObject var toastManager: ToastManager = .init()
 
-    init(email: Email, authToken: String) {
+    init(email: Email, authToken: String?) {
         self.email = email
         avatarIdentifier = .email(email)
         self.authToken = authToken
@@ -227,7 +227,7 @@ class AvatarPickerViewModel: ObservableObject {
         }
     }
 
-    func update(authToken: String) {
+    func update(authToken: String?) {
         self.authToken = authToken
         refresh()
     }
