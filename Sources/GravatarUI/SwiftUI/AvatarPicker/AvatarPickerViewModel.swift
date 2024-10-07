@@ -15,7 +15,7 @@ class AvatarPickerViewModel: ObservableObject {
         }
     }
 
-    private var avatarSelectionTask: Task<Void, Never>?
+    private var avatarSelectionTask: Task<Avatar?, Never>?
     private var authToken: String?
     private var selectedAvatarResult: Result<String, Error>? {
         didSet {
@@ -75,22 +75,24 @@ class AvatarPickerViewModel: ObservableObject {
         }
     }
 
-    func selectAvatar(with id: String) {
+    func selectAvatar(with id: String) async -> Avatar? {
         guard
             let email,
             let authToken,
             grid.selectedAvatar?.id != id,
             grid.model(with: id)?.state == .loaded
-        else { return }
+        else { return nil }
 
         avatarSelectionTask?.cancel()
 
         avatarSelectionTask = Task {
             await postAvatarSelection(with: id, authToken: authToken, identifier: .email(email))
         }
+
+        return await avatarSelectionTask?.value
     }
 
-    func postAvatarSelection(with avatarID: String, authToken: String, identifier: ProfileIdentifier) async {
+    func postAvatarSelection(with avatarID: String, authToken: String, identifier: ProfileIdentifier) async -> Avatar? {
         defer {
             grid.setState(to: .loaded, onAvatarWithID: avatarID)
         }
@@ -102,12 +104,14 @@ class AvatarPickerViewModel: ObservableObject {
             toastManager.showToast(Localized.avatarUpdateSuccess, type: .info)
 
             selectedAvatarResult = .success(response.imageId)
+            return response
         } catch APIError.responseError(let reason) where reason.cancelled {
             // NoOp.
         } catch {
             toastManager.showToast(Localized.avatarUpdateFail, type: .error)
             grid.selectAvatar(withID: selectedAvatarResult?.value())
         }
+        return nil
     }
 
     func fetchAvatars() async {
