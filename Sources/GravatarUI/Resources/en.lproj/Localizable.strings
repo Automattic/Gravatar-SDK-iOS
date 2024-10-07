@@ -1,3 +1,6 @@
+/* Title of a message advising the user that something went wrong while trying to log in. */
+"AvatarPicker.ContentLoading.Failure.LogInError.title" = "Login required";
+
 /* Title of a button that allows the user to try loading their avatars again */
 "AvatarPicker.ContentLoading.Failure.Retry.ctaButtonTitle" = "Try again";
 
@@ -19,8 +22,17 @@
 /* A message describing the error and advising the user to login again to resolve the issue */
 "AvatarPicker.ContentLoading.Failure.SessionExpired.LogIn.subtext" = "Session expired for security reasons. Please log in to update your Avatar.";
 
+/* Title of a button that will begin the process of authenticating the user, appearing beneath a message stating that a previous log in attept has failed. */
+"AvatarPicker.ContentLoading.Failure.SessionExpired.LogInError.buttonTitle" = "Log in";
+
+/* A message describing the error and advising the user to login again to resolve the issue */
+"AvatarPicker.ContentLoading.Failure.SessionExpired.LogInError.subtext" = "To modify your Gravatar profile, you need to log in first.";
+
 /* Title of a message advising the user that their login session has expired. */
 "AvatarPicker.ContentLoading.Failure.SessionExpired.title" = "Session expired";
+
+/* A message describing the error and advising the user to login again to resolve the issue */
+"AvatarPicker.ContentLoading.Failure.WrongEmailError.subtext" = "It looks like you used the wrong email to log in. Please try again using %@ this time. Thanks!";
 
 /* Title of a button that allow for uploading an image */
 "AvatarPicker.ContentLoading.Success.ctaButtonTitle" = "Upload image";
@@ -31,14 +43,32 @@
 /* Title of a message advising the user to setup their avatar */
 "AvatarPicker.ContentLoading.success.title" = "Let's setup your avatar";
 
+/* The title of the dismiss button on a confirmation dialog. */
+"AvatarPicker.Dismiss.title" = "Dismiss";
+
 /* A message describing the purpose of this view */
 "AvatarPicker.Header.subtitle" = "Choose or upload your favorite avatar images and connect them to your email address.";
 
 /* Title appearing in the header of a view that allows users to manage their avatars */
 "AvatarPicker.Header.title" = "Avatars";
 
+/* The title of the remove button on the upload error dialog. */
+"AvatarPicker.Upload.Error.Remove.title" = "Remove";
+
+/* The title of the retry button on the upload error dialog. */
+"AvatarPicker.Upload.Error.Retry.title" = "Retry";
+
+/* The title of the upload error dialog. */
+"AvatarPicker.Upload.Error.title" = "Upload has failed";
+
 /* Title of a button that will take you to your Gravatar profile, with an arrow indicating that this action will cause you to leave this view */
 "AvatarPickerProfile.Button.ViewProfile.title" = "View profile →";
+
+/* This error message shows when the user attempts to pick a different avatar and fails. */
+"AvatarPickerViewModel.Update.Fail" = "Oops, something didn't quite work out while trying to change your avatar.";
+
+/* This confirmation message shows when the user picks a different avatar. */
+"AvatarPickerViewModel.Update.Success" = "Avatar updated! It may take a few minutes to appear everywhere.";
 
 /* A generic error message to show on an error dialog when the upload fails. */
 "AvatarPickerViewModel.Upload.Error.message" = "Oops, there was an error uploading the image.";
@@ -55,6 +85,9 @@
 /* Title of a button that closes the current view */
 "GravatarNavigationModifier.Button.Done.title" = "Done";
 
+/* Screen title. Resize and crop an image. */
+"ImageCropper.title" = "Resize & Crop";
+
 /* Title for a button that allows you to claim a new Gravatar profile */
 "ProfileButton.title.create" = "Claim profile";
 
@@ -70,26 +103,3 @@
 /* An option in a menu that display the user's Photo Library and allow them to choose a photo from it */
 "SystemImagePickerView.Source.PhotoLibrary.title" = "Choose a Photo";
 
-/* A message describing the error and advising the user to login again with the given email to resolve the issue. */
-"AvatarPicker.ContentLoading.Failure.WrongEmailError.subtext" = "It looks like you used the wrong email to log in. Please try again using %@ this time. Thanks!";
-
-/* The title of the upload error dialog. */
-"AvatarPicker.Upload.Error.title" = "Upload has failed";
-
-/* The title of the remove button on the upload error dialog. */
-"AvatarPicker.Upload.Error.Remove.title" = "Remove";
-
-/* The title of the retry button on the upload error dialog. */
-"AvatarPicker.Upload.Error.Retry.title" = "Retry";
-
-/* The title of the dismiss button on a confirmation dialog. */
-"AvatarPicker.Dismiss.title" = "Dismiss";
-
-/* This confirmation message shows when the user picks a different avatar. */
-"AvatarPickerViewModel.Update.Success" = "Avatar updated! It may take a few minutes to appear everywhere.";
-
-/* This error message shows when the user attempts to pick a different avatar and fails. */
-"AvatarPickerViewModel.Update.Fail" = "Oops, something didn't quite work out while trying to change your avatar.";
-
-/* Error message to show when the upload fails because the image is too big. */
-"AvatarPicker.Upload.Error.ImageTooBig.Error" = "The provided image exceeds the maximum size: 10MB";
