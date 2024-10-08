@@ -14,7 +14,7 @@ struct Keychain: SecureStorage {
     }
 
     func setSecret(_ secret: KeychainToken, for key: String) throws {
-        guard let tokenData = secret.toData else {
+        guard let tokenData = secret.data else {
             throw KeychainError.cannotConvertSecretIntoData
         }
 

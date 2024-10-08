@@ -18,7 +18,7 @@ struct KeychainToken: Codable {
         self.token = token
     }
 
-    var toData: Data? {
+    var data: Data? {
         let encoder = JSONEncoder()
         return try? encoder.encode(self)
     }
