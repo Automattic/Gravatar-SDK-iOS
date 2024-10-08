@@ -28,6 +28,10 @@ CURRENT_MAKEFILE_DIR := $(patsubst %/,%,$(dir $(CURRENT_MAKEFILE_PATH)))
 SCHEME_DEMO_SWIFTUI = Gravatar-SwiftUI-Demo
 SCHEME_DEMO_UIKIT = Gravatar-UIKit-Demo
 
+VERSION_FILE = ./version.rb
+SDK_VERSION := $(shell ruby -r$(VERSION_FILE) -e "puts Gravatar::VERSION")
+OPENAPI_CLIENT_PROPERTIES ?= projectName=OpenAPIClient,useSPMFileStructure=true,podVersion=$(SDK_VERSION)
+
 # If no target is specified, display help
 .DEFAULT_GOAL := help
 
@@ -98,8 +102,8 @@ validate-pod: bundle-install
 	# https://github.com/Automattic/buildkite-ci/issues/7
 	xcrun simctl list >> /dev/null
 	bundle exec pod lib lint \
-		--include-podspecs="*.podspec" \
-		--verbose --fail-fast
+		--include-podspecs="[\"*.podspec\", \"openapi/GravatarOpenAPIClient/*.podspec\"]" \
+		--verbose --fail-fast --no-clean
 
 update-example-snapshots:
 	for filePath in ./Sources/GravatarUI/GravatarUI.docc/Resources/ProfileExamples/*; \
@@ -116,15 +120,17 @@ install-and-generate: $(OPENAPI_GENERATOR_CLONE_DIR) # Clones and setup the open
 generate: $(OUTPUT_DIRECTORY) # Generates the open-api model
 	rm -rf "$(OPENAPI_GENERATED_DIR)/*" && \
 	docker run --rm \
-	-v ${OPENAPI_DIR}:/local openapitools/openapi-generator-cli:"$(OPENAPI_GENERATOR_GIT_TAG)" generate \
+	-v $(OPENAPI_DIR):/local openapitools/openapi-generator-cli:"$(OPENAPI_GENERATOR_GIT_TAG)" generate \
 	-i /local/openapi.yaml \
 	-o /local/GravatarOpenAPIClient \
 	-t /local/templates \
 	-g swift5 \
 	-p packageName=Gravatar \
-	--additional-properties=useJsonEncodable=false,readonlyProperties=true,projectName=OpenAPIClient,useSPMFileStructure=true && \
+	--additional-properties=useJsonEncodable=false,readonlyProperties=true,$(OPENAPI_CLIENT_PROPERTIES) && \
     make swiftformat && \
     echo "DONE! 🎉"
+
+	
 
 generate-strings: bundle-install
 	bundle exec fastlane generate_strings
