@@ -23,16 +23,34 @@ public struct OAuthSession: Sendable {
         (try? storage.secret(with: email.rawValue) ?? nil) != nil
     }
 
+    func hasValidSession(with email: Email) -> Bool {
+        guard let token = try? storage.secret(with: email.rawValue) else {
+            return false
+        }
+        return !token.isExpired
+    }
+
+    func markSessionAsExpired(with email: Email) {
+        guard var token = sessionToken(with: email), !token.isExpired else { return }
+        token.isExpired = true
+        overrideToken(token, for: email)
+    }
+
+    func overrideToken(_ token: KeychainToken, for email: Email) {
+        deleteSession(with: email)
+        try? storage.setSecret(token, for: email.rawValue)
+    }
+
     public func deleteSession(with email: Email) {
         try? storage.deleteSecret(with: email.rawValue)
     }
 
-    func sessionToken(with email: Email) -> String? {
+    func sessionToken(with email: Email) -> KeychainToken? {
         try? storage.secret(with: email.rawValue)
     }
 
     @discardableResult
-    func retrieveAccessToken(with email: Email) async throws -> String {
+    func retrieveAccessToken(with email: Email) async throws -> KeychainToken {
         guard let secrets = await Configuration.shared.oauthSecrets else {
             assertionFailure("Trying to retrieve access token without configuring oauth secrets.")
             throw OAuthError.notConfigured
@@ -41,12 +59,13 @@ public struct OAuthSession: Sendable {
         do {
             let url = try oauthURL(with: email, secrets: secrets)
             let callbackURL = try await authenticationSession.authenticate(using: url, callbackURLScheme: secrets.callbackScheme)
-            let token = try tokenResponse(from: callbackURL).token
-            guard try await CheckTokenAuthorizationService().isToken(token, authorizedFor: email) else {
+            let tokenText = try tokenResponse(from: callbackURL).token
+            guard try await CheckTokenAuthorizationService().isToken(tokenText, authorizedFor: email) else {
                 throw OAuthError.loggedInWithWrongEmail(email: email.rawValue)
             }
-            try storage.setSecret(token, for: email.rawValue)
-            return token
+            let newToken = KeychainToken(token: tokenText)
+            overrideToken(newToken, for: email)
+            return newToken
         } catch {
             throw OAuthError.from(error: error)
         }

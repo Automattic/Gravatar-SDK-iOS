@@ -47,7 +47,7 @@ class AvatarPickerViewModel: ObservableObject {
     @Published var profileModel: AvatarPickerProfileView.Model?
     @ObservedObject var toastManager: ToastManager = .init()
 
-    init(email: Email, authToken: String) {
+    init(email: Email, authToken: String?) {
         self.email = email
         avatarIdentifier = .email(email)
         self.authToken = authToken
@@ -107,6 +107,8 @@ class AvatarPickerViewModel: ObservableObject {
             return response
         } catch APIError.responseError(let reason) where reason.cancelled {
             // NoOp.
+        } catch APIError.responseError(let .invalidHTTPStatusCode(response, errorPayload)) where response.statusCode == HTTPStatus.unauthorized.rawValue {
+            handleUnrecoverableClientError(APIError.responseError(reason: .invalidHTTPStatusCode(response: response, errorPayload: errorPayload)))
         } catch {
             toastManager.showToast(Localized.avatarUpdateFail, type: .error)
             grid.selectAvatar(withID: selectedAvatarResult?.value())
@@ -199,6 +201,11 @@ class AvatarPickerViewModel: ObservableObject {
                 supportsRetry: false,
                 errorMessage: message
             )
+        } catch ImageUploadError.responseError(reason: let .invalidHTTPStatusCode(response, errorPayload))
+            where response.statusCode == HTTPStatus.unauthorized.rawValue
+        {
+            // If the status code is 401 (unauthorized), then it means the token is not valid and we should prompt the user accordingly.
+            handleUnrecoverableClientError(APIError.responseError(reason: .invalidHTTPStatusCode(response: response, errorPayload: errorPayload)))
         } catch ImageUploadError.responseError(reason: let reason) where reason.urlSessionErrorLocalizedDescription != nil {
             handleUploadError(
                 imageID: localID,
@@ -223,6 +230,11 @@ class AvatarPickerViewModel: ObservableObject {
             state: .error(supportsRetry: supportsRetry, errorMessage: errorMessage)
         )
         grid.replaceModel(withID: imageID, with: newModel)
+    }
+
+    private func handleUnrecoverableClientError(_ error: Error) {
+        self.grid.setAvatars([])
+        self.gridResponseStatus = .failure(error)
     }
 
     private func updateSelectedAvatarURL() {
