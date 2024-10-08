@@ -1,6 +1,6 @@
-name: OpenAPIClient
+name: GravatarOpenAPIClient
 targets:
-  OpenAPIClient:
+  GravatarOpenAPIClient:
     type: framework
     platform: iOS
     deploymentTarget: "11.0"

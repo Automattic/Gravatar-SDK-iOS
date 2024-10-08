@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Pod::Spec.new do |s|
-  s.name             = 'OpenAPIClient'
+  s.name             = 'GravatarOpenAPIClient'
   s.summary          = 'A Gravatar OpenAPI Client'
   s.version          = '2.1.1'
 
@@ -18,5 +18,5 @@ Pod::Spec.new do |s|
 
   s.documentation_url = 'https://automattic.github.io/Gravatar-SDK-iOS/gravatar'
 
-  s.source_files = 'Sources/OpenAPIClient/**/*.swift'
+  s.source_files = 'Sources/GravatarOpenAPIClient/**/*.swift'
 end

@@ -20,7 +20,7 @@ Checks if the provided email address is associated with the authenticated user.
 ### Example
 ```swift
 // The following code samples are still beta. For any issue, please report via http://github.com/OpenAPITools/openapi-generator/issues/new
-import OpenAPIClient
+import GravatarOpenAPIClient
 
 let emailHash = "emailHash_example" // String | The hash of the email address to check.
 
@@ -70,7 +70,7 @@ Returns a profile by the given identifier.
 ### Example
 ```swift
 // The following code samples are still beta. For any issue, please report via http://github.com/OpenAPITools/openapi-generator/issues/new
-import OpenAPIClient
+import GravatarOpenAPIClient
 
 let profileIdentifier = "profileIdentifier_example" // String | This can either be an SHA256 hash of an email address or profile URL slug.
 

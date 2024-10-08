@@ -33,7 +33,7 @@ let package = Package(
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
             name: "Gravatar",
-            dependencies: [.product(name: "OpenAPIClient", package: "GravatarOpenAPIClient")],
+            dependencies: [.product(name: "GravatarOpenAPIClient", package: "GravatarOpenAPIClient")],
             resources: [.process("Resources")],
             swiftSettings: [
                 .enableExperimentalFeature("StrictConcurrency")

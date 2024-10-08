@@ -22,6 +22,7 @@ Pod::Spec.new do |s|
 
   s.ios.deployment_target = ios_deployment_target
 
+  s.dependency 'GravatarOpenAPIClient', s.version.to_s
   s.source_files = 'Sources/Gravatar/**/*.swift'
   s.resource_bundles = {
     'Gravatar' => ['Sources/Gravatar/Resources/*.plist']

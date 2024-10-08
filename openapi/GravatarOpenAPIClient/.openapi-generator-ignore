@@ -25,4 +25,4 @@
 .swiftformat
 Cartfile
 git_push.sh
-Sources/OpenAPIClient/APIs/
+Sources/GravatarOpenAPIClient/APIs/

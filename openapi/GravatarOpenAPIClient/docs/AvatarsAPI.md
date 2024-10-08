@@ -21,7 +21,7 @@ Retrieves a list of available avatars for the authenticated user.
 ### Example
 ```swift
 // The following code samples are still beta. For any issue, please report via http://github.com/OpenAPITools/openapi-generator/issues/new
-import OpenAPIClient
+import GravatarOpenAPIClient
 
 let selectedEmailHash = "selectedEmailHash_example" // String | The sha256 hash of the email address used to determine which avatar is selected. The 'selected' attribute in the avatar list will be set to 'true' for the avatar associated with this email. (optional) (default to "null")
 
@@ -71,7 +71,7 @@ Sets the avatar for the provided email hash.
 ### Example
 ```swift
 // The following code samples are still beta. For any issue, please report via http://github.com/OpenAPITools/openapi-generator/issues/new
-import OpenAPIClient
+import GravatarOpenAPIClient
 
 let imageId = "imageId_example" // String | Image ID of the avatar to set as the provided hashed email avatar.
 let setEmailAvatarRequest = setEmailAvatar_request(emailHash: "emailHash_example") // SetEmailAvatarRequest | Avatar selection details
@@ -123,7 +123,7 @@ Uploads a new avatar image for the authenticated user.
 ### Example
 ```swift
 // The following code samples are still beta. For any issue, please report via http://github.com/OpenAPITools/openapi-generator/issues/new
-import OpenAPIClient
+import GravatarOpenAPIClient
 
 let data = URL(string: "https://example.com")! // URL | The avatar image file
 

@@ -8,6 +8,10 @@
 # No spaces allowed
 SWIFTFORMAT_CACHE = ~/Library/Caches/com.charcoaldesign.swiftformat
 
+# SDK Version
+VERSION_FILE = ./version.rb
+SDK_VERSION := $(shell ruby -r$(VERSION_FILE) -e "puts Gravatar::VERSION")
+
 # The following values can be changed here, or passed on the command line.
 OPENAPI_GENERATOR_GIT_URL ?= https://github.com/openapitools/openapi-generator
 OPENAPI_GENERATOR_GIT_TAG ?= v7.5.0
@@ -16,6 +20,7 @@ OPENAPI_GENERATOR_CLONE_DIR ?= $(CURRENT_MAKEFILE_DIR)/openapi-generator
 OPENAPI_PROJECT_NAME ?= GravatarOpenAPIClient
 OPENAPI_DIR ?= $(CURRENT_MAKEFILE_DIR)/openapi
 OPENAPI_GENERATED_DIR ?= $(CURRENT_MAKEFILE_DIR)/openapi/$(OPENAPI_PROJECT_NAME)
+OPENAPI_CLIENT_PROPERTIES ?= projectName=$(OPENAPI_PROJECT_NAME),useSPMFileStructure=true,podVersion=$(SDK_VERSION)
 
 OPENAPI_YAML_PATH ?= $(CURRENT_MAKEFILE_DIR)/openapi/spec.yaml
 MODEL_TEMPLATE_PATH ?= $(CURRENT_MAKEFILE_DIR)/openapi
@@ -27,10 +32,6 @@ CURRENT_MAKEFILE_DIR := $(patsubst %/,%,$(dir $(CURRENT_MAKEFILE_PATH)))
 
 SCHEME_DEMO_SWIFTUI = Gravatar-SwiftUI-Demo
 SCHEME_DEMO_UIKIT = Gravatar-UIKit-Demo
-
-VERSION_FILE = ./version.rb
-SDK_VERSION := $(shell ruby -r$(VERSION_FILE) -e "puts Gravatar::VERSION")
-OPENAPI_CLIENT_PROPERTIES ?= projectName=OpenAPIClient,useSPMFileStructure=true,podVersion=$(SDK_VERSION)
 
 # If no target is specified, display help
 .DEFAULT_GOAL := help

@@ -8,7 +8,7 @@ import Foundation
 #if canImport(FoundationNetworking)
 import FoundationNetworking
 #endif
-open class OpenAPIClientAPI {
+open class GravatarOpenAPIClientAPI {
     public static var basePath = "https://api.gravatar.com/v3"
     public static var customHeaders: [String: String] = [:]
     public static var credential: URLCredential?
@@ -35,7 +35,7 @@ open class RequestBuilder<T> {
         self.headers = headers
         self.requiresAuthentication = requiresAuthentication
 
-        addHeaders(OpenAPIClientAPI.customHeaders)
+        addHeaders(GravatarOpenAPIClientAPI.customHeaders)
     }
 
     open func addHeaders(_ aHeaders: [String: String]) {
@@ -45,7 +45,7 @@ open class RequestBuilder<T> {
     }
 
     @discardableResult
-    open func execute(_ apiResponseQueue: DispatchQueue = OpenAPIClientAPI.apiResponseQueue, _ completion: @escaping (_ result: Swift.Result<Response<T>, ErrorResponse>) -> Void) -> RequestTask {
+    open func execute(_ apiResponseQueue: DispatchQueue = GravatarOpenAPIClientAPI.apiResponseQueue, _ completion: @escaping (_ result: Swift.Result<Response<T>, ErrorResponse>) -> Void) -> RequestTask {
         return requestTask
     }
 
@@ -57,7 +57,7 @@ open class RequestBuilder<T> {
     }
 
     open func addCredential() -> Self {
-        credential = OpenAPIClientAPI.credential
+        credential = GravatarOpenAPIClientAPI.credential
         return self
     }
 }
