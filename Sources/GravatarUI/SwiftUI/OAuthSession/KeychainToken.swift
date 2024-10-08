@@ -20,11 +20,6 @@ struct KeychainToken: Codable {
 
     var toData: Data? {
         let encoder = JSONEncoder()
-        do {
-            let data = try encoder.encode(self)
-            return data
-        } catch {
-            return nil
-        }
+        return try? encoder.encode(self)
     }
 }
