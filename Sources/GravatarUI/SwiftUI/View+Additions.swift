@@ -20,7 +20,8 @@ extension View {
         avatarUpdatedHandler: (() -> Void)? = nil
     ) -> some View {
         let avatarPickerView = AvatarPickerView(
-            model: AvatarPickerViewModel(email: Email(email), authToken: authToken),
+            email: Email(email),
+            authToken: .constant(authToken),
             isPresented: isPresented,
             contentLayoutProvider: AvatarPickerContentLayoutType.vertical,
             customImageEditor: customImageEditor,
@@ -40,7 +41,8 @@ extension View {
         avatarUpdatedHandler: (() -> Void)? = nil
     ) -> some View {
         let avatarPickerView = AvatarPickerView(
-            model: AvatarPickerViewModel(email: Email(email), authToken: authToken),
+            email: Email(email),
+            authToken: .constant(authToken),
             isPresented: isPresented,
             contentLayoutProvider: contentLayout,
             customImageEditor: customImageEditor,

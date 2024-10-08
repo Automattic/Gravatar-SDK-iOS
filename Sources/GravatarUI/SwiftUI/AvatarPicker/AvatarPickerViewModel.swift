@@ -47,7 +47,7 @@ class AvatarPickerViewModel: ObservableObject {
     @Published var profileModel: AvatarPickerProfileView.Model?
     @ObservedObject var toastManager: ToastManager = .init()
 
-    init(email: Email, authToken: String) {
+    init(email: Email, authToken: String?) {
         self.email = email
         avatarIdentifier = .email(email)
         self.authToken = authToken
