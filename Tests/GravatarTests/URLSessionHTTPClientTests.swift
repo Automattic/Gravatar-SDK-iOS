@@ -1,5 +1,5 @@
 @testable import Gravatar
-@testable import TestHelpers
+import TestHelpers
 import XCTest
 
 final class URLSessionHTTPClientTests: XCTestCase {
@@ -44,7 +44,7 @@ final class URLSessionHTTPClientTests: XCTestCase {
             do {
                 let _ = try await client.fetchData(with: mockURLRequest)
                 XCTFail("This should throw")
-            } catch HTTPClientError.invalidHTTPStatusCodeError(let response) {
+            } catch HTTPClientError.invalidHTTPStatusCodeError(let response, _) {
                 XCTAssertEqual(response.statusCode, invalidStatusCode)
             } catch {
                 XCTFail()

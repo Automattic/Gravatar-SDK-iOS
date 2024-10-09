@@ -1,0 +1,65 @@
+/* Translation-Revision-Date: 2024-09-11 11:54:03+0000 */
+/* Plural-Forms: nplurals=2; plural=n != 1; */
+/* Generator: GlotPress/2.4.0-alpha */
+/* Language: sv_SE */
+
+/* Title of a button that allows the user to try loading their avatars again */
+"AvatarPicker.ContentLoading.Failure.Retry.ctaButtonTitle" = "Försök igen";
+
+/* A message asking the user to try again */
+"AvatarPicker.ContentLoading.Failure.Retry.subtext" = "Något gick fel och vi kunde inte ansluta till Gravatar-servrarna.";
+
+/* Title of a message advising the user that something went wrong while loading their avatars */
+"AvatarPicker.ContentLoading.Failure.Retry.title" = "Hoppsan";
+
+/* Title of a button that will close the Avatar Picker, appearing beneath a message that advises the user that their login session has expired. */
+"AvatarPicker.ContentLoading.Failure.SessionExpired.Close.buttonTitle" = "Stäng";
+
+/* A message describing the error and advising the user to login again to resolve the issue */
+"AvatarPicker.ContentLoading.Failure.SessionExpired.Close.subtext" = "Det verkar som att din session har löpt ut. Se till att du är inloggad för att uppdatera din profilbild.";
+
+/* Title of a button that will begin the process of authenticating the user, appearing beneath a message that advises the user that their login session has expired. */
+"AvatarPicker.ContentLoading.Failure.SessionExpired.LogIn.buttonTitle" = "Logga in";
+
+/* A message describing the error and advising the user to login again to resolve the issue */
+"AvatarPicker.ContentLoading.Failure.SessionExpired.LogIn.subtext" = "Sessionen har löpt ut av säkerhetsskäl. Logga in för att uppdatera din profilbild.";
+
+/* Title of a message advising the user that their login session has expired. */
+"AvatarPicker.ContentLoading.Failure.SessionExpired.title" = "Sessionen har löpt ut";
+
+/* Title of a button that allow for uploading an image */
+"AvatarPicker.ContentLoading.Success.ctaButtonTitle" = "Ladda upp bild";
+
+/* A message describing the actions a user can take to setup their avatar */
+"AvatarPicker.ContentLoading.Success.subtext" = "Välj eller ladda upp dina favoritprofilbilder och anslut dem till din e-postadress.";
+
+/* Title of a message advising the user to setup their avatar */
+"AvatarPicker.ContentLoading.success.title" = "Låt oss konfigurera din profilbild";
+
+/* A message describing the purpose of this view */
+"AvatarPicker.Header.subtitle" = "Välj eller ladda upp dina favoritprofilbilder och anslut dem till din e-postadress.";
+
+/* Title appearing in the header of a view that allows users to manage their avatars */
+"AvatarPicker.Header.title" = "Profilbilder";
+
+/* Title of a button that will take you to your Gravatar profile, with an arrow indicating that this action will cause you to leave this view */
+"AvatarPickerProfile.Button.ViewProfile.title" = "Visa profil →";
+
+/* Text on a sample Gravatar profile, appearing in the place where a Gravatar profile would display your short biography. */
+"ClaimProfile.Label.AboutMe" = "Berätta för världen vem du är. Din profilbild och biografi som följer med dig på webben.";
+
+/* Text on a sample Gravatar profile, appearing in the place where your name would normally appear on your Gravatar profile after you claim it. */
+"ClaimProfile.Label.DisplayName" = "Ditt namn";
+
+/* Text on a sample Gravatar profile, appearing in the place where a Gravatar profile would display information like location, your preferred pronouns, etc. */
+"ClaimProfile.Label.Location" = "Lägg till din plats, dina pronomen, osv.";
+
+/* Title for a button that allows you to claim a new Gravatar profile */
+"ProfileButton.title.create" = "Gör anspråk på profil";
+
+/* Title for a button that allows you to edit your Gravatar profile */
+"ProfileButton.title.edit" = "Redigera profil";
+
+/* Title for a button that allows you to view your Gravatar profile */
+"ProfileButton.title.view" = "Visa profil";
+

@@ -1,0 +1,65 @@
+/* Translation-Revision-Date: 2024-09-12 13:54:02+0000 */
+/* Plural-Forms: nplurals=1; plural=0; */
+/* Generator: GlotPress/2.4.0-alpha */
+/* Language: zh_TW */
+
+/* Title of a button that allows the user to try loading their avatars again */
+"AvatarPicker.ContentLoading.Failure.Retry.ctaButtonTitle" = "再試一次";
+
+/* A message asking the user to try again */
+"AvatarPicker.ContentLoading.Failure.Retry.subtext" = "發生錯誤，我們無法連結至 Gravatar 伺服器。";
+
+/* Title of a message advising the user that something went wrong while loading their avatars */
+"AvatarPicker.ContentLoading.Failure.Retry.title" = "糟糕";
+
+/* Title of a button that will close the Avatar Picker, appearing beneath a message that advises the user that their login session has expired. */
+"AvatarPicker.ContentLoading.Failure.SessionExpired.Close.buttonTitle" = "關閉";
+
+/* A message describing the error and advising the user to login again to resolve the issue */
+"AvatarPicker.ContentLoading.Failure.SessionExpired.Close.subtext" = "很抱歉，看起來你的工作階段已過期。 請確保你已登入，即可更新大頭貼。";
+
+/* Title of a button that will begin the process of authenticating the user, appearing beneath a message that advises the user that their login session has expired. */
+"AvatarPicker.ContentLoading.Failure.SessionExpired.LogIn.buttonTitle" = "登入";
+
+/* A message describing the error and advising the user to login again to resolve the issue */
+"AvatarPicker.ContentLoading.Failure.SessionExpired.LogIn.subtext" = "基於安全考量，工作階段已過期。 請登入以更新大頭貼。";
+
+/* Title of a message advising the user that their login session has expired. */
+"AvatarPicker.ContentLoading.Failure.SessionExpired.title" = "工作階段已過期";
+
+/* Title of a button that allow for uploading an image */
+"AvatarPicker.ContentLoading.Success.ctaButtonTitle" = "上傳圖片";
+
+/* A message describing the actions a user can take to setup their avatar */
+"AvatarPicker.ContentLoading.Success.subtext" = "選擇或上傳你喜愛的大頭貼圖片，並與電子郵件地址建立連結。";
+
+/* Title of a message advising the user to setup their avatar */
+"AvatarPicker.ContentLoading.success.title" = "立即設定你的大頭貼";
+
+/* A message describing the purpose of this view */
+"AvatarPicker.Header.subtitle" = "選擇或上傳你喜愛的大頭貼圖片，並與電子郵件地址建立連結。";
+
+/* Title appearing in the header of a view that allows users to manage their avatars */
+"AvatarPicker.Header.title" = "大頭貼";
+
+/* Title of a button that will take you to your Gravatar profile, with an arrow indicating that this action will cause you to leave this view */
+"AvatarPickerProfile.Button.ViewProfile.title" = "檢視個人檔案 →";
+
+/* Text on a sample Gravatar profile, appearing in the place where a Gravatar profile would display your short biography. */
+"ClaimProfile.Label.AboutMe" = "讓全世界認識你。 網路世界的隨身大頭貼與簡介。";
+
+/* Text on a sample Gravatar profile, appearing in the place where your name would normally appear on your Gravatar profile after you claim it. */
+"ClaimProfile.Label.DisplayName" = "你的姓名";
+
+/* Text on a sample Gravatar profile, appearing in the place where a Gravatar profile would display information like location, your preferred pronouns, etc. */
+"ClaimProfile.Label.Location" = "新增你的位置、性別認同代稱等";
+
+/* Title for a button that allows you to claim a new Gravatar profile */
+"ProfileButton.title.create" = "登記個人檔案";
+
+/* Title for a button that allows you to edit your Gravatar profile */
+"ProfileButton.title.edit" = "編輯個人檔案";
+
+/* Title for a button that allows you to view your Gravatar profile */
+"ProfileButton.title.view" = "檢視個人檔案";
+

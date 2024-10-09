@@ -1,5 +1,5 @@
 import GravatarUI
-@testable import TestHelpers
+import TestHelpers
 import XCTest
 
 enum GravatarImageSetMockResult {
@@ -27,5 +27,5 @@ actor TestImageFetcher: ImageDownloader {
         return try await task.value
     }
 
-    func cancelTask(for url: URL) async {}
+    nonisolated func cancelTask(for url: URL) {}
 }

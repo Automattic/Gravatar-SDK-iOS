@@ -17,11 +17,23 @@ extension ProfileButtonStyle {
     var localizedTitle: String {
         switch self {
         case .view:
-            NSLocalizedString("gravatarViewProfile", value: "View profile", comment: "Title for view profile button in Gravatar profile view")
+            SDKLocalizedString(
+                "ProfileButton.title.view",
+                value: "View profile",
+                comment: "Title for a button that allows you to view your Gravatar profile"
+            )
         case .edit:
-            NSLocalizedString("gravatarEditProfile", value: "Edit profile", comment: "Title for edit profile button in Gravatar profile view")
+            SDKLocalizedString(
+                "ProfileButton.title.edit",
+                value: "Edit profile",
+                comment: "Title for a button that allows you to edit your Gravatar profile"
+            )
         case .create:
-            NSLocalizedString("gravatarCreateProfile", value: "Claim profile", comment: "Title for create profile button in Gravatar profile view")
+            SDKLocalizedString(
+                "ProfileButton.title.create",
+                value: "Claim profile",
+                comment: "Title for a button that allows you to claim a new Gravatar profile"
+            )
         }
     }
 }

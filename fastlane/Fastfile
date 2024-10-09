@@ -2,8 +2,51 @@
 
 default_platform(:ios)
 
-OS = '17.4'
-IPHONE_DEVICE = "iPhone SE (3rd generation) (#{OS})"
+OS = '17.5'
+IPHONE_DEVICE = "iPhone SE (3rd generation) (#{OS})".freeze
+
+PROJECT_ROOT_FOLDER = File.join(File.dirname(File.expand_path(__dir__)), 'Demo')
+BUILD_FOLDER = File.join(__dir__, '.build')
+LOGS_FOLDER = File.join(BUILD_FOLDER, 'logs')
+DERIVED_DATA_FOLDER = File.join(BUILD_FOLDER, 'derived-data')
+ARTIFACTS_FOLDER = File.join(BUILD_FOLDER, 'artifacts')
+XCODEPROJ_PATH = File.join(PROJECT_ROOT_FOLDER, 'Gravatar-Demo.xcodeproj')
+DEMO_APPS_SOURCES_FOLDER = File.join(PROJECT_ROOT_FOLDER, 'Demo')
+XCCONFIG_PROTOTYPE_BUILD_SWIFTUI = File.join(DEMO_APPS_SOURCES_FOLDER, 'Gravatar-SwiftUI-Demo', 'Gravatar-SwiftUI-Demo.Release.xcconfig')
+XCCONFIG_PROTOTYPE_BUILD_UIKIT = File.join(DEMO_APPS_SOURCES_FOLDER, 'Gravatar-UIKit-Demo', 'Gravatar-UIKit-Demo.Release.xcconfig')
+COMMON_XCARGS = ['-skipPackagePluginValidation'] # Allow SwiftPM plugins (e.g. swiftlint) called from Xcode to be used on CI without prior manual approval
+
+GITHUB_REPO = 'Automattic/Gravatar-SDK-iOS'
+GITHUB_URL = "https://github.com/#{GITHUB_REPO}".freeze
+
+APPCENTER_OWNER_NAME = 'automattic'
+APPCENTER_OWNER_TYPE = 'organization'
+
+require_relative 'lib/env_manager'
+require_relative 'lib/code_signing_helpers'
+
+########################################################################
+# Imports domain-specific lanes
+########################################################################
+
+import 'lanes/localization.rb'
+
+########################################################################
+
+before_all do
+  EnvManager.set_up(env_file_name: 'gravatar-sdk-ios')
+
+  # Various actions run 'xcodebuild -showBuildSettings ...' which can at times fail, possibly due to networking and SPM resolution.
+  #
+  # Bumping the interval Fastlane waits for xcodebuild to provide output before retrying seems to be an effective workaround.
+  #
+  # See also https://github.com/fastlane/fastlane/issues/20919
+  ENV['FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT'] = '120'
+
+  # Fixes known Keychain access issue in CI. No-op on local machines.
+  # See https://docs.fastlane.tools/actions/setup_ci/
+  setup_ci
+end
 
 platform :ios do
   desc 'Builds the project and runs tests'
@@ -11,30 +54,180 @@ platform :ios do
     run_tests(
       package_path: '.',
       scheme: 'Gravatar-Package',
+      xcargs: COMMON_XCARGS,
       device: IPHONE_DEVICE,
       prelaunch_simulator: true,
       clean: true,
-      buildlog_path: File.join(__dir__, '.build', 'logs'),
-      derived_data_path: File.join(__dir__, '.build', 'derived-data')
+      buildlog_path: LOGS_FOLDER,
+      derived_data_path: DERIVED_DATA_FOLDER
     )
   end
 
   desc 'Builds the Gravatar-Demo project with a specific scheme'
-  lane :build_demo do |options|
-    scheme = options.fetch(:scheme, 'Gravatar-Demo')
-
+  lane :build_demo do |scheme: 'Gravatar-UIKit-Demo'|
     # We only need to build for testing to ensure that the project builds.
     # There are no tests in the the Demo apps
-    scan(
-      project: 'Demo/Gravatar-Demo.xcodeproj',
+    run_tests(
+      project: XCODEPROJ_PATH,
       scheme: scheme,
       configuration: 'Debug',
+      xcargs: COMMON_XCARGS,
       device: IPHONE_DEVICE,
       clean: true,
       build_for_testing: true,
-      buildlog_path: File.join(__dir__, 'build', 'logs'),
-      derived_data_path: File.join(__dir__, 'build', 'derived-data'),
-      disable_package_automatic_updates: true,
+      buildlog_path: LOGS_FOLDER,
+      derived_data_path: DERIVED_DATA_FOLDER,
+      disable_package_automatic_updates: true
     )
   end
+
+  desc 'Builds the demo app from the given scheme for distribution'
+  lane :build_demo_for_distribution do |scheme:, build_number:|
+    UI.user_error! 'Please pass a build number by calling the lane with build_number:VALUE' if build_number.nil? || build_number.empty?
+
+    build_app(
+      project: XCODEPROJ_PATH,
+      scheme: scheme,
+      configuration: 'Release',
+      export_method: 'enterprise',
+      output_directory: ARTIFACTS_FOLDER,
+      xcargs: [
+        "CURRENT_PROJECT_VERSION=#{build_number}",
+        *COMMON_XCARGS
+      ]
+    )
+  end
+
+  desc 'Upload the demo app with the given name to App Center'
+  lane :upload_demo_to_appcenter do |name:, build_number:|
+    UI.user_error!("Unsupported name #{name}") unless %w[SwiftUI UIKit].include? name
+
+    slug = "Gravatar-SDK-Demo-#{name}"
+    upload_to_appcenter(appcenter_slug: slug, artifact_basename: "Gravatar #{name}")
+
+    next unless is_ci
+
+    annotate_pr_with_appcenter_link(app_suffix: name)
+    annotate_buildkite_with_appcenter_link(app_suffix: name, appcenter_slug: slug, build_number: build_number)
+  end
+
+  desc 'Fetches the code signing certificate and provisioning profile for the prototype builds'
+  lane :configure_code_signing do |readonly: true|
+    # Run one call only with multiple bundle ids to authenticate only once.
+    #
+    # While building this for the first time, running dedicated calls for each bundle identifiers with readonly = false resulted in the first working and the second failing with the same error as https://github.com/fastlane/fastlane/issues/21132
+    #
+    # The logs for the second call had:
+    #
+    # Available session is not valid anymore. Continuing with normal login.
+    #
+    # Which suggest the authenticated session from the first call was not carried over to the second.
+    configure_code_signing(
+      bundle_ids: [
+        bundle_id_prototype_build_swiftui!,
+        bundle_id_prototype_build_uikit!
+      ],
+      readonly: readonly
+    )
+  end
+
+  lane :configure_code_signing_prototype_build_swiftui do |readonly: true|
+    configure_code_signing(bundle_ids: [bundle_id_prototype_build_swiftui!], readonly: readonly)
+  end
+
+  lane :configure_code_signing_prototype_build_uikit do |readonly: true|
+    configure_code_signing(bundle_ids: [bundle_id_prototype_build_uikit!], readonly: readonly)
+  end
+end
+
+def configure_code_signing(bundle_ids:, readonly:)
+  EnvManager.require_env_vars!(*CODE_SIGNING_ENV_VARS)
+  EnvManager.require_env_vars!('MATCH_PASSWORD') if is_ci
+
+  prompt_user_for_app_store_connect_credentials unless readonly
+
+  sync_code_signing(
+    type: 'enterprise',
+    team_id: team_id_prototype_build!,
+    app_identifier: bundle_ids,
+    readonly: readonly,
+    **CODE_SIGNING_STORAGE_OPTIONS
+  )
+end
+
+def upload_to_appcenter(appcenter_slug:, artifact_basename:)
+  EnvManager.require_env_vars!('APPCENTER_API_TOKEN')
+
+  commit = ENV.fetch('BUILDKITE_COMMIT', 'Unknown')
+  pr = ENV.fetch('BUILDKITE_PULL_REQUEST', nil)
+  release_notes = <<~NOTES
+    - Branch: `#{ENV.fetch('BUILDKITE_BRANCH', 'Unknown')}`\n
+    - Commit: [#{commit[0...7]}](#{GITHUB_URL}/commit/#{commit})\n
+    - Pull Request: [##{pr}](#{GITHUB_URL}/pull/#{pr})\n
+  NOTES
+
+  appcenter_upload(
+    api_token: EnvManager.get_required_env!('APPCENTER_API_TOKEN'),
+    owner_name: APPCENTER_OWNER_NAME,
+    owner_type: APPCENTER_OWNER_TYPE,
+    app_name: appcenter_slug,
+    file: File.join(ARTIFACTS_FOLDER, "#{artifact_basename}.ipa"),
+    dsym: File.join(ARTIFACTS_FOLDER, "#{artifact_basename}.app.dSYM.zip"),
+    release_notes: release_notes,
+    destinations: 'Collaborators',
+    notify_testers: false
+  )
+end
+
+def annotate_pr_with_appcenter_link(app_suffix:)
+  comment_body = prototype_build_details_comment(
+    app_display_name: "Gravatar #{app_suffix} Prototype Build",
+    app_center_org_name: APPCENTER_OWNER_NAME,
+    fold: true
+  )
+
+  comment_on_pr(
+    project: GITHUB_REPO,
+    pr_number: Integer(ENV.fetch('BUILDKITE_PULL_REQUEST', nil)),
+    reuse_identifier: "prototype-build-link-gravtar-#{app_suffix}",
+    body: comment_body
+  )
+end
+
+def annotate_buildkite_with_appcenter_link(app_suffix:, appcenter_slug:, build_number:)
+  # This is the id of the build on App Center
+  appcenter_id = lane_context.dig(SharedValues::APPCENTER_BUILD_INFORMATION, 'id')
+  metadata = {
+    build_type: 'Prototype',
+    'appcenter:id': appcenter_id,
+    build_number: build_number
+  }
+  appcenter_install_url = "https://install.appcenter.ms/orgs/#{APPCENTER_OWNER_NAME}/apps/#{appcenter_slug}/releases/#{appcenter_id}"
+  list = metadata.map { |k, v| " - **#{k}**: #{v}" }.join("\n")
+
+  buildkite_annotate(
+    context: "appcenter-info-#{appcenter_slug}",
+    style: 'info',
+    message: "Gravatar #{app_suffix} Demo [App Center Build](#{appcenter_install_url}) Info:\n\n#{list}"
+  )
+end
+
+def team_id_prototype_build!
+  read_from_xcconfig!(key: 'DEVELOPMENT_TEAM', xcconfig: File.join(DEMO_APPS_SOURCES_FOLDER, 'Enterprise.xcconfig'))
+end
+
+def bundle_id_prototype_build_swiftui!
+  read_from_xcconfig!(key: 'PRODUCT_BUNDLE_IDENTIFIER', xcconfig: XCCONFIG_PROTOTYPE_BUILD_SWIFTUI)
+end
+
+def bundle_id_prototype_build_uikit!
+  read_from_xcconfig!(key: 'PRODUCT_BUNDLE_IDENTIFIER', xcconfig: XCCONFIG_PROTOTYPE_BUILD_UIKIT)
+end
+
+def read_from_xcconfig!(key:, xcconfig:)
+  configs = Xcodeproj::Config.new(xcconfig).attributes
+
+  UI.user_error!("Could not find value for #{key} in xcconfig!") unless configs.key?(key)
+
+  configs[key]
 end

@@ -2,9 +2,9 @@ import Foundation
 
 func getAssociatedObject<T>(_ object: Any, _ key: UnsafeRawPointer) -> T? {
     if #available(iOS 14, *) { // swift 5.3 fixed this issue (https://github.com/apple/swift/issues/46456)
-        return objc_getAssociatedObject(object, key) as? T
+        objc_getAssociatedObject(object, key) as? T
     } else {
-        return objc_getAssociatedObject(object, key) as AnyObject as? T
+        objc_getAssociatedObject(object, key) as AnyObject as? T
     }
 }
 

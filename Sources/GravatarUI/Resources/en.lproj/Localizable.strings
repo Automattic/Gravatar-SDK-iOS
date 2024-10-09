@@ -1,0 +1,108 @@
+/* Title of a message advising the user that something went wrong while trying to log in. */
+"AvatarPicker.ContentLoading.Failure.LogInError.title" = "Login required";
+
+/* Title of a button that allows the user to try loading their avatars again */
+"AvatarPicker.ContentLoading.Failure.Retry.ctaButtonTitle" = "Try again";
+
+/* A message asking the user to try again */
+"AvatarPicker.ContentLoading.Failure.Retry.subtext" = "Something went wrong and we couldn’t connect to Gravatar servers.";
+
+/* Title of a message advising the user that something went wrong while loading their avatars */
+"AvatarPicker.ContentLoading.Failure.Retry.title" = "Ooops";
+
+/* Title of a button that will close the Avatar Picker, appearing beneath a message that advises the user that their login session has expired. */
+"AvatarPicker.ContentLoading.Failure.SessionExpired.Close.buttonTitle" = "Close";
+
+/* A message describing the error and advising the user to login again to resolve the issue */
+"AvatarPicker.ContentLoading.Failure.SessionExpired.Close.subtext" = "Sorry, it looks like your session has expired. Make sure you're logged in to update your Avatar.";
+
+/* Title of a button that will begin the process of authenticating the user, appearing beneath a message that advises the user that their login session has expired. */
+"AvatarPicker.ContentLoading.Failure.SessionExpired.LogIn.buttonTitle" = "Log in";
+
+/* A message describing the error and advising the user to login again to resolve the issue */
+"AvatarPicker.ContentLoading.Failure.SessionExpired.LogIn.subtext" = "Session expired for security reasons. Please log in to update your Avatar.";
+
+/* Title of a button that will begin the process of authenticating the user, appearing beneath a message stating that a previous log in attept has failed. */
+"AvatarPicker.ContentLoading.Failure.SessionExpired.LogInError.buttonTitle" = "Log in";
+
+/* A message describing the error and advising the user to login again to resolve the issue */
+"AvatarPicker.ContentLoading.Failure.SessionExpired.LogInError.subtext" = "To modify your Gravatar profile, you need to log in first.";
+
+/* Title of a message advising the user that their login session has expired. */
+"AvatarPicker.ContentLoading.Failure.SessionExpired.title" = "Session expired";
+
+/* A message describing the error and advising the user to login again to resolve the issue */
+"AvatarPicker.ContentLoading.Failure.WrongEmailError.subtext" = "It looks like you used the wrong email to log in. Please try again using %@ this time. Thanks!";
+
+/* Title of a button that allow for uploading an image */
+"AvatarPicker.ContentLoading.Success.ctaButtonTitle" = "Upload image";
+
+/* A message describing the actions a user can take to setup their avatar */
+"AvatarPicker.ContentLoading.Success.subtext" = "Choose or upload your favorite avatar images and connect them to your email address.";
+
+/* Title of a message advising the user to setup their avatar */
+"AvatarPicker.ContentLoading.success.title" = "Let's setup your avatar";
+
+/* The title of the dismiss button on a confirmation dialog. */
+"AvatarPicker.Dismiss.title" = "Dismiss";
+
+/* A message describing the purpose of this view */
+"AvatarPicker.Header.subtitle" = "Choose or upload your favorite avatar images and connect them to your email address.";
+
+/* Title appearing in the header of a view that allows users to manage their avatars */
+"AvatarPicker.Header.title" = "Avatars";
+
+/* Error message to show when the upload fails because the image is too big. */
+"AvatarPicker.Upload.Error.ImageTooBig.Error" = "The provided image exceeds the maximum size: 10MB";
+
+/* The title of the remove button on the upload error dialog. */
+"AvatarPicker.Upload.Error.Remove.title" = "Remove";
+
+/* The title of the retry button on the upload error dialog. */
+"AvatarPicker.Upload.Error.Retry.title" = "Retry";
+
+/* The title of the upload error dialog. */
+"AvatarPicker.Upload.Error.title" = "Upload has failed";
+
+/* Title of a button that will take you to your Gravatar profile, with an arrow indicating that this action will cause you to leave this view */
+"AvatarPickerProfile.Button.ViewProfile.title" = "View profile →";
+
+/* This error message shows when the user attempts to pick a different avatar and fails. */
+"AvatarPickerViewModel.Update.Fail" = "Oops, something didn't quite work out while trying to change your avatar.";
+
+/* This confirmation message shows when the user picks a different avatar. */
+"AvatarPickerViewModel.Update.Success" = "Avatar updated! It may take a few minutes to appear everywhere.";
+
+/* A generic error message to show on an error dialog when the upload fails. */
+"AvatarPickerViewModel.Upload.Error.message" = "Oops, there was an error uploading the image.";
+
+/* Text on a sample Gravatar profile, appearing in the place where a Gravatar profile would display your short biography. */
+"ClaimProfile.Label.AboutMe" = "Tell the world who you are. Your avatar and bio that follows you across the web.";
+
+/* Text on a sample Gravatar profile, appearing in the place where your name would normally appear on your Gravatar profile after you claim it. */
+"ClaimProfile.Label.DisplayName" = "Your Name";
+
+/* Text on a sample Gravatar profile, appearing in the place where a Gravatar profile would display information like location, your preferred pronouns, etc. */
+"ClaimProfile.Label.Location" = "Add your location, pronouns, etc";
+
+/* Title of a button that closes the current view */
+"GravatarNavigationModifier.Button.Done.title" = "Done";
+
+/* Screen title. Resize and crop an image. */
+"ImageCropper.title" = "Resize & Crop";
+
+/* Title for a button that allows you to claim a new Gravatar profile */
+"ProfileButton.title.create" = "Claim profile";
+
+/* Title for a button that allows you to edit your Gravatar profile */
+"ProfileButton.title.edit" = "Edit profile";
+
+/* Title for a button that allows you to view your Gravatar profile */
+"ProfileButton.title.view" = "View profile";
+
+/* An option in a menu that will display the camera for taking a picture */
+"SystemImagePickerView.Source.Camera.title" = "Take a Photo";
+
+/* An option in a menu that display the user's Photo Library and allow them to choose a photo from it */
+"SystemImagePickerView.Source.PhotoLibrary.title" = "Choose a Photo";
+

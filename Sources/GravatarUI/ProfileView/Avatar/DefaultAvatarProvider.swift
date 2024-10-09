@@ -124,6 +124,7 @@ class DefaultAvatarProvider: AvatarProviding {
         applyBorderColor()
         applyAvatarActivityIndicatorTintColor()
         avatarImageView.backgroundColor = paletteType.palette.avatar.background
+        avatarImageView.tintColor = paletteType.palette.avatar.tint
         avatarImageView.overrideUserInterfaceStyle = paletteType.palette.preferredUserInterfaceStyle
     }
 
