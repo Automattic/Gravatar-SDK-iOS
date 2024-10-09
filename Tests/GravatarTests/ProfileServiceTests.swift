@@ -1,4 +1,4 @@
-@testable import Gravatar
+import Gravatar
 import TestHelpers
 import XCTest
 
@@ -12,7 +12,7 @@ final class ProfileServiceTests: XCTestCase {
             return XCTFail("Could not create data")
         }
         let session = URLSessionMock(returnData: data, response: .successResponse())
-        let service = ProfileService(client: HTTPClientMock(session: session))
+        let service = ProfileService(urlSession: session)
 
         do {
             _ = try await service.fetch(with: .hashID(""))
@@ -28,7 +28,7 @@ final class ProfileServiceTests: XCTestCase {
             return XCTFail("Could not create data")
         }
         let session = URLSessionMock(returnData: data, response: .successResponse())
-        let service = ProfileService(client: HTTPClientMock(session: session))
+        let service = ProfileService(urlSession: session)
 
         do {
             _ = try await service.fetch(with: .hashID(""))
@@ -46,7 +46,7 @@ final class ProfileServiceTests: XCTestCase {
             return XCTFail("Could not create data")
         }
         let session = URLSessionMock(returnData: data, response: .errorResponse(code: 404))
-        let service = ProfileService(client: URLSessionHTTPClient(urlSession: session))
+        let service = ProfileService(urlSession: session)
 
         do {
             let _ = try await service.fetch(with: .hashID(""))
@@ -66,7 +66,7 @@ final class ProfileServiceTests: XCTestCase {
         await Configuration.shared.configure(with: "somekey")
 
         let session = URLSessionMock(returnData: data, response: .successResponse())
-        let service = ProfileService(client: HTTPClientMock(session: session))
+        let service = ProfileService(urlSession: session)
 
         do {
             _ = try await service.fetch(with: .hashID(""))
