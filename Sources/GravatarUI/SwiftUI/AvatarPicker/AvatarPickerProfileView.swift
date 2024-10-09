@@ -29,9 +29,11 @@ struct AvatarPickerProfileView: View {
                     Text(model.displayName)
                         .font(.title3)
                         .fontWeight(.bold)
-                    Text(model.location)
-                        .font(.footnote)
-                        .foregroundColor(Color(UIColor.secondaryLabel))
+                    if !model.location.isEmpty {
+                        Text(model.location)
+                            .font(.footnote)
+                            .foregroundColor(Color(UIColor.secondaryLabel))
+                    }
                     Button(Localized.viewProfileButtonTitle) {
                         viewProfileAction?()
                     }
