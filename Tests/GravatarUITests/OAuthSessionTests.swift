@@ -4,7 +4,7 @@ import XCTest
 final class OAuthSessionTests: XCTestCase {
     func testOAuth() {
         let mockSession = AuthenticationSessionMock(responseURL: URL(string: "some://url.com?code=someCode")!)
-        let oauth = OAuthSession(authenticationSession: mockSession)
+        let _ = OAuthSession(authenticationSession: mockSession)
     }
 }
 
