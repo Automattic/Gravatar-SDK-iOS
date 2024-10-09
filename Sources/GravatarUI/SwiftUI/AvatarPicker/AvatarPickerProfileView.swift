@@ -39,6 +39,7 @@ struct AvatarPickerProfileView: View {
                     }
                     .font(.footnote)
                     .foregroundColor(Color(UIColor.label))
+                    .padding(.init(top: .DS.Padding.half, leading: 0, bottom: 0, trailing: 0))
                 }
             } else {
                 emptyViews()
