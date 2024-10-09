@@ -9,18 +9,11 @@ public actor ImageDownloadService: ImageDownloader, Sendable {
     let imageCache: ImageCaching
 
     /// Creates a new `ImageDownloadService`
-    ///
-    /// Optionally, you can pass a custom type conforming to ``HTTPClient`` to gain control over networking tasks.
-    /// Similarly, you can pass a custom type conforming to ``ImageCaching`` to use your custom caching system.
     /// - Parameters:
-    ///   - client: A type which will perform basic networking operations.
-    ///   - cache: A type which will perform image caching operations.
-    public init(client: HTTPClient? = nil, cache: ImageCaching? = nil) {
-        self.client = client ?? URLSessionHTTPClient()
-        self.imageCache = cache ?? ImageCache.shared
-    }
-
-    public init(urlSession: URLSession, cache: ImageCaching? = nil) {
+    ///   - urlSession: URLSession to manage the network session.
+    ///   - cache: An image cache of type ``ImageCaching``. If not provided, it defaults to SDK's in-memory cache.
+    ///
+    public init(urlSession: URLSessionProtocol? = nil, cache: ImageCaching? = nil) {
         self.client = URLSessionHTTPClient(urlSession: urlSession)
         self.imageCache = cache ?? ImageCache.shared
     }
