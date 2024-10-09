@@ -47,7 +47,6 @@ fastlane/test_output
 
 # OpenAPI
 openapi/GravatarOpenAPIClient/
-!openapi/GravatarOpenAPIClient/.gitignore
 !openapi/GravatarOpenAPIClient/.openapi-generator/
 !openapi/GravatarOpenAPIClient/.openapi-generator-ignore
 !openapi/GravatarOpenAPIClient/docs/
