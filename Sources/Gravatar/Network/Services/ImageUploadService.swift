@@ -8,8 +8,8 @@ import UIKit
 struct ImageUploadService: ImageUploader {
     private let client: HTTPClient
 
-    init(client: HTTPClient? = nil) {
-        self.client = client ?? URLSessionHTTPClient()
+    init(urlSession: URLSessionProtocol? = nil) {
+        self.client = URLSessionHTTPClient(urlSession: urlSession)
     }
 
     @discardableResult
