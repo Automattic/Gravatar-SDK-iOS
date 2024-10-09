@@ -75,6 +75,10 @@ platform :ios do
         download_dir: source.localizations_root
       )
 
+      ios_lint_localizations(
+        input_dir: source.localizations_root
+      )
+
       next if skip_commit
 
       paths_to_commit << source.localizations_root
