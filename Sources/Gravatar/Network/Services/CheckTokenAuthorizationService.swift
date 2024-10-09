@@ -3,12 +3,8 @@ import Foundation
 package struct CheckTokenAuthorizationService: Sendable {
     private let client: HTTPClient
 
-    package init(session: URLSession? = nil) {
-        if let session {
-            self.client = URLSessionHTTPClient(urlSession: session)
-        } else {
-            self.client = URLSessionHTTPClient()
-        }
+    package init(session: URLSessionProtocol? = nil) {
+        self.client = URLSessionHTTPClient(urlSession: session)
     }
 
     /// Checks if the given access token is authorized to make changes to this Gravatar account.
