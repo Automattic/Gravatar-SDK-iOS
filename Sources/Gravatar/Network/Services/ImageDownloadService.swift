@@ -2,17 +2,18 @@ import UIKit
 
 /// A service to perform image downloading.
 ///
-/// This is the default type which implements ``ImageDownloader``..
-/// Unless specified otherwise, `ImageDownloadService` will use a `URLSession` based `HTTPClient`, and a in-memory image cache.
+/// This is the default type which implements ``ImageDownloader``.
 public actor ImageDownloadService: ImageDownloader, Sendable {
     private let client: HTTPClient
     let imageCache: ImageCaching
 
     /// Creates a new `ImageDownloadService`
     /// - Parameters:
-    ///   - urlSession: URLSession to manage the network session.
+    ///   - urlSession: Manages the network tasks. It can be a [URLSession] or any other type that conforms to ``URLSessionProtocol``.
+    /// If not provided, a properly configured [URLSession] is used.
     ///   - cache: An image cache of type ``ImageCaching``. If not provided, it defaults to SDK's in-memory cache.
     ///
+    /// [URLSession]: https://developer.apple.com/documentation/foundation/urlsession
     public init(urlSession: URLSessionProtocol? = nil, cache: ImageCaching? = nil) {
         self.client = URLSessionHTTPClient(urlSession: urlSession)
         self.imageCache = cache ?? ImageCache.shared

@@ -3,8 +3,7 @@ import UIKit
 
 /// A service to perform uploading images to Gravatar.
 ///
-/// This is the default type which implements ``ImageUploader``..
-/// Unless specified otherwise, `ImageUploadService` will use a `URLSession` based `HTTPClient`.
+/// This is the default type which implements ``ImageUploader``.
 struct ImageUploadService: ImageUploader {
     private let client: HTTPClient
 

@@ -13,8 +13,11 @@ public struct AvatarService: Sendable {
     /// Optionally, you can pass a custom type conforming to ``URLSessionProtocol``.
     /// Similarly, you can pass a custom type conforming to ``ImageCaching`` to use your custom caching system.
     /// - Parameters:
-    ///   - session: A type which will perform basic networking operations. By default, a properly configured URLSession instance will be used.
+    ///   - urlSession: Manages the network tasks. It can be a [URLSession] or any other type that conforms to ``URLSessionProtocol``.
+    /// If not provided, a properly configured [URLSession] is used.
     ///   - cache: An image cache of type ``ImageCaching``. If not provided, it defaults to SDK's in-memory cache.
+    ///
+    /// [URLSession]: https://developer.apple.com/documentation/foundation/urlsession
     public init(urlSession: URLSessionProtocol? = nil, cache: ImageCaching? = nil) {
         self.imageDownloader = ImageDownloadService(urlSession: urlSession, cache: cache)
         self.imageUploader = ImageUploadService(urlSession: urlSession)
