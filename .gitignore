@@ -45,5 +45,16 @@ fastlane/README.md
 fastlane/report.xml
 fastlane/test_output
 
+# OpenAPI
+openapi/GravatarOpenAPIClient/
+!openapi/GravatarOpenAPIClient/.gitignore
+!openapi/GravatarOpenAPIClient/.openapi-generator/
+!openapi/GravatarOpenAPIClient/.openapi-generator-ignore
+!openapi/GravatarOpenAPIClient/docs/
+!openapi/GravatarOpenAPIClient/GravatarOpenAPIClient.podspec
+!openapi/GravatarOpenAPIClient/Package.swift
+!openapi/GravatarOpenAPIClient/project.yml
+!openapi/GravatarOpenAPIClient/README.md
+
 # Other
 Demo/Demo/Secrets.swift

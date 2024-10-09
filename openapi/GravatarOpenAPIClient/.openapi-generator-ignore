@@ -22,6 +22,7 @@
 # Then explicitly reverse the ignore rule for a single file:
 #!docs/README.md
 
+.gitignore
 .swiftformat
 Cartfile
 git_push.sh

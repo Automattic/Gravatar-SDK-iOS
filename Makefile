@@ -124,8 +124,9 @@ generate: $(OPENAPI_GENERATED_DIR) # Generates the open-api model
 	-g swift5 \
 	-p packageName=Gravatar \
 	--additional-properties=useJsonEncodable=false,readonlyProperties=true,$(OPENAPI_CLIENT_PROPERTIES) && \
-    make swiftformat && \
+	rsync -av --delete "$(OPENAPI_GENERATED_DIR)/Sources/$(OPENAPI_PROJECT_NAME)/" "$(CURRENT_MAKEFILE_DIR)/Sources/$(OPENAPI_PROJECT_NAME)/" && \
 	cp -fp "$(OPENAPI_GENERATED_DIR)/$(OPENAPI_PROJECT_NAME).podspec" "$(CURRENT_MAKEFILE_DIR)/" && \
+	make swiftformat && \
     echo "DONE! 🎉"
 
 	
