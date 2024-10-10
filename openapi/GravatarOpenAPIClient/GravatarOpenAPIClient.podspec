@@ -19,5 +19,5 @@ Pod::Spec.new do |s|
 
   s.documentation_url = 'https://automattic.github.io/Gravatar-SDK-iOS/gravatar'
 
-  s.source_files = 'openapi/GravatarOpenAPIClient/Sources/GravatarOpenAPIClient/**/*.swift'
+  s.source_files = 'Sources/GravatarOpenAPIClient/**/*.swift'
 end
