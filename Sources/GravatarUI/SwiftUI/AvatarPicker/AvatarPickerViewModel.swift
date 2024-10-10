@@ -185,6 +185,12 @@ class AvatarPickerViewModel: ObservableObject {
 
             let newModel = AvatarImageModel(id: avatar.id, source: .remote(url: avatar.url))
             grid.replaceModel(withID: localID, with: newModel)
+            if selectedAvatarURL == nil {
+                // server side has some auto-selection logic that kicks in
+                // during the avatar upload if there's no selected avatar.
+                // so let's get synced.
+                refresh()
+            }
         } catch ImageUploadError.responseError(reason: let .invalidHTTPStatusCode(response, errorPayload))
             where response.statusCode == HTTPStatus.badRequest.rawValue || response.statusCode == HTTPStatus.payloadTooLarge.rawValue
         {
