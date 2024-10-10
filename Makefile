@@ -110,10 +110,6 @@ update-example-snapshots:
 	cd ./Sources/GravatarUI/GravatarUI.docc/Resources/ProfileExamples && \
 	for filePath in *; do name=$${filePath%.*}; mv $$filePath $${name//-dark/~dark}@2x$${filePath#$$name}; done
 
-install-and-generate: $(OPENAPI_GENERATOR_CLONE_DIR) # Clones and setup the openapi-generator.
-	"$(OPENAPI_GENERATOR_CLONE_DIR)"/run-in-docker.sh mvn package
-	make generate
-
 generate: $(OPENAPI_GENERATED_DIR) # Generates the open-api model
 	rm -rf "$(OPENAPI_GENERATED_DIR)/*" && \
 	docker run --rm \
@@ -128,8 +124,6 @@ generate: $(OPENAPI_GENERATED_DIR) # Generates the open-api model
 	cp -fp "$(OPENAPI_GENERATED_DIR)/$(OPENAPI_PROJECT_NAME).podspec" "$(CURRENT_MAKEFILE_DIR)/" && \
 	make swiftformat && \
     echo "DONE! 🎉"
-
-	
 
 generate-strings: bundle-install
 	bundle exec fastlane generate_strings
