@@ -1,17 +1,23 @@
 import Foundation
 
-public struct StringRule {
+public struct StringRule: @unchecked Sendable {
     public var minLength: Int?
     public var maxLength: Int?
     public var pattern: String?
 }
 
-public struct NumericRule<T: Comparable & Numeric> {
+public struct NumericRule<T: Comparable & Numeric>: @unchecked Sendable {
     public var minimum: T?
     public var exclusiveMinimum = false
     public var maximum: T?
     public var exclusiveMaximum = false
     public var multipleOf: T?
+}
+
+public struct ArrayRule: @unchecked Sendable {
+    public var minItems: Int?
+    public var maxItems: Int?
+    public var uniqueItems: Bool
 }
 
 public enum StringValidationErrorKind: Error {
@@ -20,6 +26,10 @@ public enum StringValidationErrorKind: Error {
 
 public enum NumericValidationErrorKind: Error {
     case minimum, maximum, multipleOf
+}
+
+public enum ArrayValidationErrorKind: Error {
+    case minItems, maxItems, uniqueItems
 }
 
 public struct ValidationError<T: Error & Hashable>: Error {
@@ -116,5 +126,30 @@ public enum Validator {
             throw error
         }
         return numeric
+    }
+
+    /// Validate a array against a rule.
+    /// - Parameter array: The Array you wish to validate.
+    /// - Parameter rule: The ArrayRule you wish to use for validation.
+    /// - Returns: A validated array.
+    /// - Throws: `ValidationError<ArrayValidationErrorKind>` if the string is invalid against the rule.
+    public static func validate(_ array: [AnyHashable], against rule: ArrayRule) throws -> [AnyHashable] {
+        var error = ValidationError<ArrayValidationErrorKind>(kinds: [])
+        if let minItems = rule.minItems, !(minItems <= array.count) {
+            error.kinds.insert(.minItems)
+        }
+        if let maxItems = rule.maxItems, !(array.count <= maxItems) {
+            error.kinds.insert(.maxItems)
+        }
+        if rule.uniqueItems {
+            let unique = Set(array)
+            if unique.count != array.count {
+                error.kinds.insert(.uniqueItems)
+            }
+        }
+        guard error.kinds.isEmpty else {
+            throw error
+        }
+        return array
     }
 }

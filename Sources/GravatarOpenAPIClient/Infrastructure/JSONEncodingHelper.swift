@@ -1,12 +1,12 @@
 import Foundation
 
 open class JSONEncodingHelper {
-    open class func encodingParameters(forEncodableObject encodableObj: (some Encodable)?) -> [String: Any]? {
+    open class func encodingParameters(forEncodableObject encodableObj: (some Encodable)?, codableHelper: CodableHelper) -> [String: Any]? {
         var params: [String: Any]?
 
         // Encode the Encodable object
         if let encodableObj {
-            let encodeResult = CodableHelper.encode(encodableObj)
+            let encodeResult = codableHelper.encode(encodableObj)
             do {
                 let data = try encodeResult.get()
                 params = JSONDataEncoding.encodingParameters(jsonData: data)
@@ -18,7 +18,7 @@ open class JSONEncodingHelper {
         return params
     }
 
-    open class func encodingParameters(forEncodableObject encodableObj: Any?) -> [String: Any]? {
+    open class func encodingParameters(forEncodableObject encodableObj: Any?, codableHelper: CodableHelper) -> [String: Any]? {
         var params: [String: Any]?
 
         if let encodableObj {

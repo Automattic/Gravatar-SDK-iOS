@@ -55,6 +55,8 @@ public enum APIHelper {
             return collection
                 .compactMap { value in convertAnyToString(value) }
                 .joined(separator: ",")
+        } else if let value = source as? any RawRepresentable {
+            return "\(value.rawValue)"
         }
         return source
     }

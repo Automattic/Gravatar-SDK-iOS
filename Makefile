@@ -10,7 +10,7 @@ SWIFTFORMAT_CACHE = ~/Library/Caches/com.charcoaldesign.swiftformat
 
 # The following values can be changed here, or passed on the command line.
 OPENAPI_GENERATOR_GIT_URL ?= https://github.com/openapitools/openapi-generator
-OPENAPI_GENERATOR_GIT_TAG ?= v7.5.0
+OPENAPI_GENERATOR_GIT_TAG ?= v7.9.0
 OPENAPI_GENERATOR_CLONE_DIR ?= $(CURRENT_MAKEFILE_DIR)/openapi-generator
 
 OPENAPI_PROJECT_NAME ?= GravatarOpenAPIClient
@@ -117,7 +117,7 @@ generate: $(OPENAPI_GENERATED_DIR) # Generates the open-api model
 	-i /local/openapi.yaml \
 	-o /local/GravatarOpenAPIClient \
 	-t /local/templates \
-	-g swift5 \
+	-g swift6 \
 	-p packageName=Gravatar \
 	--additional-properties=useJsonEncodable=false,readonlyProperties=true,$(OPENAPI_CLIENT_PROPERTIES) && \
 	rsync -av --delete "$(OPENAPI_GENERATED_DIR)/Sources/$(OPENAPI_PROJECT_NAME)/" "$(CURRENT_MAKEFILE_DIR)/Sources/$(OPENAPI_PROJECT_NAME)/" && \
