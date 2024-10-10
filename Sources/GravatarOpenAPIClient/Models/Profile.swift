@@ -53,8 +53,7 @@ public struct Profile: Codable, Hashable, Sendable {
     /// The date the user registered their account. This is only provided in authenticated API requests.
     public private(set) var registrationDate: Date?
 
-    @available(*, deprecated, message: "init will become internal on the next release")
-    public init(
+    init(
         hash: String,
         displayName: String,
         profileUrl: String,
@@ -108,36 +107,7 @@ public struct Profile: Codable, Hashable, Sendable {
         self.registrationDate = registrationDate
     }
 
-    @available(*, deprecated, message: "CodingKeys will become internal on the next release.")
-    public enum CodingKeys: String, CodingKey, CaseIterable {
-        case hash
-        case displayName = "display_name"
-        case profileUrl = "profile_url"
-        case avatarUrl = "avatar_url"
-        case avatarAltText = "avatar_alt_text"
-        case location
-        case description
-        case jobTitle = "job_title"
-        case company
-        case verifiedAccounts = "verified_accounts"
-        case pronunciation
-        case pronouns
-        case timezone
-        case languages
-        case firstName = "first_name"
-        case lastName = "last_name"
-        case isOrganization = "is_organization"
-        case links
-        case interests
-        case payments
-        case contactInfo = "contact_info"
-        case gallery
-        case numberVerifiedAccounts = "number_verified_accounts"
-        case lastProfileEdit = "last_profile_edit"
-        case registrationDate = "registration_date"
-    }
-
-    enum InternalCodingKeys: String, CodingKey, CaseIterable {
+    enum CodingKeys: String, CodingKey, CaseIterable {
         case hash
         case displayName = "display_name"
         case profileUrl = "profile_url"
@@ -168,7 +138,7 @@ public struct Profile: Codable, Hashable, Sendable {
     // Encodable protocol methods
 
     public func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: InternalCodingKeys.self)
+        var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(hash, forKey: .hash)
         try container.encode(displayName, forKey: .displayName)
         try container.encode(profileUrl, forKey: .profileUrl)
@@ -194,37 +164,5 @@ public struct Profile: Codable, Hashable, Sendable {
         try container.encodeIfPresent(numberVerifiedAccounts, forKey: .numberVerifiedAccounts)
         try container.encodeIfPresent(lastProfileEdit, forKey: .lastProfileEdit)
         try container.encodeIfPresent(registrationDate, forKey: .registrationDate)
-    }
-
-    // Decodable protocol methods
-
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: InternalCodingKeys.self)
-
-        hash = try container.decode(String.self, forKey: .hash)
-        displayName = try container.decode(String.self, forKey: .displayName)
-        profileUrl = try container.decode(String.self, forKey: .profileUrl)
-        avatarUrl = try container.decode(String.self, forKey: .avatarUrl)
-        avatarAltText = try container.decode(String.self, forKey: .avatarAltText)
-        location = try container.decode(String.self, forKey: .location)
-        description = try container.decode(String.self, forKey: .description)
-        jobTitle = try container.decode(String.self, forKey: .jobTitle)
-        company = try container.decode(String.self, forKey: .company)
-        verifiedAccounts = try container.decode([VerifiedAccount].self, forKey: .verifiedAccounts)
-        pronunciation = try container.decode(String.self, forKey: .pronunciation)
-        pronouns = try container.decode(String.self, forKey: .pronouns)
-        timezone = try container.decodeIfPresent(String.self, forKey: .timezone)
-        languages = try container.decodeIfPresent([Language].self, forKey: .languages)
-        firstName = try container.decodeIfPresent(String.self, forKey: .firstName)
-        lastName = try container.decodeIfPresent(String.self, forKey: .lastName)
-        isOrganization = try container.decodeIfPresent(Bool.self, forKey: .isOrganization)
-        links = try container.decodeIfPresent([Link].self, forKey: .links)
-        interests = try container.decodeIfPresent([Interest].self, forKey: .interests)
-        payments = try container.decodeIfPresent(ProfilePayments.self, forKey: .payments)
-        contactInfo = try container.decodeIfPresent(ProfileContactInfo.self, forKey: .contactInfo)
-        gallery = try container.decodeIfPresent([GalleryImage].self, forKey: .gallery)
-        numberVerifiedAccounts = try container.decodeIfPresent(Int.self, forKey: .numberVerifiedAccounts)
-        lastProfileEdit = try container.decodeIfPresent(Date.self, forKey: .lastProfileEdit)
-        registrationDate = try container.decodeIfPresent(Date.self, forKey: .registrationDate)
     }
 }

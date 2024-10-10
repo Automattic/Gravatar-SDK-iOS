@@ -55,5 +55,8 @@ openapi/GravatarOpenAPIClient/
 !openapi/GravatarOpenAPIClient/project.yml
 !openapi/GravatarOpenAPIClient/README.md
 
+# SwiftGen (part of wpmreleasetoolkit)
+vendor/swiftgen
+
 # Other
 Demo/Demo/Secrets.swift

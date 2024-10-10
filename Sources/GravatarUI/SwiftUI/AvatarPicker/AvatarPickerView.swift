@@ -10,17 +10,65 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
     @Environment(\.verticalSizeClass) var verticalSizeClass
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
 
-    @StateObject var model: AvatarPickerViewModel
+    // Declare "@StateObject"s as private to prevent setting them from a
+    // memberwise initializer, which can conflict with the storage
+    // management that SwiftUI provides.
+    // https://developer.apple.com/documentation/swiftui/stateobject
+    @StateObject private var model: AvatarPickerViewModel
     @Binding var isPresented: Bool
+    @Binding var authToken: String?
 
     @State private var safariURL: URL?
     @State private var uploadError: FailedUploadInfo?
     @State private var isUploadErrorDialogPresented: Bool = false
 
-    var contentLayoutProvider: AvatarPickerContentLayoutProviding = AvatarPickerContentLayoutType.vertical
+    var contentLayoutProvider: AvatarPickerContentLayoutProviding
     var customImageEditor: ImageEditorBlock<ImageEditor>?
     var tokenErrorHandler: (() -> Void)?
     var avatarUpdatedHandler: (() -> Void)?
+
+    init(
+        email: Email,
+        authToken: Binding<String?>,
+        isPresented: Binding<Bool>,
+        contentLayoutProvider: AvatarPickerContentLayoutProviding = AvatarPickerContentLayoutType.vertical,
+        customImageEditor: ImageEditorBlock<ImageEditor>? = nil as NoCustomEditorBlock?,
+        tokenErrorHandler: (() -> Void)? = nil,
+        avatarUpdatedHandler: (() -> Void)? = nil
+    ) {
+        self._isPresented = isPresented
+        self.contentLayoutProvider = contentLayoutProvider
+        self.customImageEditor = customImageEditor
+        self.tokenErrorHandler = tokenErrorHandler
+        self.avatarUpdatedHandler = avatarUpdatedHandler
+        self._authToken = authToken
+        self._model = StateObject(wrappedValue: AvatarPickerViewModel(email: email, authToken: authToken.wrappedValue))
+    }
+
+    fileprivate init(
+        avatarImageModels: [AvatarImageModel],
+        selectedImageID: String? = nil,
+        profileModel: ProfileSummaryModel? = nil,
+        isPresented: Binding<Bool>,
+        contentLayoutProvider: AvatarPickerContentLayoutProviding = AvatarPickerContentLayoutType.vertical,
+        customImageEditor: ImageEditorBlock<ImageEditor>? = nil as NoCustomEditorBlock?,
+        tokenErrorHandler: (() -> Void)? = nil,
+        avatarUpdatedHandler: (() -> Void)? = nil
+    ) {
+        self._isPresented = isPresented
+        self.contentLayoutProvider = contentLayoutProvider
+        self.customImageEditor = customImageEditor
+        self.tokenErrorHandler = tokenErrorHandler
+        self.avatarUpdatedHandler = avatarUpdatedHandler
+        self._authToken = .constant(nil)
+        self._model = StateObject(
+            wrappedValue: AvatarPickerViewModel(
+                avatarImageModels: avatarImageModels,
+                selectedImageID: selectedImageID,
+                profileModel: profileModel
+            )
+        )
+    }
 
     public var body: some View {
         ZStack {
@@ -86,6 +134,9 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
         .fullScreenCover(item: $safariURL) { url in
             SafariView(url: url)
                 .edgesIgnoringSafeArea(.all)
+        }
+        .onChange(of: authToken ?? "") { newValue in
+            model.update(authToken: newValue)
         }
     }
 
@@ -507,30 +558,34 @@ private enum AvatarPicker {
         }
     }
 
-    let model = AvatarPickerViewModel(
-        avatarImageModels: [
-            .init(id: "0", source: .local(image: UIImage()), state: .loading),
-            .init(id: "1", source: .remote(url: "https://gravatar.com/userimage/110207384/aa5f129a2ec75162cee9a1f0c472356a.jpeg?size=256")),
-            .init(id: "2", source: .remote(url: "https://gravatar.com/userimage/110207384/db73834576b01b69dd8da1e29877ca07.jpeg?size=256")),
-            .init(id: "3", source: .remote(url: "https://gravatar.com/userimage/110207384/3f7095bf2580265d1801d128c6410016.jpeg?size=256")),
-            .init(id: "4", source: .remote(url: "https://gravatar.com/userimage/110207384/fbbd335e57862e19267679f19b4f9db8.jpeg?size=256")),
-            .init(id: "5", source: .remote(url: "https://gravatar.com/userimage/110207384/96c6950d6d8ce8dd1177a77fe738101e.jpeg?size=256")),
-            .init(id: "6", source: .remote(url: "https://gravatar.com/userimage/110207384/4a4f9385b0a6fa5c00342557a098f480.jpeg?size=256")),
-            .init(id: "7", source: .local(image: UIImage()), state: .error(supportsRetry: true, errorMessage: "Something went wrong.")),
-            .init(id: "8", source: .local(image: UIImage()), state: .error(supportsRetry: false, errorMessage: "Something went wrong.")),
-        ],
-        selectedImageID: "5",
-        profileModel: PreviewModel()
-    )
+    let avatarImageModels: [AvatarImageModel] = [
+        .init(id: "0", source: .local(image: UIImage()), state: .loading),
+        .init(id: "1", source: .remote(url: "https://gravatar.com/userimage/110207384/aa5f129a2ec75162cee9a1f0c472356a.jpeg?size=256")),
+        .init(id: "2", source: .remote(url: "https://gravatar.com/userimage/110207384/db73834576b01b69dd8da1e29877ca07.jpeg?size=256")),
+        .init(id: "3", source: .remote(url: "https://gravatar.com/userimage/110207384/3f7095bf2580265d1801d128c6410016.jpeg?size=256")),
+        .init(id: "4", source: .remote(url: "https://gravatar.com/userimage/110207384/fbbd335e57862e19267679f19b4f9db8.jpeg?size=256")),
+        .init(id: "5", source: .remote(url: "https://gravatar.com/userimage/110207384/96c6950d6d8ce8dd1177a77fe738101e.jpeg?size=256")),
+        .init(id: "6", source: .remote(url: "https://gravatar.com/userimage/110207384/4a4f9385b0a6fa5c00342557a098f480.jpeg?size=256")),
+        .init(id: "7", source: .local(image: UIImage()), state: .error(supportsRetry: true, errorMessage: "Something went wrong.")),
+        .init(id: "8", source: .local(image: UIImage()), state: .error(supportsRetry: false, errorMessage: "Something went wrong.")),
+    ]
+    let selectedImageID = "5"
+    let profileModel = PreviewModel()
 
-    return AvatarPickerView<NoCustomEditor>(model: model, isPresented: .constant(true), contentLayoutProvider: AvatarPickerContentLayoutType.horizontal)
+    return AvatarPickerView<NoCustomEditor>(
+        avatarImageModels: avatarImageModels,
+        selectedImageID: selectedImageID,
+        profileModel: profileModel,
+        isPresented: .constant(true),
+        contentLayoutProvider: AvatarPickerContentLayoutType.horizontal
+    )
 }
 
 #Preview("Empty elements") {
-    AvatarPickerView<NoCustomEditor>(model: .init(avatarImageModels: [], profileModel: nil), isPresented: .constant(true))
+    AvatarPickerView<NoCustomEditor>(avatarImageModels: [], profileModel: nil, isPresented: .constant(true))
 }
 
 #Preview("Load from network") {
     /// Enter valid email and auth token.
-    AvatarPickerView<NoCustomEditor>(model: .init(email: .init(""), authToken: ""), isPresented: .constant(true))
+    AvatarPickerView<NoCustomEditor>(email: .init(""), authToken: .constant(""), isPresented: .constant(true))
 }

@@ -48,7 +48,6 @@ steps:
     plugins: [$CI_TOOLKIT]
     depends_on:
       - "test"
-      - "test_demo"
       - "validate"
       - "lint"
     if: build.tag != null

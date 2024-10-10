@@ -24,13 +24,12 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
     fileprivate typealias Constants = QuickEditorConstants
 
     @Environment(\.oauthSession) private var oauthSession
-    @State var hasSession: Bool = false
+    @State var token: String?
     @State var scope: QuickEditorScopeType
     @State var isAuthenticating: Bool = true
     @State var oauthError: OAuthError?
     @Binding var isPresented: Bool
     let email: Email
-    let token: String?
     var customImageEditor: ImageEditorBlock<ImageEditor>?
     var contentLayoutProvider: AvatarPickerContentLayoutProviding
     var avatarUpdatedHandler: (() -> Void)?
@@ -57,8 +56,6 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
         NavigationView {
             if let token {
                 editorView(with: token)
-            } else if hasSession, let token = oauthSession.sessionToken(with: email) {
-                editorView(with: token)
             } else {
                 noticeView()
                     .accumulateIntrinsicHeight()
@@ -71,12 +68,13 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
         switch scope {
         case .avatarPicker:
             AvatarPickerView(
-                model: .init(email: email, authToken: token),
+                email: email,
+                authToken: $token,
                 isPresented: $isPresented,
                 contentLayoutProvider: contentLayoutProvider,
                 customImageEditor: customImageEditor,
                 tokenErrorHandler: {
-                    oauthSession.deleteSession(with: email)
+                    oauthSession.markSessionAsExpired(with: email)
                     performAuthentication()
                 },
                 avatarUpdatedHandler: avatarUpdatedHandler
@@ -128,7 +126,7 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
     func performAuthentication() {
         Task {
             isAuthenticating = true
-            if !oauthSession.hasSession(with: email) {
+            if !oauthSession.hasValidSession(with: email) {
                 do {
                     _ = try await oauthSession.retrieveAccessToken(with: email)
                     oauthError = nil
@@ -140,7 +138,7 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
                     oauthError = nil
                 }
             }
-            hasSession = oauthSession.hasSession(with: email)
+            token = oauthSession.sessionToken(with: email)?.token
             isAuthenticating = false
         }
     }

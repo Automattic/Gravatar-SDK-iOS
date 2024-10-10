@@ -15,7 +15,7 @@ class AvatarPickerViewModel: ObservableObject {
         }
     }
 
-    private var avatarSelectionTask: Task<Void, Never>?
+    private var avatarSelectionTask: Task<Avatar?, Never>?
     private var authToken: String?
     private var selectedAvatarResult: Result<String, Error>? {
         didSet {
@@ -47,7 +47,7 @@ class AvatarPickerViewModel: ObservableObject {
     @Published var profileModel: AvatarPickerProfileView.Model?
     @ObservedObject var toastManager: ToastManager = .init()
 
-    init(email: Email, authToken: String) {
+    init(email: Email, authToken: String?) {
         self.email = email
         avatarIdentifier = .email(email)
         self.authToken = authToken
@@ -75,22 +75,24 @@ class AvatarPickerViewModel: ObservableObject {
         }
     }
 
-    func selectAvatar(with id: String) {
+    func selectAvatar(with id: String) async -> Avatar? {
         guard
             let email,
             let authToken,
             grid.selectedAvatar?.id != id,
             grid.model(with: id)?.state == .loaded
-        else { return }
+        else { return nil }
 
         avatarSelectionTask?.cancel()
 
         avatarSelectionTask = Task {
             await postAvatarSelection(with: id, authToken: authToken, identifier: .email(email))
         }
+
+        return await avatarSelectionTask?.value
     }
 
-    func postAvatarSelection(with avatarID: String, authToken: String, identifier: ProfileIdentifier) async {
+    func postAvatarSelection(with avatarID: String, authToken: String, identifier: ProfileIdentifier) async -> Avatar? {
         defer {
             grid.setState(to: .loaded, onAvatarWithID: avatarID)
         }
@@ -102,12 +104,16 @@ class AvatarPickerViewModel: ObservableObject {
             toastManager.showToast(Localized.avatarUpdateSuccess, type: .info)
 
             selectedAvatarResult = .success(response.imageId)
+            return response
         } catch APIError.responseError(let reason) where reason.cancelled {
             // NoOp.
+        } catch APIError.responseError(let .invalidHTTPStatusCode(response, errorPayload)) where response.statusCode == HTTPStatus.unauthorized.rawValue {
+            handleUnrecoverableClientError(APIError.responseError(reason: .invalidHTTPStatusCode(response: response, errorPayload: errorPayload)))
         } catch {
             toastManager.showToast(Localized.avatarUpdateFail, type: .error)
             grid.selectAvatar(withID: selectedAvatarResult?.value())
         }
+        return nil
     }
 
     func fetchAvatars() async {
@@ -177,14 +183,29 @@ class AvatarPickerViewModel: ObservableObject {
 
             let newModel = AvatarImageModel(id: avatar.id, source: .remote(url: avatar.url))
             grid.replaceModel(withID: localID, with: newModel)
-        } catch ImageUploadError.responseError(reason: let .invalidHTTPStatusCode(response, errorPayload)) where response.statusCode == 400 {
+        } catch ImageUploadError.responseError(reason: let .invalidHTTPStatusCode(response, errorPayload))
+            where response.statusCode == HTTPStatus.badRequest.rawValue || response.statusCode == HTTPStatus.payloadTooLarge.rawValue
+        {
+            let message: String = {
+                if response.statusCode == HTTPStatus.payloadTooLarge.rawValue {
+                    // The error response comes back as an HTML document for 413, which is unexpected.
+                    // Until BE starts to send the json, we'll handle 413 on the client side.
+                    return Localized.imageTooBigError
+                }
+                return errorPayload?.message ?? Localized.genericUploadError
+            }()
             // If the status code is 400 then it means we got a validation error about this image and the operation is not suitable for retrying.
             handleUploadError(
                 imageID: localID,
                 squareImage: squareImage,
                 supportsRetry: false,
-                errorMessage: errorPayload?.message ?? Localized.genericUploadError
+                errorMessage: message
             )
+        } catch ImageUploadError.responseError(reason: let .invalidHTTPStatusCode(response, errorPayload))
+            where response.statusCode == HTTPStatus.unauthorized.rawValue
+        {
+            // If the status code is 401 (unauthorized), then it means the token is not valid and we should prompt the user accordingly.
+            handleUnrecoverableClientError(APIError.responseError(reason: .invalidHTTPStatusCode(response: response, errorPayload: errorPayload)))
         } catch ImageUploadError.responseError(reason: let reason) where reason.urlSessionErrorLocalizedDescription != nil {
             handleUploadError(
                 imageID: localID,
@@ -209,6 +230,11 @@ class AvatarPickerViewModel: ObservableObject {
             state: .error(supportsRetry: supportsRetry, errorMessage: errorMessage)
         )
         grid.replaceModel(withID: imageID, with: newModel)
+    }
+
+    private func handleUnrecoverableClientError(_ error: Error) {
+        self.grid.setAvatars([])
+        self.gridResponseStatus = .failure(error)
     }
 
     private func updateSelectedAvatarURL() {
@@ -261,6 +287,11 @@ extension AvatarPickerViewModel {
             "AvatarPickerViewModel.Update.Fail",
             value: "Oops, something didn't quite work out while trying to change your avatar.",
             comment: "This error message shows when the user attempts to pick a different avatar and fails."
+        )
+        static let imageTooBigError = SDKLocalizedString(
+            "AvatarPicker.Upload.Error.ImageTooBig.Error",
+            value: "The provided image exceeds the maximum size: 10MB",
+            comment: "Error message to show when the upload fails because the image is too big."
         )
     }
 }
