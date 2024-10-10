@@ -45,10 +45,11 @@ public struct AvatarService: Sendable {
     /// - Parameters:
     ///   - image: The image to be uploaded.
     ///   - accessToken: The authentication token for the user. This is a WordPress.com OAuth2 access token.
+    ///   - avatarSelection: How to handle avatar selection after uploading a new avatar
     /// - Returns: An asynchronously-delivered `AvatarType` instance, containing data of the newly created avatar.
     @discardableResult
-    public func upload(_ image: UIImage, accessToken: String) async throws -> AvatarType {
-        let avatar: Avatar = try await upload(image, accessToken: accessToken)
+    public func upload(_ image: UIImage, accessToken: String, avatarSelection: AvatarSelection = .preserveSelection) async throws -> AvatarType {
+        let avatar: Avatar = try await upload(image, accessToken: accessToken, avatarSelection: avatarSelection)
         return avatar
     }
 
@@ -57,11 +58,12 @@ public struct AvatarService: Sendable {
     /// - Parameters:
     ///   - image: The image to be uploaded.
     ///   - accessToken: The authentication token for the user. This is a WordPress.com OAuth2 access token.
+    ///   - avatarSelection: How to handle avatar selection after uploading a new avatar
     /// - Returns: An asynchronously-delivered `Avatar` instance, containing data of the newly created avatar.
     @discardableResult
-    func upload(_ image: UIImage, accessToken: String) async throws -> Avatar {
+    func upload(_ image: UIImage, accessToken: String, avatarSelection: AvatarSelection) async throws -> Avatar {
         do {
-            let (data, _) = try await imageUploader.uploadImage(image, accessToken: accessToken, additionalHTTPHeaders: nil)
+            let (data, _) = try await imageUploader.uploadImage(image, accessToken: accessToken, avatarSelection: avatarSelection, additionalHTTPHeaders: nil)
             return try data.decode()
         } catch let error as ImageUploadError {
             throw error
