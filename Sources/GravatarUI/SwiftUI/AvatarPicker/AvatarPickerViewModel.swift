@@ -151,7 +151,8 @@ class AvatarPickerViewModel: ObservableObject {
     func upload(_ image: UIImage, shouldSquareImage: Bool) async {
         guard let authToken else { return }
 
-        // objectWillChange is the only way that makes the UI update when the initial state is empty.
+        // SwiftUI doesn't update the UI if the grid is empty.
+        // objectWillChange forces the update.
         objectWillChange.send()
         let squareImage = shouldSquareImage ? image.squared() : image
         let localID = UUID().uuidString
