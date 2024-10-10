@@ -2,106 +2,103 @@ import Foundation
 #if canImport(FoundationNetworking)
 import FoundationNetworking
 #endif
-#if canImport(AnyCodable)
-import AnyCodable
-#endif
 
 extension Bool: JSONEncodable {
-    func encodeToJSON() -> Any { self }
+    func encodeToJSON(codableHelper: CodableHelper) -> Any { self }
 }
 
 extension Float: JSONEncodable {
-    func encodeToJSON() -> Any { self }
+    func encodeToJSON(codableHelper: CodableHelper) -> Any { self }
 }
 
 extension Int: JSONEncodable {
-    func encodeToJSON() -> Any { self }
+    func encodeToJSON(codableHelper: CodableHelper) -> Any { self }
 }
 
 extension Int32: JSONEncodable {
-    func encodeToJSON() -> Any { self }
+    func encodeToJSON(codableHelper: CodableHelper) -> Any { self }
 }
 
 extension Int64: JSONEncodable {
-    func encodeToJSON() -> Any { self }
+    func encodeToJSON(codableHelper: CodableHelper) -> Any { self }
 }
 
 extension Double: JSONEncodable {
-    func encodeToJSON() -> Any { self }
+    func encodeToJSON(codableHelper: CodableHelper) -> Any { self }
 }
 
 extension Decimal: JSONEncodable {
-    func encodeToJSON() -> Any { self }
+    func encodeToJSON(codableHelper: CodableHelper) -> Any { self }
 }
 
 extension String: JSONEncodable {
-    func encodeToJSON() -> Any { self }
+    func encodeToJSON(codableHelper: CodableHelper) -> Any { self }
 }
 
 extension URL: JSONEncodable {
-    func encodeToJSON() -> Any { self }
+    func encodeToJSON(codableHelper: CodableHelper) -> Any { self }
 }
 
 extension UUID: JSONEncodable {
-    func encodeToJSON() -> Any { self }
+    func encodeToJSON(codableHelper: CodableHelper) -> Any { self }
 }
 
 extension RawRepresentable where RawValue: JSONEncodable {
-    func encodeToJSON() -> Any { self.rawValue }
+    func encodeToJSON(codableHelper: CodableHelper) -> Any { self.rawValue }
 }
 
-private func encodeIfPossible(_ object: some Any) -> Any {
+private func encodeIfPossible(_ object: some Any, codableHelper: CodableHelper) -> Any {
     if let encodableObject = object as? JSONEncodable {
-        encodableObject.encodeToJSON()
+        encodableObject.encodeToJSON(codableHelper: codableHelper)
     } else {
         object
     }
 }
 
 extension Array: JSONEncodable {
-    func encodeToJSON() -> Any {
-        self.map(encodeIfPossible)
+    func encodeToJSON(codableHelper: CodableHelper) -> Any {
+        self.map { encodeIfPossible($0, codableHelper: codableHelper) }
     }
 }
 
 extension Set: JSONEncodable {
-    func encodeToJSON() -> Any {
-        Array(self).encodeToJSON()
+    func encodeToJSON(codableHelper: CodableHelper) -> Any {
+        Array(self).encodeToJSON(codableHelper: codableHelper)
     }
 }
 
 extension Dictionary: JSONEncodable {
-    func encodeToJSON() -> Any {
+    func encodeToJSON(codableHelper: CodableHelper) -> Any {
         var dictionary = [AnyHashable: Any]()
         for (key, value) in self {
-            dictionary[key] = encodeIfPossible(value)
+            dictionary[key] = encodeIfPossible(value, codableHelper: codableHelper)
         }
         return dictionary
     }
 }
 
 extension Data: JSONEncodable {
-    func encodeToJSON() -> Any {
+    func encodeToJSON(codableHelper: CodableHelper) -> Any {
         self.base64EncodedString(options: Data.Base64EncodingOptions())
     }
 }
 
 extension Date: JSONEncodable {
-    func encodeToJSON() -> Any {
-        CodableHelper.dateFormatter.string(from: self)
+    func encodeToJSON(codableHelper: CodableHelper) -> Any {
+        codableHelper.dateFormatter.string(from: self)
     }
 }
 
 extension JSONEncodable where Self: Encodable {
-    func encodeToJSON() -> Any {
-        guard let data = try? CodableHelper.jsonEncoder.encode(self) else {
+    func encodeToJSON(codableHelper: CodableHelper) -> Any {
+        guard let data = try? codableHelper.jsonEncoder.encode(self) else {
             fatalError("Could not encode to json: \(self)")
         }
-        return data.encodeToJSON()
+        return data.encodeToJSON(codableHelper: codableHelper)
     }
 }
 
-extension String: CodingKey {
+extension String: @retroactive CodingKey {
     public var stringValue: String {
         self
     }
@@ -144,9 +141,12 @@ extension KeyedEncodingContainerProtocol {
     }
 
     public mutating func encode(_ value: Decimal, forKey key: Self.Key) throws {
-        var mutableValue = value
-        let stringValue = NSDecimalString(&mutableValue, Locale(identifier: "en_US"))
-        try encode(stringValue, forKey: key)
+        let decimalNumber = NSDecimalNumber(decimal: value)
+        let numberFormatter = NumberFormatter()
+        numberFormatter.numberStyle = .decimal
+        numberFormatter.locale = Locale(identifier: "en_US")
+        let formattedString = numberFormatter.string(from: decimalNumber) ?? "\(value)"
+        try encode(formattedString, forKey: key)
     }
 
     public mutating func encodeIfPresent(_ value: Decimal?, forKey key: Self.Key) throws {
@@ -212,11 +212,5 @@ extension KeyedDecodingContainerProtocol {
         }
 
         return decimalValue
-    }
-}
-
-extension HTTPURLResponse {
-    var isStatusCodeSuccessful: Bool {
-        Configuration.successfulStatusCodeRange.contains(statusCode)
     }
 }

@@ -6,18 +6,46 @@ import MobileCoreServices
 import UniformTypeIdentifiers
 #endif
 
-public protocol URLSessionProtocol {
-    func dataTask(with request: URLRequest, completionHandler: @escaping @Sendable (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTask
+// Protocol defined for a session data task. This allows mocking out the URLSessionProtocol below since
+// you may not want to create or return a real URLSessionDataTask.
+public protocol URLSessionDataTaskProtocol {
+    func resume()
+
+    var taskIdentifier: Int { get }
+
+    var progress: Progress { get }
+
+    func cancel()
 }
 
-extension URLSession: URLSessionProtocol {}
+// Protocol allowing implementations to alter what is returned or to test their implementations.
+public protocol URLSessionProtocol: Sendable {
+    // Task which performs the network fetch. Expected to be from URLSession.dataTask(with:completionHandler:) such that a network request
+    // is sent off when `.resume()` is called.
+    func dataTaskFromProtocol(with request: URLRequest, completionHandler: @escaping @Sendable (Data?, URLResponse?, (any Error)?) -> Void)
+        -> URLSessionDataTaskProtocol
+}
 
-class URLSessionRequestBuilderFactory: RequestBuilderFactory {
-    func getNonDecodableBuilder<T>() -> RequestBuilder<T>.Type {
+extension URLSession: URLSessionProtocol {
+    // Passthrough to URLSession.dataTask(with:completionHandler) since URLSessionDataTask conforms to URLSessionDataTaskProtocol and fetches the network data.
+    public func dataTaskFromProtocol(
+        with request: URLRequest,
+        completionHandler: @escaping @Sendable (Data?, URLResponse?, (any Error)?) -> Void
+    ) -> URLSessionDataTaskProtocol {
+        dataTask(with: request, completionHandler: completionHandler)
+    }
+}
+
+extension URLSessionDataTask: URLSessionDataTaskProtocol {}
+
+public class URLSessionRequestBuilderFactory: RequestBuilderFactory {
+    public init() {}
+
+    public func getNonDecodableBuilder<T>() -> RequestBuilder<T>.Type {
         URLSessionRequestBuilder<T>.self
     }
 
-    func getBuilder<T: Decodable>() -> RequestBuilder<T>.Type {
+    public func getBuilder<T: Decodable>() -> RequestBuilder<T>.Type {
         URLSessionDecodableRequestBuilder<T>.self
     }
 }
@@ -27,26 +55,48 @@ public typealias GravatarOpenAPIClientAPIChallengeHandler = (URLSession, URLSess
     URLCredential?
 )
 
-// Store the URLSession's delegate to retain its reference
-private let sessionDelegate = SessionDelegate()
+private class URLSessionRequestBuilderConfiguration: @unchecked Sendable {
+    private init() {
+        defaultURLSession = URLSession(configuration: .default, delegate: sessionDelegate, delegateQueue: nil)
+    }
 
-// Store the URLSession to retain its reference
-private let defaultURLSession = URLSession(configuration: .default, delegate: sessionDelegate, delegateQueue: nil)
+    static let shared = URLSessionRequestBuilderConfiguration()
 
-// Store current taskDidReceiveChallenge for every URLSessionTask
-private var challengeHandlerStore = SynchronizedDictionary<Int, GravatarOpenAPIClientAPIChallengeHandler>()
+    // Store the URLSession's delegate to retain its reference
+    let sessionDelegate = SessionDelegate()
 
-// Store current URLCredential for every URLSessionTask
-private var credentialStore = SynchronizedDictionary<Int, URLCredential>()
+    // Store the URLSession to retain its reference
+    let defaultURLSession: URLSession
 
-open class URLSessionRequestBuilder<T>: RequestBuilder<T> {
+    // Store current taskDidReceiveChallenge for every URLSessionTask
+    var challengeHandlerStore = SynchronizedDictionary<Int, GravatarOpenAPIClientAPIChallengeHandler>()
+
+    // Store current URLCredential for every URLSessionTask
+    var credentialStore = SynchronizedDictionary<Int, URLCredential>()
+}
+
+open class URLSessionRequestBuilder<T>: RequestBuilder<T>, @unchecked Sendable {
     /**
      May be assigned if you want to control the authentication challenges.
      */
     public var taskDidReceiveChallenge: GravatarOpenAPIClientAPIChallengeHandler?
 
-    public required init(method: String, URLString: String, parameters: [String: Any]?, headers: [String: String] = [:], requiresAuthentication: Bool) {
-        super.init(method: method, URLString: URLString, parameters: parameters, headers: headers, requiresAuthentication: requiresAuthentication)
+    public required init(
+        method: String,
+        URLString: String,
+        parameters: [String: Any]?,
+        headers: [String: String] = [:],
+        requiresAuthentication: Bool,
+        openAPIClient: OpenAPIClient = OpenAPIClient.shared
+    ) {
+        super.init(
+            method: method,
+            URLString: URLString,
+            parameters: parameters,
+            headers: headers,
+            requiresAuthentication: requiresAuthentication,
+            openAPIClient: openAPIClient
+        )
     }
 
     /**
@@ -54,7 +104,7 @@ open class URLSessionRequestBuilder<T>: RequestBuilder<T> {
      configuration.
      */
     open func createURLSession() -> URLSessionProtocol {
-        defaultURLSession
+        URLSessionRequestBuilderConfiguration.shared.defaultURLSession
     }
 
     /**
@@ -96,10 +146,7 @@ open class URLSessionRequestBuilder<T>: RequestBuilder<T> {
     }
 
     @discardableResult
-    override open func execute(
-        _ apiResponseQueue: DispatchQueue = GravatarOpenAPIClientAPI.apiResponseQueue,
-        _ completion: @escaping (_ result: Swift.Result<Response<T>, ErrorResponse>) -> Void
-    ) -> RequestTask {
+    override open func execute(completion: @Sendable @escaping (_ result: Swift.Result<Response<T>, ErrorResponse>) -> Void) -> RequestTask {
         let urlSession = createURLSession()
 
         guard let xMethod = HTTPMethod(rawValue: method) else {
@@ -115,7 +162,7 @@ open class URLSessionRequestBuilder<T>: RequestBuilder<T> {
         case .options, .post, .put, .patch, .delete, .trace, .connect:
             let contentType = headers["Content-Type"] ?? "application/json"
 
-            if contentType.hasPrefix("application/json") {
+            if contentType.hasPrefix("application/") && contentType.contains("json") {
                 encoding = JSONDataEncoding()
             } else if contentType.hasPrefix("multipart/form-data") {
                 encoding = FormDataEncoding(contentTypeForFormPart: contentTypeForFormPart(fileURL:))
@@ -131,37 +178,67 @@ open class URLSessionRequestBuilder<T>: RequestBuilder<T> {
         do {
             let request = try createURLRequest(urlSession: urlSession, method: xMethod, encoding: encoding, headers: headers)
 
-            var taskIdentifier: Int?
-            let cleanupRequest = {
-                if let taskIdentifier {
-                    challengeHandlerStore[taskIdentifier] = nil
-                    credentialStore[taskIdentifier] = nil
+            openAPIClient.interceptor.intercept(urlRequest: request, urlSession: urlSession, openAPIClient: openAPIClient) { result in
+
+                switch result {
+                case .success(let modifiedRequest):
+                    let dataTask = urlSession.dataTaskFromProtocol(with: modifiedRequest) { data, response, error in
+                        self.cleanupRequest()
+                        if let response, let error {
+                            self.openAPIClient.interceptor.retry(
+                                urlRequest: modifiedRequest,
+                                urlSession: urlSession,
+                                openAPIClient: self.openAPIClient,
+                                data: data,
+                                response: response,
+                                error: error
+                            ) { retry in
+                                switch retry {
+                                case .retry:
+                                    self.execute(completion: completion)
+
+                                case .dontRetry:
+                                    self.openAPIClient.apiResponseQueue.async {
+                                        self.processRequestResponse(urlRequest: request, data: data, response: response, error: error, completion: completion)
+                                    }
+                                }
+                            }
+                        } else {
+                            self.openAPIClient.apiResponseQueue.async {
+                                self.processRequestResponse(urlRequest: request, data: data, response: response, error: error, completion: completion)
+                            }
+                        }
+                    }
+
+                    self.onProgressReady?(dataTask.progress)
+
+                    URLSessionRequestBuilderConfiguration.shared.challengeHandlerStore[dataTask.taskIdentifier] = self.taskDidReceiveChallenge
+                    URLSessionRequestBuilderConfiguration.shared.credentialStore[dataTask.taskIdentifier] = self.credential
+
+                    self.requestTask.set(task: dataTask)
+
+                    dataTask.resume()
+
+                case .failure(let error):
+                    self.openAPIClient.apiResponseQueue.async {
+                        completion(.failure(ErrorResponse.error(415, nil, nil, error)))
+                    }
                 }
             }
-
-            let dataTask = urlSession.dataTask(with: request) { data, response, error in
-                apiResponseQueue.async {
-                    self.processRequestResponse(urlRequest: request, data: data, response: response, error: error, completion: completion)
-                    cleanupRequest()
-                }
-            }
-
-            onProgressReady?(dataTask.progress)
-
-            taskIdentifier = dataTask.taskIdentifier
-            challengeHandlerStore[dataTask.taskIdentifier] = taskDidReceiveChallenge
-            credentialStore[dataTask.taskIdentifier] = credential
-
-            dataTask.resume()
-
-            requestTask.set(task: dataTask)
         } catch {
-            apiResponseQueue.async {
+            self.openAPIClient.apiResponseQueue.async {
                 completion(.failure(ErrorResponse.error(415, nil, nil, error)))
             }
         }
 
         return requestTask
+    }
+
+    private func cleanupRequest() {
+        if let task = requestTask.get() {
+            URLSessionRequestBuilderConfiguration.shared.challengeHandlerStore[task.taskIdentifier] = nil
+            URLSessionRequestBuilderConfiguration.shared.credentialStore[task.taskIdentifier] = nil
+        }
     }
 
     fileprivate func processRequestResponse(
@@ -181,7 +258,7 @@ open class URLSessionRequestBuilder<T>: RequestBuilder<T> {
             return
         }
 
-        guard httpResponse.isStatusCodeSuccessful else {
+        guard openAPIClient.successfulStatusCodeRange.contains(httpResponse.statusCode) else {
             completion(.failure(ErrorResponse.error(httpResponse.statusCode, data, response, DecodableRequestBuilderError.unsuccessfulHTTPStatusCode)))
             return
         }
@@ -198,7 +275,7 @@ open class URLSessionRequestBuilder<T>: RequestBuilder<T> {
 
     open func buildHeaders() -> [String: String] {
         var httpHeaders: [String: String] = [:]
-        for (key, value) in GravatarOpenAPIClientAPI.customHeaders {
+        for (key, value) in openAPIClient.customHeaders {
             httpHeaders[key] = value
         }
         for (key, value) in headers {
@@ -253,7 +330,7 @@ open class URLSessionRequestBuilder<T>: RequestBuilder<T> {
     }
 }
 
-open class URLSessionDecodableRequestBuilder<T: Decodable>: URLSessionRequestBuilder<T> {
+open class URLSessionDecodableRequestBuilder<T: Decodable>: URLSessionRequestBuilder<T>, @unchecked Sendable {
     override fileprivate func processRequestResponse(
         urlRequest: URLRequest,
         data: Data?,
@@ -271,7 +348,7 @@ open class URLSessionDecodableRequestBuilder<T: Decodable>: URLSessionRequestBui
             return
         }
 
-        guard httpResponse.isStatusCodeSuccessful else {
+        guard openAPIClient.successfulStatusCodeRange.contains(httpResponse.statusCode) else {
             completion(.failure(ErrorResponse.error(httpResponse.statusCode, data, response, DecodableRequestBuilderError.unsuccessfulHTTPStatusCode)))
             return
         }
@@ -338,7 +415,7 @@ open class URLSessionDecodableRequestBuilder<T: Decodable>: URLSessionRequestBui
                 return
             }
 
-            let decodeResult = CodableHelper.decode(T.self, from: unwrappedData)
+            let decodeResult = openAPIClient.codableHelper.decode(T.self, from: unwrappedData)
 
             switch decodeResult {
             case .success(let decodableObj):
@@ -350,7 +427,7 @@ open class URLSessionDecodableRequestBuilder<T: Decodable>: URLSessionRequestBui
     }
 }
 
-private class SessionDelegate: NSObject, URLSessionTaskDelegate {
+private final class SessionDelegate: NSObject, URLSessionTaskDelegate {
     func urlSession(
         _ session: URLSession,
         task: URLSessionTask,
@@ -361,13 +438,13 @@ private class SessionDelegate: NSObject, URLSessionTaskDelegate {
 
         var credential: URLCredential?
 
-        if let taskDidReceiveChallenge = challengeHandlerStore[task.taskIdentifier] {
+        if let taskDidReceiveChallenge = URLSessionRequestBuilderConfiguration.shared.challengeHandlerStore[task.taskIdentifier] {
             (disposition, credential) = taskDidReceiveChallenge(session, task, challenge)
         } else {
             if challenge.previousFailureCount > 0 {
                 disposition = .rejectProtectionSpace
             } else {
-                credential = credentialStore[task.taskIdentifier] ?? session.configuration.urlCredentialStorage?
+                credential = URLSessionRequestBuilderConfiguration.shared.credentialStore[task.taskIdentifier] ?? session.configuration.urlCredentialStorage?
                     .defaultCredential(for: challenge.protectionSpace)
 
                 if credential != nil {
@@ -566,7 +643,7 @@ private class FormDataEncoding: ParameterEncoding {
     func mimeType(for url: URL) -> String {
         let pathExtension = url.pathExtension
 
-        if #available(iOS 15, macOS 11, *) {
+        if #available(macOS 11.0, iOS 14.0, tvOS 14.0, watchOS 7.0, *) {
             #if canImport(UniformTypeIdentifiers)
             if let utType = UTType(filenameExtension: pathExtension) {
                 return utType.preferredMIMEType ?? "application/octet-stream"
@@ -648,3 +725,52 @@ extension Data? {
 }
 
 extension JSONDataEncoding: ParameterEncoding {}
+
+public enum OpenAPIInterceptorRetry {
+    case retry
+    case dontRetry
+}
+
+public protocol OpenAPIInterceptor {
+    func intercept(
+        urlRequest: URLRequest,
+        urlSession: URLSessionProtocol,
+        openAPIClient: OpenAPIClient,
+        completion: @escaping (Result<URLRequest, Error>) -> Void
+    )
+
+    func retry(
+        urlRequest: URLRequest,
+        urlSession: URLSessionProtocol,
+        openAPIClient: OpenAPIClient,
+        data: Data?,
+        response: URLResponse,
+        error: Error,
+        completion: @escaping (OpenAPIInterceptorRetry) -> Void
+    )
+}
+
+public class DefaultOpenAPIInterceptor: OpenAPIInterceptor {
+    public init() {}
+
+    public func intercept(
+        urlRequest: URLRequest,
+        urlSession: URLSessionProtocol,
+        openAPIClient: OpenAPIClient,
+        completion: @escaping (Result<URLRequest, any Error>) -> Void
+    ) {
+        completion(.success(urlRequest))
+    }
+
+    public func retry(
+        urlRequest: URLRequest,
+        urlSession: URLSessionProtocol,
+        openAPIClient: OpenAPIClient,
+        data: Data?,
+        response: URLResponse,
+        error: Error,
+        completion: @escaping (OpenAPIInterceptorRetry) -> Void
+    ) {
+        completion(.dontRetry)
+    }
+}

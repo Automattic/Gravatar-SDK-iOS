@@ -4,7 +4,7 @@ import FoundationNetworking
 #endif
 
 protocol JSONEncodable {
-    func encodeToJSON() -> Any
+    func encodeToJSON(codableHelper: CodableHelper) -> Any
 }
 
 /// An enum where the last case value can be used as a default catch-all.
@@ -104,20 +104,26 @@ open class Response<T> {
     }
 }
 
-public final class RequestTask {
-    private var lock = NSRecursiveLock()
-    private var task: URLSessionTask?
+public final class RequestTask: @unchecked Sendable {
+    private let lock = NSRecursiveLock()
+    private var task: URLSessionDataTaskProtocol?
 
-    func set(task: URLSessionTask) {
-        lock.lock()
-        defer { lock.unlock() }
-        self.task = task
+    func set(task: URLSessionDataTaskProtocol) {
+        lock.withLock {
+            self.task = task
+        }
+    }
+
+    func get() -> URLSessionDataTaskProtocol? {
+        lock.withLock {
+            task
+        }
     }
 
     public func cancel() {
-        lock.lock()
-        defer { lock.unlock() }
-        task?.cancel()
-        task = nil
+        lock.withLock {
+            task?.cancel()
+            task = nil
+        }
     }
 }
