@@ -111,7 +111,7 @@ update-example-snapshots:
 	for filePath in *; do name=$${filePath%.*}; mv $$filePath $${name//-dark/~dark}@2x$${filePath#$$name}; done
 
 generate: $(OPENAPI_GENERATED_DIR) # Generates the open-api model
-	rm -rf "$(OPENAPI_GENERATED_DIR)/*" && \
+	rm -rf "$(OPENAPI_GENERATED_DIR)"/* && \
 	docker run --rm \
 	-v $(OPENAPI_DIR):/local openapitools/openapi-generator-cli:"$(OPENAPI_GENERATOR_GIT_TAG)" generate \
 	-i /local/openapi.yaml \
