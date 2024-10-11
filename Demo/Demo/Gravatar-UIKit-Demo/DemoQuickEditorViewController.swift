@@ -125,18 +125,16 @@ final class DemoQuickEditorViewController: UIViewController {
 
     func updateLogoutButton(_ button: UIButton? = nil) {
         guard let savedEmail else { return }
-        let session = OAuthSession()
         let button = button ?? logoutButton
         UIView.animate {
-            button.isHidden = !session.hasSession(with: Email(savedEmail))
+            button.isHidden = !OAuthSession.hasSession(with: Email(savedEmail))
             button.alpha = button.isHidden ? 0 : 1
         }
     }
 
     func logout() {
         guard let savedEmail else { return }
-        let session = OAuthSession()
-        session.deleteSession(with: Email(savedEmail))
+        OAuthSession.deleteSession(with: Email(savedEmail))
         updateLogoutButton()
     }
 

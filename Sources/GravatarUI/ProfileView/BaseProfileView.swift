@@ -423,7 +423,7 @@ open class BaseProfileView: UIView, UIContentView {
 
     private func loadAvatar(with config: ProfileViewConfiguration) {
         loadAvatar(
-            with: config.avatarIdentifier ?? config.avatarID,
+            with: config.avatarIdentifier,
             placeholder: config.avatarConfiguration.placeholder,
             rating: config.avatarConfiguration.rating,
             defaultAvatarOption: config.avatarConfiguration.defaultAvatarOption,

@@ -14,7 +14,7 @@ XCODEPROJ_PATH = File.join(PROJECT_ROOT_FOLDER, 'Gravatar-Demo.xcodeproj')
 DEMO_APPS_SOURCES_FOLDER = File.join(PROJECT_ROOT_FOLDER, 'Demo')
 XCCONFIG_PROTOTYPE_BUILD_SWIFTUI = File.join(DEMO_APPS_SOURCES_FOLDER, 'Gravatar-SwiftUI-Demo', 'Gravatar-SwiftUI-Demo.Release.xcconfig')
 XCCONFIG_PROTOTYPE_BUILD_UIKIT = File.join(DEMO_APPS_SOURCES_FOLDER, 'Gravatar-UIKit-Demo', 'Gravatar-UIKit-Demo.Release.xcconfig')
-COMMON_XCARGS = ['-skipPackagePluginValidation'] # Allow SwiftPM plugins (e.g. swiftlint) called from Xcode to be used on CI without prior manual approval
+COMMON_XCARGS = ['-skipPackagePluginValidation'].freeze # Allow SwiftPM plugins (e.g. swiftlint) called from Xcode to be used on CI without prior manual approval
 
 GITHUB_REPO = 'Automattic/Gravatar-SDK-iOS'
 GITHUB_URL = "https://github.com/#{GITHUB_REPO}".freeze

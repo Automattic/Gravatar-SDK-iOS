@@ -1,5 +1,5 @@
 import Combine
-@testable import Gravatar
+import Gravatar
 import GravatarUI
 import SnapshotTesting
 import TestHelpers
@@ -69,14 +69,12 @@ final class ProfileViewModelTests: XCTestCase {
 
     func successfulService() -> ProfileService {
         let session = URLSessionMock(returnData: jsonData, response: .successResponse())
-        let client = URLSessionHTTPClient(urlSession: session)
-        return ProfileService(client: client)
+        return ProfileService(urlSession: session)
     }
 
     func failingService() -> ProfileService {
         let session = URLSessionMock(returnData: jsonData, response: .errorResponse(code: 404))
-        let client = URLSessionHTTPClient(urlSession: session)
-        return ProfileService(client: client)
+        return ProfileService(urlSession: session)
     }
 }
 

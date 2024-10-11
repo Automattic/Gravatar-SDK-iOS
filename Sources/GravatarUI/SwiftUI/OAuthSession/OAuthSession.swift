@@ -1,6 +1,8 @@
 import AuthenticationServices
 
 public struct OAuthSession: Sendable {
+    private static let shared = OAuthSession()
+
     private let storage: SecureStorage
     private let authenticationSession: AuthenticationSession
     private let snakeCaseDecoder: JSONDecoder = {
@@ -14,13 +16,12 @@ public struct OAuthSession: Sendable {
         self.storage = storage
     }
 
-    public init() {
-        self.authenticationSession = OldAuthenticationSession()
-        self.storage = Keychain()
-    }
-
     public func hasSession(with email: Email) -> Bool {
         (try? storage.secret(with: email.rawValue) ?? nil) != nil
+    }
+
+    public static func hasSession(with email: Email) -> Bool {
+        shared.hasSession(with: email)
     }
 
     func hasValidSession(with email: Email) -> Bool {
@@ -43,6 +44,10 @@ public struct OAuthSession: Sendable {
 
     public func deleteSession(with email: Email) {
         try? storage.deleteSecret(with: email.rawValue)
+    }
+
+    public static func deleteSession(with email: Email) {
+        shared.deleteSession(with: email)
     }
 
     func sessionToken(with email: Email) -> KeychainToken? {
