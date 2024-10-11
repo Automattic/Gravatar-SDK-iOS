@@ -34,10 +34,10 @@ class DemoUploadImageViewController: UIViewController {
         return textField
     }()
     
-    let avatarSelectionButton: UIButton = {
+    lazy var avatarSelectionButton: UIButton = {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle(AvatarSelection.preserveSelection.description, for: .normal)
+        button.setTitle("Upload version: " + avatarUploadVersion.rawValue, for: .normal)
         button.contentHorizontalAlignment = .center
         button.isEnabled = false
         return button
@@ -77,7 +77,7 @@ class DemoUploadImageViewController: UIViewController {
         return label
     }()
     
-    private var avatarSelection: AvatarSelection = .preserveSelection
+    private var avatarUploadVersion: AvatarUploadVersion = .v3
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -133,8 +133,14 @@ class DemoUploadImageViewController: UIViewController {
         let service = Gravatar.AvatarService()
         Task {
             do {
-                let avatarModel = try await service.upload(image, accessToken: token, avatarSelection: self.avatarSelection)
-                resultLabel.text = "✅ New avatar id \(avatarModel.id)"
+                switch avatarUploadVersion {
+                    case .v1:
+                        let response = try await service.upload(image, email: .init(email), accessToken: token)
+                        resultLabel.text = "✅ New V1 avatar status: \((response as? HTTPURLResponse)?.statusCode ?? -1)"
+                    case .v3:
+                        let avatarModel = try await service.upload(image, accessToken: token)
+                        resultLabel.text = "✅ New V3 avatar id \(avatarModel.id)"
+                }
             } catch {
                 resultLabel.text = "Error \((error as NSError).code): \(error.localizedDescription)"
             }
@@ -176,12 +182,12 @@ extension DemoUploadImageViewController: UIImagePickerControllerDelegate, UINavi
     }
     
     @objc private func setAvatarSelectionMethod(with email: String) {
-        let controller = UIAlertController(title: "Avatar Selection After Upload", message: nil, preferredStyle: .actionSheet)
+        let controller = UIAlertController(title: "Upload version:", message: nil, preferredStyle: .actionSheet)
 
-        AvatarSelection.allCases(for: .init(email)).forEach { selectionCase in
-            controller.addAction(UIAlertAction(title: "\(selectionCase.description)", style: .default) { [weak self] action in
-                self?.avatarSelection = selectionCase
-                self?.avatarSelectionButton.setTitle("Avatar Selection: \(selectionCase.description)", for: .normal)
+        AvatarUploadVersion.allCases.forEach { selectionCase in
+            controller.addAction(UIAlertAction(title: selectionCase.rawValue, style: .default) { [weak self] action in
+                self?.avatarUploadVersion = selectionCase
+                self?.avatarSelectionButton.setTitle("Upload version: \(selectionCase.rawValue)", for: .normal)
             })
         }
 
@@ -191,15 +197,7 @@ extension DemoUploadImageViewController: UIImagePickerControllerDelegate, UINavi
     }
 }
 
-extension AvatarSelection {
-    fileprivate var description: String {
-        switch self {
-        case .preserveSelection:
-            "Preserve Selection"
-        case .selectUploadedImage(_):
-            "Select Uploaded Image"
-        case .selectUploadedImageIfNoneSelected(_):
-            "Select Uploaded Image (If None)"
-        }
-    }
+enum AvatarUploadVersion: String, CaseIterable {
+    case v1
+    case v3
 }
