@@ -31,16 +31,15 @@ struct ImageUploadService: ImageUploader {
         avatarSelection: AvatarSelection,
         additionalHTTPHeaders: [HTTPHeaderField]?
     ) async throws -> (Data, HTTPURLResponse) {
-        let apiVersion: APIVersion = avatarSelection == .preserveSelection ? .v3 : .v1
         let boundary = "\(UUID().uuidString)"
         let request = URLRequest.imageUploadRequest(
             with: boundary,
             additionalHTTPHeaders: additionalHTTPHeaders,
-            apiVersion: apiVersion
+            apiVersion: avatarSelection.supportedAPIVersion
         )
         .settingAuthorizationHeaderField(with: accessToken)
         // For the Multipart form/data, we need to send the email address, not the id of the emai address
-        let body = imageUploadBody(with: data, boundary: boundary, avatarSelection: avatarSelection, apiVersion: apiVersion)
+        let body = imageUploadBody(with: data, boundary: boundary, avatarSelection: avatarSelection)
         do {
             return try await client.uploadData(with: request, data: body)
         } catch let error as HTTPClientError {
@@ -51,19 +50,19 @@ struct ImageUploadService: ImageUploader {
     }
 }
 
-private func imageUploadBody(with imageData: Data, boundary: String, avatarSelection: AvatarSelection, apiVersion: APIVersion = .v3) -> Data {
-    var account: Email?
-
-    switch apiVersion {
+private func imageUploadBody(with imageData: Data, boundary: String, avatarSelection: AvatarSelection) -> Data {
+    switch avatarSelection.supportedAPIVersion {
     case .v1:
-        switch avatarSelection {
+        var account: Email? = switch avatarSelection {
         case .preserveSelection:
-            account = nil
+            nil
         case .selectUploadedImage(let email), .selectUploadedImageIfNoneSelected(let email):
-            account = email
+            email
         }
+
         return imageUploadBodyV1(with: imageData, account: account, boundary: boundary)
-    case .v3: return imageUploadBodyV3(with: imageData, boundary: boundary)
+    case .v3:
+        return imageUploadBodyV3(with: imageData, boundary: boundary)
     }
 }
 
@@ -161,4 +160,13 @@ extension URLRequest {
 private enum APIVersion {
     case v1
     case v3
+}
+
+extension AvatarSelection {
+    fileprivate var supportedAPIVersion: APIVersion {
+        switch self {
+        case .selectUploadedImageIfNoneSelected, .selectUploadedImage: .v1
+        case .preserveSelection: .v3
+        }
+    }
 }
