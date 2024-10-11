@@ -44,12 +44,23 @@ public struct AvatarService: Sendable {
     /// ``ImageUploadError``.
     /// - Parameters:
     ///   - image: The image to be uploaded.
+    ///   - email: An`Email` object
+    ///   - accessToken: The authentication token for the user. This is a WordPress.com OAuth2 access token.
+    /// - Returns: An asynchronously-delivered `URLResponse` instance, containing the response of the upload network task.
+    public func upload(_ image: UIImage, email: Email, accessToken: String) async throws -> URLResponse {
+        try await imageUploader.uploadImage(image, accessToken: accessToken, avatarSelection: .selectUploadedImage(for: email), additionalHTTPHeaders: nil).response
+    }
+
+    /// Uploads an image to be used as the user's Gravatar profile image, and returns the `URLResponse` of the network tasks asynchronously. Throws
+    /// ``ImageUploadError``.
+    /// - Parameters:
+    ///   - image: The image to be uploaded.
     ///   - accessToken: The authentication token for the user. This is a WordPress.com OAuth2 access token.
     ///   - avatarSelection: How to handle avatar selection after uploading a new avatar
     /// - Returns: An asynchronously-delivered `AvatarType` instance, containing data of the newly created avatar.
     @discardableResult
-    public func upload(_ image: UIImage, accessToken: String, avatarSelection: AvatarSelection = .preserveSelection) async throws -> AvatarType {
-        let avatar: Avatar = try await upload(image, accessToken: accessToken, avatarSelection: avatarSelection)
+    public func upload(_ image: UIImage, accessToken: String) async throws -> AvatarType {
+        let avatar: Avatar = try await upload(image, accessToken: accessToken, avatarSelection: .preserveSelection)
         return avatar
     }
 
