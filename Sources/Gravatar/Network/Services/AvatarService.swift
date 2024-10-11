@@ -10,26 +10,17 @@ public struct AvatarService: Sendable {
 
     /// Creates a new `AvatarService`
     ///
-    /// Optionally, you can pass a custom type conforming to ``HTTPClient`` to gain control over networking tasks.
-    /// Similarly, you can pass a custom type conforming to ``ImageCaching`` to use your custom caching system.
-    /// - Parameters:
-    ///   - client: A type which will perform basic networking operations.
-    ///   - cache: A type which will perform image caching operations.
-    public init(client: HTTPClient, cache: ImageCaching? = nil) {
-        self.imageDownloader = ImageDownloadService(client: client, cache: cache)
-        self.imageUploader = ImageUploadService(client: client)
-    }
-
-    /// Creates a new `AvatarService`
-    ///
     /// Optionally, you can pass a custom type conforming to ``URLSessionProtocol``.
     /// Similarly, you can pass a custom type conforming to ``ImageCaching`` to use your custom caching system.
     /// - Parameters:
-    ///   - session: A type which will perform basic networking operations. By default, a properly configured URLSession instance will be used.
-    ///   - cache: A type which will perform image caching operations.
-    public init(session: URLSessionProtocol? = nil, cache: ImageCaching? = nil) {
-        let client = URLSessionHTTPClient(urlSession: session)
-        self.init(client: client, cache: cache)
+    ///   - urlSession: Manages the network tasks. It can be a [URLSession] or any other type that conforms to ``URLSessionProtocol``.
+    /// If not provided, a properly configured [URLSession] is used.
+    ///   - cache: An image cache of type ``ImageCaching``. If not provided, it defaults to SDK's in-memory cache.
+    ///
+    /// [URLSession]: https://developer.apple.com/documentation/foundation/urlsession
+    public init(urlSession: URLSessionProtocol? = nil, cache: ImageCaching? = nil) {
+        self.imageDownloader = ImageDownloadService(urlSession: urlSession, cache: cache)
+        self.imageUploader = ImageUploadService(urlSession: urlSession)
     }
 
     /// Fetches a Gravatar user profile image using an `AvatarId`, and delivers the image asynchronously. See also: ``ImageDownloadService`` to
@@ -47,19 +38,6 @@ public struct AvatarService: Sendable {
         }
 
         return try await imageDownloader.fetchImage(with: gravatarURL, forceRefresh: options.forceRefresh, processingMethod: options.processingMethod)
-    }
-
-    /// Uploads an image to be used as the user's Gravatar profile image, and returns the `URLResponse` of the network tasks asynchronously. Throws
-    /// ``ImageUploadError``.
-    /// - Parameters:
-    ///   - image: The image to be uploaded.
-    ///   - email: An`Email` object
-    ///   - accessToken: The authentication token for the user. This is a WordPress.com OAuth2 access token.
-    /// - Returns: An asynchronously-delivered `URLResponse` instance, containing the response of the upload network task.
-    @discardableResult
-    @available(*, deprecated, renamed: "upload(_:accessToken:)")
-    public func upload(_ image: UIImage, email: Email, accessToken: String) async throws -> URLResponse {
-        try await imageUploader.uploadImage(image, accessToken: accessToken, additionalHTTPHeaders: nil).response
     }
 
     /// Uploads an image to be used as the user's Gravatar profile image, and returns the `URLResponse` of the network tasks asynchronously. Throws

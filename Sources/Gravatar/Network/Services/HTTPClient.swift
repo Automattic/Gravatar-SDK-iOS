@@ -4,7 +4,7 @@ import Foundation
 ///
 /// You can provide your own type conforming to this protocol to gain control over all networking operations performed internally by this SDK.
 /// For more info, see ``AvatarService/init(client:cache:)`` and ``ProfileService/init(client:)``.
-public protocol HTTPClient: Sendable {
+protocol HTTPClient: Sendable {
     /// Performs a data request using the  information provided,  and delivers the result asynchronously.
     /// - Parameter request: A URL request object that provides request-specific information such as the URL and cache policy.
     /// - Returns: An asynchronously-delivered tuple that contains the URL contents as a Data instance, and a HTTPURLResponse.

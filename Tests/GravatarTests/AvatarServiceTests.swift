@@ -131,6 +131,6 @@ final class AvatarServiceTests: XCTestCase {
 }
 
 private func avatarService(with session: URLSessionProtocol, cache: ImageCaching? = nil) -> AvatarService {
-    let service = AvatarService(session: session, cache: cache)
+    let service = AvatarService(urlSession: session, cache: cache)
     return service
 }

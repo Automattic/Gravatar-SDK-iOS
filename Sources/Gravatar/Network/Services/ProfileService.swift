@@ -16,11 +16,13 @@ public struct ProfileService: ProfileFetching, Sendable {
     private let client: HTTPClient
 
     /// Creates a new `ProfileService`.
+    /// - Parameters:
+    ///   - urlSession: Manages the network tasks. It can be a [URLSession] or any other type that conforms to ``URLSessionProtocol``.
+    /// If not provided, a properly configured [URLSession] is used.
     ///
-    /// Optionally, you can pass a custom type conforming to ``HTTPClient`` to gain control over networking tasks.
-    /// - Parameter client: A type which will perform basic networking operations.
-    public init(client: HTTPClient? = nil) {
-        self.client = client ?? URLSessionHTTPClient()
+    /// [URLSession]: https://developer.apple.com/documentation/foundation/urlsession
+    public init(urlSession: URLSessionProtocol? = nil) {
+        self.client = URLSessionHTTPClient(urlSession: urlSession)
     }
 
     public func fetch(with profileID: ProfileIdentifier) async throws -> Profile {
