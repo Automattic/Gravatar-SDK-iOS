@@ -144,8 +144,8 @@ private enum APIVersion {
 
     var imageUploadURL: URL {
         switch self {
-        case .v1: URL(string: "https://api.gravatar.com/v1/upload-image")!
-        case .v3: URL(string: "https://api.gravatar.com/v3/me/avatars")!
+        case .v1: APIConfig.baseURL.appendingPathComponent("v1/upload-image")
+        case .v3: APIConfig.baseURL.appendingPathComponent("v3/me/avatars")
         }
     }
 }
