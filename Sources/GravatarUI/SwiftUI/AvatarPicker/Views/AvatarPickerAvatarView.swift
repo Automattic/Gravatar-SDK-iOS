@@ -34,7 +34,7 @@ struct AvatarPickerAvatarView: View {
         .aspectRatio(1, contentMode: .fill)
         .shape(
             RoundedRectangle(cornerRadius: AvatarGridConstants.avatarCornerRadius),
-            borderColor: .accentColor,
+            borderColor: Color(uiColor: .gravatarBlue),
             borderWidth: shouldSelect() ? AvatarGridConstants.selectedBorderWidth : 0
         )
         .overlay {
