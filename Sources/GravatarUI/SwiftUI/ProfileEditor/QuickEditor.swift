@@ -24,15 +24,18 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
     fileprivate typealias Constants = QuickEditorConstants
 
     @Environment(\.oauthSession) private var oauthSession
-    @State var token: String?
-    @State var scope: QuickEditorScopeType
-    @State var isAuthenticating: Bool = true
-    @State var oauthError: OAuthError?
-    @Binding var isPresented: Bool
-    let email: Email
-    var customImageEditor: ImageEditorBlock<ImageEditor>?
-    var contentLayoutProvider: AvatarPickerContentLayoutProviding
-    var avatarUpdatedHandler: (() -> Void)?
+    @State private var fetchedToken: String?
+    @State private var isAuthenticating: Bool = true
+    @State private var oauthError: OAuthError?
+    @Binding private var isPresented: Bool
+    private let externalToken: String?
+    private var token: String? { externalToken ?? fetchedToken }
+    private var tokenBinding: Binding<String?> { externalToken != nil ? .constant(externalToken) : $fetchedToken }
+    private let scope: QuickEditorScopeType
+    private let email: Email
+    private let customImageEditor: ImageEditorBlock<ImageEditor>?
+    private let contentLayoutProvider: AvatarPickerContentLayoutProviding
+    private let avatarUpdatedHandler: (() -> Void)?
 
     init(
         email: Email,
@@ -48,7 +51,7 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
         self._isPresented = isPresented
         self.customImageEditor = customImageEditor
         self.contentLayoutProvider = contentLayoutProvider
-        self.token = token
+        self.externalToken = token
         self.avatarUpdatedHandler = avatarUpdatedHandler
     }
 
@@ -69,7 +72,7 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
         case .avatarPicker:
             AvatarPickerView(
                 email: email,
-                authToken: $token,
+                authToken: tokenBinding,
                 isPresented: $isPresented,
                 contentLayoutProvider: contentLayoutProvider,
                 customImageEditor: customImageEditor,
@@ -138,7 +141,7 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
                     oauthError = nil
                 }
             }
-            token = oauthSession.sessionToken(with: email)?.token
+            fetchedToken = oauthSession.sessionToken(with: email)?.token
             isAuthenticating = false
         }
     }
