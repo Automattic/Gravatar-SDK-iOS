@@ -40,7 +40,7 @@ struct ImageUploadService: ImageUploader {
         )
         .settingAuthorizationHeaderField(with: accessToken)
         // For the Multipart form/data, we need to send the email address, not the id of the emai address
-        let body = imageUploadBody(with: data, boundary: boundary, apiVersion: apiVersion)
+        let body = imageUploadBody(with: data, boundary: boundary, avatarSelection: avatarSelection, apiVersion: apiVersion)
         do {
             return try await client.uploadData(with: request, data: body)
         } catch let error as HTTPClientError {
@@ -51,19 +51,28 @@ struct ImageUploadService: ImageUploader {
     }
 }
 
-private func imageUploadBody(with imageData: Data, boundary: String, apiVersion: APIVersion = .v3) -> Data {
+private func imageUploadBody(with imageData: Data, boundary: String, avatarSelection: AvatarSelection, apiVersion: APIVersion = .v3) -> Data {
+    var account: Email?
+
     switch apiVersion {
-    case .v1: imageUploadBodyV1(with: imageData, boundary: boundary)
-    case .v3: imageUploadBodyV3(with: imageData, boundary: boundary)
+    case .v1:
+        switch avatarSelection {
+        case .preserveSelection:
+            account = nil
+        case .selectUploadedImage(let email), .selectUploadedImageIfNoneSelected(let email):
+            account = email
+        }
+        return imageUploadBodyV1(with: imageData, account: account, boundary: boundary)
+    case .v3: return imageUploadBodyV3(with: imageData, boundary: boundary)
     }
 }
 
-private func imageUploadBodyV1(with imageData: Data, boundary: String) -> Data {
+private func imageUploadBodyV1(with imageData: Data, account: Email?, boundary: String) -> Data {
     enum UploadParameters {
         static let contentType = "application/octet-stream"
         static let filename = "profile.png"
         static let imageKey = "filedata"
-//        static let accountKey = "account"
+        static let accountKey = "account"
     }
 
     var body = Data()
@@ -77,9 +86,11 @@ private func imageUploadBodyV1(with imageData: Data, boundary: String) -> Data {
     body.append("\r\n")
 
     // Account Payload
-//    body.append("--\(boundary)\r\n")
-//    body.append("Content-Disposition: form-data; name=\"\(UploadParameters.accountKey)\"\r\n\r\n")
-//    body.append("\(account)\r\n")
+    if let email = account?.string {
+        body.append("--\(boundary)\r\n")
+        body.append("Content-Disposition: form-data; name=\"\(UploadParameters.accountKey)\"\r\n\r\n")
+        body.append("\(email)\r\n")
+    }
     // EOF!
     body.append("--\(boundary)--\r\n")
 

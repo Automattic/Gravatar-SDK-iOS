@@ -48,7 +48,8 @@ public struct AvatarService: Sendable {
     ///   - accessToken: The authentication token for the user. This is a WordPress.com OAuth2 access token.
     /// - Returns: An asynchronously-delivered `URLResponse` instance, containing the response of the upload network task.
     public func upload(_ image: UIImage, email: Email, accessToken: String) async throws -> URLResponse {
-        try await imageUploader.uploadImage(image, accessToken: accessToken, avatarSelection: .selectUploadedImage(for: email), additionalHTTPHeaders: nil).response
+        try await imageUploader.uploadImage(image, accessToken: accessToken, avatarSelection: .selectUploadedImage(for: email), additionalHTTPHeaders: nil)
+            .response
     }
 
     /// Uploads an image to be used as the user's Gravatar profile image, and returns the `URLResponse` of the network tasks asynchronously. Throws
