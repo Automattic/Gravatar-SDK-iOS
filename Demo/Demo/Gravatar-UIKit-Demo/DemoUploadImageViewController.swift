@@ -33,6 +33,15 @@ class DemoUploadImageViewController: UIViewController {
         textField.isSecureTextEntry = true
         return textField
     }()
+    
+    let avatarSelectionButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setTitle(AvatarSelection.preserveSelection.description, for: .normal)
+        button.contentHorizontalAlignment = .center
+        button.isEnabled = false
+        return button
+    }()
 
     let selectImageButton: UIButton = {
         let button = UIButton(type: .system)
@@ -67,13 +76,15 @@ class DemoUploadImageViewController: UIViewController {
         label.textAlignment = .center
         return label
     }()
+    
+    private var avatarSelection: AvatarSelection = .preserveSelection
 
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "Upload Image"
         view.backgroundColor = .white
 
-        for view in [emailField, tokenField, selectImageButton, avatarImageView, uploadImageButton, activityIndicator, resultLabel] {
+        for view in [emailField, tokenField, avatarSelectionButton, selectImageButton, avatarImageView, uploadImageButton, activityIndicator, resultLabel] {
             rootStackView.addArrangedSubview(view)
         }
         view.addSubview(rootStackView)
@@ -84,6 +95,7 @@ class DemoUploadImageViewController: UIViewController {
             view.readableContentGuide.trailingAnchor.constraint(equalTo: rootStackView.trailingAnchor),
         ])
 
+        emailField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
         uploadImageButton.addTarget(self, action: #selector(fetchProfileButtonHandler), for: .touchUpInside)
         selectImageButton.addTarget(self, action: #selector(selectImage), for: .touchUpInside)
     }
@@ -93,6 +105,16 @@ class DemoUploadImageViewController: UIViewController {
         picker.allowsEditing = true
         picker.delegate = self
         present(picker, animated: true)
+    }
+    
+    @objc func textFieldDidChange(_ sender: UITextField) {
+        if emailField.text?.isEmpty == true {
+            avatarSelectionButton.isEnabled = false
+        } else {
+            avatarSelectionButton.isEnabled = true
+            avatarSelectionButton.removeTarget(nil, action: nil, for: .touchUpInside)
+            avatarSelectionButton.addTarget(self, action: #selector(avatarSelectionTapped), for: .touchUpInside)
+        }
     }
 
     @objc func fetchProfileButtonHandler() {
@@ -111,7 +133,7 @@ class DemoUploadImageViewController: UIViewController {
         let service = Gravatar.AvatarService()
         Task {
             do {
-               let avatarModel = try await service.upload(image, accessToken: token)
+                let avatarModel = try await service.upload(image, accessToken: token, avatarSelection: self.avatarSelection)
                 resultLabel.text = "✅ New avatar id \(avatarModel.id)"
             } catch {
                 resultLabel.text = "Error \((error as NSError).code): \(error.localizedDescription)"
@@ -144,6 +166,40 @@ extension DemoUploadImageViewController: UIImagePickerControllerDelegate, UINavi
             UIColor.black.setFill()
             context.fill(CGRect(origin: .zero, size: squareSize))
             image.draw(in: CGRect(origin: imageOrigin, size: image.size))
+        }
+    }
+    
+    @objc private func avatarSelectionTapped() {
+        if let email = emailField.text {
+            setAvatarSelectionMethod(with: email)
+        }
+    }
+    
+    @objc private func setAvatarSelectionMethod(with email: String) {
+        let controller = UIAlertController(title: "Avatar Selection After Upload", message: nil, preferredStyle: .actionSheet)
+
+        AvatarSelection.allCases(for: .init(email)).forEach { selectionCase in
+            controller.addAction(UIAlertAction(title: "\(selectionCase.description)", style: .default) { [weak self] action in
+                self?.avatarSelection = selectionCase
+                self?.avatarSelectionButton.setTitle("Avatar Selection: \(selectionCase.description)", for: .normal)
+            })
+        }
+
+        controller.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+
+        present(controller, animated: true)
+    }
+}
+
+extension AvatarSelection {
+    fileprivate var description: String {
+        switch self {
+        case .preserveSelection:
+            "Preserve Selection"
+        case .selectUploadedImage(_):
+            "Select Uploaded Image"
+        case .selectUploadedImageIfNoneSelected(_):
+            "Select Uploaded Image (If None)"
         }
     }
 }

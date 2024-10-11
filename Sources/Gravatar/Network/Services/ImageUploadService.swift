@@ -22,15 +22,25 @@ struct ImageUploadService: ImageUploader {
             throw ImageUploadError.cannotConvertImageIntoData
         }
 
-        return try await uploadImage(data: data, accessToken: accessToken, additionalHTTPHeaders: additionalHTTPHeaders)
+        return try await uploadImage(data: data, accessToken: accessToken, avatarSelection: avatarSelection, additionalHTTPHeaders: additionalHTTPHeaders)
     }
 
-    private func uploadImage(data: Data, accessToken: String, additionalHTTPHeaders: [HTTPHeaderField]?) async throws -> (Data, HTTPURLResponse) {
+    private func uploadImage(
+        data: Data,
+        accessToken: String,
+        avatarSelection: AvatarSelection,
+        additionalHTTPHeaders: [HTTPHeaderField]?
+    ) async throws -> (Data, HTTPURLResponse) {
+        let apiVersion: APIVersion = avatarSelection == .preserveSelection ? .v3 : .v1
         let boundary = "\(UUID().uuidString)"
-        let request = URLRequest.imageUploadRequest(with: boundary, additionalHTTPHeaders: additionalHTTPHeaders)
-            .settingAuthorizationHeaderField(with: accessToken)
+        let request = URLRequest.imageUploadRequest(
+            with: boundary,
+            additionalHTTPHeaders: additionalHTTPHeaders,
+            apiVersion: apiVersion
+        )
+        .settingAuthorizationHeaderField(with: accessToken)
         // For the Multipart form/data, we need to send the email address, not the id of the emai address
-        let body = imageUploadBody(with: data, boundary: boundary)
+        let body = imageUploadBody(with: data, boundary: boundary, apiVersion: apiVersion)
         do {
             return try await client.uploadData(with: request, data: body)
         } catch let error as HTTPClientError {
@@ -41,7 +51,42 @@ struct ImageUploadService: ImageUploader {
     }
 }
 
-private func imageUploadBody(with imageData: Data, boundary: String) -> Data {
+private func imageUploadBody(with imageData: Data, boundary: String, apiVersion: APIVersion = .v3) -> Data {
+    switch apiVersion {
+    case .v1: imageUploadBodyV1(with: imageData, boundary: boundary)
+    case .v3: imageUploadBodyV3(with: imageData, boundary: boundary)
+    }
+}
+
+private func imageUploadBodyV1(with imageData: Data, boundary: String) -> Data {
+    enum UploadParameters {
+        static let contentType = "application/octet-stream"
+        static let filename = "profile.png"
+        static let imageKey = "filedata"
+//        static let accountKey = "account"
+    }
+
+    var body = Data()
+
+    // Image Payload
+    body.append("--\(boundary)\r\n")
+    body.append("Content-Disposition: form-data; name=\(UploadParameters.imageKey); ")
+    body.append("filename=\(UploadParameters.filename)\r\n")
+    body.append("Content-Type: \(UploadParameters.contentType);\r\n\r\n")
+    body.append(imageData)
+    body.append("\r\n")
+
+    // Account Payload
+//    body.append("--\(boundary)\r\n")
+//    body.append("Content-Disposition: form-data; name=\"\(UploadParameters.accountKey)\"\r\n\r\n")
+//    body.append("\(account)\r\n")
+    // EOF!
+    body.append("--\(boundary)--\r\n")
+
+    return body
+}
+
+private func imageUploadBodyV3(with imageData: Data, boundary: String) -> Data {
     enum UploadParameters {
         static let contentType = "application/octet-stream"
         static let filename = "profile"
@@ -72,7 +117,25 @@ extension Data {
 }
 
 extension URLRequest {
-    fileprivate static func imageUploadRequest(with boundary: String, additionalHTTPHeaders: [HTTPHeaderField]?) -> URLRequest {
+    fileprivate static func imageUploadRequest(with boundary: String, additionalHTTPHeaders: [HTTPHeaderField]?, apiVersion: APIVersion) -> URLRequest {
+        switch apiVersion {
+        case .v1: imageUploadRequestV1(with: boundary, additionalHTTPHeaders: additionalHTTPHeaders)
+        case .v3: imageUploadRequestV3(with: boundary, additionalHTTPHeaders: additionalHTTPHeaders)
+        }
+    }
+
+    fileprivate static func imageUploadRequestV1(with boundary: String, additionalHTTPHeaders: [HTTPHeaderField]?) -> URLRequest {
+        let url = URL(string: "https://api.gravatar.com/v1/upload-image")!
+        var request = URLRequest(url: url)
+        request.addValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+        request.httpMethod = "POST"
+        additionalHTTPHeaders?.forEach { headerTuple in
+            request.addValue(headerTuple.value, forHTTPHeaderField: headerTuple.name)
+        }
+        return request
+    }
+
+    fileprivate static func imageUploadRequestV3(with boundary: String, additionalHTTPHeaders: [HTTPHeaderField]?) -> URLRequest {
         let url = URL(string: "https://api.gravatar.com/v3/me/avatars")!
         var request = URLRequest(url: url)
         request.addValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
@@ -82,4 +145,9 @@ extension URLRequest {
         }
         return request
     }
+}
+
+private enum APIVersion {
+    case v1
+    case v3
 }
