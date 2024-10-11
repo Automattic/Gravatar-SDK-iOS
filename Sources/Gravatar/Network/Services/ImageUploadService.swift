@@ -128,26 +128,7 @@ extension Data {
 
 extension URLRequest {
     fileprivate static func imageUploadRequest(with boundary: String, additionalHTTPHeaders: [HTTPHeaderField]?, apiVersion: APIVersion) -> URLRequest {
-        switch apiVersion {
-        case .v1: imageUploadRequestV1(with: boundary, additionalHTTPHeaders: additionalHTTPHeaders)
-        case .v3: imageUploadRequestV3(with: boundary, additionalHTTPHeaders: additionalHTTPHeaders)
-        }
-    }
-
-    fileprivate static func imageUploadRequestV1(with boundary: String, additionalHTTPHeaders: [HTTPHeaderField]?) -> URLRequest {
-        let url = URL(string: "https://api.gravatar.com/v1/upload-image")!
-        var request = URLRequest(url: url)
-        request.addValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
-        request.httpMethod = "POST"
-        additionalHTTPHeaders?.forEach { headerTuple in
-            request.addValue(headerTuple.value, forHTTPHeaderField: headerTuple.name)
-        }
-        return request
-    }
-
-    fileprivate static func imageUploadRequestV3(with boundary: String, additionalHTTPHeaders: [HTTPHeaderField]?) -> URLRequest {
-        let url = URL(string: "https://api.gravatar.com/v3/me/avatars")!
-        var request = URLRequest(url: url)
+        var request = URLRequest(url: apiVersion.imageUploadURL)
         request.addValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
         request.httpMethod = "POST"
         additionalHTTPHeaders?.forEach { headerTuple in
@@ -160,6 +141,13 @@ extension URLRequest {
 private enum APIVersion {
     case v1
     case v3
+
+    var imageUploadURL: URL {
+        switch self {
+        case .v1: URL(string: "https://api.gravatar.com/v1/upload-image")!
+        case .v3: URL(string: "https://api.gravatar.com/v3/me/avatars")!
+        }
+    }
 }
 
 extension AvatarSelection {
