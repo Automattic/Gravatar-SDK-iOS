@@ -95,12 +95,9 @@ platform :ios do
         paths: source.source_paths,
         exclude: ['**/SDKLocalizedString.swift'],
         routines: ['SDKLocalizedString'],
-        output_dir: source.base_localization_root
+        output_dir: source.base_localization_root,
+        output_encoding: 'UTF-8'
       )
-
-      Dir.chdir('..') do
-        convert_generated_strings!(source: source)
-      end
 
       next if skip_commit
 
@@ -115,46 +112,5 @@ platform :ios do
       message: 'Update strings in base locale',
       allow_nothing_to_commit: true
     )
-  end
-
-  # Converts the base localization `.strings` files of a `LocalizationSource`
-  # from UTF-16 encoding to UTF-8 encoding
-  #
-  # @param source [LocalizableSource] An object that represents a localizable source
-  # @return [void]
-  #
-  # @example Convert all `.strings` files from UTF-16 to UTF-8.
-  #   convert_generated_strings!(
-  #     source: LocalizationSource.new(source_paths: ['/source/path'], localizations_root: 'Localizations'),
-  #   )
-  #
-  def convert_generated_strings!(source:)
-    Dir.mktmpdir do |tempdir|
-      source.base_localization_strings_paths.each do |strings_file|
-        utf8_strings_file = convert_file_to_utf8(strings_file: strings_file, tempdir: tempdir)
-        FileUtils.cp(utf8_strings_file, strings_file) unless utf8_strings_file.nil?
-      end
-    end
-  end
-
-  # Converts a UTF-16 `.strings` file to UTF-8 and writes it to the specified path.
-  #
-  # @param strings_file [String] the path to the original UTF-16 `.strings` file
-  # @param tempdir [String] temp directory for storing the encoded file
-  # @return [String, nil] returns the path to the converted file if the conversion succeeds, or `nil` if the file is not UTF-16
-  # @raise [StandardError] if a general error occurs during file conversion
-  #
-  def convert_file_to_utf8(strings_file:, tempdir:)
-    utf8_strings_file = File.join(tempdir, File.basename(strings_file))
-    possible_utf16_content = File.read(strings_file, mode: 'rb:BOM|UTF-16')
-    UI.message("Converting: #{strings_file}")
-    File.write(utf8_strings_file, possible_utf16_content, mode: 'w:UTF-8')
-    utf8_strings_file
-  rescue Encoding::InvalidByteSequenceError
-    UI.message("Skipping non-UTF-16 file: #{strings_file}")
-    nil
-  rescue StandardError => e
-    UI.error("An error occurred during conversion: #{e.message}")
-    raise
   end
 end
