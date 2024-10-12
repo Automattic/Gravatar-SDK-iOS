@@ -53,7 +53,7 @@ struct ImageUploadService: ImageUploader {
 private func imageUploadBody(with imageData: Data, boundary: String, avatarSelection: AvatarSelection) -> Data {
     switch avatarSelection.supportedAPIVersion {
     case .v1:
-        var account: Email? = switch avatarSelection {
+        let account: Email? = switch avatarSelection {
         case .preserveSelection:
             nil
         case .selectUploadedImage(let email), .selectUploadedImageIfNoneSelected(let email):
