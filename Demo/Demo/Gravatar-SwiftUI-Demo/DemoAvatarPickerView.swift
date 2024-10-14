@@ -50,7 +50,7 @@ struct DemoAvatarPickerView: View {
                 .gravatarQuickEditorSheet(
                     isPresented: $isPresentingPicker,
                     email: email,
-                    authToken: token,
+                    authToken: !token.isEmpty ? token : nil,
                     scope: .avatarPicker(.init(contentLayout: contentLayoutOptions.contentLayout)),
                     customImageEditor: customImageEditor()
                 )
