@@ -89,6 +89,9 @@ private struct ImagePicker<Label, ImageEditor: ImageEditorView>: View where Labe
     }
 
     private func pickerDidSelectImage(_ item: ImagePickerItem) {
+        Task {
+            await UIApplication.shared.dismissKeyboard()
+        }
         imagePickerSelectedItem = item
     }
 }
