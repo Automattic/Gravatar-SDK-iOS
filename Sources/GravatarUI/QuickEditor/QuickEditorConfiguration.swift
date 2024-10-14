@@ -24,3 +24,9 @@ public struct AvatarPickerConfiguration: Sendable {
         contentLayout: .horizontal(presentationStyle: .intrinsicHeight)
     )
 }
+
+extension AvatarPickerConfiguration {
+    public static var horizontalInstrinsicHeight: AvatarPickerConfiguration { .init(contentLayout: .horizontal(presentationStyle: .intrinsicHeight)) }
+    public static var verticalLarge: AvatarPickerConfiguration { .init(contentLayout: .vertical(presentationStyle: .large)) }
+    public static var verticalScrollable: AvatarPickerConfiguration { .init(contentLayout: .vertical(presentationStyle: .expandableMedium())) }
+}
