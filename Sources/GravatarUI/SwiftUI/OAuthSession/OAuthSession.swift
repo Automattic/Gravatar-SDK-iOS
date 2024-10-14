@@ -140,14 +140,12 @@ extension OAuthError {
 private struct AccessTokenRequestParams: Encodable {
     let clientID: String
     let redirectURI: String
-    let clientSecret: String
     let grantType: String = "authorization_code"
     let code: String
 
     init(secrets: Configuration.OAuthSecrets, code: String) {
         clientID = secrets.clientID
         redirectURI = secrets.redirectURI
-        clientSecret = secrets.clientSecret
         self.code = code
     }
 }
