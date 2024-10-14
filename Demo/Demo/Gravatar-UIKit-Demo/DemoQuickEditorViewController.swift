@@ -225,6 +225,11 @@ extension DemoQuickEditorViewController: UITextFieldDelegate {
             savedToken = textField.text
         }
     }
+
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
 }
 
 extension Email {
