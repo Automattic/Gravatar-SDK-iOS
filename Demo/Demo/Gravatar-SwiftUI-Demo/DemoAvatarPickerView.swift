@@ -47,11 +47,13 @@ struct DemoAvatarPickerView: View {
                 Button("Tap to open the Avatar Picker") {
                     isPresentingPicker = true
                 }
-                .avatarPickerSheet(isPresented: $isPresentingPicker,
-                                   email: email,
-                                   authToken: token,
-                                   contentLayout: contentLayoutOptions.contentLayout,
-                                   customImageEditor: customImageEditor())
+                .gravatarQuickEditorSheet(
+                    isPresented: $isPresentingPicker,
+                    email: email,
+                    authToken: !token.isEmpty ? token : nil,
+                    scope: .avatarPicker(.init(contentLayout: contentLayoutOptions.contentLayout)),
+                    customImageEditor: customImageEditor()
+                )
                 Spacer()
             }
             .padding(.horizontal)
