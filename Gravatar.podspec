@@ -18,10 +18,11 @@ Pod::Spec.new do |s|
 
   s.swift_versions    = Gravatar::SWIFT_VERSIONS
 
-  ios_deployment_target = '15.0'
+  ios_deployment_target = Gravatar::IOS_DEPLOYMENT_TARGET
 
   s.ios.deployment_target = ios_deployment_target
 
+  s.dependency 'GravatarOpenAPIClient', s.version.to_s
   s.source_files = 'Sources/Gravatar/**/*.swift'
   s.resource_bundles = {
     'Gravatar' => ['Sources/Gravatar/Resources/*.plist']

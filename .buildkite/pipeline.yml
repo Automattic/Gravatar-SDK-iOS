@@ -44,6 +44,7 @@ steps:
     command: |
       .buildkite/commands/publish-pod.sh "Gravatar.podspec"
       .buildkite/commands/publish-pod.sh "GravatarUI.podspec"
+      .buildkite/commands/publish-pod.sh "GravatarOpenAPIClient.podspec"
     plugins: [$CI_TOOLKIT]
     depends_on:
       - "test"

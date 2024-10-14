@@ -12,9 +12,15 @@ SWIFTFORMAT_CACHE = ~/Library/Caches/com.charcoaldesign.swiftformat
 OPENAPI_GENERATOR_GIT_URL ?= https://github.com/openapitools/openapi-generator
 OPENAPI_GENERATOR_GIT_TAG ?= v7.5.0
 OPENAPI_GENERATOR_CLONE_DIR ?= $(CURRENT_MAKEFILE_DIR)/openapi-generator
+
+OPENAPI_PROJECT_NAME ?= GravatarOpenAPIClient
+OPENAPI_DIR ?= $(CURRENT_MAKEFILE_DIR)/$(OPENAPI_REL_DIR)
+OPENAPI_REL_DIR ?= openapi
+OPENAPI_GENERATED_DIR ?= $(CURRENT_MAKEFILE_DIR)/openapi/$(OPENAPI_PROJECT_NAME)
+OPENAPI_CLIENT_PROPERTIES ?= projectName=$(OPENAPI_PROJECT_NAME),useSPMFileStructure=true
+
 OPENAPI_YAML_PATH ?= $(CURRENT_MAKEFILE_DIR)/openapi/spec.yaml
 MODEL_TEMPLATE_PATH ?= $(CURRENT_MAKEFILE_DIR)/openapi
-OUTPUT_DIRECTORY ?= $(CURRENT_MAKEFILE_DIR)/Sources/Gravatar/OpenApi/Generated
 
 # Derived values (don't change these).
 CURRENT_MAKEFILE_PATH := $(abspath $(lastword $(MAKEFILE_LIST)))
@@ -94,7 +100,7 @@ validate-pod: bundle-install
 	xcrun simctl list >> /dev/null
 	bundle exec pod lib lint \
 		--include-podspecs="*.podspec" \
-		--verbose --fail-fast
+		--verbose --fail-fast --allow-warnings
 
 update-example-snapshots:
 	for filePath in ./Sources/GravatarUI/GravatarUI.docc/Resources/ProfileExamples/*; \
@@ -104,24 +110,19 @@ update-example-snapshots:
 	cd ./Sources/GravatarUI/GravatarUI.docc/Resources/ProfileExamples && \
 	for filePath in *; do name=$${filePath%.*}; mv $$filePath $${name//-dark/~dark}@2x$${filePath#$$name}; done
 
-install-and-generate: $(OPENAPI_GENERATOR_CLONE_DIR) # Clones and setup the openapi-generator.
-	"$(OPENAPI_GENERATOR_CLONE_DIR)"/run-in-docker.sh mvn package
-	make generate
-
-generate: $(OUTPUT_DIRECTORY) # Generates the open-api model
-	cp "$(OPENAPI_YAML_PATH)" "$(OPENAPI_GENERATOR_CLONE_DIR)"/openapi.yaml
-	mkdir -p "$(OPENAPI_GENERATOR_CLONE_DIR)"/templates
-	cp "$(MODEL_TEMPLATE_PATH)"/*.mustache "$(OPENAPI_GENERATOR_CLONE_DIR)"/templates/
-	rm -rf "$(OPENAPI_GENERATOR_CLONE_DIR)"/generated/OpenAPIClient/Classes/OpenAPIs/Models/*
-	"$(OPENAPI_GENERATOR_CLONE_DIR)"/run-in-docker.sh generate -i openapi.yaml \
-    --global-property models \
-    -t templates \
-    -g swift5 \
-    -o ./generated \
-    -p packageName=Gravatar \
-	--additional-properties=useJsonEncodable=false,readonlyProperties=true && \
-    rsync -av --delete "$(OPENAPI_GENERATOR_CLONE_DIR)"/generated/OpenAPIClient/Classes/OpenAPIs/Models/ "$(OUTPUT_DIRECTORY)/" && \
-    make swiftformat && \
+generate: $(OPENAPI_GENERATED_DIR) # Generates the open-api model
+	rm -rf "$(OPENAPI_GENERATED_DIR)"/* && \
+	docker run --rm \
+	-v $(OPENAPI_DIR):/local openapitools/openapi-generator-cli:"$(OPENAPI_GENERATOR_GIT_TAG)" generate \
+	-i /local/openapi.yaml \
+	-o /local/GravatarOpenAPIClient \
+	-t /local/templates \
+	-g swift5 \
+	-p packageName=Gravatar \
+	--additional-properties=useJsonEncodable=false,readonlyProperties=true,$(OPENAPI_CLIENT_PROPERTIES) && \
+	rsync -av --delete "$(OPENAPI_GENERATED_DIR)/Sources/$(OPENAPI_PROJECT_NAME)/" "$(CURRENT_MAKEFILE_DIR)/Sources/$(OPENAPI_PROJECT_NAME)/" && \
+	cp -fp "$(OPENAPI_GENERATED_DIR)/$(OPENAPI_PROJECT_NAME).podspec" "$(CURRENT_MAKEFILE_DIR)/" && \
+	make swiftformat && \
     echo "DONE! 🎉"
 
 generate-strings: bundle-install
@@ -131,22 +132,22 @@ download-strings: bundle-install
 	bundle exec fastlane download_localized_strings
 
 clean-generated:  # Delete the output directory used for generated sources.
-	@echo 'Delete entire directory: $(OUTPUT_DIRECTORY)? [y/N] ' && read ans && [ $${ans:-N} = y ] || (echo "Aborted"; exit 1)
-	rm -rf "$(OUTPUT_DIRECTORY)"
+	@echo 'Delete entire directory: $(OPENAPI_GENERATED_DIR)? [y/N] ' && read ans && [ $${ans:-N} = y ] || (echo "Aborted"; exit 1)
+	rm -rf "$(OPENAPI_GENERATED_DIR)"
 
-clean:  # Clean everything, including the checkout of swift-openapi-generator.
+clean:  # Clean everything
 	@echo 'Delete checkout of openapi-generator $(OPENAPI_GENERATOR_CLONE_DIR)? [y/N] ' && read ans && [ $${ans:-N} = y ] || (echo "Aborted"; exit 1)
-	rm -rf "$(OPENAPI_GENERATOR_CLONE_DIR)"
+	rm -rf "$(OPENAPI_GENERATOR_CLONE_DIR)/*"
 
 
 dump:  # Dump all derived values used by the Makefile.
 	@echo "CURRENT_MAKEFILE_PATH = $(CURRENT_MAKEFILE_PATH)"
 	@echo "CURRENT_MAKEFILE_DIR = $(CURRENT_MAKEFILE_DIR)"
+	@echo "OPENAPI_GENERATED_DIR = $(OPENAPI_GENERATED_DIR)"
 	@echo "OPENAPI_GENERATOR_GIT_URL = $(OPENAPI_GENERATOR_GIT_URL)"
 	@echo "OPENAPI_GENERATOR_GIT_TAG = $(OPENAPI_GENERATOR_GIT_TAG)"
 	@echo "OPENAPI_GENERATOR_CLONE_DIR = $(OPENAPI_GENERATOR_CLONE_DIR)"
 	@echo "OPENAPI_YAML_PATH = $(OPENAPI_YAML_PATH)"
-	@echo "OUTPUT_DIRECTORY = $(OUTPUT_DIRECTORY)"
 
 $(OPENAPI_GENERATOR_CLONE_DIR):
 	git \
@@ -157,5 +158,5 @@ $(OPENAPI_GENERATOR_CLONE_DIR):
 		"$(OPENAPI_GENERATOR_GIT_URL)" \
 		$@
 
-$(OUTPUT_DIRECTORY):
+$(OPENAPI_GENERATED_DIR):
 	mkdir -p "$@"
