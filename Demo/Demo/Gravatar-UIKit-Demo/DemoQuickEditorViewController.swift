@@ -201,7 +201,8 @@ final class DemoQuickEditorViewController: UIViewController {
 
 extension DemoQuickEditorViewController: UITextFieldDelegate {
     func textFieldDidChangeSelection(_ textField: UITextField) {
-        if textField == emailField, let emailText = textField.text, Email(emailText).isValid {
+        guard textField == emailField else { return }
+        if let emailText = textField.text, Email(emailText).isValid {
             fetchProfile(with: emailText)
             showButton.isEnabled = true
         } else {
@@ -223,6 +224,11 @@ extension DemoQuickEditorViewController: UITextFieldDelegate {
         if textField == tokenField {
             savedToken = textField.text
         }
+    }
+
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
     }
 }
 
