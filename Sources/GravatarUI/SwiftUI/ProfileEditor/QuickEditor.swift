@@ -76,7 +76,7 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
                 isPresented: $isPresented,
                 contentLayoutProvider: contentLayoutProvider,
                 customImageEditor: customImageEditor,
-                tokenErrorHandler: fetchedToken == nil ? nil : {
+                tokenErrorHandler: externalToken != nil ? nil : {
                     oauthSession.markSessionAsExpired(with: email)
                     performAuthentication()
                 },
