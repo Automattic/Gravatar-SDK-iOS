@@ -6,5 +6,5 @@
 version: 1
 builder:
     configs:
-    - documentation_targets: [Gravatar]
+    - documentation_targets: [Gravatar, GravatarUI]
       platform: ios
