@@ -40,7 +40,7 @@ public struct AvatarService: Sendable {
         return try await imageDownloader.fetchImage(with: gravatarURL, forceRefresh: options.forceRefresh, processingMethod: options.processingMethod)
     }
 
-    /// Uploads an image and sets it as the avatar of the given email's Gravatar profile. Returns the `URLResponse` of the network tasks asynchronously. Throws
+    /// Uploads an image and sets it as the avatar of the given email at Gravatar.com. Returns the `URLResponse` of the network tasks asynchronously. Throws
     /// ``ImageUploadError``.
     /// - Parameters:
     ///   - image: The image to be uploaded.
