@@ -28,9 +28,8 @@ extension View {
     ///   - authToken: (Optional) Gravatar OAuth token. If not passed, Gravatar OAuth flow will start to gather the token internally.
     ///   Pass this only if your app already has a Gravatar OAuth token.
     ///   - scope: Scope for the QuickEditor.
-    ///   - customImageEditor: (Optional) A custom image editor to show the user for cropping and other sorts of image editing operations  right after an image
-    /// is
-    /// picked.
+    ///   - customImageEditor: (Optional) A custom image editor to show the user right after an image is picked for
+    ///   cropping and other sorts of image editing operations.
     ///   - avatarUpdatedHandler: (Optional) A callback to execute when a different avatar is selected.
     ///   - onDismiss: (Optional) A callback to execute when the sheet is dismissed.
     /// - Returns: A modifier to display the QuickEditor sheet.
@@ -63,9 +62,8 @@ extension View {
     ///   - authToken: (Optional) Gravatar OAuth token. If not passed, Gravatar OAuth flow will start to gather the token internally.
     ///   Pass this only if your app already has a Gravatar OAuth token.
     ///   - scope: Scope for the QuickEditor. See: ``QuickEditorScope``.
-    ///   - customImageEditor: (Optional) A custom image editor to show the user for cropping and other sorts of image editing operations  right after an image
-    /// is
-    /// picked.
+    ///   - customImageEditor: (Optional) A custom image editor to show the user right after an image is picked for
+    ///   cropping and other sorts of image editing operations.
     ///   - avatarUpdatedHandler: (Optional) A callback to execute when a different avatar is selected.
     ///   - onDismiss: (Optional) A callback to execute when the sheet is dismissed.
     /// - Returns: A modifier to display the QuickEditor sheet.
