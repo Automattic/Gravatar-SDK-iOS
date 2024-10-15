@@ -44,5 +44,6 @@ end
 
 @Links(visualStyle: list) {
     - <doc:UIImageViewExtension>
+    - <doc:AvatarViewArticle>
     - <doc:ProfileViews>
 }
