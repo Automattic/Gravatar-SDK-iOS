@@ -1,0 +1,33 @@
+@Tutorial(time: 10) {
+    @Intro(title: "Adding the Quick Editor to a SwiftUI View") {
+        This tutorial guides you through the process of adding a `QuickEditor` to a SwiftUI `ContentView`. Integrating the QuickEditor into your project is fast and easy.
+        @Image(source: "QuickEditor_Tutorial_Header.png", alt: "Quick Editor View")
+    }
+    
+
+    @Section(title: "Add the Quick Editor to a SwiftUI View") {
+        @ContentAndMedia { }
+
+        @Steps {
+            @Step {
+                We start with the default `ContentView` in a new SwiftUI project.
+                @Code(name: "ContentView.swift", file: "QE_Tut_01.swift")
+            }
+            
+            @Step {
+                Replace the default views with some helper fields.
+                
+                Add a `TextField` for entering an email address, a second `TextField` for entering an authorization token, and a `Button`, which we will use to trigger the Quick Editor to open.
+                @Code(name: "ContentView.swift", file: "QE_Tut_02.swift")
+            }
+            
+            @Step {
+                Now, use a View Modifier to add the QuickEditor.
+                
+                The QuickEditor supports a variety of layout configurations.  You can specify the layout you want by passing a ``QuickEditorScope`` to the view modifier.  In this example, we specify a `.verticalLarge` ``QuickEditorConfiguration``.
+                @Code(name: "ContentView.swift", file: "QE_Tut_03.swift")
+                @Image(source: "QuickEditor_Tutorial_01_03.png", alt: "Preview of the Quick Editor using the `.verticalLarge` QuickEditorConfiguration")
+            }
+        }
+    }
+}
