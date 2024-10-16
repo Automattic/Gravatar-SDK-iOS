@@ -54,7 +54,9 @@ private struct ImagePicker<Label, ImageEditor: ImageEditorView>: View where Labe
                         }
                     } else {
                         ImageCropper(inputImage: item.image) { croppedImage in
-                            self.onImageEdited(croppedImage)
+                            Task {
+                                await self.onImageEdited(croppedImage)
+                            }
                         } onCancel: {
                             imagePickerSelectedItem = nil
                         }.ignoresSafeArea()
