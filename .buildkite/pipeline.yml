@@ -26,6 +26,11 @@ steps:
     command: |
       validate_swift_package
     plugins: [$CI_TOOLKIT]
+    env:
+      IMAGE_ID: "{{matrix}}"
+    matrix:
+        - $IMAGE_ID
+        - "15.1"
 
   ###################
   # Validate Podspec
