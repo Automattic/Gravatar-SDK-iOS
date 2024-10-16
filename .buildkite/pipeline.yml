@@ -21,7 +21,7 @@ steps:
   #################
   # Build and Test
   #################
-  - label: "📦 Build and Test Swift Package"
+  - label: "📦 Build and Test Swift Package ({{matrix}})"
     key: "test"
     command: |
       validate_swift_package
