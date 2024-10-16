@@ -35,7 +35,11 @@ final class QuickEditorViewController: UIViewController, ModalPresentationWithIn
         isPresented: isPresented,
         customImageEditor: nil as NoCustomEditorBlock?,
         contentLayoutProvider: contentLayoutWithPresentation,
-        avatarUpdatedHandler: onAvatarUpdated
+        avatarUpdatedHandler: {
+            Task { @MainActor in
+                self.onAvatarUpdated?()
+            }
+        }
     ), onHeightChange: { [weak self] newHeight in
         guard let self else { return }
         if self.shouldAcceptHeight(newHeight) {
