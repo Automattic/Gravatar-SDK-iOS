@@ -24,13 +24,20 @@ steps:
   - label: "📦 Build and Test Swift Package ({{matrix}})"
     key: "test"
     command: |
-      validate_swift_package
+      validate_swift_package device:"{{matrix.device}}"
     plugins: [$CI_TOOLKIT]
     env:
       IMAGE_ID: "{{matrix}}"
     matrix:
-        - $IMAGE_ID
-        - "xcode-15.1"
+      setup:
+        image:
+          - $IMAGE_ID
+        device:
+          - "iPhone SE (3rd generation) (17.5)"
+      adjustments:
+        - with:
+          image: "xcode-15.1"
+          device: "iPhone SE (3rd generation) (17.2)"
 
   ###################
   # Validate Podspec
