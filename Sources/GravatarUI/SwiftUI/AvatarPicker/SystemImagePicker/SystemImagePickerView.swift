@@ -11,6 +11,7 @@ struct SystemImagePickerView<Label, ImageEditor: ImageEditorView>: View where La
     }
 }
 
+@MainActor
 private struct ImagePicker<Label, ImageEditor: ImageEditorView>: View where Label: View {
     enum SourceType: CaseIterable, Identifiable {
         case photoLibrary
@@ -50,11 +51,15 @@ private struct ImagePicker<Label, ImageEditor: ImageEditorView>: View where Labe
                 .sheet(item: $imagePickerSelectedItem, content: { item in
                     if let customEditor {
                         customEditor(item.image) { editedImage in
-                            self.onImageEdited(editedImage)
+                            Task {
+                                await self.onImageEdited(editedImage)
+                            }
                         }
                     } else {
                         ImageCropper(inputImage: item.image) { croppedImage in
-                            self.onImageEdited(croppedImage)
+                            Task {
+                                await self.onImageEdited(croppedImage)
+                            }
                         } onCancel: {
                             imagePickerSelectedItem = nil
                         }.ignoresSafeArea()
@@ -89,9 +94,7 @@ private struct ImagePicker<Label, ImageEditor: ImageEditorView>: View where Labe
     }
 
     private func pickerDidSelectImage(_ item: ImagePickerItem) {
-        Task {
-            await UIApplication.shared.dismissKeyboard()
-        }
+        UIApplication.shared.dismissKeyboard()
         imagePickerSelectedItem = item
     }
 }
