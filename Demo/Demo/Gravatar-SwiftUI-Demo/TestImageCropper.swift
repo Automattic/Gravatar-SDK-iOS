@@ -3,9 +3,9 @@ import GravatarUI
 
 struct TestImageCropper: View, ImageEditorView {
     var inputImage: UIImage
-    var editingDidFinish: ((UIImage) -> Void)
+    var editingDidFinish: (@Sendable (UIImage) -> Void)
     
-    init(inputImage: UIImage, editingDidFinish: @escaping (UIImage) -> Void) {
+    init(inputImage: UIImage, editingDidFinish: @escaping @Sendable (UIImage) -> Void) {
         self.inputImage = inputImage
         self.editingDidFinish = editingDidFinish
     }
