@@ -24,10 +24,11 @@ steps:
   - label: "📦 Build and Test Swift Package ({{matrix.image_id}})"
     key: "test"
     command: |
-      validate_swift_package device:"{{matrix.device}}"
+      validate_swift_package
     plugins: [$CI_TOOLKIT]
     env:
       IMAGE_ID: "{{matrix.image_id}}"
+      BUILDKITE_DEVICE: "{{matrix.device}}"
     matrix:
       setup:
         image_id:

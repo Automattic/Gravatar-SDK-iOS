@@ -50,8 +50,8 @@ end
 
 platform :ios do
   desc 'Builds the project and runs tests'
-  lane :test do |options|
-    iphone_device = options[:device] ? options[:device].freeze : IPHONE_DEVICE
+  lane :test do
+    iphone_device = ENV['BUILDKITE_DEVICE'] ? ENV['BUILDKITE_DEVICE'].freeze : IPHONE_DEVICE
     run_tests(
       package_path: '.',
       scheme: 'Gravatar-Package',
