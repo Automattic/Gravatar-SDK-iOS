@@ -50,12 +50,13 @@ end
 
 platform :ios do
   desc 'Builds the project and runs tests'
-  lane :test do
+  lane :test do |options|
+    iphone_device = options[:device] ? options[:device].freeze : IPHONE_DEVICE
     run_tests(
       package_path: '.',
       scheme: 'Gravatar-Package',
       xcargs: COMMON_XCARGS,
-      device: IPHONE_DEVICE,
+      device: iphone_device,
       prelaunch_simulator: true,
       clean: true,
       buildlog_path: LOGS_FOLDER,
