@@ -26,7 +26,33 @@
                 
                 The QuickEditor supports a variety of layout configurations.  You can specify the layout you want by passing a ``QuickEditorScope`` to the view modifier.  In this example, we specify a `.verticalLarge` ``QuickEditorConfiguration``.
                 @Code(name: "ContentView.swift", file: "QE_Tut_03.swift")
+            }
+            
+            @Step {
+                When ``QuickEditorConfiguration`` is set to `.verticalLarge`, the bottom sheet expands to the top of the screen, and the grid of avatars scrolls down, vertically.
                 @Image(source: "QuickEditor_Tutorial_01_03.png", alt: "Preview of the Quick Editor using the `.verticalLarge` QuickEditorConfiguration")
+            }
+            
+            @Step {
+                Change ``QuickEditorConfiguration`` to `.verticalMediumExpandable`.
+                @Code(name: "ContentView.swift", file: "QE_Tut_04.swift")
+            }
+            
+            @Step {
+                When ``QuickEditorConfiguration`` is set to `.verticalMediumExpandable`, the bottom sheet expands to a medium detent, and the grid of avatars scrolls down, vertically.  Scrolling the avatars up causes the sheet to expand to the top of the screen.
+                @Image(source: "QuickEditor_Tutorial_01_04.png", alt: "Preview of the Quick Editor using the `.verticalLarge` QuickEditorConfiguration")
+
+            }
+            
+            @Step {
+                Change the ``QuickEditorConfiguration`` to `.horizontalInstrinsicHeight`.  
+                @Code(name: "ContentView.swift", file: "QE_Tut_05.swift")
+            }
+            
+            @Step {
+                When ``QuickEditorConfiguration`` is set to `.horizontalInstrinsicHeight`, the grid of avatars is replaced by a horizontal scrolling view of avatars.
+                @Image(source: "QuickEditor_Tutorial_01_05.png", alt: "Preview of the Quick Editor using the `.verticalLarge` QuickEditorConfiguration")
+
             }
         }
     }
