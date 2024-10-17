@@ -31,7 +31,7 @@ steps:
         env:
           IMAGE_ID: "{{matrix.image_id}}"
         matrix:
-          setup: {}
+          setup: ~
           adjustments: # Specify additional versions of Xcode and devices
           - with:
                 image_id: $IMAGE_ID
