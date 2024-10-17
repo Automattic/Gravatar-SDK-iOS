@@ -21,46 +21,50 @@ steps:
   #################
   # Build and Test
   #################
-  - label: "📦 Build and Test Swift Package ({{matrix.image_id}})"
-    key: "test"
-    command: |
-      validate_swift_package
-    plugins: [$CI_TOOLKIT]
-    env:
-      IMAGE_ID: "{{matrix.image_id}}"
-      BUILDKITE_DEVICE: "{{matrix.device}}"
-    matrix:
-      setup:
-        image_id:
-          - $IMAGE_ID
-        device:
-          - "iPhone SE (3rd generation) (17.5)"
-      adjustments:
-        - with:
-            image_id: "xcode-15.1"
-            device: "iPhone SE (3rd generation) (17.2)"
+  - group: "📦 Build and Test Swift Package"
+    steps:
+      - label: "📦 Build and Test Swift Package ({{matrix.image_id}})"
+        key: "test"
+        command: |
+          validate_swift_package
+        plugins: [$CI_TOOLKIT]
+        env:
+          IMAGE_ID: "{{matrix.image_id}}"
+          BUILDKITE_DEVICE: "{{matrix.device}}"
+        matrix:
+          setup:
+            image_id:
+              - $IMAGE_ID
+            device:
+              - "iPhone SE (3rd generation) (17.5)"
+          adjustments:
+            - with:
+                image_id: "xcode-15.1"
+                device: "iPhone SE (3rd generation) (17.2)"
 
   ###################
   # Validate Podspec
   ###################
-  - label: "🔬 Validate Podspecs"
-    key: "validate"
-    command: |
-      .buildkite/commands/validate-pods.sh
-    plugins: [$CI_TOOLKIT]
-    env:
-      IMAGE_ID: "{{matrix.image_id}}"
-      BUILDKITE_DEVICE: "{{matrix.device}}"
-    matrix:
-      setup:
-        image_id:
-          - $IMAGE_ID
-        device:
-          - "iPhone SE (3rd generation) (17.5)"
-      adjustments:
-        - with:
-            image_id: "xcode-15.1"
-            device: "iPhone SE (3rd generation) (17.2)"
+  - group: "🔬 Validate Podspecs"
+    steps:
+      - label: "🔬 Validate Podspecs ({{matrix.image_id}})"
+        key: "validate"
+        command: |
+          .buildkite/commands/validate-pods.sh
+        plugins: [$CI_TOOLKIT]
+        env:
+          IMAGE_ID: "{{matrix.image_id}}"
+          BUILDKITE_DEVICE: "{{matrix.device}}"
+        matrix:
+          setup:
+            image_id:
+              - $IMAGE_ID
+            device:
+              - "iPhone SE (3rd generation) (17.5)"
+          adjustments:
+            - with:
+                image_id: "xcode-15.1"
+                device: "iPhone SE (3rd generation) (17.2)"
 
   #######################
   # Publish the Podspecs (if we're building a tag)
