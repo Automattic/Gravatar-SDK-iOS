@@ -9,4 +9,12 @@
         
         @TutorialReference(tutorial: "doc:ContactsList")
     }
+    
+    @Chapter(name: "Adding the Quick Editor") {
+        Learn how to use GravatarUI to create a contacts list.
+        
+        @Image(source: "QuickEditor_Tutorial_Preview.png", alt: "Add an accessible description for your image here.")
+        
+        @TutorialReference(tutorial: "doc:QuickEditor")
+    }
 }
