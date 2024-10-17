@@ -21,20 +21,50 @@ steps:
   #################
   # Build and Test
   #################
-  - label: "📦 Build and Test Swift Package"
-    key: "test"
-    command: |
-      validate_swift_package
-    plugins: [$CI_TOOLKIT]
+  - group: "📦 Build and Test Swift Package"
+    steps:
+      - label: "📦 Build and Test Swift Package ({{matrix.image_id}})"
+        key: "test"
+        command: |
+          validate_swift_package test device_model:"{{matrix.device_model}}" os:"{{matrix.device_os}}"
+        plugins: [$CI_TOOLKIT]
+        env:
+          IMAGE_ID: "{{matrix.image_id}}"
+        matrix:
+          setup: # Specify the current version of Xcode and device
+            image_id: $IMAGE_ID
+            device_model: "default"
+            device_os: "default"
+          adjustments: # Specify additional versions of Xcode and devices
+            - with:
+                image_id: "xcode-15.1"
+                device_model: "default"
+                device_os: "17.2"
+            - with:
+                image_id: "xcode-16.0-v7"
+                device_model: "default"
+                device_os: "18.0"
 
   ###################
   # Validate Podspec
   ###################
-  - label: "🔬 Validate Podspecs"
-    key: "validate"
-    command: |
-      .buildkite/commands/validate-pods.sh
-    plugins: [$CI_TOOLKIT]
+  - group: "🔬 Validate Podspecs"
+    steps:
+      - label: "🔬 Validate Podspecs ({{matrix.image_id}})"
+        key: "validate"
+        command: |
+          .buildkite/commands/validate-pods.sh
+        plugins: [$CI_TOOLKIT]
+        env:
+          IMAGE_ID: "{{matrix.image_id}}"
+        matrix:
+          setup: # Specify the current version of Xcode and device
+            image_id: $IMAGE_ID
+          adjustments: # Specify additional versions of Xcode and devices
+            - with:
+                image_id: "xcode-15.1"
+            - with:
+                image_id: "xcode-16.0-v7"
 
   #######################
   # Publish the Podspecs (if we're building a tag)
