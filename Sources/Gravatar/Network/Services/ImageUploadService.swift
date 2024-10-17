@@ -18,7 +18,13 @@ struct ImageUploadService: ImageUploader {
         avatarSelection: AvatarSelection = .preserveSelection,
         additionalHTTPHeaders: [HTTPHeaderField]?
     ) async throws -> (data: Data, response: HTTPURLResponse) {
-        guard let data = image.jpegData(compressionQuality: 0.8) else {
+        guard let data: Data = {
+            if #available(iOS 17.0, *) {
+                image.heicData()
+            } else {
+                image.jpegData(compressionQuality: 0.8)
+            }
+        }() else {
             throw ImageUploadError.cannotConvertImageIntoData
         }
 
