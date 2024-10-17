@@ -31,9 +31,6 @@ steps:
         env:
           IMAGE_ID: "{{matrix.image_id}}"
         matrix:
-          setup:
-            image_id:
-            device:
           adjustments:
             - with:
                 image_id: $IMAGE_ID
@@ -55,9 +52,6 @@ steps:
         env:
           IMAGE_ID: "{{matrix.image_id}}"
         matrix:
-          setup:
-            image_id:
-            device:
           adjustments:
             - with:
                 image_id: $IMAGE_ID
