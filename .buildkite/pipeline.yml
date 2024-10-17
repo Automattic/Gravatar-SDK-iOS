@@ -32,8 +32,8 @@ steps:
           IMAGE_ID: "{{matrix.image_id}}"
         matrix:
           setup:
-            image_id:
-            device:
+            image_id: null
+            device: null
           adjustments:
             - with:
                 image_id: $IMAGE_ID
