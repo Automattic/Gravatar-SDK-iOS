@@ -41,7 +41,7 @@ steps:
                 device_model: "default"
                 device_os: "17.2"
             - with:
-                image_id: "xcode-16.0"
+                image_id: "xcode-16.0-v7"
                 device_model: "default"
                 device_os: "18.0"
 
@@ -64,7 +64,7 @@ steps:
             - with:
                 image_id: "xcode-15.1"
             - with:
-                image_id: "xcode-16.0"
+                image_id: "xcode-16.0-v7"
 
   #######################
   # Publish the Podspecs (if we're building a tag)
