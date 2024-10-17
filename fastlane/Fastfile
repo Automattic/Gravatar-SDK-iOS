@@ -3,7 +3,8 @@
 default_platform(:ios)
 
 OS = '17.5'
-IPHONE_DEVICE = "iPhone SE (3rd generation) (#{OS})".freeze
+IPHONE_MODEL = 'iPhone SE (3rd generation)'
+IPHONE_DEVICE = "#{IPHONE_MODEL} (#{OS})".freeze
 
 PROJECT_ROOT_FOLDER = File.join(File.dirname(File.expand_path(__dir__)), 'Demo')
 BUILD_FOLDER = File.join(__dir__, '.build')
@@ -50,14 +51,15 @@ end
 
 platform :ios do
   desc 'Builds the project and runs tests'
-  lane :test do |device_name: "default", os: "default"|
-    device_name = IPHONE_DEVICE if device_name == "default"
+  lane :test do |device_model: "default", os: "default"|
+    device_model = IPHONE_MODEL if device_model == "default"
     os = OS if os == "default"
+    
     run_tests(
       package_path: '.',
       scheme: 'Gravatar-Package',
       xcargs: COMMON_XCARGS,
-      device: "#{device_name} (#{os})",
+      device: "#{device_model} (#{os})",
       prelaunch_simulator: true,
       clean: true,
       buildlog_path: LOGS_FOLDER,

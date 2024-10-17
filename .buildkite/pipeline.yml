@@ -26,19 +26,19 @@ steps:
       - label: "📦 Build and Test Swift Package ({{matrix.image_id}})"
         key: "test"
         command: |
-          validate_swift_package test device_name:"{{matrix.device_name}}" os:"{{matrix.device_os}}"
+          validate_swift_package test device_model:"{{matrix.device_model}}" os:"{{matrix.device_os}}"
         plugins: [$CI_TOOLKIT]
         env:
           IMAGE_ID: "{{matrix.image_id}}"
         matrix:
           setup: # Specify the current version of Xcode and device
             image_id: $IMAGE_ID
-            device_name: "default"
+            device_model: "default"
             device_os: "default"
           adjustments: # Specify additional versions of Xcode and devices
             - with:
                 image_id: "xcode-15.1"
-                device_name: "default"
+                device_model: "default"
                 device_os: "17.2"
 
   ###################
