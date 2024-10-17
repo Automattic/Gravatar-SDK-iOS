@@ -31,10 +31,12 @@ steps:
         env:
           IMAGE_ID: "{{matrix.image_id}}"
         matrix:
+          setup:
+            image_id:
+              - $IMAGE_ID
+            device:
+              - "iPhone SE (3rd generation) (17.5)"
           adjustments:
-            - with:
-                image_id: $IMAGE_ID
-                device: "iPhone SE (3rd generation) (17.5)"
             - with:
                 image_id: "xcode-15.1"
                 device: "iPhone SE (3rd generation) (17.2)"
@@ -52,10 +54,12 @@ steps:
         env:
           IMAGE_ID: "{{matrix.image_id}}"
         matrix:
+          setup:
+            image_id:
+              - $IMAGE_ID
+            device:
+              - "iPhone SE (3rd generation) (17.5)"
           adjustments:
-            - with:
-                image_id: $IMAGE_ID
-                device: "iPhone SE (3rd generation) (17.5)"
             - with:
                 image_id: "xcode-15.1"
                 device: "iPhone SE (3rd generation) (17.2)"
