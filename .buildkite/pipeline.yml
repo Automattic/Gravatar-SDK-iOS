@@ -26,11 +26,10 @@ steps:
       - label: "📦 Build and Test Swift Package ({{matrix.image_id}})"
         key: "test"
         command: |
-          validate_swift_package
+          validate_swift_package test device:"{{matrix.device}}"
         plugins: [$CI_TOOLKIT]
         env:
           IMAGE_ID: "{{matrix.image_id}}"
-          BUILDKITE_DEVICE: "{{matrix.device}}"
         matrix:
           setup:
             image_id:
@@ -54,7 +53,6 @@ steps:
         plugins: [$CI_TOOLKIT]
         env:
           IMAGE_ID: "{{matrix.image_id}}"
-          BUILDKITE_DEVICE: "{{matrix.device}}"
         matrix:
           setup:
             image_id:

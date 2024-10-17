@@ -50,13 +50,12 @@ end
 
 platform :ios do
   desc 'Builds the project and runs tests'
-  lane :test do
-    iphone_device = ENV['BUILDKITE_DEVICE'] ? ENV['BUILDKITE_DEVICE'].freeze : IPHONE_DEVICE
+  lane :test do |device: IPHONE_DEVICE|
     run_tests(
       package_path: '.',
       scheme: 'Gravatar-Package',
       xcargs: COMMON_XCARGS,
-      device: iphone_device,
+      device: device,
       prelaunch_simulator: true,
       clean: true,
       buildlog_path: LOGS_FOLDER,
