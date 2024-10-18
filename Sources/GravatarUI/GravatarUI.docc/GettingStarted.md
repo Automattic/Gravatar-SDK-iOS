@@ -46,4 +46,6 @@ end
     - <doc:UIImageViewExtension>
     - <doc:AvatarViewArticle>
     - <doc:ProfileViews>
+    - <doc:GravatarOAuth>
+    - <doc:QuickEditorArticle>
 }
