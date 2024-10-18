@@ -1,7 +1,10 @@
-/* Translation-Revision-Date: 2024-09-12 15:54:03+0000 */
+/* Translation-Revision-Date: 2024-10-17 15:54:03+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
+
+/* Title of a message advising the user that something went wrong while trying to log in. */
+"AvatarPicker.ContentLoading.Failure.LogInError.title" = "Необходимо войти в учётную запись";
 
 /* Title of a button that allows the user to try loading their avatars again */
 "AvatarPicker.ContentLoading.Failure.Retry.ctaButtonTitle" = "Повторить попытку";
@@ -24,8 +27,17 @@
 /* A message describing the error and advising the user to login again to resolve the issue */
 "AvatarPicker.ContentLoading.Failure.SessionExpired.LogIn.subtext" = "В целях безопасности время сеанса истекло. Войдите, чтобы изменить свой аватар.";
 
+/* Title of a button that will begin the process of authenticating the user, appearing beneath a message stating that a previous log in attept has failed. */
+"AvatarPicker.ContentLoading.Failure.SessionExpired.LogInError.buttonTitle" = "Войти";
+
+/* A message describing the error and advising the user to login again to resolve the issue */
+"AvatarPicker.ContentLoading.Failure.SessionExpired.LogInError.subtext" = "Необходимо войти в учётную запись, чтобы изменить профиль Gravatar.";
+
 /* Title of a message advising the user that their login session has expired. */
 "AvatarPicker.ContentLoading.Failure.SessionExpired.title" = "Время сеанса истекло";
+
+/* A message describing the error and advising the user to login again to resolve the issue */
+"AvatarPicker.ContentLoading.Failure.WrongEmailError.subtext" = "По-видимому, вы указали неверный адрес эл. почты при входе. Попробуйте ещё раз с %@. Спасибо!";
 
 /* Title of a button that allow for uploading an image */
 "AvatarPicker.ContentLoading.Success.ctaButtonTitle" = "Загрузить изображение";
@@ -36,14 +48,38 @@
 /* Title of a message advising the user to setup their avatar */
 "AvatarPicker.ContentLoading.success.title" = "Настройте свой аватар";
 
+/* The title of the dismiss button on a confirmation dialog. */
+"AvatarPicker.Dismiss.title" = "Закрыть";
+
 /* A message describing the purpose of this view */
 "AvatarPicker.Header.subtitle" = "Выберите или загрузите любимые изображения для аватаров и подключите их к своему адресу электронной почты.";
 
 /* Title appearing in the header of a view that allows users to manage their avatars */
 "AvatarPicker.Header.title" = "Аватары";
 
+/* Error message to show when the upload fails because the image is too big. */
+"AvatarPicker.Upload.Error.ImageTooBig.Error" = "Размер предоставленного изображения превосходит максимально допустимый: 10 МБ";
+
+/* The title of the remove button on the upload error dialog. */
+"AvatarPicker.Upload.Error.Remove.title" = "Удалить";
+
+/* The title of the retry button on the upload error dialog. */
+"AvatarPicker.Upload.Error.Retry.title" = "Повторить попытку";
+
+/* The title of the upload error dialog. */
+"AvatarPicker.Upload.Error.title" = "Загрузка не удалась";
+
 /* Title of a button that will take you to your Gravatar profile, with an arrow indicating that this action will cause you to leave this view */
 "AvatarPickerProfile.Button.ViewProfile.title" = "Просмотреть профиль →";
+
+/* This error message shows when the user attempts to pick a different avatar and fails. */
+"AvatarPickerViewModel.Update.Fail" = "Что-то пошло не так при попытке изменить ваш аватар.";
+
+/* This confirmation message shows when the user picks a different avatar. */
+"AvatarPickerViewModel.Update.Success" = "Аватар обновлён! Через несколько минут он станет отображаться повсюду.";
+
+/* A generic error message to show on an error dialog when the upload fails. */
+"AvatarPickerViewModel.Upload.Error.message" = "Ошибка при загрузке изображения.";
 
 /* Text on a sample Gravatar profile, appearing in the place where a Gravatar profile would display your short biography. */
 "ClaimProfile.Label.AboutMe" = "Расскажите о себе. Ваш аватар и визитка, которые сопровождают вас повсюду по Интернету.";
@@ -54,6 +90,12 @@
 /* Text on a sample Gravatar profile, appearing in the place where a Gravatar profile would display information like location, your preferred pronouns, etc. */
 "ClaimProfile.Label.Location" = "Добавьте ваше местоположение, местоимения и т. д.";
 
+/* Title of a button that closes the current view */
+"GravatarNavigationModifier.Button.Done.title" = "Готово";
+
+/* Screen title. Resize and crop an image. */
+"ImageCropper.title" = "Изменить размер и обрезать";
+
 /* Title for a button that allows you to claim a new Gravatar profile */
 "ProfileButton.title.create" = "Зарегистрировать профиль";
 
@@ -62,4 +104,10 @@
 
 /* Title for a button that allows you to view your Gravatar profile */
 "ProfileButton.title.view" = "Просмотреть профиль";
+
+/* An option in a menu that will display the camera for taking a picture */
+"SystemImagePickerView.Source.Camera.title" = "Сделать фотоснимок";
+
+/* An option in a menu that display the user's Photo Library and allow them to choose a photo from it */
+"SystemImagePickerView.Source.PhotoLibrary.title" = "Выбрать фотографию";
 
