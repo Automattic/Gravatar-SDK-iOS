@@ -8,13 +8,13 @@ Some of our REST endpoints require OAuth2 authorization. If you want to call suc
 
 Some of our UI features handle the OAuth flow internally, so you don't need to—for example, the Quick Editor. You only need to provide the `apiKey`, `clientID`, and `redirectURI`. It uses the "Implicit OAuth" flow behind the scenes, and the token's lifetime is two weeks.
 
-> Keep in mind that you need to use the https scheme. Internally, QuickEditor uses Implicit OAuth flow (response_type=token) and for security reasons, the server doesn't allow custom URL schemes.
-
 Please refer to the official [Gravatar OAuth](https://docs.gravatar.com/oauth/) documentation to learn more.
 
 #### Steps
 
 1. [Create or Update your Application](https://docs.gravatar.com/oauth/#creating-and-updating-your-application)
+
+> Keep in mind that you need to use the https scheme. Internally, QuickEditor uses Implicit OAuth flow (response_type=token) and for security reasons, the server doesn't allow custom URL schemes.
 
 2. Pass `apiKey`, `clientID`, and `redirectURI` to the SDK.
 
