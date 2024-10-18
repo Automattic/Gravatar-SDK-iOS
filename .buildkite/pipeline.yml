@@ -52,24 +52,29 @@ steps:
   ###################
   - group: "🔬 Validate Podspecs"
     steps:
-      - label: "🔬 Validate Podspecs (Swift {{matrix.swift_version}})"
+      - label: "🔬 Validate Podspecs ($CURRENT_SWIFT_VERSION)"
         key: "validate"
         command: |
           .buildkite/commands/validate-pods.sh
         plugins: [$CI_TOOLKIT]
         env:
-          IMAGE_ID: "{{matrix.image_id}}"
-        matrix:
-          setup: # Specify the current version of Xcode and Swift
-            image_id: $CURRENT_IMAGE_ID
-            swift_version: $CURRENT_SWIFT_VERSION
-          adjustments: # Specify additional versions of Xcode and Swift
-            - with:
-                image_id: $SWIFT_5_9_IMAGE_ID
-                swift_version: $SWIFT_5_9_VERSION
-            - with:
-                image_id: $SWIFT_6_0_IMAGE_ID
-                swift_version: $SWIFT_6_0_VERSION
+          IMAGE_ID: "$CURRENT_IMAGE_ID"
+
+      - label: "🔬 Validate Podspecs ($SWIFT_5_9_VERSION)"
+        key: "validate"
+        command: |
+          .buildkite/commands/validate-pods.sh
+        plugins: [$CI_TOOLKIT]
+        env:
+          IMAGE_ID: "$SWIFT_5_9_IMAGE_ID"
+
+      - label: "🔬 Validate Podspecs ($SWIFT_6_0_VERSION)"
+        key: "validate"
+        command: |
+          .buildkite/commands/validate-pods.sh
+        plugins: [$CI_TOOLKIT]
+        env:
+          IMAGE_ID: "$SWIFT_6_0_IMAGE_ID"
 
   #######################
   # Publish the Podspecs (if we're building a tag)
