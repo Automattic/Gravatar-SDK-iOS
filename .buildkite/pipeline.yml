@@ -6,7 +6,7 @@
 agents:
   queue: "mac"
 env:
-  IMAGE_ID: $IMAGE_ID
+  IMAGE_ID: $CURRENT_IMAGE_ID
 
 steps:
   #################
@@ -21,20 +21,56 @@ steps:
   #################
   # Build and Test
   #################
-  - label: "📦 Build and Test Swift Package"
-    key: "test"
-    command: |
-      validate_swift_package
-    plugins: [$CI_TOOLKIT]
+  - group: "📦 Build and Test Swift Package"
+    steps:
+      - label: "📦 Build and Test Swift Package (Swift {{matrix.swift_version}})"
+        key: "test"
+        command: |
+          validate_swift_package test device_model:"{{matrix.device_model}}" os:"{{matrix.device_os}}"
+        plugins: [$CI_TOOLKIT]
+        env:
+          IMAGE_ID: "{{matrix.image_id}}"
+        matrix:
+          setup: # Specify the current version of Xcode, Swift, a device, and the required version of iOS
+            image_id: $CURRENT_IMAGE_ID
+            swift_version: $CURRENT_SWIFT_VERSION
+            device_model: $CURRENT_DEVICE
+            device_os: $CURRENT_OS
+          adjustments: # Specify additional versions of Xcode, Swift, a device, and the required version of iOS
+            - with:  # Swift 5.9
+                image_id: $SWIFT_5_9_IMAGE_ID
+                swift_version: $SWIFT_5_9_VERSION
+                device_model: $SWIFT_5_9_DEVICE
+                device_os: $SWIFT_5_9_OS
+            - with:  # Swift 6.0
+                image_id: $SWIFT_6_0_IMAGE_ID
+                swift_version: $SWIFT_6_0_VERSION
+                device_model: $SWIFT_6_0_DEVICE
+                device_os: $SWIFT_6_0_OS
 
   ###################
   # Validate Podspec
   ###################
-  - label: "🔬 Validate Podspecs"
-    key: "validate"
-    command: |
-      .buildkite/commands/validate-pods.sh
-    plugins: [$CI_TOOLKIT]
+  - group: "🔬 Validate Podspecs"
+    steps:
+      - label: "🔬 Validate Podspecs (Swift {{matrix.swift_version}})"
+        key: "validate"
+        command: |
+          .buildkite/commands/validate-pods.sh
+        plugins: [$CI_TOOLKIT]
+        env:
+          IMAGE_ID: "{{matrix.image_id}}"
+        matrix:
+          setup: # Specify the current version of Xcode and Swift
+            image_id: $CURRENT_IMAGE_ID
+            swift_version: $CURRENT_SWIFT_VERSION
+          adjustments: # Specify additional versions of Xcode and Swift
+            - with:
+                image_id: $SWIFT_5_9_IMAGE_ID
+                swift_version: $SWIFT_5_9_VERSION
+            - with:
+                image_id: $SWIFT_6_0_IMAGE_ID
+                swift_version: $SWIFT_6_0_VERSION
 
   #######################
   # Publish the Podspecs (if we're building a tag)
