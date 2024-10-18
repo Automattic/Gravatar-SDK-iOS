@@ -1,7 +1,10 @@
-/* Translation-Revision-Date: 2024-09-12 09:54:03+0000 */
+/* Translation-Revision-Date: 2024-10-17 09:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
+
+/* Title of a message advising the user that something went wrong while trying to log in. */
+"AvatarPicker.ContentLoading.Failure.LogInError.title" = "로그인 필요";
 
 /* Title of a button that allows the user to try loading their avatars again */
 "AvatarPicker.ContentLoading.Failure.Retry.ctaButtonTitle" = "다시 시도";
@@ -24,8 +27,17 @@
 /* A message describing the error and advising the user to login again to resolve the issue */
 "AvatarPicker.ContentLoading.Failure.SessionExpired.LogIn.subtext" = "보안상의 이유로 세션이 만료되었습니다. 아바타를 업데이트하려면 로그인하세요.";
 
+/* Title of a button that will begin the process of authenticating the user, appearing beneath a message stating that a previous log in attept has failed. */
+"AvatarPicker.ContentLoading.Failure.SessionExpired.LogInError.buttonTitle" = "로그인";
+
+/* A message describing the error and advising the user to login again to resolve the issue */
+"AvatarPicker.ContentLoading.Failure.SessionExpired.LogInError.subtext" = "그라바타 프로필을 수정하려면 먼저 로그인해야 합니다.";
+
 /* Title of a message advising the user that their login session has expired. */
 "AvatarPicker.ContentLoading.Failure.SessionExpired.title" = "세션이 만료됐습니다";
+
+/* A message describing the error and advising the user to login again to resolve the issue */
+"AvatarPicker.ContentLoading.Failure.WrongEmailError.subtext" = "잘못된 이메일을 사용하여 로그인하신 것 같습니다. 이번에는 %@을(를) 사용하여 다시 시도해 보세요. 감사합니다!";
 
 /* Title of a button that allow for uploading an image */
 "AvatarPicker.ContentLoading.Success.ctaButtonTitle" = "이미지 업로드";
@@ -36,14 +48,38 @@
 /* Title of a message advising the user to setup their avatar */
 "AvatarPicker.ContentLoading.success.title" = "아바타를 설정하겠습니다.";
 
+/* The title of the dismiss button on a confirmation dialog. */
+"AvatarPicker.Dismiss.title" = "해제";
+
 /* A message describing the purpose of this view */
 "AvatarPicker.Header.subtitle" = "좋아하는 아바타 이미지를 선택하거나 업로드하고 이메일 주소에 연결하세요.";
 
 /* Title appearing in the header of a view that allows users to manage their avatars */
 "AvatarPicker.Header.title" = "아바타";
 
+/* Error message to show when the upload fails because the image is too big. */
+"AvatarPicker.Upload.Error.ImageTooBig.Error" = "제공된 이미지가 최대 크기(10MB)를 초과합니다.";
+
+/* The title of the remove button on the upload error dialog. */
+"AvatarPicker.Upload.Error.Remove.title" = "제거";
+
+/* The title of the retry button on the upload error dialog. */
+"AvatarPicker.Upload.Error.Retry.title" = "다시 시도";
+
+/* The title of the upload error dialog. */
+"AvatarPicker.Upload.Error.title" = "업로드 실패";
+
 /* Title of a button that will take you to your Gravatar profile, with an arrow indicating that this action will cause you to leave this view */
 "AvatarPickerProfile.Button.ViewProfile.title" = "프로필 보기 →";
+
+/* This error message shows when the user attempts to pick a different avatar and fails. */
+"AvatarPickerViewModel.Update.Fail" = "죄송합니다. 아바타를 변경하는 중 문제가 발생했습니다.";
+
+/* This confirmation message shows when the user picks a different avatar. */
+"AvatarPickerViewModel.Update.Success" = "아바타가 업데이트되었습니다! 모든 곳에 표시되는 데 몇 분이 소요될 수 있습니다.";
+
+/* A generic error message to show on an error dialog when the upload fails. */
+"AvatarPickerViewModel.Upload.Error.message" = "죄송합니다. 이미지를 업로드하는 중 오류가 발생했습니다.";
 
 /* Text on a sample Gravatar profile, appearing in the place where a Gravatar profile would display your short biography. */
 "ClaimProfile.Label.AboutMe" = "회원님을 소개하세요. 웹에서 나를 따라다니는 아바타와 약력입니다.";
@@ -54,6 +90,12 @@
 /* Text on a sample Gravatar profile, appearing in the place where a Gravatar profile would display information like location, your preferred pronouns, etc. */
 "ClaimProfile.Label.Location" = "위치, 대명사 등 추가";
 
+/* Title of a button that closes the current view */
+"GravatarNavigationModifier.Button.Done.title" = "완료";
+
+/* Screen title. Resize and crop an image. */
+"ImageCropper.title" = "크기 조정 및 자르기";
+
 /* Title for a button that allows you to claim a new Gravatar profile */
 "ProfileButton.title.create" = "프로필 신청";
 
@@ -62,4 +104,10 @@
 
 /* Title for a button that allows you to view your Gravatar profile */
 "ProfileButton.title.view" = "프로필 보기";
+
+/* An option in a menu that will display the camera for taking a picture */
+"SystemImagePickerView.Source.Camera.title" = "사진 촬영";
+
+/* An option in a menu that display the user's Photo Library and allow them to choose a photo from it */
+"SystemImagePickerView.Source.PhotoLibrary.title" = "사진 선택";
 

@@ -1,7 +1,10 @@
-/* Translation-Revision-Date: 2024-09-12 15:54:03+0000 */
+/* Translation-Revision-Date: 2024-10-16 07:45:02+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: tr */
+
+/* Title of a message advising the user that something went wrong while trying to log in. */
+"AvatarPicker.ContentLoading.Failure.LogInError.title" = "Oturum açmanız gerekiyor";
 
 /* Title of a button that allows the user to try loading their avatars again */
 "AvatarPicker.ContentLoading.Failure.Retry.ctaButtonTitle" = "Tekrar dene";
@@ -24,26 +27,59 @@
 /* A message describing the error and advising the user to login again to resolve the issue */
 "AvatarPicker.ContentLoading.Failure.SessionExpired.LogIn.subtext" = "Güvenlik nedeniyle oturum süresi doldu. Avatarınızı güncellemek için lütfen oturum açın.";
 
+/* Title of a button that will begin the process of authenticating the user, appearing beneath a message stating that a previous log in attept has failed. */
+"AvatarPicker.ContentLoading.Failure.SessionExpired.LogInError.buttonTitle" = "Oturum aç";
+
+/* A message describing the error and advising the user to login again to resolve the issue */
+"AvatarPicker.ContentLoading.Failure.SessionExpired.LogInError.subtext" = "Gravatar profilinizi değiştirmek için önce oturum açmalısınız.";
+
 /* Title of a message advising the user that their login session has expired. */
 "AvatarPicker.ContentLoading.Failure.SessionExpired.title" = "Oturum süresi doldu";
+
+/* A message describing the error and advising the user to login again to resolve the issue */
+"AvatarPicker.ContentLoading.Failure.WrongEmailError.subtext" = "Görünüşe göre oturum açmak için yanlış e-posta kullandın. Lütfen bu sefer %@ ile tekrar dene. Teşekkürler!";
 
 /* Title of a button that allow for uploading an image */
 "AvatarPicker.ContentLoading.Success.ctaButtonTitle" = "Görsel yükle";
 
 /* A message describing the actions a user can take to setup their avatar */
-"AvatarPicker.ContentLoading.Success.subtext" = "Favori avatar görsellerinizi oluşturun veya yükleyin ve e-posta adresinize bağlayın.";
+"AvatarPicker.ContentLoading.Success.subtext" = "En sevdiğiniz avatarı seçin veya yükleyin, sonra e-posta adresinize bağlayın.";
 
 /* Title of a message advising the user to setup their avatar */
 "AvatarPicker.ContentLoading.success.title" = "Avatarınızı oluşturalım";
 
+/* The title of the dismiss button on a confirmation dialog. */
+"AvatarPicker.Dismiss.title" = "Kapat";
+
 /* A message describing the purpose of this view */
-"AvatarPicker.Header.subtitle" = "Favori avatar görsellerinizi oluşturun veya yükleyin ve e-posta adresinize bağlayın.";
+"AvatarPicker.Header.subtitle" = "En sevdiğiniz avatarı seçin veya yükleyin, sonra e-posta adresinize bağlayın.";
 
 /* Title appearing in the header of a view that allows users to manage their avatars */
 "AvatarPicker.Header.title" = "Avatarlar";
 
+/* Error message to show when the upload fails because the image is too big. */
+"AvatarPicker.Upload.Error.ImageTooBig.Error" = "Sağlanan görsel maksimum boyutu aşıyor: 10MB";
+
+/* The title of the remove button on the upload error dialog. */
+"AvatarPicker.Upload.Error.Remove.title" = "Kaldır";
+
+/* The title of the retry button on the upload error dialog. */
+"AvatarPicker.Upload.Error.Retry.title" = "Tekrar dene";
+
+/* The title of the upload error dialog. */
+"AvatarPicker.Upload.Error.title" = "Yükleme başarısız oldu";
+
 /* Title of a button that will take you to your Gravatar profile, with an arrow indicating that this action will cause you to leave this view */
 "AvatarPickerProfile.Button.ViewProfile.title" = "Profili görüntüle →";
+
+/* This error message shows when the user attempts to pick a different avatar and fails. */
+"AvatarPickerViewModel.Update.Fail" = "Hay aksi, avatarını değiştirirken işler pek yolunda gitmedi.";
+
+/* This confirmation message shows when the user picks a different avatar. */
+"AvatarPickerViewModel.Update.Success" = "Avatar güncellendi! Her yerde görünmesi birkaç dakika sürebilir.";
+
+/* A generic error message to show on an error dialog when the upload fails. */
+"AvatarPickerViewModel.Upload.Error.message" = "Hay aksi, görsel yüklenirken bir sorun oluştu.";
 
 /* Text on a sample Gravatar profile, appearing in the place where a Gravatar profile would display your short biography. */
 "ClaimProfile.Label.AboutMe" = "Kim olduğunuzu dünyaya anlatın. Web'de gösterilen avatarınız ve biyografiniz.";
@@ -54,6 +90,12 @@
 /* Text on a sample Gravatar profile, appearing in the place where a Gravatar profile would display information like location, your preferred pronouns, etc. */
 "ClaimProfile.Label.Location" = "Konumunuzu, zamirlerinizi vb. ekleyin";
 
+/* Title of a button that closes the current view */
+"GravatarNavigationModifier.Button.Done.title" = "Tamam";
+
+/* Screen title. Resize and crop an image. */
+"ImageCropper.title" = "Boyutlandır ve Kırp";
+
 /* Title for a button that allows you to claim a new Gravatar profile */
 "ProfileButton.title.create" = "Profili sahiplen";
 
@@ -62,4 +104,10 @@
 
 /* Title for a button that allows you to view your Gravatar profile */
 "ProfileButton.title.view" = "Profili görüntüle";
+
+/* An option in a menu that will display the camera for taking a picture */
+"SystemImagePickerView.Source.Camera.title" = "Fotoğraf Çek";
+
+/* An option in a menu that display the user's Photo Library and allow them to choose a photo from it */
+"SystemImagePickerView.Source.PhotoLibrary.title" = "Fotoğraf Seç";
 
