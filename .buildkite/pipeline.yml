@@ -23,7 +23,7 @@ steps:
   #################
   - group: "📦 Build and Test Swift Package"
     steps:
-      - label: "📦 Build and Test Swift Package ({{matrix.image_id}})"
+      - label: "📦 Build and Test Swift Package (Swift {{matrix.swift_version}})"
         key: "test"
         command: |
           validate_swift_package test device_model:"{{matrix.device_model}}" os:"{{matrix.device_os}}"
@@ -31,17 +31,20 @@ steps:
         env:
           IMAGE_ID: "{{matrix.image_id}}"
         matrix:
-          setup: # Specify the current version of Xcode and device
+          setup: # Specify the current version of Xcode, Swift, a device, and the required version of iOS
             image_id: $IMAGE_ID
+            swift_version: "5.10"
             device_model: "default"
             device_os: "default"
-          adjustments: # Specify additional versions of Xcode and devices
+          adjustments: # Specify additional versions of Xcode, Swift, a device, and the required version of iOS
             - with:
                 image_id: "xcode-15.2-xl"
+                swift_version: "5.9"
                 device_model: "default"
                 device_os: "17.2"
             - with:
                 image_id: "xcode-16.0-v7"
+                swift_version: "6.0"
                 device_model: "default"
                 device_os: "18.0"
 
@@ -50,7 +53,7 @@ steps:
   ###################
   - group: "🔬 Validate Podspecs"
     steps:
-      - label: "🔬 Validate Podspecs ({{matrix.image_id}})"
+      - label: "🔬 Validate Podspecs (Swift {{matrix.swift_version}})"
         key: "validate"
         command: |
           .buildkite/commands/validate-pods.sh
@@ -58,13 +61,16 @@ steps:
         env:
           IMAGE_ID: "{{matrix.image_id}}"
         matrix:
-          setup: # Specify the current version of Xcode and device
+          setup: # Specify the current version of Xcode and Swift
             image_id: $IMAGE_ID
-          adjustments: # Specify additional versions of Xcode and devices
+            swift_version: "5.10"
+          adjustments: # Specify additional versions of Xcode and Swift
             - with:
                 image_id: "xcode-15.2-xl"
+                swift_version: "5.9"
             - with:
                 image_id: "xcode-16.0-v7"
+                swift_version: "6.0"
 
   #######################
   # Publish the Podspecs (if we're building a tag)
