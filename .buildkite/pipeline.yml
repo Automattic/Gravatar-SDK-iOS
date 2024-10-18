@@ -37,7 +37,7 @@ steps:
             device_os: "default"
           adjustments: # Specify additional versions of Xcode and devices
             - with:
-                image_id: "xcode-15.1"
+                image_id: "xcode-15.2-xl"
                 device_model: "default"
                 device_os: "17.2"
             - with:
@@ -62,7 +62,7 @@ steps:
             image_id: $IMAGE_ID
           adjustments: # Specify additional versions of Xcode and devices
             - with:
-                image_id: "xcode-15.1"
+                image_id: "xcode-15.2-xl"
             - with:
                 image_id: "xcode-16.0-v7"
 
