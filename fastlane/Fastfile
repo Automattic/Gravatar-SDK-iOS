@@ -71,12 +71,15 @@ platform :ios do
   lane :build_demo do |scheme: 'Gravatar-UIKit-Demo'|
     # We only need to build for testing to ensure that the project builds.
     # There are no tests in the the Demo apps
+    device_model = ENV.fetch('DEVICE_MODEL', IPHONE_MODEL)
+    device_os = ENV.fetch('DEVICE_OS', OS)
+
     run_tests(
       project: XCODEPROJ_PATH,
       scheme: scheme,
       configuration: 'Debug',
       xcargs: COMMON_XCARGS,
-      device: IPHONE_DEVICE,
+      device: "#{device_model} (#{device_os})",
       clean: true,
       build_for_testing: true,
       buildlog_path: LOGS_FOLDER,
