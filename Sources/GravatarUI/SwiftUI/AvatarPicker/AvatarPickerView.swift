@@ -360,7 +360,7 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
         guard let url = URL(string: "https://gravatar.com/profile") else { return }
         safariURL = url
     }
-    
+
     @ViewBuilder
     private func profileView() -> some View {
         VStack(alignment: .leading, content: {
