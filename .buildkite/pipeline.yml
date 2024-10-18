@@ -23,30 +23,29 @@ steps:
   #################
   - group: "📦 Build and Test Swift Package"
     steps:
-      - label: "📦 Build and Test Swift Package (Swift {{matrix.swift_version}})"
-        key: "test"
+      - label: "📦 Build and Test Swift Package ($CURRENT_SWIFT_VERSION)"
         command: |
-          validate_swift_package test device_model:"{{matrix.device_model}}" os:"{{matrix.device_os}}"
-        plugins: [$CI_TOOLKIT]
+          validate_swift_package test device_model:"$CURRENT_DEVICE" os:"$CURRENT_OS"
+        key: "test"
         env:
-          IMAGE_ID: "{{matrix.image_id}}"
-        matrix:
-          setup: # Specify the current version of Xcode, Swift, a device, and the required version of iOS
-            image_id: $CURRENT_IMAGE_ID
-            swift_version: $CURRENT_SWIFT_VERSION
-            device_model: $CURRENT_DEVICE
-            device_os: $CURRENT_OS
-          adjustments: # Specify additional versions of Xcode, Swift, a device, and the required version of iOS
-            - with:  # Swift 5.9
-                image_id: $SWIFT_5_9_IMAGE_ID
-                swift_version: $SWIFT_5_9_VERSION
-                device_model: $SWIFT_5_9_DEVICE
-                device_os: $SWIFT_5_9_OS
-            - with:  # Swift 6.0
-                image_id: $SWIFT_6_0_IMAGE_ID
-                swift_version: $SWIFT_6_0_VERSION
-                device_model: $SWIFT_6_0_DEVICE
-                device_os: $SWIFT_6_0_OS
+          IMAGE_ID: "$CURRENT_IMAGE_ID"
+        plugins: [$CI_TOOLKIT]
+
+      - label: "📦 Build and Test Swift Package ($SWIFT_5_9_VERSION)"
+        command: |
+          validate_swift_package test device_model:"$SWIFT_5_9_DEVICE" os:"$SWIFT_5_9_OS"
+        key: "test_swift_5_9"
+        env:
+          IMAGE_ID: "$SWIFT_5_9_IMAGE_ID"
+        plugins: [$CI_TOOLKIT]
+
+      - label: "📦 Build and Test Swift Package ($SWIFT_6_0_VERSION)"
+        command: |
+          validate_swift_package test device_model:"$SWIFT_6_0_DEVICE" os:"$SWIFT_6_0_OS"
+        key: "test_swift_6_0"
+        env:
+          IMAGE_ID: "$SWIFT_6_0_IMAGE_ID"
+        plugins: [$CI_TOOLKIT]
 
   ###################
   # Validate Podspec
@@ -125,3 +124,31 @@ steps:
         plugins: [$CI_TOOLKIT]
         command: .buildkite/commands/upload-to-appcenter.sh UIKit
         if: build.pull_request.id != null
+
+  - group: "🔬 Validate Podspecs"
+    steps:
+      - label: "🛠️ Build SwiftUI Demo ({{matrix.swift_version}})"
+        depends_on: build_swiftui
+        plugins: [$CI_TOOLKIT]
+        command: |
+          install_gems
+          BUILD_NUMBER=$BUILDKITE_BUILD_NUMBER make build-demo-for-distribution-swiftui
+        env:
+          IMAGE_ID: "{{matrix.image_id}}"
+        matrix:
+          setup: # Specify the current version of Xcode, Swift, a device, and the required version of iOS
+            image_id: $CURRENT_IMAGE_ID
+            swift_version: $CURRENT_SWIFT_VERSION
+            device_model: $CURRENT_DEVICE
+            device_os: $CURRENT_OS
+          adjustments: # Specify additional versions of Xcode, Swift, a device, and the required version of iOS
+            - with:  # Swift 5.9
+                image_id: $SWIFT_5_9_IMAGE_ID
+                swift_version: $SWIFT_5_9_VERSION
+                device_model: $SWIFT_5_9_DEVICE
+                device_os: $SWIFT_5_9_OS
+            - with:  # Swift 6.0
+                image_id: $SWIFT_6_0_IMAGE_ID
+                swift_version: $SWIFT_6_0_VERSION
+                device_model: $SWIFT_6_0_DEVICE
+                device_os: $SWIFT_6_0_OS
