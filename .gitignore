@@ -45,9 +45,18 @@ fastlane/README.md
 fastlane/report.xml
 fastlane/test_output
 
+# OpenAPI
+openapi/GravatarOpenAPIClient/
+!openapi/GravatarOpenAPIClient/.openapi-generator/
+!openapi/GravatarOpenAPIClient/.openapi-generator-ignore
+!openapi/GravatarOpenAPIClient/docs/
+!openapi/GravatarOpenAPIClient/GravatarOpenAPIClient.podspec
+!openapi/GravatarOpenAPIClient/Package.swift
+!openapi/GravatarOpenAPIClient/project.yml
+!openapi/GravatarOpenAPIClient/README.md
+
 # SwiftGen (part of wpmreleasetoolkit)
 vendor/swiftgen
 
 # Other
-openapi-generator/
 Demo/Demo/Secrets.swift

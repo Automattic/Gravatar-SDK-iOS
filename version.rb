@@ -5,4 +5,5 @@ module Gravatar
   SWIFT_VERSIONS = [
     '5.10'
   ].freeze
+  IOS_DEPLOYMENT_TARGET = '15.0'
 end

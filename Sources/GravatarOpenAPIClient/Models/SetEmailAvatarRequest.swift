@@ -1,8 +1,8 @@
 import Foundation
 
-struct SetEmailAvatarRequest: Codable, Hashable, Sendable {
+public struct SetEmailAvatarRequest: Codable, Hashable, Sendable {
     /// The email SHA256 hash to set the avatar for.
-    private(set) var emailHash: String
+    public private(set) var emailHash: String
 
     init(emailHash: String) {
         self.emailHash = emailHash
@@ -14,7 +14,7 @@ struct SetEmailAvatarRequest: Codable, Hashable, Sendable {
 
     // Encodable protocol methods
 
-    func encode(to encoder: Encoder) throws {
+    public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(emailHash, forKey: .emailHash)
     }

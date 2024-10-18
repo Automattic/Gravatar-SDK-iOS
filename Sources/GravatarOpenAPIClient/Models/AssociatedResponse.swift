@@ -1,8 +1,8 @@
 import Foundation
 
-struct AssociatedResponse: Codable, Hashable, Sendable {
+public struct AssociatedResponse: Codable, Hashable, Sendable {
     /// Whether the entity is associated with the account.
-    private(set) var associated: Bool
+    public private(set) var associated: Bool
 
     init(associated: Bool) {
         self.associated = associated
@@ -14,7 +14,7 @@ struct AssociatedResponse: Codable, Hashable, Sendable {
 
     // Encodable protocol methods
 
-    func encode(to encoder: Encoder) throws {
+    public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(associated, forKey: .associated)
     }
