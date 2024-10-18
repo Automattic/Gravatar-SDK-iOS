@@ -16,8 +16,6 @@ Please refer to the official [Gravatar OAuth](https://docs.gravatar.com/oauth/) 
 
 The redirect URL should be a valid `https` URL. The server will reject custom URL schemes because they are insecure and prone to being interrupted by other apps. This is a feature of the "Implicit OAuth" flow.
 
-While you can use the custom domain 'wpcom-local-dev' during development (e.g., `wpcom-local-dev://some-authorization-callback`), it's important to note that in production, a valid `https` domain is required.
-
 2. Pass `apiKey`, `clientID`, and `redirectURI` to the SDK.
 
 Call `Configuration.shared.configure(...)` to pass the OAuth secrets. 
