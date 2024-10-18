@@ -125,7 +125,7 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
             title: Constants.title,
             actionButtonDisabled: model.profileModel?.profileURL == nil,
             onActionButtonPressed: {
-                openProfileInSafari()
+                openProfileEditInSafari()
             },
             onDoneButtonPressed: {
                 isPresented = false
@@ -354,6 +354,11 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
 
     private func openProfileInSafari() {
         safariURL = model.profileModel?.profileURL
+    }
+
+    private func openProfileEditInSafari() {
+        guard let url = URL(string: "https://gravatar.com/profile") else { return }
+        safariURL = url
     }
 
     @ViewBuilder
