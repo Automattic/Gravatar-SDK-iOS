@@ -6,7 +6,7 @@
 agents:
   queue: "mac"
 env:
-  IMAGE_ID: $IMAGE_ID
+  IMAGE_ID: $CURRENT_IMAGE_ID
 
 steps:
   #################
@@ -32,7 +32,7 @@ steps:
           IMAGE_ID: "{{matrix.image_id}}"
         matrix:
           setup: # Specify the current version of Xcode, Swift, a device, and the required version of iOS
-            image_id: $IMAGE_ID
+            image_id: $CURRENT_IMAGE_ID
             swift_version: "5.10"
             device_model: "default"
             device_os: "default"
@@ -62,7 +62,7 @@ steps:
           IMAGE_ID: "{{matrix.image_id}}"
         matrix:
           setup: # Specify the current version of Xcode and Swift
-            image_id: $IMAGE_ID
+            image_id: $CURRENT_IMAGE_ID
             swift_version: "5.10"
           adjustments: # Specify additional versions of Xcode and Swift
             - with:
