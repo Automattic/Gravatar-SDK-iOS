@@ -3,6 +3,29 @@
 # This file is `source`'d before calling `buildkite-agent pipeline upload`, and can be used
 # to set up some variables that will be interpolated in the `.yml` pipeline before uploading it.
 
-export CURRENT_IMAGE_ID="xcode-15.4"
-
 export CI_TOOLKIT="automattic/a8c-ci-toolkit#3.2.2"
+
+## Supported versions of Swift
+# Swift 6.0
+export SWIFT_6_0_IMAGE_ID="xcode-16.0-v7"
+export SWIFT_6_0_VERSION="6.0"
+export SWIFT_6_0_DEVICE="default"  # Use the default value in Fastlane
+export SWIFT_6_0_OS="18.0"
+
+# Swift 5.10
+export SWIFT_5_10_IMAGE_ID="xcode-15.4"
+export SWIFT_5_10_VERSION="5.10"
+export SWIFT_5_10_DEVICE="default"
+export SWIFT_5_10_OS="17.5"
+
+# Swift 5.9
+export SWIFT_5_9_IMAGE_ID="xcode-15.2-xl"
+export SWIFT_5_9_VERSION="5.9"
+export SWIFT_5_9_DEVICE="default"  # Use the default value in Fastlane
+export SWIFT_5_9_OS="17.2"
+
+# Current Development Environment
+export CURRENT_IMAGE_ID=$SWIFT_5_10_IMAGE_ID
+export CURRENT_SWIFT_VERSION=$SWIFT_5_10_VERSION
+export CURRENT_DEVICE=$SWIFT_5_10_DEVICE
+export CURRENT_OS="default"  # Use the default value in Fastlane
