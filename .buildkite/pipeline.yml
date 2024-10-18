@@ -61,7 +61,6 @@ steps:
           IMAGE_ID: "$CURRENT_IMAGE_ID"
 
       - label: "🔬 Validate Podspecs ($SWIFT_5_9_VERSION)"
-        key: "validate"
         command: |
           .buildkite/commands/validate-pods.sh
         plugins: [$CI_TOOLKIT]
@@ -69,7 +68,6 @@ steps:
           IMAGE_ID: "$SWIFT_5_9_IMAGE_ID"
 
       - label: "🔬 Validate Podspecs ($SWIFT_6_0_VERSION)"
-        key: "validate"
         command: |
           .buildkite/commands/validate-pods.sh
         plugins: [$CI_TOOLKIT]
