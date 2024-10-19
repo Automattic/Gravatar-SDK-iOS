@@ -8,6 +8,18 @@ agents:
 env:
   IMAGE_ID: $CURRENT_IMAGE_ID
 
+demo_build_swiftUI: &demo_build_swiftUI
+  plugins: [$CI_TOOLKIT]
+  command: |
+    install_gems
+    BUILD_NUMBER=$BUILDKITE_BUILD_NUMBER make build-demo-for-distribution-swiftui
+
+demo_build_uikit: &demo_build_uikit
+  plugins: [$CI_TOOLKIT]
+  command: |
+    install_gems
+    BUILD_NUMBER=$BUILDKITE_BUILD_NUMBER make build-demo-for-distribution-uikit
+
 steps:
   #################
   # Lint Source files
@@ -94,34 +106,25 @@ steps:
   ###################
   - group: "🛠️ Build SwiftUI Demo"
     steps:
-      - label: "🛠️ Build SwiftUI Demo"
+      - <<: *demo_build_swiftUI
+        label: "🛠️ Build SwiftUI Demo"
         key: build_swiftui
         depends_on: test
-        plugins: [$CI_TOOLKIT]
         env:
           IMAGE_ID: "$CURRENT_IMAGE_ID"
-        command: |
-          install_gems
-          BUILD_NUMBER=$BUILDKITE_BUILD_NUMBER make build-demo-for-distribution-swiftui
         artifact_paths:
           - ".build/artifacts/*.ipa"
           - ".build/artifacts/*.dSYM.zip"
 
-      - label: "🛠️ Build SwiftUI Demo ($SWIFT_5_9_VERSION)"
+      - <<: *demo_build_swiftUI
+        label: "🛠️ Build SwiftUI Demo ($SWIFT_5_9_VERSION)"
         depends_on: test_swift_5_9
-        plugins: [$CI_TOOLKIT]
-        command: |
-          install_gems
-          BUILD_NUMBER=$BUILDKITE_BUILD_NUMBER make build-demo-for-distribution-swiftui
         env:
           IMAGE_ID: "$SWIFT_5_9_IMAGE_ID"
 
-      - label: "🛠️ Build SwiftUI Demo ($SWIFT_6_0_VERSION)"
+      - <<: *demo_build_swiftUI
+        label: "🛠️ Build SwiftUI Demo ($SWIFT_6_0_VERSION)"
         depends_on: test_swift_6_0
-        plugins: [$CI_TOOLKIT]
-        command: |
-          install_gems
-          BUILD_NUMBER=$BUILDKITE_BUILD_NUMBER make build-demo-for-distribution-swiftui
         env:
           IMAGE_ID: "$SWIFT_6_0_IMAGE_ID"
 
@@ -131,38 +134,29 @@ steps:
         command: .buildkite/commands/upload-to-appcenter.sh SwiftUI
         if: build.pull_request.id != null
 
-      - label: "🛠️ Build UIKit Demo"
+      - <<: *demo_build_uikit
+        label: "🛠️ Build UIKit Demo"
         key: build_uikit
         depends_on: test
-        plugins: [$CI_TOOLKIT]
         env:
           IMAGE_ID: "$CURRENT_IMAGE_ID"
-        command: |
-          install_gems
-          BUILD_NUMBER=$BUILDKITE_BUILD_NUMBER make build-demo-for-distribution-uikit
         artifact_paths:
           - ".build/artifacts/*.ipa"
           - ".build/artifacts/*.dSYM.zip"
 
-      - label: "🛠️ Build UIKit Demo ($SWIFT_5_9_VERSION)"
+      - <<: *demo_build_uikit
+        label: "🛠️ Build UIKit Demo ($SWIFT_5_9_VERSION)"
         key: build_uikit_swift_5_9
         depends_on: test_swift_5_9
-        plugins: [$CI_TOOLKIT]
         env:
           IMAGE_ID: "$SWIFT_5_9_IMAGE_ID"
-        command: |
-          install_gems
-          BUILD_NUMBER=$BUILDKITE_BUILD_NUMBER make build-demo-for-distribution-uikit
 
-      - label: "🛠️ Build UIKit Demo ($SWIFT_6_0_VERSION)"
+      - <<: *demo_build_uikit
+        label: "🛠️ Build UIKit Demo ($SWIFT_6_0_VERSION)"
         key: build_uikit_swift_6_0
         depends_on: test_swift_6_0
-        plugins: [$CI_TOOLKIT]
         env:
           IMAGE_ID: "$SWIFT_6_0_IMAGE_ID"
-        command: |
-          install_gems
-          BUILD_NUMBER=$BUILDKITE_BUILD_NUMBER make build-demo-for-distribution-uikit
 
       - label: "⬆️ Upload UIKit Demo to App Center"
         depends_on: build_uikit
