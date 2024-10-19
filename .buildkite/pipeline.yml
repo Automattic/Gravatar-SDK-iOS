@@ -8,6 +8,11 @@ agents:
 env:
   IMAGE_ID: $CURRENT_IMAGE_ID
 
+validate_pods: &validate_pods
+  command: |
+    .buildkite/commands/validate-pods.sh
+  plugins: [$CI_TOOLKIT]
+
 demo_build_swiftUI: &demo_build_swiftUI
   plugins: [$CI_TOOLKIT]
   command: |
@@ -64,25 +69,19 @@ steps:
   ###################
   - group: "🔬 Validate Podspecs"
     steps:
-      - label: "🔬 Validate Podspecs ($CURRENT_SWIFT_VERSION)"
+      - <<: *validate_pods
+        label: "🔬 Validate Podspecs ($CURRENT_SWIFT_VERSION)"
         key: "validate"
-        command: |
-          .buildkite/commands/validate-pods.sh
-        plugins: [$CI_TOOLKIT]
         env:
           IMAGE_ID: "$CURRENT_IMAGE_ID"
 
-      - label: "🔬 Validate Podspecs ($SWIFT_5_9_VERSION)"
-        command: |
-          .buildkite/commands/validate-pods.sh
-        plugins: [$CI_TOOLKIT]
+      - <<: *validate_pods
+        label: "🔬 Validate Podspecs ($SWIFT_5_9_VERSION)"
         env:
           IMAGE_ID: "$SWIFT_5_9_IMAGE_ID"
 
-      - label: "🔬 Validate Podspecs ($SWIFT_6_0_VERSION)"
-        command: |
-          .buildkite/commands/validate-pods.sh
-        plugins: [$CI_TOOLKIT]
+      - <<: *validate_pods
+        label: "🔬 Validate Podspecs ($SWIFT_6_0_VERSION)"
         env:
           IMAGE_ID: "$SWIFT_6_0_IMAGE_ID"
 
