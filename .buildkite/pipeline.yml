@@ -8,6 +8,9 @@ agents:
 env:
   IMAGE_ID: $CURRENT_IMAGE_ID
 
+##################
+# Reusabled Blocks
+##################
 validate_pods: &validate_pods
   command: |
     .buildkite/commands/validate-pods.sh
@@ -105,13 +108,16 @@ steps:
   ###################
   - group: "🛠️ Build SwiftUI Demo"
     steps:
+      ###################
+      # Build/Upload SwiftUI Demo
+      ###################
       - <<: *demo_build_swiftUI
         label: "🛠️ Build SwiftUI Demo"
         key: build_swiftui
         depends_on: test
         env:
           IMAGE_ID: "$CURRENT_IMAGE_ID"
-        artifact_paths:
+        artifact_paths: # Archive artifacts only for the production version of Swift
           - ".build/artifacts/*.ipa"
           - ".build/artifacts/*.dSYM.zip"
 
@@ -133,13 +139,16 @@ steps:
         command: .buildkite/commands/upload-to-appcenter.sh SwiftUI
         if: build.pull_request.id != null
 
+      ###################
+      # Build/Upload UIKit Demo
+      ###################
       - <<: *demo_build_uikit
         label: "🛠️ Build UIKit Demo"
         key: build_uikit
         depends_on: test
         env:
           IMAGE_ID: "$CURRENT_IMAGE_ID"
-        artifact_paths:
+        artifact_paths: # Archive artifacts only for the production version of Swift
           - ".build/artifacts/*.ipa"
           - ".build/artifacts/*.dSYM.zip"
 
