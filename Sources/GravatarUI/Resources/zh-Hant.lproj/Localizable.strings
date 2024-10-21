@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-10-17 09:54:03+0000 */
+/* Translation-Revision-Date: 2024-10-18 12:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -31,13 +31,13 @@
 "AvatarPicker.ContentLoading.Failure.SessionExpired.LogInError.buttonTitle" = "登入";
 
 /* A message describing the error and advising the user to login again to resolve the issue */
-"AvatarPicker.ContentLoading.Failure.SessionExpired.LogInError.subtext" = "請先登入，才可修改 Gravatar 個人檔案。";
+"AvatarPicker.ContentLoading.Failure.SessionExpired.LogInError.subtext" = "請先登入，才能修改 Gravatar 個人檔案。";
 
 /* Title of a message advising the user that their login session has expired. */
 "AvatarPicker.ContentLoading.Failure.SessionExpired.title" = "工作階段已過期";
 
 /* A message describing the error and advising the user to login again to resolve the issue */
-"AvatarPicker.ContentLoading.Failure.WrongEmailError.subtext" = "你登入用的電子郵件地址似乎有誤。 這一次請使用 %@ 再試一次。  謝謝！";
+"AvatarPicker.ContentLoading.Failure.WrongEmailError.subtext" = "你用來登入的用電子郵件地址似乎有誤。 這次請輸入 %@ 重試。 謝謝！";
 
 /* Title of a button that allow for uploading an image */
 "AvatarPicker.ContentLoading.Success.ctaButtonTitle" = "上傳圖片";
@@ -58,7 +58,7 @@
 "AvatarPicker.Header.title" = "大頭貼";
 
 /* Error message to show when the upload fails because the image is too big. */
-"AvatarPicker.Upload.Error.ImageTooBig.Error" = "所提供的圖片超過大小上限：10MB";
+"AvatarPicker.Upload.Error.ImageTooBig.Error" = "你提供的圖片超過大小上限：10MB";
 
 /* The title of the remove button on the upload error dialog. */
 "AvatarPicker.Upload.Error.Remove.title" = "移除";
@@ -76,10 +76,10 @@
 "AvatarPickerViewModel.Update.Fail" = "糟糕，嘗試變更大頭貼時發生問題。";
 
 /* This confirmation message shows when the user picks a different avatar. */
-"AvatarPickerViewModel.Update.Success" = "已更新大頭貼！ 可能需要幾分鐘，你才會在各處看到該大頭貼。";
+"AvatarPickerViewModel.Update.Success" = "已更新大頭貼！ 可能需要幾分鐘，大頭貼才會顯示於各處。";
 
 /* A generic error message to show on an error dialog when the upload fails. */
-"AvatarPickerViewModel.Upload.Error.message" = "糟糕，在上傳圖片時發生錯誤。";
+"AvatarPickerViewModel.Upload.Error.message" = "糟糕，上傳圖片時發生錯誤。";
 
 /* Text on a sample Gravatar profile, appearing in the place where a Gravatar profile would display your short biography. */
 "ClaimProfile.Label.AboutMe" = "讓全世界認識你。 網路世界的隨身大頭貼與簡介。";
@@ -94,7 +94,7 @@
 "GravatarNavigationModifier.Button.Done.title" = "完成";
 
 /* Screen title. Resize and crop an image. */
-"ImageCropper.title" = "重新調整大小與裁切";
+"ImageCropper.title" = "調整大小和裁切";
 
 /* Title for a button that allows you to claim a new Gravatar profile */
 "ProfileButton.title.create" = "登記個人檔案";
@@ -106,8 +106,8 @@
 "ProfileButton.title.view" = "檢視個人檔案";
 
 /* An option in a menu that will display the camera for taking a picture */
-"SystemImagePickerView.Source.Camera.title" = "拍攝照片";
+"SystemImagePickerView.Source.Camera.title" = "拍攝相片";
 
 /* An option in a menu that display the user's Photo Library and allow them to choose a photo from it */
-"SystemImagePickerView.Source.PhotoLibrary.title" = "選擇一張照片";
+"SystemImagePickerView.Source.PhotoLibrary.title" = "選擇照片";
 
