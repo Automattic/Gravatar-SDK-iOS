@@ -46,7 +46,7 @@ steps:
       - label: "📦 Build and Test Swift Package ($CURRENT_SWIFT_VERSION)"
         command: |
           validate_swift_package test device_model:"$CURRENT_DEVICE" os:"$CURRENT_OS"
-        key: "test"
+        key: "test_swift_current"
         env:
           IMAGE_ID: "$CURRENT_IMAGE_ID"
         plugins: [$CI_TOOLKIT]
@@ -98,7 +98,7 @@ steps:
       .buildkite/commands/publish-pod.sh "GravatarUI.podspec"
     plugins: [$CI_TOOLKIT]
     depends_on:
-      - "test"
+      - "test_swift_current"
       - "validate"
       - "lint"
     if: build.tag != null
@@ -114,7 +114,7 @@ steps:
       - <<: *demo_build_swiftUI
         label: "🛠️ Build SwiftUI Demo"
         key: build_swiftui
-        depends_on: test
+        depends_on: test_swift_current
         env:
           IMAGE_ID: "$CURRENT_IMAGE_ID"
         artifact_paths: # Archive artifacts only for the production version of Swift
@@ -145,7 +145,7 @@ steps:
       - <<: *demo_build_uikit
         label: "🛠️ Build UIKit Demo"
         key: build_uikit
-        depends_on: test
+        depends_on: test_swift_current
         env:
           IMAGE_ID: "$CURRENT_IMAGE_ID"
         artifact_paths: # Archive artifacts only for the production version of Swift
