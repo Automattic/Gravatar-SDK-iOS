@@ -9,8 +9,6 @@ final class OAuthSessionTests: XCTestCase {
 }
 
 class AuthenticationSessionMock: AuthenticationSession, @unchecked Sendable {
-    func cancel() async {}
-
     let responseURL: URL
 
     init(responseURL: URL) {
@@ -20,4 +18,6 @@ class AuthenticationSessionMock: AuthenticationSession, @unchecked Sendable {
     func authenticate(using url: URL, callbackURLScheme: String) async throws -> URL {
         responseURL
     }
+
+    func cancel() async {}
 }
