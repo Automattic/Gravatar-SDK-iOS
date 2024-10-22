@@ -63,6 +63,18 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
                 noticeView()
                     .accumulateIntrinsicHeight()
             }
+        }.onAppear {
+            NotificationCenter.default.addObserver(forName: .authorizationFinished, object: nil, queue: nil) { _ in
+                Task { @MainActor in
+                    onAuthenticationFinished()
+                }
+            }
+            NotificationCenter.default.addObserver(forName: .authorizationError, object: nil, queue: nil) { notification in
+                guard let error = notification.object as? OAuthError else { return }
+                Task { @MainActor in
+                    oauthError = error
+                }
+            }
         }
     }
 
@@ -131,8 +143,7 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
             isAuthenticating = true
             if !oauthSession.hasValidSession(with: email) {
                 do {
-                    _ = try await oauthSession.retrieveAccessToken(with: email)
-                    oauthError = nil
+                    try await oauthSession.retrieveAccessToken(with: email)
                 } catch OAuthError.oauthResponseError(_, let code) where code == .canceledLogin {
                     // ignore the error if the user has cancelled the operation.
                 } catch let error as OAuthError {
@@ -141,9 +152,16 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
                     oauthError = nil
                 }
             }
-            fetchedToken = oauthSession.sessionToken(with: email)?.token
-            isAuthenticating = false
+            onAuthenticationFinished()
         }
+    }
+
+    func onAuthenticationFinished() {
+        if let fetchedToken = oauthSession.sessionToken(with: email)?.token {
+            self.fetchedToken = fetchedToken
+            oauthError = nil
+        }
+        isAuthenticating = false
     }
 }
 
