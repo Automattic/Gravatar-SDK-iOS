@@ -73,6 +73,7 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
                 guard let error = notification.object as? OAuthError else { return }
                 Task { @MainActor in
                     oauthError = error
+                    onAuthenticationFinished()
                 }
             }
         }
