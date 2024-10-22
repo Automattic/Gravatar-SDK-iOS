@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-10-17 09:54:03+0000 */
+/* Translation-Revision-Date: 2024-10-18 10:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -76,7 +76,7 @@
 "AvatarPickerViewModel.Update.Fail" = "アバターの変更中にエラーが発生しました。";
 
 /* This confirmation message shows when the user picks a different avatar. */
-"AvatarPickerViewModel.Update.Success" = "アバターを更新しました。 すべてのサイトで表示されるまでに数分かかります。";
+"AvatarPickerViewModel.Update.Success" = "アバターを更新しました。 すべての場所で表示されるまでには数分かかる可能性があります。";
 
 /* A generic error message to show on an error dialog when the upload fails. */
 "AvatarPickerViewModel.Upload.Error.message" = "画像のアップロード中にエラーが発生しました。";
