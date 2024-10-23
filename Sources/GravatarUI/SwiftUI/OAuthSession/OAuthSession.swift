@@ -84,7 +84,7 @@ public struct OAuthSession: Sendable {
             await shared.authenticationSession.cancel()
             postNotification(.authorizationFinished)
             return true
-        } catch OAuthError.couldNotParseAccessCode(email.rawValue) {
+        } catch OAuthError.couldNotParseAccessCode {
             return false // The URL was not a Gravatar callback URL with a token.
         } catch {
             await shared.authenticationSession.cancel()
