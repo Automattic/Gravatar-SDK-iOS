@@ -82,14 +82,20 @@ public struct OAuthSession: Sendable {
             let newToken = KeychainToken(token: tokenText)
             shared.overrideToken(newToken, for: email)
             await shared.authenticationSession.cancel()
-            NotificationCenter.default.post(name: .authorizationFinished, object: nil)
+            postNotification(.authorizationFinished)
             return true
         } catch OAuthError.couldNotParseAccessCode(email.rawValue) {
             return false // The URL was not a Gravatar callback URL with a token.
         } catch {
-            NotificationCenter.default.post(name: .authorizationError, object: error)
             await shared.authenticationSession.cancel()
+            postNotification(.authorizationError, error: error)
             return true
+        }
+    }
+
+    private static func postNotification(_ name: Notification.Name, error: Error? = nil) {
+        Task { @MainActor in
+            NotificationCenter.default.post(name: name, object: error)
         }
     }
 

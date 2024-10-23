@@ -55,6 +55,9 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
         self.avatarUpdatedHandler = avatarUpdatedHandler
     }
 
+    let authorizationFinishedNotification = NotificationCenter.default.publisher(for: .authorizationFinished)
+    let authorizationErrorNotification = NotificationCenter.default.publisher(for: .authorizationError)
+
     var body: some View {
         NavigationView {
             if let token {
@@ -63,19 +66,12 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
                 noticeView()
                     .accumulateIntrinsicHeight()
             }
-        }.onAppear {
-            NotificationCenter.default.addObserver(forName: .authorizationFinished, object: nil, queue: nil) { _ in
-                Task { @MainActor in
-                    onAuthenticationFinished()
-                }
-            }
-            NotificationCenter.default.addObserver(forName: .authorizationError, object: nil, queue: nil) { notification in
-                guard let error = notification.object as? OAuthError else { return }
-                Task { @MainActor in
-                    oauthError = error
-                    onAuthenticationFinished()
-                }
-            }
+        }.onReceive(authorizationFinishedNotification) { _ in
+            onAuthenticationFinished()
+        }.onReceive(authorizationErrorNotification) { notification in
+            guard let error = notification.object as? OAuthError else { return }
+            oauthError = error
+            onAuthenticationFinished()
         }
     }
 
