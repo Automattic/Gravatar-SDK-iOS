@@ -41,11 +41,10 @@ struct ImageUploadService: ImageUploader {
         let request = URLRequest.imageUploadRequest(
             with: boundary,
             additionalHTTPHeaders: additionalHTTPHeaders,
-            apiVersion: avatarSelection.supportedAPIVersion
-        )
-        .settingAuthorizationHeaderField(with: accessToken)
-        // For the Multipart form/data, we need to send the email address, not the id of the emai address
-        let body = imageUploadBody(with: data, boundary: boundary, avatarSelection: avatarSelection)
+            selectionBehavior: avatarSelection
+        ).settingAuthorizationHeaderField(with: accessToken)
+
+        let body = imageUploadBody(with: data, boundary: boundary)
         do {
             return try await client.uploadData(with: request, data: body)
         } catch let error as HTTPClientError {
@@ -56,53 +55,7 @@ struct ImageUploadService: ImageUploader {
     }
 }
 
-private func imageUploadBody(with imageData: Data, boundary: String, avatarSelection: AvatarSelection) -> Data {
-    switch avatarSelection.supportedAPIVersion {
-    case .v1:
-        let account: Email? = switch avatarSelection {
-        case .preserveSelection:
-            nil
-        case .selectUploadedImage(let email), .selectUploadedImageIfNoneSelected(let email):
-            email
-        }
-
-        return imageUploadBodyV1(with: imageData, account: account, boundary: boundary)
-    case .v3:
-        return imageUploadBodyV3(with: imageData, boundary: boundary)
-    }
-}
-
-private func imageUploadBodyV1(with imageData: Data, account: Email?, boundary: String) -> Data {
-    enum UploadParameters {
-        static let contentType = "application/octet-stream"
-        static let filename = "profile.png"
-        static let imageKey = "filedata"
-        static let accountKey = "account"
-    }
-
-    var body = Data()
-
-    // Image Payload
-    body.append("--\(boundary)\r\n")
-    body.append("Content-Disposition: form-data; name=\(UploadParameters.imageKey); ")
-    body.append("filename=\(UploadParameters.filename)\r\n")
-    body.append("Content-Type: \(UploadParameters.contentType);\r\n\r\n")
-    body.append(imageData)
-    body.append("\r\n")
-
-    // Account Payload
-    if let email = account?.string {
-        body.append("--\(boundary)\r\n")
-        body.append("Content-Disposition: form-data; name=\"\(UploadParameters.accountKey)\"\r\n\r\n")
-        body.append("\(email)\r\n")
-    }
-    // EOF!
-    body.append("--\(boundary)--\r\n")
-
-    return body
-}
-
-private func imageUploadBodyV3(with imageData: Data, boundary: String) -> Data {
+private func imageUploadBody(with imageData: Data, boundary: String) -> Data {
     enum UploadParameters {
         static let contentType = "application/octet-stream"
         static let filename = "profile"
@@ -133,8 +86,12 @@ extension Data {
 }
 
 extension URLRequest {
-    fileprivate static func imageUploadRequest(with boundary: String, additionalHTTPHeaders: [HTTPHeaderField]?, apiVersion: APIVersion) -> URLRequest {
-        var request = URLRequest(url: apiVersion.imageUploadURL)
+    fileprivate static func imageUploadRequest(
+        with boundary: String,
+        additionalHTTPHeaders: [HTTPHeaderField]?,
+        selectionBehavior: AvatarSelection
+    ) -> URLRequest {
+        var request = URLRequest(url: .imageUploadURL.appendingQueryItems(for: selectionBehavior))
         request.addValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
         request.httpMethod = "POST"
         additionalHTTPHeaders?.forEach { headerTuple in
@@ -144,23 +101,37 @@ extension URLRequest {
     }
 }
 
-private enum APIVersion {
-    case v1
-    case v3
+extension URL {
+    fileprivate static var imageUploadURL: URL {
+        APIConfig.baseURL.appendingPathComponent("v3/me/avatars")
+    }
+}
 
-    var imageUploadURL: URL {
-        switch self {
-        case .v1: APIConfig.baseURL.appendingPathComponent("v1/upload-image")
-        case .v3: APIConfig.baseURL.appendingPathComponent("v3/me/avatars")
+extension URL {
+    func appendingQueryItems(for selectionBehavior: AvatarSelection) -> URL {
+        let queryItems = selectionBehavior.queryItems
+        if #available(iOS 16.0, *) {
+            return self.appending(queryItems: queryItems)
+        } else {
+            var components = URLComponents(string: absoluteString)
+            components?.queryItems = queryItems
+            return components?.url ?? self
         }
     }
 }
 
 extension AvatarSelection {
-    fileprivate var supportedAPIVersion: APIVersion {
+    var queryItems: [URLQueryItem] {
         switch self {
-        case .selectUploadedImageIfNoneSelected, .selectUploadedImage: .v1
-        case .preserveSelection: .v3
+        case .selectUploadedImage(let email):
+            [
+                .init(name: "select_avatar", value: "true"),
+                .init(name: "selected_email_hash", value: email.id),
+            ]
+        case .preserveSelection:
+            [.init(name: "select_avatar", value: "false")]
+        case .selectUploadedImageIfNoneSelected(let email):
+            [.init(name: "selected_email_hash", value: email.id)]
         }
     }
 }

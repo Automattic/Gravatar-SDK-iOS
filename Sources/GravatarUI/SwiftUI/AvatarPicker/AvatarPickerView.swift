@@ -138,6 +138,9 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
         .onChange(of: authToken ?? "") { newValue in
             model.update(authToken: newValue)
         }
+        .onChange(of: model.backendSelectedAvatarURL) { _ in
+            notifyAvatarSelection()
+        }
     }
 
     private func header() -> some View {
@@ -316,15 +319,19 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
     func selectAvatar(with id: String) {
         Task {
             if await model.selectAvatar(with: id) != nil {
-                if let avatarUpdatedHandler {
-                    // Delay to wait until the server has updated the selected avatar before updating the UI.
-                    // Without the delay the cache busting remains insufficient to capture the new avatar.
-                    // With less than 800 ms, we can still see the issue.
-                    // Hopefully, we can remove this delay soon.
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
-                        avatarUpdatedHandler()
-                    }
-                }
+                notifyAvatarSelection()
+            }
+        }
+    }
+
+    func notifyAvatarSelection() {
+        if let avatarUpdatedHandler {
+            // Delay to wait until the server has updated the selected avatar before updating the UI.
+            // Without the delay the cache busting remains insufficient to capture the new avatar.
+            // With less than 800 ms, we can still see the issue.
+            // Hopefully, we can remove this delay soon.
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+                avatarUpdatedHandler()
             }
         }
     }

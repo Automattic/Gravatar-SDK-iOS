@@ -26,6 +26,7 @@ class AvatarPickerViewModel: ObservableObject {
     }
 
     @Published var selectedAvatarURL: URL?
+    @Published private(set) var backendSelectedAvatarURL: URL?
     @Published private(set) var gridResponseStatus: Result<Void, Error>?
 
     let grid: AvatarGridModel = .init(avatars: [])
@@ -179,18 +180,23 @@ class AvatarPickerViewModel: ObservableObject {
     }
 
     private func doUpload(squareImage: UIImage, localID: String, accessToken: String) async {
+        guard let email else { return }
         let service = AvatarService()
         do {
-            let avatar = try await service.upload(squareImage, accessToken: accessToken)
+            let avatar = try await service.upload(
+                squareImage,
+                accessToken: accessToken,
+                selectionBehavior: .selectUploadedImageIfNoneSelected(for: email)
+            )
             ImageCache.shared.setEntry(.ready(squareImage), for: avatar.url)
 
             let newModel = AvatarImageModel(id: avatar.id, source: .remote(url: avatar.url))
             grid.replaceModel(withID: localID, with: newModel)
-            if selectedAvatarURL == nil {
-                // server side has some auto-selection logic that kicks in
-                // during the avatar upload if there's no selected avatar.
-                // so let's get synced.
-                refresh()
+
+            if avatar.isSelected {
+                grid.selectAvatar(withID: avatar.id)
+                self.selectedAvatarURL = URL(string: avatar.url)
+                self.backendSelectedAvatarURL = URL(string: avatar.url)
             }
         } catch ImageUploadError.responseError(reason: let .invalidHTTPStatusCode(response, errorPayload))
             where response.statusCode == HTTPStatus.badRequest.rawValue || response.statusCode == HTTPStatus.payloadTooLarge.rawValue
