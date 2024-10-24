@@ -34,4 +34,31 @@ Task {
 }
 ```
 
+3. Handle the universal link callback
+
+The OAuth flow calls the `redirectURI` you have provided in the previous step which then triggers `UIApplicationDelegate`.`application(_:continue:restorationHandler:)`. Here, you need to call `OAuthSession.handleCallback(...)` with the callback URL. This way, the SDK captures the access token to be used in the authorization requiring API calls.
+
+```swift
+
+class AppDelegate: UIApplicationDelegate {
+
+    // [...]
+
+    func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
+        guard userActivity.activityType == NSUserActivityTypeBrowsingWeb,
+            let incomingURL = userActivity.webpageURL,
+            let components = NSURLComponents(url: incomingURL, resolvingAgainstBaseURL: true),
+            let path = components.path else { return }
+
+        if path == "/redirect-url" { // Replace with your own OAuth redirectURI path
+            Task {
+                await GravatarUI.OAuthSession.handleCallback(incomingURL)
+            }
+        }
+    }
+}
+
+
+```
+
 That's it. Now you are ready to use the <doc:QuickEditorArticle>.
