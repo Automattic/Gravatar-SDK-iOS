@@ -1,5 +1,5 @@
-@testable import GravatarUI
 @testable import Gravatar
+@testable import GravatarUI
 import TestHelpers
 import XCTest
 
@@ -98,10 +98,10 @@ extension OAuthSessionTests {
 
     func handleURL(_ url: URL, oauthSession: OAuthSession, isTokenAssociated: Bool = true) async throws -> Bool {
         // Hidding some complexity of this call to make it easier to read.
-        await OAuthSession.handleCallback(
+        try await OAuthSession.handleCallback(
             url,
             shared: oauthSession,
-            checkTokenAuthorizationService: try checkTokenService(isAssociated: isTokenAssociated)
+            checkTokenAuthorizationService: checkTokenService(isAssociated: isTokenAssociated)
         )
     }
 
@@ -147,11 +147,11 @@ final class TestStorage: SecureStorage {
     func setSecret(_ secret: GravatarUI.KeychainToken, for key: String) throws {
         store[key] = secret
     }
-    
+
     func deleteSecret(with key: String) throws {
         store[key] = nil
     }
-    
+
     func secret(with key: String) throws -> GravatarUI.KeychainToken? {
         store[key]
     }
