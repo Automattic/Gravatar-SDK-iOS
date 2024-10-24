@@ -71,17 +71,17 @@ public struct OAuthSession: Sendable {
         }
     }
 
-    public static func handleCallback(_ callbackURL: URL) async -> Bool {
+    static func handleCallback(_ callbackURL: URL, shared: OAuthSession, checkTokenAuthorizationService: CheckTokenAuthorizationService) async -> Bool {
         guard let email = await shared.emailStorage.restore() else { return false }
 
         do {
             let tokenText = try shared.tokenResponse(from: callbackURL).token
-            guard try await CheckTokenAuthorizationService().isToken(tokenText, authorizedFor: email) else {
+            guard try await checkTokenAuthorizationService.isToken(tokenText, authorizedFor: email) else {
                 throw OAuthError.loggedInWithWrongEmail(email: email.rawValue)
             }
             let newToken = KeychainToken(token: tokenText)
             shared.overrideToken(newToken, for: email)
-            await shared.authenticationSession.cancel()
+//            await shared.authenticationSession.cancel()
             postNotification(.authorizationFinished)
             return true
         } catch OAuthError.couldNotParseAccessCode {
@@ -91,6 +91,10 @@ public struct OAuthSession: Sendable {
             postNotification(.authorizationError, error: error)
             return true
         }
+    }
+
+    public static func handleCallback(_ callbackURL: URL) async -> Bool {
+        await handleCallback(callbackURL, shared: shared, checkTokenAuthorizationService: .init())
     }
 
     private static func postNotification(_ name: Notification.Name, error: Error? = nil) {
