@@ -10,12 +10,14 @@ protocol ImageUploader: Sendable {
     ///   - image: The image to be uploaded.
     ///   - email: The user email account.
     ///   - accessToken: The authentication token for the user.
+    ///   - avatarSelection: How to handle avatar selection after uploading a new avatar
     ///   - additionalHTTPHeaders: Additional headers to add.
     /// - Returns: An asynchronously-delivered `URLResponse` instance, containing the response of the upload network task.
     @discardableResult
     func uploadImage(
         _ image: UIImage,
         accessToken: String,
+        avatarSelection: AvatarSelection,
         additionalHTTPHeaders: [HTTPHeaderField]?
     ) async throws -> (data: Data, response: HTTPURLResponse)
 }

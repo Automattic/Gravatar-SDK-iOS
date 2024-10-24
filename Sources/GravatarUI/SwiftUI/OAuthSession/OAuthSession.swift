@@ -1,6 +1,9 @@
 import AuthenticationServices
 
 public struct OAuthSession: Sendable {
+    static let shared = OAuthSession()
+    private var emailStorage = SessionEmailStorage()
+
     private let storage: SecureStorage
     private let authenticationSession: AuthenticationSession
     private let snakeCaseDecoder: JSONDecoder = {
@@ -14,13 +17,12 @@ public struct OAuthSession: Sendable {
         self.storage = storage
     }
 
-    public init() {
-        self.authenticationSession = OldAuthenticationSession()
-        self.storage = Keychain()
-    }
-
     public func hasSession(with email: Email) -> Bool {
         (try? storage.secret(with: email.rawValue) ?? nil) != nil
+    }
+
+    public static func hasSession(with email: Email) -> Bool {
+        shared.hasSession(with: email)
     }
 
     func hasValidSession(with email: Email) -> Bool {
@@ -45,29 +47,55 @@ public struct OAuthSession: Sendable {
         try? storage.deleteSecret(with: email.rawValue)
     }
 
+    public static func deleteSession(with email: Email) {
+        shared.deleteSession(with: email)
+    }
+
     func sessionToken(with email: Email) -> KeychainToken? {
         try? storage.secret(with: email.rawValue)
     }
 
-    @discardableResult
-    func retrieveAccessToken(with email: Email) async throws -> KeychainToken {
+    func retrieveAccessToken(with email: Email) async throws {
         guard let secrets = await Configuration.shared.oauthSecrets else {
             assertionFailure("Trying to retrieve access token without configuring oauth secrets.")
             throw OAuthError.notConfigured
         }
 
+        await emailStorage.save(email)
         do {
             let url = try oauthURL(with: email, secrets: secrets)
             let callbackURL = try await authenticationSession.authenticate(using: url, callbackURLScheme: secrets.callbackScheme)
-            let tokenText = try tokenResponse(from: callbackURL).token
+            _ = await Self.handleCallback(callbackURL)
+        } catch {
+            throw OAuthError.from(error: error)
+        }
+    }
+
+    public static func handleCallback(_ callbackURL: URL) async -> Bool {
+        guard let email = await shared.emailStorage.restore() else { return false }
+
+        do {
+            let tokenText = try shared.tokenResponse(from: callbackURL).token
             guard try await CheckTokenAuthorizationService().isToken(tokenText, authorizedFor: email) else {
                 throw OAuthError.loggedInWithWrongEmail(email: email.rawValue)
             }
             let newToken = KeychainToken(token: tokenText)
-            overrideToken(newToken, for: email)
-            return newToken
+            shared.overrideToken(newToken, for: email)
+            await shared.authenticationSession.cancel()
+            postNotification(.authorizationFinished)
+            return true
+        } catch OAuthError.couldNotParseAccessCode {
+            return false // The URL was not a Gravatar callback URL with a token.
         } catch {
-            throw OAuthError.from(error: error)
+            await shared.authenticationSession.cancel()
+            postNotification(.authorizationError, error: error)
+            return true
+        }
+    }
+
+    private static func postNotification(_ name: Notification.Name, error: Error? = nil) {
+        Task { @MainActor in
+            NotificationCenter.default.post(name: name, object: error)
         }
     }
 
@@ -135,14 +163,12 @@ extension OAuthError {
 private struct AccessTokenRequestParams: Encodable {
     let clientID: String
     let redirectURI: String
-    let clientSecret: String
     let grantType: String = "authorization_code"
     let code: String
 
     init(secrets: Configuration.OAuthSecrets, code: String) {
         clientID = secrets.clientID
         redirectURI = secrets.redirectURI
-        clientSecret = secrets.clientSecret
         self.code = code
     }
 }
@@ -213,6 +239,26 @@ extension [URLQueryItem] {
 
 protocol AuthenticationSession: Sendable {
     func authenticate(using url: URL, callbackURLScheme: String) async throws -> URL
+    func cancel() async
 }
 
 extension OldAuthenticationSession: AuthenticationSession {}
+
+// Stores the email used for the current OAuth flow
+private actor SessionEmailStorage {
+    var current: Email?
+
+    func save(_ email: Email) {
+        current = email
+    }
+
+    func restore() -> Email? {
+        let currentEmail = current
+        return currentEmail
+    }
+}
+
+extension Notification.Name {
+    static let authorizationFinished = Notification.Name("com.GravatarSDK.AuthorizationFinished")
+    static let authorizationError = Notification.Name("com.GravatarSDK.AuthorizationFinishedWithError")
+}

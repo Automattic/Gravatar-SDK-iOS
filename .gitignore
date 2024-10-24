@@ -45,6 +45,9 @@ fastlane/README.md
 fastlane/report.xml
 fastlane/test_output
 
+# SwiftGen (part of wpmreleasetoolkit)
+vendor/swiftgen
+
 # Other
-openapi-generator/
+openapi/GravatarOpenAPIClient/Sources/
 Demo/Demo/Secrets.swift

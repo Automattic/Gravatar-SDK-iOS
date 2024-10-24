@@ -24,15 +24,18 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
     fileprivate typealias Constants = QuickEditorConstants
 
     @Environment(\.oauthSession) private var oauthSession
-    @State var token: String?
-    @State var scope: QuickEditorScopeType
-    @State var isAuthenticating: Bool = true
-    @State var oauthError: OAuthError?
-    @Binding var isPresented: Bool
-    let email: Email
-    var customImageEditor: ImageEditorBlock<ImageEditor>?
-    var contentLayoutProvider: AvatarPickerContentLayoutProviding
-    var avatarUpdatedHandler: (() -> Void)?
+    @State private var fetchedToken: String?
+    @State private var isAuthenticating: Bool = true
+    @State private var oauthError: OAuthError?
+    @Binding private var isPresented: Bool
+    private let externalToken: String?
+    private var token: String? { externalToken ?? fetchedToken }
+    private var tokenBinding: Binding<String?> { externalToken != nil ? .constant(externalToken) : $fetchedToken }
+    private let scope: QuickEditorScopeType
+    private let email: Email
+    private let customImageEditor: ImageEditorBlock<ImageEditor>?
+    private let contentLayoutProvider: AvatarPickerContentLayoutProviding
+    private let avatarUpdatedHandler: (() -> Void)?
 
     init(
         email: Email,
@@ -48,9 +51,12 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
         self._isPresented = isPresented
         self.customImageEditor = customImageEditor
         self.contentLayoutProvider = contentLayoutProvider
-        self.token = token
+        self.externalToken = token
         self.avatarUpdatedHandler = avatarUpdatedHandler
     }
+
+    let authorizationFinishedNotification = NotificationCenter.default.publisher(for: .authorizationFinished)
+    let authorizationErrorNotification = NotificationCenter.default.publisher(for: .authorizationError)
 
     var body: some View {
         NavigationView {
@@ -60,6 +66,12 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
                 noticeView()
                     .accumulateIntrinsicHeight()
             }
+        }.onReceive(authorizationFinishedNotification) { _ in
+            onAuthenticationFinished()
+        }.onReceive(authorizationErrorNotification) { notification in
+            guard let error = notification.object as? OAuthError else { return }
+            oauthError = error
+            onAuthenticationFinished()
         }
     }
 
@@ -69,11 +81,11 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
         case .avatarPicker:
             AvatarPickerView(
                 email: email,
-                authToken: $token,
+                authToken: tokenBinding,
                 isPresented: $isPresented,
                 contentLayoutProvider: contentLayoutProvider,
                 customImageEditor: customImageEditor,
-                tokenErrorHandler: {
+                tokenErrorHandler: externalToken != nil ? nil : {
                     oauthSession.markSessionAsExpired(with: email)
                     performAuthentication()
                 },
@@ -128,8 +140,7 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
             isAuthenticating = true
             if !oauthSession.hasValidSession(with: email) {
                 do {
-                    _ = try await oauthSession.retrieveAccessToken(with: email)
-                    oauthError = nil
+                    try await oauthSession.retrieveAccessToken(with: email)
                 } catch OAuthError.oauthResponseError(_, let code) where code == .canceledLogin {
                     // ignore the error if the user has cancelled the operation.
                 } catch let error as OAuthError {
@@ -138,9 +149,16 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
                     oauthError = nil
                 }
             }
-            token = oauthSession.sessionToken(with: email)?.token
-            isAuthenticating = false
+            onAuthenticationFinished()
         }
+    }
+
+    func onAuthenticationFinished() {
+        if let fetchedToken = oauthSession.sessionToken(with: email)?.token {
+            self.fetchedToken = fetchedToken
+            oauthError = nil
+        }
+        isAuthenticating = false
     }
 }
 

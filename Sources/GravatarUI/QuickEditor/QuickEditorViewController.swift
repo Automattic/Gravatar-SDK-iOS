@@ -168,7 +168,7 @@ public struct QuickEditorPresenter {
         animated: Bool = true,
         completion: (() -> Void)? = nil,
         onAvatarUpdated: (() -> Void)? = nil,
-        onDismiss: @escaping () -> Void
+        onDismiss: (() -> Void)? = nil
     ) {
         let quickEditor = QuickEditorViewController(
             email: email,

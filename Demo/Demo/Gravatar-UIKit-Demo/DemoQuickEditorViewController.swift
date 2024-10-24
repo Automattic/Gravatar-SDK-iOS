@@ -125,18 +125,16 @@ final class DemoQuickEditorViewController: UIViewController {
 
     func updateLogoutButton(_ button: UIButton? = nil) {
         guard let savedEmail else { return }
-        let session = OAuthSession()
         let button = button ?? logoutButton
         UIView.animate {
-            button.isHidden = !session.hasSession(with: Email(savedEmail))
+            button.isHidden = !OAuthSession.hasSession(with: Email(savedEmail))
             button.alpha = button.isHidden ? 0 : 1
         }
     }
 
     func logout() {
         guard let savedEmail else { return }
-        let session = OAuthSession()
-        session.deleteSession(with: Email(savedEmail))
+        OAuthSession.deleteSession(with: Email(savedEmail))
         updateLogoutButton()
     }
 
@@ -203,7 +201,8 @@ final class DemoQuickEditorViewController: UIViewController {
 
 extension DemoQuickEditorViewController: UITextFieldDelegate {
     func textFieldDidChangeSelection(_ textField: UITextField) {
-        if textField == emailField, let emailText = textField.text, Email(emailText).isValid {
+        guard textField == emailField else { return }
+        if let emailText = textField.text, Email(emailText).isValid {
             fetchProfile(with: emailText)
             showButton.isEnabled = true
         } else {
@@ -225,6 +224,11 @@ extension DemoQuickEditorViewController: UITextFieldDelegate {
         if textField == tokenField {
             savedToken = textField.text
         }
+    }
+
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
     }
 }
 

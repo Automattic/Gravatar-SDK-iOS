@@ -64,10 +64,19 @@ platform :ios do
     SOURCES_TO_LOCALIZE.each do |source|
       next if source.gp_project_url.nil?
 
+      check_translation_progress(
+        glotpress_url: source.gp_project_url,
+        abort_on_violations: false
+      )
+
       ios_download_strings_files_from_glotpress(
         project_url: source.gp_project_url,
         locales: GLOTPRESS_TO_LPROJ_APP_LOCALE_CODES,
         download_dir: source.localizations_root
+      )
+
+      ios_lint_localizations(
+        input_dir: source.localizations_root
       )
 
       next if skip_commit

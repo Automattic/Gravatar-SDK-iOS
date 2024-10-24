@@ -1,7 +1,10 @@
-/* Translation-Revision-Date: 2024-09-12 11:54:03+0000 */
+/* Translation-Revision-Date: 2024-10-18 08:54:03+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
+
+/* Title of a message advising the user that something went wrong while trying to log in. */
+"AvatarPicker.ContentLoading.Failure.LogInError.title" = "يلزم تسجيل الدخول";
 
 /* Title of a button that allows the user to try loading their avatars again */
 "AvatarPicker.ContentLoading.Failure.Retry.ctaButtonTitle" = "المحاولة مجددًا";
@@ -24,8 +27,17 @@
 /* A message describing the error and advising the user to login again to resolve the issue */
 "AvatarPicker.ContentLoading.Failure.SessionExpired.LogIn.subtext" = "انتهت صلاحية الجلسة لأسباب تتعلق بالأمان. يرجى تسجيل الدخول لتحديث صورتك الرمزية.";
 
+/* Title of a button that will begin the process of authenticating the user, appearing beneath a message stating that a previous log in attept has failed. */
+"AvatarPicker.ContentLoading.Failure.SessionExpired.LogInError.buttonTitle" = "تسجيل الدخول";
+
+/* A message describing the error and advising the user to login again to resolve the issue */
+"AvatarPicker.ContentLoading.Failure.SessionExpired.LogInError.subtext" = "لتعديل ملفك الشخصي على جرافتار، يجب عليك تسجيل الدخول أولاً.";
+
 /* Title of a message advising the user that their login session has expired. */
 "AvatarPicker.ContentLoading.Failure.SessionExpired.title" = "انتهت صلاحية الجلسة";
+
+/* A message describing the error and advising the user to login again to resolve the issue */
+"AvatarPicker.ContentLoading.Failure.WrongEmailError.subtext" = "يبدو أنك تستخدم البريد الإلكتروني الخطأ لتسجيل الدخول. يرجى المحاولة مجددًا باستخدام %@ في هذه المرة. شكرًا!";
 
 /* Title of a button that allow for uploading an image */
 "AvatarPicker.ContentLoading.Success.ctaButtonTitle" = "رفع صورة";
@@ -36,14 +48,38 @@
 /* Title of a message advising the user to setup their avatar */
 "AvatarPicker.ContentLoading.success.title" = "لنقم بإعداد الأفاتار الخاص بك";
 
+/* The title of the dismiss button on a confirmation dialog. */
+"AvatarPicker.Dismiss.title" = "تجاهل";
+
 /* A message describing the purpose of this view */
 "AvatarPicker.Header.subtitle" = "اختر الصور الرمزية التي تفضِّلها أو ارفعها، واربطها بعنوان بريدك الإلكتروني.";
 
 /* Title appearing in the header of a view that allows users to manage their avatars */
 "AvatarPicker.Header.title" = "الصور الرمزية";
 
+/* Error message to show when the upload fails because the image is too big. */
+"AvatarPicker.Upload.Error.ImageTooBig.Error" = "تتجاوز الصورة المتوفرة الحد الأقصى للحجم: 10 ميجابايت";
+
+/* The title of the remove button on the upload error dialog. */
+"AvatarPicker.Upload.Error.Remove.title" = "إزالة";
+
+/* The title of the retry button on the upload error dialog. */
+"AvatarPicker.Upload.Error.Retry.title" = "إعادة المحاولة";
+
+/* The title of the upload error dialog. */
+"AvatarPicker.Upload.Error.title" = "فشل الرفع";
+
 /* Title of a button that will take you to your Gravatar profile, with an arrow indicating that this action will cause you to leave this view */
 "AvatarPickerProfile.Button.ViewProfile.title" = "عرض الملف الشخصي ←";
+
+/* This error message shows when the user attempts to pick a different avatar and fails. */
+"AvatarPickerViewModel.Update.Fail" = "عذرًا، حدث خطأ ما في أثناء محاولة تغيير صورتك الرمزية.";
+
+/* This confirmation message shows when the user picks a different avatar. */
+"AvatarPickerViewModel.Update.Success" = "تم تحديث الصورة الرمزية! قد يستغرق الظهور في كل مكان بضع دقائق.";
+
+/* A generic error message to show on an error dialog when the upload fails. */
+"AvatarPickerViewModel.Upload.Error.message" = "عفوًا، كان هناك خطأ في أثناء رفع الصورة.";
 
 /* Text on a sample Gravatar profile, appearing in the place where a Gravatar profile would display your short biography. */
 "ClaimProfile.Label.AboutMe" = "أخبر العالم مَن أنت. صورتك الرمزية وسيرتك الذاتية التي تتبعك عبر الويب.";
@@ -54,6 +90,12 @@
 /* Text on a sample Gravatar profile, appearing in the place where a Gravatar profile would display information like location, your preferred pronouns, etc. */
 "ClaimProfile.Label.Location" = "إضافة موقعك وضمائرك وما إلى ذلك";
 
+/* Title of a button that closes the current view */
+"GravatarNavigationModifier.Button.Done.title" = "تم";
+
+/* Screen title. Resize and crop an image. */
+"ImageCropper.title" = "تغيير الحجم والقص";
+
 /* Title for a button that allows you to claim a new Gravatar profile */
 "ProfileButton.title.create" = "المطالبة بالملف الشخصي";
 
@@ -62,4 +104,10 @@
 
 /* Title for a button that allows you to view your Gravatar profile */
 "ProfileButton.title.view" = "عرض الملف الشخصي";
+
+/* An option in a menu that will display the camera for taking a picture */
+"SystemImagePickerView.Source.Camera.title" = "التقاط صورة";
+
+/* An option in a menu that display the user's Photo Library and allow them to choose a photo from it */
+"SystemImagePickerView.Source.PhotoLibrary.title" = "اختيار صورة";
 
