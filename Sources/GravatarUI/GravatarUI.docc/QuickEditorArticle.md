@@ -4,18 +4,10 @@ This customizable sheet allows users to update their avatars. Available for both
 
 ### Quick Editor Preview
 
-Here's how it looks like:
-
-![](vertical-large.png)
-
-It is possible to initially display it as a bottom sheet and let the user to expand it.
-
-![](vertical-medium-expandable.png)
-
-Also possible to scroll the avatars collection horizontially:
-
-![](horizontal-intrinsic-height.png)
-
+Layout 1 | Layout 2 | Layout 3 |
+----- | ------ | ----- |
+![](vertical-large.png) | ![](vertical-medium-expandable.png) | ![](horizontal-intrinsic-height.png) |
+Full height sheet | Expandable sheet | Intrinsic height sheet, horizontal scroll |
 
 ### Quick Editor - SwiftUI
 
