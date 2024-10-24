@@ -71,6 +71,8 @@ public struct OAuthSession: Sendable {
         }
     }
 
+    // Internal for tests purposes. This allows to inject a custom `shared` instance and a service double.
+    // The public version will call this function directly.
     static func handleCallback(_ callbackURL: URL, shared: OAuthSession, checkTokenAuthorizationService: CheckTokenAuthorizationService) async -> Bool {
         guard let email = await shared.emailStorage.restore() else { return false }
 
@@ -81,7 +83,7 @@ public struct OAuthSession: Sendable {
             }
             let newToken = KeychainToken(token: tokenText)
             shared.overrideToken(newToken, for: email)
-//            await shared.authenticationSession.cancel()
+            await shared.authenticationSession.cancel()
             postNotification(.authorizationFinished)
             return true
         } catch OAuthError.couldNotParseAccessCode {
@@ -94,6 +96,7 @@ public struct OAuthSession: Sendable {
     }
 
     public static func handleCallback(_ callbackURL: URL) async -> Bool {
+        // Call handleCallback() directly without adding extra logic here.
         await handleCallback(callbackURL, shared: shared, checkTokenAuthorizationService: .init())
     }
 
