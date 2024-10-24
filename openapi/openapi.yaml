@@ -626,12 +626,12 @@ paths:
         - name: selected_email_hash
           in: query
           description: >-
-            The sha256 hash of the email address used to determine which avatar
+            The SHA256 hash of the email address used to determine which avatar
             is selected. The 'selected' attribute in the avatar list will be set
             to 'true' for the avatar associated with this email.
           schema:
             type: string
-            default: null
+            default: ''
       responses:
         '200':
           description: Successful retrieval of avatars
@@ -655,6 +655,28 @@ paths:
       operationId: uploadAvatar
       security:
         - oauth: []
+      parameters:
+        - name: selected_email_hash
+          in: query
+          description: >-
+            The SHA256 hash of email. If provided, the uploaded image will be
+            selected as the avatar for this email.
+          required: false
+          schema:
+            type: string
+        - name: select_avatar
+          in: query
+          description: >-
+            Determines if the uploaded image should be set as the avatar for the
+            email. If not passed, the image is only selected as the email's
+            avatar if no previous avatar has been set. Accepts '1'/'true' to
+            always set the avatar or '0'/'false' to never set the avatar.
+          required: false
+          schema:
+            type:
+              - boolean
+              - 'null'
+            default: null
       requestBody:
         required: true
         content:
