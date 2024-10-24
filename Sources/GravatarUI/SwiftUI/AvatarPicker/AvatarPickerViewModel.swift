@@ -184,7 +184,11 @@ class AvatarPickerViewModel: ObservableObject {
         guard let email else { return }
         let service = AvatarService()
         do {
-            let avatar: Avatar = try await service.upload(squareImage, selectionBehavior: .selectUploadedImageIfNoneSelected(for: email), accessToken: accessToken)
+            let avatar: Avatar = try await service.upload(
+                squareImage,
+                selectionBehavior: .selectUploadedImageIfNoneSelected(for: email),
+                accessToken: accessToken
+            )
             ImageCache.shared.setEntry(.ready(squareImage), for: avatar.url)
 
             let newModel = AvatarImageModel(id: avatar.id, source: .remote(url: avatar.url))

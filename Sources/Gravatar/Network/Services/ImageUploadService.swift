@@ -90,7 +90,11 @@ extension Data {
 }
 
 extension URLRequest {
-    fileprivate static func imageUploadRequest(with boundary: String, additionalHTTPHeaders: [HTTPHeaderField]?, selectionBehavior: AvatarSelection) -> URLRequest {
+    fileprivate static func imageUploadRequest(
+        with boundary: String,
+        additionalHTTPHeaders: [HTTPHeaderField]?,
+        selectionBehavior: AvatarSelection
+    ) -> URLRequest {
         var request = URLRequest(url: .imageUploadURL.appendingQueryItems(for: selectionBehavior))
         request.addValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
         request.httpMethod = "POST"
@@ -101,8 +105,8 @@ extension URLRequest {
     }
 }
 
-private extension URL {
-    static var imageUploadURL: URL {
+extension URL {
+    fileprivate static var imageUploadURL: URL {
         APIConfig.baseURL.appendingPathComponent("v3/me/avatars")
     }
 }
@@ -123,15 +127,15 @@ extension URL {
 extension AvatarSelection {
     var queryItems: [URLQueryItem] {
         switch self {
-            case .selectUploadedImage(let email):
-                return [
-                    .init(name: "select_avatar", value: "true"),
-                    .init(name: "selected_email_hash", value: email.id)
-                ]
-            case .preserveSelection:
-                return [.init(name: "select_avatar", value: "false")]
-            case .selectUploadedImageIfNoneSelected(let email):
-                return [.init(name: "selected_email_hash", value: email.id)]
+        case .selectUploadedImage(let email):
+            [
+                .init(name: "select_avatar", value: "true"),
+                .init(name: "selected_email_hash", value: email.id),
+            ]
+        case .preserveSelection:
+            [.init(name: "select_avatar", value: "false")]
+        case .selectUploadedImageIfNoneSelected(let email):
+            [.init(name: "selected_email_hash", value: email.id)]
         }
     }
 }

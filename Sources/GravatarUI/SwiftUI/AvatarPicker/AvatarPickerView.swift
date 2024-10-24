@@ -138,7 +138,7 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
         .onChange(of: authToken ?? "") { newValue in
             model.update(authToken: newValue)
         }
-        .onChange(of: model.selectedAvatarURL) { newValue in
+        .onChange(of: model.selectedAvatarURL) { _ in
             if !model.isFirstLoad {
                 notifyAvatarSelection()
             }
