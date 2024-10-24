@@ -71,12 +71,14 @@ public struct OAuthSession: Sendable {
         }
     }
 
-    public static func handleCallback(_ callbackURL: URL) async -> Bool {
+    // Internal for tests purposes. This allows to inject a custom `shared` instance and a service double.
+    // The public version will call this function directly.
+    static func handleCallback(_ callbackURL: URL, shared: OAuthSession, checkTokenAuthorizationService: CheckTokenAuthorizationService) async -> Bool {
         guard let email = await shared.emailStorage.restore() else { return false }
 
         do {
             let tokenText = try shared.tokenResponse(from: callbackURL).token
-            guard try await CheckTokenAuthorizationService().isToken(tokenText, authorizedFor: email) else {
+            guard try await checkTokenAuthorizationService.isToken(tokenText, authorizedFor: email) else {
                 throw OAuthError.loggedInWithWrongEmail(email: email.rawValue)
             }
             let newToken = KeychainToken(token: tokenText)
@@ -91,6 +93,11 @@ public struct OAuthSession: Sendable {
             postNotification(.authorizationError, error: error)
             return true
         }
+    }
+
+    public static func handleCallback(_ callbackURL: URL) async -> Bool {
+        // Call handleCallback() directly without adding extra logic here.
+        await handleCallback(callbackURL, shared: shared, checkTokenAuthorizationService: .init())
     }
 
     private static func postNotification(_ name: Notification.Name, error: Error? = nil) {
