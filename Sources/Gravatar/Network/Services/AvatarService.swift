@@ -40,19 +40,6 @@ public struct AvatarService: Sendable {
         return try await imageDownloader.fetchImage(with: gravatarURL, forceRefresh: options.forceRefresh, processingMethod: options.processingMethod)
     }
 
-    /// Uploads an image and sets it as the avatar of the given email at Gravatar.com. Returns the `URLResponse` of the network tasks asynchronously. Throws
-    /// ``ImageUploadError``.
-    /// - Parameters:
-    ///   - image: The image to be uploaded.
-    ///   - email: An`Email` object
-    ///   - accessToken: The authentication token for the user. This is a WordPress.com OAuth2 access token.
-    /// - Returns: An asynchronously-delivered `URLResponse` instance, containing the response of the upload network task.
-    @discardableResult
-    public func upload(_ image: UIImage, email: Email, accessToken: String) async throws -> URLResponse {
-        try await imageUploader.uploadImage(image, accessToken: accessToken, avatarSelection: .selectUploadedImage(for: email), additionalHTTPHeaders: nil)
-            .response
-    }
-
     /// Uploads an image to be used as the user's Gravatar profile image, and returns the `URLResponse` of the network tasks asynchronously. Throws
     /// ``ImageUploadError``.
     /// - Parameters:
@@ -60,8 +47,8 @@ public struct AvatarService: Sendable {
     ///   - accessToken: The authentication token for the user. This is a WordPress.com OAuth2 access token.
     /// - Returns: An asynchronously-delivered `AvatarType` instance, containing data of the newly created avatar.
     @discardableResult
-    public func upload(_ image: UIImage, accessToken: String) async throws -> AvatarType {
-        let avatar: Avatar = try await upload(image, accessToken: accessToken, avatarSelection: .preserveSelection)
+    public func upload(_ image: UIImage, selectionBehavior: AvatarSelection, accessToken: String) async throws -> AvatarType {
+        let avatar: Avatar = try await upload(image, accessToken: accessToken, avatarSelection: selectionBehavior)
         return avatar
     }
 
