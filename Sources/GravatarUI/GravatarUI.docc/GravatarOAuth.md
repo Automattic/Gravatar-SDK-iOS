@@ -58,7 +58,6 @@ class AppDelegate: UIApplicationDelegate {
     }
 }
 
-
 ```
 
 That's it. Now you are ready to use the <doc:QuickEditorArticle>.
