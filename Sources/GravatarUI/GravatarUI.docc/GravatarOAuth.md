@@ -36,7 +36,7 @@ Task {
 
 3. Define a Universal Link for the redirectURI
 
-Please ensure that a Universal Link is defined in your application for the redirect URI, so the OAuth flow can run successfully. For the required steps, please refer to the [Universal Links](https://developer.apple.com/documentation/xcode/allowing-apps-and-websites-to-link-to-your-content/) documentation.
+For the OAuth flow to run successfully, ensure that a Universal Link is defined in your application for the redirect URI. For the required steps, refer to the [Universal Links](https://developer.apple.com/documentation/xcode/allowing-apps-and-websites-to-link-to-your-content/) documentation.
 
 4. Handle the universal link callback
 
