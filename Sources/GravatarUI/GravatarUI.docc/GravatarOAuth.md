@@ -34,7 +34,11 @@ Task {
 }
 ```
 
-3. Handle the universal link callback
+3. Define a Universal Link for the redirectURI
+
+Please ensure that a Universal Link is defined in your application for the redirect URI, so the OAuth flow can run successfully. For the required steps, please refer to the [Universal Links](https://developer.apple.com/documentation/xcode/allowing-apps-and-websites-to-link-to-your-content/) documentation.
+
+4. Handle the universal link callback
 
 The OAuth flow calls the `redirectURI` you have provided in the previous step which then triggers `UIApplicationDelegate`.`application(_:continue:restorationHandler:)`. Here, you need to call `OAuthSession.handleCallback(...)` with the callback URL. This way, the SDK captures the access token to be used in the authorization requiring API calls.
 
