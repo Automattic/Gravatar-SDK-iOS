@@ -56,10 +56,6 @@ struct ImageUploadService: ImageUploader {
 }
 
 private func imageUploadBody(with imageData: Data, boundary: String) -> Data {
-    imageUploadBodyV3(with: imageData, boundary: boundary)
-}
-
-private func imageUploadBodyV3(with imageData: Data, boundary: String) -> Data {
     enum UploadParameters {
         static let contentType = "application/octet-stream"
         static let filename = "profile"
