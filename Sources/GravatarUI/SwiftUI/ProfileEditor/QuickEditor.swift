@@ -55,6 +55,9 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
         self.avatarUpdatedHandler = avatarUpdatedHandler
     }
 
+    let authorizationFinishedNotification = NotificationCenter.default.publisher(for: .authorizationFinished)
+    let authorizationErrorNotification = NotificationCenter.default.publisher(for: .authorizationError)
+
     var body: some View {
         NavigationView {
             if let token {
@@ -63,6 +66,12 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
                 noticeView()
                     .accumulateIntrinsicHeight()
             }
+        }.onReceive(authorizationFinishedNotification) { _ in
+            onAuthenticationFinished()
+        }.onReceive(authorizationErrorNotification) { notification in
+            guard let error = notification.object as? OAuthError else { return }
+            oauthError = error
+            onAuthenticationFinished()
         }
     }
 
@@ -131,8 +140,7 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
             isAuthenticating = true
             if !oauthSession.hasValidSession(with: email) {
                 do {
-                    _ = try await oauthSession.retrieveAccessToken(with: email)
-                    oauthError = nil
+                    try await oauthSession.retrieveAccessToken(with: email)
                 } catch OAuthError.oauthResponseError(_, let code) where code == .canceledLogin {
                     // ignore the error if the user has cancelled the operation.
                 } catch let error as OAuthError {
@@ -141,9 +149,16 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
                     oauthError = nil
                 }
             }
-            fetchedToken = oauthSession.sessionToken(with: email)?.token
-            isAuthenticating = false
+            onAuthenticationFinished()
         }
+    }
+
+    func onAuthenticationFinished() {
+        if let fetchedToken = oauthSession.sessionToken(with: email)?.token {
+            self.fetchedToken = fetchedToken
+            oauthError = nil
+        }
+        isAuthenticating = false
     }
 }
 

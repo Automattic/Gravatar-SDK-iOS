@@ -1,7 +1,7 @@
 import SwiftUI
 
 private struct OAuthSessionKey: EnvironmentKey {
-    static let defaultValue: OAuthSession = .init()
+    static let defaultValue: OAuthSession = .shared
 }
 
 extension EnvironmentValues {

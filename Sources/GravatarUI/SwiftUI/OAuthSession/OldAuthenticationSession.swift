@@ -6,12 +6,13 @@ final class WebAuthenticationPresentationContextProvider: NSObject, ASWebAuthent
     }
 }
 
-struct OldAuthenticationSession: Sendable {
+actor OldAuthenticationSession: Sendable {
     let context = WebAuthenticationPresentationContextProvider()
+    var session: ASWebAuthenticationSession?
 
     func authenticate(using url: URL, callbackURLScheme: String) async throws -> URL {
         try await withCheckedThrowingContinuation { continuation in
-            let session = ASWebAuthenticationSession(url: url, callbackURLScheme: callbackURLScheme) { callbackURL, error in
+            session = ASWebAuthenticationSession(url: url, callbackURLScheme: callbackURLScheme) { callbackURL, error in
                 if let error {
                     continuation.resume(throwing: error)
                 } else if let callbackURL {
@@ -20,9 +21,16 @@ struct OldAuthenticationSession: Sendable {
             }
 
             Task { @MainActor in
-                session.presentationContextProvider = context
-                session.start()
+                await session?.presentationContextProvider = context
+                await session?.start()
             }
+        }
+    }
+
+    nonisolated
+    func cancel() {
+        Task { @MainActor in
+            await session?.cancel()
         }
     }
 }
