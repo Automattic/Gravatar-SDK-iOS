@@ -26,7 +26,7 @@ class AvatarPickerViewModel: ObservableObject {
     }
 
     @Published var selectedAvatarURL: URL?
-    @Published var isFirstLoad: Bool = true
+    @Published var backendSelectedAvatarURL: URL?
     @Published private(set) var gridResponseStatus: Result<Void, Error>?
 
     let grid: AvatarGridModel = .init(avatars: [])
@@ -134,7 +134,6 @@ class AvatarPickerViewModel: ObservableObject {
             gridResponseStatus = .failure(error)
             isAvatarsLoading = false
         }
-        isFirstLoad = false
     }
 
     func fetchProfile() async {
@@ -197,6 +196,7 @@ class AvatarPickerViewModel: ObservableObject {
             if avatar.isSelected {
                 grid.selectAvatar(withID: avatar.id)
                 self.selectedAvatarURL = URL(string: avatar.url)
+                self.backendSelectedAvatarURL = URL(string: avatar.url)
             }
         } catch ImageUploadError.responseError(reason: let .invalidHTTPStatusCode(response, errorPayload))
             where response.statusCode == HTTPStatus.badRequest.rawValue || response.statusCode == HTTPStatus.payloadTooLarge.rawValue

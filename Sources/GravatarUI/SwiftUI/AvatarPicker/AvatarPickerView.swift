@@ -138,10 +138,8 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
         .onChange(of: authToken ?? "") { newValue in
             model.update(authToken: newValue)
         }
-        .onChange(of: model.selectedAvatarURL) { _ in
-            if !model.isFirstLoad {
-                notifyAvatarSelection()
-            }
+        .onChange(of: model.backendSelectedAvatarURL) { _ in
+            notifyAvatarSelection()
         }
     }
 
@@ -320,7 +318,9 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
 
     func selectAvatar(with id: String) {
         Task {
-            await model.selectAvatar(with: id)
+            if await model.selectAvatar(with: id) != nil {
+                notifyAvatarSelection()
+            }
         }
     }
 
