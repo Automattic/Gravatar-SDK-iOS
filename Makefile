@@ -1,3 +1,8 @@
+ifndef GRAVATAR_SDK_LOCAL_DEVELOPMENT
+export GRAVATAR_SDK_LOCAL_DEVELOPMENT := 1
+$(info GRAVATAR_SDK_LOCAL_DEVELOPMENT not set in the environment. Setting to 1.)
+endif
+
 .PHONY: all dev clean run
 
 # To see how to drive this makefile use:
@@ -20,7 +25,6 @@ OPENAPI_GENERATED_DIR ?= $(CURRENT_MAKEFILE_DIR)/openapi/$(OPENAPI_PROJECT_NAME)
 OPENAPI_CLIENT_PROPERTIES ?= projectName=$(OPENAPI_PROJECT_NAME),useSPMFileStructure=true
 
 XCODE_PROJECT_NAME ?= Gravatar-SDK-iOS
-XCODE_LOCAL_DEVELOPMENT_KEY ?= GRAVATAR_SDK_LOCAL_DEVELOPMENT=1
 
 # Derived values (don't change these).
 CURRENT_MAKEFILE_PATH := $(abspath $(lastword $(MAKEFILE_LIST)))
@@ -39,7 +43,7 @@ help:  # Display this help.
 
 dev: # Open the package in xcode
 	@osascript -e 'tell application "Xcode" to quit'
-	@$(XCODE_LOCAL_DEVELOPMENT_KEY) xed .
+	@xed .
 
 dev-demo: # Open an xcode project with the package and a demo project
 	xed Demo/
