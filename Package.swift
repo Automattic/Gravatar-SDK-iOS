@@ -1,6 +1,7 @@
 // swift-tools-version: 5.10
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
+import Foundation
 import PackageDescription
 
 let package = Package(
@@ -25,7 +26,6 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/nicklockwood/SwiftFormat", from: "0.54.5"),
         .package(url: "https://github.com/pointfreeco/swift-snapshot-testing", from: "1.17.6"),
-        .package(url: "https://github.com/SimplyDanny/SwiftLintPlugins", exact: "0.56.2"),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -73,3 +73,17 @@ let package = Package(
         )
     ]
 )
+
+let targetsWithSwiftLint = ["Gravatar", "GravatarUI"]
+
+if ProcessInfo.processInfo.environment["GRAVATAR_SDK_LOCAL_DEVELOPMENT"] != nil {
+    package.dependencies.append(.package(url: "https://github.com/SimplyDanny/SwiftLintPlugins", from: "0.57.0"))
+    
+    package.targets.filter{ targetsWithSwiftLint.contains($0.name) }.forEach { target in
+        var plugins: [Target.PluginUsage] = target.plugins ?? []
+        
+        plugins.append(.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins"))
+        
+        target.plugins = plugins
+    }
+}

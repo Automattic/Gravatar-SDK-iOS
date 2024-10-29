@@ -1,4 +1,4 @@
-.PHONY: all clean run
+.PHONY: all dev clean run
 
 # To see how to drive this makefile use:
 #
@@ -19,6 +19,9 @@ OPENAPI_DIR ?= $(CURRENT_MAKEFILE_DIR)/$(OPENAPI_REL_DIR)
 OPENAPI_GENERATED_DIR ?= $(CURRENT_MAKEFILE_DIR)/openapi/$(OPENAPI_PROJECT_NAME)
 OPENAPI_CLIENT_PROPERTIES ?= projectName=$(OPENAPI_PROJECT_NAME),useSPMFileStructure=true
 
+XCODE_PROJECT_NAME ?= Gravatar-SDK-iOS
+XCODE_LOCAL_DEVELOPMENT_KEY ?= GRAVATAR_SDK_LOCAL_DEVELOPMENT=1
+
 # Derived values (don't change these).
 CURRENT_MAKEFILE_PATH := $(abspath $(lastword $(MAKEFILE_LIST)))
 CURRENT_MAKEFILE_DIR := $(patsubst %/,%,$(dir $(CURRENT_MAKEFILE_PATH)))
@@ -35,7 +38,8 @@ help:  # Display this help.
 	@-+grep -Eh "^[a-z-]+:.*#" $(CURRENT_MAKEFILE_PATH) | sed -E 's/^(.*:)(.*#+)(.*)/  \1 @@@ \3 /' | column -t -s "@@@"
 
 dev: # Open the package in xcode
-	xed .
+	@osascript -e 'tell application "Xcode" to quit'
+	@$(XCODE_LOCAL_DEVELOPMENT_KEY) xed .
 
 dev-demo: # Open an xcode project with the package and a demo project
 	xed Demo/
