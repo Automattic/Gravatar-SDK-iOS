@@ -69,6 +69,8 @@ final class ImageSquaringTesting: XCTestCase {
         XCTAssertEqual(result.size.height, 102, "Height should match the larger side")
     }
 
+    // MARK: - Extreme Dimensions Tests
+
     func testVerySmallImage() {
         // Given a very small image (1x1)
         let smallImage = createImage(width: 1, height: 1)
