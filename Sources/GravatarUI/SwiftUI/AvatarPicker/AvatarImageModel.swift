@@ -7,11 +7,10 @@ struct AvatarImageModel: Hashable, Identifiable, Sendable {
         case local(image: UIImage)
     }
 
-    enum State {
+    enum State: Equatable, Hashable {
         case loaded
         case loading
-        case retry
-        case error
+        case error(supportsRetry: Bool, errorMessage: String)
     }
 
     let id: String

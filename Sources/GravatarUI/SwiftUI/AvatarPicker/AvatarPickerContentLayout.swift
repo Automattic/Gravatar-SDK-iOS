@@ -16,6 +16,7 @@ public enum VerticalContentPresentationStyle: Sendable, Equatable {
 /// Presentation styles supported for the horizontially scrolling content.
 public enum HorizontalContentPresentationStyle: String, Sendable, Equatable {
     /// Represents a bottom sheet with intrinsic height.
+    ///
     /// There are 2 size classes where this mode is inactive:
     ///  - Compact height: The sheet is displayed in full height.
     ///  - Regular width: The system ignores the intrinsic height and defaults to a full size sheet which is
@@ -24,7 +25,7 @@ public enum HorizontalContentPresentationStyle: String, Sendable, Equatable {
 }
 
 /// Content layout to use iOS 16.0 +.
-public enum AvatarPickerContentLayoutWithPresentation: AvatarPickerContentLayoutProviding, Equatable {
+public enum AvatarPickerContentLayout: AvatarPickerContentLayoutProviding, Equatable {
     /// Displays avatars in a vertcally scrolling grid with the given presentation style. See: ``VerticalContentPresentationStyle``
     case vertical(presentationStyle: VerticalContentPresentationStyle = .large)
 
@@ -34,7 +35,7 @@ public enum AvatarPickerContentLayoutWithPresentation: AvatarPickerContentLayout
 
     // MARK: AvatarPickerContentLayoutProviding
 
-    var contentLayout: AvatarPickerContentLayout {
+    var contentLayout: AvatarPickerContentLayoutType {
         switch self {
         case .horizontal:
             .horizontal
@@ -42,11 +43,20 @@ public enum AvatarPickerContentLayoutWithPresentation: AvatarPickerContentLayout
             .vertical
         }
     }
+
+    var prioritizeScrollOverResize: Bool {
+        switch self {
+        case .vertical(.expandableMedium(_, let prioritizeScrollOverResize)):
+            prioritizeScrollOverResize
+        default:
+            false
+        }
+    }
 }
 
 /// Content layout to use pre iOS 16.0 where the system don't offer different presentation styles for SwiftUI.
-/// Use ``AvatarPickerContentLayoutWithPresentation`` for iOS 16.0 +.
-enum AvatarPickerContentLayout: String, CaseIterable, Identifiable, AvatarPickerContentLayoutProviding {
+/// Use ``AvatarPickerContentLayout`` for iOS 16.0 +.
+enum AvatarPickerContentLayoutType: String, CaseIterable, Identifiable, AvatarPickerContentLayoutProviding {
     var id: Self { self }
 
     /// Displays avatars in a vertcally scrolling grid.
@@ -56,11 +66,11 @@ enum AvatarPickerContentLayout: String, CaseIterable, Identifiable, AvatarPicker
 
     // MARK: AvatarPickerContentLayoutProviding
 
-    var contentLayout: AvatarPickerContentLayout { self }
+    var contentLayout: AvatarPickerContentLayoutType { self }
 }
 
-/// Internal type. This is an abstraction over `AvatarPickerContentLayout` and `AvatarPickerContentLayoutWithPresentation`
+/// Internal type. This is an abstraction over `AvatarPickerContentLayoutType` and `AvatarPickerContentLayout`
 /// to use when all we are interested is to find out if the content is horizontial or vertical.
 protocol AvatarPickerContentLayoutProviding: Sendable {
-    var contentLayout: AvatarPickerContentLayout { get }
+    var contentLayout: AvatarPickerContentLayoutType { get }
 }

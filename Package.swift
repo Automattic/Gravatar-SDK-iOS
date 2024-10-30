@@ -23,8 +23,8 @@ let package = Package(
         ),
     ],
     dependencies: [
-        .package(url: "https://github.com/nicklockwood/SwiftFormat", from: "0.54.0"),
-        .package(url: "https://github.com/pointfreeco/swift-snapshot-testing", from: "1.8.1"),
+        .package(url: "https://github.com/nicklockwood/SwiftFormat", from: "0.54.5"),
+        .package(url: "https://github.com/pointfreeco/swift-snapshot-testing", from: "1.17.6"),
         .package(url: "https://github.com/SimplyDanny/SwiftLintPlugins", exact: "0.56.2"),
     ],
     targets: [
@@ -32,10 +32,10 @@ let package = Package(
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
             name: "Gravatar",
+            resources: [.process("Resources")],
             swiftSettings: [
                 .enableExperimentalFeature("StrictConcurrency")
-            ],
-            plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")]
+            ]
         ),
         .testTarget(
             name: "GravatarTests",
@@ -51,8 +51,7 @@ let package = Package(
             resources: [.process("Resources")],
             swiftSettings: [
                 .enableExperimentalFeature("StrictConcurrency")
-            ],
-            plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")]
+            ]
         ),
         .testTarget(
             name: "GravatarUITests",

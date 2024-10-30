@@ -14,7 +14,7 @@ Pod::Spec.new do |s|
     git: 'https://github.com/Automattic/Gravatar-SDK-iOS.git',
     tag: s.version.to_s
   }
-  s.documentation_url = 'https://automattic.github.io/Gravatar-SDK-iOS/'
+  s.documentation_url = 'https://swiftpackageindex.com/Automattic/Gravatar-SDK-iOS/documentation/gravatarui'
 
   s.swift_versions    = Gravatar::SWIFT_VERSIONS
 

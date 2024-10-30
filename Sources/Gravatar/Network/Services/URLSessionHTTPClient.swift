@@ -10,8 +10,15 @@ enum HTTPClientError: Error {
 struct URLSessionHTTPClient: HTTPClient {
     private let urlSession: URLSessionProtocol
 
-    init(urlSession: URLSessionProtocol = URLSession(configuration: .default)) {
-        self.urlSession = urlSession
+    init(urlSession: URLSessionProtocol? = nil) {
+        let configuration = URLSessionConfiguration.default
+        configuration.httpAdditionalHeaders = [
+            "Accept": "application/json",
+            "X-Platform": "ios",
+            "X-SDK-Version": BundleInfo.sdkVersion ?? "",
+            "X-Source": BundleInfo.appName ?? "",
+        ]
+        self.urlSession = urlSession ?? URLSession(configuration: configuration)
     }
 
     func fetchData(with request: URLRequest) async throws -> (Data, HTTPURLResponse) {
@@ -48,25 +55,26 @@ private func validatedHTTPResponse(_ response: URLResponse, data: Data) throws -
     guard let httpResponse = response as? HTTPURLResponse else {
         throw HTTPClientError.invalidURLResponseError(response)
     }
-    if isErrorResponse(httpResponse) {
+    if httpResponse.isError {
         throw HTTPClientError.invalidHTTPStatusCodeError(httpResponse, data)
     }
     return httpResponse
-}
-
-private func isErrorResponse(_ response: HTTPURLResponse) -> Bool {
-    response.statusCode >= 400 && response.statusCode < 600
 }
 
 extension HTTPClientError {
     func map() -> ResponseErrorReason {
         switch self {
         case .URLSessionError(let error):
-            .URLSessionError(error: error)
+            return .URLSessionError(error: error)
         case .invalidHTTPStatusCodeError(let response, let data):
-            .invalidHTTPStatusCode(response: response, data: data)
+            if response.isClientError {
+                let error: ModelError? = try? data.decode()
+                return .invalidHTTPStatusCode(response: response, errorPayload: error)
+            } else {
+                return .invalidHTTPStatusCode(response: response)
+            }
         case .invalidURLResponseError(let response):
-            .invalidURLResponse(response: response)
+            return .invalidURLResponse(response: response)
         }
     }
 }

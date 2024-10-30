@@ -65,6 +65,7 @@ class DefaultAvatarProvider: AvatarProviding {
     private func applyCornerRadius() {
         guard !skipStyling else { return }
         avatarImageView.layer.cornerRadius = avatarCornerRadius
+        avatarImageView.layer.cornerCurve = .circular
     }
 
     private func applyLength() {

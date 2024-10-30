@@ -23,27 +23,17 @@ struct DimmingButton: View {
     }
 }
 
-/// Dims the parent and puts a retry button on it.
-struct DimmingRetryButton: View {
-    let action: () -> Void
-
-    var body: some View {
-        DimmingButton(imageName: "arrow.clockwise", action: action)
-    }
-}
-
-/// Dims the parent and puts a retry button on it.
+/// Dims the parent and puts an exclamation mark on it.
 struct DimmingErrorButton: View {
     let action: () -> Void
 
     var body: some View {
-        DimmingButton(imageName: "xmark", action: action)
+        DimmingButton(imageName: "exclamationmark.triangle.fill", action: action)
     }
 }
 
 #Preview {
     VStack {
-        DimmingRetryButton {}.frame(width: 100, height: 100)
         DimmingErrorButton {}.frame(width: 100, height: 100)
     }
 }

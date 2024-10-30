@@ -9,9 +9,10 @@ final class LargeProfileViewTests: XCTestCase {
 
     let palettesToTest: [PaletteType] = [.light, .dark]
 
-    override func setUp() async throws {
-        try await super.setUp()
-        // isRecording = true
+    override func invokeTest() {
+        withSnapshotTesting(record: .failed) {
+            super.invokeTest()
+        }
     }
 
     @MainActor

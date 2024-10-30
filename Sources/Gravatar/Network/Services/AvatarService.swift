@@ -10,14 +10,17 @@ public struct AvatarService: Sendable {
 
     /// Creates a new `AvatarService`
     ///
-    /// Optionally, you can pass a custom type conforming to ``HTTPClient`` to gain control over networking tasks.
+    /// Optionally, you can pass a custom type conforming to ``URLSessionProtocol``.
     /// Similarly, you can pass a custom type conforming to ``ImageCaching`` to use your custom caching system.
     /// - Parameters:
-    ///   - client: A type which will perform basic networking operations.
-    ///   - cache: A type which will perform image caching operations.
-    public init(client: HTTPClient? = nil, cache: ImageCaching? = nil) {
-        self.imageDownloader = ImageDownloadService(client: client, cache: cache)
-        self.imageUploader = ImageUploadService(client: client)
+    ///   - urlSession: Manages the network tasks. It can be a [URLSession] or any other type that conforms to ``URLSessionProtocol``.
+    /// If not provided, a properly configured [URLSession] is used.
+    ///   - cache: An image cache of type ``ImageCaching``. If not provided, it defaults to SDK's in-memory cache.
+    ///
+    /// [URLSession]: https://developer.apple.com/documentation/foundation/urlsession
+    public init(urlSession: URLSessionProtocol? = nil, cache: ImageCaching? = nil) {
+        self.imageDownloader = ImageDownloadService(urlSession: urlSession, cache: cache)
+        self.imageUploader = ImageUploadService(urlSession: urlSession)
     }
 
     /// Fetches a Gravatar user profile image using an `AvatarId`, and delivers the image asynchronously. See also: ``ImageDownloadService`` to
@@ -41,13 +44,13 @@ public struct AvatarService: Sendable {
     /// ``ImageUploadError``.
     /// - Parameters:
     ///   - image: The image to be uploaded.
-    ///   - email: An`Email` object
+    ///   - selectionBehavior: How to handle avatar selection after uploading a new avatar
     ///   - accessToken: The authentication token for the user. This is a WordPress.com OAuth2 access token.
-    /// - Returns: An asynchronously-delivered `URLResponse` instance, containing the response of the upload network task.
+    /// - Returns: An asynchronously-delivered `AvatarType` instance, containing data of the newly created avatar.
     @discardableResult
-    @available(*, deprecated, renamed: "upload(_:accessToken:)")
-    public func upload(_ image: UIImage, email: Email, accessToken: String) async throws -> URLResponse {
-        try await imageUploader.uploadImage(image, accessToken: accessToken, additionalHTTPHeaders: [(name: "Client-Type", value: "ios")]).response
+    public func upload(_ image: UIImage, selectionBehavior: AvatarSelection, accessToken: String) async throws -> AvatarType {
+        let avatar: Avatar = try await upload(image, accessToken: accessToken, selectionBehavior: selectionBehavior)
+        return avatar
     }
 
     /// Uploads an image to be used as the user's Gravatar profile image, and returns the `URLResponse` of the network tasks asynchronously. Throws
@@ -55,24 +58,17 @@ public struct AvatarService: Sendable {
     /// - Parameters:
     ///   - image: The image to be uploaded.
     ///   - accessToken: The authentication token for the user. This is a WordPress.com OAuth2 access token.
-    /// - Returns: An asynchronously-delivered `AvatarModel` instance, containing data of the newly created avatar.
+    ///   - avatarSelection: How to handle avatar selection after uploading a new avatar
+    /// - Returns: An asynchronously-delivered `Avatar` instance, containing data of the newly created avatar.
     @discardableResult
-    public func upload(_ image: UIImage, accessToken: String) async throws -> Avatar {
+    package func upload(_ image: UIImage, accessToken: String, selectionBehavior: AvatarSelection) async throws -> Avatar {
         do {
-            let (data, _) = try await imageUploader.uploadImage(image, accessToken: accessToken, additionalHTTPHeaders: [(name: "Client-Type", value: "ios")])
+            let (data, _) = try await imageUploader.uploadImage(image, accessToken: accessToken, avatarSelection: selectionBehavior, additionalHTTPHeaders: nil)
             return try data.decode()
-
-        } catch ImageUploadError.responseError(reason: let reason) where reason.httpStatusCode == 400 {
-            guard let data = reason.errorData, let error: ModelError = try? data.decode() else {
-                throw ImageUploadError.responseError(reason: reason)
-            }
+        } catch let error as ImageUploadError {
             throw error
-        } catch let error as DecodingError {
-            throw ImageUploadError.responseError(reason: .unexpected(error))
         } catch {
-            throw error
+            throw ImageUploadError.responseError(reason: .unexpected(error))
         }
     }
 }
-
-extension ModelError: Error {}

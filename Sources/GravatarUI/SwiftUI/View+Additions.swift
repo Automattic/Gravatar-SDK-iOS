@@ -11,45 +11,6 @@ extension View {
             )
     }
 
-    @available(iOS, deprecated: 16.0, message: "Use the new method that takes in `AvatarPickerContentLayoutWithPresentation` for `contentLayout`.")
-    public func avatarPickerSheet(
-        isPresented: Binding<Bool>,
-        email: String,
-        authToken: String,
-        customImageEditor: ImageEditorBlock<some ImageEditorView>? = nil as NoCustomEditorBlock?,
-        imageSquaring: ImageSquaringStrategy? = .default
-    ) -> some View {
-        let avatarPickerView = AvatarPickerView(
-            model: AvatarPickerViewModel(email: Email(email), authToken: authToken),
-            contentLayoutProvider: AvatarPickerContentLayout.vertical,
-            isPresented: isPresented,
-            customImageEditor: customImageEditor,
-            imageSquaring: imageSquaring
-        )
-        let navigationWrapped = NavigationView { avatarPickerView }
-        return modifier(ModalPresentationModifier(isPresented: isPresented, modalView: navigationWrapped))
-    }
-
-    @available(iOS 16.0, *)
-    public func avatarPickerSheet(
-        isPresented: Binding<Bool>,
-        email: String,
-        authToken: String,
-        contentLayout: AvatarPickerContentLayoutWithPresentation,
-        customImageEditor: ImageEditorBlock<some ImageEditorView>? = nil as NoCustomEditorBlock?,
-        imageSquaring: ImageSquaringStrategy? = .default
-    ) -> some View {
-        let avatarPickerView = AvatarPickerView(
-            model: AvatarPickerViewModel(email: Email(email), authToken: authToken),
-            contentLayoutProvider: contentLayout,
-            isPresented: isPresented,
-            customImageEditor: customImageEditor,
-            imageSquaring: imageSquaring
-        )
-        let navigationWrapped = NavigationView { avatarPickerView }
-        return modifier(AvatarPickerModalPresentationModifier(isPresented: isPresented, modalView: navigationWrapped, contentLayout: contentLayout))
-    }
-
     func avatarPickerBorder(colorScheme: ColorScheme, borderWidth: CGFloat = 1) -> some View {
         self
             .shape(
@@ -60,46 +21,80 @@ extension View {
             .padding(.vertical, borderWidth) // to prevent borders from getting clipped
     }
 
-    @available(iOS, deprecated: 16.0, message: "Use the new method that takes in `AvatarPickerContentLayoutWithPresentation` for `contentLayout`.")
+    /// A modifier to display the QuickEditor sheet. QuickEditor can be used to select and upload a new avatar.
+    /// - Parameters:
+    ///   - isPresented: A Binding boolean to manage showing/hiding the sheet.
+    ///   - email: Email for the Gravatar account.
+    ///   - authToken: (Optional) Gravatar OAuth token. If not passed, Gravatar OAuth flow will start to gather the token internally.
+    ///   Pass this only if your app already has a Gravatar OAuth token.
+    ///   - scope: Scope for the QuickEditor.
+    ///   - customImageEditor: (Optional) A custom image editor to show the user right after an image is picked for
+    ///   cropping and other sorts of image editing operations.
+    ///   - avatarUpdatedHandler: (Optional) A callback to execute when a different avatar is selected.
+    ///   - onDismiss: (Optional) A callback to execute when the sheet is dismissed.
+    /// - Returns: A modifier to display the QuickEditor sheet.
+    @available(iOS, deprecated: 16.0, message: "Use the new method that takes in `QuickEditorScope`.")
     public func gravatarQuickEditorSheet(
         isPresented: Binding<Bool>,
         email: String,
-        scope: QuickEditorScope,
+        authToken: String? = nil,
+        scope: QuickEditorScopeType,
         customImageEditor: ImageEditorBlock<some ImageEditorView>? = nil as NoCustomEditorBlock?,
+        avatarUpdatedHandler: (() -> Void)? = nil,
         onDismiss: (() -> Void)? = nil
     ) -> some View {
         let editor = QuickEditor(
             email: .init(email),
             scope: scope,
+            token: authToken,
             isPresented: isPresented,
             customImageEditor: customImageEditor,
-            contentLayoutProvider: AvatarPickerContentLayout.vertical
+            contentLayoutProvider: AvatarPickerContentLayoutType.vertical,
+            avatarUpdatedHandler: avatarUpdatedHandler
         )
         return modifier(ModalPresentationModifier(isPresented: isPresented, onDismiss: onDismiss, modalView: editor))
     }
 
+    /// A modifier to display the QuickEditor sheet. QuickEditor can be used to select and upload a new avatar.
+    /// - Parameters:
+    ///   - isPresented: A Binding boolean to manage showing/hiding the sheet.
+    ///   - email: Email for the Gravatar account.
+    ///   - authToken: (Optional) Gravatar OAuth token. If not passed, Gravatar OAuth flow will start to gather the token internally.
+    ///   Pass this only if your app already has a Gravatar OAuth token.
+    ///   - scope: Scope for the QuickEditor. See: ``QuickEditorScope``.
+    ///   - customImageEditor: (Optional) A custom image editor to show the user right after an image is picked for
+    ///   cropping and other sorts of image editing operations.
+    ///   - avatarUpdatedHandler: (Optional) A callback to execute when a different avatar is selected.
+    ///   - onDismiss: (Optional) A callback to execute when the sheet is dismissed.
+    /// - Returns: A modifier to display the QuickEditor sheet.
     @available(iOS 16.0, *)
     public func gravatarQuickEditorSheet(
         isPresented: Binding<Bool>,
         email: String,
+        authToken: String? = nil,
         scope: QuickEditorScope,
         customImageEditor: ImageEditorBlock<some ImageEditorView>? = nil as NoCustomEditorBlock?,
-        contentLayout: AvatarPickerContentLayoutWithPresentation,
+        avatarUpdatedHandler: (() -> Void)? = nil,
         onDismiss: (() -> Void)? = nil
     ) -> some View {
-        let editor = QuickEditor(
-            email: .init(email),
-            scope: scope,
-            isPresented: isPresented,
-            customImageEditor: customImageEditor,
-            contentLayoutProvider: contentLayout
-        )
-        return modifier(AvatarPickerModalPresentationModifier(
-            isPresented: isPresented,
-            onDismiss: onDismiss,
-            modalView: editor,
-            contentLayout: contentLayout
-        ))
+        switch scope {
+        case .avatarPicker(let config):
+            let editor = QuickEditor(
+                email: .init(email),
+                scope: scope.scopeType,
+                token: authToken,
+                isPresented: isPresented,
+                customImageEditor: customImageEditor,
+                contentLayoutProvider: config.contentLayout,
+                avatarUpdatedHandler: avatarUpdatedHandler
+            )
+            return modifier(AvatarPickerModalPresentationModifier(
+                isPresented: isPresented,
+                onDismiss: onDismiss,
+                modalView: editor,
+                contentLayout: config.contentLayout
+            ))
+        }
     }
 
     func presentationContentInteraction(shouldPrioritizeScrolling: Bool) -> some View {

@@ -8,9 +8,10 @@ final class TestPlaceholderDisplayers: XCTestCase {
         static let containerWidth = elementSize.width * 2
     }
 
-    override func setUpWithError() throws {
-        try super.setUpWithError()
-        // isRecording = true
+    override func invokeTest() {
+        withSnapshotTesting(record: .failed) {
+            super.invokeTest()
+        }
     }
 
     @MainActor

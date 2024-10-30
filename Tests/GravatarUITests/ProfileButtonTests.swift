@@ -6,9 +6,10 @@ final class ProfileButtonTests: XCTestCase {
     let frame = CGRect(x: 0, y: 0, width: 100, height: 50)
     let palettesToTest: [PaletteType] = [.light, .dark]
 
-    override func setUp() async throws {
-        try await super.setUp()
-        // isRecording = true
+    override func invokeTest() {
+        withSnapshotTesting(record: .failed) {
+            super.invokeTest()
+        }
     }
 
     @MainActor

@@ -1,7 +1,19 @@
 import SwiftUI
 
-public enum QuickEditorScope {
+@available(iOS, deprecated: 16.0, renamed: "QuickEditorScope")
+public enum QuickEditorScopeType: Sendable {
     case avatarPicker
+}
+
+public enum QuickEditorScope: Sendable {
+    case avatarPicker(AvatarPickerConfiguration)
+
+    var scopeType: QuickEditorScopeType {
+        switch self {
+        case .avatarPicker:
+            .avatarPicker
+        }
+    }
 }
 
 private enum QuickEditorConstants {
@@ -12,36 +24,54 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
     fileprivate typealias Constants = QuickEditorConstants
 
     @Environment(\.oauthSession) private var oauthSession
-    @State var hasSession: Bool = false
-    @State var scope: QuickEditorScope
-    @State var isAuthenticating: Bool = true
-    @Binding var isPresented: Bool
-    let email: Email
-    var customImageEditor: ImageEditorBlock<ImageEditor>?
-    var contentLayoutProvider: AvatarPickerContentLayoutProviding
+    @State private var fetchedToken: String?
+    @State private var isAuthenticating: Bool = true
+    @State private var oauthError: OAuthError?
+    @Binding private var isPresented: Bool
+    private let externalToken: String?
+    private var token: String? { externalToken ?? fetchedToken }
+    private var tokenBinding: Binding<String?> { externalToken != nil ? .constant(externalToken) : $fetchedToken }
+    private let scope: QuickEditorScopeType
+    private let email: Email
+    private let customImageEditor: ImageEditorBlock<ImageEditor>?
+    private let contentLayoutProvider: AvatarPickerContentLayoutProviding
+    private let avatarUpdatedHandler: (() -> Void)?
 
     init(
         email: Email,
-        scope: QuickEditorScope,
+        scope: QuickEditorScopeType,
+        token: String? = nil,
         isPresented: Binding<Bool>,
         customImageEditor: ImageEditorBlock<ImageEditor>? = nil,
-        contentLayoutProvider: AvatarPickerContentLayoutProviding = AvatarPickerContentLayout.vertical
+        contentLayoutProvider: AvatarPickerContentLayoutProviding = AvatarPickerContentLayoutType.vertical,
+        avatarUpdatedHandler: (() -> Void)? = nil
     ) {
         self.email = email
         self.scope = scope
         self._isPresented = isPresented
         self.customImageEditor = customImageEditor
         self.contentLayoutProvider = contentLayoutProvider
+        self.externalToken = token
+        self.avatarUpdatedHandler = avatarUpdatedHandler
     }
+
+    let authorizationFinishedNotification = NotificationCenter.default.publisher(for: .authorizationFinished)
+    let authorizationErrorNotification = NotificationCenter.default.publisher(for: .authorizationError)
 
     var body: some View {
         NavigationView {
-            if hasSession, let token = oauthSession.sessionToken(with: email) {
+            if let token {
                 editorView(with: token)
             } else {
                 noticeView()
                     .accumulateIntrinsicHeight()
             }
+        }.onReceive(authorizationFinishedNotification) { _ in
+            onAuthenticationFinished()
+        }.onReceive(authorizationErrorNotification) { notification in
+            guard let error = notification.object as? OAuthError else { return }
+            oauthError = error
+            onAuthenticationFinished()
         }
     }
 
@@ -50,14 +80,16 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
         switch scope {
         case .avatarPicker:
             AvatarPickerView(
-                model: .init(email: email, authToken: token),
-                contentLayoutProvider: contentLayoutProvider,
+                email: email,
+                authToken: tokenBinding,
                 isPresented: $isPresented,
+                contentLayoutProvider: contentLayoutProvider,
                 customImageEditor: customImageEditor,
-                tokenErrorHandler: {
-                    oauthSession.deleteSession(with: email)
+                tokenErrorHandler: externalToken != nil ? nil : {
+                    oauthSession.markSessionAsExpired(with: email)
                     performAuthentication()
-                }
+                },
+                avatarUpdatedHandler: avatarUpdatedHandler
             )
         }
     }
@@ -68,14 +100,14 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
             if !isAuthenticating {
                 EmailText(email: email)
                 ContentLoadingErrorView(
-                    title: Constants.Localized.LogInError.title,
-                    subtext: Constants.Localized.LogInError.subtext,
+                    title: Constants.ErrorView.title(for: oauthError),
+                    subtext: Constants.ErrorView.subtext(for: oauthError),
                     image: nil,
                     actionButton: {
                         Button {
                             performAuthentication()
                         } label: {
-                            CTAButtonView(Constants.Localized.LogInError.buttonTitle)
+                            CTAButtonView(Constants.ErrorView.buttonTitle(for: oauthError))
                         }
                     },
                     innerPadding: .init(
@@ -106,17 +138,69 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
     func performAuthentication() {
         Task {
             isAuthenticating = true
-            if !oauthSession.hasSession(with: email) {
-                _ = try? await oauthSession.retrieveAccessToken(with: email)
+            if !oauthSession.hasValidSession(with: email) {
+                do {
+                    try await oauthSession.retrieveAccessToken(with: email)
+                } catch OAuthError.oauthResponseError(_, let code) where code == .canceledLogin {
+                    // ignore the error if the user has cancelled the operation.
+                } catch let error as OAuthError {
+                    oauthError = error
+                } catch {
+                    oauthError = nil
+                }
             }
-            hasSession = oauthSession.hasSession(with: email)
-            isAuthenticating = false
+            onAuthenticationFinished()
         }
+    }
+
+    func onAuthenticationFinished() {
+        if let fetchedToken = oauthSession.sessionToken(with: email)?.token {
+            self.fetchedToken = fetchedToken
+            oauthError = nil
+        }
+        isAuthenticating = false
     }
 }
 
 extension QuickEditorConstants {
+    enum ErrorView {
+        static func title(for oauthError: OAuthError?) -> String {
+            switch oauthError {
+            case .loggedInWithWrongEmail:
+                Localized.WrongEmailError.title
+            default:
+                Localized.LogInError.title
+            }
+        }
+
+        static func subtext(for oauthError: OAuthError?) -> String {
+            switch oauthError {
+            case .loggedInWithWrongEmail(let email):
+                String(format: Localized.WrongEmailError.subtext, email)
+            default:
+                Localized.LogInError.subtext
+            }
+        }
+
+        static func buttonTitle(for oauthError: OAuthError?) -> String {
+            Localized.LogInError.buttonTitle
+        }
+    }
+
     enum Localized {
+        enum WrongEmailError {
+            static let title = SDKLocalizedString(
+                "AvatarPicker.ContentLoading.Failure.Retry.title",
+                value: "Ooops",
+                comment: "Title of a message advising the user that something went wrong while loading their avatars"
+            )
+            static let subtext = SDKLocalizedString(
+                "AvatarPicker.ContentLoading.Failure.WrongEmailError.subtext",
+                value: "It looks like you used the wrong email to log in. Please try again using %@ this time. Thanks!",
+                comment: "A message describing the error and advising the user to login again to resolve the issue"
+            )
+        }
+
         enum LogInError {
             static let title = SDKLocalizedString(
                 "AvatarPicker.ContentLoading.Failure.LogInError.title",
@@ -144,6 +228,6 @@ extension QuickEditorConstants {
         email: .init(""),
         scope: .avatarPicker,
         isPresented: .constant(true),
-        contentLayoutProvider: AvatarPickerContentLayoutWithPresentation.vertical(presentationStyle: .large)
+        contentLayoutProvider: AvatarPickerContentLayout.vertical(presentationStyle: .large)
     )
 }

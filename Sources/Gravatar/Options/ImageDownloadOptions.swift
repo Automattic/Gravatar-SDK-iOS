@@ -15,7 +15,7 @@ public struct ImageDownloadOptions {
     /// For more info about backend defaults, see https://docs.gravatar.com/general/images/
     /// - Parameters:
     ///   - preferredSize: Preferred image size (set to `nil` for default size)
-    ///   - gravatarRating: Maximum rating for image (set to `nil` for default rating)
+    ///   - rating: Maximum rating for image (set to `nil` for default rating)
     ///   - forceRefresh: Force the image to be downloaded, ignoring the cache
     ///   - forceDefaultAvatar: If `true`, the returned image will always be the default avatar, determined by the `defaultAvatarOption` parameter.
     ///   - defaultAvatarOption: Configure the default avatar (set to `nil` to use the default default avatar)

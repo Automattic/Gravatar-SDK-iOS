@@ -1,6 +1,9 @@
 import AuthenticationServices
 
 public struct OAuthSession: Sendable {
+    static let shared = OAuthSession()
+    private var emailStorage = SessionEmailStorage()
+
     private let storage: SecureStorage
     private let authenticationSession: AuthenticationSession
     private let snakeCaseDecoder: JSONDecoder = {
@@ -18,56 +21,97 @@ public struct OAuthSession: Sendable {
         (try? storage.secret(with: email.rawValue) ?? nil) != nil
     }
 
+    public static func hasSession(with email: Email) -> Bool {
+        shared.hasSession(with: email)
+    }
+
+    func hasValidSession(with email: Email) -> Bool {
+        guard let token = try? storage.secret(with: email.rawValue) else {
+            return false
+        }
+        return !token.isExpired
+    }
+
+    func markSessionAsExpired(with email: Email) {
+        guard var token = sessionToken(with: email), !token.isExpired else { return }
+        token.isExpired = true
+        overrideToken(token, for: email)
+    }
+
+    func overrideToken(_ token: KeychainToken, for email: Email) {
+        deleteSession(with: email)
+        try? storage.setSecret(token, for: email.rawValue)
+    }
+
     public func deleteSession(with email: Email) {
         try? storage.deleteSecret(with: email.rawValue)
     }
 
-    func sessionToken(with email: Email) -> String? {
+    public static func deleteSession(with email: Email) {
+        shared.deleteSession(with: email)
+    }
+
+    func sessionToken(with email: Email) -> KeychainToken? {
         try? storage.secret(with: email.rawValue)
     }
 
-    @discardableResult
-    func retrieveAccessToken(with email: Email) async throws -> String {
+    func retrieveAccessToken(with email: Email) async throws {
         guard let secrets = await Configuration.shared.oauthSecrets else {
             assertionFailure("Trying to retrieve access token without configuring oauth secrets.")
             throw OAuthError.notConfigured
         }
 
+        await emailStorage.save(email)
         do {
             let url = try oauthURL(with: email, secrets: secrets)
             let callbackURL = try await authenticationSession.authenticate(using: url, callbackURLScheme: secrets.callbackScheme)
-            let token = try await getToken(from: callbackURL, secrets: secrets)
-            try storage.setSecret(token, for: email.rawValue)
-            return token
+            _ = await Self.handleCallback(callbackURL)
         } catch {
             throw OAuthError.from(error: error)
         }
     }
 
-    private func getToken(from callbackURL: URL, secrets: Configuration.OAuthSecrets) async throws -> String {
-        let queryItems = URLComponents(string: callbackURL.absoluteString)?.queryItems
-        guard let code = queryItems?.filter({ $0.name == "code" }).first?.value else {
+    // Internal for tests purposes. This allows to inject a custom `shared` instance and a service double.
+    // The public version will call this function directly.
+    static func handleCallback(_ callbackURL: URL, shared: OAuthSession, checkTokenAuthorizationService: CheckTokenAuthorizationService) async -> Bool {
+        guard let email = await shared.emailStorage.restore() else { return false }
+
+        do {
+            let tokenText = try shared.tokenResponse(from: callbackURL).token
+            guard try await checkTokenAuthorizationService.isToken(tokenText, authorizedFor: email) else {
+                throw OAuthError.loggedInWithWrongEmail(email: email.rawValue)
+            }
+            let newToken = KeychainToken(token: tokenText)
+            shared.overrideToken(newToken, for: email)
+            await shared.authenticationSession.cancel()
+            postNotification(.authorizationFinished)
+            return true
+        } catch OAuthError.couldNotParseAccessCode {
+            return false // The URL was not a Gravatar callback URL with a token.
+        } catch {
+            await shared.authenticationSession.cancel()
+            postNotification(.authorizationError, error: error)
+            return true
+        }
+    }
+
+    public static func handleCallback(_ callbackURL: URL) async -> Bool {
+        // Call handleCallback() directly without adding extra logic here.
+        await handleCallback(callbackURL, shared: shared, checkTokenAuthorizationService: .init())
+    }
+
+    private static func postNotification(_ name: Notification.Name, error: Error? = nil) {
+        Task { @MainActor in
+            NotificationCenter.default.post(name: name, object: error)
+        }
+    }
+
+    private func tokenResponse(from callbackURL: URL) throws -> AccessToken {
+        guard let accessToken = AccessToken(from: callbackURL) else {
             throw OAuthError.couldNotParseAccessCode(callbackURL.absoluteString)
         }
 
-        return try await requestAccessToken(code: code, secrets: secrets)
-    }
-
-    private func requestAccessToken(code: String, secrets: Configuration.OAuthSecrets) async throws -> String {
-        do {
-            let request = try accessTokenRequest(with: code, secrets: secrets)
-            let (data, response) = try await URLSession.shared.data(for: request)
-
-            if let httpResponse = (response as? HTTPURLResponse), httpResponse.statusCode >= 400 {
-                let error = try snakeCaseDecoder.decode(RemoteOAuthError.self, from: data)
-                throw OAuthError.oauthResponseError(error.errorDescription)
-            } else {
-                let auth = try snakeCaseDecoder.decode(OAuthResponse.self, from: data)
-                return auth.accessToken
-            }
-        } catch {
-            throw error
-        }
+        return accessToken
     }
 
     private func oauthURL(with email: Email, secrets: Configuration.OAuthSecrets) throws -> URL {
@@ -89,28 +133,17 @@ public struct OAuthSession: Sendable {
             throw OAuthError.couldNotCreateOAuthURLWithGivenSecrets
         }
     }
-
-    private func accessTokenRequest(with code: String, secrets: Configuration.OAuthSecrets) throws -> URLRequest {
-        let tokenURL = URL(string: "https://public-api.wordpress.com/oauth2/token")!
-        let params = AccessTokenRequestParams(secrets: secrets, code: code)
-
-        var request = URLRequest(url: tokenURL)
-        request.httpMethod = "POST"
-        request.addValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-        request.httpBody = try params.queryItems.string?.data(using: .utf8)
-
-        return request
-    }
 }
 
 enum OAuthError: Error {
     case notConfigured
     case couldNotCreateOAuthURLWithGivenSecrets
     case couldNotParseAccessCode(String)
-    case oauthResponseError(String)
+    case oauthResponseError(String, ASWebAuthenticationSessionError.Code?)
     case unknown(Error)
     case couldNotStoreToken(Error)
     case decodingError(Error)
+    case loggedInWithWrongEmail(email: String)
 }
 
 extension OAuthError {
@@ -125,7 +158,7 @@ extension OAuthError {
             return OAuthError.decodingError(error)
         case let error as NSError:
             if error.domain == ASWebAuthenticationSessionErrorDomain {
-                return .oauthResponseError(error.localizedDescription)
+                return .oauthResponseError(error.localizedDescription, ASWebAuthenticationSessionError.Code(rawValue: error.code))
             }
             return .unknown(error)
         default:
@@ -137,14 +170,12 @@ extension OAuthError {
 private struct AccessTokenRequestParams: Encodable {
     let clientID: String
     let redirectURI: String
-    let clientSecret: String
     let grantType: String = "authorization_code"
     let code: String
 
     init(secrets: Configuration.OAuthSecrets, code: String) {
         clientID = secrets.clientID
         redirectURI = secrets.redirectURI
-        clientSecret = secrets.clientSecret
         self.code = code
     }
 }
@@ -172,7 +203,7 @@ private struct OAuthURLParams: Encodable {
 
     init(email: Email, secrets: Configuration.OAuthSecrets) {
         self.clientID = secrets.clientID
-        self.responseType = "code"
+        self.responseType = "token"
         self.blogID = "0"
         self.redirectURI = secrets.redirectURI
         self.userEmail = email.rawValue
@@ -215,6 +246,26 @@ extension [URLQueryItem] {
 
 protocol AuthenticationSession: Sendable {
     func authenticate(using url: URL, callbackURLScheme: String) async throws -> URL
+    func cancel() async
 }
 
 extension OldAuthenticationSession: AuthenticationSession {}
+
+// Stores the email used for the current OAuth flow
+private actor SessionEmailStorage {
+    var current: Email?
+
+    func save(_ email: Email) {
+        current = email
+    }
+
+    func restore() -> Email? {
+        let currentEmail = current
+        return currentEmail
+    }
+}
+
+extension Notification.Name {
+    static let authorizationFinished = Notification.Name("com.GravatarSDK.AuthorizationFinished")
+    static let authorizationError = Notification.Name("com.GravatarSDK.AuthorizationFinishedWithError")
+}

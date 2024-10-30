@@ -7,7 +7,7 @@ import UIKit
 public protocol ImageCaching: Sendable {
     /// Saves an image in the cache.
     /// - Parameters:
-    ///   - image: The cache entry to set.
+    ///   - entry: The cache entry to set.
     ///   - key: The entry's key, used to be found via `.getEntry(key:)`.
     func setEntry(_ entry: CacheEntry?, for key: String)
 

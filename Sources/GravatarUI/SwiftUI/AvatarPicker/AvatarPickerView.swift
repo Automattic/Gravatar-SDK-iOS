@@ -6,16 +6,70 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
     fileprivate typealias Constants = AvatarPicker.Constants
     fileprivate typealias Localized = AvatarPicker.Localized
 
-    @ObservedObject var model: AvatarPickerViewModel
-    var contentLayoutProvider: AvatarPickerContentLayoutProviding = AvatarPickerContentLayout.vertical
     @Environment(\.colorScheme) var colorScheme: ColorScheme
-    @Binding var isPresented: Bool
-    @State private var safariURL: URL?
     @Environment(\.verticalSizeClass) var verticalSizeClass
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
+
+    // Declare "@StateObject"s as private to prevent setting them from a
+    // memberwise initializer, which can conflict with the storage
+    // management that SwiftUI provides.
+    // https://developer.apple.com/documentation/swiftui/stateobject
+    @StateObject private var model: AvatarPickerViewModel
+    @Binding var isPresented: Bool
+    @Binding var authToken: String?
+
+    @State private var safariURL: URL?
+    @State private var uploadError: FailedUploadInfo?
+    @State private var isUploadErrorDialogPresented: Bool = false
+
+    var contentLayoutProvider: AvatarPickerContentLayoutProviding
     var customImageEditor: ImageEditorBlock<ImageEditor>?
     var imageSquaring: ImageSquaringStrategy?
     var tokenErrorHandler: (() -> Void)?
+    var avatarUpdatedHandler: (() -> Void)?
+
+    init(
+        email: Email,
+        authToken: Binding<String?>,
+        isPresented: Binding<Bool>,
+        contentLayoutProvider: AvatarPickerContentLayoutProviding = AvatarPickerContentLayoutType.vertical,
+        customImageEditor: ImageEditorBlock<ImageEditor>? = nil as NoCustomEditorBlock?,
+        tokenErrorHandler: (() -> Void)? = nil,
+        avatarUpdatedHandler: (() -> Void)? = nil
+    ) {
+        self._isPresented = isPresented
+        self.contentLayoutProvider = contentLayoutProvider
+        self.customImageEditor = customImageEditor
+        self.tokenErrorHandler = tokenErrorHandler
+        self.avatarUpdatedHandler = avatarUpdatedHandler
+        self._authToken = authToken
+        self._model = StateObject(wrappedValue: AvatarPickerViewModel(email: email, authToken: authToken.wrappedValue))
+    }
+
+    fileprivate init(
+        avatarImageModels: [AvatarImageModel],
+        selectedImageID: String? = nil,
+        profileModel: ProfileSummaryModel? = nil,
+        isPresented: Binding<Bool>,
+        contentLayoutProvider: AvatarPickerContentLayoutProviding = AvatarPickerContentLayoutType.vertical,
+        customImageEditor: ImageEditorBlock<ImageEditor>? = nil as NoCustomEditorBlock?,
+        tokenErrorHandler: (() -> Void)? = nil,
+        avatarUpdatedHandler: (() -> Void)? = nil
+    ) {
+        self._isPresented = isPresented
+        self.contentLayoutProvider = contentLayoutProvider
+        self.customImageEditor = customImageEditor
+        self.tokenErrorHandler = tokenErrorHandler
+        self.avatarUpdatedHandler = avatarUpdatedHandler
+        self._authToken = .constant(nil)
+        self._model = StateObject(
+            wrappedValue: AvatarPickerViewModel(
+                avatarImageModels: avatarImageModels,
+                selectedImageID: selectedImageID,
+                profileModel: profileModel
+            )
+        )
+    }
 
     public var body: some View {
         ZStack {
@@ -40,6 +94,28 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
                 .task {
                     model.refresh()
                 }
+                .confirmationDialog(
+                    Localized.uploadErrorTitle,
+                    isPresented: $isUploadErrorDialogPresented,
+                    titleVisibility: .visible,
+                    presenting: uploadError
+                ) { error in
+                    Button(role: .destructive) {
+                        deleteFailedUpload(error.avatarLocalID)
+                    } label: {
+                        Label(Localized.removeButtonTitle, systemImage: "trash")
+                    }
+                    if error.supportsRetry {
+                        Button {
+                            retryUpload(error.avatarLocalID)
+                        } label: {
+                            Label(Localized.retryButtonTitle, systemImage: "arrow.clockwise")
+                        }
+                    }
+                    Button(Localized.dismissButtonTitle, role: .cancel) {}
+                } message: { error in
+                    Text(error.errorMessage)
+                }
             }
 
             ToastContainerView(toastManager: model.toastManager)
@@ -50,7 +126,7 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
             title: Constants.title,
             actionButtonDisabled: model.profileModel?.profileURL == nil,
             onActionButtonPressed: {
-                openProfileInSafari()
+                openProfileEditInSafari()
             },
             onDoneButtonPressed: {
                 isPresented = false
@@ -59,6 +135,12 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
         .fullScreenCover(item: $safariURL) { url in
             SafariView(url: url)
                 .edgesIgnoringSafeArea(.all)
+        }
+        .onChange(of: authToken ?? "") { newValue in
+            model.update(authToken: newValue)
+        }
+        .onChange(of: model.backendSelectedAvatarURL) { _ in
+            notifyAvatarSelection()
         }
     }
 
@@ -181,15 +263,15 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
         }
     }
 
-    private func retryUpload(_ avatar: AvatarImageModel) {
+    private func retryUpload(_ id: String) {
         Task {
-            await model.retryUpload(of: avatar.id)
+            await model.retryUpload(of: id)
         }
     }
 
-    private func deleteFailedUpload(_ avatar: AvatarImageModel) {
+    private func deleteFailedUpload(_ id: String) {
         withAnimation {
-            model.deleteFailed(avatar)
+            model.deleteFailed(id)
         }
     }
 
@@ -202,16 +284,14 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
                 grid: model.grid,
                 customImageEditor: customImageEditor,
                 onAvatarTap: { avatar in
-                    model.selectAvatar(with: avatar.id)
+                    selectAvatar(with: avatar.id)
                 },
                 onImagePickerDidPickImage: { image in
                     uploadImage(image)
                 },
-                onRetryUpload: { avatar in
-                    retryUpload(avatar)
-                },
-                onDeleteFailed: { avatar in
-                    deleteFailedUpload(avatar)
+                onFailedUploadTapped: { failedUploadInfo in
+                    uploadError = failedUploadInfo
+                    isUploadErrorDialogPresented = true
                 }
             )
             .padding(.horizontal, Constants.horizontalPadding)
@@ -220,22 +300,40 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
             HorizontalAvatarGrid(
                 grid: model.grid,
                 onAvatarTap: { avatar in
-                    model.selectAvatar(with: avatar.id)
+                    selectAvatar(with: avatar.id)
                 },
-                onRetryUpload: { avatar in
-                    retryUpload(avatar)
-                },
-                onDeleteFailed: { avatar in
-                    deleteFailedUpload(avatar)
+                onFailedUploadTapped: { failedUploadInfo in
+                    uploadError = failedUploadInfo
+                    isUploadErrorDialogPresented = true
                 }
             )
             .padding(.top, .DS.Padding.medium)
             .padding(.bottom, .DS.Padding.double)
             imagePicker {
-                CTAButtonView("Upload image")
+                CTAButtonView(Localized.buttonUploadImage)
             }
             .padding(.horizontal, Constants.horizontalPadding)
             .padding(.bottom, .DS.Padding.medium)
+        }
+    }
+
+    func selectAvatar(with id: String) {
+        Task {
+            if await model.selectAvatar(with: id) != nil {
+                notifyAvatarSelection()
+            }
+        }
+    }
+
+    func notifyAvatarSelection() {
+        if let avatarUpdatedHandler {
+            // Delay to wait until the server has updated the selected avatar before updating the UI.
+            // Without the delay the cache busting remains insufficient to capture the new avatar.
+            // With less than 800 ms, we can still see the issue.
+            // Hopefully, we can remove this delay soon.
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+                avatarUpdatedHandler()
+            }
         }
     }
 
@@ -257,11 +355,18 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
                     CircularProgressViewStyle()
                 )
                 .controlSize(.regular)
+
+            Spacer()
         }
     }
 
     private func openProfileInSafari() {
         safariURL = model.profileModel?.profileURL
+    }
+
+    private func openProfileEditInSafari() {
+        guard let url = URL(string: "https://gravatar.com/profile") else { return }
+        safariURL = url
     }
 
     @ViewBuilder
@@ -319,6 +424,26 @@ private enum AvatarPicker {
     }
 
     enum Localized {
+        static let uploadErrorTitle = SDKLocalizedString(
+            "AvatarPicker.Upload.Error.title",
+            value: "Upload has failed",
+            comment: "The title of the upload error dialog."
+        )
+        static let removeButtonTitle = SDKLocalizedString(
+            "AvatarPicker.Upload.Error.Remove.title",
+            value: "Remove",
+            comment: "The title of the remove button on the upload error dialog."
+        )
+        static let retryButtonTitle = SDKLocalizedString(
+            "AvatarPicker.Upload.Error.Retry.title",
+            value: "Retry",
+            comment: "The title of the retry button on the upload error dialog."
+        )
+        static let dismissButtonTitle = SDKLocalizedString(
+            "AvatarPicker.Dismiss.title",
+            value: "Dismiss",
+            comment: "The title of the dismiss button on a confirmation dialog."
+        )
         static let buttonUploadImage = SDKLocalizedString(
             "AvatarPicker.ContentLoading.Success.ctaButtonTitle",
             value: "Upload image",
@@ -446,30 +571,34 @@ private enum AvatarPicker {
         }
     }
 
-    let model = AvatarPickerViewModel(
-        avatarImageModels: [
-            .init(id: "0", source: .local(image: UIImage()), state: .loading),
-            .init(id: "1", source: .remote(url: "https://gravatar.com/userimage/110207384/aa5f129a2ec75162cee9a1f0c472356a.jpeg?size=256")),
-            .init(id: "2", source: .remote(url: "https://gravatar.com/userimage/110207384/db73834576b01b69dd8da1e29877ca07.jpeg?size=256")),
-            .init(id: "3", source: .remote(url: "https://gravatar.com/userimage/110207384/3f7095bf2580265d1801d128c6410016.jpeg?size=256")),
-            .init(id: "4", source: .remote(url: "https://gravatar.com/userimage/110207384/fbbd335e57862e19267679f19b4f9db8.jpeg?size=256")),
-            .init(id: "5", source: .remote(url: "https://gravatar.com/userimage/110207384/96c6950d6d8ce8dd1177a77fe738101e.jpeg?size=256")),
-            .init(id: "6", source: .remote(url: "https://gravatar.com/userimage/110207384/4a4f9385b0a6fa5c00342557a098f480.jpeg?size=256")),
-            .init(id: "7", source: .local(image: UIImage()), state: .retry),
-            .init(id: "8", source: .local(image: UIImage()), state: .error),
-        ],
-        selectedImageID: "5",
-        profileModel: PreviewModel()
-    )
+    let avatarImageModels: [AvatarImageModel] = [
+        .init(id: "0", source: .local(image: UIImage()), state: .loading),
+        .init(id: "1", source: .remote(url: "https://gravatar.com/userimage/110207384/aa5f129a2ec75162cee9a1f0c472356a.jpeg?size=256")),
+        .init(id: "2", source: .remote(url: "https://gravatar.com/userimage/110207384/db73834576b01b69dd8da1e29877ca07.jpeg?size=256")),
+        .init(id: "3", source: .remote(url: "https://gravatar.com/userimage/110207384/3f7095bf2580265d1801d128c6410016.jpeg?size=256")),
+        .init(id: "4", source: .remote(url: "https://gravatar.com/userimage/110207384/fbbd335e57862e19267679f19b4f9db8.jpeg?size=256")),
+        .init(id: "5", source: .remote(url: "https://gravatar.com/userimage/110207384/96c6950d6d8ce8dd1177a77fe738101e.jpeg?size=256")),
+        .init(id: "6", source: .remote(url: "https://gravatar.com/userimage/110207384/4a4f9385b0a6fa5c00342557a098f480.jpeg?size=256")),
+        .init(id: "7", source: .local(image: UIImage()), state: .error(supportsRetry: true, errorMessage: "Something went wrong.")),
+        .init(id: "8", source: .local(image: UIImage()), state: .error(supportsRetry: false, errorMessage: "Something went wrong.")),
+    ]
+    let selectedImageID = "5"
+    let profileModel = PreviewModel()
 
-    return AvatarPickerView<NoCustomEditor>(model: model, contentLayoutProvider: AvatarPickerContentLayout.horizontal, isPresented: .constant(true))
+    return AvatarPickerView<NoCustomEditor>(
+        avatarImageModels: avatarImageModels,
+        selectedImageID: selectedImageID,
+        profileModel: profileModel,
+        isPresented: .constant(true),
+        contentLayoutProvider: AvatarPickerContentLayoutType.horizontal
+    )
 }
 
 #Preview("Empty elements") {
-    AvatarPickerView<NoCustomEditor>(model: .init(avatarImageModels: [], profileModel: nil), isPresented: .constant(true))
+    AvatarPickerView<NoCustomEditor>(avatarImageModels: [], profileModel: nil, isPresented: .constant(true))
 }
 
 #Preview("Load from network") {
     /// Enter valid email and auth token.
-    AvatarPickerView<NoCustomEditor>(model: .init(email: .init(""), authToken: ""), isPresented: .constant(true))
+    AvatarPickerView<NoCustomEditor>(email: .init(""), authToken: .constant(""), isPresented: .constant(true))
 }

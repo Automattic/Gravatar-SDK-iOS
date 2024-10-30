@@ -4,15 +4,13 @@ import Foundation
 public actor Configuration {
     public struct OAuthSecrets: Sendable {
         package let clientID: String
-        package let clientSecret: String
         package let redirectURI: String
         package var callbackScheme: String {
             URLComponents(string: redirectURI)?.scheme ?? ""
         }
 
-        public init(clientID: String, clientSecret: String, redirectURI: String) {
+        public init(clientID: String, redirectURI: String) {
             self.clientID = clientID
-            self.clientSecret = clientSecret
             self.redirectURI = redirectURI
         }
     }
@@ -27,7 +25,9 @@ public actor Configuration {
     private init() {}
 
     /// Updates the current configuration instance.
-    /// - Parameter apiKey: The new authorisation API key.
+    /// - Parameter
+    ///   - apiKey: The new authorisation API key.
+    ///   - oauthSecrets: An instance containing the secrets for the OAuth flow.
     public func configure(with apiKey: String?, oauthSecrets: OAuthSecrets? = nil) {
         self.apiKey = apiKey
         self.oauthSecrets = oauthSecrets

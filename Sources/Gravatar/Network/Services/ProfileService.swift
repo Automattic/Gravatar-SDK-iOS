@@ -16,11 +16,13 @@ public struct ProfileService: ProfileFetching, Sendable {
     private let client: HTTPClient
 
     /// Creates a new `ProfileService`.
+    /// - Parameters:
+    ///   - urlSession: Manages the network tasks. It can be a [URLSession] or any other type that conforms to ``URLSessionProtocol``.
+    /// If not provided, a properly configured [URLSession] is used.
     ///
-    /// Optionally, you can pass a custom type conforming to ``HTTPClient`` to gain control over networking tasks.
-    /// - Parameter client: A type which will perform basic networking operations.
-    public init(client: HTTPClient? = nil) {
-        self.client = client ?? URLSessionHTTPClient()
+    /// [URLSession]: https://developer.apple.com/documentation/foundation/urlsession
+    public init(urlSession: URLSessionProtocol? = nil) {
+        self.client = URLSessionHTTPClient(urlSession: urlSession)
     }
 
     public func fetch(with profileID: ProfileIdentifier) async throws -> Profile {
@@ -31,7 +33,7 @@ public struct ProfileService: ProfileFetching, Sendable {
 
     package func fetchAvatars(with token: String, id: ProfileIdentifier) async throws -> [Avatar] {
         do {
-            guard let url = avatarsBaseURLComponents.settingQueryItems([.init(name: "selected_email", value: id.id)]).url else {
+            guard let url = avatarsBaseURLComponents.settingQueryItems([.init(name: "selected_email_hash", value: id.id)]).url else {
                 throw APIError.requestError(reason: .urlInitializationFailed)
             }
             let request = URLRequest(url: url).settingAuthorizationHeaderField(with: token)
@@ -82,20 +84,6 @@ extension URLRequest {
         var copy = self
         copy.setValue(bearerKey, forHTTPHeaderField: HeaderField.authorization.rawValue)
         return copy
-    }
-}
-
-extension Avatar {
-    public var id: String {
-        imageId
-    }
-
-    public var url: String {
-        imageUrl
-    }
-
-    public var isSelected: Bool {
-        selected == true
     }
 }
 

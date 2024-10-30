@@ -25,7 +25,6 @@ struct DemoApp: App {
                 with: Secrets.apiKey,
                 oauthSecrets: .init(
                     clientID: Secrets.clientID,
-                    clientSecret: Secrets.clientSecret,
                     redirectURI: Secrets.redirectURI
                 )
             )

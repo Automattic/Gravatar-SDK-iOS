@@ -11,7 +11,7 @@ package actor URLSessionMock: URLSessionProtocol {
 
     let returnData: Data
     let response: HTTPURLResponse
-    let error: NSError?
+    private(set) var error: NSError?
     private(set) var isCancellable: Bool = false
     private(set) var maxDurationSeconds: Double = 2
     package private(set) var callsCount = 0
@@ -61,6 +61,10 @@ package actor URLSessionMock: URLSessionProtocol {
 
     func update(request: URLRequest) async {
         self.request = request
+    }
+
+    package func update(error: NSError?) async {
+        self.error = error
     }
 
     package func update(isCancellable: Bool) async {

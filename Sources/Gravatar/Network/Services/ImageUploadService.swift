@@ -3,29 +3,47 @@ import UIKit
 
 /// A service to perform uploading images to Gravatar.
 ///
-/// This is the default type which implements ``ImageUploader``..
-/// Unless specified otherwise, `ImageUploadService` will use a `URLSession` based `HTTPClient`.
+/// This is the default type which implements ``ImageUploader``.
 struct ImageUploadService: ImageUploader {
     private let client: HTTPClient
 
-    init(client: HTTPClient? = nil) {
-        self.client = client ?? URLSessionHTTPClient()
+    init(urlSession: URLSessionProtocol? = nil) {
+        self.client = URLSessionHTTPClient(urlSession: urlSession)
     }
 
     @discardableResult
-    func uploadImage(_ image: UIImage, accessToken: String, additionalHTTPHeaders: [HTTPHeaderField]?) async throws -> (data: Data, response: HTTPURLResponse) {
-        guard let data = image.jpegData(compressionQuality: 0.9) else {
+    func uploadImage(
+        _ image: UIImage,
+        accessToken: String,
+        avatarSelection: AvatarSelection = .preserveSelection,
+        additionalHTTPHeaders: [HTTPHeaderField]?
+    ) async throws -> (data: Data, response: HTTPURLResponse) {
+        guard let data: Data = {
+            if #available(iOS 17.0, *) {
+                image.heicData()
+            } else {
+                image.jpegData(compressionQuality: 0.8)
+            }
+        }() else {
             throw ImageUploadError.cannotConvertImageIntoData
         }
 
-        return try await uploadImage(data: data, accessToken: accessToken, additionalHTTPHeaders: additionalHTTPHeaders)
+        return try await uploadImage(data: data, accessToken: accessToken, avatarSelection: avatarSelection, additionalHTTPHeaders: additionalHTTPHeaders)
     }
 
-    private func uploadImage(data: Data, accessToken: String, additionalHTTPHeaders: [HTTPHeaderField]?) async throws -> (Data, HTTPURLResponse) {
+    private func uploadImage(
+        data: Data,
+        accessToken: String,
+        avatarSelection: AvatarSelection,
+        additionalHTTPHeaders: [HTTPHeaderField]?
+    ) async throws -> (Data, HTTPURLResponse) {
         let boundary = "\(UUID().uuidString)"
-        let request = URLRequest.imageUploadRequest(with: boundary, additionalHTTPHeaders: additionalHTTPHeaders)
-            .settingAuthorizationHeaderField(with: accessToken)
-        // For the Multipart form/data, we need to send the email address, not the id of the emai address
+        let request = URLRequest.imageUploadRequest(
+            with: boundary,
+            additionalHTTPHeaders: additionalHTTPHeaders,
+            selectionBehavior: avatarSelection
+        ).settingAuthorizationHeaderField(with: accessToken)
+
         let body = imageUploadBody(with: data, boundary: boundary)
         do {
             return try await client.uploadData(with: request, data: body)
@@ -68,14 +86,52 @@ extension Data {
 }
 
 extension URLRequest {
-    fileprivate static func imageUploadRequest(with boundary: String, additionalHTTPHeaders: [HTTPHeaderField]?) -> URLRequest {
-        let url = URL(string: "https://api.gravatar.com/v3/me/avatars")!
-        var request = URLRequest(url: url)
+    fileprivate static func imageUploadRequest(
+        with boundary: String,
+        additionalHTTPHeaders: [HTTPHeaderField]?,
+        selectionBehavior: AvatarSelection
+    ) -> URLRequest {
+        var request = URLRequest(url: .imageUploadURL.appendingQueryItems(for: selectionBehavior))
         request.addValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
         request.httpMethod = "POST"
         additionalHTTPHeaders?.forEach { headerTuple in
             request.addValue(headerTuple.value, forHTTPHeaderField: headerTuple.name)
         }
         return request
+    }
+}
+
+extension URL {
+    fileprivate static var imageUploadURL: URL {
+        APIConfig.baseURL.appendingPathComponent("v3/me/avatars")
+    }
+}
+
+extension URL {
+    func appendingQueryItems(for selectionBehavior: AvatarSelection) -> URL {
+        let queryItems = selectionBehavior.queryItems
+        if #available(iOS 16.0, *) {
+            return self.appending(queryItems: queryItems)
+        } else {
+            var components = URLComponents(string: absoluteString)
+            components?.queryItems = queryItems
+            return components?.url ?? self
+        }
+    }
+}
+
+extension AvatarSelection {
+    var queryItems: [URLQueryItem] {
+        switch self {
+        case .selectUploadedImage(let email):
+            [
+                .init(name: "select_avatar", value: "true"),
+                .init(name: "selected_email_hash", value: email.id),
+            ]
+        case .preserveSelection:
+            [.init(name: "select_avatar", value: "false")]
+        case .selectUploadedImageIfNoneSelected(let email):
+            [.init(name: "selected_email_hash", value: email.id)]
+        }
     }
 }

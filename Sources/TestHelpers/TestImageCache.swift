@@ -1,38 +1,63 @@
 import Gravatar
 import UIKit
 
-package class TestImageCache: ImageCaching, @unchecked Sendable {
-    var dict: [String: CacheEntryWrapper] = [:]
+package final class TestImageCache: ImageCaching, @unchecked Sendable {
+    let imageCache = ImageCache()
 
-    package private(set) var getImageCallsCount = 0
-    package private(set) var setImageCallsCount = 0
-    package private(set) var setTaskCallsCount = 0
+    package typealias CacheMessage = (operation: CacheMessageType, key: String)
+    private var cacheMessages = [CacheMessage]()
+
+    package enum CacheMessageType {
+        case setToNil
+        case inProgress
+        case ready
+        case get
+    }
+
+    package var getImageCallsCount: Int { messageCount(type: .get) }
+    package var setImageCallsCount: Int { messageCount(type: .ready) }
+    package var setTaskCallsCount: Int { messageCount(type: .inProgress) }
+
+    // Serial queue to synchronize access to shared mutable state
+    private let accessQueue = DispatchQueue(label: "com.testImageCache.accessQueue")
 
     package init() {}
 
     package func setEntry(_ entry: Gravatar.CacheEntry?, for key: String) {
-        guard let entry else {
-            dict[key] = nil
-            return
+        accessQueue.sync {
+            var message: CacheMessage
+            defer { cacheMessages.append(message) }
+            guard let entry else {
+                imageCache.setEntry(nil, for: key)
+                message = (operation: .setToNil, key: key)
+                return
+            }
+            switch entry {
+            case .inProgress:
+                message = (operation: .inProgress, key: key)
+            case .ready:
+                message = (operation: .ready, key: key)
+            }
+            imageCache.setEntry(entry, for: key)
         }
-        switch entry {
-        case .inProgress:
-            setTaskCallsCount += 1
-        case .ready:
-            setImageCallsCount += 1
-        }
-        dict[key] = CacheEntryWrapper(entry)
     }
 
     package func getEntry(with key: String) -> Gravatar.CacheEntry? {
-        getImageCallsCount += 1
-        return dict[key]?.cacheEntry
+        accessQueue.sync {
+            cacheMessages.append(CacheMessage(operation: .get, key: key))
+            return imageCache.getEntry(with: key)
+        }
     }
-}
 
-package struct CacheEntryWrapper: Sendable {
-    let cacheEntry: CacheEntry
-    package init(_ cacheEntry: CacheEntry) {
-        self.cacheEntry = cacheEntry
+    package func messageCount(type: CacheMessageType) -> Int {
+        accessQueue.sync {
+            cacheMessages.filter { $0.operation == type }.count
+        }
+    }
+
+    package func messageCount(type: CacheMessageType, forKey key: String) -> Int {
+        accessQueue.sync {
+            cacheMessages.filter { $0.operation == type && $0.key == key }.count
+        }
     }
 }

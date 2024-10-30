@@ -10,7 +10,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 with: Secrets.apiKey,
                 oauthSecrets: .init(
                     clientID: Secrets.clientID,
-                    clientSecret: Secrets.clientSecret,
                     redirectURI: Secrets.redirectURI
                 )
             )

@@ -20,11 +20,6 @@ class RemoteSVGButton: UIControl, WKNavigationDelegate {
     private var iconURL: URL?
     private static let cache: NSCache<NSString, NSString> = .init()
 
-    init(iconSize: CGSize) {
-        self.iconSize = iconSize
-        super.init()
-    }
-
     private lazy var webView: WKWebView = {
         let webView = WKWebView()
         webView.translatesAutoresizingMaskIntoConstraints = false

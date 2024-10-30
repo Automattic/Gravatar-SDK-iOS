@@ -8,7 +8,7 @@ public protocol ImageEditorView: View {
     var inputImage: UIImage { get }
 
     /// Callback to call when the editing is done. Pass the edited image here.
-    var editingDidFinish: (UIImage) -> Void { get set }
+    var editingDidFinish: @Sendable (UIImage) -> Void { get set }
 }
 
 public typealias ImageEditorBlock<ImageEditor: ImageEditorView> = (UIImage, _ editingDidFinish: @escaping (UIImage) -> Void) -> ImageEditor
@@ -18,7 +18,7 @@ public typealias ImageEditorBlock<ImageEditor: ImageEditorView> = (UIImage, _ ed
 /// passed value is `nil`.
 public struct NoCustomEditor: ImageEditorView {
     public var inputImage: UIImage
-    public var editingDidFinish: (UIImage) -> Void
+    public var editingDidFinish: @Sendable (UIImage) -> Void
 
     public var body: some View {
         EmptyView()

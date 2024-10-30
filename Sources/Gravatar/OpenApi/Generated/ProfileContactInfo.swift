@@ -16,8 +16,7 @@ public struct ProfileContactInfo: Codable, Hashable, Sendable {
     /// The URL to the user's calendar.
     public private(set) var calendar: String?
 
-    @available(*, deprecated, message: "init will become internal on the next release")
-    public init(
+    init(
         homePhone: String? = nil,
         workPhone: String? = nil,
         cellPhone: String? = nil,
@@ -33,17 +32,7 @@ public struct ProfileContactInfo: Codable, Hashable, Sendable {
         self.calendar = calendar
     }
 
-    @available(*, deprecated, message: "CodingKeys will become internal on the next release.")
-    public enum CodingKeys: String, CodingKey, CaseIterable {
-        case homePhone = "home_phone"
-        case workPhone = "work_phone"
-        case cellPhone = "cell_phone"
-        case email
-        case contactForm = "contact_form"
-        case calendar
-    }
-
-    enum InternalCodingKeys: String, CodingKey, CaseIterable {
+    enum CodingKeys: String, CodingKey, CaseIterable {
         case homePhone = "home_phone"
         case workPhone = "work_phone"
         case cellPhone = "cell_phone"
@@ -55,25 +44,12 @@ public struct ProfileContactInfo: Codable, Hashable, Sendable {
     // Encodable protocol methods
 
     public func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: InternalCodingKeys.self)
+        var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encodeIfPresent(homePhone, forKey: .homePhone)
         try container.encodeIfPresent(workPhone, forKey: .workPhone)
         try container.encodeIfPresent(cellPhone, forKey: .cellPhone)
         try container.encodeIfPresent(email, forKey: .email)
         try container.encodeIfPresent(contactForm, forKey: .contactForm)
         try container.encodeIfPresent(calendar, forKey: .calendar)
-    }
-
-    // Decodable protocol methods
-
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: InternalCodingKeys.self)
-
-        homePhone = try container.decodeIfPresent(String.self, forKey: .homePhone)
-        workPhone = try container.decodeIfPresent(String.self, forKey: .workPhone)
-        cellPhone = try container.decodeIfPresent(String.self, forKey: .cellPhone)
-        email = try container.decodeIfPresent(String.self, forKey: .email)
-        contactForm = try container.decodeIfPresent(String.self, forKey: .contactForm)
-        calendar = try container.decodeIfPresent(String.self, forKey: .calendar)
     }
 }

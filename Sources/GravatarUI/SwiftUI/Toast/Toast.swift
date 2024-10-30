@@ -63,13 +63,15 @@ struct Toast: View {
     VStack {
         Toast(toast: .init(
             message: "Avatar updated! It may take a few minutes to appear everywhere.",
-            type: .info
+            type: .info,
+            stackingBehavior: .avoidStackingWithSameMessage
         )) { _ in
         }
 
         Toast(toast: .init(
             message: "Something went wrong.",
-            type: .error
+            type: .error,
+            stackingBehavior: .alwaysStack
         )) { _ in
         }
     }

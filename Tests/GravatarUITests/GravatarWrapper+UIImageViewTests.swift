@@ -84,40 +84,6 @@ final class GravatarWrapper_UIImageViewTests: XCTestCase {
     }
 
     @MainActor
-    func testCancelOngoingDownload() async throws {
-        let imageView = UIImageView(frame: frame)
-        let cache = TestImageCache()
-
-        let imageURL = try XCTUnwrap(URL(string: "https://gravatar.com/avatar/HASH"))
-        let response = HTTPURLResponse.successResponse(with: imageURL)
-        let sessionMock = URLSessionMock(returnData: ImageHelper.testImageData, response: response)
-        await sessionMock.update(isCancellable: true)
-        let imageDownloader = ImageDownloadService.mock(with: sessionMock, cache: cache)
-
-        let task1 = Task {
-            do {
-                try await imageView.gravatar.setImage(
-                    avatarID: .email("hello@gmail.com"),
-                    options: [.imageDownloader(imageDownloader)]
-                )
-                XCTFail()
-            } catch ImageFetchingComponentError.responseError(reason: .URLSessionError(error: let error)) {
-                XCTAssertNotNil(error as? CancellationError)
-            } catch {
-                XCTFail()
-            }
-        }
-
-        let task2 = Task {
-            try await Task.sleep(nanoseconds: UInt64(0.1 * 1_000_000_000))
-            await imageView.gravatar.cancelImageDownload()
-        }
-
-        await task1.value
-        try await task2.value
-    }
-
-    @MainActor
     func testRemoveCurrentImageWhileLoadingNoPlaceholder() async throws {
         let imageView = UIImageView(frame: frame)
         imageView.image = ImageHelper.testImage

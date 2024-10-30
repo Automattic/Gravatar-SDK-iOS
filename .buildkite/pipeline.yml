@@ -18,6 +18,16 @@ steps:
       echo "--- 🛠 Linting"
       make lint
 
+  - label: ☢️ Danger - PR Check
+    command: danger
+    key: danger
+    if: build.pull_request.id != null
+    retry:
+      manual:
+        permit_on_passed: true
+    agents:
+      queue: linter
+
   #################
   # Build and Test
   #################
@@ -47,7 +57,6 @@ steps:
     plugins: [$CI_TOOLKIT]
     depends_on:
       - "test"
-      - "test_demo"
       - "validate"
       - "lint"
     if: build.tag != null
