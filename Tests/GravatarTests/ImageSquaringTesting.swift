@@ -14,9 +14,7 @@ final class ImageSquaringTesting: XCTestCase {
         let result = DefaultImageSquarer().squared(squareImage)
 
         // Then it should remain unchanged
-        XCTAssertTrue(result.isSquare(), "Image should remain square")
-        XCTAssertEqual(result.size.width, 100, "Width should remain unchanged")
-        XCTAssertEqual(result.size.height, 100, "Height should remain unchanged")
+        XCTAssertEqual(result, squareImage, "UIImage objects should be identical")
     }
 
     func testPortraitImage() {
