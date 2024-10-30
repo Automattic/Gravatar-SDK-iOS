@@ -24,7 +24,7 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
 
     var contentLayoutProvider: AvatarPickerContentLayoutProviding
     var customImageEditor: ImageEditorBlock<ImageEditor>?
-    var imageSquaring: ImageSquaringStrategy?
+    var imageSquaring: ImageSquaringStrategy
     var tokenErrorHandler: (() -> Void)?
     var avatarUpdatedHandler: (() -> Void)?
 
@@ -34,12 +34,14 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
         isPresented: Binding<Bool>,
         contentLayoutProvider: AvatarPickerContentLayoutProviding = AvatarPickerContentLayoutType.vertical,
         customImageEditor: ImageEditorBlock<ImageEditor>? = nil as NoCustomEditorBlock?,
+        imageSquaring: ImageSquaringStrategy = .default,
         tokenErrorHandler: (() -> Void)? = nil,
         avatarUpdatedHandler: (() -> Void)? = nil
     ) {
         self._isPresented = isPresented
         self.contentLayoutProvider = contentLayoutProvider
         self.customImageEditor = customImageEditor
+        self.imageSquaring = imageSquaring
         self.tokenErrorHandler = tokenErrorHandler
         self.avatarUpdatedHandler = avatarUpdatedHandler
         self._authToken = authToken
@@ -53,12 +55,14 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
         isPresented: Binding<Bool>,
         contentLayoutProvider: AvatarPickerContentLayoutProviding = AvatarPickerContentLayoutType.vertical,
         customImageEditor: ImageEditorBlock<ImageEditor>? = nil as NoCustomEditorBlock?,
+        imageSquaring: ImageSquaringStrategy = .default,
         tokenErrorHandler: (() -> Void)? = nil,
         avatarUpdatedHandler: (() -> Void)? = nil
     ) {
         self._isPresented = isPresented
         self.contentLayoutProvider = contentLayoutProvider
         self.customImageEditor = customImageEditor
+        self.imageSquaring = imageSquaring
         self.tokenErrorHandler = tokenErrorHandler
         self.avatarUpdatedHandler = avatarUpdatedHandler
         self._authToken = .constant(nil)

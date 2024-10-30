@@ -30,6 +30,7 @@ extension View {
     ///   - scope: Scope for the QuickEditor.
     ///   - customImageEditor: (Optional) A custom image editor to show the user right after an image is picked for
     ///   cropping and other sorts of image editing operations.
+    ///   - imageSquaring: A strategy for ensuring that images are square before uploading
     ///   - avatarUpdatedHandler: (Optional) A callback to execute when a different avatar is selected.
     ///   - onDismiss: (Optional) A callback to execute when the sheet is dismissed.
     /// - Returns: A modifier to display the QuickEditor sheet.
@@ -40,6 +41,7 @@ extension View {
         authToken: String? = nil,
         scope: QuickEditorScopeType,
         customImageEditor: ImageEditorBlock<some ImageEditorView>? = nil as NoCustomEditorBlock?,
+        imageSquaring: ImageSquaringStrategy = .default,
         avatarUpdatedHandler: (() -> Void)? = nil,
         onDismiss: (() -> Void)? = nil
     ) -> some View {
@@ -49,6 +51,7 @@ extension View {
             token: authToken,
             isPresented: isPresented,
             customImageEditor: customImageEditor,
+            imageSquaring: imageSquaring,
             contentLayoutProvider: AvatarPickerContentLayoutType.vertical,
             avatarUpdatedHandler: avatarUpdatedHandler
         )
@@ -64,6 +67,7 @@ extension View {
     ///   - scope: Scope for the QuickEditor. See: ``QuickEditorScope``.
     ///   - customImageEditor: (Optional) A custom image editor to show the user right after an image is picked for
     ///   cropping and other sorts of image editing operations.
+    ///   - imageSquaring: A strategy for ensuring that images are square before uploading
     ///   - avatarUpdatedHandler: (Optional) A callback to execute when a different avatar is selected.
     ///   - onDismiss: (Optional) A callback to execute when the sheet is dismissed.
     /// - Returns: A modifier to display the QuickEditor sheet.
@@ -74,6 +78,7 @@ extension View {
         authToken: String? = nil,
         scope: QuickEditorScope,
         customImageEditor: ImageEditorBlock<some ImageEditorView>? = nil as NoCustomEditorBlock?,
+        imageSquaring: ImageSquaringStrategy = .default,
         avatarUpdatedHandler: (() -> Void)? = nil,
         onDismiss: (() -> Void)? = nil
     ) -> some View {
@@ -85,6 +90,7 @@ extension View {
                 token: authToken,
                 isPresented: isPresented,
                 customImageEditor: customImageEditor,
+                imageSquaring: imageSquaring,
                 contentLayoutProvider: config.contentLayout,
                 avatarUpdatedHandler: avatarUpdatedHandler
             )
