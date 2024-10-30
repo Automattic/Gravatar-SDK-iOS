@@ -1,6 +1,8 @@
+# Make sure GRAVATAR_SDK_LOCAL_DEVELOPMENT is set as an ENV
 ifndef GRAVATAR_SDK_LOCAL_DEVELOPMENT
 export GRAVATAR_SDK_LOCAL_DEVELOPMENT := 1
-$(info GRAVATAR_SDK_LOCAL_DEVELOPMENT not set in the environment. Setting to 1.)
+$(info GRAVATAR_SDK_LOCAL_DEVELOPMENT not set in the environment. Add `export GRAVATAR_SDK_LOCAL_DEVELOPMENT=1` in your shell, reload your shell, and quit Xcode.)
+$(info Setting GRAVATAR_SDK_LOCAL_DEVELOPMENT=1 for this run only.)
 endif
 
 .PHONY: all dev clean run
@@ -42,7 +44,7 @@ help:  # Display this help.
 	@-+grep -Eh "^[a-z-]+:.*#" $(CURRENT_MAKEFILE_PATH) | sed -E 's/^(.*:)(.*#+)(.*)/  \1 @@@ \3 /' | column -t -s "@@@"
 
 dev: # Open the package in xcode
-	@osascript -e 'tell application "Xcode" to quit'
+	@echo "Opening the Package.swift in Xcode..."
 	@xed .
 
 dev-demo: # Open an xcode project with the package and a demo project
