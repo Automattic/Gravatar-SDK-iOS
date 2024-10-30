@@ -3,7 +3,7 @@ import XCTest
 
 @testable import Gravatar
 
-final class ImageSquaringTesting: XCTestCase {
+final class ImageSquaringTests: XCTestCase {
     // MARK: Pixel Tests
 
     func testSquareImage() {
@@ -137,6 +137,62 @@ final class ImageSquaringTesting: XCTestCase {
         XCTAssertEqual(result.size.width, 500)
         XCTAssertEqual(result.size.height, 500)
         XCTAssertEqual(result.scale, 2.0, "Image scale should remain @2x")
+    }
+
+    // MARK: - Custom Strategy Tests
+
+    func testCustomImageSquarer() {
+        struct CustomCropper: ImageSquaring {
+            /// Custom ImageSquarer that halves the height and width
+            func squared(_ image: UIImage) -> UIImage {
+                let newSize = CGSize(width: image.size.width / 2, height: image.size.height / 2)
+                UIGraphicsBeginImageContextWithOptions(newSize, false, image.scale)
+                image.draw(in: CGRect(origin: .zero, size: newSize))
+                let resizedImage = UIGraphicsGetImageFromCurrentImageContext()
+                UIGraphicsEndImageContext()
+                return resizedImage!
+            }
+        }
+
+        // Create a square image
+        let image = createImage(width: 200, height: 200)
+
+        // Use a custom cropper
+        let squarer = ImageSquaringStrategy.custom(cropper: CustomCropper()).strategy
+
+        // Test the custom squaring strategy
+        let squaredImage = squarer.squared(image)
+
+        // Assert that the image dimentions have been halved
+        XCTAssertEqual(squaredImage.size.width, image.size.width / 2, "The image width should be halved.")
+        XCTAssertEqual(squaredImage.size.height, image.size.height / 2, "The image height should be halved.")
+    }
+
+    func testCustomImageSquarerAssertsNotSquare() {
+        struct CustomCropper: ImageSquaring {
+            /// Custom ImageSquarer that halves the height and width
+            func squared(_ image: UIImage) -> UIImage {
+                let newSize = CGSize(width: image.size.width / 2, height: image.size.height / 2)
+                UIGraphicsBeginImageContextWithOptions(newSize, false, image.scale)
+                image.draw(in: CGRect(origin: .zero, size: newSize))
+                let resizedImage = UIGraphicsGetImageFromCurrentImageContext()
+                UIGraphicsEndImageContext()
+                return resizedImage!
+            }
+        }
+
+        // Create a rectangular image
+        let image = createImage(width: 100, height: 200)
+
+        // Use a custom cropper
+        let squarer = ImageSquaringStrategy.custom(cropper: CustomCropper()).strategy
+
+        // Test the custom squaring strategy
+        let squaredImage = squarer.squared(image)
+
+        // Assert that the image dimentions have been halved
+        XCTAssertEqual(squaredImage.size.width, image.size.width / 2, "The image width should be halved.")
+        XCTAssertEqual(squaredImage.size.height, image.size.height / 2, "The image height should be halved.")
     }
 
     // MARK: - Helpers
