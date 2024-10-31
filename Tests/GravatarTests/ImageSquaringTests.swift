@@ -150,10 +150,10 @@ final class ImageSquaringTests: XCTestCase {
         let referenceImage = try XCTUnwrap(UIImage(named: "ImageSquaringDefaultBackgroundReferenceImage", in: .module, with: nil)).pngData()
 
         // And a strategy with a custom blue background color
-        let strategy = ImageSquaringStrategy.default.strategy
+        let cropper = ImageSquaringStrategy.default.cropper
 
         // When squared() is called
-        let resultImage = strategy.squared(inputImage)
+        let resultImage = cropper.squared(inputImage)
 
         // Archive the reference image for future use
         attach(image: resultImage, attachmentName: "Default Background Image")
@@ -175,10 +175,10 @@ final class ImageSquaringTests: XCTestCase {
 
         // And a strategy with a custom blue background color
         let backgroundColor = UIColor.blue
-        let strategy = ImageSquaringStrategy.customBackgroundColor(backgroundColor).strategy
+        let cropper = ImageSquaringStrategy.customBackgroundColor(backgroundColor).cropper
 
         // When squared() is called
-        let resultImage = strategy.squared(inputImage)
+        let resultImage = cropper.squared(inputImage)
 
         // Archive the reference image for future use
         attach(image: resultImage, attachmentName: "Custom Background Image")
@@ -209,7 +209,7 @@ final class ImageSquaringTests: XCTestCase {
         let image = createImage(width: 200, height: 200)
 
         // Use a custom cropper
-        let squarer = ImageSquaringStrategy.custom(CustomCropper()).strategy
+        let squarer = ImageSquaringStrategy.custom(CustomCropper()).cropper
 
         // Test the custom squaring strategy
         let squaredImage = squarer.squared(image)
@@ -236,7 +236,7 @@ final class ImageSquaringTests: XCTestCase {
         let image = createImage(width: 100, height: 200)
 
         // Use a custom cropper
-        let squarer = ImageSquaringStrategy.custom(CustomCropper()).strategy
+        let squarer = ImageSquaringStrategy.custom(CustomCropper()).cropper
 
         // Test the custom squaring strategy
         let squaredImage = squarer.squared(image)

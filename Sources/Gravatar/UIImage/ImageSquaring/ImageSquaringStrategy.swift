@@ -7,7 +7,7 @@ public enum ImageSquaringStrategy: Sendable {
 }
 
 extension ImageSquaringStrategy {
-    public var strategy: ImageSquaring {
+    public var cropper: ImageSquaring {
         switch self {
         case .default:
             DefaultImageSquarer()
