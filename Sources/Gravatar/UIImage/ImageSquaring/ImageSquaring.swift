@@ -5,7 +5,7 @@ extension CGFloat {
 }
 
 public protocol ImageSquaring: Sendable {
-    func squared(_ image: UIImage) -> UIImage
+    func square(_ image: UIImage) -> UIImage
 }
 
 struct DefaultImageSquarer: ImageSquaring {
@@ -15,7 +15,7 @@ struct DefaultImageSquarer: ImageSquaring {
         self.backgroundColor = backgroundColor
     }
 
-    func squared(_ image: UIImage) -> UIImage {
+    func square(_ image: UIImage) -> UIImage {
         image.squared(withBackgroundColor: backgroundColor)
     }
 }

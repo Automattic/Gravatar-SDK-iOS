@@ -11,7 +11,7 @@ final class ImageSquaringTests: XCTestCase {
         let squareImage = createImage(width: 100, height: 100)
 
         // When DefaultImageSquarer is used
-        let result = DefaultImageSquarer().squared(squareImage)
+        let result = DefaultImageSquarer().square(squareImage)
 
         // Then it should remain unchanged
         XCTAssertEqual(result, squareImage, "UIImage objects should be identical")
@@ -22,10 +22,10 @@ final class ImageSquaringTests: XCTestCase {
         let portraitImage = createImage(width: 50, height: 100)
 
         // When DefaultImageSquarer is used
-        let result = DefaultImageSquarer().squared(portraitImage)
+        let result = DefaultImageSquarer().square(portraitImage)
 
         // Then the result should be a square image (100x100)
-        XCTAssertTrue(result.isSquare(), "Image should be squared")
+        XCTAssertTrue(result.isSquare(), "Image should be square")
         XCTAssertEqual(result.size.width, 100, "Width should match the taller side")
         XCTAssertEqual(result.size.height, 100, "Height should match the taller side")
     }
@@ -35,10 +35,10 @@ final class ImageSquaringTests: XCTestCase {
         let landscapeImage = createImage(width: 200, height: 100)
 
         // When DefaultImageSquarer is used
-        let result = DefaultImageSquarer().squared(landscapeImage)
+        let result = DefaultImageSquarer().square(landscapeImage)
 
         // Then the result should be a square image (200x200)
-        XCTAssertTrue(result.isSquare(), "Image should be squared")
+        XCTAssertTrue(result.isSquare(), "Image should be square")
         XCTAssertEqual(result.size.width, 200, "Width should match the wider side")
         XCTAssertEqual(result.size.height, 200, "Height should match the wider side")
     }
@@ -48,10 +48,10 @@ final class ImageSquaringTests: XCTestCase {
         let slightDifferenceImage = createImage(width: 100, height: 101)
 
         // When DefaultImageSquarer is used
-        let result = DefaultImageSquarer().squared(slightDifferenceImage)
+        let result = DefaultImageSquarer().square(slightDifferenceImage)
 
         // Then the result should aspect-fill and become 100x100
-        XCTAssertTrue(result.isSquare(), "Image should be squared")
+        XCTAssertTrue(result.isSquare(), "Image should be square")
         XCTAssertEqual(result.size.width, 100, "Width should match the smaller side")
         XCTAssertEqual(result.size.height, 100, "Height should match the smaller side")
     }
@@ -61,10 +61,10 @@ final class ImageSquaringTests: XCTestCase {
         let slightDifferenceImage = createImage(width: 100, height: 102)
 
         // When DefaultImageSquarer is used
-        let result = DefaultImageSquarer().squared(slightDifferenceImage)
+        let result = DefaultImageSquarer().square(slightDifferenceImage)
 
         // Then the result should aspect-fit and become 102x102
-        XCTAssertTrue(result.isSquare(), "Image should be squared")
+        XCTAssertTrue(result.isSquare(), "Image should be square")
         XCTAssertEqual(result.size.width, 102, "Width should match the larger side")
         XCTAssertEqual(result.size.height, 102, "Height should match the larger side")
     }
@@ -76,7 +76,7 @@ final class ImageSquaringTests: XCTestCase {
         let smallImage = createImage(width: 1, height: 1)
 
         // When DefaultImageSquarer is used
-        let result = DefaultImageSquarer().squared(smallImage)
+        let result = DefaultImageSquarer().square(smallImage)
 
         // Then it should remain a 1x1 image since it's already square
         XCTAssertTrue(result.isSquare(), "Image should remain square")
@@ -89,10 +89,10 @@ final class ImageSquaringTests: XCTestCase {
         let largeImage = createImage(width: 5000, height: 3000)
 
         // When DefaultImageSquarer is used
-        let result = DefaultImageSquarer().squared(largeImage)
+        let result = DefaultImageSquarer().square(largeImage)
 
         // Then the result should be a 5_000x5_000 square image
-        XCTAssertTrue(result.isSquare(), "Image should be squared")
+        XCTAssertTrue(result.isSquare(), "Image should be square")
         XCTAssertEqual(result.size.width, 5000, "Width should match the larger side")
         XCTAssertEqual(result.size.height, 5000, "Height should match the larger side")
     }
@@ -102,10 +102,10 @@ final class ImageSquaringTests: XCTestCase {
         let wideImage = createImage(width: 10000, height: 500)
 
         // When DefaultImageSquarer is used
-        let result = DefaultImageSquarer().squared(wideImage)
+        let result = DefaultImageSquarer().square(wideImage)
 
         // Then the result should be a 10_000x10_000 square image
-        XCTAssertTrue(result.isSquare(), "Image should be squared")
+        XCTAssertTrue(result.isSquare(), "Image should be square")
         XCTAssertEqual(result.size.width, 10000, "Width should match the wider side")
         XCTAssertEqual(result.size.height, 10000, "Height should match the wider side")
     }
@@ -115,10 +115,10 @@ final class ImageSquaringTests: XCTestCase {
         let tallImage = createImage(width: 500, height: 10000)
 
         // When DefaultImageSquarer is used
-        let result = DefaultImageSquarer().squared(tallImage)
+        let result = DefaultImageSquarer().square(tallImage)
 
         // Then the result should be a 10_000x10_000 square image
-        XCTAssertTrue(result.isSquare(), "Image should be squared")
+        XCTAssertTrue(result.isSquare(), "Image should be square")
         XCTAssertEqual(result.size.width, 10000, "Width should match the taller side")
         XCTAssertEqual(result.size.height, 10000, "Height should match the taller side")
     }
@@ -130,10 +130,10 @@ final class ImageSquaringTests: XCTestCase {
         let image = createImage(width: 300, height: 500, scale: 2.0)
 
         // When DefaultImageSquarer is used
-        let result = DefaultImageSquarer().squared(image)
+        let result = DefaultImageSquarer().square(image)
 
         // Then the result should be a 500x500 square image with scale @2x
-        XCTAssertTrue(result.isSquare(), "Image should be squared")
+        XCTAssertTrue(result.isSquare(), "Image should be square")
         XCTAssertEqual(result.size.width, 500)
         XCTAssertEqual(result.size.height, 500)
         XCTAssertEqual(result.scale, 2.0, "Image scale should remain @2x")
@@ -152,8 +152,8 @@ final class ImageSquaringTests: XCTestCase {
         // And a strategy with the default (black) background color
         let cropper = ImageSquaringStrategy.default.cropper
 
-        // When squared() is called
-        let resultImage = cropper.squared(inputImage)
+        // When square() is called
+        let resultImage = cropper.square(inputImage)
 
         // Archive the reference image for future use
         attach(image: resultImage, attachmentName: "Default Background Image")
@@ -177,8 +177,8 @@ final class ImageSquaringTests: XCTestCase {
         let backgroundColor = UIColor.blue
         let cropper = ImageSquaringStrategy.customBackgroundColor(backgroundColor).cropper
 
-        // When squared() is called
-        let resultImage = cropper.squared(inputImage)
+        // When square() is called
+        let resultImage = cropper.square(inputImage)
 
         // Archive the reference image for future use
         attach(image: resultImage, attachmentName: "Custom Background Image")
@@ -212,7 +212,7 @@ final class ImageSquaringTests: XCTestCase {
         let squarer = ImageSquaringStrategy.custom(CustomCropper()).cropper
 
         // Test the custom squaring strategy
-        let squaredImage = squarer.squared(image)
+        let squaredImage = squarer.square(image)
 
         // Assert that the image dimentions have been halved
         XCTAssertEqual(squaredImage.size.width, image.size.width / 2, "The image width should be halved.")
@@ -239,7 +239,7 @@ final class ImageSquaringTests: XCTestCase {
         let squarer = ImageSquaringStrategy.custom(CustomCropper()).cropper
 
         // Test the custom squaring strategy
-        let squaredImage = squarer.squared(image)
+        let squaredImage = squarer.square(image)
 
         // Assert that the image dimentions have been halved
         XCTAssertEqual(squaredImage.size.width, image.size.width / 2, "The image width should be halved.")
