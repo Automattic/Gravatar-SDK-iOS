@@ -149,7 +149,7 @@ final class ImageSquaringTests: XCTestCase {
         // And a reference image
         let referenceImage = try XCTUnwrap(UIImage(named: "ImageSquaringDefaultBackgroundReferenceImage", in: .module, with: nil)).pngData()
 
-        // And a strategy with a custom blue background color
+        // And a strategy with the default (black) background color
         let cropper = ImageSquaringStrategy.default.cropper
 
         // When squared() is called
