@@ -1,7 +1,7 @@
 import UIKit
 
 public enum ImageSquaringStrategy: Sendable {
-    case custom(cropper: ImageSquaring)
+    case custom(ImageSquaring)
     case customBackgroundColor(UIColor)
     case `default`
 }

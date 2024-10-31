@@ -209,7 +209,7 @@ final class ImageSquaringTests: XCTestCase {
         let image = createImage(width: 200, height: 200)
 
         // Use a custom cropper
-        let squarer = ImageSquaringStrategy.custom(cropper: CustomCropper()).strategy
+        let squarer = ImageSquaringStrategy.custom(CustomCropper()).strategy
 
         // Test the custom squaring strategy
         let squaredImage = squarer.squared(image)
@@ -236,7 +236,7 @@ final class ImageSquaringTests: XCTestCase {
         let image = createImage(width: 100, height: 200)
 
         // Use a custom cropper
-        let squarer = ImageSquaringStrategy.custom(cropper: CustomCropper()).strategy
+        let squarer = ImageSquaringStrategy.custom(CustomCropper()).strategy
 
         // Test the custom squaring strategy
         let squaredImage = squarer.squared(image)
