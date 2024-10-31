@@ -2,6 +2,7 @@ import UIKit
 
 public enum ImageSquaringStrategy: Sendable {
     case custom(cropper: ImageSquaring)
+    case customBackgroundColor(UIColor)
     case `default`
 }
 
@@ -10,6 +11,8 @@ extension ImageSquaringStrategy {
         switch self {
         case .default:
             DefaultImageSquarer()
+        case .customBackgroundColor(let backgroundColor):
+            DefaultImageSquarer(backgroundColor: backgroundColor)
         case .custom(cropper: let cropper):
             cropper
         }

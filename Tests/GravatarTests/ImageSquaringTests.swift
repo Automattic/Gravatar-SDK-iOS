@@ -139,6 +139,57 @@ final class ImageSquaringTests: XCTestCase {
         XCTAssertEqual(result.scale, 2.0, "Image scale should remain @2x")
     }
 
+    // MARK: - Background Color Tests
+
+    @MainActor
+    func testDefaultBackgroundColorIsApplied() throws {
+        // Given a non-square image (300x500)
+        let inputImage = createImage(width: 300, height: 500, scale: 1, fillColor: .red)
+
+        // And a reference image
+        let referenceImage = try XCTUnwrap(UIImage(named: "ImageSquaringDefaultBackgroundReferenceImage", in: .module, with: nil)).pngData()
+
+        // And a strategy with a custom blue background color
+        let strategy = ImageSquaringStrategy.default.strategy
+
+        // When squared() is called
+        let resultImage = strategy.squared(inputImage)
+
+        // Archive the reference image for future use
+        attach(image: resultImage, attachmentName: "Default Background Image")
+
+        // Then the result should be square
+        XCTAssertTrue(resultImage.isSquare(), "The image should be square.")
+
+        // And the generated image should match the reference image
+        XCTAssertEqual(resultImage.pngData(), referenceImage)
+    }
+
+    @MainActor
+    func testCustomBackgroundColorIsApplied() throws {
+        // Given a non-square image (300x500)
+        let inputImage = createImage(width: 300, height: 500, scale: 1, fillColor: .red)
+
+        // And a reference image
+        let referenceImage = try XCTUnwrap(UIImage(named: "ImageSquaringCustomBackgroundReferenceImage", in: .module, with: nil)).pngData()
+
+        // And a strategy with a custom blue background color
+        let backgroundColor = UIColor.blue
+        let strategy = ImageSquaringStrategy.customBackgroundColor(backgroundColor).strategy
+
+        // When squared() is called
+        let resultImage = strategy.squared(inputImage)
+
+        // Archive the reference image for future use
+        attach(image: resultImage, attachmentName: "Custom Background Image")
+
+        // Then the result should be square
+        XCTAssertTrue(resultImage.isSquare(), "The image should be square.")
+
+        // And the generated image should match the reference image
+        XCTAssertEqual(resultImage.pngData(), referenceImage)
+    }
+
     // MARK: - Custom Strategy Tests
 
     func testCustomImageSquarer() {
@@ -197,13 +248,23 @@ final class ImageSquaringTests: XCTestCase {
 
     // MARK: - Helpers
 
-    private func createImage(width: CGFloat, height: CGFloat, scale: CGFloat = 1) -> UIImage {
+    private func createImage(width: CGFloat, height: CGFloat, scale: CGFloat = 1, fillColor: UIColor = .red) -> UIImage {
         let size = CGSize(width: width, height: height)
         let format = UIGraphicsImageRendererFormat()
         format.scale = scale
         return UIGraphicsImageRenderer(size: size, format: format).image { context in
-            UIColor.red.setFill()
+            fillColor.setFill()
             context.fill(CGRect(origin: .zero, size: size))
+        }
+    }
+
+    @MainActor
+    private func attach(image: UIImage, attachmentName: String, lifetime: XCTAttachment.Lifetime = .deleteOnSuccess) {
+        XCTContext.runActivity(named: "Archive Image") { activity in
+            let attachment = XCTAttachment(image: image)
+            attachment.name = attachmentName
+            attachment.lifetime = lifetime
+            activity.add(attachment)
         }
     }
 }

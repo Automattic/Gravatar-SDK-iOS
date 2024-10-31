@@ -9,8 +9,14 @@ public protocol ImageSquaring: Sendable {
 }
 
 struct DefaultImageSquarer: ImageSquaring {
+    private let backgroundColor: UIColor
+
+    init(backgroundColor: UIColor = .black) {
+        self.backgroundColor = backgroundColor
+    }
+
     func squared(_ image: UIImage) -> UIImage {
-        image.squared()
+        image.squared(withBackgroundColor: backgroundColor)
     }
 }
 
@@ -19,7 +25,7 @@ extension UIImage {
         size.height == size.width
     }
 
-    fileprivate func squared() -> UIImage {
+    fileprivate func squared(withBackgroundColor backgroundColor: UIColor) -> UIImage {
         if isSquare() {
             return self
         }
@@ -42,7 +48,7 @@ extension UIImage {
         format.opaque = true
 
         return UIGraphicsImageRenderer(size: squareSize, format: format).image { context in
-            UIColor.black.setFill() // Background color (black fill)
+            backgroundColor.setFill() // Background color
             context.fill(CGRect(origin: .zero, size: squareSize)) // Fill background
 
             // Draw the image in the center of the new square context
