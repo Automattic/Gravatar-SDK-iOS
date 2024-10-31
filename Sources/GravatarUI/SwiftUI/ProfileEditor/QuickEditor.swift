@@ -33,8 +33,8 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
     private var tokenBinding: Binding<String?> { externalToken != nil ? .constant(externalToken) : $fetchedToken }
     private let scope: QuickEditorScopeType
     private let email: Email
+    private let imageSquaringStrategy: ImageSquaringStrategy
     private let customImageEditor: ImageEditorBlock<ImageEditor>?
-    private let imageSquaring: ImageSquaringStrategy
     private let contentLayoutProvider: AvatarPickerContentLayoutProviding
     private let avatarUpdatedHandler: (() -> Void)?
 
@@ -43,16 +43,16 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
         scope: QuickEditorScopeType,
         token: String? = nil,
         isPresented: Binding<Bool>,
+        imageSquaringStrategy: ImageSquaringStrategy,
         customImageEditor: ImageEditorBlock<ImageEditor>? = nil,
-        imageSquaring: ImageSquaringStrategy,
         contentLayoutProvider: AvatarPickerContentLayoutProviding = AvatarPickerContentLayoutType.vertical,
         avatarUpdatedHandler: (() -> Void)? = nil
     ) {
         self.email = email
         self.scope = scope
         self._isPresented = isPresented
+        self.imageSquaringStrategy = imageSquaringStrategy
         self.customImageEditor = customImageEditor
-        self.imageSquaring = imageSquaring
         self.contentLayoutProvider = contentLayoutProvider
         self.externalToken = token
         self.avatarUpdatedHandler = avatarUpdatedHandler
@@ -87,8 +87,8 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
                 authToken: tokenBinding,
                 isPresented: $isPresented,
                 contentLayoutProvider: contentLayoutProvider,
+                imageSquaringStrategy: imageSquaringStrategy,
                 customImageEditor: customImageEditor,
-                imageSquaring: imageSquaring,
                 tokenErrorHandler: externalToken != nil ? nil : {
                     oauthSession.markSessionAsExpired(with: email)
                     performAuthentication()
@@ -232,7 +232,7 @@ extension QuickEditorConstants {
         email: .init(""),
         scope: .avatarPicker,
         isPresented: .constant(true),
-        imageSquaring: .default,
+        imageSquaringStrategy: .default,
         contentLayoutProvider: AvatarPickerContentLayout.vertical(presentationStyle: .large)
     )
 }

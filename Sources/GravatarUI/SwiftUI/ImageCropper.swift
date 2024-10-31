@@ -7,7 +7,7 @@ struct ImageCropper: UIViewControllerRepresentable, ImageEditorView {
 
     typealias UIViewControllerType = UINavigationController
 
-    init(inputImage: UIImage, editingDidFinish: @escaping @Sendable (UIImage) -> Void, onCancel: @escaping () -> Void) {
+    init(inputImage: UIImage, image editingDidFinish: @escaping @Sendable (UIImage) -> Void, onCancel: @escaping () -> Void) {
         self.inputImage = inputImage
         self.editingDidFinish = editingDidFinish
         self.onCancel = onCancel
