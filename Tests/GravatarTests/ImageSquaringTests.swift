@@ -10,8 +10,8 @@ final class ImageSquaringTests: XCTestCase {
         // Given a square image
         let squareImage = createImage(width: 100, height: 100)
 
-        // When DefaultImageSquarer is used
-        let result = DefaultImageSquarer().square(squareImage)
+        // When the default ImageSquaringStrategy is used
+        let result = ImageSquaringStrategy.default.cropper.square(squareImage)
 
         // Then it should remain unchanged
         XCTAssertEqual(result, squareImage, "UIImage objects should be identical")
@@ -21,8 +21,8 @@ final class ImageSquaringTests: XCTestCase {
         // Given a portrait image (50x100)
         let portraitImage = createImage(width: 50, height: 100)
 
-        // When DefaultImageSquarer is used
-        let result = DefaultImageSquarer().square(portraitImage)
+        // When the default ImageSquaringStrategy is used
+        let result = ImageSquaringStrategy.default.cropper.square(portraitImage)
 
         // Then the result should be a square image (100x100)
         XCTAssertTrue(result.isSquare(), "Image should be square")
@@ -34,8 +34,8 @@ final class ImageSquaringTests: XCTestCase {
         // Given a landscape image (200x100)
         let landscapeImage = createImage(width: 200, height: 100)
 
-        // When DefaultImageSquarer is used
-        let result = DefaultImageSquarer().square(landscapeImage)
+        // When the default ImageSquaringStrategy is used
+        let result = ImageSquaringStrategy.default.cropper.square(landscapeImage)
 
         // Then the result should be a square image (200x200)
         XCTAssertTrue(result.isSquare(), "Image should be square")
@@ -47,8 +47,8 @@ final class ImageSquaringTests: XCTestCase {
         // Given an image with a minor size difference (100x101) where the difference is below the .minorDifferenceThreshold
         let slightDifferenceImage = createImage(width: 100, height: 101)
 
-        // When DefaultImageSquarer is used
-        let result = DefaultImageSquarer().square(slightDifferenceImage)
+        // When the default ImageSquaringStrategy is used
+        let result = ImageSquaringStrategy.default.cropper.square(slightDifferenceImage)
 
         // Then the result should aspect-fill and become 100x100
         XCTAssertTrue(result.isSquare(), "Image should be square")
@@ -60,8 +60,8 @@ final class ImageSquaringTests: XCTestCase {
         // Given an image with a minor size difference (100x102) where the difference is at or above the .minorDifferenceThreshold
         let slightDifferenceImage = createImage(width: 100, height: 102)
 
-        // When DefaultImageSquarer is used
-        let result = DefaultImageSquarer().square(slightDifferenceImage)
+        // When the default ImageSquaringStrategy is used
+        let result = ImageSquaringStrategy.default.cropper.square(slightDifferenceImage)
 
         // Then the result should aspect-fit and become 102x102
         XCTAssertTrue(result.isSquare(), "Image should be square")
@@ -75,8 +75,8 @@ final class ImageSquaringTests: XCTestCase {
         // Given a very small image (1x1)
         let smallImage = createImage(width: 1, height: 1)
 
-        // When DefaultImageSquarer is used
-        let result = DefaultImageSquarer().square(smallImage)
+        // When the default ImageSquaringStrategy is used
+        let result = ImageSquaringStrategy.default.cropper.square(smallImage)
 
         // Then it should remain a 1x1 image since it's already square
         XCTAssertTrue(result.isSquare(), "Image should remain square")
@@ -88,8 +88,8 @@ final class ImageSquaringTests: XCTestCase {
         // Given a large image (5_000x3_000)
         let largeImage = createImage(width: 5000, height: 3000)
 
-        // When DefaultImageSquarer is used
-        let result = DefaultImageSquarer().square(largeImage)
+        // When the default ImageSquaringStrategy is used
+        let result = ImageSquaringStrategy.default.cropper.square(largeImage)
 
         // Then the result should be a 5_000x5_000 square image
         XCTAssertTrue(result.isSquare(), "Image should be square")
@@ -101,8 +101,8 @@ final class ImageSquaringTests: XCTestCase {
         // Given an extremely wide image (10_000x500)
         let wideImage = createImage(width: 10000, height: 500)
 
-        // When DefaultImageSquarer is used
-        let result = DefaultImageSquarer().square(wideImage)
+        // When the default ImageSquaringStrategy is used
+        let result = ImageSquaringStrategy.default.cropper.square(wideImage)
 
         // Then the result should be a 10_000x10_000 square image
         XCTAssertTrue(result.isSquare(), "Image should be square")
@@ -114,8 +114,8 @@ final class ImageSquaringTests: XCTestCase {
         // Given an extremely tall image (500x10_000)
         let tallImage = createImage(width: 500, height: 10000)
 
-        // When DefaultImageSquarer is used
-        let result = DefaultImageSquarer().square(tallImage)
+        // When the default ImageSquaringStrategy is used
+        let result = ImageSquaringStrategy.default.cropper.square(tallImage)
 
         // Then the result should be a 10_000x10_000 square image
         XCTAssertTrue(result.isSquare(), "Image should be square")
@@ -129,8 +129,8 @@ final class ImageSquaringTests: XCTestCase {
         // Given a retina image (@2x) with size 300x500
         let image = createImage(width: 300, height: 500, scale: 2.0)
 
-        // When DefaultImageSquarer is used
-        let result = DefaultImageSquarer().square(image)
+        // When the default ImageSquaringStrategy is used
+        let result = ImageSquaringStrategy.default.cropper.square(image)
 
         // Then the result should be a 500x500 square image with scale @2x
         XCTAssertTrue(result.isSquare(), "Image should be square")
@@ -144,16 +144,13 @@ final class ImageSquaringTests: XCTestCase {
     @MainActor
     func testDefaultBackgroundColorIsApplied() throws {
         // Given a non-square image (300x500)
-        let inputImage = createImage(width: 300, height: 500, scale: 1, fillColor: .red)
+        let image = createImage(width: 300, height: 500, scale: 1, fillColor: .red)
 
         // And a reference image
         let referenceImage = try XCTUnwrap(UIImage(named: "ImageSquaringDefaultBackgroundReferenceImage", in: .module, with: nil)).pngData()
 
-        // And a strategy with the default (black) background color
-        let cropper = ImageSquaringStrategy.default.cropper
-
-        // When square() is called
-        let resultImage = cropper.square(inputImage)
+        // When the default ImageSquaringStrategy is used (with a UIColor.black background)
+        let resultImage = ImageSquaringStrategy.default.cropper.square(image)
 
         // Archive the reference image for future use
         attach(image: resultImage, attachmentName: "Default Background Image")
@@ -195,7 +192,7 @@ final class ImageSquaringTests: XCTestCase {
     func testCustomImageSquarer() {
         struct CustomCropper: ImageSquaring {
             /// Custom ImageSquarer that halves the height and width
-            func squared(_ image: UIImage) -> UIImage {
+            func square(_ image: UIImage) -> UIImage {
                 let newSize = CGSize(width: image.size.width / 2, height: image.size.height / 2)
                 UIGraphicsBeginImageContextWithOptions(newSize, false, image.scale)
                 image.draw(in: CGRect(origin: .zero, size: newSize))
@@ -222,7 +219,7 @@ final class ImageSquaringTests: XCTestCase {
     func testCustomImageSquarerAssertsNotSquare() {
         struct CustomCropper: ImageSquaring {
             /// Custom ImageSquarer that halves the height and width
-            func squared(_ image: UIImage) -> UIImage {
+            func square(_ image: UIImage) -> UIImage {
                 let newSize = CGSize(width: image.size.width / 2, height: image.size.height / 2)
                 UIGraphicsBeginImageContextWithOptions(newSize, false, image.scale)
                 image.draw(in: CGRect(origin: .zero, size: newSize))
