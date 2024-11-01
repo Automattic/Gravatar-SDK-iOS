@@ -34,6 +34,16 @@ class DemoUploadImageViewController: UIViewController {
         return textField
     }()
     
+    let cropToFitThreshold: UITextField = {
+        let textField = UITextField()
+        textField.translatesAutoresizingMaskIntoConstraints = false
+        textField.text = "0.02"
+        textField.keyboardType = .numberPad
+        textField.autocapitalizationType = .none
+        textField.textAlignment = .center
+        return textField
+    }()
+    
     lazy var avatarSelectionButton: UIButton = {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -84,7 +94,7 @@ class DemoUploadImageViewController: UIViewController {
         title = "Upload Image"
         view.backgroundColor = .white
 
-        for view in [emailField, tokenField, avatarSelectionButton, selectImageButton, avatarImageView, uploadImageButton, activityIndicator, resultLabel] {
+        for view in [emailField, tokenField, cropToFitThreshold, avatarSelectionButton, selectImageButton, avatarImageView, uploadImageButton, activityIndicator, resultLabel] {
             rootStackView.addArrangedSubview(view)
         }
         view.addSubview(rootStackView)
@@ -122,6 +132,8 @@ class DemoUploadImageViewController: UIViewController {
             activityIndicator.isAnimating == false,
             let email = emailField.text, email.isEmpty == false,
             let token = tokenField.text, token.isEmpty == false,
+            let cropToFitThresholdString = cropToFitThreshold.text, cropToFitThresholdString.isEmpty == false,
+            let cropToFitThreshold = CGFloat(cropToFitThresholdString),
             let image = avatarImageView.image
         else {
             return
@@ -134,7 +146,7 @@ class DemoUploadImageViewController: UIViewController {
 
         Task {
             do {
-                let avatarModel = try await service.upload(image, selectionBehavior: avatarSelectionBehavior, accessToken: token)
+                let avatarModel = try await service.upload(image, selectionBehavior: avatarSelectionBehavior, accessToken: token, cropToFitThreshold: cropToFitThreshold)
                 resultLabel.text = "✅ Avatar id \(avatarModel.id)"
             } catch {
                 resultLabel.text = "Error \((error as NSError).code): \(error.localizedDescription)"
@@ -207,5 +219,12 @@ extension AvatarSelection {
             case .preserveSelection: return "Preserve selection"
             case .selectUploadedImageIfNoneSelected: return "Select uploaded image if none selected"
         }
+    }
+}
+
+extension CGFloat {
+    init?(_ value: String?) {
+        guard let value, let doubleValue = Double(value) else { return nil }
+        self.init(doubleValue)
     }
 }
