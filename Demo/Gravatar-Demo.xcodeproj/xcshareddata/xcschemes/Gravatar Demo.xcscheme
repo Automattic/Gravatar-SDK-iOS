@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1510"
+   LastUpgradeVersion = "1600"
    version = "1.7">
    <BuildAction
       parallelizeBuildables = "YES"
-      buildImplicitDependencies = "YES">
+      buildImplicitDependencies = "YES"
+      buildArchitectures = "Automatic">
       <BuildActionEntries>
          <BuildActionEntry
             buildForTesting = "YES"
@@ -15,8 +16,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "495775DE2B5B34970082812A"
-               BuildableName = "Gravatar UIKit.app"
-               BlueprintName = "Gravatar UIKit"
+               BuildableName = "Gravatar Demo.app"
+               BlueprintName = "Gravatar Demo"
                ReferencedContainer = "container:Gravatar-Demo.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -44,18 +45,11 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "495775DE2B5B34970082812A"
-            BuildableName = "Gravatar UIKit.app"
-            BlueprintName = "Gravatar UIKit"
+            BuildableName = "Gravatar Demo.app"
+            BlueprintName = "Gravatar Demo"
             ReferencedContainer = "container:Gravatar-Demo.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
-      <EnvironmentVariables>
-         <EnvironmentVariable
-            key = "OS_ACTIVITY_MODE"
-            value = "disable"
-            isEnabled = "YES">
-         </EnvironmentVariable>
-      </EnvironmentVariables>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
@@ -63,6 +57,16 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
+      <BuildableProductRunnable
+         runnableDebuggingMode = "0">
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "495775DE2B5B34970082812A"
+            BuildableName = "Gravatar Demo.app"
+            BlueprintName = "Gravatar Demo"
+            ReferencedContainer = "container:Gravatar-Demo.xcodeproj">
+         </BuildableReference>
+      </BuildableProductRunnable>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">

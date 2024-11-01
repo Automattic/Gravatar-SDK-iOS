@@ -15,8 +15,7 @@ SOURCES_TO_LOCALIZE = [
   ),
   LocalizableSource.new(
     source_paths: [
-      File.join('Demo', 'Demo', 'Gravatar-UIKit-Demo'),
-      File.join('Demo', 'Demo', 'Gravatar-SwiftUI-Demo')
+      File.join('Demo', 'Demo', 'Gravatar-Demo')
     ],
     localizations_root: File.join('Demo', 'Demo', 'Localizations'),
     gp_project_url: nil # We don't perform translations for the Demo project yet

@@ -2,6 +2,8 @@ import SwiftUI
 import GravatarUI
 
 struct ContentView: View {
+    let onDismiss: (() -> Void)?
+
     enum Page: String, CaseIterable, Identifiable {
         case avatarView = "Avatar view"
         case avatarPickerView = "Avatar picker view"
@@ -27,6 +29,15 @@ struct ContentView: View {
             }
             .navigationTitle("Gravatar SwiftUI Demo")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                if let onDismiss {
+                    ToolbarItem(placement: .topBarLeading) {
+                        Button("Dismiss") {
+                            onDismiss()
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -44,5 +55,5 @@ struct ContentView: View {
 }
 
 #Preview {
-    ContentView()
+    ContentView(onDismiss: nil)
 }

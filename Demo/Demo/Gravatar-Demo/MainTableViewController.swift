@@ -1,16 +1,12 @@
-//
-//  MainTableViewController.swift
-//  Gravatar-Demo
-//
-//  Created by Pinar Olguc on 24.01.2024.
-//
 
 import Foundation
 import UIKit
+import SwiftUI
 
 class MainTableViewController: UITableViewController {
 
     enum Row: Int, CaseIterable {
+        case swiftUI
         case imageDownloadNetworking
         case uiImageViewExtension
         case fetchProfile
@@ -40,8 +36,12 @@ class MainTableViewController: UITableViewController {
         guard let row = Row(rawValue: indexPath.row) else { return UITableViewCell() }
         let cell = tableView.dequeueReusableCell(withIdentifier: Self.reuseID, for: indexPath)
         var content = cell.defaultContentConfiguration()
+        cell.accessoryType = .disclosureIndicator
 
         switch row {
+        case .swiftUI:
+            content.text = "SwiftUI Demos"
+            cell.accessoryType = .none
         case .imageDownloadNetworking:
             content.text = "Image download - Networking"
         case .uiImageViewExtension:
@@ -73,6 +73,12 @@ class MainTableViewController: UITableViewController {
         guard let row = Row(rawValue: indexPath.row) else { return }
         
         switch row {
+        case .swiftUI:
+            let swiftUIContentViewController = UIHostingController(rootView: ContentView(onDismiss: { [weak self] in
+                self?.dismiss(animated: true)
+            }))
+            swiftUIContentViewController.modalPresentationStyle = .fullScreen
+            present(swiftUIContentViewController, animated: true)
         case .imageDownloadNetworking:
             let vc = DemoAvatarDownloadViewController()
             navigationController?.pushViewController(vc, animated: true)

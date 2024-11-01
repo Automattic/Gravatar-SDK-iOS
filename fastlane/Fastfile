@@ -12,8 +12,7 @@ DERIVED_DATA_FOLDER = File.join(BUILD_FOLDER, 'derived-data')
 ARTIFACTS_FOLDER = File.join(BUILD_FOLDER, 'artifacts')
 XCODEPROJ_PATH = File.join(PROJECT_ROOT_FOLDER, 'Gravatar-Demo.xcodeproj')
 DEMO_APPS_SOURCES_FOLDER = File.join(PROJECT_ROOT_FOLDER, 'Demo')
-XCCONFIG_PROTOTYPE_BUILD_SWIFTUI = File.join(DEMO_APPS_SOURCES_FOLDER, 'Gravatar-SwiftUI-Demo', 'Gravatar-SwiftUI-Demo.Release.xcconfig')
-XCCONFIG_PROTOTYPE_BUILD_UIKIT = File.join(DEMO_APPS_SOURCES_FOLDER, 'Gravatar-UIKit-Demo', 'Gravatar-UIKit-Demo.Release.xcconfig')
+XCCONFIG_PROTOTYPE_BUILD = File.join(DEMO_APPS_SOURCES_FOLDER, 'Gravatar-Demo', 'Gravatar-Demo.Release.xcconfig')
 COMMON_XCARGS = ['-skipPackagePluginValidation'].freeze # Allow SwiftPM plugins (e.g. swiftlint) called from Xcode to be used on CI without prior manual approval
 
 GITHUB_REPO = 'Automattic/Gravatar-SDK-iOS'
@@ -64,7 +63,7 @@ platform :ios do
   end
 
   desc 'Builds the Gravatar-Demo project with a specific scheme'
-  lane :build_demo do |scheme: 'Gravatar-UIKit-Demo'|
+  lane :build_demo do |scheme: 'Gravatar-Demo'|
     # We only need to build for testing to ensure that the project builds.
     # There are no tests in the the Demo apps
     run_tests(
@@ -99,16 +98,14 @@ platform :ios do
   end
 
   desc 'Upload the demo app with the given name to App Center'
-  lane :upload_demo_to_appcenter do |name:, build_number:|
-    UI.user_error!("Unsupported name #{name}") unless %w[SwiftUI UIKit].include? name
-
-    slug = "Gravatar-SDK-Demo-#{name}"
-    upload_to_appcenter(appcenter_slug: slug, artifact_basename: "Gravatar #{name}")
+  lane :upload_demo_to_appcenter do |build_number:|
+    slug = 'Gravatar-SDK-Demo-UIKit'
+    upload_to_appcenter(appcenter_slug: slug, artifact_basename: 'Gravatar Demo')
 
     next unless is_ci
 
-    annotate_pr_with_appcenter_link(app_suffix: name)
-    annotate_buildkite_with_appcenter_link(app_suffix: name, appcenter_slug: slug, build_number: build_number)
+    annotate_pr_with_appcenter_link
+    annotate_buildkite_with_appcenter_link(appcenter_slug: slug, build_number: build_number)
   end
 
   desc 'Fetches the code signing certificate and provisioning profile for the prototype builds'
@@ -124,19 +121,14 @@ platform :ios do
     # Which suggest the authenticated session from the first call was not carried over to the second.
     configure_code_signing(
       bundle_ids: [
-        bundle_id_prototype_build_swiftui!,
-        bundle_id_prototype_build_uikit!
+        bundle_id_prototype_build!
       ],
       readonly: readonly
     )
   end
 
-  lane :configure_code_signing_prototype_build_swiftui do |readonly: true|
-    configure_code_signing(bundle_ids: [bundle_id_prototype_build_swiftui!], readonly: readonly)
-  end
-
-  lane :configure_code_signing_prototype_build_uikit do |readonly: true|
-    configure_code_signing(bundle_ids: [bundle_id_prototype_build_uikit!], readonly: readonly)
+  lane :configure_code_signing_prototype_build do |readonly: true|
+    configure_code_signing(bundle_ids: [bundle_id_prototype_build!], readonly: readonly)
   end
 end
 
@@ -179,9 +171,9 @@ def upload_to_appcenter(appcenter_slug:, artifact_basename:)
   )
 end
 
-def annotate_pr_with_appcenter_link(app_suffix:)
+def annotate_pr_with_appcenter_link
   comment_body = prototype_build_details_comment(
-    app_display_name: "Gravatar #{app_suffix} Prototype Build",
+    app_display_name: 'Gravatar Prototype Build',
     app_center_org_name: APPCENTER_OWNER_NAME,
     fold: true
   )
@@ -189,12 +181,12 @@ def annotate_pr_with_appcenter_link(app_suffix:)
   comment_on_pr(
     project: GITHUB_REPO,
     pr_number: Integer(ENV.fetch('BUILDKITE_PULL_REQUEST', nil)),
-    reuse_identifier: "prototype-build-link-gravtar-#{app_suffix}",
+    reuse_identifier: 'prototype-build-link-gravtar-demo',
     body: comment_body
   )
 end
 
-def annotate_buildkite_with_appcenter_link(app_suffix:, appcenter_slug:, build_number:)
+def annotate_buildkite_with_appcenter_link(appcenter_slug:, build_number:)
   # This is the id of the build on App Center
   appcenter_id = lane_context.dig(SharedValues::APPCENTER_BUILD_INFORMATION, 'id')
   metadata = {
@@ -208,7 +200,7 @@ def annotate_buildkite_with_appcenter_link(app_suffix:, appcenter_slug:, build_n
   buildkite_annotate(
     context: "appcenter-info-#{appcenter_slug}",
     style: 'info',
-    message: "Gravatar #{app_suffix} Demo [App Center Build](#{appcenter_install_url}) Info:\n\n#{list}"
+    message: "Gravatar Demo [App Center Build](#{appcenter_install_url}) Info:\n\n#{list}"
   )
 end
 
@@ -216,12 +208,8 @@ def team_id_prototype_build!
   read_from_xcconfig!(key: 'DEVELOPMENT_TEAM', xcconfig: File.join(DEMO_APPS_SOURCES_FOLDER, 'Enterprise.xcconfig'))
 end
 
-def bundle_id_prototype_build_swiftui!
-  read_from_xcconfig!(key: 'PRODUCT_BUNDLE_IDENTIFIER', xcconfig: XCCONFIG_PROTOTYPE_BUILD_SWIFTUI)
-end
-
-def bundle_id_prototype_build_uikit!
-  read_from_xcconfig!(key: 'PRODUCT_BUNDLE_IDENTIFIER', xcconfig: XCCONFIG_PROTOTYPE_BUILD_UIKIT)
+def bundle_id_prototype_build!
+  read_from_xcconfig!(key: 'PRODUCT_BUNDLE_IDENTIFIER', xcconfig: XCCONFIG_PROTOTYPE_BUILD)
 end
 
 def read_from_xcconfig!(key:, xcconfig:)
