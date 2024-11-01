@@ -28,9 +28,9 @@ extension View {
     ///   - authToken: (Optional) Gravatar OAuth token. If not passed, Gravatar OAuth flow will start to gather the token internally.
     ///   Pass this only if your app already has a Gravatar OAuth token.
     ///   - scope: Scope for the QuickEditor.
-    ///   - imageSquaringStrategy: A strategy for ensuring that images are square before uploading. See: ``ImageSquaringStrategy``
     ///   - customImageEditor: (Optional) A custom image editor to show the user right after an image is picked for
     ///   cropping and other sorts of image editing operations.
+    ///   - imageSquaring: A strategy for ensuring that images are square before uploading
     ///   - avatarUpdatedHandler: (Optional) A callback to execute when a different avatar is selected.
     ///   - onDismiss: (Optional) A callback to execute when the sheet is dismissed.
     /// - Returns: A modifier to display the QuickEditor sheet.
@@ -40,8 +40,8 @@ extension View {
         email: String,
         authToken: String? = nil,
         scope: QuickEditorScopeType,
-        imageSquaringStrategy: ImageSquaringStrategy = .default,
         customImageEditor: ImageEditorBlock<some ImageEditorView>? = nil as NoCustomEditorBlock?,
+        imageSquaring: ImageSquaringStrategy = .default,
         avatarUpdatedHandler: (() -> Void)? = nil,
         onDismiss: (() -> Void)? = nil
     ) -> some View {
@@ -50,8 +50,8 @@ extension View {
             scope: scope,
             token: authToken,
             isPresented: isPresented,
-            imageSquaringStrategy: imageSquaringStrategy,
             customImageEditor: customImageEditor,
+            imageSquaring: imageSquaring,
             contentLayoutProvider: AvatarPickerContentLayoutType.vertical,
             avatarUpdatedHandler: avatarUpdatedHandler
         )
@@ -65,9 +65,9 @@ extension View {
     ///   - authToken: (Optional) Gravatar OAuth token. If not passed, Gravatar OAuth flow will start to gather the token internally.
     ///   Pass this only if your app already has a Gravatar OAuth token.
     ///   - scope: Scope for the QuickEditor. See: ``QuickEditorScope``.
-    ///   - imageSquaringStrategy: A strategy for ensuring that images are square before uploading. See: ``ImageSquaringStrategy``
     ///   - customImageEditor: (Optional) A custom image editor to show the user right after an image is picked for
     ///   cropping and other sorts of image editing operations.
+    ///   - imageSquaring: A strategy for ensuring that images are square before uploading
     ///   - avatarUpdatedHandler: (Optional) A callback to execute when a different avatar is selected.
     ///   - onDismiss: (Optional) A callback to execute when the sheet is dismissed.
     /// - Returns: A modifier to display the QuickEditor sheet.
@@ -77,8 +77,8 @@ extension View {
         email: String,
         authToken: String? = nil,
         scope: QuickEditorScope,
-        imageSquaringStrategy: ImageSquaringStrategy = .default,
         customImageEditor: ImageEditorBlock<some ImageEditorView>? = nil as NoCustomEditorBlock?,
+        imageSquaring: ImageSquaringStrategy = .default,
         avatarUpdatedHandler: (() -> Void)? = nil,
         onDismiss: (() -> Void)? = nil
     ) -> some View {
@@ -89,8 +89,8 @@ extension View {
                 scope: scope.scopeType,
                 token: authToken,
                 isPresented: isPresented,
-                imageSquaringStrategy: imageSquaringStrategy,
                 customImageEditor: customImageEditor,
+                imageSquaring: imageSquaring,
                 contentLayoutProvider: config.contentLayout,
                 avatarUpdatedHandler: avatarUpdatedHandler
             )

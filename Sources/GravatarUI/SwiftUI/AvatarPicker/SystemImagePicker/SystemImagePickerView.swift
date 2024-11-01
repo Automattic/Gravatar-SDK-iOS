@@ -4,11 +4,10 @@ import SwiftUI
 struct SystemImagePickerView<Label, ImageEditor: ImageEditorView>: View where Label: View {
     @ViewBuilder var label: () -> Label
     var customEditor: ImageEditorBlock<ImageEditor>?
-    let imageSquaringStrategy: ImageSquaringStrategy
     let onImageSelected: (UIImage) -> Void
 
     var body: some View {
-        ImagePicker(label: label, onImageSelected: onImageSelected, customEditor: customEditor, imageSquaringStrategy: imageSquaringStrategy)
+        ImagePicker(label: label, onImageSelected: onImageSelected, customEditor: customEditor)
     }
 }
 
@@ -28,7 +27,6 @@ private struct ImagePicker<Label, ImageEditor: ImageEditorView>: View where Labe
     @ViewBuilder var label: () -> Label
     let onImageSelected: (UIImage) -> Void
     var customEditor: ImageEditorBlock<ImageEditor>?
-    let imageSquaringStrategy: ImageSquaringStrategy
     @State var imagePickerSelectedItem: ImagePickerItem?
 
     var body: some View {
@@ -52,12 +50,12 @@ private struct ImagePicker<Label, ImageEditor: ImageEditorView>: View where Labe
                 .sheet(item: $imagePickerSelectedItem, content: { item in
                     if let customEditor {
                         customEditor(item.image) { editedImage in
-                            self.onImageEdited(self.imageSquaringStrategy.cropper.square(editedImage))
+                            self.onImageEdited(editedImage)
                         }
                     } else {
                         ImageCropper(inputImage: item.image) { croppedImage in
                             Task {
-                                await self.onImageEdited(self.imageSquaringStrategy.cropper.square(croppedImage))
+                                await self.onImageEdited(croppedImage)
                             }
                         } onCancel: {
                             imagePickerSelectedItem = nil

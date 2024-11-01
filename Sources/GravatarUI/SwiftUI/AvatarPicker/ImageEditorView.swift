@@ -19,7 +19,6 @@ public typealias ImageEditorBlock<ImageEditor: ImageEditorView> = (UIImage, _ ed
 public struct NoCustomEditor: ImageEditorView {
     public var inputImage: UIImage
     public var editingDidFinish: @Sendable (UIImage) -> Void
-    public var squaringStrategy: ImageSquaringStrategy
 
     public var body: some View {
         EmptyView()

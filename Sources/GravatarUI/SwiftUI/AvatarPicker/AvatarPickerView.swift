@@ -24,7 +24,7 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
 
     var contentLayoutProvider: AvatarPickerContentLayoutProviding
     var customImageEditor: ImageEditorBlock<ImageEditor>?
-    let imageSquaringStrategy: ImageSquaringStrategy
+    var imageSquaring: ImageSquaringStrategy
     var tokenErrorHandler: (() -> Void)?
     var avatarUpdatedHandler: (() -> Void)?
 
@@ -33,15 +33,15 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
         authToken: Binding<String?>,
         isPresented: Binding<Bool>,
         contentLayoutProvider: AvatarPickerContentLayoutProviding = AvatarPickerContentLayoutType.vertical,
-        imageSquaringStrategy: ImageSquaringStrategy,
         customImageEditor: ImageEditorBlock<ImageEditor>? = nil as NoCustomEditorBlock?,
+        imageSquaring: ImageSquaringStrategy = .default,
         tokenErrorHandler: (() -> Void)? = nil,
         avatarUpdatedHandler: (() -> Void)? = nil
     ) {
         self._isPresented = isPresented
         self.contentLayoutProvider = contentLayoutProvider
-        self.imageSquaringStrategy = imageSquaringStrategy
         self.customImageEditor = customImageEditor
+        self.imageSquaring = imageSquaring
         self.tokenErrorHandler = tokenErrorHandler
         self.avatarUpdatedHandler = avatarUpdatedHandler
         self._authToken = authToken
@@ -54,15 +54,15 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
         profileModel: ProfileSummaryModel? = nil,
         isPresented: Binding<Bool>,
         contentLayoutProvider: AvatarPickerContentLayoutProviding = AvatarPickerContentLayoutType.vertical,
-        imageSquaringStrategy: ImageSquaringStrategy,
         customImageEditor: ImageEditorBlock<ImageEditor>? = nil as NoCustomEditorBlock?,
+        imageSquaring: ImageSquaringStrategy = .default,
         tokenErrorHandler: (() -> Void)? = nil,
         avatarUpdatedHandler: (() -> Void)? = nil
     ) {
         self._isPresented = isPresented
         self.contentLayoutProvider = contentLayoutProvider
-        self.imageSquaringStrategy = imageSquaringStrategy
         self.customImageEditor = customImageEditor
+        self.imageSquaring = imageSquaring
         self.tokenErrorHandler = tokenErrorHandler
         self.avatarUpdatedHandler = avatarUpdatedHandler
         self._authToken = .constant(nil)
@@ -255,7 +255,7 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
     }
 
     private func imagePicker(label: @escaping () -> some View) -> some View {
-        SystemImagePickerView(label: label, customEditor: customImageEditor, imageSquaringStrategy: imageSquaringStrategy) { image in
+        SystemImagePickerView(label: label, customEditor: customImageEditor) { image in
             uploadImage(image)
         }
     }
@@ -263,7 +263,7 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
     private func uploadImage(_ image: UIImage) {
         Task {
             // By default, we
-            await model.uploadImage(image)
+            await model.uploadImage(image, imageSquaring: imageSquaring)
         }
     }
 
@@ -286,7 +286,6 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
         if contentLayoutProvider.contentLayout == .vertical || horizontalSizeClass != .compact {
             AvatarGrid(
                 grid: model.grid,
-                imageSquaringStrategy: imageSquaringStrategy,
                 customImageEditor: customImageEditor,
                 onAvatarTap: { avatar in
                     selectAvatar(with: avatar.id)
@@ -595,16 +594,15 @@ private enum AvatarPicker {
         selectedImageID: selectedImageID,
         profileModel: profileModel,
         isPresented: .constant(true),
-        contentLayoutProvider: AvatarPickerContentLayoutType.horizontal,
-        imageSquaringStrategy: .default
+        contentLayoutProvider: AvatarPickerContentLayoutType.horizontal
     )
 }
 
 #Preview("Empty elements") {
-    AvatarPickerView<NoCustomEditor>(avatarImageModels: [], profileModel: nil, isPresented: .constant(true), imageSquaringStrategy: .default)
+    AvatarPickerView<NoCustomEditor>(avatarImageModels: [], profileModel: nil, isPresented: .constant(true))
 }
 
 #Preview("Load from network") {
     /// Enter valid email and auth token.
-    AvatarPickerView<NoCustomEditor>(email: .init(""), authToken: .constant(""), isPresented: .constant(true), imageSquaringStrategy: .default)
+    AvatarPickerView<NoCustomEditor>(email: .init(""), authToken: .constant(""), isPresented: .constant(true))
 }

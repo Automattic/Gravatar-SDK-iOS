@@ -19,7 +19,6 @@ struct AvatarGrid<ImageEditor: ImageEditorView>: View {
     )]
 
     @ObservedObject var grid: AvatarGridModel
-    let imageSquaringStrategy: ImageSquaringStrategy
     var customImageEditor: ImageEditorBlock<ImageEditor>?
     let onAvatarTap: (AvatarImageModel) -> Void
     let onImagePickerDidPickImage: (UIImage) -> Void
@@ -32,7 +31,6 @@ struct AvatarGrid<ImageEditor: ImageEditorView>: View {
                     PlusButtonView(minSize: AvatarGridConstants.minAvatarWidth, maxSize: AvatarGridConstants.maxAvatarWidth)
                 },
                 customEditor: customImageEditor,
-                imageSquaringStrategy: imageSquaringStrategy,
                 onImageSelected: { image in
                     onImagePickerDidPickImage(image)
                 }
@@ -64,7 +62,7 @@ struct AvatarGrid<ImageEditor: ImageEditorView>: View {
     )
     grid.selectAvatar(initialAvatarCell)
     return VStack {
-        AvatarGrid<NoCustomEditor>(grid: grid, imageSquaringStrategy: .default) { avatar in
+        AvatarGrid<NoCustomEditor>(grid: grid) { avatar in
             grid.selectAvatar(withID: avatar.id)
         } onImagePickerDidPickImage: { image in
             grid.append(newAvatarModel(image))
