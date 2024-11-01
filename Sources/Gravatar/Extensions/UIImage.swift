@@ -1,39 +1,24 @@
 import UIKit
 
-extension CGFloat {
-    fileprivate static let minorDifferenceThreshold: CGFloat = 0.02
-}
-
-public protocol ImageSquaring: Sendable {
-    func square(_ image: UIImage) -> UIImage
-}
-
-struct DefaultImageSquarer: ImageSquaring {
-    private let backgroundColor: UIColor
-
-    init(backgroundColor: UIColor = .black) {
-        self.backgroundColor = backgroundColor
-    }
-
-    func square(_ image: UIImage) -> UIImage {
-        image.squared(withBackgroundColor: backgroundColor)
-    }
-}
-
 extension UIImage {
     package func isSquare() -> Bool {
         size.height == size.width
     }
 
-    fileprivate func squared(withBackgroundColor backgroundColor: UIColor) -> UIImage {
+    package func squared(cropToFitThreshold: CGFloat? = 0.02) -> UIImage {
         if isSquare() {
+            return self
+        }
+
+        guard let cropToFitThreshold else {
             return self
         }
 
         let (height, width) = (size.height, size.width)
 
         // Determine the side length for the square (aspect fill or fit logic)
-        let squareSide = (abs(width - height) / min(width, height)) < .minorDifferenceThreshold
+
+        let squareSide = (abs(width - height) / min(width, height)) <= cropToFitThreshold
             ? min(width, height) // Aspect fill
             : max(width, height) // Aspect fit
 
@@ -48,7 +33,7 @@ extension UIImage {
         format.opaque = true
 
         return UIGraphicsImageRenderer(size: squareSize, format: format).image { context in
-            backgroundColor.setFill() // Background color
+            UIColor.black.setFill() // Background color
             context.fill(CGRect(origin: .zero, size: squareSize)) // Fill background
 
             // Draw the image in the center of the new square context

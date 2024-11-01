@@ -24,7 +24,6 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
 
     var contentLayoutProvider: AvatarPickerContentLayoutProviding
     var customImageEditor: ImageEditorBlock<ImageEditor>?
-    var imageSquaring: ImageSquaringStrategy?
     var tokenErrorHandler: (() -> Void)?
     var avatarUpdatedHandler: (() -> Void)?
 
@@ -258,8 +257,8 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
 
     private func uploadImage(_ image: UIImage) {
         Task {
-            // By default, we
-            await model.uploadImage(image, imageSquaring: imageSquaring)
+            // If there's a custom image editor, it should take care of squaring.
+            await model.upload(image)
         }
     }
 

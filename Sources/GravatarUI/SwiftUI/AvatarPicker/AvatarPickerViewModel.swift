@@ -149,13 +149,13 @@ class AvatarPickerViewModel: ObservableObject {
         }
     }
 
-    func uploadImage(_ image: UIImage, imageSquaring: ImageSquaringStrategy?) async {
+    func upload(_ image: UIImage) async {
         guard let authToken else { return }
 
         // SwiftUI doesn't update the UI if the grid is empty.
         // objectWillChange forces the update.
         objectWillChange.send()
-        let squareImage = imageSquaring?.cropper.square(image) ?? image
+        let squareImage = image.squared()
         assert(squareImage.isSquare(), "Image must be square before uploading: \(squareImage.size.height) x \(squareImage.size.width)")
 
         let localID = UUID().uuidString
