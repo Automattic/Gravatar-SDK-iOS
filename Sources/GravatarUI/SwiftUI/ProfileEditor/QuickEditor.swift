@@ -34,7 +34,6 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
     private let scope: QuickEditorScopeType
     private let email: Email
     private let customImageEditor: ImageEditorBlock<ImageEditor>?
-    private let imageSquaring: ImageSquaringStrategy
     private let contentLayoutProvider: AvatarPickerContentLayoutProviding
     private let avatarUpdatedHandler: (() -> Void)?
 
@@ -44,7 +43,6 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
         token: String? = nil,
         isPresented: Binding<Bool>,
         customImageEditor: ImageEditorBlock<ImageEditor>? = nil,
-        imageSquaring: ImageSquaringStrategy,
         contentLayoutProvider: AvatarPickerContentLayoutProviding = AvatarPickerContentLayoutType.vertical,
         avatarUpdatedHandler: (() -> Void)? = nil
     ) {
@@ -52,7 +50,6 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
         self.scope = scope
         self._isPresented = isPresented
         self.customImageEditor = customImageEditor
-        self.imageSquaring = imageSquaring
         self.contentLayoutProvider = contentLayoutProvider
         self.externalToken = token
         self.avatarUpdatedHandler = avatarUpdatedHandler
@@ -88,7 +85,6 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
                 isPresented: $isPresented,
                 contentLayoutProvider: contentLayoutProvider,
                 customImageEditor: customImageEditor,
-                imageSquaring: imageSquaring,
                 tokenErrorHandler: externalToken != nil ? nil : {
                     oauthSession.markSessionAsExpired(with: email)
                     performAuthentication()
@@ -232,7 +228,6 @@ extension QuickEditorConstants {
         email: .init(""),
         scope: .avatarPicker,
         isPresented: .constant(true),
-        imageSquaring: .default,
         contentLayoutProvider: AvatarPickerContentLayout.vertical(presentationStyle: .large)
     )
 }

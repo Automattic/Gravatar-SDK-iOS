@@ -34,7 +34,6 @@ final class QuickEditorViewController: UIViewController, ModalPresentationWithIn
         token: token,
         isPresented: isPresented,
         customImageEditor: nil as NoCustomEditorBlock?,
-        imageSquaring: .default,
         contentLayoutProvider: contentLayoutWithPresentation,
         avatarUpdatedHandler: onAvatarUpdated
     ), onHeightChange: { [weak self] newHeight in
