@@ -258,7 +258,7 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
     private func uploadImage(_ image: UIImage) {
         Task {
             // If there's a custom image editor, it should take care of squaring.
-            await model.upload(image)
+            await model.upload(image, shouldSquareImage: customImageEditor == nil)
         }
     }
 
