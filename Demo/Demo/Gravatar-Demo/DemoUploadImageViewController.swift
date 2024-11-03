@@ -34,14 +34,54 @@ class DemoUploadImageViewController: UIViewController {
         return textField
     }()
     
+    let squaringLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "Square:"
+        label.font = .preferredFont(forTextStyle: .body)
+        label.adjustsFontSizeToFitWidth = true
+        return label
+    }()
+    
+    let segmentedControl: UISegmentedControl = {
+        let segmentedControl = UISegmentedControl(items: ["Selection", "On upload"])
+        segmentedControl.translatesAutoresizingMaskIntoConstraints = false
+        segmentedControl.selectedSegmentIndex = 0
+        return segmentedControl
+    }()
+    
+    let cropToFitLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "Crop:"
+        label.font = .preferredFont(forTextStyle: .footnote)
+        label.adjustsFontSizeToFitWidth = true
+        return label
+    }()
+    
     let cropToFitThreshold: UITextField = {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.text = "0.02"
         textField.keyboardType = .numberPad
         textField.autocapitalizationType = .none
-        textField.textAlignment = .center
+        textField.textAlignment = .right
+        textField.borderStyle = .roundedRect
+        textField.isEnabled = false
+        textField.isUserInteractionEnabled = false
+        textField.textColor = .lightGray
         return textField
+    }()
+    
+    let squaringStackView: UIStackView = {
+        let stack = UIStackView()
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        stack.axis = .horizontal
+        stack.spacing = 5
+        stack.distribution = .fillProportionally
+        stack.alignment = .fill
+        
+        return stack
     }()
     
     lazy var avatarSelectionButton: UIButton = {
@@ -88,13 +128,19 @@ class DemoUploadImageViewController: UIViewController {
     }()
 
     private var avatarSelectionBehavior: AvatarSelection = .preserveSelection
+    private var cropToFitThresholdValue: CGFloat? = 0.02
+    private var imageSquaringMechanism: SquaringMechanism = .imagePickerController
 
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "Upload Image"
         view.backgroundColor = .white
 
-        for view in [emailField, tokenField, cropToFitThreshold, avatarSelectionButton, selectImageButton, avatarImageView, uploadImageButton, activityIndicator, resultLabel] {
+        for view in [squaringLabel, segmentedControl, cropToFitLabel, cropToFitThreshold] {
+            squaringStackView.addArrangedSubview(view)
+        }
+        
+        for view in [emailField, tokenField, squaringStackView, avatarSelectionButton, selectImageButton, avatarImageView, uploadImageButton, activityIndicator, resultLabel] {
             rootStackView.addArrangedSubview(view)
         }
         view.addSubview(rootStackView)
@@ -108,8 +154,37 @@ class DemoUploadImageViewController: UIViewController {
         emailField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
         uploadImageButton.addTarget(self, action: #selector(fetchProfileButtonHandler), for: .touchUpInside)
         selectImageButton.addTarget(self, action: #selector(selectImage), for: .touchUpInside)
+        segmentedControl.addTarget(self, action: #selector(segmentedControllerValueChanged(_:)), for: .valueChanged)
+        cropToFitThreshold.addTarget(self, action: #selector(thresholdEditingDidEnd(_:)), for: .editingChanged)
     }
-
+    
+    @objc func segmentedControllerValueChanged(_ sender: UISegmentedControl) {
+        switch sender.selectedSegmentIndex {
+        case 0:
+            cropToFitThreshold.isEnabled = false
+            cropToFitThreshold.isUserInteractionEnabled = false
+            cropToFitThreshold.textColor = .lightGray
+            imageSquaringMechanism = .imagePickerController
+        case 1:
+            cropToFitThreshold.isEnabled = true
+            cropToFitThreshold.isUserInteractionEnabled = true
+            cropToFitThreshold.textColor = .black
+            imageSquaringMechanism = .onUpload
+        default:
+            return
+        }
+    }
+    
+    @objc func thresholdEditingDidEnd(_ sender: UITextField) {
+        guard let cropToFitThresholdString = cropToFitThreshold.text,
+              cropToFitThresholdString.isEmpty == false else {
+            self.cropToFitThresholdValue = nil
+            return
+        }
+        
+        self.cropToFitThresholdValue = CGFloat(cropToFitThresholdString)
+    }
+    
     @objc func selectImage(_ sender: UIButton) {
         let picker = UIImagePickerController()
         picker.allowsEditing = true
@@ -132,8 +207,6 @@ class DemoUploadImageViewController: UIViewController {
             activityIndicator.isAnimating == false,
             let email = emailField.text, email.isEmpty == false,
             let token = tokenField.text, token.isEmpty == false,
-            let cropToFitThresholdString = cropToFitThreshold.text, cropToFitThresholdString.isEmpty == false,
-            let cropToFitThreshold = CGFloat(cropToFitThresholdString),
             let image = avatarImageView.image
         else {
             return
@@ -146,7 +219,7 @@ class DemoUploadImageViewController: UIViewController {
 
         Task {
             do {
-                let avatarModel = try await service.upload(image, selectionBehavior: avatarSelectionBehavior, accessToken: token, cropToFitThreshold: cropToFitThreshold)
+                let avatarModel = try await service.upload(image, selectionBehavior: avatarSelectionBehavior, accessToken: token, cropToFitThreshold: cropToFitThresholdValue)
                 resultLabel.text = "✅ Avatar id \(avatarModel.id)"
             } catch {
                 resultLabel.text = "Error \((error as NSError).code): \(error.localizedDescription)"
@@ -160,8 +233,12 @@ extension DemoUploadImageViewController: UIImagePickerControllerDelegate, UINavi
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         guard let image = info[.editedImage] as? UIImage else { return }
 
-        let squareImage = makeSquare(image)
-        avatarImageView.image = squareImage
+        switch imageSquaringMechanism {
+        case .imagePickerController:
+            avatarImageView.image = makeSquare(image)
+        case .onUpload:
+            avatarImageView.image = image
+        }
 
         dismiss(animated: true)
     }
@@ -227,4 +304,9 @@ extension CGFloat {
         guard let value, let doubleValue = Double(value) else { return nil }
         self.init(doubleValue)
     }
+}
+
+private enum SquaringMechanism {
+    case imagePickerController
+    case onUpload
 }
