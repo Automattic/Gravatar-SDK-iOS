@@ -114,7 +114,10 @@ class DemoUploadImageViewController: UIViewController {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.heightAnchor.constraint(equalToConstant: 300).isActive = true
         imageView.widthAnchor.constraint(equalToConstant: 300).isActive = true
-        imageView.backgroundColor = .lightGray
+        imageView.backgroundColor = .clear
+        imageView.layer.borderWidth = 1
+        imageView.layer.borderColor = UIColor.lightGray.cgColor
+        imageView.contentMode = .scaleAspectFit
         return imageView
     }()
 
