@@ -54,7 +54,7 @@ class DemoUploadImageViewController: UIViewController {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Crop:"
-        label.font = .preferredFont(forTextStyle: .footnote)
+        label.font = .preferredFont(forTextStyle: .body)
         label.adjustsFontSizeToFitWidth = true
         return label
     }()
