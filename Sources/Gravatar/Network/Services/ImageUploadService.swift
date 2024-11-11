@@ -18,6 +18,11 @@ struct ImageUploadService: ImageUploader {
         avatarSelection: AvatarSelection = .preserveSelection,
         additionalHTTPHeaders: [HTTPHeaderField]?
     ) async throws -> (data: Data, response: HTTPURLResponse) {
+        assert(
+            image.isSquare(),
+            "This image is not square, and uploading it will fail. Consider using the default `cropToFitThreshold` when calling `AvatarService.upload(::::)`."
+        )
+
         guard let data: Data = {
             if #available(iOS 17.0, *) {
                 image.heicData()
