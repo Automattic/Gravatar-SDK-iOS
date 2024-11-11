@@ -63,7 +63,7 @@ class DemoUploadImageViewController: UIViewController {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.text = "0.02"
-        textField.keyboardType = .numberPad
+        textField.keyboardType = .decimalPad
         textField.autocapitalizationType = .none
         textField.textAlignment = .right
         textField.borderStyle = .roundedRect
