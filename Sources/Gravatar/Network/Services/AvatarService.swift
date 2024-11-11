@@ -46,9 +46,9 @@ public struct AvatarService: Sendable {
     /// If an image is not square, the upload will fail.  To avoid this, by default, the image will be cropped before uploading.  The `cropToFitThreshold`
     /// controls how this cropping is applied:
     /// - **Crop to fill:** Images with sides whose difference is **at or below** this threshold will be **cropped to fill** a square, having their longer sides
-    /// cropped.
-    /// - **Crop to fit:** Images with sides whose difference is **above** this threshold will have a background color of `UIColor.black` added, and the image
-    /// will be **cropped to fit** within the squared image.
+    /// shortened to match their shorter sides.
+    /// - **Crop to fit:** Images with sides whose difference is **above** this threshold will be **cropped to fill** a square, so that the entire image fits
+    /// within a square whose sides are the length of the longest side, and a background color of `UIColor.black` will be added to fill the rest of the square
     /// - **Disable image squaring:** When the threshold is set to `nil`, no image squaring will be applied.
     ///
     /// If image squaring is disabled, images that are not square will raise an assertion.
@@ -77,9 +77,9 @@ public struct AvatarService: Sendable {
     /// If an image is not square, the upload will fail.  To avoid this, by default, the image will be cropped before uploading.  The `cropToFitThreshold`
     /// controls how this cropping is applied:
     /// - **Crop to fill:** Images with sides whose difference is **at or below** this threshold will be **cropped to fill** a square, having their longer sides
-    /// cropped.
-    /// - **Crop to fit:** Images with sides whose difference is **above** this threshold will have a background color of `UIColor.black` added, and the image
-    /// will be **cropped to fit** within the squared image.
+    /// shortened to match their shorter sides.
+    /// - **Crop to fit:** Images with sides whose difference is **above** this threshold will be **cropped to fill** a square, so that the entire image fits
+    /// within a square whose sides are the length of the longest side, and a background color of `UIColor.black` will be added to fill the rest of the square
     /// - **Disable image squaring:** When the threshold is set to `nil`, no image squaring will be applied.
     ///
     /// If image squaring is disabled, images that are not square will raise an assertion.
