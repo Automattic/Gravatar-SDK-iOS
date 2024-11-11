@@ -55,6 +55,7 @@ class DemoUploadImageViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Crop:"
         label.font = .preferredFont(forTextStyle: .body)
+        label.textColor = .label
         label.adjustsFontSizeToFitWidth = true
         return label
     }()
@@ -69,7 +70,7 @@ class DemoUploadImageViewController: UIViewController {
         textField.borderStyle = .roundedRect
         textField.isEnabled = false
         textField.isUserInteractionEnabled = false
-        textField.textColor = .lightGray
+        textField.textColor = .label.withAlphaComponent(0.5)
         return textField
     }()
     
@@ -137,7 +138,7 @@ class DemoUploadImageViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "Upload Image"
-        view.backgroundColor = .white
+        view.backgroundColor = .systemBackground
 
         for view in [squaringLabel, segmentedControl, cropToFitLabel, cropToFitThreshold] {
             squaringStackView.addArrangedSubview(view)
@@ -166,12 +167,12 @@ class DemoUploadImageViewController: UIViewController {
         case 0:
             cropToFitThreshold.isEnabled = false
             cropToFitThreshold.isUserInteractionEnabled = false
-            cropToFitThreshold.textColor = .lightGray
+            cropToFitThreshold.textColor = .label.withAlphaComponent(0.5)
             imageSquaringMechanism = .imagePickerController
         case 1:
             cropToFitThreshold.isEnabled = true
             cropToFitThreshold.isUserInteractionEnabled = true
-            cropToFitThreshold.textColor = .black
+            cropToFitThreshold.textColor = .label
             imageSquaringMechanism = .onUpload
         default:
             return
