@@ -139,7 +139,7 @@ class DemoUploadImageViewController: UIViewController, UITextFieldDelegate {
         case .imagePickerController:
             return .none
         case .onUpload:
-            return .crop(behavior: .threshold(cropToFitThresholdValue))
+            return .default
         }
     }
 

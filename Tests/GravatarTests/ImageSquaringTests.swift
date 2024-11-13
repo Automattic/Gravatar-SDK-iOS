@@ -4,7 +4,7 @@ import XCTest
 @testable import Gravatar
 
 final class ImageSquaringTests: XCTestCase {
-    // MARK: Pixel Tests
+    // MARK: Default Image Squaring
 
     func testSquareImage() {
         // Given a square image
@@ -139,6 +139,16 @@ final class ImageSquaringTests: XCTestCase {
         XCTAssertEqual(result.size.height, 10000, "Height should match the taller side")
     }
 
+    func testZeroSizeImage() {
+        let zeroSizeImage = createImage(width: 0, height: 0)
+
+        let result = SquaringStrategy.default.square(zeroSizeImage)
+
+        XCTAssertTrue(result.isSquare(), "Image should be square")
+        XCTAssertEqual(result.size.width, 0)
+        XCTAssertEqual(result.size.height, 0)
+    }
+
     // MARK: - Scale Test
 
     func testImageSquaringWithScale2x() {
@@ -178,15 +188,16 @@ final class ImageSquaringTests: XCTestCase {
         XCTAssertEqual(resultImage.pngData(), referenceImage)
     }
 
-    // MARK: - Custom Cropping Tolerance
+    // MARK: - Custom EdgeRatio Threshold
 
-    func testMinorAspectDifferenceBelowCustomCropToFitThresholdImageShouldUseAspectFill() {
-        // Given an image with a minor size difference (100x102) where the difference exactly matches
-        // a custom `cropToFitTolerance` of `0.02` (image difference: `0.02`)
+    func testMinorAspectDifferenceAboveCustomEdgeRatioThresholdImageShouldUseAspectFill() {
+        // Given an image with a minor size difference (100x102) where the edge ratio (`0.9804`)
+        // is above the custom edgeRatio (`0.97`)
         let slightDifferenceImage = createImage(width: 100, height: 102)
+        let edgeRatio: CGFloat = 0.97
 
         // When the custom squaring function is applied
-        let result = SquaringStrategy.crop(behavior: .threshold(0.03)).square(slightDifferenceImage)
+        let result = SquaringStrategy.edgeRatioDeterminesFitOrFill(edgeRatio: edgeRatio).square(slightDifferenceImage)
 
         // Then the result should aspect-fill and become 100x100
         XCTAssertTrue(result.isSquare(), "Image should be square")
@@ -194,33 +205,82 @@ final class ImageSquaringTests: XCTestCase {
         XCTAssertEqual(result.size.height, 100, "Height should match the smaller side")
     }
 
-    func testMinorAspectDifferenceMatchesCustomCropToFitThresholdImageShouldUseAspectFill() {
-        // Given an image with a minor size difference (100x103) where the difference exactly matches
-        // a custom `cropToFitTolerance` of `0.03` (image difference: `0.03`)
-        let slightDifferenceImage = createImage(width: 100, height: 103)
-
-        // When the custom squaring function is applied
-        let result = SquaringStrategy.crop(behavior: .threshold(0.03)).square(slightDifferenceImage)
-
-        // Then the result should aspect-fill and become 100x100
-        XCTAssertTrue(result.isSquare(), "Image should be square")
-        XCTAssertEqual(result.size.width, 100, "Width should match the smaller side")
-        XCTAssertEqual(result.size.height, 100, "Height should match the smaller side")
-    }
-
-    func testMinorAspectDifferenceAboveCustomCropToFitThresholdImageShouldUseAspectFill() {
-        // Given an image with a minor size difference (100x104) where the difference is above
-        // a custom `cropToFitTolerance` of `0.03` (image difference: `0.04`)
+    func testMinorAspectDifferenceBelowCustomEdgeRatioThresholdImageShouldUseAspectFit() {
+        // Given an image with a minor size difference (100x104) where the edge ratio (`0.9615`)
+        // is below the custom edgeRatio (`0.97`)
         let slightDifferenceImage = createImage(width: 100, height: 104)
+        let edgeRatio: CGFloat = 0.97
 
         // When the custom squaring function is applied
-        let result = SquaringStrategy.crop(behavior: .threshold(0.03)).square(slightDifferenceImage)
+        let result = SquaringStrategy.edgeRatioDeterminesFitOrFill(edgeRatio: edgeRatio).square(slightDifferenceImage)
 
         // Then the result should aspect-fit and become 102x102
         XCTAssertTrue(result.isSquare(), "Image should be square")
         XCTAssertEqual(result.size.width, 104, "Width should match the larger side")
         XCTAssertEqual(result.size.height, 104, "Height should match the larger side")
     }
+
+    // MARK: - Aspect Fit Image Squaring
+
+    func testWideImageUsingAspectFitShouldBeSquared() {
+        let wideImage = createImage(width: 200, height: 100)
+
+        let result = SquaringStrategy.aspectFit.square(wideImage)
+
+        XCTAssertTrue(result.isSquare(), "Image should be square")
+        XCTAssertEqual(result.size.width, 200, "Width should match the longer side")
+        XCTAssertEqual(result.size.height, 200, "Height should match the longer side")
+    }
+
+    func testTallImageUsingAspectFitShouldBeSquared() {
+        let tallImage = createImage(width: 100, height: 200)
+
+        let result = SquaringStrategy.aspectFit.square(tallImage)
+
+        XCTAssertTrue(result.isSquare(), "Image should be square")
+        XCTAssertEqual(result.size.width, 200, "Width should match the longer side")
+        XCTAssertEqual(result.size.height, 200, "Height should match the longer side")
+    }
+
+    func testSquareImageUsingAspectFitShouldBeSquared() {
+        let squareImage = createImage(width: 100, height: 100)
+
+        let result = SquaringStrategy.aspectFit.square(squareImage)
+
+        XCTAssertEqual(result, squareImage, "UIImage objects should be identical")
+    }
+
+    // MARK: - Aspect Fill Image Squaring
+
+    func testWideImageUsingAspectFillShouldBeSquared() {
+        let wideImage = createImage(width: 200, height: 100)
+
+        let result = SquaringStrategy.aspectFill.square(wideImage)
+
+        XCTAssertTrue(result.isSquare(), "Image should be square")
+        XCTAssertEqual(result.size.width, 100, "Width should match the shorter side")
+        XCTAssertEqual(result.size.height, 100, "Height should match the shorter side")
+    }
+
+    func testTallImageUsingAspectFillShouldBeSquared() {
+        let tallImage = createImage(width: 100, height: 200)
+
+        let result = SquaringStrategy.aspectFill.square(tallImage)
+
+        XCTAssertTrue(result.isSquare(), "Image should be square")
+        XCTAssertEqual(result.size.width, 100, "Width should match the shorter side")
+        XCTAssertEqual(result.size.height, 100, "Height should match the shorter side")
+    }
+
+    func testSquareImageUsingAspectFillShouldBeSquared() {
+        let squareImage = createImage(width: 100, height: 100)
+
+        let result = SquaringStrategy.aspectFill.square(squareImage)
+
+        XCTAssertEqual(result, squareImage, "UIImage objects should be identical")
+    }
+
+    // MARK: - No Image Squaring
 
     func testNoCroppingWithMinorAspectDifferenceImageShouldReturnOriginalImage() {
         // Given an image with a minor size difference (100x103) where the difference exactly matches
