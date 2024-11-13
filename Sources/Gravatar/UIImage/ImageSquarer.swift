@@ -1,10 +1,10 @@
 import UIKit
 
 struct ImageSquarer {
-    private let edgeRatioThreshold: CGFloat
+    private let squarenessThreshold: CGFloat
 
-    init(edgeRatioThreshold: CGFloat) {
-        self.edgeRatioThreshold = edgeRatioThreshold.clamp(to: 0 ... 1)
+    init(squarenessThreshold: CGFloat) {
+        self.squarenessThreshold = squarenessThreshold.clamp(to: 0 ... 1)
     }
 
     func square(_ image: UIImage) -> UIImage {
@@ -16,7 +16,7 @@ struct ImageSquarer {
 
         // Determine the side length for the square (aspect fill or fit logic)
 
-        let squareSide = image.edgeRatio > edgeRatioThreshold
+        let squareSide = image.squareness > squarenessThreshold
             ? image.shortEdge // Aspect fill
             : image.longEdge // Aspect fit
 

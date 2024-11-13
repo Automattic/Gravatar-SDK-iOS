@@ -192,12 +192,12 @@ final class ImageSquaringTests: XCTestCase {
 
     func testMinorAspectDifferenceAboveCustomEdgeRatioThresholdImageShouldUseAspectFill() {
         // Given an image with a minor size difference (100x102) where the edge ratio (`0.9804`)
-        // is above the custom edgeRatio (`0.97`)
+        // is above the custom squareness (`0.97`)
         let slightDifferenceImage = createImage(width: 100, height: 102)
-        let edgeRatio: CGFloat = 0.97
+        let squarenessThreshold: CGFloat = 0.97
 
         // When the custom squaring function is applied
-        let result = SquaringStrategy.edgeRatioDeterminesFitOrFill(edgeRatio: edgeRatio).square(slightDifferenceImage)
+        let result = SquaringStrategy.squarenessDeterminesFitOrFill(squarenessThreshold: squarenessThreshold).square(slightDifferenceImage)
 
         // Then the result should aspect-fill and become 100x100
         XCTAssertTrue(result.isSquare(), "Image should be square")
@@ -207,12 +207,12 @@ final class ImageSquaringTests: XCTestCase {
 
     func testMinorAspectDifferenceBelowCustomEdgeRatioThresholdImageShouldUseAspectFit() {
         // Given an image with a minor size difference (100x104) where the edge ratio (`0.9615`)
-        // is below the custom edgeRatio (`0.97`)
+        // is below the custom squareness (`0.97`)
         let slightDifferenceImage = createImage(width: 100, height: 104)
-        let edgeRatio: CGFloat = 0.97
+        let squarenessThreshold: CGFloat = 0.97
 
         // When the custom squaring function is applied
-        let result = SquaringStrategy.edgeRatioDeterminesFitOrFill(edgeRatio: edgeRatio).square(slightDifferenceImage)
+        let result = SquaringStrategy.squarenessDeterminesFitOrFill(squarenessThreshold: squarenessThreshold).square(slightDifferenceImage)
 
         // Then the result should aspect-fit and become 102x102
         XCTAssertTrue(result.isSquare(), "Image should be square")
