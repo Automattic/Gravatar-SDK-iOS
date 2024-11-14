@@ -19,7 +19,7 @@ public enum SquaringStrategy {
 
     /// The defaul squaring strategy
     ///
-    /// This strategy uses a high squarenessThreshold to determine `aspectFit` or `aspectFill`.  Only images that are very close to square will use
+    /// This strategy uses a high aspectFillMinSquareness to determine `aspectFit` or `aspectFill`.  Only images that are very close to square will use
     /// `aspectFill`, which minimizes the amount of image loss that happens during cropping.  All other images will use `aspectFit`.
     case `default`
 
@@ -31,18 +31,18 @@ public enum SquaringStrategy {
     /// `Squareness` is similar to `Aspect Ratio`, except that all values are in the range `0...1`
     /// - A square `UIImage` (`100 x 100`) has a `squareness` of `1`
     /// - A rectangular `UIImage` with a `size` of `100 x 200` (or `200 x 100`) has a squareness of `0.5`
-    case squarenessDeterminesFitOrFill(squarenessThreshold: CGFloat)
+    case squarenessDeterminesFitOrFill(aspectFillMinSquareness: CGFloat)
 
     package func square(_ image: UIImage) -> UIImage {
         switch self {
         case .aspectFit:
-            ImageSquarer(squarenessThreshold: .aspectFitThreshold).square(image)
+            ImageSquarer(aspectFillMinSquareness: .aspectFitThreshold).square(image)
         case .aspectFill:
-            ImageSquarer(squarenessThreshold: .aspectFillThreshold).square(image)
-        case .squarenessDeterminesFitOrFill(let squarenessThreshold):
-            ImageSquarer(squarenessThreshold: squarenessThreshold).square(image)
+            ImageSquarer(aspectFillMinSquareness: .aspectFillThreshold).square(image)
+        case .squarenessDeterminesFitOrFill(let aspectFillMinSquareness):
+            ImageSquarer(aspectFillMinSquareness: aspectFillMinSquareness).square(image)
         case .default:
-            ImageSquarer(squarenessThreshold: .defaultThreshold).square(image)
+            ImageSquarer(aspectFillMinSquareness: .defaultThreshold).square(image)
         case .none:
             // TODO: Check for squareness and log non-square images
             image
