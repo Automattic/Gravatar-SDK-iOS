@@ -11,7 +11,10 @@ import UIKit
 /// - A square UIImage (`100 x 100`) has a `squareness` of `1`
 /// - A UIImage with a `size` of `100 x 200` has a `squareness of `0.5`
 public enum SquaringStrategy: Sendable {
-    /// The default `SquaringStrategy`. Uses a high `aspectFillMinSquareness` value to limit which images are cropped to `aspectFill`
+    /// Crops images that are very close to square using an `.aspectFill` strategy.  All other images are cropped using an `.aspectFit` strategy.
+    ///
+    /// This strategy trims a small percentage of pixel rows to fix images that appear square to the naked eye,
+    /// using a high value for `aspectFillMinSquareness`.
     public static let `default`: SquaringStrategy = .squarenessDeterminesFitOrFill(aspectFillMinSquareness: .defaultMinSquareness)
 
     /// Square all images by cropping the image to `aspectFill`.
