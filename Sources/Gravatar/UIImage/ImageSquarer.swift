@@ -18,7 +18,7 @@ struct ImageSquarer {
 
         // Floating point comparisons can be affected by precision issues. But with a maximum image
         // size of `2048 x 2048`, the largest and smallest possible `squareness` values only rely on
-        // four decimal places of precision.
+        // four decimal places of precision. So this should be a safe comparison.
         let squareSide = image.squareness >= aspectFillMinSquareness
             ? image.shortEdge // Aspect fill
             : image.longEdge // Aspect fit
