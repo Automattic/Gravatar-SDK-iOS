@@ -46,9 +46,3 @@ struct ImageSquarer {
         }
     }
 }
-
-extension CGFloat {
-    func clamp(to range: ClosedRange<Self>) -> Self {
-        CGFloat.minimum(CGFloat.maximum(self, range.lowerBound), range.upperBound)
-    }
-}
