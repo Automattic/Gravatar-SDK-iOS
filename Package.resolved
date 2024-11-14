@@ -1,19 +1,19 @@
 {
-  "originHash" : "90e777ed5b0907a1af52392e32f74661a3874ff8582593fea55eaa7c7d9580c3",
+  "originHash" : "dddfee60d726ac68a5cd796dea6619c69dcce5cc55b1b6d7d75bb308b96243a1",
   "pins" : [
     {
       "identity" : "swift-snapshot-testing",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/swift-snapshot-testing.git",
       "state" : {
-        "revision" : "5b0c434778f2c1a4c9b5ebdb8682b28e84dd69bd",
-        "version" : "1.15.4"
+        "revision" : "42a086182681cf661f5c47c9b7dc3931de18c6d7",
+        "version" : "1.17.6"
       }
     },
     {
       "identity" : "swift-syntax",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/apple/swift-syntax",
+      "location" : "https://github.com/swiftlang/swift-syntax",
       "state" : {
         "revision" : "303e5c5c36d6a558407d364878df131c3546fad8",
         "version" : "510.0.2"
@@ -26,15 +26,6 @@
       "state" : {
         "revision" : "ab6844edb79a7b88dc6320e6cee0a0db7674dac3",
         "version" : "0.54.5"
-      }
-    },
-    {
-      "identity" : "swiftlintplugins",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/SimplyDanny/SwiftLintPlugins",
-      "state" : {
-        "revision" : "6c3d6c32a37224179dc290f21e03d1238f3d963b",
-        "version" : "0.56.2"
       }
     }
   ],

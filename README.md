@@ -6,6 +6,8 @@
 
 Gravatar SDK is a Swift library that allows you to integrate [Gravatar](https://gravatar.com/) features into your own iOS applications.
 
+If you're also looking to integrate Gravatar in your Android app, check out our [Gravatar SDK for Android](https://github.com/Automattic/Gravatar-SDK-android)!
+
 ## Features
 
 - Display a profile view or an avatar through ready-to-use UI components.

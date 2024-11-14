@@ -109,6 +109,7 @@ generate: $(OPENAPI_GENERATED_DIR) # Generates the open-api model
 	-p packageName=Gravatar \
 	--additional-properties=useJsonEncodable=false,readonlyProperties=true,$(OPENAPI_CLIENT_PROPERTIES) && \
 	rsync -av --delete "$(OPENAPI_GENERATED_DIR)/Sources/$(OPENAPI_PROJECT_NAME)/Models/" "$(OUTPUT_DIRECTORY)/" && \
+	swift ./access-control-modifier.swift && \
 	make swiftformat && \
     echo "DONE! 🎉"
 

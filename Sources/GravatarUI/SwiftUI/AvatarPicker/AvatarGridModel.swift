@@ -50,7 +50,9 @@ class AvatarGridModel: ObservableObject {
             selectedAvatar = nil
             return
         }
-        selectedAvatar = model(with: selectedID)
+        if let selectedModel = model(with: selectedID) {
+            selectedAvatar = selectedModel
+        }
     }
 
     func setAvatars(_ avatars: [AvatarImageModel]) {
