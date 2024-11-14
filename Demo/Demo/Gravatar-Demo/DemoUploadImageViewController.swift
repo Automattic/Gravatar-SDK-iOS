@@ -2,6 +2,10 @@ import UIKit
 import Gravatar
 
 class DemoUploadImageViewController: UIViewController, UITextFieldDelegate {
+    private enum Constant {
+        static let aspectFillMinSquarenessDefaultValue: CGFloat = 0.98
+    }
+    
     let rootStackView: UIStackView = {
         let stack = UIStackView()
         stack.translatesAutoresizingMaskIntoConstraints = false
@@ -50,20 +54,20 @@ class DemoUploadImageViewController: UIViewController, UITextFieldDelegate {
         return segmentedControl
     }()
     
-    let cropToFitLabel: UILabel = {
+    let aspectFillMinSquarenessLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Crop:"
+        label.text = "Min:"
         label.font = .preferredFont(forTextStyle: .body)
         label.textColor = .label
         label.adjustsFontSizeToFitWidth = true
         return label
     }()
     
-    let cropToFitThreshold: UITextField = {
+    let aspectFillMinSquarenessField: UITextField = {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
-        textField.text = "0.02"
+        textField.text = "\(Constant.aspectFillMinSquarenessDefaultValue)"
         textField.keyboardType = .decimalPad
         textField.autocapitalizationType = .none
         textField.textAlignment = .right
@@ -132,7 +136,7 @@ class DemoUploadImageViewController: UIViewController, UITextFieldDelegate {
     }()
 
     private var avatarSelectionBehavior: AvatarSelection = .preserveSelection
-    private var cropToFitThresholdValue: CGFloat = 0.02
+    private var aspectFillMinSquarenessValue: CGFloat = Constant.aspectFillMinSquarenessDefaultValue
     private var imageSquaringMechanism: SquaringMechanism = .imagePickerController
     private var squaringStrategy: SquaringStrategy {
         switch imageSquaringMechanism {
@@ -148,7 +152,7 @@ class DemoUploadImageViewController: UIViewController, UITextFieldDelegate {
         title = "Upload Image"
         view.backgroundColor = .systemBackground
 
-        for view in [squaringLabel, segmentedControl, cropToFitLabel, cropToFitThreshold] {
+        for view in [squaringLabel, segmentedControl, aspectFillMinSquarenessLabel, aspectFillMinSquarenessField] {
             squaringStackView.addArrangedSubview(view)
         }
         
@@ -167,20 +171,20 @@ class DemoUploadImageViewController: UIViewController, UITextFieldDelegate {
         uploadImageButton.addTarget(self, action: #selector(fetchProfileButtonHandler), for: .touchUpInside)
         selectImageButton.addTarget(self, action: #selector(selectImage), for: .touchUpInside)
         segmentedControl.addTarget(self, action: #selector(segmentedControllerValueChanged(_:)), for: .valueChanged)
-        cropToFitThreshold.addTarget(self, action: #selector(thresholdEditingDidEnd(_:)), for: .editingChanged)
+        aspectFillMinSquarenessField.addTarget(self, action: #selector(thresholdEditingDidEnd(_:)), for: .editingChanged)
     }
     
     @objc func segmentedControllerValueChanged(_ sender: UISegmentedControl) {
         switch sender.selectedSegmentIndex {
         case 0:
-            cropToFitThreshold.isEnabled = false
-            cropToFitThreshold.isUserInteractionEnabled = false
-            cropToFitThreshold.textColor = .label.withAlphaComponent(0.5)
+            aspectFillMinSquarenessField.isEnabled = false
+            aspectFillMinSquarenessField.isUserInteractionEnabled = false
+            aspectFillMinSquarenessField.textColor = .label.withAlphaComponent(0.5)
             imageSquaringMechanism = .imagePickerController
         case 1:
-            cropToFitThreshold.isEnabled = true
-            cropToFitThreshold.isUserInteractionEnabled = true
-            cropToFitThreshold.textColor = .label
+            aspectFillMinSquarenessField.isEnabled = true
+            aspectFillMinSquarenessField.isUserInteractionEnabled = true
+            aspectFillMinSquarenessField.textColor = .label
             imageSquaringMechanism = .onUpload
         default:
             return
@@ -188,13 +192,13 @@ class DemoUploadImageViewController: UIViewController, UITextFieldDelegate {
     }
     
     @objc func thresholdEditingDidEnd(_ sender: UITextField) {
-        guard let cropToFitThresholdString = cropToFitThreshold.text,
-              cropToFitThresholdString.isEmpty == false else {
-            self.cropToFitThresholdValue = 0.02
+        guard let aspectFillMinSquarenessString = aspectFillMinSquarenessField.text,
+              aspectFillMinSquarenessString.isEmpty == false else {
+            self.aspectFillMinSquarenessValue = Constant.aspectFillMinSquarenessDefaultValue
             return
         }
         
-        self.cropToFitThresholdValue = CGFloat(cropToFitThresholdString) ?? 0.02
+        self.aspectFillMinSquarenessValue = CGFloat(aspectFillMinSquarenessString) ?? Constant.aspectFillMinSquarenessDefaultValue
     }
     
     @objc func selectImage(_ sender: UIButton) {

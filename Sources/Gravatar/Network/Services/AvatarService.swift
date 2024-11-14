@@ -43,22 +43,11 @@ public struct AvatarService: Sendable {
     /// Uploads an image to be used as the user's Gravatar profile image, and returns the `URLResponse` of the network tasks asynchronously. Throws
     /// ``ImageUploadError``.
     ///
-    /// If an image is not square, the upload will fail.  To avoid this, by default, the image will be cropped before uploading.  The `cropToFitThreshold`
-    /// controls how this cropping is applied:
-    /// - **Crop to fill:** Images with sides whose difference is **at or below** this threshold will be **cropped to fill** a square, having their longer sides
-    /// shortened to match their shorter sides.
-    /// - **Crop to fit:** Images with sides whose difference is **above** this threshold will be **cropped to fill** a square, so that the entire image fits
-    /// within a square whose sides are the length of the longest side, and a background color of `UIColor.black` will be added to fill the rest of the square
-    /// - **Disable image squaring:** When the threshold is set to `nil`, no image squaring will be applied.
-    ///
-    /// If image squaring is disabled, images that are not square will raise an assertion.
-    ///
     /// - Parameters:
     ///   - image: The image to be uploaded.
     ///   - selectionBehavior: How to handle avatar selection after uploading a new avatar
     ///   - accessToken: The authentication token for the user. This is a WordPress.com OAuth2 access token.
-    ///   - cropToFitThreshold: (Optional) Controls the maximum difference between the lenght of the sides of an image, measured as a percentage, where the
-    /// image will be cropped to fit in a square.  Set to `nil` to disable image squaring.  See the `Discussion` for details.
+    ///   - squaringStrategy: The ``SquaringStrategy`` to apply to an image that is not square before it is uploaded
     /// - Returns: An asynchronously-delivered `AvatarType` instance, containing data of the newly created avatar.
     @discardableResult
     public func upload(
@@ -74,22 +63,11 @@ public struct AvatarService: Sendable {
     /// Uploads an image to be used as the user's Gravatar profile image, and returns the `URLResponse` of the network tasks asynchronously. Throws
     /// ``ImageUploadError``.
     ///
-    /// If an image is not square, the upload will fail.  To avoid this, by default, the image will be cropped before uploading.  The `cropToFitThreshold`
-    /// controls how this cropping is applied:
-    /// - **Crop to fill:** Images with sides whose difference is **at or below** this threshold will be **cropped to fill** a square, having their longer sides
-    /// shortened to match their shorter sides.
-    /// - **Crop to fit:** Images with sides whose difference is **above** this threshold will be **cropped to fill** a square, so that the entire image fits
-    /// within a square whose sides are the length of the longest side, and a background color of `UIColor.black` will be added to fill the rest of the square
-    /// - **Disable image squaring:** When the threshold is set to `nil`, no image squaring will be applied.
-    ///
-    /// If image squaring is disabled, images that are not square will raise an assertion.
-    ///
     /// - Parameters:
     ///   - image: The image to be uploaded.
     ///   - accessToken: The authentication token for the user. This is a WordPress.com OAuth2 access token.
     ///   - avatarSelection: How to handle avatar selection after uploading a new avatar
-    ///   - cropToFitThreshold: (Optional) Controls the maximum difference between the lenght of the sides of an image, measured as a percentage, where the
-    /// image will be cropped to fit in a square.  Set to `nil` to disable image squaring.  See the `Discussion` for details.
+    ///   - squaringStrategy: The ``SquaringStrategy`` to apply to an image that is not square before it is uploaded
     /// - Returns: An asynchronously-delivered `Avatar` instance, containing data of the newly created avatar.
     @discardableResult
     package func upload(

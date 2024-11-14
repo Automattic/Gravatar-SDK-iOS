@@ -16,6 +16,9 @@ struct ImageSquarer {
 
         // Determine the side length for the square (aspect fill or fit logic)
 
+        // Floating point comparisons can be affected by precision issues. But with a maximum image
+        // size of `2048 x 2048`, the largest and smallest possible `squareness` values only rely on
+        // four decimal places of precision.
         let squareSide = image.squareness >= aspectFillMinSquareness
             ? image.shortEdge // Aspect fill
             : image.longEdge // Aspect fit

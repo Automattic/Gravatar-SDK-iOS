@@ -20,7 +20,7 @@ struct ImageUploadService: ImageUploader {
     ) async throws -> (data: Data, response: HTTPURLResponse) {
         assert(
             image.isSquare(),
-            "This image is not square, and uploading it will fail. Consider using the default `cropToFitThreshold` when calling `AvatarService.upload(::::)`."
+            "This image is not square, and uploading it will fail. Consider using `SquaringStrategy.default` when calling `AvatarService.upload(::::)`."
         )
 
         guard let data: Data = {
