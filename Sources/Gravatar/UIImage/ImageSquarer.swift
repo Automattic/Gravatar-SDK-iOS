@@ -16,7 +16,7 @@ struct ImageSquarer {
 
         // Determine the side length for the square (aspect fill or fit logic)
 
-        let squareSide = image.squareness > aspectFillMinSquareness
+        let squareSide = image.squareness >= aspectFillMinSquareness
             ? image.shortEdge // Aspect fill
             : image.longEdge // Aspect fit
 
