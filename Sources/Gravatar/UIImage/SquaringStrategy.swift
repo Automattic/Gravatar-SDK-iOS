@@ -26,7 +26,8 @@ public enum SquaringStrategy {
     /// No squaring will be applied to images
     case none
 
-    /// Determines the squaring strategy based on how close the image is to square, by comparing the `shortEdge` and `longEdge` of the image.
+    /// Determines the squaring strategy based on how close the image is to square, by defining a minimum squareness for which `aspectFill` will be used, and
+    /// below which `.aspectFit` will be used.
     ///
     /// `Squareness` is similar to `Aspect Ratio`, except that all values are in the range `0...1`
     /// - A square `UIImage` (`100 x 100`) has a `squareness` of `1`
