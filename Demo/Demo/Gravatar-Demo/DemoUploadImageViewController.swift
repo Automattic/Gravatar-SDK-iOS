@@ -1,7 +1,7 @@
 import UIKit
 import Gravatar
 
-class DemoUploadImageViewController: UIViewController {
+class DemoUploadImageViewController: UIViewController, UITextFieldDelegate {
     let rootStackView: UIStackView = {
         let stack = UIStackView()
         stack.translatesAutoresizingMaskIntoConstraints = false
@@ -132,8 +132,16 @@ class DemoUploadImageViewController: UIViewController {
     }()
 
     private var avatarSelectionBehavior: AvatarSelection = .preserveSelection
-    private var cropToFitThresholdValue: CGFloat? = 0.02
+    private var cropToFitThresholdValue: CGFloat = 0.02
     private var imageSquaringMechanism: SquaringMechanism = .imagePickerController
+    private var squaringStrategy: SquaringStrategy {
+        switch imageSquaringMechanism {
+        case .imagePickerController:
+            return .none
+        case .onUpload:
+            return .default
+        }
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -182,11 +190,11 @@ class DemoUploadImageViewController: UIViewController {
     @objc func thresholdEditingDidEnd(_ sender: UITextField) {
         guard let cropToFitThresholdString = cropToFitThreshold.text,
               cropToFitThresholdString.isEmpty == false else {
-            self.cropToFitThresholdValue = nil
+            self.cropToFitThresholdValue = 0.02
             return
         }
         
-        self.cropToFitThresholdValue = CGFloat(cropToFitThresholdString)
+        self.cropToFitThresholdValue = CGFloat(cropToFitThresholdString) ?? 0.02
     }
     
     @objc func selectImage(_ sender: UIButton) {
@@ -223,7 +231,7 @@ class DemoUploadImageViewController: UIViewController {
 
         Task {
             do {
-                let avatarModel = try await service.upload(image, selectionBehavior: avatarSelectionBehavior, accessToken: token, cropToFitThreshold: cropToFitThresholdValue)
+                let avatarModel = try await service.upload(image, selectionBehavior: avatarSelectionBehavior, accessToken: token, squaringStrategy: squaringStrategy)
                 resultLabel.text = "✅ Avatar id \(avatarModel.id)"
             } catch {
                 resultLabel.text = "Error \((error as NSError).code): \(error.localizedDescription)"

@@ -65,9 +65,9 @@ public struct AvatarService: Sendable {
         _ image: UIImage,
         selectionBehavior: AvatarSelection,
         accessToken: String,
-        cropToFitThreshold: CGFloat? = 0.2
+        squaringStrategy: SquaringStrategy = .default
     ) async throws -> AvatarType {
-        let avatar: Avatar = try await upload(image, accessToken: accessToken, selectionBehavior: selectionBehavior, cropToFitThreshold: cropToFitThreshold)
+        let avatar: Avatar = try await upload(image, accessToken: accessToken, selectionBehavior: selectionBehavior, squaringStrategy: squaringStrategy)
         return avatar
     }
 
@@ -96,11 +96,11 @@ public struct AvatarService: Sendable {
         _ image: UIImage,
         accessToken: String,
         selectionBehavior: AvatarSelection,
-        cropToFitThreshold: CGFloat? = 0.2
+        squaringStrategy: SquaringStrategy = .default
     ) async throws -> Avatar {
         do {
             let (data, _) = try await imageUploader.uploadImage(
-                image.squared(cropToFitThreshold: cropToFitThreshold),
+                squaringStrategy.square(image),
                 accessToken: accessToken,
                 avatarSelection: selectionBehavior,
                 additionalHTTPHeaders: nil

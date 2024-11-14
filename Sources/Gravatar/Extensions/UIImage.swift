@@ -5,39 +5,24 @@ extension UIImage {
         size.height == size.width
     }
 
-    package func squared(cropToFitThreshold: CGFloat? = 0.02) -> UIImage {
-        if isSquare() {
-            return self
+    /// Describes how close to square an image's `size` is, by comparing the `shortEdge` and `longEdge` of the image.
+    ///
+    /// `Squareness` is similar to `Aspect Ratio`, except that all values are in the range `0...1`
+    /// - A square UIImage (`100 x 100`) has a `squareness` of `1`
+    /// - A UIImage with a `size` of `100 x 200` has a `squareness of `0.5`
+    var squareness: CGFloat {
+        if isSquare() { // This catches 0x0 images, which would cause a divide-by-zero error
+            return 1
         }
 
-        guard let cropToFitThreshold else {
-            return self
-        }
+        return shortEdge / longEdge
+    }
 
-        let (height, width) = (size.height, size.width)
+    var shortEdge: CGFloat {
+        min(self.size.width, self.size.height)
+    }
 
-        // Determine the side length for the square (aspect fill or fit logic)
-
-        let squareSide = (abs(width - height) / min(width, height)) <= cropToFitThreshold
-            ? min(width, height) // Aspect fill
-            : max(width, height) // Aspect fit
-
-        let squareSize = CGSize(width: squareSide, height: squareSide)
-        let imageOrigin = CGPoint(
-            x: (squareSize.width - width) / 2,
-            y: (squareSize.height - height) / 2
-        )
-
-        let format = UIGraphicsImageRendererFormat()
-        format.scale = self.scale // Respect original image scale
-        format.opaque = true
-
-        return UIGraphicsImageRenderer(size: squareSize, format: format).image { context in
-            UIColor.black.setFill() // Background color
-            context.fill(CGRect(origin: .zero, size: squareSize)) // Fill background
-
-            // Draw the image in the center of the new square context
-            self.draw(in: CGRect(origin: imageOrigin, size: size))
-        }
+    var longEdge: CGFloat {
+        max(self.size.width, self.size.height)
     }
 }
