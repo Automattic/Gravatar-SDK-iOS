@@ -1,7 +1,7 @@
 import UIKit
 import Gravatar
 
-class DemoUploadImageViewController: UIViewController, UITextFieldDelegate {
+class DemoUploadImageViewController: UIViewController {
     private enum Constant {
         static let aspectFillMinSquarenessDefaultValue: CGFloat = 0.98
     }
