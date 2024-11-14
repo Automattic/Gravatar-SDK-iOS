@@ -4,7 +4,11 @@ struct ImageSquarer {
     private let aspectFillMinSquareness: CGFloat
 
     init(aspectFillMinSquareness: CGFloat) {
-        self.aspectFillMinSquareness = aspectFillMinSquareness.clamp(to: 0 ... 1)
+        assert(
+            (aspectFillMinSquareness >= 0) && (aspectFillMinSquareness <= 1),
+            "Squareness must be between 0 and 1, inclusive"
+        )
+        self.aspectFillMinSquareness = aspectFillMinSquareness.clamped(to: 0 ... 1)
     }
 
     func square(_ image: UIImage) -> UIImage {
