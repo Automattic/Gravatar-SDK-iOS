@@ -10,40 +10,34 @@ import UIKit
 /// `Squareness` is similar to `Aspect Ratio`, except that all values are in the range `0...1`
 /// - A square UIImage (`100 x 100`) has a `squareness` of `1`
 /// - A UIImage with a `size` of `100 x 200` has a `squareness of `0.5`
-public enum SquaringStrategy {
-    /// Sqares the image using an `aspectFill` strategy
-    case aspectFill
+public enum SquaringStrategy: Sendable {
+    /// The default `SquaringStrategy`. Uses a high `aspectFillMinSquareness` value to limit which images are cropped to `aspectFill`
+    public static let `default`: SquaringStrategy = .squarenessDeterminesFitOrFill(aspectFillMinSquareness: .defaultMinSquareness)
 
-    /// Sqares the image using an `aspectFit` strategy
-    case aspectFit
+    /// Square all images by cropping the image to `aspectFill`.
+    public static let aspectFill: SquaringStrategy = .squarenessDeterminesFitOrFill(aspectFillMinSquareness: .aspectFillMinSquareness)
 
-    /// The defaul squaring strategy
+    /// Square all iamges by cropping the image to `aspectFit`, and adding a background color to fill in the square
+    public static let aspectFit: SquaringStrategy = .squarenessDeterminesFitOrFill(aspectFillMinSquareness: .aspectFitMinSquareness)
+
+    /// Determines the squaring strategy based on how close the image is to square, by defining a minimum squareness for which `aspectFill` will be used,
+    /// and below which `.aspectFit` will be used.
     ///
-    /// This strategy uses a high aspectFillMinSquareness to determine `aspectFit` or `aspectFill`.  Only images that are very close to square will use
-    /// `aspectFill`, which minimizes the amount of image loss that happens during cropping.  All other images will use `aspectFit`.
-    case `default`
+    /// This `SquaringStrategy` is intended to crop non-square images responsbility.  When an image is only slighlyt off from square, we can safely trim the
+    /// image in order to square it.  For images that are more rectangular, cropping to `aspectFit` may meaningful impact the image.  In those cases, we crop to
+    /// `aspectFit`, and then add a background color to fill in the square.
+    case squarenessDeterminesFitOrFill(aspectFillMinSquareness: CGFloat)
 
     /// No squaring will be applied to images
     case none
 
-    /// Determines the squaring strategy based on how close the image is to square, by defining a minimum squareness for which `aspectFill` will be used, and
-    /// below which `.aspectFit` will be used.
-    ///
-    /// `Squareness` is similar to `Aspect Ratio`, except that all values are in the range `0...1`
-    /// - A square `UIImage` (`100 x 100`) has a `squareness` of `1`
-    /// - A rectangular `UIImage` with a `size` of `100 x 200` (or `200 x 100`) has a squareness of `0.5`
-    case squarenessDeterminesFitOrFill(aspectFillMinSquareness: CGFloat)
-
+    /// Applies the `SquaringStrategy` to a `UIImage`
+    /// - Parameter image: a `UIImage` that should be squared
+    /// - Returns: a `UIImage` with the `SquaringStrategy` applied.
     package func square(_ image: UIImage) -> UIImage {
         switch self {
-        case .aspectFit:
-            ImageSquarer(aspectFillMinSquareness: .aspectFitThreshold).square(image)
-        case .aspectFill:
-            ImageSquarer(aspectFillMinSquareness: .aspectFillThreshold).square(image)
         case .squarenessDeterminesFitOrFill(let aspectFillMinSquareness):
             ImageSquarer(aspectFillMinSquareness: aspectFillMinSquareness).square(image)
-        case .default:
-            ImageSquarer(aspectFillMinSquareness: .defaultThreshold).square(image)
         case .none:
             // TODO: Check for squareness and log non-square images
             image
@@ -52,7 +46,12 @@ public enum SquaringStrategy {
 }
 
 extension CGFloat {
-    fileprivate static let defaultThreshold: CGFloat = 0.98
-    fileprivate static let aspectFitThreshold: CGFloat = 1.0
-    fileprivate static let aspectFillThreshold: CGFloat = 0.0
+    /// The default `aspecptFillMinSquareness` value
+    fileprivate static let defaultMinSquareness: CGFloat = 0.98
+
+    /// The `aspectFillMinSquareness` value that will cause the `SquaringStrategy` to apply `aspectFit` squaring logic to all images
+    fileprivate static let aspectFitMinSquareness: CGFloat = 1.0
+
+    /// The `aspectFillMinSquareness` value that will cause the `SquaringStrategy` to apply `aspectFill` squaring logic to all images
+    fileprivate static let aspectFillMinSquareness: CGFloat = 0.0
 }
