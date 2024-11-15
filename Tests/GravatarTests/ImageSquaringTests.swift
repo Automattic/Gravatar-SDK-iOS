@@ -196,7 +196,7 @@ struct ImageSquaringTests {
         #expect(resultImage.pngData() == referenceImage)
     }
 
-    // MARK: - Custom EdgeRatio Threshold
+    // MARK: - Custom Squareness Threshold
 
     @Test
     func minorAspectDifferenceAboveCustomEdgeRatioThresholdImageShouldUseAspectFill() {
