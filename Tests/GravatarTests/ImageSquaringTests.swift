@@ -1,12 +1,11 @@
+import Testing
 import UIKit
-import XCTest
 
 @testable import Gravatar
 
-final class ImageSquaringTests: XCTestCase {
-    // MARK: Default Image Squaring
-
-    func testSquareImage() {
+struct ImageSquaringTests {
+    @Test
+    func dquareImage() async throws {
         // Given a square image
         let squareImage = createImage(width: 100, height: 100)
 
@@ -14,10 +13,11 @@ final class ImageSquaringTests: XCTestCase {
         let result = SquaringStrategy.default.square(squareImage)
 
         // Then it should remain unchanged
-        XCTAssertEqual(result, squareImage, "UIImage objects should be identical")
+        #expect(result == squareImage, "UIImage objects should be identical")
     }
 
-    func testPortraitImage() {
+    @Test
+    func portraitImage() {
         // Given a portrait image (50x100)
         let portraitImage = createImage(width: 50, height: 100)
 
@@ -25,12 +25,13 @@ final class ImageSquaringTests: XCTestCase {
         let result = SquaringStrategy.default.square(portraitImage)
 
         // Then the result should be a square image (100x100)
-        XCTAssertTrue(result.isSquare(), "Image should be square")
-        XCTAssertEqual(result.size.width, 100, "Width should match the taller side")
-        XCTAssertEqual(result.size.height, 100, "Height should match the taller side")
+        #expect(result.isSquare(), "Image should be square")
+        #expect(result.size.width == 100, "Width should match the taller side")
+        #expect(result.size.height == 100, "Height should match the taller side")
     }
 
-    func testLandscapeImage() {
+    @Test
+    func landscapeImage() {
         // Given a landscape image (200x100)
         let landscapeImage = createImage(width: 200, height: 100)
 
@@ -38,12 +39,13 @@ final class ImageSquaringTests: XCTestCase {
         let result = SquaringStrategy.default.square(landscapeImage)
 
         // Then the result should be a square image (200x200)
-        XCTAssertTrue(result.isSquare(), "Image should be square")
-        XCTAssertEqual(result.size.width, 200, "Width should match the wider side")
-        XCTAssertEqual(result.size.height, 200, "Height should match the wider side")
+        #expect(result.isSquare(), "Image should be square")
+        #expect(result.size.width == 200, "Width should match the wider side")
+        #expect(result.size.height == 200, "Height should match the wider side")
     }
 
-    func testMinorAspectDifferenceAboveAspectFillMinSquarenessImageShouldUseAspectFill() {
+    @Test
+    func minorAspectDifferenceAboveAspectFillMinSquarenessImageShouldUseAspectFill() {
         // Given an image with a minor size difference (99x100) with a squareness of `0.99`, which is above
         // the default `aspectFillMinSquareness` threshold (`0.98`)
         let slightDifferenceImage = createImage(width: 99, height: 100)
@@ -52,12 +54,13 @@ final class ImageSquaringTests: XCTestCase {
         let result = SquaringStrategy.default.square(slightDifferenceImage)
 
         // Then the result should aspect-fill and become 99x99
-        XCTAssertTrue(result.isSquare(), "Image should be square")
-        XCTAssertEqual(result.size.width, 99, "Width should match the smaller side")
-        XCTAssertEqual(result.size.height, 99, "Height should match the smaller side")
+        #expect(result.isSquare(), "Image should be square")
+        #expect(result.size.width == 99, "Width should match the smaller side")
+        #expect(result.size.height == 99, "Height should match the smaller side")
     }
 
-    func testMinorAspectDifferenceMatchesAspectFillMinSquarenessImageShouldUseAspectFill() {
+    @Test
+    func minorAspectDifferenceMatchesAspectFillMinSquarenessImageShouldUseAspectFill() {
         // Given an image with a minor size difference (98x100) with a squareness of `0.98`, which matches
         // the default `aspectFillMinSquareness` threshold (`0.98`)
         let slightDifferenceImage = createImage(width: 98, height: 100)
@@ -66,12 +69,13 @@ final class ImageSquaringTests: XCTestCase {
         let result = SquaringStrategy.default.square(slightDifferenceImage)
 
         // Then the result should aspect-fill and become 98x98
-        XCTAssertTrue(result.isSquare(), "Image should be square")
-        XCTAssertEqual(result.size.width, 98, "Width should match the smaller side")
-        XCTAssertEqual(result.size.height, 98, "Height should match the smaller side")
+        #expect(result.isSquare(), "Image should be square")
+        #expect(result.size.width == 98, "Width should match the smaller side")
+        #expect(result.size.height == 98, "Height should match the smaller side")
     }
 
-    func testMinorAspectDifferenceBelowAspectFillMinSquarenessImageShouldUseAspectFit() {
+    @Test
+    func minorAspectDifferenceBelowAspectFillMinSquarenessImageShouldUseAspectFit() {
         // Given an image with a minor size difference (97x100) with a squareness of `0.97`, which is above
         // the default `aspectFillMinSquareness` threshold (`0.98`)
         let slightDifferenceImage = createImage(width: 97, height: 100)
@@ -80,14 +84,15 @@ final class ImageSquaringTests: XCTestCase {
         let result = SquaringStrategy.default.square(slightDifferenceImage)
 
         // Then the result should aspect-fit and become 100x100
-        XCTAssertTrue(result.isSquare(), "Image should be square")
-        XCTAssertEqual(result.size.width, 100, "Width should match the larger side")
-        XCTAssertEqual(result.size.height, 100, "Height should match the larger side")
+        #expect(result.isSquare(), "Image should be square")
+        #expect(result.size.width == 100, "Width should match the larger side")
+        #expect(result.size.height == 100, "Height should match the larger side")
     }
 
     // MARK: - Extreme Dimensions Tests
 
-    func testVerySmallImage() {
+    @Test
+    func verySmallImage() {
         // Given a very small image (1x1)
         let smallImage = createImage(width: 1, height: 1)
 
@@ -95,12 +100,11 @@ final class ImageSquaringTests: XCTestCase {
         let result = SquaringStrategy.default.square(smallImage)
 
         // Then it should remain a 1x1 image since it's already square
-        XCTAssertTrue(result.isSquare(), "Image should remain square")
-        XCTAssertEqual(result.size.width, 1, "Width should remain unchanged")
-        XCTAssertEqual(result.size.height, 1, "Height should remain unchanged")
+        #expect(result == smallImage, "Image should remain unchanged")
     }
 
-    func testVeryLargeImage() {
+    @Test
+    func veryLargeImage() {
         // Given a large image (5_000x3_000)
         let largeImage = createImage(width: 5000, height: 3000)
 
@@ -108,12 +112,13 @@ final class ImageSquaringTests: XCTestCase {
         let result = SquaringStrategy.default.square(largeImage)
 
         // Then the result should be a 5_000x5_000 square image
-        XCTAssertTrue(result.isSquare(), "Image should be square")
-        XCTAssertEqual(result.size.width, 5000, "Width should match the larger side")
-        XCTAssertEqual(result.size.height, 5000, "Height should match the larger side")
+        #expect(result.isSquare(), "Image should be square")
+        #expect(result.size.width == 5000, "Width should match the larger side")
+        #expect(result.size.height == 5000, "Height should match the larger side")
     }
 
-    func testWideImage() {
+    @Test
+    func wideImage() {
         // Given an extremely wide image (10_000x500)
         let wideImage = createImage(width: 10000, height: 500)
 
@@ -121,12 +126,13 @@ final class ImageSquaringTests: XCTestCase {
         let result = SquaringStrategy.default.square(wideImage)
 
         // Then the result should be a 10_000x10_000 square image
-        XCTAssertTrue(result.isSquare(), "Image should be square")
-        XCTAssertEqual(result.size.width, 10000, "Width should match the wider side")
-        XCTAssertEqual(result.size.height, 10000, "Height should match the wider side")
+        #expect(result.isSquare(), "Image should be square")
+        #expect(result.size.width == 10000, "Width should match the wider side")
+        #expect(result.size.height == 10000, "Height should match the wider side")
     }
 
-    func testTallImage() {
+    @Test
+    func tallImage() {
         // Given an extremely tall image (500x10_000)
         let tallImage = createImage(width: 500, height: 10000)
 
@@ -134,24 +140,27 @@ final class ImageSquaringTests: XCTestCase {
         let result = SquaringStrategy.default.square(tallImage)
 
         // Then the result should be a 10_000x10_000 square image
-        XCTAssertTrue(result.isSquare(), "Image should be square")
-        XCTAssertEqual(result.size.width, 10000, "Width should match the taller side")
-        XCTAssertEqual(result.size.height, 10000, "Height should match the taller side")
+        #expect(result.isSquare(), "Image should be square")
+        #expect(result.size.width == 10000, "Width should match the taller side")
+        #expect(result.size.height == 10000, "Height should match the taller side")
     }
 
-    func testZeroSizeImage() {
+    @Test
+    func zeroSizeImage() {
+        // Given an image with zero size (0x0)
         let zeroSizeImage = createImage(width: 0, height: 0)
 
+        // When the default squaring strategy is applied
         let result = SquaringStrategy.default.square(zeroSizeImage)
 
-        XCTAssertTrue(result.isSquare(), "Image should be square")
-        XCTAssertEqual(result.size.width, 0)
-        XCTAssertEqual(result.size.height, 0)
+        // Then the result should be a 0x0 square image
+        #expect(result == zeroSizeImage, "Image should remain unchanged")
     }
 
     // MARK: - Scale Test
 
-    func testImageSquaringWithScale2x() {
+    @Test
+    func imageSquaringWithScale2x() {
         // Given a retina image (@2x) with size 300x500
         let image = createImage(width: 300, height: 500, scale: 2.0)
 
@@ -159,38 +168,38 @@ final class ImageSquaringTests: XCTestCase {
         let result = SquaringStrategy.default.square(image)
 
         // Then the result should be a 500x500 square image with scale @2x
-        XCTAssertTrue(result.isSquare(), "Image should be square")
-        XCTAssertEqual(result.size.width, 500)
-        XCTAssertEqual(result.size.height, 500)
-        XCTAssertEqual(result.scale, 2.0, "Image scale should remain @2x")
+        #expect(result.isSquare(), "Image should be square")
+        #expect(result.size.width == 500, "Width should match the longer side")
+        #expect(result.size.height == 500, "Height should match the longer side")
+        #expect(result.scale == 2.0, "Image scale should remain @2x")
     }
 
     // MARK: - Background Color Tests
 
-    @MainActor
-    func testDefaultBackgroundColorIsApplied() throws {
+    @Test
+    func backgroundColorIsApplied() throws {
         // Given a non-square image (300x500)
         let image = createImage(width: 300, height: 500, scale: 1, fillColor: .red)
 
         // And a reference image
-        let referenceImage = try XCTUnwrap(UIImage(named: "ImageSquaringDefaultBackgroundReferenceImage", in: .module, with: nil)).pngData()
+        let referenceImage = try #require(
+            UIImage(named: "ImageSquaringDefaultBackgroundReferenceImage", in: .module, with: nil)
+        ).pngData()
 
         // When the default squaring strategy is applied
         let resultImage = SquaringStrategy.default.square(image)
 
-        // Archive the reference image for future use
-        attach(image: resultImage, attachmentName: "Default Background Image")
-
         // Then the result should be square
-        XCTAssertTrue(resultImage.isSquare(), "The image should be square.")
+        #expect(resultImage.isSquare(), "The image should be square.")
 
         // And the generated image should match the reference image
-        XCTAssertEqual(resultImage.pngData(), referenceImage)
+        #expect(resultImage.pngData() == referenceImage)
     }
 
     // MARK: - Custom EdgeRatio Threshold
 
-    func testMinorAspectDifferenceAboveCustomEdgeRatioThresholdImageShouldUseAspectFill() {
+    @Test
+    func minorAspectDifferenceAboveCustomEdgeRatioThresholdImageShouldUseAspectFill() {
         // Given an image with a minor size difference (100x102) where the edge ratio (`0.9804`)
         // is above the custom squareness (`0.97`)
         let slightDifferenceImage = createImage(width: 100, height: 102)
@@ -200,12 +209,13 @@ final class ImageSquaringTests: XCTestCase {
         let result = SquaringStrategy.squarenessDeterminesFitOrFill(aspectFillMinSquareness: aspectFillMinSquareness).square(slightDifferenceImage)
 
         // Then the result should aspect-fill and become 100x100
-        XCTAssertTrue(result.isSquare(), "Image should be square")
-        XCTAssertEqual(result.size.width, 100, "Width should match the smaller side")
-        XCTAssertEqual(result.size.height, 100, "Height should match the smaller side")
+        #expect(result.isSquare(), "Image should be square")
+        #expect(result.size.width == 100, "Width should match the smaller side")
+        #expect(result.size.height == 100, "Height should match the smaller side")
     }
 
-    func testMinorAspectDifferenceBelowCustomEdgeRatioThresholdImageShouldUseAspectFit() {
+    @Test
+    func minorAspectDifferenceBelowCustomEdgeRatioThresholdImageShouldUseAspectFit() {
         // Given an image with a minor size difference (100x104) where the edge ratio (`0.9615`)
         // is below the custom squareness (`0.97`)
         let slightDifferenceImage = createImage(width: 100, height: 104)
@@ -214,75 +224,82 @@ final class ImageSquaringTests: XCTestCase {
         // When the custom squaring function is applied
         let result = SquaringStrategy.squarenessDeterminesFitOrFill(aspectFillMinSquareness: aspectFillMinSquareness).square(slightDifferenceImage)
 
-        // Then the result should aspect-fit and become 102x102
-        XCTAssertTrue(result.isSquare(), "Image should be square")
-        XCTAssertEqual(result.size.width, 104, "Width should match the larger side")
-        XCTAssertEqual(result.size.height, 104, "Height should match the larger side")
+        // Then the result should aspect-fit and become 104x104
+        #expect(result.isSquare(), "Image should be square")
+        #expect(result.size.width == 104, "Width should match the larger side")
+        #expect(result.size.height == 104, "Height should match the larger side")
     }
 
     // MARK: - Aspect Fit Image Squaring
 
-    func testWideImageUsingAspectFitShouldBeSquared() {
+    @Test
+    func wideImageUsingAspectFitShouldBeSquared() {
         let wideImage = createImage(width: 200, height: 100)
 
         let result = SquaringStrategy.aspectFit.square(wideImage)
 
-        XCTAssertTrue(result.isSquare(), "Image should be square")
-        XCTAssertEqual(result.size.width, 200, "Width should match the longer side")
-        XCTAssertEqual(result.size.height, 200, "Height should match the longer side")
+        #expect(result.isSquare(), "Image should be square")
+        #expect(result.size.width == 200, "Width should match the longer side")
+        #expect(result.size.height == 200, "Height should match the longer side")
     }
 
-    func testTallImageUsingAspectFitShouldBeSquared() {
+    @Test
+    func tallImageUsingAspectFitShouldBeSquared() {
         let tallImage = createImage(width: 100, height: 200)
 
         let result = SquaringStrategy.aspectFit.square(tallImage)
 
-        XCTAssertTrue(result.isSquare(), "Image should be square")
-        XCTAssertEqual(result.size.width, 200, "Width should match the longer side")
-        XCTAssertEqual(result.size.height, 200, "Height should match the longer side")
+        #expect(result.isSquare(), "Image should be square")
+        #expect(result.size.width == 200, "Width should match the longer side")
+        #expect(result.size.height == 200, "Height should match the longer side")
     }
 
-    func testSquareImageUsingAspectFitShouldBeSquared() {
+    @Test
+    func squareImageUsingAspectFitShouldBeSquared() {
         let squareImage = createImage(width: 100, height: 100)
 
         let result = SquaringStrategy.aspectFit.square(squareImage)
 
-        XCTAssertEqual(result, squareImage, "UIImage objects should be identical")
+        #expect(result == squareImage, "UIImage objects should be identical")
     }
 
     // MARK: - Aspect Fill Image Squaring
 
-    func testWideImageUsingAspectFillShouldBeSquared() {
+    @Test
+    func wideImageUsingAspectFillShouldBeSquared() {
         let wideImage = createImage(width: 200, height: 100)
 
         let result = SquaringStrategy.aspectFill.square(wideImage)
 
-        XCTAssertTrue(result.isSquare(), "Image should be square")
-        XCTAssertEqual(result.size.width, 100, "Width should match the shorter side")
-        XCTAssertEqual(result.size.height, 100, "Height should match the shorter side")
+        #expect(result.isSquare(), "Image should be square")
+        #expect(result.size.width == 100, "Width should match the shorter side")
+        #expect(result.size.height == 100, "Height should match the shorter side")
     }
 
-    func testTallImageUsingAspectFillShouldBeSquared() {
+    @Test
+    func tallImageUsingAspectFillShouldBeSquared() {
         let tallImage = createImage(width: 100, height: 200)
 
         let result = SquaringStrategy.aspectFill.square(tallImage)
 
-        XCTAssertTrue(result.isSquare(), "Image should be square")
-        XCTAssertEqual(result.size.width, 100, "Width should match the shorter side")
-        XCTAssertEqual(result.size.height, 100, "Height should match the shorter side")
+        #expect(result.isSquare(), "Image should be square")
+        #expect(result.size.width == 100, "Width should match the shorter side")
+        #expect(result.size.height == 100, "Height should match the shorter side")
     }
 
-    func testSquareImageUsingAspectFillShouldBeSquared() {
+    @Test
+    func squareImageUsingAspectFillShouldBeSquared() {
         let squareImage = createImage(width: 100, height: 100)
 
         let result = SquaringStrategy.aspectFill.square(squareImage)
 
-        XCTAssertEqual(result, squareImage, "UIImage objects should be identical")
+        #expect(result == squareImage, "UIImage objects should be identical")
     }
 
     // MARK: - No Image Squaring
 
-    func testNoCroppingWithMinorAspectDifferenceImageShouldReturnOriginalImage() {
+    @Test
+    func noCroppingWithMinorAspectDifferenceImageShouldReturnOriginalImage() {
         // Given an image with a minor size difference (97x100) with a squareness of `0.97`, which is below
         // the default `aspectFillMinSquareness` threshold (`0.98`)
         let slightDifferenceImage = createImage(width: 97, height: 100)
@@ -291,7 +308,7 @@ final class ImageSquaringTests: XCTestCase {
         let result = SquaringStrategy.none.square(slightDifferenceImage)
 
         // Then it should remain unchanged
-        XCTAssertEqual(result, slightDifferenceImage, "UIImage objects should be identical")
+        #expect(result == slightDifferenceImage, "UIImage objects should be identical")
     }
 
     // MARK: - Helpers
@@ -303,16 +320,6 @@ final class ImageSquaringTests: XCTestCase {
         return UIGraphicsImageRenderer(size: size, format: format).image { context in
             fillColor.setFill()
             context.fill(CGRect(origin: .zero, size: size))
-        }
-    }
-
-    @MainActor
-    private func attach(image: UIImage, attachmentName: String, lifetime: XCTAttachment.Lifetime = .deleteOnSuccess) {
-        XCTContext.runActivity(named: "Archive Image") { activity in
-            let attachment = XCTAttachment(image: image)
-            attachment.name = attachmentName
-            attachment.lifetime = lifetime
-            activity.add(attachment)
         }
     }
 }
