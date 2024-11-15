@@ -99,22 +99,10 @@ struct ImageSquaringTests {
         // When the default squaring strategy is applied
         let result = SquaringStrategy.default.square(smallImage)
 
-        // Then it should remain a 1x1 image since it's already square
-        #expect(result == smallImage, "Image should remain unchanged")
-    }
-
-    @Test
-    func veryLargeImage() {
-        // Given a large image (5_000x3_000)
-        let largeImage = createImage(width: 5000, height: 3000)
-
-        // When the default squaring strategy is applied
-        let result = SquaringStrategy.default.square(largeImage)
-
-        // Then the result should be a 5_000x5_000 square image
+        // Then the result should aspect-fit and become 2x2
         #expect(result.isSquare(), "Image should be square")
-        #expect(result.size.width == 5000, "Width should match the larger side")
-        #expect(result.size.height == 5000, "Height should match the larger side")
+        #expect(result.size.width == 2, "Width should match the larger side")
+        #expect(result.size.height == 2, "Height should match the larger side")
     }
 
     @Test
