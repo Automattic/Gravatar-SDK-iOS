@@ -4,7 +4,7 @@ import UIKit
 @testable import Gravatar
 
 struct ImageSquaringTests {
-    @Test
+    @Test("Square image is not modified")
     func squareImage() async throws {
         // Given a square image
         let squareImage = createImage(width: 100, height: 100)
@@ -16,7 +16,7 @@ struct ImageSquaringTests {
         #expect(result == squareImage, "UIImage objects should be identical")
     }
 
-    @Test
+    @Test("Portrait image is squared")
     func portraitImage() {
         // Given a portrait image (50x100)
         let portraitImage = createImage(width: 50, height: 100)
@@ -30,7 +30,7 @@ struct ImageSquaringTests {
         #expect(result.size.height == 100, "Height should match the taller side")
     }
 
-    @Test
+    @Test("Landscape image is squared")
     func landscapeImage() {
         // Given a landscape image (200x100)
         let landscapeImage = createImage(width: 200, height: 100)
@@ -44,7 +44,7 @@ struct ImageSquaringTests {
         #expect(result.size.height == 200, "Height should match the wider side")
     }
 
-    @Test
+    @Test("Squareness above threshold uses .aspectFill")
     func minorAspectDifferenceAboveAspectFillMinSquarenessImageShouldUseAspectFill() {
         // Given an image with a minor size difference (99x100) with a squareness of `0.99`, which is above
         // the default `aspectFillMinSquareness` threshold (`0.98`)
@@ -59,7 +59,7 @@ struct ImageSquaringTests {
         #expect(result.size.height == 99, "Height should match the smaller side")
     }
 
-    @Test
+    @Test("Squareness at threshold uses .aspectFill")
     func minorAspectDifferenceMatchesAspectFillMinSquarenessImageShouldUseAspectFill() {
         // Given an image with a minor size difference (98x100) with a squareness of `0.98`, which matches
         // the default `aspectFillMinSquareness` threshold (`0.98`)
@@ -74,7 +74,7 @@ struct ImageSquaringTests {
         #expect(result.size.height == 98, "Height should match the smaller side")
     }
 
-    @Test
+    @Test("Squareness below threshold uses .aspectFit")
     func minorAspectDifferenceBelowAspectFillMinSquarenessImageShouldUseAspectFit() {
         // Given an image with a minor size difference (97x100) with a squareness of `0.97`, which is above
         // the default `aspectFillMinSquareness` threshold (`0.98`)
@@ -91,7 +91,7 @@ struct ImageSquaringTests {
 
     // MARK: - Extreme Dimensions Tests
 
-    @Test
+    @Test("Very small image is squared")
     func verySmallImage() {
         // Given a very small image (1x2)
         let smallImage = createImage(width: 1, height: 2)
@@ -105,7 +105,7 @@ struct ImageSquaringTests {
         #expect(result.size.height == 2, "Height should match the larger side")
     }
 
-    @Test
+    @Test("Extreme width image is squared")
     func wideImage() {
         // Given an extremely wide image (10_000x500)
         let wideImage = createImage(width: 10000, height: 500)
@@ -119,7 +119,7 @@ struct ImageSquaringTests {
         #expect(result.size.height == 10000, "Height should match the wider side")
     }
 
-    @Test
+    @Test("Extremely height image is squared")
     func tallImage() {
         // Given an extremely tall image (500x10_000)
         let tallImage = createImage(width: 500, height: 10000)
@@ -133,7 +133,7 @@ struct ImageSquaringTests {
         #expect(result.size.height == 10000, "Height should match the taller side")
     }
 
-    @Test
+    @Test("Zero size image remains unchanged")
     func zeroSizeImage() {
         // Given an image with zero size (0x0)
         let zeroSizeImage = createImage(width: 0, height: 0)
@@ -147,7 +147,7 @@ struct ImageSquaringTests {
 
     // MARK: - Scale Test
 
-    @Test
+    @Test("Squared image retains image scale")
     func imageSquaringWithScale2x() {
         // Given a retina image (@2x) with size 300x500
         let image = createImage(width: 300, height: 500, scale: 2.0)
@@ -164,7 +164,7 @@ struct ImageSquaringTests {
 
     // MARK: - Background Color Tests
 
-    @Test
+    @Test("Background color is applied")
     func backgroundColorIsApplied() throws {
         // Given a non-square image (300x500)
         let image = createImage(width: 300, height: 500, scale: 1, fillColor: .red)
@@ -186,7 +186,7 @@ struct ImageSquaringTests {
 
     // MARK: - Custom Squareness Threshold
 
-    @Test
+    @Test("Custom: Squareness above threshold uses .aspectFill")
     func minorAspectDifferenceAboveCustomEdgeRatioThresholdImageShouldUseAspectFill() {
         // Given an image with a minor size difference (100x102) where the edge ratio (`0.9804`)
         // is above the custom squareness (`0.97`)
@@ -202,7 +202,7 @@ struct ImageSquaringTests {
         #expect(result.size.height == 100, "Height should match the smaller side")
     }
 
-    @Test
+    @Test("Custom: Squareness below threshold uses .aspectFill")
     func minorAspectDifferenceBelowCustomEdgeRatioThresholdImageShouldUseAspectFit() {
         // Given an image with a minor size difference (100x104) where the edge ratio (`0.9615`)
         // is below the custom squareness (`0.97`)
@@ -220,7 +220,7 @@ struct ImageSquaringTests {
 
     // MARK: - Aspect Fit Image Squaring
 
-    @Test
+    @Test("AspectFit: Wide image should be squared")
     func wideImageUsingAspectFitShouldBeSquared() {
         let wideImage = createImage(width: 200, height: 100)
 
@@ -231,7 +231,7 @@ struct ImageSquaringTests {
         #expect(result.size.height == 200, "Height should match the longer side")
     }
 
-    @Test
+    @Test("AspectFit: Tall image should be squared")
     func tallImageUsingAspectFitShouldBeSquared() {
         let tallImage = createImage(width: 100, height: 200)
 
@@ -242,7 +242,7 @@ struct ImageSquaringTests {
         #expect(result.size.height == 200, "Height should match the longer side")
     }
 
-    @Test
+    @Test("AspectFit: Square iamge should be unchanged")
     func squareImageUsingAspectFitShouldBeSquared() {
         let squareImage = createImage(width: 100, height: 100)
 
@@ -253,7 +253,7 @@ struct ImageSquaringTests {
 
     // MARK: - Aspect Fill Image Squaring
 
-    @Test
+    @Test("AspectFill: Wide image should be squared")
     func wideImageUsingAspectFillShouldBeSquared() {
         let wideImage = createImage(width: 200, height: 100)
 
@@ -264,7 +264,7 @@ struct ImageSquaringTests {
         #expect(result.size.height == 100, "Height should match the shorter side")
     }
 
-    @Test
+    @Test("AspectFill: Tall image should be squared")
     func tallImageUsingAspectFillShouldBeSquared() {
         let tallImage = createImage(width: 100, height: 200)
 
@@ -275,7 +275,7 @@ struct ImageSquaringTests {
         #expect(result.size.height == 100, "Height should match the shorter side")
     }
 
-    @Test
+    @Test("AspectFill: Square image should be unchanged")
     func squareImageUsingAspectFillShouldBeSquared() {
         let squareImage = createImage(width: 100, height: 100)
 
@@ -286,10 +286,9 @@ struct ImageSquaringTests {
 
     // MARK: - No Image Squaring
 
-    @Test
-    func noCroppingWithMinorAspectDifferenceImageShouldReturnOriginalImage() {
-        // Given an image with a minor size difference (97x100) with a squareness of `0.97`, which is below
-        // the default `aspectFillMinSquareness` threshold (`0.98`)
+    @Test("No Cropping: Non-square image should be unchanged")
+    func noCroppingNonSquareImageShouldReturnOriginalImage() {
+        // Given a non-square image
         let slightDifferenceImage = createImage(width: 97, height: 100)
 
         // When the default squaring function is applied
