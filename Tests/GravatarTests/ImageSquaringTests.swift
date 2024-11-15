@@ -5,7 +5,7 @@ import UIKit
 
 struct ImageSquaringTests {
     @Test
-    func dquareImage() async throws {
+    func squareImage() async throws {
         // Given a square image
         let squareImage = createImage(width: 100, height: 100)
 
