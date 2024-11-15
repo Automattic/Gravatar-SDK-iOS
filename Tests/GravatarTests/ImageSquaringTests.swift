@@ -93,8 +93,8 @@ struct ImageSquaringTests {
 
     @Test
     func verySmallImage() {
-        // Given a very small image (1x1)
-        let smallImage = createImage(width: 1, height: 1)
+        // Given a very small image (1x2)
+        let smallImage = createImage(width: 1, height: 2)
 
         // When the default squaring strategy is applied
         let result = SquaringStrategy.default.square(smallImage)
