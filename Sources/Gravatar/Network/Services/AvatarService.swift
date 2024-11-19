@@ -47,14 +47,9 @@ public struct AvatarService: Sendable {
     ///   - image: The image to be uploaded.
     ///   - selectionBehavior: How to handle avatar selection after uploading a new avatar
     ///   - accessToken: The authentication token for the user. This is a WordPress.com OAuth2 access token.
-    ///   - squaringStrategy: The ``SquaringStrategy`` to apply to an image that is not square before it is uploaded
     /// - Returns: An asynchronously-delivered `AvatarType` instance, containing data of the newly created avatar.
     @discardableResult
-    public func upload(
-        _ image: UIImage,
-        selectionBehavior: AvatarSelection,
-        accessToken: String
-    ) async throws -> AvatarType {
+    public func upload(_ image: UIImage, selectionBehavior: AvatarSelection, accessToken: String) async throws -> AvatarType {
         let avatar: Avatar = try await upload(image, accessToken: accessToken, selectionBehavior: selectionBehavior)
         return avatar
     }
@@ -66,14 +61,9 @@ public struct AvatarService: Sendable {
     ///   - image: The image to be uploaded.
     ///   - accessToken: The authentication token for the user. This is a WordPress.com OAuth2 access token.
     ///   - avatarSelection: How to handle avatar selection after uploading a new avatar
-    ///   - squaringStrategy: The ``SquaringStrategy`` to apply to an image that is not square before it is uploaded
     /// - Returns: An asynchronously-delivered `Avatar` instance, containing data of the newly created avatar.
     @discardableResult
-    package func upload(
-        _ image: UIImage,
-        accessToken: String,
-        selectionBehavior: AvatarSelection
-    ) async throws -> Avatar {
+    package func upload(_ image: UIImage, accessToken: String, selectionBehavior: AvatarSelection) async throws -> Avatar {
         do {
             let (data, _) = try await imageUploader.uploadImage(
                 image.squared(),
