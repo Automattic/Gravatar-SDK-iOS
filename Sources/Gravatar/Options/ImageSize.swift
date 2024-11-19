@@ -23,4 +23,15 @@ extension ImageSize {
             Int(points * scaleFactor)
         }
     }
+
+    func points(scaleFactor: CGFloat) -> CGFloat {
+        guard scaleFactor > 0 else { return 0 }
+
+        switch self {
+        case .pixels(let pixels):
+            return CGFloat(pixels) / scaleFactor
+        case .points(let points):
+            return points
+        }
+    }
 }

@@ -155,8 +155,8 @@ class AvatarPickerViewModel: ObservableObject {
         // SwiftUI doesn't update the UI if the grid is empty.
         // objectWillChange forces the update.
         objectWillChange.send()
-        let squareImage = shouldSquareImage ? SquaringStrategy.default.square(image) : image
-        assert(squareImage.isSquare(), "Image must be square before uploading: \(squareImage.size.height) x \(squareImage.size.width)")
+        let squareImage = shouldSquareImage ? image.squared() : image
+        assert(squareImage.isSquare, "Image must be square before uploading: \(squareImage.size.height) x \(squareImage.size.width)")
 
         let localID = UUID().uuidString
 

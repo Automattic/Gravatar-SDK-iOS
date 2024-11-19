@@ -53,10 +53,9 @@ public struct AvatarService: Sendable {
     public func upload(
         _ image: UIImage,
         selectionBehavior: AvatarSelection,
-        accessToken: String,
-        squaringStrategy: SquaringStrategy = .default
+        accessToken: String
     ) async throws -> AvatarType {
-        let avatar: Avatar = try await upload(image, accessToken: accessToken, selectionBehavior: selectionBehavior, squaringStrategy: squaringStrategy)
+        let avatar: Avatar = try await upload(image, accessToken: accessToken, selectionBehavior: selectionBehavior)
         return avatar
     }
 
@@ -73,12 +72,11 @@ public struct AvatarService: Sendable {
     package func upload(
         _ image: UIImage,
         accessToken: String,
-        selectionBehavior: AvatarSelection,
-        squaringStrategy: SquaringStrategy = .default
+        selectionBehavior: AvatarSelection
     ) async throws -> Avatar {
         do {
             let (data, _) = try await imageUploader.uploadImage(
-                squaringStrategy.square(image),
+                image.squared(),
                 accessToken: accessToken,
                 avatarSelection: selectionBehavior,
                 additionalHTTPHeaders: nil

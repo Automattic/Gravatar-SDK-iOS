@@ -1,8 +1,12 @@
 import UIKit
 
 extension UIImage {
-    package func isSquare() -> Bool {
+    package var isSquare: Bool {
         size.height == size.width
+    }
+
+    var aspectRatio: CGFloat {
+        size.width / size.height
     }
 
     /// Describes how close to square an image's `size` is, by comparing the `shortEdge` and `longEdge` of the image.
@@ -13,11 +17,15 @@ extension UIImage {
     ///
     /// - SeeAlso: ``SquaringStrategy``
     var squareness: CGFloat {
-        if isSquare() { // This catches 0x0 images, which would cause a divide-by-zero error
+        if isSquare { // This catches 0x0 images, which would cause a divide-by-zero error
             return 1
         }
 
         return shortEdge / longEdge
+    }
+
+    var deviationFromSquare: CGFloat {
+        1 - squareness
     }
 
     /// Returns the lenght of the shorter edge of an image
@@ -29,4 +37,72 @@ extension UIImage {
     var longEdge: CGFloat {
         max(self.size.width, self.size.height)
     }
+
+    package func squared(
+        withinTolerance squarenessTolerance: CGFloat = .defaultSquarenessTolerance,
+        maxSize: ImageSize? = nil
+    ) -> UIImage {
+        self
+            .squared(withinTolerance: squarenessTolerance)
+            .resized(toMaxSize: maxSize)
+    }
+
+    package func squared(withinTolerance squarenessTolerance: CGFloat) -> UIImage {
+        guard !self.isSquare, self.deviationFromSquare <= squarenessTolerance else { return self }
+
+        let (height, width) = (self.size.height, self.size.width)
+
+        let squareSideLength = floor(self.shortEdge)
+
+        let squareSize = CGSize(width: squareSideLength, height: squareSideLength)
+        let imageOrigin = CGPoint(
+            x: (squareSize.width - width) / 2,
+            y: (squareSize.height - height) / 2
+        )
+
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = self.scale // Respect original image scale
+
+        return UIGraphicsImageRenderer(size: squareSize, format: format).image { _ in
+            // Draw the image in the center of the new square context
+            self.draw(in: CGRect(origin: imageOrigin, size: self.size))
+        }
+    }
+
+    package func resized(toMaxSize maxSize: ImageSize?) -> UIImage {
+        guard let maxSize else { return self }
+
+        let maxLengthInPoints = maxSize.points(scaleFactor: self.scale)
+
+        guard maxLengthInPoints > 0, longEdge > maxLengthInPoints else { return self }
+
+        var newSize = if aspectRatio > 1 {
+            CGSize(
+                width: maxLengthInPoints,
+                height: maxLengthInPoints / aspectRatio
+            )
+        } else {
+            CGSize(
+                width: maxLengthInPoints * aspectRatio,
+                height: maxLengthInPoints
+            )
+        }
+
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = self.scale
+
+        let renderer = UIGraphicsImageRenderer(size: newSize, format: format)
+        return renderer.image { _ in
+            self.draw(in: CGRect(origin: .zero, size: newSize))
+        }
+    }
+}
+
+extension CGFloat {
+    package static let defaultSquarenessTolerance: CGFloat = 0.02
+    package static let maxOutputSizeInPixels: CGFloat = 1280
+}
+
+extension Int {
+    package static let maxOutputSizeInPixels: Int = 1280
 }

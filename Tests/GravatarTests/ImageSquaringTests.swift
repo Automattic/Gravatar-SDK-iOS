@@ -9,128 +9,81 @@ struct ImageSquaringTests {
         // Given a square image
         let squareImage = createImage(width: 100, height: 100)
 
-        // When the default squaring strategy is applied
-        let result = SquaringStrategy.default.square(squareImage)
+        // When the default squaring is applied
+        let result = squareImage.squared()
 
         // Then it should remain unchanged
         #expect(result == squareImage, "UIImage objects should be identical")
     }
 
-    @Test("Portrait image is squared")
-    func portraitImage() {
-        // Given a portrait image (50x100)
-        let portraitImage = createImage(width: 50, height: 100)
+    @Test("Tall image is squared")
+    func tallImageIsSquared() {
+        // Given an extremely wide image (10_000x500)
+        let wideImage = createImage(width: 9999, height: 10000)
 
-        // When the default squaring strategy is applied
-        let result = SquaringStrategy.default.square(portraitImage)
+        // When the default squaring is applied
+        let result = wideImage.squared(maxSize: .pixels(100))
 
-        // Then the result should be a square image (100x100)
-        #expect(result.isSquare(), "Image should be square")
-        #expect(result.size.width == 100, "Width should match the taller side")
-        #expect(result.size.height == 100, "Height should match the taller side")
+        // Then the result should be a 100x100 square image
+        // Assumes scale == 1 (pixels == points)
+        #expect(result.isSquare, "Image should be squared")
+        #expect(result.size.width == 100, "Width should be 100")
+        #expect(result.size.height == 100, "Height should be 100")
     }
 
-    @Test("Landscape image is squared")
-    func landscapeImage() {
-        // Given a landscape image (200x100)
-        let landscapeImage = createImage(width: 200, height: 100)
+    @Test("Wide image is squared")
+    func wideImageIsSquared() {
+        // Given an extremely wide image (10_000x500)
+        let wideImage = createImage(width: 10000, height: 9999)
 
-        // When the default squaring strategy is applied
-        let result = SquaringStrategy.default.square(landscapeImage)
+        // When the default squaring is applied
+        let result = wideImage.squared(maxSize: .pixels(100))
 
-        // Then the result should be a square image (200x200)
-        #expect(result.isSquare(), "Image should be square")
-        #expect(result.size.width == 200, "Width should match the wider side")
-        #expect(result.size.height == 200, "Height should match the wider side")
+        // Then the result should be a 100x100 square image
+        // Assumes scale == 1 (pixels == points)
+        #expect(result.isSquare, "Image should be squared")
+        #expect(result.size.width == 100, "Width should be 100")
+        #expect(result.size.height == 100, "Height should be 100")
     }
 
-    @Test("Squareness above threshold uses .aspectFill")
-    func minorAspectDifferenceAboveAspectFillMinSquarenessImageShouldUseAspectFill() {
-        // Given an image with a minor size difference (99x100) with a squareness of `0.99`, which is above
-        // the default `aspectFillMinSquareness` threshold (`0.98`)
-        let slightDifferenceImage = createImage(width: 99, height: 100)
+    // MARK: - Very Small Imgae Tests
 
-        // When the default squaring strategy is applied
-        let result = SquaringStrategy.default.square(slightDifferenceImage)
-
-        // Then the result should aspect-fill and become 99x99
-        #expect(result.isSquare(), "Image should be square")
-        #expect(result.size.width == 99, "Width should match the smaller side")
-        #expect(result.size.height == 99, "Height should match the smaller side")
-    }
-
-    @Test("Squareness at threshold uses .aspectFill")
-    func minorAspectDifferenceMatchesAspectFillMinSquarenessImageShouldUseAspectFill() {
-        // Given an image with a minor size difference (98x100) with a squareness of `0.98`, which matches
-        // the default `aspectFillMinSquareness` threshold (`0.98`)
-        let slightDifferenceImage = createImage(width: 98, height: 100)
-
-        // When the default squaring strategy is applied
-        let result = SquaringStrategy.default.square(slightDifferenceImage)
-
-        // Then the result should aspect-fill and become 98x98
-        #expect(result.isSquare(), "Image should be square")
-        #expect(result.size.width == 98, "Width should match the smaller side")
-        #expect(result.size.height == 98, "Height should match the smaller side")
-    }
-
-    @Test("Squareness below threshold uses .aspectFit")
-    func minorAspectDifferenceBelowAspectFillMinSquarenessImageShouldUseAspectFit() {
-        // Given an image with a minor size difference (97x100) with a squareness of `0.97`, which is above
-        // the default `aspectFillMinSquareness` threshold (`0.98`)
-        let slightDifferenceImage = createImage(width: 97, height: 100)
-
-        // When the default squaring strategy is applied
-        let result = SquaringStrategy.default.square(slightDifferenceImage)
-
-        // Then the result should aspect-fit and become 100x100
-        #expect(result.isSquare(), "Image should be square")
-        #expect(result.size.width == 100, "Width should match the larger side")
-        #expect(result.size.height == 100, "Height should match the larger side")
-    }
-
-    // MARK: - Extreme Dimensions Tests
-
-    @Test("Very small image is squared")
-    func verySmallImage() {
-        // Given a very small image (1x2)
+    @Test("Very small non-square image is unchanged")
+    func verySmallNonSquareImage() {
+        // Given a very small, non-square image (1x2) outside the default squareness tolerance
         let smallImage = createImage(width: 1, height: 2)
 
-        // When the default squaring strategy is applied
-        let result = SquaringStrategy.default.square(smallImage)
+        // When the default squaring is applied
+        let result = smallImage.squared(maxSize: .pixels(2))
 
-        // Then the result should aspect-fit and become 2x2
-        #expect(result.isSquare(), "Image should be square")
-        #expect(result.size.width == 2, "Width should match the larger side")
-        #expect(result.size.height == 2, "Height should match the larger side")
+        // Then the image should be unchanged
+        #expect(result == smallImage, "Image should be unchanged")
     }
 
-    @Test("Extreme width image is squared")
-    func wideImage() {
-        // Given an extremely wide image (10_000x500)
-        let wideImage = createImage(width: 10000, height: 500)
+    @Test("Very small non-square image is squared")
+    func verySmallNonSquareImageIsSquared() {
+        // Given a very small, non-square image (1x2)
+        let smallImage = createImage(width: 1, height: 2)
 
-        // When the default squaring strategy is applied
-        let result = SquaringStrategy.default.square(wideImage)
+        // When squaring is applied with a very large squaring tolerance
+        let result = smallImage.squared(withinTolerance: 1.0)
 
-        // Then the result should be a 10_000x10_000 square image
-        #expect(result.isSquare(), "Image should be square")
-        #expect(result.size.width == 10000, "Width should match the wider side")
-        #expect(result.size.height == 10000, "Height should match the wider side")
+        // Then the image should be squared to 1x1
+        #expect(result.isSquare, "Image should be squared")
+        #expect(result.size.width == 1, "Width should be 1")
+        #expect(result.size.height == 1, "Height should be 1")
     }
 
-    @Test("Extremely height image is squared")
-    func tallImage() {
-        // Given an extremely tall image (500x10_000)
-        let tallImage = createImage(width: 500, height: 10000)
+    @Test("Very small square image is unchanged")
+    func verySmallSquareImage() {
+        // Given a very small, square image (1x1) outside the default squareness tolerance
+        let smallImage = createImage(width: 1, height: 1)
 
-        // When the default squaring strategy is applied
-        let result = SquaringStrategy.default.square(tallImage)
+        // When the default squaring is applied
+        let result = smallImage.squared()
 
-        // Then the result should be a 10_000x10_000 square image
-        #expect(result.isSquare(), "Image should be square")
-        #expect(result.size.width == 10000, "Width should match the taller side")
-        #expect(result.size.height == 10000, "Height should match the taller side")
+        // Then the image should be unchanged
+        #expect(result == smallImage, "Image should be unchanged")
     }
 
     @Test("Zero size image remains unchanged")
@@ -138,175 +91,159 @@ struct ImageSquaringTests {
         // Given an image with zero size (0x0)
         let zeroSizeImage = createImage(width: 0, height: 0)
 
-        // When the default squaring strategy is applied
-        let result = SquaringStrategy.default.square(zeroSizeImage)
+        // When the default squaring is applied
+        let result = zeroSizeImage.squared()
 
         // Then the result should be a 0x0 square image
         #expect(result == zeroSizeImage, "Image should remain unchanged")
+    }
+
+    // MARK: - Max Size Tests
+
+    @Test("Image above max size is reduced and squared")
+    func imageAboveMaxSizeIsReducedSquared() {
+        // Given an extremely wide image (10_000x500)
+        let wideImage = createImage(width: 10000, height: 9999)
+
+        // When the default squaring is applied
+        let result = wideImage.squared(maxSize: .pixels(100))
+
+        // Then the result should be a 100x100 square image
+        // Assumes scale == 1 (pixels == points)
+        #expect(result.isSquare, "Image should be squared")
+        #expect(result.size.width == 100, "Width should be 100")
+        #expect(result.size.height == 100, "Height should be 100")
+    }
+
+    @Test("Image with width above max size is reduced and not squared")
+    func imageWidthAboveMaxSizeIsReducedNotSquared() {
+        // Given an extremely wide image (10_000x500)
+        let wideImage = createImage(width: 10000, height: 500)
+
+        // When the default squaring is applied
+        let result = wideImage.squared(maxSize: .pixels(100))
+
+        // Then the result should be a 100x5 square image
+        // Assumes scale == 1 (pixels == points)
+        #expect(!result.isSquare, "Image should no be squared")
+        #expect(result.size.width == 100, "Width should be maxSize")
+        #expect(result.size.height == 5, "Height should be 100/10_000 the original height")
+    }
+
+    @Test("Image with height above max size is reduced and not squared")
+    func imageHeightAboveMaxSizeIsReducedNotSquared() {
+        // Given an extremely wide image (10_000x500)
+        let tallImage = createImage(width: 500, height: 10000)
+
+        // When the default squaring is applied
+        let result = tallImage.squared(maxSize: .pixels(100))
+
+        // Then the result should be a 5x100 square image
+        // Assumes scale == 1 (pixels == points)
+        #expect(!result.isSquare, "Image should no be squared")
+        #expect(result.size.width == 5, "Width should be maxSize")
+        #expect(result.size.height == 100, "Height should be 100/10_000 the original height")
     }
 
     // MARK: - Scale Test
 
     @Test("Squared image retains image scale")
     func imageSquaringWithScale2x() {
-        // Given a retina image (@2x) with size 300x500
-        let image = createImage(width: 300, height: 500, scale: 2.0)
+        // Given a retina image (@2x) with size 302x300
+        let scale: CGFloat = 2.0
+        let image = createImage(width: 302, height: 300, scale: scale)
 
-        // When the default squaring strategy is applied
-        let result = SquaringStrategy.default.square(image)
+        // When the default squaring is applied
+        let result = image.squared()
 
         // Then the result should be a 500x500 square image with scale @2x
-        #expect(result.isSquare(), "Image should be square")
-        #expect(result.size.width == 500, "Width should match the longer side")
-        #expect(result.size.height == 500, "Height should match the longer side")
-        #expect(result.scale == 2.0, "Image scale should remain @2x")
+        #expect(result.isSquare, "Image should be square")
+        #expect(result.size.width == 300 / scale, "Width should match the shorter side")
+        #expect(result.size.height == 300 / scale, "Height should match the shorter side")
+        #expect(result.scale == scale, "Image scale should remain @2x")
     }
 
-    // MARK: - Background Color Tests
+    @Suite("Default Squareness Tolerance")
+    struct DefaultSquarenessToleranceTests {
+        @Test("Squareness within tolerance is squared")
+        func imageWithDeviationFromSquareWithinToleranceIsSquareded() {
+            // Given an image with a minor size difference (100x102) where the edge ratio (`0.9804`)
+            // is above the custom squareness (`0.97`)
+            let slightDifferenceImage = createImage(width: 100, height: 102)
+            let deviationFromSquareTolerance: CGFloat = 0.03
 
-    @Test("Background color is applied")
-    func backgroundColorIsApplied() throws {
-        // Given a non-square image (300x500)
-        let image = createImage(width: 300, height: 500, scale: 1, fillColor: .red)
+            // Squaring applied with custom tolerance
+            let result = slightDifferenceImage.squared(withinTolerance: deviationFromSquareTolerance)
 
-        // And a reference image
-        let referenceImage = try #require(
-            UIImage(named: "ImageSquaringDefaultBackgroundReferenceImage", in: .module, with: nil)
-        ).pngData()
-
-        // When the default squaring strategy is applied
-        let resultImage = SquaringStrategy.default.square(image)
-
-        // Then the result should be square
-        #expect(resultImage.isSquare(), "The image should be square.")
-
-        // And the generated image should match the reference image
-        #expect(resultImage.pngData() == referenceImage)
-    }
-
-    // MARK: - Custom Squareness Threshold
-
-    @Test("Custom: Squareness above threshold uses .aspectFill")
-    func minorAspectDifferenceAboveCustomEdgeRatioThresholdImageShouldUseAspectFill() {
-        // Given an image with a minor size difference (100x102) where the edge ratio (`0.9804`)
-        // is above the custom squareness (`0.97`)
-        let slightDifferenceImage = createImage(width: 100, height: 102)
-        let aspectFillMinSquareness: CGFloat = 0.97
-
-        // When the custom squaring function is applied
-        let result = SquaringStrategy.squarenessDeterminesFitOrFill(aspectFillMinSquareness: aspectFillMinSquareness).square(slightDifferenceImage)
-
-        // Then the result should aspect-fill and become 100x100
-        #expect(result.isSquare(), "Image should be square")
-        #expect(result.size.width == 100, "Width should match the smaller side")
-        #expect(result.size.height == 100, "Height should match the smaller side")
-    }
-
-    @Test("Custom: Squareness below threshold uses .aspectFill")
-    func minorAspectDifferenceBelowCustomEdgeRatioThresholdImageShouldUseAspectFit() {
-        // Given an image with a minor size difference (100x104) where the edge ratio (`0.9615`)
-        // is below the custom squareness (`0.97`)
-        let slightDifferenceImage = createImage(width: 100, height: 104)
-        let aspectFillMinSquareness: CGFloat = 0.97
-
-        // When the custom squaring function is applied
-        let result = SquaringStrategy.squarenessDeterminesFitOrFill(aspectFillMinSquareness: aspectFillMinSquareness).square(slightDifferenceImage)
-
-        // Then the result should aspect-fit and become 104x104
-        #expect(result.isSquare(), "Image should be square")
-        #expect(result.size.width == 104, "Width should match the larger side")
-        #expect(result.size.height == 104, "Height should match the larger side")
-    }
-
-    // MARK: - Aspect Fit Image Squaring
-
-    @Test("AspectFit: Wide image should be squared")
-    func wideImageUsingAspectFitShouldBeSquared() {
-        let wideImage = createImage(width: 200, height: 100)
-
-        let result = SquaringStrategy.aspectFit.square(wideImage)
-
-        #expect(result.isSquare(), "Image should be square")
-        #expect(result.size.width == 200, "Width should match the longer side")
-        #expect(result.size.height == 200, "Height should match the longer side")
-    }
-
-    @Test("AspectFit: Tall image should be squared")
-    func tallImageUsingAspectFitShouldBeSquared() {
-        let tallImage = createImage(width: 100, height: 200)
-
-        let result = SquaringStrategy.aspectFit.square(tallImage)
-
-        #expect(result.isSquare(), "Image should be square")
-        #expect(result.size.width == 200, "Width should match the longer side")
-        #expect(result.size.height == 200, "Height should match the longer side")
-    }
-
-    @Test("AspectFit: Square iamge should be unchanged")
-    func squareImageUsingAspectFitShouldBeSquared() {
-        let squareImage = createImage(width: 100, height: 100)
-
-        let result = SquaringStrategy.aspectFit.square(squareImage)
-
-        #expect(result == squareImage, "UIImage objects should be identical")
-    }
-
-    // MARK: - Aspect Fill Image Squaring
-
-    @Test("AspectFill: Wide image should be squared")
-    func wideImageUsingAspectFillShouldBeSquared() {
-        let wideImage = createImage(width: 200, height: 100)
-
-        let result = SquaringStrategy.aspectFill.square(wideImage)
-
-        #expect(result.isSquare(), "Image should be square")
-        #expect(result.size.width == 100, "Width should match the shorter side")
-        #expect(result.size.height == 100, "Height should match the shorter side")
-    }
-
-    @Test("AspectFill: Tall image should be squared")
-    func tallImageUsingAspectFillShouldBeSquared() {
-        let tallImage = createImage(width: 100, height: 200)
-
-        let result = SquaringStrategy.aspectFill.square(tallImage)
-
-        #expect(result.isSquare(), "Image should be square")
-        #expect(result.size.width == 100, "Width should match the shorter side")
-        #expect(result.size.height == 100, "Height should match the shorter side")
-    }
-
-    @Test("AspectFill: Square image should be unchanged")
-    func squareImageUsingAspectFillShouldBeSquared() {
-        let squareImage = createImage(width: 100, height: 100)
-
-        let result = SquaringStrategy.aspectFill.square(squareImage)
-
-        #expect(result == squareImage, "UIImage objects should be identical")
-    }
-
-    // MARK: - No Image Squaring
-
-    @Test("No Cropping: Non-square image should be unchanged")
-    func noCroppingNonSquareImageShouldReturnOriginalImage() {
-        // Given a non-square image
-        let slightDifferenceImage = createImage(width: 97, height: 100)
-
-        // When the default squaring function is applied
-        let result = SquaringStrategy.none.square(slightDifferenceImage)
-
-        // Then it should remain unchanged
-        #expect(result == slightDifferenceImage, "UIImage objects should be identical")
-    }
-
-    // MARK: - Helpers
-
-    private func createImage(width: CGFloat, height: CGFloat, scale: CGFloat = 1, fillColor: UIColor = .red) -> UIImage {
-        let size = CGSize(width: width, height: height)
-        let format = UIGraphicsImageRendererFormat()
-        format.scale = scale
-        return UIGraphicsImageRenderer(size: size, format: format).image { context in
-            fillColor.setFill()
-            context.fill(CGRect(origin: .zero, size: size))
+            // Then the result should aspect-fill and become 100x100
+            // Assumes scale == 1 (pixels == points)
+            #expect(result.isSquare, "Image should be square")
+            #expect(result.size.width == 100, "Width should match the smaller side")
+            #expect(result.size.height == 100, "Height should match the smaller side")
         }
+
+        @Test("Squareness outside of tolerance is untouched")
+        func imageWithDeviationFromSquareOutsideOfToleranceIsSquareded() {
+            // Given an image with a minor size difference (100x104) where the edge ratio (`0.9615`)
+            // is below the custom squareness (`0.97`)
+            let slightDifferenceImage = createImage(width: 100, height: 104)
+            let deviationFromSquareTolerance: CGFloat = 0.03
+
+            // Squaring applied with custom tolerance
+            let result = slightDifferenceImage.squared(withinTolerance: deviationFromSquareTolerance)
+
+            // Then the image should be unchanged
+            #expect(result == slightDifferenceImage, "Image should be unchanged")
+        }
+    }
+
+    // MARK: - Custom Squareness Tolerance
+
+    @Suite("Custom Squareness Tolerance")
+    struct CustomSquarenessToleranceTests {
+        @Test("Squareness within tolerance is squared")
+        func imageWithDeviationFromSquareWithinToleranceIsSquareded() {
+            // Given an image with a minor size difference (100x102) where the edge ratio (`0.9804`)
+            // is above the custom squareness (`0.97`)
+            let slightDifferenceImage = createImage(width: 100, height: 102)
+            let deviationFromSquareTolerance: CGFloat = 0.03
+
+            // Squaring applied with custom tolerance
+            let result = slightDifferenceImage.squared(withinTolerance: deviationFromSquareTolerance)
+
+            // Then the result should aspect-fill and become 100x100
+            // Assumes scale == 1 (pixels == points)
+            #expect(result.isSquare, "Image should be square")
+            #expect(result.size.width == 100, "Width should match the smaller side")
+            #expect(result.size.height == 100, "Height should match the smaller side")
+        }
+
+        @Test("Squareness outside of tolerance is untouched")
+        func imageWithDeviationFromSquareOutsideOfToleranceIsSquareded() {
+            // Given an image with a minor size difference (100x104) where the edge ratio (`0.9615`)
+            // is below the custom squareness (`0.97`)
+            let slightDifferenceImage = createImage(width: 100, height: 104)
+            let deviationFromSquareTolerance: CGFloat = 0.03
+
+            // Squaring applied with custom tolerance
+            let result = slightDifferenceImage.squared(withinTolerance: deviationFromSquareTolerance)
+
+            // Then the image should be unchanged
+            #expect(result == slightDifferenceImage, "Image should be unchanged")
+        }
+    }
+}
+
+// MARK: - Helpers
+
+private func createImage(width: CGFloat, height: CGFloat, scale: CGFloat = 1, fillColor: UIColor = .red) -> UIImage {
+    assert(scale > 0)
+
+    let size = CGSize(width: width / scale, height: height / scale)
+    let format = UIGraphicsImageRendererFormat()
+    format.scale = scale
+    return UIGraphicsImageRenderer(size: size, format: format).image { context in
+        fillColor.setFill()
+        context.fill(CGRect(origin: .zero, size: size))
     }
 }

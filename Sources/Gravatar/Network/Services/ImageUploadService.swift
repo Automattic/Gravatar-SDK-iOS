@@ -19,7 +19,7 @@ struct ImageUploadService: ImageUploader {
         additionalHTTPHeaders: [HTTPHeaderField]?
     ) async throws -> (data: Data, response: HTTPURLResponse) {
         assert(
-            image.isSquare(),
+            image.isSquare,
             "This image is not square, and uploading it will fail. Consider using `SquaringStrategy.default` when calling `AvatarService.upload(::::)`."
         )
 
