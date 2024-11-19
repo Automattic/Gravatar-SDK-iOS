@@ -48,7 +48,7 @@ extension UIImage {
     }
 
     package func squared(withinTolerance squarenessTolerance: CGFloat) -> UIImage {
-        guard !self.isSquare, self.deviationFromSquare <= squarenessTolerance else { return self }
+        guard !self.isSquare, self.deviationFromSquare <= squarenessTolerance.clamped(to: 0 ... 1.0) else { return self }
 
         let (height, width) = (self.size.height, self.size.width)
 
