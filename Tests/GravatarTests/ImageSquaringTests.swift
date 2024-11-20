@@ -259,6 +259,38 @@ struct ImageSquaringTests {
         #expect(result.size.height == 300 / scale, "Height should match the shorter side")
         #expect(result.scale == scale, "Image scale should remain @2x")
     }
+
+    @Test("MaxSize is applied regardless of scale for square image", arguments: [1.0, 2.0, 3.0])
+    func maxPixelSizeIsRespectedRegardlessOfScaleForSquareImage(imageScale: CGFloat) {
+        // Given a square image that is above `maxSize` with a given scale
+        let maxSizeInPixels = 500
+        let largeSquareImage = createImage(width: 1000, height: 1000, scale: imageScale)
+
+        // When the default squaring is applied with a maxSize of `500`
+        let result = largeSquareImage.squared(maxSize: .pixels(maxSizeInPixels))
+
+        // Then the result should be a 500x500 pixel square image
+        #expect(result.isSquare, "Image should be squared")
+        #expect(result.size.height == CGFloat(maxSizeInPixels) / imageScale, "Height should be (500 points / scale)")
+    }
+
+    @Test("MaxSize is applied regardless of scale for non-square image", arguments: [1.0, 2.0, 3.0])
+    func maxPixelSizeIsRespectedRegardlessOfScaleForNonSquareImage(imageScale: CGFloat) {
+        // Given a non-square image with a squareness (`0.999`) above the default squarenessThresshold (`0.98`)
+        // that is above a `maxSize` with a given scale
+        let maxSizeInPixels = 500
+        let widthInPixels: CGFloat = 1000
+        let heightInPixels: CGFloat = 999
+        let largeSquareImage = createImage(width: widthInPixels, height: heightInPixels, scale: imageScale)
+
+        // When the default squaring is applied with a maxSize of `500`
+        let result = largeSquareImage.squared(maxSize: .pixels(maxSizeInPixels))
+
+        // Then the result should be a 500x500 pixel square image
+        #expect(result.isSquare, "Image should be squared")
+        #expect(result.size.height == CGFloat(maxSizeInPixels) / imageScale, "Height should be (500 points / scale)")
+        #expect(result.size.width == CGFloat(maxSizeInPixels) / imageScale, "Width should be (500 points / scale)")
+    }
 }
 
 // MARK: - Helpers
