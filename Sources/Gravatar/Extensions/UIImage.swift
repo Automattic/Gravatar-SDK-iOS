@@ -4,7 +4,11 @@ extension UIImage {
     package var isSquare: Bool {
         size.height == size.width
     }
+}
 
+// MARK: - Internal
+
+extension UIImage {
     /// Crops a `UIImage` to be square if it's `squareness` is above a given `squarenessThreshold`. Images with a `squareness` below the threshold will not be
     /// squared.  If `maxSize` is set, the UIImage will `size` will be reduce so that it's longest side is at or below `maxSize`
     ///
@@ -15,7 +19,7 @@ extension UIImage {
     ///   - squarenessThreshold: The threshold over which images should be squared.
     ///   - maxSize:(optional)  The maximum length of the longest side of a `UIImage`
     /// - Returns: A `UIImage` that has been squared and reduced according to the parameters
-    package func squared(
+    func squared(
         aboveThreshold squarenessThreshold: CGFloat = .defaultSquarenessThreshold,
         maxSize: ImageSize? = nil
     ) -> UIImage {
@@ -23,16 +27,7 @@ extension UIImage {
             .squared(aboveThreshold: squarenessThreshold)
             .resized(toMaxSize: maxSize)
     }
-}
 
-extension CGFloat {
-    /// Default `squarenessThreshold`
-    package static let defaultSquarenessThreshold: CGFloat = 0.98
-}
-
-// MARK: - Internal
-
-extension UIImage {
     var aspectRatio: CGFloat {
         size.width / size.height
     }
@@ -61,6 +56,11 @@ extension UIImage {
     var longEdge: CGFloat {
         max(self.size.width, self.size.height)
     }
+}
+
+extension CGFloat {
+    /// Default `squarenessThreshold`
+    static let defaultSquarenessThreshold: CGFloat = 0.98
 }
 
 // MARK: - Private
