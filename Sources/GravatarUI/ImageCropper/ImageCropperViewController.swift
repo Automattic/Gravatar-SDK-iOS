@@ -4,7 +4,7 @@ class ImageCropperViewController: UIViewController, UIScrollViewDelegate {
     private enum Constants {
         static let backgroundColor = UIColor.black
         static let croperFrameSize: CGFloat = 320
-        static let maxOutputImageSizeInPixels: Int = 1280
+        static let maxOutputImageSizeInPixels: CGFloat = 1280
     }
 
     // ScrollView for zooming and panning
@@ -181,7 +181,7 @@ class ImageCropperViewController: UIViewController, UIScrollViewDelegate {
 
         let croppedUIImage = UIImage(cgImage: croppedCGImage, scale: UITraitCollection.current.displayScale, orientation: .up)
 
-        let result = croppedUIImage.squared(maxSize: .pixels(Constants.maxOutputImageSizeInPixels))
+        guard let result = croppedUIImage.square(maxLength: Constants.maxOutputImageSizeInPixels) else { return }
         onCompletion?(result)
     }
 
@@ -236,12 +236,12 @@ class ImageCropperViewController: UIViewController, UIScrollViewDelegate {
 @MainActor
 extension UIImage {
     // Resize the UIImage fitting within a specified maximum size.
-//    func square(maxLength maxLengthInPixels: CGFloat) -> UIImage? {
-//        let scale = UITraitCollection.current.displayScale
-//        let smallerEgde = min(size.width * scale, size.height * scale)
-//        let squareEdge = floor(min(maxLengthInPixels, smallerEgde))
-//        return downsize(to: squareEdge)
-//    }
+    func square(maxLength maxLengthInPixels: CGFloat) -> UIImage? {
+        let scale = UITraitCollection.current.displayScale
+        let smallerEgde = min(size.width * scale, size.height * scale)
+        let squareEdge = floor(min(maxLengthInPixels, smallerEgde))
+        return downsize(to: squareEdge)
+    }
 
     // Downsize to targetSquareEdgeInPixels
     private func downsize(to targetSquareEdgeInPixels: CGFloat) -> UIImage? {
