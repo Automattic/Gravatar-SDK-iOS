@@ -5,6 +5,22 @@ extension UIImage {
         size.height == size.width
     }
 
+        aboveThreshold squarenessThreshold: CGFloat = .defaultSquarenessTolerance,
+        maxSize: ImageSize? = nil
+    ) -> UIImage {
+        self
+            .squared(aboveThreshold: squarenessThreshold)
+            .resized(toMaxSize: maxSize)
+    }
+}
+
+extension CGFloat {
+    package static let defaultSquarenessTolerance: CGFloat = 0.02
+}
+
+// MARK: - Internal
+
+extension UIImage {
     var aspectRatio: CGFloat {
         size.width / size.height
     }
@@ -37,17 +53,12 @@ extension UIImage {
     var longEdge: CGFloat {
         max(self.size.width, self.size.height)
     }
+}
 
-    package func squared(
-        aboveThreshold squarenessThreshold: CGFloat = .defaultSquarenessTolerance,
-        maxSize: ImageSize? = nil
-    ) -> UIImage {
-        self
-            .squared(aboveThreshold: squarenessThreshold)
-            .resized(toMaxSize: maxSize)
-    }
+// MARK: - Private
 
-    package func squared(aboveThreshold squarenessThreshold: CGFloat) -> UIImage {
+extension UIImage {
+    private func squared(aboveThreshold squarenessThreshold: CGFloat) -> UIImage {
         guard !self.isSquare, self.deviationFromSquare <= squarenessThreshold.clamped(to: 0 ... 1.0) else { return self }
 
         let (height, width) = (self.size.height, self.size.width)
@@ -69,7 +80,7 @@ extension UIImage {
         }
     }
 
-    package func resized(toMaxSize maxSize: ImageSize?) -> UIImage {
+    private func resized(toMaxSize maxSize: ImageSize?) -> UIImage {
         guard let maxSize else { return self }
 
         let maxLengthInPoints = maxSize.points(scaleFactor: self.scale)
@@ -96,8 +107,4 @@ extension UIImage {
             self.draw(in: CGRect(origin: .zero, size: newSize))
         }
     }
-}
-
-extension CGFloat {
-    package static let defaultSquarenessTolerance: CGFloat = 0.02
 }
