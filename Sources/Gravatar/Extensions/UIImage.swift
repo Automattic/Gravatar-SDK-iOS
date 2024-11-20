@@ -100,9 +100,4 @@ extension UIImage {
 
 extension CGFloat {
     package static let defaultSquarenessTolerance: CGFloat = 0.02
-    package static let maxOutputSizeInPixels: CGFloat = 1280
-}
-
-extension Int {
-    package static let maxOutputSizeInPixels: Int = 1280
 }
