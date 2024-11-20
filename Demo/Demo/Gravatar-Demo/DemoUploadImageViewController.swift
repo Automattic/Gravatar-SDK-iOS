@@ -2,10 +2,6 @@ import UIKit
 import Gravatar
 
 class DemoUploadImageViewController: UIViewController {
-    private enum Constant {
-        static let aspectFillMinSquarenessDefaultValue: CGFloat = 0.98
-    }
-    
     let rootStackView: UIStackView = {
         let stack = UIStackView()
         stack.translatesAutoresizingMaskIntoConstraints = false
@@ -38,57 +34,6 @@ class DemoUploadImageViewController: UIViewController {
         return textField
     }()
     
-    let squaringLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Square:"
-        label.font = .preferredFont(forTextStyle: .body)
-        label.adjustsFontSizeToFitWidth = true
-        return label
-    }()
-    
-    let segmentedControl: UISegmentedControl = {
-        let segmentedControl = UISegmentedControl(items: ["Selection", "On upload"])
-        segmentedControl.translatesAutoresizingMaskIntoConstraints = false
-        segmentedControl.selectedSegmentIndex = 0
-        return segmentedControl
-    }()
-    
-    let aspectFillMinSquarenessLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Min:"
-        label.font = .preferredFont(forTextStyle: .body)
-        label.textColor = .label
-        label.adjustsFontSizeToFitWidth = true
-        return label
-    }()
-    
-    let aspectFillMinSquarenessField: UITextField = {
-        let textField = UITextField()
-        textField.translatesAutoresizingMaskIntoConstraints = false
-        textField.text = "\(Constant.aspectFillMinSquarenessDefaultValue)"
-        textField.keyboardType = .decimalPad
-        textField.autocapitalizationType = .none
-        textField.textAlignment = .right
-        textField.borderStyle = .roundedRect
-        textField.isEnabled = false
-        textField.isUserInteractionEnabled = false
-        textField.textColor = .label.withAlphaComponent(0.5)
-        return textField
-    }()
-    
-    let squaringStackView: UIStackView = {
-        let stack = UIStackView()
-        stack.translatesAutoresizingMaskIntoConstraints = false
-        stack.axis = .horizontal
-        stack.spacing = 5
-        stack.distribution = .fillProportionally
-        stack.alignment = .fill
-        
-        return stack
-    }()
-    
     lazy var avatarSelectionButton: UIButton = {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -119,10 +64,7 @@ class DemoUploadImageViewController: UIViewController {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.heightAnchor.constraint(equalToConstant: 300).isActive = true
         imageView.widthAnchor.constraint(equalToConstant: 300).isActive = true
-        imageView.backgroundColor = .clear
-        imageView.layer.borderWidth = 1
-        imageView.layer.borderColor = UIColor.lightGray.cgColor
-        imageView.contentMode = .scaleAspectFit
+        imageView.backgroundColor = .lightGray
         return imageView
     }()
 
@@ -136,27 +78,13 @@ class DemoUploadImageViewController: UIViewController {
     }()
 
     private var avatarSelectionBehavior: AvatarSelection = .preserveSelection
-    private var aspectFillMinSquarenessValue: CGFloat = Constant.aspectFillMinSquarenessDefaultValue
-    private var imageSquaringMechanism: SquaringMechanism = .imagePickerController
-    private var squaringStrategy: SquaringStrategy {
-        switch imageSquaringMechanism {
-        case .imagePickerController:
-            return .none
-        case .onUpload:
-            return .default
-        }
-    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "Upload Image"
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = .white
 
-        for view in [squaringLabel, segmentedControl, aspectFillMinSquarenessLabel, aspectFillMinSquarenessField] {
-            squaringStackView.addArrangedSubview(view)
-        }
-        
-        for view in [emailField, tokenField, squaringStackView, avatarSelectionButton, selectImageButton, avatarImageView, uploadImageButton, activityIndicator, resultLabel] {
+        for view in [emailField, tokenField, avatarSelectionButton, selectImageButton, avatarImageView, uploadImageButton, activityIndicator, resultLabel] {
             rootStackView.addArrangedSubview(view)
         }
         view.addSubview(rootStackView)
@@ -170,37 +98,8 @@ class DemoUploadImageViewController: UIViewController {
         emailField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
         uploadImageButton.addTarget(self, action: #selector(fetchProfileButtonHandler), for: .touchUpInside)
         selectImageButton.addTarget(self, action: #selector(selectImage), for: .touchUpInside)
-        segmentedControl.addTarget(self, action: #selector(segmentedControllerValueChanged(_:)), for: .valueChanged)
-        aspectFillMinSquarenessField.addTarget(self, action: #selector(thresholdEditingDidEnd(_:)), for: .editingChanged)
     }
-    
-    @objc func segmentedControllerValueChanged(_ sender: UISegmentedControl) {
-        switch sender.selectedSegmentIndex {
-        case 0:
-            aspectFillMinSquarenessField.isEnabled = false
-            aspectFillMinSquarenessField.isUserInteractionEnabled = false
-            aspectFillMinSquarenessField.textColor = .label.withAlphaComponent(0.5)
-            imageSquaringMechanism = .imagePickerController
-        case 1:
-            aspectFillMinSquarenessField.isEnabled = true
-            aspectFillMinSquarenessField.isUserInteractionEnabled = true
-            aspectFillMinSquarenessField.textColor = .label
-            imageSquaringMechanism = .onUpload
-        default:
-            return
-        }
-    }
-    
-    @objc func thresholdEditingDidEnd(_ sender: UITextField) {
-        guard let aspectFillMinSquarenessString = aspectFillMinSquarenessField.text,
-              aspectFillMinSquarenessString.isEmpty == false else {
-            self.aspectFillMinSquarenessValue = Constant.aspectFillMinSquarenessDefaultValue
-            return
-        }
-        
-        self.aspectFillMinSquarenessValue = CGFloat(aspectFillMinSquarenessString) ?? Constant.aspectFillMinSquarenessDefaultValue
-    }
-    
+
     @objc func selectImage(_ sender: UIButton) {
         let picker = UIImagePickerController()
         picker.allowsEditing = true
@@ -235,7 +134,7 @@ class DemoUploadImageViewController: UIViewController {
 
         Task {
             do {
-                let avatarModel = try await service.upload(image, selectionBehavior: avatarSelectionBehavior, accessToken: token, squaringStrategy: squaringStrategy)
+                let avatarModel = try await service.upload(image, selectionBehavior: avatarSelectionBehavior, accessToken: token)
                 resultLabel.text = "✅ Avatar id \(avatarModel.id)"
             } catch {
                 resultLabel.text = "Error \((error as NSError).code): \(error.localizedDescription)"
@@ -249,12 +148,8 @@ extension DemoUploadImageViewController: UIImagePickerControllerDelegate, UINavi
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         guard let image = info[.editedImage] as? UIImage else { return }
 
-        switch imageSquaringMechanism {
-        case .imagePickerController:
-            avatarImageView.image = makeSquare(image)
-        case .onUpload:
-            avatarImageView.image = image
-        }
+        let squareImage = makeSquare(image)
+        avatarImageView.image = squareImage
 
         dismiss(animated: true)
     }
@@ -313,16 +208,4 @@ extension AvatarSelection {
             case .selectUploadedImageIfNoneSelected: return "Select uploaded image if none selected"
         }
     }
-}
-
-extension CGFloat {
-    init?(_ value: String?) {
-        guard let value, let doubleValue = Double(value) else { return nil }
-        self.init(doubleValue)
-    }
-}
-
-private enum SquaringMechanism {
-    case imagePickerController
-    case onUpload
 }
