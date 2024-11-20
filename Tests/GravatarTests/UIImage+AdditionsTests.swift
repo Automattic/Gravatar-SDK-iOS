@@ -56,6 +56,22 @@ enum UIImageAdditionsTests {
             // Then
             #expect(squareness == 0.5)
         }
+
+        @Test("Squareness: Negative CGSize returns positive squareness")
+        func negativeSquarenessReturnsNonNegativeSquareness() {
+            // Given a CGSize that is not square with one negative value
+            let size = CGSize(width: -100, height: 99)
+
+            // And an image created using that size
+            let image = createImage(size: size)
+
+            // When
+            let squareness = image.squareness
+
+            // Then the UIImage should have size `CGSize.zero` and the squareness should be `1.0`
+            #expect(image.size == .zero)
+            #expect(squareness == 1.0)
+        }
     }
 
     @Suite("DeviationFromSquare")
@@ -145,7 +161,16 @@ enum UIImageAdditionsTests {
 private func createImage(width: CGFloat, height: CGFloat, scale: CGFloat = 1, fillColor: UIColor = .red) -> UIImage {
     assert(scale > 0)
 
-    let size = CGSize(width: width / scale, height: height / scale)
+    return createImage(
+        size: CGSize(width: width / scale, height: height / scale),
+        scale: scale,
+        fillColor: fillColor
+    )
+}
+
+private func createImage(size: CGSize, scale: CGFloat = 1, fillColor: UIColor = .red) -> UIImage {
+    assert(scale > 0)
+
     let format = UIGraphicsImageRendererFormat()
     format.scale = scale
     return UIGraphicsImageRenderer(size: size, format: format).image { context in
