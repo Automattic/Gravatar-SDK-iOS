@@ -42,7 +42,6 @@ public struct AvatarService: Sendable {
 
     /// Uploads an image to be used as the user's Gravatar profile image, and returns the `URLResponse` of the network tasks asynchronously. Throws
     /// ``ImageUploadError``.
-    ///
     /// - Parameters:
     ///   - image: The image to be uploaded.
     ///   - selectionBehavior: How to handle avatar selection after uploading a new avatar
@@ -56,7 +55,6 @@ public struct AvatarService: Sendable {
 
     /// Uploads an image to be used as the user's Gravatar profile image, and returns the `URLResponse` of the network tasks asynchronously. Throws
     /// ``ImageUploadError``.
-    ///
     /// - Parameters:
     ///   - image: The image to be uploaded.
     ///   - accessToken: The authentication token for the user. This is a WordPress.com OAuth2 access token.
