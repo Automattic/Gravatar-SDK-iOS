@@ -3,7 +3,7 @@ import Testing
 
 @testable import Gravatar
 
-struct ClampableTests {
+struct ClampingTests {
     static let positiveRange: ClosedRange<CGFloat> = 0.0 ... 1.0
     static let negativeRange: ClosedRange<CGFloat> = -1.0 ... 0.0
 
