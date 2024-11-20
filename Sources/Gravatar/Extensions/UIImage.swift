@@ -41,8 +41,6 @@ extension UIImage {
     /// `Squareness` is similar to `Aspect Ratio`, except that all values are in the range `0...1`
     /// - A square UIImage (`100 x 100`) has a `squareness` of `1`
     /// - A UIImage with a `size` of `100 x 200` has a `squareness of `0.5`
-    ///
-    /// - SeeAlso: ``SquaringStrategy``
     var squareness: CGFloat {
         if isSquare { // This catches 0x0 images, which would cause a divide-by-zero error
             return 1
