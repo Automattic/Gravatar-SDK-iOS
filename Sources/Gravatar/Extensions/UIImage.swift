@@ -76,7 +76,7 @@ extension UIImage {
 
         guard maxLengthInPoints > 0, longEdge > maxLengthInPoints else { return self }
 
-        var newSize = if aspectRatio > 1 {
+        let newSize = if aspectRatio > 1 {
             CGSize(
                 width: maxLengthInPoints,
                 height: maxLengthInPoints / aspectRatio
