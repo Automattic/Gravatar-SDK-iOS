@@ -3,29 +3,30 @@ import Testing
 
 @testable import Gravatar
 
+@Suite("ImageSize")
 struct ImageSizeTests {
-    private static let scaleFactors: [CGFloat] = [1.0, 2.0, 3.0]
+    private static let scaleFactors: [ScaleFactor] = [.init(1.0), .init(2.0), .init(3.0)]
 
     @Test("From Points", arguments: scaleFactors)
-    func pixelsConversionFromPoints(atScaleFactor scaleFactor: CGFloat) {
+    func pixelsConversionFromPoints(atScaleFactor scaleFactor: ScaleFactor) {
         // Given
         let points: CGFloat = 50
         let imageSize = ImageSize.points(points)
 
         // When
-        let result = imageSize.pixels(scaleFactor: scaleFactor)
+        let result = imageSize.pixels(scaleFactor: scaleFactor.scale)
 
         // Then
-        #expect(CGFloat(result) == (points * scaleFactor))
+        #expect(CGFloat(result) == (points * scaleFactor.scale))
     }
 
     @Test("From Pixels", arguments: scaleFactors)
-    func pixelsConversionFromPixels(atScaleFactor scaleFactor: CGFloat) {
+    func pixelsConversionFromPixels(atScaleFactor scaleFactor: ScaleFactor) {
         // Given
         let imageSize = ImageSize.pixels(200)
 
         // When
-        let result = imageSize.pixels(scaleFactor: scaleFactor)
+        let result = imageSize.pixels(scaleFactor: scaleFactor.scale)
 
         // Then
         #expect(result == 200, "Expected pixels case to directly return the same pixel value")
@@ -42,5 +43,17 @@ struct ImageSizeTests {
 
         // Then
         #expect(result == 0, "Expected pixels conversion to return 0 for a zero scale factor")
+    }
+}
+
+struct ScaleFactor: CustomTestStringConvertible {
+    let scale: CGFloat
+
+    init(_ scale: CGFloat) {
+        self.scale = scale
+    }
+
+    var testDescription: String {
+        "At scale factor \(scale)"
     }
 }

@@ -3,6 +3,7 @@ import Testing
 
 @testable import Gravatar
 
+@Suite("Clamping")
 struct ClampingTests {
     static let positiveRange: ClosedRange<CGFloat> = 0.0 ... 1.0
     static let negativeRange: ClosedRange<CGFloat> = -1.0 ... 0.0
@@ -31,7 +32,7 @@ struct ClampingTests {
             #expect(clampTest.value.clamped(to: clampTest.range) == clampTest.expectedResult)
         }
 
-        @Test("Unusual CGFloat does clamp", arguments: [
+        @Test("Unusual CGFloats", arguments: [
             ClampTest(.infinity, clampedTo: positiveRange, returns: 1.0),
             ClampTest(.greatestFiniteMagnitude, clampedTo: positiveRange, returns: 1.0),
             ClampTest(.leastNonzeroMagnitude, clampedTo: 1.0 ... 2.0, returns: 1.0),

@@ -3,11 +3,12 @@ import UIKit
 
 @testable import Gravatar
 
-enum UIImageAdditionsTests {
+@Suite("UIImage+Additions")
+struct UIImageAdditionsTests {
     @Suite("isSquare")
     struct IsSquareTests {
         @Test("Square image")
-        func testIsSquareForSquareImage() {
+        func squareImage() {
             // Given
             let squareImage = createImage(width: 100, height: 100)
 
@@ -19,7 +20,7 @@ enum UIImageAdditionsTests {
         }
 
         @Test("Non-square images", arguments: TestImage.nonSquareImages)
-        func testIsSquareForNonSquarePortraitImage(testImage: TestImage) {
+        func nonSquareImage(testImage: TestImage) {
             // Given
             let nonSquareImage = testImage.image
 
@@ -32,9 +33,9 @@ enum UIImageAdditionsTests {
     }
 
     @Suite("Squareness")
-    struct SquardnessTests {
-        @Test("Squareness: Square image")
-        func testSquarenessForSquareImage() {
+    struct SquarenessTests {
+        @Test("Square image")
+        func squareImageHasSquarenessOne() {
             // Given
             let squareImage = createImage(width: 100, height: 100)
 
@@ -45,8 +46,8 @@ enum UIImageAdditionsTests {
             #expect(squareness == 1.0)
         }
 
-        @Test("Squareness: Non-square images", arguments: TestImage.nonSquareImages)
-        func testSquarenessForNonSquarePortraitImage(testImage: TestImage) {
+        @Test("Non-square images", arguments: TestImage.nonSquareImages)
+        func nonSquareImageHasSquarenessHalf(testImage: TestImage) {
             // Given
             let nonSquareImage = testImage.image
 
@@ -57,7 +58,7 @@ enum UIImageAdditionsTests {
             #expect(squareness == 0.5)
         }
 
-        @Test("Squareness: Negative CGSize returns positive squareness")
+        @Test("Negative CGSize returns positive squareness")
         func negativeSquarenessReturnsNonNegativeSquareness() {
             // Given a CGSize that is not square with one negative value
             let size = CGSize(width: -100, height: 99)
@@ -152,7 +153,7 @@ private func createImage(size: CGSize, scale: CGFloat = 1, fillColor: UIColor = 
     }
 }
 
-struct TestImage {
+struct TestImage: CustomTestStringConvertible {
     static let nonSquareImages: [TestImage] = [.portrait, .landscaope]
     static let portrait: TestImage = .init(width: 150, height: 300)
     static let landscaope: TestImage = .init(width: 300, height: 150)
@@ -162,5 +163,9 @@ struct TestImage {
 
     var image: UIImage {
         createImage(width: width, height: height)
+    }
+
+    var testDescription: String {
+        "w: \(width) x h: \(height)"
     }
 }

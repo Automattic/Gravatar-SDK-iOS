@@ -3,6 +3,7 @@ import UIKit
 
 @testable import Gravatar
 
+@Suite("Image Squaring")
 struct ImageSquaringTests {
     @Suite("Default Squareness")
     struct DefaultSquarenessThresholdTests {
@@ -52,7 +53,7 @@ struct ImageSquaringTests {
 
     @Suite("Very Small Images")
     struct VerySmallImageSquarenessToleranceTests {
-        @Test("Very small non-square image is unchanged")
+        @Test("Non-square image is unchanged")
         func verySmallNonSquareImageIsUnchanged() {
             // Given a very small, non-square image (1x2) below the default squarenessThreshold
             let smallImage = createImage(width: 1, height: 2)
@@ -64,7 +65,7 @@ struct ImageSquaringTests {
             #expect(result == smallImage, "Image should be unchanged")
         }
 
-        @Test("Very small non-square image is squared")
+        @Test("Non-square image is squared")
         func verySmallNonSquareImageIsSquared() {
             // Given a very small, non-square image (1x2)
             let smallImage = createImage(width: 1, height: 2)
@@ -78,7 +79,7 @@ struct ImageSquaringTests {
             #expect(result.size.height == 1, "Height should be 1")
         }
 
-        @Test("Very small square image is unchanged")
+        @Test("Square image is unchanged")
         func verySmallSquareImage() {
             // Given a very small, square image (1x1) below the default squarenessThreshold
             let smallImage = createImage(width: 1, height: 1)
@@ -138,7 +139,7 @@ struct ImageSquaringTests {
             #expect(result == slightDifferenceImage, "Image should be unchanged")
         }
 
-        @Test("Negative squareness threshold is treated as 0 threshold")
+        @Test("Squareness threshold below 0 -> threshold of 0")
         func negativeSquarenessThresholdIsTreatedAsZeroThreshold() {
             // Given an image that is close to square
             let slightDifferenceImage = createImage(width: 100_000, height: 100_001)
@@ -152,7 +153,7 @@ struct ImageSquaringTests {
             #expect(result.size.height == 100_000, "Image should be 100_000 pixels tall")
         }
 
-        @Test("Squareness threshold above 1 is treated as a threshold of 1")
+        @Test("Squareness threshold above 1 -> threshold of 1")
         func squarenessThresholdAboveOneIsTreatedAsZeroThreshold() {
             // Given an image with a very large deviation from square
             let slightDifferenceImage = createImage(width: 100_000, height: 1)
