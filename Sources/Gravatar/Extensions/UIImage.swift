@@ -10,26 +10,30 @@ extension UIImage {
 
 extension UIImage {
     /// Crops a `UIImage` to be square if it's `squareness` is above a given `squarenessThreshold`. Images with a `squareness` below the threshold will not be
-    /// squared.  If `maxSize` is set, the UIImage will `size` will be reduce so that it's longest side is at or below `maxSize`
-    ///
-    /// ## Squaring and Reducing Size
-    /// For images that will be squared and reduced, the squaring is applied first.  Then the `maxSize` reduction is applied to the squared image.  This ensures
-    /// that the resulting squared image will have a `width` and `height` equal to the `maxSize`.
+    /// squared.
     /// - Parameters:
     ///   - squarenessThreshold: The threshold over which images should be squared.
-    ///   - maxSize:(optional)  The maximum length of the longest side of a `UIImage`
-    /// - Returns: A `UIImage` that has been squared and reduced according to the parameters
-    func squared(
-        aboveThreshold squarenessThreshold: CGFloat = .defaultSquarenessThreshold,
-        maxSize: ImageSize? = nil
-    ) -> UIImage {
-        self
-            .squared(aboveThreshold: squarenessThreshold)
-            .resized(toMaxSize: maxSize)
-    }
+    /// - Returns: A `UIImage` that has been squared according to the threshold
+    func squared(aboveThreshold squarenessThreshold: CGFloat = .defaultSquarenessThreshold) -> UIImage {
+        guard !self.isSquare, self.squareness > squarenessThreshold.clamped(to: 0 ... 1.0) else { return self }
 
-    var aspectRatio: CGFloat {
-        size.width / size.height
+        let (height, width) = (self.size.height, self.size.width)
+
+        let squareSideLength = floor(self.shortEdge)
+
+        let squareSize = CGSize(width: squareSideLength, height: squareSideLength)
+        let imageOrigin = CGPoint(
+            x: (squareSize.width - width) / 2,
+            y: (squareSize.height - height) / 2
+        )
+
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = self.scale // Respect original image scale
+
+        return UIGraphicsImageRenderer(size: squareSize, format: format).image { _ in
+            // Draw the image in the center of the new square context
+            self.draw(in: CGRect(origin: imageOrigin, size: self.size))
+        }
     }
 
     /// Describes how close to square an image's `size` is, by comparing the `shortEdge` and `longEdge` of the image.
@@ -61,58 +65,4 @@ extension UIImage {
 extension CGFloat {
     /// Default `squarenessThreshold`
     static let defaultSquarenessThreshold: CGFloat = 0.98
-}
-
-// MARK: - Private
-
-extension UIImage {
-    private func squared(aboveThreshold squarenessThreshold: CGFloat) -> UIImage {
-        guard !self.isSquare, self.squareness > squarenessThreshold.clamped(to: 0 ... 1.0) else { return self }
-
-        let (height, width) = (self.size.height, self.size.width)
-
-        let squareSideLength = floor(self.shortEdge)
-
-        let squareSize = CGSize(width: squareSideLength, height: squareSideLength)
-        let imageOrigin = CGPoint(
-            x: (squareSize.width - width) / 2,
-            y: (squareSize.height - height) / 2
-        )
-
-        let format = UIGraphicsImageRendererFormat()
-        format.scale = self.scale // Respect original image scale
-
-        return UIGraphicsImageRenderer(size: squareSize, format: format).image { _ in
-            // Draw the image in the center of the new square context
-            self.draw(in: CGRect(origin: imageOrigin, size: self.size))
-        }
-    }
-
-    private func resized(toMaxSize maxSize: ImageSize?) -> UIImage {
-        guard let maxSize else { return self }
-
-        let maxLengthInPoints = maxSize.points(scaleFactor: self.scale)
-
-        guard maxLengthInPoints > 0, longEdge > maxLengthInPoints else { return self }
-
-        let newSize = if aspectRatio > 1 {
-            CGSize(
-                width: maxLengthInPoints,
-                height: maxLengthInPoints / aspectRatio
-            )
-        } else {
-            CGSize(
-                width: maxLengthInPoints * aspectRatio,
-                height: maxLengthInPoints
-            )
-        }
-
-        let format = UIGraphicsImageRendererFormat()
-        format.scale = self.scale
-
-        let renderer = UIGraphicsImageRenderer(size: newSize, format: format)
-        return renderer.image { _ in
-            self.draw(in: CGRect(origin: .zero, size: newSize))
-        }
-    }
 }
