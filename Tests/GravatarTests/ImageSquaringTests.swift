@@ -5,7 +5,7 @@ import UIKit
 
 struct ImageSquaringTests {
     @Suite("Default Squareness")
-    struct DefaultSquarenessToleranceTests {
+    struct DefaultSquarenessThresholdTests {
         @Test("Square image is not modified")
         func squareImage() async throws {
             // Given a square image
@@ -18,27 +18,27 @@ struct ImageSquaringTests {
             #expect(result == squareImage, "UIImage objects should be identical")
         }
 
-        @Test("Squareness within tolerance is squared")
-        func imageWithDeviationFromSquareWithinToleranceIsSquareded() {
-            // Given an image with a minor size difference (100x102) where the divergence from square (`0.019`)
-            // is within the default squarenessTolerance (`0.02`)
-            let slightDifferenceImage = createImage(width: 100, height: 102)
+        @Test("Squareness above threshold is squared")
+        func imageWithSquarenessAboveThresholdIsSquareded() {
+            // Given an image with a minor size difference (99x100) with a squareness (`0.99`)
+            // above the default squarenessThreshold (`0.98`)
+            let slightDifferenceImage = createImage(width: 99, height: 100)
 
             // Squaring applied with the default tolerance
             let result = slightDifferenceImage.squared()
 
-            // Then the result should aspect-fill and become 100x100
+            // Then the result should aspect-fill and become 99x99
             // Assumes scale == 1 (pixels == points)
             #expect(result.isSquare, "Image should be square")
-            #expect(result.size.width == 100, "Width should match the smaller side")
-            #expect(result.size.height == 100, "Height should match the smaller side")
+            #expect(result.size.width == 99, "Width should match the smaller side")
+            #expect(result.size.height == 99, "Height should match the smaller side")
         }
 
-        @Test("Squareness outside of tolerance is untouched")
-        func imageWithDeviationFromSquareOutsideOfToleranceIsSquareded() {
-            // Given an image with a minor size difference (100x103) where the divergence from square (`0.029`)
-            // is outside the default squarenessTolerance (`0.02`)
-            let slightDifferenceImage = createImage(width: 100, height: 103)
+        @Test("Squareness below threshold is unchanged")
+        func imageWithSquarenessBelowThresholdIsUnchanged() {
+            // Given an image with a minor size difference (97x100) where a squareness (`0.97`)
+            // is below the default squarenessTolerance (`0.98`)
+            let slightDifferenceImage = createImage(width: 97, height: 100)
 
             // Squaring applied with custom tolerance
             let result = slightDifferenceImage.squared()
@@ -53,8 +53,8 @@ struct ImageSquaringTests {
     @Suite("Very Small Images")
     struct VerySmallImageSquarenessToleranceTests {
         @Test("Very small non-square image is unchanged")
-        func verySmallNonSquareImage() {
-            // Given a very small, non-square image (1x2) outside the default squareness tolerance
+        func verySmallNonSquareImageIsUnchanged() {
+            // Given a very small, non-square image (1x2) below the default squarenessThreshold
             let smallImage = createImage(width: 1, height: 2)
 
             // When the default squaring is applied
@@ -69,8 +69,8 @@ struct ImageSquaringTests {
             // Given a very small, non-square image (1x2)
             let smallImage = createImage(width: 1, height: 2)
 
-            // When squaring is applied with a very large squaring tolerance
-            let result = smallImage.squared(aboveThreshold: 1.0)
+            // When squaring is applied with a very low squaringThreshold
+            let result = smallImage.squared(aboveThreshold: 0.0)
 
             // Then the image should be squared to 1x1
             #expect(result.isSquare, "Image should be squared")
@@ -80,7 +80,7 @@ struct ImageSquaringTests {
 
         @Test("Very small square image is unchanged")
         func verySmallSquareImage() {
-            // Given a very small, square image (1x1) outside the default squareness tolerance
+            // Given a very small, square image (1x1) below the default squarenessThreshold
             let smallImage = createImage(width: 1, height: 1)
 
             // When the default squaring is applied
@@ -180,19 +180,19 @@ struct ImageSquaringTests {
         }
     }
 
-    // MARK: - Custom Squareness Tolerance
+    // MARK: - Custom Squareness Threshold
 
-    @Suite("Custom Squareness Tolerance")
-    struct CustomSquarenessToleranceTests {
-        @Test("Squareness within tolerance is squared")
-        func imageWithDeviationFromSquareWithinToleranceIsSquareded() {
-            // Given an image with a minor size difference (100x103) where the divergence from square (`0.029`)
-            // is within the default squarenessTolerance (`0.03`)
+    @Suite("Custom Squareness Threshold")
+    struct CustomSquarenessThresholdTests {
+        @Test("Squareness above threshold is squared")
+        func imageSquarenessAboveThresholdIsSquareded() {
+            // Given an image with a minor size difference (100x103) where the squareness (`0.9709`)
+            // is above a custom squarenessThreshold (`0.97`)
             let slightDifferenceImage = createImage(width: 100, height: 103)
-            let deviationFromSquareTolerance: CGFloat = 0.03
+            let squarenessThreshold: CGFloat = 0.97
 
             // Squaring applied with custom tolerance
-            let result = slightDifferenceImage.squared(aboveThreshold: deviationFromSquareTolerance)
+            let result = slightDifferenceImage.squared(aboveThreshold: squarenessThreshold)
 
             // Then the result should aspect-fill and become 100x100
             // Assumes scale == 1 (pixels == points)
@@ -201,44 +201,44 @@ struct ImageSquaringTests {
             #expect(result.size.height == 100, "Height should match the smaller side")
         }
 
-        @Test("Squareness outside of tolerance is untouched")
-        func imageWithDeviationFromSquareOutsideOfToleranceIsSquareded() {
-            // Given an image with a minor size difference (100x104) where the divergence from square (`0.0385`)
-            // is within the custom squarenessTolerance (`0.03`)
+        @Test("Squareness below threshold is untouched")
+        func imageSquarenessBelowThresholdIsSquareded() {
+            // Given an image with a minor size difference (100x104) where the squareness (`0.9616`)
+            // is below a custom squarenessThreshold (`0.97`)
             let slightDifferenceImage = createImage(width: 100, height: 104)
-            let deviationFromSquareTolerance: CGFloat = 0.03
+            let squarenessThreshold: CGFloat = 0.97
 
             // Squaring applied with custom tolerance
-            let result = slightDifferenceImage.squared(aboveThreshold: deviationFromSquareTolerance)
+            let result = slightDifferenceImage.squared(aboveThreshold: squarenessThreshold)
 
             // Then the image should be unchanged
             #expect(result == slightDifferenceImage, "Image should be unchanged")
         }
 
-        @Test("Negative squareness tolerance is treated as 0 tolerance")
-        func negativeSquarenessToleranceIsTreatedAsZeroTolerance() {
-            // Given an image with a very small deviation from square
+        @Test("Negative squareness threshold is treated as 0 threshold")
+        func negativeSquarenessThresholdIsTreatedAsZeroThreshold() {
+            // Given an image that is close to square
             let slightDifferenceImage = createImage(width: 100_000, height: 100_001)
 
             // Squaring the image using a negative tolerance
             let result = slightDifferenceImage.squared(aboveThreshold: -1.0)
 
-            // Then the image should be unchanged, as though the tolerance were 0
-            #expect(result == slightDifferenceImage, "Image should be unchanged")
+            // Then the image should be squared, as though the threshold were 0
+            #expect(result.isSquare, "Image should be square")
+            #expect(result.size.width == 100_000, "Image should be 100_000 pixels wide")
+            #expect(result.size.height == 100_000, "Image should be 100_000 pixels tall")
         }
 
-        @Test("Squareness tolerance above 1 is treated as a tolerance of 1")
-        func squarenessToleranceAboveOneIsTreatedAsZeroTolerance() {
+        @Test("Squareness threshold above 1 is treated as a threshold of 1")
+        func squarenessThresholdAboveOneIsTreatedAsZeroThreshold() {
             // Given an image with a very large deviation from square
             let slightDifferenceImage = createImage(width: 100_000, height: 1)
 
-            // Squaring the image using a tolerance above 1
+            // Squaring the image using a threshold above 1
             let result = slightDifferenceImage.squared(aboveThreshold: 10.0)
 
-            // Then the image should be squared, as though the tolerance were 1
-            #expect(result.isSquare, "Image should be square")
-            #expect(result.size.width == 1, "Image should be 1 pixels wide")
-            #expect(result.size.height == 1, "Image should be 1 pixels tall")
+            // Then the image should be unchanged, as though the threshold were 1
+            #expect(result == slightDifferenceImage, "Image should be unchanged")
         }
     }
 

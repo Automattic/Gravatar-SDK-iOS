@@ -5,7 +5,18 @@ extension UIImage {
         size.height == size.width
     }
 
-        aboveThreshold squarenessThreshold: CGFloat = .defaultSquarenessTolerance,
+    /// Crops a `UIImage` to be square if it's `squareness` is above a given `squarenessThreshold`. Images with a `squareness` below the threshold will not be
+    /// squared.  If `maxSize` is set, the UIImage will `size` will be reduce so that it's longest side is at or below `maxSize`
+    ///
+    /// ## Squaring and Reducing Size
+    /// For images that will be squared and reduced, the squaring is applied first.  Then the `maxSize` reduction is applied to the squared image.  This ensures
+    /// that the resulting squared image will have a `width` and `height` equal to the `maxSize`.
+    /// - Parameters:
+    ///   - squarenessThreshold: The threshold over which images should be squared.
+    ///   - maxSize:(optional)  The maximum length of the longest side of a `UIImage`
+    /// - Returns: A `UIImage` that has been squared and reduced according to the parameters
+    package func squared(
+        aboveThreshold squarenessThreshold: CGFloat = .defaultSquarenessThreshold,
         maxSize: ImageSize? = nil
     ) -> UIImage {
         self
@@ -15,7 +26,8 @@ extension UIImage {
 }
 
 extension CGFloat {
-    package static let defaultSquarenessTolerance: CGFloat = 0.02
+    /// Default `squarenessThreshold`
+    package static let defaultSquarenessThreshold: CGFloat = 0.98
 }
 
 // MARK: - Internal
@@ -40,10 +52,6 @@ extension UIImage {
         return shortEdge / longEdge
     }
 
-    var deviationFromSquare: CGFloat {
-        1 - squareness
-    }
-
     /// Returns the lenght of the shorter edge of an image
     var shortEdge: CGFloat {
         min(self.size.width, self.size.height)
@@ -59,7 +67,7 @@ extension UIImage {
 
 extension UIImage {
     private func squared(aboveThreshold squarenessThreshold: CGFloat) -> UIImage {
-        guard !self.isSquare, self.deviationFromSquare <= squarenessThreshold.clamped(to: 0 ... 1.0) else { return self }
+        guard !self.isSquare, self.squareness > squarenessThreshold.clamped(to: 0 ... 1.0) else { return self }
 
         let (height, width) = (self.size.height, self.size.width)
 

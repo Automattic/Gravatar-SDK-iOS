@@ -74,33 +74,6 @@ enum UIImageAdditionsTests {
         }
     }
 
-    @Suite("DeviationFromSquare")
-    struct DeviationFromSquareTests {
-        @Test("Square image")
-        func testDeviationFromSquareForSquareImage() {
-            // Given
-            let squareImage = createImage(width: 100, height: 100)
-
-            // When
-            let deviation = squareImage.deviationFromSquare
-
-            // Then
-            #expect(deviation == 0.0, "Expected deviation from square to be 0 for a square image")
-        }
-
-        @Test("Non-square images", arguments: TestImage.nonSquareImages)
-        func testDeviationFromSquareForNonSquarePortraitImage(testImage: TestImage) {
-            // Given
-            let nonSquareImage = testImage.image
-
-            // When
-            let deviation = nonSquareImage.deviationFromSquare
-
-            // Then
-            #expect(deviation == 0.5)
-        }
-    }
-
     @Suite("ShortEdge")
     struct ShortEdgeTests {
         @Test("Square image")
