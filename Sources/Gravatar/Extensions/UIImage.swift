@@ -39,16 +39,16 @@ extension UIImage {
     }
 
     package func squared(
-        withinTolerance squarenessTolerance: CGFloat = .defaultSquarenessTolerance,
+        aboveThreshold squarenessThreshold: CGFloat = .defaultSquarenessTolerance,
         maxSize: ImageSize? = nil
     ) -> UIImage {
         self
-            .squared(withinTolerance: squarenessTolerance)
+            .squared(aboveThreshold: squarenessThreshold)
             .resized(toMaxSize: maxSize)
     }
 
-    package func squared(withinTolerance squarenessTolerance: CGFloat) -> UIImage {
-        guard !self.isSquare, self.deviationFromSquare <= squarenessTolerance.clamped(to: 0 ... 1.0) else { return self }
+    package func squared(aboveThreshold squarenessThreshold: CGFloat) -> UIImage {
+        guard !self.isSquare, self.deviationFromSquare <= squarenessThreshold.clamped(to: 0 ... 1.0) else { return self }
 
         let (height, width) = (self.size.height, self.size.width)
 

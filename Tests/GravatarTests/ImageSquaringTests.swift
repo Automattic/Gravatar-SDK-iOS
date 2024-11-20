@@ -70,7 +70,7 @@ struct ImageSquaringTests {
             let smallImage = createImage(width: 1, height: 2)
 
             // When squaring is applied with a very large squaring tolerance
-            let result = smallImage.squared(withinTolerance: 1.0)
+            let result = smallImage.squared(aboveThreshold: 1.0)
 
             // Then the image should be squared to 1x1
             #expect(result.isSquare, "Image should be squared")
@@ -192,7 +192,7 @@ struct ImageSquaringTests {
             let deviationFromSquareTolerance: CGFloat = 0.03
 
             // Squaring applied with custom tolerance
-            let result = slightDifferenceImage.squared(withinTolerance: deviationFromSquareTolerance)
+            let result = slightDifferenceImage.squared(aboveThreshold: deviationFromSquareTolerance)
 
             // Then the result should aspect-fill and become 100x100
             // Assumes scale == 1 (pixels == points)
@@ -209,7 +209,7 @@ struct ImageSquaringTests {
             let deviationFromSquareTolerance: CGFloat = 0.03
 
             // Squaring applied with custom tolerance
-            let result = slightDifferenceImage.squared(withinTolerance: deviationFromSquareTolerance)
+            let result = slightDifferenceImage.squared(aboveThreshold: deviationFromSquareTolerance)
 
             // Then the image should be unchanged
             #expect(result == slightDifferenceImage, "Image should be unchanged")
@@ -221,7 +221,7 @@ struct ImageSquaringTests {
             let slightDifferenceImage = createImage(width: 100_000, height: 100_001)
 
             // Squaring the image using a negative tolerance
-            let result = slightDifferenceImage.squared(withinTolerance: -1.0)
+            let result = slightDifferenceImage.squared(aboveThreshold: -1.0)
 
             // Then the image should be unchanged, as though the tolerance were 0
             #expect(result == slightDifferenceImage, "Image should be unchanged")
@@ -233,7 +233,7 @@ struct ImageSquaringTests {
             let slightDifferenceImage = createImage(width: 100_000, height: 1)
 
             // Squaring the image using a tolerance above 1
-            let result = slightDifferenceImage.squared(withinTolerance: 10.0)
+            let result = slightDifferenceImage.squared(aboveThreshold: 10.0)
 
             // Then the image should be squared, as though the tolerance were 1
             #expect(result.isSquare, "Image should be square")
