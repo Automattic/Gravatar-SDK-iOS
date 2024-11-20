@@ -1,6 +1,6 @@
 import Foundation
 
-extension FloatingPoint {
+extension CGFloat {
     /// Constrains a value to a specified closed range.
     ///
     ///  Use this method to ensure that a value does not fall below the lower bound or exceed the upper bound of a specified range.
