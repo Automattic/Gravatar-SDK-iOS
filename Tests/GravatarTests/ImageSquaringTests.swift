@@ -10,7 +10,7 @@ struct ImageSquaringTests {
         @Test("Square image is not modified")
         func squareImage() async throws {
             // Given a square image
-            let squareImage = createImage(width: 100, height: 100)
+            let squareImage = createImage(widthInPixels: 100, heightInPixels: 100)
 
             // When the default squaring is applied
             let result = squareImage.squared()
@@ -23,7 +23,7 @@ struct ImageSquaringTests {
         func imageWithSquarenessAboveThresholdIsSquareded() {
             // Given an image with a minor size difference (98x100) with a squareness (`0.98`)
             // at or above the default squarenessThreshold (`0.98`)
-            let slightDifferenceImage = createImage(width: 98, height: 100)
+            let slightDifferenceImage = createImage(widthInPixels: 98, heightInPixels: 100)
 
             // Squaring applied with the default tolerance
             let result = slightDifferenceImage.squared()
@@ -39,7 +39,7 @@ struct ImageSquaringTests {
         func imageWithSquarenessBelowThresholdIsUnchanged() {
             // Given an image with a minor size difference (97x100) where a squareness (`0.97`)
             // is below the default squarenessTolerance (`0.98`)
-            let slightDifferenceImage = createImage(width: 97, height: 100)
+            let slightDifferenceImage = createImage(widthInPixels: 97, heightInPixels: 100)
 
             // Squaring applied with custom tolerance
             let result = slightDifferenceImage.squared()
@@ -56,7 +56,7 @@ struct ImageSquaringTests {
         @Test("Non-square image is unchanged")
         func verySmallNonSquareImageIsUnchanged() {
             // Given a very small, non-square image (1x2) below the default squarenessThreshold
-            let smallImage = createImage(width: 1, height: 2)
+            let smallImage = createImage(widthInPixels: 1, heightInPixels: 2)
 
             // When the default squaring is applied
             let result = smallImage.squared()
@@ -68,7 +68,7 @@ struct ImageSquaringTests {
         @Test("Non-square image is squared")
         func verySmallNonSquareImageIsSquared() {
             // Given a very small, non-square image (1x2)
-            let smallImage = createImage(width: 1, height: 2)
+            let smallImage = createImage(widthInPixels: 1, heightInPixels: 2)
 
             // When squaring is applied with a very low squaringThreshold
             let result = smallImage.squared(aboveThreshold: 0.0)
@@ -82,7 +82,7 @@ struct ImageSquaringTests {
         @Test("Square image is unchanged")
         func verySmallSquareImage() {
             // Given a very small, square image (1x1) below the default squarenessThreshold
-            let smallImage = createImage(width: 1, height: 1)
+            let smallImage = createImage(widthInPixels: 1, heightInPixels: 1)
 
             // When the default squaring is applied
             let result = smallImage.squared()
@@ -94,7 +94,7 @@ struct ImageSquaringTests {
         @Test("Zero size image remains unchanged")
         func zeroSizeImage() {
             // Given an image with zero size (0x0)
-            let zeroSizeImage = createImage(width: 0, height: 0)
+            let zeroSizeImage = createImage(widthInPixels: 0, heightInPixels: 0)
 
             // When the default squaring is applied
             let result = zeroSizeImage.squared()
@@ -112,7 +112,7 @@ struct ImageSquaringTests {
         func imageSquarenessAboveThresholdIsSquareded() {
             // Given an image with a minor size difference (100x103) where the squareness (`0.9709`)
             // is at or above a custom squarenessThreshold (`0.97`)
-            let slightDifferenceImage = createImage(width: 100, height: 103)
+            let slightDifferenceImage = createImage(widthInPixels: 100, heightInPixels: 103)
             let squarenessThreshold: CGFloat = 0.97
 
             // Squaring applied with custom tolerance
@@ -129,7 +129,7 @@ struct ImageSquaringTests {
         func imageSquarenessBelowThresholdIsSquareded() {
             // Given an image with a minor size difference (100x104) where the squareness (`0.9616`)
             // is below a custom squarenessThreshold (`0.97`)
-            let slightDifferenceImage = createImage(width: 100, height: 104)
+            let slightDifferenceImage = createImage(widthInPixels: 100, heightInPixels: 104)
             let squarenessThreshold: CGFloat = 0.97
 
             // Squaring applied with custom tolerance
@@ -146,7 +146,7 @@ struct ImageSquaringTests {
     func imageSquaringWithScale2x() {
         // Given a retina image (@2x) with size 302x300
         let scale: CGFloat = 2.0
-        let image = createImage(width: 302, height: 300, scale: scale)
+        let image = createImage(widthInPixels: 302, heightInPixels: 300, scale: scale)
 
         // When the default squaring is applied
         let result = image.squared()
@@ -161,10 +161,29 @@ struct ImageSquaringTests {
 
 // MARK: - Helpers
 
-private func createImage(width: CGFloat, height: CGFloat, scale: CGFloat = 1, fillColor: UIColor = .red) -> UIImage {
+private func createImage(
+    widthInPixels: CGFloat,
+    heightInPixels: CGFloat,
+    scale: CGFloat = 1,
+    fillColor: UIColor = .red
+) -> UIImage {
     assert(scale > 0)
 
-    let size = CGSize(width: width / scale, height: height / scale)
+    return createImage(
+        widthInPoints: widthInPixels / scale,
+        heightInPoints: heightInPixels / scale,
+        scale: scale,
+        fillColor: fillColor
+    )
+}
+
+private func createImage(
+    widthInPoints: CGFloat,
+    heightInPoints: CGFloat,
+    scale: CGFloat = 1,
+    fillColor: UIColor = .red
+) -> UIImage {
+    let size = CGSize(width: widthInPoints, height: heightInPoints)
     let format = UIGraphicsImageRendererFormat()
     format.scale = scale
     return UIGraphicsImageRenderer(size: size, format: format).image { context in
