@@ -16,7 +16,7 @@ extension UIImage {
     /// - Returns: A `UIImage` that has been squared according to the threshold
     func squared(aboveThreshold squarenessThreshold: CGFloat = .defaultSquarenessThreshold) -> UIImage {
         assert((0.0 ... 1.0).contains(squarenessThreshold), "Squareness threshold must be between 0 and 1")
-        guard !self.isSquare, self.squareness > squarenessThreshold else { return self }
+        guard !self.isSquare, self.squareness >= squarenessThreshold else { return self }
 
         let (height, width) = (self.size.height, self.size.width)
 
