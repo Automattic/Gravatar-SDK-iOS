@@ -57,14 +57,23 @@ struct ImageSquaringTests {
             ],
             [1.0, 2.0, 3.0]
         )
-        func squaringImageDoesNotIncreaseDimensions(imageSpec: ImageSpec, scale: CGFloat) {
+        func squaringImageDoesNotIncreasePixelDimensions(imageSpec: ImageSpec, scale: CGFloat) {
+            // Given a non-square image with fractional point size dimensions that is squarable
             let image = createImage(widthInPoints: imageSpec.width, heightInPoints: imageSpec.height, scale: scale)
 
+            // When the default squaring is applied
             let result = image.squared()
 
+            // The result should be square, and both dimensions
+            let imageWidthInPixels = image.size.width * image.scale
+            let imageHeightInPixels = image.size.height * image.scale
+
+            let resultWidthInPixels = result.size.width * result.scale
+            let resultHeightInPixels = result.size.height * result.scale
+
             #expect(result.isSquare, "Image should be square")
-            #expect(result.size.width <= image.size.width, "Image should not increase width")
-            #expect(result.size.height <= image.size.height, "Image should not increase height")
+            #expect(resultWidthInPixels <= imageWidthInPixels, "Image should not increase width")
+            #expect(resultHeightInPixels <= imageHeightInPixels, "Image should not increase height")
         }
     }
 
@@ -216,14 +225,6 @@ struct ImageSpec: CustomTestStringConvertible {
     let height: CGFloat
 
     var testDescription: String {
-        "w:\(width) x h:\(height)"
-    }
-}
-
-struct ImageScale: CustomTestStringConvertible {
-    let scale: CGFloat
-
-    var testDescription: String {
-        "@\(scale)"
+        "w: \(width) pt x h: \(height) pt"
     }
 }
