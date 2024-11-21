@@ -33,7 +33,7 @@ extension UIImage {
 
         return UIGraphicsImageRenderer(size: squareSize, format: format).image { _ in
             // Draw the image in the center of the new square context
-            self.draw(in: CGRect(origin: imageOrigin, size: self.size))
+            self.draw(in: CGRect(origin: imageOrigin, size: squareSize))
         }
     }
 
