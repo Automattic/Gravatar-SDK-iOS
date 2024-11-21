@@ -47,6 +47,25 @@ struct ImageSquaringTests {
             // Then the image should be unchanged
             #expect(result == slightDifferenceImage, "Image should be unchanged")
         }
+
+        @Test(
+            "Squaring does not increase dimensions",
+            arguments: [
+                ImageSpec(width: 1002.5, height: 1001.5),
+                ImageSpec(width: 1002.25, height: 1002.75),
+                ImageSpec(width: 1002.75, height: 1002.25)
+            ],
+            [1.0, 2.0, 3.0]
+        )
+        func squaringImageDoesNotIncreaseDimensions(imageSpec: ImageSpec, scale: CGFloat) {
+            let image = createImage(widthInPoints: imageSpec.width, heightInPoints: imageSpec.height, scale: scale)
+
+            let result = image.squared()
+
+            #expect(result.isSquare, "Image should be square")
+            #expect(result.size.width <= image.size.width, "Image should not increase width")
+            #expect(result.size.height <= image.size.height, "Image should not increase height")
+        }
     }
 
     // MARK: - Very Small Imgae Tests
@@ -189,5 +208,22 @@ private func createImage(
     return UIGraphicsImageRenderer(size: size, format: format).image { context in
         fillColor.setFill()
         context.fill(CGRect(origin: .zero, size: size))
+    }
+}
+
+struct ImageSpec: CustomTestStringConvertible {
+    let width: CGFloat
+    let height: CGFloat
+
+    var testDescription: String {
+        "w:\(width) x h:\(height)"
+    }
+}
+
+struct ImageScale: CustomTestStringConvertible {
+    let scale: CGFloat
+
+    var testDescription: String {
+        "@\(scale)"
     }
 }
