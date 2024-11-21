@@ -12,10 +12,11 @@ extension UIImage {
     /// Crops a `UIImage` to be square if it's `squareness` is above a given `squarenessThreshold`. Images with a `squareness` below the threshold will not be
     /// squared.
     /// - Parameters:
-    ///   - squarenessThreshold: The threshold over which images should be squared.
+    ///   - squarenessThreshold: The threshold over which images should be squared. Value must be in the closed range `0.0 ... 1.0`
     /// - Returns: A `UIImage` that has been squared according to the threshold
     func squared(aboveThreshold squarenessThreshold: CGFloat = .defaultSquarenessThreshold) -> UIImage {
-        guard !self.isSquare, self.squareness > squarenessThreshold.clamped(to: 0 ... 1.0) else { return self }
+        assert((0.0 ... 1.0).contains(squarenessThreshold), "Squareness threshold must be between 0 and 1")
+        guard !self.isSquare, self.squareness > squarenessThreshold else { return self }
 
         let (height, width) = (self.size.height, self.size.width)
 

@@ -138,32 +138,6 @@ struct ImageSquaringTests {
             // Then the image should be unchanged
             #expect(result == slightDifferenceImage, "Image should be unchanged")
         }
-
-        @Test("Squareness threshold below 0 -> threshold of 0")
-        func negativeSquarenessThresholdIsTreatedAsZeroThreshold() {
-            // Given an image that is close to square
-            let slightDifferenceImage = createImage(width: 100_000, height: 100_001)
-
-            // Squaring the image using a negative tolerance
-            let result = slightDifferenceImage.squared(aboveThreshold: -1.0)
-
-            // Then the image should be squared, as though the threshold were 0
-            #expect(result.isSquare, "Image should be square")
-            #expect(result.size.width == 100_000, "Image should be 100_000 pixels wide")
-            #expect(result.size.height == 100_000, "Image should be 100_000 pixels tall")
-        }
-
-        @Test("Squareness threshold above 1 -> threshold of 1")
-        func squarenessThresholdAboveOneIsTreatedAsZeroThreshold() {
-            // Given an image with a very large deviation from square
-            let slightDifferenceImage = createImage(width: 100_000, height: 1)
-
-            // Squaring the image using a threshold above 1
-            let result = slightDifferenceImage.squared(aboveThreshold: 10.0)
-
-            // Then the image should be unchanged, as though the threshold were 1
-            #expect(result == slightDifferenceImage, "Image should be unchanged")
-        }
     }
 
     // MARK: - Scale Test
