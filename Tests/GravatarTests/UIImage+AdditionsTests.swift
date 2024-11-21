@@ -7,10 +7,10 @@ import UIKit
 struct UIImageAdditionsTests {
     @Suite("isSquare")
     struct IsSquareTests {
-        @Test("Square image")
-        func squareImage() {
+        @Test("Square image", arguments: ScaleFactor.allCases)
+        func squareImage(at scaleFactor: ScaleFactor) {
             // Given
-            let squareImage = createImage(width: 100, height: 100)
+            let squareImage = createImage(widthInPixels: 100, heightInPixels: 100, scale: scaleFactor.scale)
 
             // When
             let isSquare = squareImage.isSquare
@@ -19,10 +19,10 @@ struct UIImageAdditionsTests {
             #expect(isSquare)
         }
 
-        @Test("Non-square images", arguments: TestImage.nonSquareImages)
-        func nonSquareImage(testImage: TestImage) {
+        @Test("Non-square images", arguments: TestImage.nonSquareImages, ScaleFactor.allCases)
+        func nonSquareImage(testImage: TestImage, scaleFactor: ScaleFactor) {
             // Given
-            let nonSquareImage = testImage.image
+            let nonSquareImage = testImage.image(atScale: scaleFactor.scale)
 
             // When
             let isSquare = nonSquareImage.isSquare
@@ -34,10 +34,10 @@ struct UIImageAdditionsTests {
 
     @Suite("Squareness")
     struct SquarenessTests {
-        @Test("Square image")
-        func squareImageHasSquarenessOne() {
+        @Test("Square image", arguments: ScaleFactor.allCases)
+        func squareImageHasSquarenessOne(at scaleFactor: ScaleFactor) {
             // Given
-            let squareImage = createImage(width: 100, height: 100)
+            let squareImage = createImage(widthInPixels: 100, heightInPixels: 100, scale: scaleFactor.scale)
 
             // When
             let squareness = squareImage.squareness
@@ -46,10 +46,10 @@ struct UIImageAdditionsTests {
             #expect(squareness == 1.0)
         }
 
-        @Test("Non-square images", arguments: TestImage.nonSquareImages)
-        func nonSquareImageHasSquarenessHalf(testImage: TestImage) {
+        @Test("Non-square images", arguments: TestImage.nonSquareImages, ScaleFactor.allCases)
+        func nonSquareImageHasSquarenessHalf(testImage: TestImage, scaleFactor: ScaleFactor) {
             // Given
-            let nonSquareImage = testImage.image
+            let nonSquareImage = testImage.image(atScale: scaleFactor.scale)
 
             // When
             let squareness = nonSquareImage.squareness
@@ -58,13 +58,13 @@ struct UIImageAdditionsTests {
             #expect(squareness == 0.5)
         }
 
-        @Test("Negative CGSize returns positive squareness")
-        func negativeSquarenessReturnsNonNegativeSquareness() {
+        @Test("Negative CGSize returns positive squareness", arguments: ScaleFactor.allCases)
+        func negativeSquarenessReturnsNonNegativeSquareness(at scaleFactor: ScaleFactor) {
             // Given a CGSize that is not square with one negative value
             let size = CGSize(width: -100, height: 99)
 
             // And an image created using that size
-            let image = createImage(size: size)
+            let image = createImage(size: size, scale: scaleFactor.scale)
 
             // When
             let squareness = image.squareness
@@ -77,81 +77,60 @@ struct UIImageAdditionsTests {
 
     @Suite("ShortEdge")
     struct ShortEdgeTests {
-        @Test("Square image")
-        func shortEdgeForSquareImage() {
+        @Test("Square image", arguments: ScaleFactor.allCases)
+        func shortEdgeForSquareImage(at scaleFactor: ScaleFactor) {
             // Given
-            let squareImage = createImage(width: 150, height: 150)
+            let squareImage = createImage(widthInPixels: 150, heightInPixels: 150, scale: scaleFactor.scale)
 
             // When
             let shortEdge = squareImage.shortEdge
 
             // Then
-            #expect(shortEdge == 150)
+            #expect(shortEdge * scaleFactor.scale == 150)
         }
 
-        @Test("Non-square images", arguments: TestImage.nonSquareImages)
-        func shortEdgeForPortraitImage(testImage: TestImage) {
+        @Test("Non-square images", arguments: TestImage.nonSquareImages, ScaleFactor.allCases)
+        func shortEdgeForPortraitImage(testImage: TestImage, scaleFactor: ScaleFactor) {
             // Given
-            let nonSquareImage = testImage.image
+            let nonSquareImage = testImage.image(atScale: scaleFactor.scale)
 
             // When
             let shortEdge = nonSquareImage.shortEdge
 
             // Then
-            #expect(shortEdge == 150)
+            #expect(shortEdge * scaleFactor.scale == 150)
         }
     }
 
     @Suite("LongEdge")
     struct LongEdgeTests {
-        @Test("Square image")
-        func longEdgeForSquareImage() {
+        @Test("Square image", arguments: ScaleFactor.allCases)
+        func longEdgeForSquareImage(at scaleFactor: ScaleFactor) {
             // Given
-            let nonSquareImage = createImage(width: 150, height: 150)
+            let nonSquareImage = createImage(widthInPixels: 150, heightInPixels: 150, scale: scaleFactor.scale)
 
             // When
             let longEdge = nonSquareImage.longEdge
 
             // Then
-            #expect(longEdge == 150)
+            #expect(longEdge * scaleFactor.scale == 150)
         }
 
-        @Test("Non-square images", arguments: TestImage.nonSquareImages)
-        func longEdgeForPortraitImage(testImage: TestImage) {
+        @Test("Non-square images", arguments: TestImage.nonSquareImages, ScaleFactor.allCases)
+        func longEdgeForPortraitImage(testImage: TestImage, scaleFactor: ScaleFactor) {
             // Given
-            let nonSquareImage = testImage.image
+            let nonSquareImage = testImage.image(atScale: scaleFactor.scale)
 
             // When
             let longEdge = nonSquareImage.longEdge
 
             // Then
-            #expect(longEdge == 300)
+            #expect(longEdge * scaleFactor.scale == 300)
         }
     }
 }
 
 // MARK: - Helpers
-
-private func createImage(width: CGFloat, height: CGFloat, scale: CGFloat = 1, fillColor: UIColor = .red) -> UIImage {
-    assert(scale > 0)
-
-    return createImage(
-        size: CGSize(width: width / scale, height: height / scale),
-        scale: scale,
-        fillColor: fillColor
-    )
-}
-
-private func createImage(size: CGSize, scale: CGFloat = 1, fillColor: UIColor = .red) -> UIImage {
-    assert(scale > 0)
-
-    let format = UIGraphicsImageRendererFormat()
-    format.scale = scale
-    return UIGraphicsImageRenderer(size: size, format: format).image { context in
-        fillColor.setFill()
-        context.fill(CGRect(origin: .zero, size: size))
-    }
-}
 
 struct TestImage: CustomTestStringConvertible {
     static let nonSquareImages: [TestImage] = [.portrait, .landscaope]
@@ -161,8 +140,8 @@ struct TestImage: CustomTestStringConvertible {
     let width: CGFloat
     let height: CGFloat
 
-    var image: UIImage {
-        createImage(width: width, height: height)
+    func image(atScale scale: CGFloat) -> UIImage {
+        createImage(widthInPixels: width, heightInPixels: height, scale: scale)
     }
 
     var testDescription: String {

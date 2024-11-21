@@ -5,9 +5,7 @@ import Testing
 
 @Suite("ImageSize")
 struct ImageSizeTests {
-    private static let scaleFactors: [ScaleFactor] = [.init(1.0), .init(2.0), .init(3.0)]
-
-    @Test("From Points", arguments: scaleFactors)
+    @Test("From Points", arguments: ScaleFactor.allCases)
     func pixelsConversionFromPoints(atScaleFactor scaleFactor: ScaleFactor) {
         // Given
         let points: CGFloat = 50
@@ -20,7 +18,7 @@ struct ImageSizeTests {
         #expect(CGFloat(result) == (points * scaleFactor.scale))
     }
 
-    @Test("From Pixels", arguments: scaleFactors)
+    @Test("From Pixels", arguments: ScaleFactor.allCases)
     func pixelsConversionFromPixels(atScaleFactor scaleFactor: ScaleFactor) {
         // Given
         let imageSize = ImageSize.pixels(200)
@@ -47,6 +45,11 @@ struct ImageSizeTests {
 }
 
 struct ScaleFactor: CustomTestStringConvertible {
+    static let one: ScaleFactor = .init(1.0)
+    static let two: ScaleFactor = .init(2.0)
+    static let three: ScaleFactor = .init(3.0)
+    static let allCases: [ScaleFactor] = [.one, .two, .three]
+
     let scale: CGFloat
 
     init(_ scale: CGFloat) {
@@ -54,6 +57,6 @@ struct ScaleFactor: CustomTestStringConvertible {
     }
 
     var testDescription: String {
-        "At scale factor \(scale)"
+        "@ \(scale)x"
     }
 }
