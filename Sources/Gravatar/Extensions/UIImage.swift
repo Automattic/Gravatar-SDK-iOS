@@ -20,7 +20,7 @@ extension UIImage {
 
         let (height, width) = (self.size.height, self.size.width)
 
-        let squareSideLength = floor(self.shortEdge)
+        let squareSideLength = self.shortEdge
 
         let squareSize = CGSize(width: squareSideLength, height: squareSideLength)
         let imageOrigin = CGPoint(
