@@ -291,6 +291,10 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
                 onFailedUploadTapped: { failedUploadInfo in
                     uploadError = failedUploadInfo
                     isUploadErrorDialogPresented = true
+                },
+                onAvatarActionTap: { avatar, action in
+                    // TODO: Replace
+                    print("Avatar action tapped: \(avatar.id), \(action.rawValue)")
                 }
             )
             .padding(.horizontal, Constants.horizontalPadding)
@@ -304,6 +308,10 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
                 onFailedUploadTapped: { failedUploadInfo in
                     uploadError = failedUploadInfo
                     isUploadErrorDialogPresented = true
+                },
+                onAvatarActionTap: { avatar, action in
+                    // TODO: Replace
+                    print("Avatar action tapped: \(avatar.id), \(action.rawValue)")
                 }
             )
             .padding(.top, .DS.Padding.medium)

@@ -1,3 +1,4 @@
+import ImagePlayground
 import PhotosUI
 import SwiftUI
 
@@ -15,19 +16,30 @@ private struct ImagePicker<Label, ImageEditor: ImageEditorView>: View where Labe
     enum SourceType: CaseIterable, Identifiable {
         case photoLibrary
         case camera
+        case playground
+
+        static var allCases: [SourceType] {
+            var cases: [SourceType] = [.camera, .photoLibrary]
+            if #available(iOS 18.2, *) {
+                if EnvironmentValues().supportsImagePlayground {
+                    cases.append(.playground)
+                }
+            }
+            return cases
+        }
 
         var id: Int {
             self.hashValue
         }
     }
 
-    @State var isPresented = false
     @State private var sourceType: SourceType?
 
     @ViewBuilder var label: () -> Label
     let onImageSelected: (UIImage) -> Void
     var customEditor: ImageEditorBlock<ImageEditor>?
     @State var imagePickerSelectedItem: ImagePickerItem?
+    @State var playgroundSelectedItem: ImagePickerItem?
 
     var body: some View {
         VStack {
@@ -35,7 +47,6 @@ private struct ImagePicker<Label, ImageEditor: ImageEditorView>: View where Labe
                 ForEach(SourceType.allCases) { source in
                     Button {
                         sourceType = source
-                        isPresented = true
                     } label: {
                         SwiftUI.Label(source.localizedTitle, systemImage: source.iconName)
                     }
@@ -44,29 +55,58 @@ private struct ImagePicker<Label, ImageEditor: ImageEditorView>: View where Labe
                 label()
             }
         }
-        .sheet(item: $sourceType, content: { source in
-            // This allows to present different kind of pickers for different sources.
-            displayImagePicker(for: source)
-                .sheet(item: $imagePickerSelectedItem, content: { item in
-                    if let customEditor {
-                        customEditor(item.image) { editedImage in
-                            self.onImageEdited(editedImage)
-                        }
-                    } else {
-                        ImageCropper(inputImage: item.image) { croppedImage in
-                            Task {
-                                await self.onImageEdited(croppedImage)
-                            }
-                        } onCancel: {
-                            imagePickerSelectedItem = nil
-                        }.ignoresSafeArea()
-                    }
-                })
+        .imagePlaygroundSheetIfAvailable(
+            isPresented: Binding(
+                get: { sourceType == .playground },
+                set: { if !$0 { sourceType = nil } }
+            ),
+            sourceImage: nil,
+            onCompletion: { url in
+                if let image = UIImage(contentsOfFile: url.relativePath) {
+                    playgroundSelectedItem = ImagePickerItem(id: url.absoluteString, image: image)
+                }
+            },
+            onCancellation: {}
+        )
+        .sheet(item: $playgroundSelectedItem, content: { item in
+            imageEditor(with: item)
         })
+        .sheet(
+            item: Binding(
+                get: { sourceType != .playground ? sourceType : nil },
+                set: { sourceType = $0 }
+            ),
+            content: { source in
+                // This allows to present different kind of pickers for different sources.
+                displayImagePicker(for: source)
+                    .sheet(item: $imagePickerSelectedItem, content: { item in
+                        imageEditor(with: item)
+                    })
+            }
+        )
+    }
+
+    @ViewBuilder
+    func imageEditor(with item: ImagePickerItem) -> some View {
+        if let customEditor {
+            customEditor(item.image) { editedImage in
+                self.onImageEdited(editedImage)
+            }
+        } else {
+            ImageCropper(inputImage: item.image) { croppedImage in
+                Task {
+                    await self.onImageEdited(croppedImage)
+                }
+            } onCancel: {
+                imagePickerSelectedItem = nil
+                playgroundSelectedItem = nil
+            }.ignoresSafeArea()
+        }
     }
 
     private func onImageEdited(_ image: UIImage) {
         imagePickerSelectedItem = nil
+        playgroundSelectedItem = nil
         sourceType = nil
         onImageSelected(image)
     }
@@ -87,6 +127,8 @@ private struct ImagePicker<Label, ImageEditor: ImageEditorView>: View where Labe
             } onCancel: {
                 sourceType = nil
             }.ignoresSafeArea()
+        case .playground:
+            EmptyView()
         }
     }
 
@@ -105,6 +147,8 @@ extension ImagePicker.SourceType {
             "camera"
         case .photoLibrary:
             "photo.on.rectangle.angled"
+        case .playground:
+            "apple.image.playground"
         }
     }
 
@@ -122,13 +166,12 @@ extension ImagePicker.SourceType {
                 value: "Take a Photo",
                 comment: "An option in a menu that will display the camera for taking a picture"
             )
-        }
-    }
-
-    func map() -> UIImagePickerController.SourceType {
-        switch self {
-        case .photoLibrary: .photoLibrary
-        case .camera: .camera
+        case .playground:
+            SDKLocalizedString(
+                "SystemImagePickerView.Source.Playground.title",
+                value: "Playground",
+                comment: "An option to show the image playground"
+            )
         }
     }
 }

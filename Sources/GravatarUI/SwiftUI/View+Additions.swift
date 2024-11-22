@@ -119,4 +119,18 @@ extension View {
             }
         }
     }
+
+    @ViewBuilder
+    public func imagePlaygroundSheetIfAvailable(
+        isPresented: Binding<Bool>,
+        sourceImage: Image? = nil,
+        onCompletion: @escaping (URL) -> Void,
+        onCancellation: (() -> Void)? = nil
+    ) -> some View {
+        if #available(iOS 18.2, *) {
+            self.imagePlaygroundSheet(isPresented: isPresented, sourceImage: sourceImage, onCompletion: onCompletion, onCancellation: onCancellation)
+        } else {
+            self
+        }
+    }
 }

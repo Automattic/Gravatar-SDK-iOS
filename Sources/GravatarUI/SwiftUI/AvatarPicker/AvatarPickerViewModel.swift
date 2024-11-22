@@ -4,7 +4,9 @@ import SwiftUI
 
 @MainActor
 class AvatarPickerViewModel: ObservableObject {
-    private let profileService: ProfileService = .init()
+    private let profileService: ProfileService
+    private let avatarService: AvatarService
+
     private(set) var email: Email? {
         didSet {
             guard let email else {
@@ -48,14 +50,22 @@ class AvatarPickerViewModel: ObservableObject {
     @Published var profileModel: AvatarPickerProfileView.Model?
     @ObservedObject var toastManager: ToastManager = .init()
 
-    init(email: Email, authToken: String?) {
+    init(email: Email, authToken: String?, profileService: ProfileService? = nil, avatarService: AvatarService? = nil) {
         self.email = email
         avatarIdentifier = .email(email)
         self.authToken = authToken
+        self.profileService = profileService ?? ProfileService()
+        self.avatarService = avatarService ?? AvatarService()
     }
 
     /// Internal init for previewing purposes. Do not make this public.
-    init(avatarImageModels: [AvatarImageModel], selectedImageID: String? = nil, profileModel: ProfileSummaryModel? = nil) {
+    init(
+        avatarImageModels: [AvatarImageModel],
+        selectedImageID: String? = nil,
+        profileModel: ProfileSummaryModel? = nil,
+        profileService: ProfileService? = nil,
+        avatarService: AvatarService? = nil
+    ) {
         if let selectedImageID {
             self.selectedAvatarResult = .success(selectedImageID)
         }
@@ -74,6 +84,8 @@ class AvatarPickerViewModel: ObservableObject {
                 break
             }
         }
+        self.profileService = profileService ?? ProfileService()
+        self.avatarService = avatarService ?? AvatarService()
     }
 
     func selectAvatar(with id: String) async -> Avatar? {
@@ -101,11 +113,11 @@ class AvatarPickerViewModel: ObservableObject {
         grid.setState(to: .loading, onAvatarWithID: avatarID)
 
         do {
-            let response = try await profileService.selectAvatar(token: authToken, profileID: identifier, avatarID: avatarID)
+            let selectedAvatar = try await profileService.selectAvatar(token: authToken, profileID: identifier, avatarID: avatarID)
             toastManager.showToast(Localized.avatarUpdateSuccess, type: .info)
-
-            selectedAvatarResult = .success(response.imageId)
-            return response
+            grid.replaceModel(withID: avatarID, with: .init(with: selectedAvatar))
+            selectedAvatarResult = .success(selectedAvatar.imageId)
+            return selectedAvatar
         } catch APIError.responseError(let reason) where reason.cancelled {
             // NoOp.
         } catch APIError.responseError(let .invalidHTTPStatusCode(response, errorPayload)) where response.statusCode == HTTPStatus.unauthorized.rawValue {
@@ -181,16 +193,15 @@ class AvatarPickerViewModel: ObservableObject {
 
     private func doUpload(squareImage: UIImage, localID: String, accessToken: String) async {
         guard let email else { return }
-        let service = AvatarService()
         do {
-            let avatar = try await service.upload(
+            let avatar = try await avatarService.upload(
                 squareImage,
                 accessToken: accessToken,
                 selectionBehavior: .selectUploadedImageIfNoneSelected(for: email)
             )
             ImageCache.shared.setEntry(.ready(squareImage), for: avatar.url)
 
-            let newModel = AvatarImageModel(id: avatar.id, source: .remote(url: avatar.url))
+            let newModel = AvatarImageModel(with: avatar)
             grid.replaceModel(withID: localID, with: newModel)
 
             if avatar.isSelected {
@@ -275,14 +286,18 @@ class AvatarPickerViewModel: ObservableObject {
 
     func refresh() {
         Task {
-            // We want them to be parallel child tasks so they don't wait each other.
-            async let avatars: () = fetchAvatars()
-            async let profile: () = fetchProfile()
-
-            // We need to await them otherwise network requests can be cancelled.
-            await avatars
-            await profile
+            await refresh()
         }
+    }
+
+    func refresh() async {
+        // We want them to be parallel child tasks so they don't wait each other.
+        async let avatars: () = fetchAvatars()
+        async let profile: () = fetchProfile()
+
+        // We need to await them otherwise network requests can be cancelled.
+        await avatars
+        await profile
     }
 }
 
@@ -325,7 +340,8 @@ extension Result<[AvatarImageModel], Error> {
 extension AvatarImageModel {
     init(with avatar: Avatar) {
         id = avatar.id
-        source = .remote(url: avatar.url)
+        let avatarGridItemSize = Int(AvatarGridConstants.maxAvatarWidth * UITraitCollection.current.displayScale)
+        source = .remote(url: avatar.url(withSize: String(avatarGridItemSize)))
         state = .loaded
         isSelected = avatar.isSelected
     }

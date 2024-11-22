@@ -9,6 +9,7 @@ struct HorizontalAvatarGrid: View {
 
     let onAvatarTap: (AvatarImageModel) -> Void
     let onFailedUploadTapped: (FailedUploadInfo) -> Void
+    let onAvatarActionTap: (AvatarImageModel, AvatarAction) -> Void
 
     var body: some View {
         ScrollView(.horizontal) {
@@ -22,7 +23,10 @@ struct HorizontalAvatarGrid: View {
                             grid.selectedAvatar?.id == avatar.id
                         },
                         onAvatarTap: onAvatarTap,
-                        onFailedUploadTapped: onFailedUploadTapped
+                        onFailedUploadTapped: onFailedUploadTapped,
+                        onActionTap: { action in
+                            onAvatarActionTap(avatar, action)
+                        }
                     )
                 }
             }
@@ -47,6 +51,8 @@ struct HorizontalAvatarGrid: View {
     return HorizontalAvatarGrid(grid: grid) { avatar in
         grid.selectAvatar(withID: avatar.id)
     } onFailedUploadTapped: { _ in
+        // No op. Inside the preview.
+    } onAvatarActionTap: { _, _ in
         // No op. Inside the preview.
     }
 }

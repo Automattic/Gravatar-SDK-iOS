@@ -74,6 +74,24 @@ final class URLComponentsTests: XCTestCase {
         let componentsWithoutQueryItems = componentsWithQueryItems?.settingQueryItems([], shouldEncodePlusChar: true)
         XCTAssertNil(componentsWithoutQueryItems?.queryItems, "QueryItems should be nil")
     }
+
+    func testReplaceQueryItemWhenItemAlreadyExists() throws {
+        let urlComponents = try XCTUnwrap(URLComponents(string: "https://example.com/path?a=1&b=2"))
+        let newURL = urlComponents.replacingQueryItem(name: "a", value: "123").string
+        XCTAssertEqual(newURL, "https://example.com/path?a=123&b=2")
+    }
+
+    func testReplaceQueryItemWithNewItem() throws {
+        let urlComponents = try XCTUnwrap(URLComponents(string: "https://example.com/path?a=1&b=2"))
+        let newURL = urlComponents.replacingQueryItem(name: "c", value: "123").string
+        XCTAssertEqual(newURL, "https://example.com/path?a=1&b=2&c=123")
+    }
+
+    func testReplaceQueryItemWhenNoQueryItemExists() throws {
+        let urlComponents = try XCTUnwrap(URLComponents(string: "https://example.com/path"))
+        let newURL = urlComponents.replacingQueryItem(name: "a", value: "123").string
+        XCTAssertEqual(newURL, "https://example.com/path?a=123")
+    }
 }
 
 private struct TestQueryItems {

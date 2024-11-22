@@ -23,6 +23,7 @@ struct AvatarGrid<ImageEditor: ImageEditorView>: View {
     let onAvatarTap: (AvatarImageModel) -> Void
     let onImagePickerDidPickImage: (UIImage) -> Void
     let onFailedUploadTapped: (FailedUploadInfo) -> Void
+    let onAvatarActionTap: (AvatarImageModel, AvatarAction) -> Void
 
     var body: some View {
         LazyVGrid(columns: gridItems, spacing: AvatarGridConstants.avatarSpacing) {
@@ -45,7 +46,10 @@ struct AvatarGrid<ImageEditor: ImageEditorView>: View {
                         grid.selectedAvatar?.id == avatar.id
                     },
                     onAvatarTap: onAvatarTap,
-                    onFailedUploadTapped: onFailedUploadTapped
+                    onFailedUploadTapped: onFailedUploadTapped,
+                    onActionTap: { action in
+                        onAvatarActionTap(avatar, action)
+                    }
                 )
             }
         }
@@ -67,6 +71,8 @@ struct AvatarGrid<ImageEditor: ImageEditorView>: View {
         } onImagePickerDidPickImage: { image in
             grid.append(newAvatarModel(image))
         } onFailedUploadTapped: { _ in
+            // No op. inside the preview.
+        } onAvatarActionTap: { _, _ in
             // No op. inside the preview.
         }
         .padding()

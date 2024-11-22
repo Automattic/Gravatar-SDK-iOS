@@ -13,6 +13,7 @@ struct AvatarPickerAvatarView: View {
     let shouldSelect: () -> Bool
     let onAvatarTap: (AvatarImageModel) -> Void
     let onFailedUploadTapped: (FailedUploadInfo) -> Void
+    let onActionTap: (AvatarAction) -> Void
 
     var body: some View {
         AvatarView(
@@ -54,10 +55,42 @@ struct AvatarPickerAvatarView: View {
                 }
                 .cornerRadius(AvatarGridConstants.avatarCornerRadius)
             case .loaded:
-                EmptyView()
+                VStack {
+                    Spacer()
+                    HStack {
+                        Spacer()
+                        actionsMenu()
+                    }
+                }
             }
         }.onTapGesture {
             onAvatarTap(avatar)
+        }
+    }
+
+    func ellipsisView() -> some View {
+        Image("more-horizontal", bundle: Bundle.module).renderingMode(.template)
+            .tint(.white)
+            .background(Color(uiColor: UIColor.gravatarBlack.withAlphaComponent(0.4)))
+            .cornerRadius(2)
+            .padding(CGFloat.DS.Padding.half)
+    }
+
+    func actionsMenu() -> some View {
+        Menu {
+            ForEach(AvatarAction.allCases) { action in
+                Button(role: action.role) {
+                    onActionTap(action)
+                } label: {
+                    Label {
+                        Text(action.localizedTitle)
+                    } icon: {
+                        action.icon
+                    }
+                }
+            }
+        } label: {
+            ellipsisView()
         }
     }
 }
@@ -68,5 +101,6 @@ struct AvatarPickerAvatarView: View {
         false
     } onAvatarTap: { _ in
     } onFailedUploadTapped: { _ in
+    } onActionTap: { _ in
     }
 }
