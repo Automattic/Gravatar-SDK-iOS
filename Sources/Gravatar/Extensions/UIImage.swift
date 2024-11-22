@@ -39,6 +39,11 @@ extension UIImage {
 
     /// Describes how close to square an image's `size` is, by comparing the `shortEdge` and `longEdge` of the image.
     ///
+    /// This returns the same value for the same `UIImage` at different image scales. To account for floating point precision issues introduced when using
+    /// points
+    /// (`pixels / scale`), this calculation uses the underlying pixel counts (`points * scale`).
+    ///
+    /// ## Squareness
     /// `Squareness` is similar to `Aspect Ratio`, except that all values are in the range `0...1`
     /// - A square UIImage (`100 x 100`) has a `squareness` of `1`
     /// - A UIImage with a `size` of `100 x 200` has a `squareness of `0.5`
@@ -47,7 +52,7 @@ extension UIImage {
             return 1
         }
 
-        return shortEdge / longEdge
+        return (shortEdge * scale) / (longEdge * scale)
     }
 
     /// Returns the lenght of the shorter edge of an image

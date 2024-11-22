@@ -55,7 +55,8 @@ struct UIImageAdditionsTests {
             let squareness = nonSquareImage.squareness
 
             // Then
-            #expect(squareness == 0.5)
+
+            #expect(squareness == testImage.expectedSquareness)
         }
 
         @Test("Negative CGSize returns positive squareness", arguments: ScaleFactor.allCases)
@@ -98,7 +99,7 @@ struct UIImageAdditionsTests {
             let shortEdge = nonSquareImage.shortEdge
 
             // Then
-            #expect(shortEdge * scaleFactor.scale == 150)
+            #expect(shortEdge * scaleFactor.scale == testImage.expectedShortEdge)
         }
     }
 
@@ -125,7 +126,7 @@ struct UIImageAdditionsTests {
             let longEdge = nonSquareImage.longEdge
 
             // Then
-            #expect(longEdge * scaleFactor.scale == 300)
+            #expect(longEdge * scaleFactor.scale == testImage.expectedLongEdge)
         }
     }
 }
@@ -133,12 +134,54 @@ struct UIImageAdditionsTests {
 // MARK: - Helpers
 
 struct TestImage: CustomTestStringConvertible {
-    static let nonSquareImages: [TestImage] = [.portrait, .landscaope]
-    static let portrait: TestImage = .init(width: 150, height: 300)
-    static let landscaope: TestImage = .init(width: 300, height: 150)
+    static let nonSquareImages: [TestImage] = [.portrait, .landscape, .trickyAtScale3]
+
+    /// A test image with a portrait aspect ratio (`150 x 300`)
+    static let portrait: TestImage = .init(
+        width: 150,
+        height: 300,
+        expectedSquareness: 0.5,
+        expectedShortEdge: 150,
+        expectedLongEdge: 300
+    )
+
+    /// A test image with a landscape aspect ratio (`300 x 150`)
+    static let landscape: TestImage = .init(
+        width: 300,
+        height: 150,
+        expectedSquareness: 0.5,
+        expectedShortEdge: 150,
+        expectedLongEdge: 300
+    )
+
+    /// A test image with one value that is not divisible by `3` (`98 x 100`)
+    static let trickyAtScale3: TestImage = .init(
+        width: 98,
+        height: 100,
+        expectedSquareness: 0.98,
+        expectedShortEdge: 98,
+        expectedLongEdge: 100
+    )
 
     let width: CGFloat
     let height: CGFloat
+    let expectedSquareness: CGFloat?
+    let expectedShortEdge: CGFloat?
+    let expectedLongEdge: CGFloat?
+
+    init(
+        width: CGFloat,
+        height: CGFloat,
+        expectedSquareness: CGFloat? = nil,
+        expectedShortEdge: CGFloat? = nil,
+        expectedLongEdge: CGFloat? = nil
+    ) {
+        self.width = width
+        self.height = height
+        self.expectedSquareness = expectedSquareness
+        self.expectedShortEdge = expectedShortEdge
+        self.expectedLongEdge = expectedLongEdge
+    }
 
     func image(atScale scale: CGFloat) -> UIImage {
         createImage(widthInPixels: width, heightInPixels: height, scale: scale)
