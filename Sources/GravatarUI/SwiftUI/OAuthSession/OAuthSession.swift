@@ -15,6 +15,8 @@ public struct OAuthSession: Sendable {
     init(authenticationSession: AuthenticationSession = OldAuthenticationSession(), storage: SecureStorage = Keychain()) {
         self.authenticationSession = authenticationSession
         self.storage = storage
+        // override with dummy token that is not marked as expired yet
+        // overrideToken(KeychainToken(token: "dummy-expired-token"), for: Email("pinarolguc@gmail.com"))
     }
 
     public func hasSession(with email: Email) -> Bool {
@@ -144,6 +146,7 @@ enum OAuthError: Error {
     case couldNotStoreToken(Error)
     case decodingError(Error)
     case loggedInWithWrongEmail(email: String)
+    case sessionExpired
 }
 
 extension OAuthError {
@@ -268,4 +271,5 @@ private actor SessionEmailStorage {
 extension Notification.Name {
     static let authorizationFinished = Notification.Name("com.GravatarSDK.AuthorizationFinished")
     static let authorizationError = Notification.Name("com.GravatarSDK.AuthorizationFinishedWithError")
+    static let tokenExpiredError = Notification.Name("com.GravatarSDK.TokenExpired")
 }

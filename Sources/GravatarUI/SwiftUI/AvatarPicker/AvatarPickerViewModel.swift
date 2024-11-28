@@ -180,6 +180,14 @@ class AvatarPickerViewModel: ObservableObject {
             isAvatarsLoading = false
             gridResponseStatus = .success(())
         } catch {
+            switch error {
+            case APIError.responseError(reason: let reason) where reason.httpStatusCode == HTTPStatus.unauthorized.rawValue:
+                Task { @MainActor in
+                    NotificationCenter.default.post(name: .tokenExpiredError, object: email)
+                }
+            default:
+                break
+            }
             gridResponseStatus = .failure(error)
             isAvatarsLoading = false
         }

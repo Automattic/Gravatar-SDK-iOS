@@ -57,16 +57,23 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
 
     let authorizationFinishedNotification = NotificationCenter.default.publisher(for: .authorizationFinished)
     let authorizationErrorNotification = NotificationCenter.default.publisher(for: .authorizationError)
+    let tokenExpiredNotification = NotificationCenter.default.publisher(for: .tokenExpiredError)
 
     var body: some View {
         NavigationView {
-            if let token {
+            if let token, oauthError == nil {
                 editorView(with: token)
             } else {
                 noticeView()
                     .accumulateIntrinsicHeight()
             }
-        }.onReceive(authorizationFinishedNotification) { _ in
+        }.onReceive(tokenExpiredNotification) { notification in
+            guard let email = notification.object as? Email else { return }
+            oauthSession.markSessionAsExpired(with: email)
+            oauthError = .sessionExpired
+        }
+        .onReceive(authorizationFinishedNotification) { _ in
+            oauthError = nil
             onAuthenticationFinished()
         }.onReceive(authorizationErrorNotification) { notification in
             guard let error = notification.object as? OAuthError else { return }
@@ -85,10 +92,6 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
                 isPresented: $isPresented,
                 contentLayoutProvider: contentLayoutProvider,
                 customImageEditor: customImageEditor,
-                tokenErrorHandler: externalToken != nil ? nil : {
-                    oauthSession.markSessionAsExpired(with: email)
-                    performAuthentication()
-                },
                 avatarUpdatedHandler: avatarUpdatedHandler
             )
         }
@@ -100,14 +103,18 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
             if !isAuthenticating {
                 EmailText(email: email)
                 ContentLoadingErrorView(
-                    title: Constants.ErrorView.title(for: oauthError),
-                    subtext: Constants.ErrorView.subtext(for: oauthError),
+                    title: Constants.ErrorView.title(for: oauthError, isTokenExternal: externalToken != nil),
+                    subtext: Constants.ErrorView.subtext(for: oauthError, isTokenExternal: externalToken != nil),
                     image: nil,
                     actionButton: {
                         Button {
-                            performAuthentication()
+                            if externalToken != nil {
+                                isPresented = false
+                            } else {
+                                performAuthentication()
+                            }
                         } label: {
-                            CTAButtonView(Constants.ErrorView.buttonTitle(for: oauthError))
+                            CTAButtonView(Constants.ErrorView.buttonTitle(for: oauthError, isTokenExternal: externalToken != nil))
                         }
                     },
                     innerPadding: .init(
@@ -130,7 +137,10 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
             }
         )
         .task {
-            performAuthentication()
+            if oauthError == nil {
+                // automaticially open oauth flow if not previously failed.
+                performAuthentication()
+            }
         }
     }
 
@@ -154,9 +164,8 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
     }
 
     func onAuthenticationFinished() {
-        if let fetchedToken = oauthSession.sessionToken(with: email)?.token {
-            self.fetchedToken = fetchedToken
-            oauthError = nil
+        if let fetchedToken = oauthSession.sessionToken(with: email), !fetchedToken.isExpired {
+            self.fetchedToken = fetchedToken.token
         }
         isAuthenticating = false
     }
@@ -164,26 +173,30 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
 
 extension QuickEditorConstants {
     enum ErrorView {
-        static func title(for oauthError: OAuthError?) -> String {
+        static func title(for oauthError: OAuthError?, isTokenExternal: Bool) -> String {
             switch oauthError {
             case .loggedInWithWrongEmail:
                 Localized.WrongEmailError.title
+            case .sessionExpired:
+                Localized.SessionExpired.title
             default:
                 Localized.LogInError.title
             }
         }
 
-        static func subtext(for oauthError: OAuthError?) -> String {
+        static func subtext(for oauthError: OAuthError?, isTokenExternal: Bool) -> String {
             switch oauthError {
             case .loggedInWithWrongEmail(let email):
                 String(format: Localized.WrongEmailError.subtext, email)
+            case .sessionExpired:
+                isTokenExternal ? Localized.SessionExpired.Close.subtext : Localized.SessionExpired.LogIn.subtext
             default:
                 Localized.LogInError.subtext
             }
         }
 
-        static func buttonTitle(for oauthError: OAuthError?) -> String {
-            Localized.LogInError.buttonTitle
+        static func buttonTitle(for oauthError: OAuthError?, isTokenExternal: Bool) -> String {
+            isTokenExternal ? Localized.SessionExpired.Close.buttonTitle : Localized.LogInError.buttonTitle
         }
     }
 
@@ -219,6 +232,40 @@ extension QuickEditorConstants {
                 value: "To modify your Gravatar profile, you need to log in first.",
                 comment: "A message describing the error and advising the user to login again to resolve the issue"
             )
+        }
+
+        enum SessionExpired {
+            static let title = SDKLocalizedString(
+                "AvatarPicker.ContentLoading.Failure.SessionExpired.title",
+                value: "Session expired",
+                comment: "Title of a message advising the user that their login session has expired."
+            )
+            enum Close {
+                static let buttonTitle = SDKLocalizedString(
+                    "AvatarPicker.ContentLoading.Failure.SessionExpired.Close.buttonTitle",
+                    value: "Close",
+                    comment: "Title of a button that will close the Avatar Picker, appearing beneath a message that advises the user that their login session has expired."
+                )
+
+                static let subtext = SDKLocalizedString(
+                    "AvatarPicker.ContentLoading.Failure.SessionExpired.Close.subtext",
+                    value: "Sorry, it looks like your session has expired. Make sure you're logged in to update your Avatar.",
+                    comment: "A message describing the error and advising the user to login again to resolve the issue"
+                )
+            }
+
+            enum LogIn {
+                static let buttonTitle = SDKLocalizedString(
+                    "AvatarPicker.ContentLoading.Failure.SessionExpired.LogIn.buttonTitle",
+                    value: "Log in",
+                    comment: "Title of a button that will begin the process of authenticating the user, appearing beneath a message that advises the user that their login session has expired."
+                )
+                static let subtext = SDKLocalizedString(
+                    "AvatarPicker.ContentLoading.Failure.SessionExpired.LogIn.subtext",
+                    value: "Session expired for security reasons. Please log in to update your Avatar.",
+                    comment: "A message describing the error and advising the user to login again to resolve the issue"
+                )
+            }
         }
     }
 }

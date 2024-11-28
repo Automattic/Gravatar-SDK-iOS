@@ -27,7 +27,6 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
 
     var contentLayoutProvider: AvatarPickerContentLayoutProviding
     var customImageEditor: ImageEditorBlock<ImageEditor>?
-    var tokenErrorHandler: (() -> Void)?
     var avatarUpdatedHandler: (() -> Void)?
 
     init(
@@ -36,13 +35,11 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
         isPresented: Binding<Bool>,
         contentLayoutProvider: AvatarPickerContentLayoutProviding = AvatarPickerContentLayoutType.vertical,
         customImageEditor: ImageEditorBlock<ImageEditor>? = nil as NoCustomEditorBlock?,
-        tokenErrorHandler: (() -> Void)? = nil,
         avatarUpdatedHandler: (() -> Void)? = nil
     ) {
         self._isPresented = isPresented
         self.contentLayoutProvider = contentLayoutProvider
         self.customImageEditor = customImageEditor
-        self.tokenErrorHandler = tokenErrorHandler
         self.avatarUpdatedHandler = avatarUpdatedHandler
         self._authToken = authToken
         self._model = StateObject(wrappedValue: AvatarPickerViewModel(email: email, authToken: authToken.wrappedValue))
@@ -55,13 +52,11 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
         isPresented: Binding<Bool>,
         contentLayoutProvider: AvatarPickerContentLayoutProviding = AvatarPickerContentLayoutType.vertical,
         customImageEditor: ImageEditorBlock<ImageEditor>? = nil as NoCustomEditorBlock?,
-        tokenErrorHandler: (() -> Void)? = nil,
         avatarUpdatedHandler: (() -> Void)? = nil
     ) {
         self._isPresented = isPresented
         self.contentLayoutProvider = contentLayoutProvider
         self.customImageEditor = customImageEditor
-        self.tokenErrorHandler = tokenErrorHandler
         self.avatarUpdatedHandler = avatarUpdatedHandler
         self._authToken = .constant(nil)
         self._model = StateObject(
@@ -211,28 +206,6 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
                     actionButton: {
                         imagePicker {
                             CTAButtonView(Localized.buttonUploadImage)
-                        }
-                    }
-                )
-            case .failure(APIError.responseError(reason: let reason)) where reason.httpStatusCode == HTTPStatus.unauthorized.rawValue:
-                let buttonTitle = tokenErrorHandler == nil ?
-                    Localized.ContentLoading.Failure.SessionExpired.Close.buttonTitle :
-                    Localized.ContentLoading.Failure.SessionExpired.LogIn.buttonTitle
-                let subtext: String = tokenErrorHandler == nil ?
-                    Localized.ContentLoading.Failure.SessionExpired.Close.subtext :
-                    Localized.ContentLoading.Failure.SessionExpired.LogIn.subtext
-                contentLoadingErrorView(
-                    title: Localized.ContentLoading.Failure.SessionExpired.title,
-                    subtext: subtext,
-                    actionButton: {
-                        Button {
-                            if let tokenErrorHandler {
-                                tokenErrorHandler()
-                            } else {
-                                isPresented = false
-                            }
-                        } label: {
-                            CTAButtonView(buttonTitle)
                         }
                     }
                 )
@@ -562,40 +535,6 @@ private enum AvatarPicker {
             }
 
             enum Failure {
-                enum SessionExpired {
-                    static let title = SDKLocalizedString(
-                        "AvatarPicker.ContentLoading.Failure.SessionExpired.title",
-                        value: "Session expired",
-                        comment: "Title of a message advising the user that their login session has expired."
-                    )
-                    enum Close {
-                        static let buttonTitle = SDKLocalizedString(
-                            "AvatarPicker.ContentLoading.Failure.SessionExpired.Close.buttonTitle",
-                            value: "Close",
-                            comment: "Title of a button that will close the Avatar Picker, appearing beneath a message that advises the user that their login session has expired."
-                        )
-
-                        static let subtext = SDKLocalizedString(
-                            "AvatarPicker.ContentLoading.Failure.SessionExpired.Close.subtext",
-                            value: "Sorry, it looks like your session has expired. Make sure you're logged in to update your Avatar.",
-                            comment: "A message describing the error and advising the user to login again to resolve the issue"
-                        )
-                    }
-
-                    enum LogIn {
-                        static let buttonTitle = SDKLocalizedString(
-                            "AvatarPicker.ContentLoading.Failure.SessionExpired.LogIn.buttonTitle",
-                            value: "Log in",
-                            comment: "Title of a button that will begin the process of authenticating the user, appearing beneath a message that advises the user that their login session has expired."
-                        )
-                        static let subtext = SDKLocalizedString(
-                            "AvatarPicker.ContentLoading.Failure.SessionExpired.LogIn.subtext",
-                            value: "Session expired for security reasons. Please log in to update your Avatar.",
-                            comment: "A message describing the error and advising the user to login again to resolve the issue"
-                        )
-                    }
-                }
-
                 enum Retry {
                     static let title = SDKLocalizedString(
                         "AvatarPicker.ContentLoading.Failure.Retry.title",
