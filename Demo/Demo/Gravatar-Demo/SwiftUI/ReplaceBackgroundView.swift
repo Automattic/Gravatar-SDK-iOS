@@ -165,39 +165,12 @@ struct ReplaceBackgroundView: View {
             }
         }
         .sheet(isPresented: $isSharing) {
-            if let image = outputImage {
-                ShareSheet(items: [image])
+            if let url = try? outputImage?.image.saveToFile() {
+                ShareSheet(items: [url])
                     .presentationDetents([.fraction(0.6), .large])
             }
         }
     }
-    
-  /*  @ViewBuilder
-    func photosPicker<Label: View>(photoSelected: @escaping ((UIImage) -> Void), @ViewBuilder label: @Sendable () -> Label) -> some View {
-        PhotosPicker(
-            selection: $selectedItem,
-            matching: .images,
-            photoLibrary: .shared()
-        ) {
-            label()
-        }
-        .sheet(item: $imagePickerSelectedItem, content: { item in
-            ImageCropperView(image: item.image) { newImage in
-                photoSelected(newImage)
-                imagePickerSelectedItem = nil
-            } onCancel: {
-                imagePickerSelectedItem = nil
-            }
-        })
-        .onChange(of: selectedItem) { oldItem, newItem in
-            Task {
-                if let data = try? await newItem?.loadTransferable(type: Data.self),
-                   let uiImage = UIImage(data: data) {
-                    imagePickerSelectedItem = .init(id: newItem?.itemIdentifier ?? UUID().uuidString, image: uiImage)
-                }
-            }
-        }
-    }*/
 
     func updateOutputImage() {
         print("Updating output image...")
