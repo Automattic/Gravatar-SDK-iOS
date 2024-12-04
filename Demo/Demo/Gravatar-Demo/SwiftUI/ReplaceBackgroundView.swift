@@ -15,6 +15,11 @@ struct ReplaceBackgroundView: View {
     @State private var selectedSegment = "Image"
     @State private var selectedColor: Color = Color(uiColor: UIColor(red: 240/255, green: 184/255, blue: 73/255, alpha: 1))
     @State private var selectedImageNumber: Int = 1
+    @State private var customBackgroundImage: UIImage?
+    var shouldShowTooltip: Bool {
+        return customBackgroundImage == nil && attemptSelect0
+    }
+    @State private var attemptSelect0: Bool = false
 
     var body: some View {
         ScrollView {
@@ -33,30 +38,13 @@ struct ReplaceBackgroundView: View {
                         .background(Color.gray.opacity(0.5))
                         .padding(12)
                 }
-
-                PhotosPicker(
-                    selection: $selectedItem,
-                    matching: .images,
-                    photoLibrary: .shared()
-                ) {
+                PhotoPickerView(onImageSelected: { image in
+                    print("photosPicker first one called")
+                    self.croppedImage = image
+                }, label: {
                     Text("Select a Photo")
-                }
-                .sheet(item: $imagePickerSelectedItem, content: { item in
-                    ImageCropperView(image: item.image) { newImage in
-                        self.croppedImage = newImage
-                        imagePickerSelectedItem = nil
-                    } onCancel: {
-                        imagePickerSelectedItem = nil
-                    }
                 })
-                .onChange(of: selectedItem) { oldItem, newItem in
-                    Task {
-                        if let data = try? await newItem?.loadTransferable(type: Data.self),
-                           let uiImage = UIImage(data: data) {
-                            imagePickerSelectedItem = .init(id: newItem?.itemIdentifier ?? UUID().uuidString, image: uiImage)
-                        }
-                    }
-                }
+
                 Divider()
                     .padding(.bottom, 8)
                     .padding(.horizontal, 16)
@@ -81,6 +69,51 @@ struct ReplaceBackgroundView: View {
                     VStack {
                         ScrollView(.horizontal) {
                             LazyHStack(spacing: 4) {
+                                ZStack(alignment: .bottomTrailing) {
+                                    Image(uiImage: customBackgroundImage ?? UIImage())
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(width: 100, height: 100)
+                                        .padding(4)
+                                    
+                                        .border(selectedImageNumber == 0 ? Color.blue : Color.clear, width: 3)
+                                        .background(Color.gray.opacity(0.2))
+                                        .overlay(alignment: .trailing) {
+                                            if shouldShowTooltip {
+                                                Text("Pick Image👇")
+                                                    .foregroundColor(Color(UIColor.label))
+                                                    .font(.caption)
+                                                    .fontWeight(.bold)
+                                                    .padding(.horizontal, 2)
+                                            }
+                                        }
+                                        .onTapGesture {
+                                            if customBackgroundImage != nil {
+                                                selectedImageNumber = 0
+                                                attemptSelect0 = false
+                                            }
+                                            else {
+                                                attemptSelect0 = true
+                                            }
+                                        }
+                                    
+                                    PhotoPickerView(onImageSelected: { image in
+                                          print("photosPicker second one called")
+                                          customBackgroundImage = image
+                                    }, label: {
+                                        Image(systemName: "photo.on.rectangle.angled.fill")
+                                            .renderingMode(.template)
+                                            .tint(.white)
+                                            .padding(.horizontal, 4)
+                                            .padding(.vertical, 6)
+                                            .background(Color(uiColor: .black.withAlphaComponent(0.4)))
+                                            .cornerRadius(2)
+                                            .padding(4)
+                                            .foregroundColor(Color(.white))
+                                    })
+
+                                }
+
                                 ForEach(1...56, id: \.self) { number in
                                     if let image = UIImage(named: "bg-\(number)") {
                                         Image(uiImage: image)
@@ -95,10 +128,12 @@ struct ReplaceBackgroundView: View {
                                     }
                                 }
                             }
+                            .padding(.vertical, 4)
                         }
                     }
                     .padding(.horizontal, 16)
                 }
+
                 Spacer()
             }
         }
@@ -112,6 +147,9 @@ struct ReplaceBackgroundView: View {
             updateOutputImage()
         }
         .onChange(of: croppedImage) { _, _ in
+            updateOutputImage()
+        }
+        .onChange(of: customBackgroundImage) { _, _ in
             updateOutputImage()
         }
         .navigationTitle("Replace Background")
@@ -133,6 +171,33 @@ struct ReplaceBackgroundView: View {
             }
         }
     }
+    
+  /*  @ViewBuilder
+    func photosPicker<Label: View>(photoSelected: @escaping ((UIImage) -> Void), @ViewBuilder label: @Sendable () -> Label) -> some View {
+        PhotosPicker(
+            selection: $selectedItem,
+            matching: .images,
+            photoLibrary: .shared()
+        ) {
+            label()
+        }
+        .sheet(item: $imagePickerSelectedItem, content: { item in
+            ImageCropperView(image: item.image) { newImage in
+                photoSelected(newImage)
+                imagePickerSelectedItem = nil
+            } onCancel: {
+                imagePickerSelectedItem = nil
+            }
+        })
+        .onChange(of: selectedItem) { oldItem, newItem in
+            Task {
+                if let data = try? await newItem?.loadTransferable(type: Data.self),
+                   let uiImage = UIImage(data: data) {
+                    imagePickerSelectedItem = .init(id: newItem?.itemIdentifier ?? UUID().uuidString, image: uiImage)
+                }
+            }
+        }
+    }*/
 
     func updateOutputImage() {
         print("Updating output image...")
@@ -154,7 +219,14 @@ struct ReplaceBackgroundView: View {
                 }
             }
         } else if selectedSegment == "Image" {
-            guard let image = UIImage(named: "bg-\(selectedImageNumber)") else { return }
+            var bgImage: UIImage?
+            if selectedImageNumber == 0 {
+                bgImage = customBackgroundImage
+            }
+            else if let image = UIImage(named: "bg-\(selectedImageNumber)") {
+                bgImage = image
+            }
+            guard let image = bgImage else { return }
             croppedImage.replaceBackground(with: image) {  image in
                 Task { @MainActor in
                     if let image {
