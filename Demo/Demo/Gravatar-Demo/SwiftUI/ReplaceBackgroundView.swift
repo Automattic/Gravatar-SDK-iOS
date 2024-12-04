@@ -7,32 +7,43 @@ struct ReplaceBackgroundView: View {
         static let backgroundPictureCount = 56
     }
     @State private var selectedItem: PhotosPickerItem?
-    @State private var selectedImage: UIImage?
+    @State private var croppedImage: UIImage?
+    @State private var outputImage: ImagePickerItem?
+
     @State private var isSharing: Bool = false
     @State var imagePickerSelectedItem: ImagePickerItem?
+    @State private var selectedSegment = "Image"
+    @State private var selectedColor: Color = Color(uiColor: UIColor(red: 240/255, green: 184/255, blue: 73/255, alpha: 1))
+    @State private var selectedImageNumber: Int = 1
 
     var body: some View {
         ScrollView {
             VStack() {
-                VStack {
-                    Image(uiImage: selectedImage ?? UIImage())
+                if let image = outputImage?.image {
+                    Image(uiImage: image)
                         .resizable()
                         .scaledToFit()
                         .frame(width: 300, height: 300)
+                        .background(Color.blue.opacity(0.5))
+                        .padding(12)
                 }
-                .background(Color.gray.opacity(0.5))
-                .padding(12)
+                else {
+                    Spacer()
+                        .frame(width: 300, height: 300)
+                        .background(Color.gray.opacity(0.5))
+                        .padding(12)
+                }
 
                 PhotosPicker(
                     selection: $selectedItem,
                     matching: .images,
                     photoLibrary: .shared()
                 ) {
-                    Label("Select a Photo", image: "image")
+                    Text("Select a Photo")
                 }
                 .sheet(item: $imagePickerSelectedItem, content: { item in
-                    ImageCropperView(image: item.image) { croppedImage in
-                        self.selectedImage = croppedImage
+                    ImageCropperView(image: item.image) { newImage in
+                        self.croppedImage = newImage
                         imagePickerSelectedItem = nil
                     } onCancel: {
                         imagePickerSelectedItem = nil
@@ -46,8 +57,62 @@ struct ReplaceBackgroundView: View {
                         }
                     }
                 }
+                Divider()
+                    .padding(.bottom, 8)
+                    .padding(.horizontal, 16)
+
+                Text("Backgrounds").font(.headline)
+
+                Picker("Options", selection: $selectedSegment) {
+                    Label("Image", systemImage: "photo.fill").tag("Image")
+                    Label("Color", systemImage: "paintbrush.fill").tag("Color")
+                }
+                .pickerStyle(SegmentedPickerStyle())
+                .padding(.vertical, 8)
+                .padding(.horizontal, 16)
+
+                // Content Based on Selection
+                if selectedSegment == "Color" {
+                    VStack {
+                        ColorPicker("Pick a Color", selection: $selectedColor)
+                            .padding()
+                    }
+                } else if selectedSegment == "Image" {
+                    VStack {
+                        ScrollView(.horizontal) {
+                            LazyHStack(spacing: 4) {
+                                ForEach(1...56, id: \.self) { number in
+                                    if let image = UIImage(named: "bg-\(number)") {
+                                        Image(uiImage: image)
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(width: 100, height: 100)
+                                            .padding(4)
+                                            .border(selectedImageNumber == number ? Color.blue : Color.clear, width: 3)
+                                            .onTapGesture {
+                                                selectedImageNumber = number
+                                            }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    .padding(.horizontal, 16)
+                }
                 Spacer()
             }
+        }
+        .onChange(of: selectedSegment) { _, _ in
+            updateOutputImage()
+        }
+        .onChange(of: selectedColor) { _, _ in
+            updateOutputImage()
+        }
+        .onChange(of: selectedImageNumber) { _, _ in
+            updateOutputImage()
+        }
+        .onChange(of: croppedImage) { _, _ in
+            updateOutputImage()
         }
         .navigationTitle("Replace Background")
         .toolbar {
@@ -58,15 +123,56 @@ struct ReplaceBackgroundView: View {
                     Image(systemName: "square.and.arrow.up")
                         .font(.body)
                 }
-                .disabled(selectedImage == nil) // Disable button if no image
+                .disabled(outputImage == nil) // Disable button if no image
             }
         }
         .sheet(isPresented: $isSharing) {
-            if let image = selectedImage {
+            if let image = outputImage {
                 ShareSheet(items: [image])
                     .presentationDetents([.fraction(0.6), .large])
             }
         }
+    }
+
+    func updateOutputImage() {
+        print("Updating output image...")
+
+        guard let croppedImage else {
+            print("Cropped image is nil")
+            return
+        }
+
+        if selectedSegment == "Color" {
+            guard let bgImage = createImage(color: UIColor(selectedColor),
+                                            size: .init(width: 600, height: 600)) else { return }
+            croppedImage.replaceBackground(with: bgImage) {  image in
+                Task { @MainActor in
+                    if let image {
+                        outputImage = .init(id: UUID().uuidString, image: image)
+                        print("Output image updated with color background")
+                    }
+                }
+            }
+        } else if selectedSegment == "Image" {
+            guard let image = UIImage(named: "bg-\(selectedImageNumber)") else { return }
+            croppedImage.replaceBackground(with: image) {  image in
+                Task { @MainActor in
+                    if let image {
+                        outputImage = .init(id: UUID().uuidString, image: image)
+                        print("Output image updated with selected background image")
+                    }
+                }
+            }
+        }
+    }
+
+    private func createImage(color: UIColor = .blue, size: CGSize) -> UIImage? {
+        UIGraphicsBeginImageContextWithOptions(size, false, 0)
+        color.setFill()
+        UIRectFill(CGRectMake(0, 0, size.width, size.height))
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return image
     }
 }
 

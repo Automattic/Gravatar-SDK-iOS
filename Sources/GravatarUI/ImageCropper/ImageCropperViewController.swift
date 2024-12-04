@@ -59,7 +59,7 @@ public class ImageCropperViewController: UIViewController, UIScrollViewDelegate 
         fatalError("init(coder:) has not been implemented")
     }
 
-    public override func viewDidLoad() {
+    override public func viewDidLoad() {
         super.viewDidLoad()
         let appearance = UINavigationBarAppearance()
         navigationController?.navigationBar.standardAppearance = appearance
@@ -190,7 +190,7 @@ public class ImageCropperViewController: UIViewController, UIScrollViewDelegate 
         onCancel?()
     }
 
-    public override func viewDidLayoutSubviews() {
+    override public func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
         // Update the scrollViewFrame in the overlay view when the layout changes
