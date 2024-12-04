@@ -1,6 +1,6 @@
 import UIKit
 
-class ImageCropperViewController: UIViewController, UIScrollViewDelegate {
+public class ImageCropperViewController: UIViewController, UIScrollViewDelegate {
     private enum Constants {
         static let backgroundColor = UIColor.black
         static let croperFrameSize: CGFloat = 320
@@ -59,7 +59,7 @@ class ImageCropperViewController: UIViewController, UIScrollViewDelegate {
         fatalError("init(coder:) has not been implemented")
     }
 
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
         let appearance = UINavigationBarAppearance()
         navigationController?.navigationBar.standardAppearance = appearance
@@ -190,7 +190,7 @@ class ImageCropperViewController: UIViewController, UIScrollViewDelegate {
         onCancel?()
     }
 
-    override func viewDidLayoutSubviews() {
+    public override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
         // Update the scrollViewFrame in the overlay view when the layout changes
@@ -202,11 +202,11 @@ class ImageCropperViewController: UIViewController, UIScrollViewDelegate {
 
     // MARK: - UIScrollViewDelegate Methods
 
-    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
+    public func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         imageView
     }
 
-    func scrollViewDidEndZooming(_ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat) {
+    public func scrollViewDidEndZooming(_ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat) {
         // NO-OP:
         // Required to enable scrollView Zooming
     }

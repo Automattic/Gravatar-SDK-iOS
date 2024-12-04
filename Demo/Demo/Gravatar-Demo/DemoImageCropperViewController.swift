@@ -84,9 +84,24 @@ extension DemoImageCropperViewController: PHPickerViewControllerDelegate {
         }
     }
     
+    private func createImage(color: UIColor = .blue, size: CGSize) -> UIImage? {
+        UIGraphicsBeginImageContextWithOptions(size, false, 0)
+        color.setFill()
+        UIRectFill(CGRectMake(0, 0, size.width, size.height))
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return image
+    }
+    
     // Show the cropper with the selected image
     func showCropper(with image: UIImage) {
-        let cropperVC = ImageCropperViewController.wrappedInNavigationViewController(image: image) { image in
+        guard let dummyBackgroundImage = createImage(color: .butterscotchYellow, size: .init(width: 500, height: 500)) else { return }
+        image.replaceBackground(with: dummyBackgroundImage) { newImage in
+            Task { @MainActor in
+                self.croppedImageView.image = newImage
+            }
+        }
+       /* let cropperVC = ImageCropperViewController.wrappedInNavigationViewController(image: image) { image in
             self.croppedImageView.image = image
             self.sizeLabel.text = "\(image.size.width) x \(image.size.height) - scale: \(image.scale) - \(image.calculateSizeInMB())MB"
             self.dismiss(animated: true)
@@ -94,7 +109,7 @@ extension DemoImageCropperViewController: PHPickerViewControllerDelegate {
             self.dismiss(animated: true)
         }
 
-        present(cropperVC, animated: true, completion: nil)
+        present(cropperVC, animated: true, completion: nil)*/
     }
 }
 

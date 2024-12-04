@@ -8,6 +8,7 @@ struct ContentView: View {
         case avatarView = "Avatar view"
         case avatarPickerView = "Avatar picker view"
         case oauth = "Profile editor with oauth"
+        case replaceBackground = "Replace background"
 
         var id: Int {
             self.rawValue.hashValue
@@ -50,6 +51,8 @@ struct ContentView: View {
             DemoAvatarPickerView()
         case .oauth:
             DemoProfileEditorView()
+        case .replaceBackground:
+            ReplaceBackgroundView()
         }
     }
 }
