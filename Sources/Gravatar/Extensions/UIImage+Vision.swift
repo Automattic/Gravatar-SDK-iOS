@@ -1,10 +1,9 @@
-import UIKit
-@preconcurrency import Vision
 import CoreImage
 import CoreImage.CIFilterBuiltins
+import UIKit
+@preconcurrency import Vision
 
 extension UIImage {
-
     public func replaceBackground(with newBackground: UIImage, completion: @escaping @Sendable (UIImage?) -> Void) {
         let inputImage = self
         guard let cgImage = inputImage.cgImage else {
@@ -19,43 +18,43 @@ extension UIImage {
         request.outputPixelFormat = kCVPixelFormatType_OneComponent8
         #if targetEnvironment(simulator)
         if #available(iOS 17.0, *) {
-          let allDevices = MLComputeDevice.allComputeDevices
+            let allDevices = MLComputeDevice.allComputeDevices
 
-          for device in allDevices {
-            if(device.description.contains("MLCPUComputeDevice")){
-              request.setComputeDevice(.some(device), for: .main)
-              break
+            for device in allDevices {
+                if device.description.contains("MLCPUComputeDevice") {
+                    request.setComputeDevice(.some(device), for: .main)
+                    break
+                }
             }
-          }
         } else {
-          // Fallback on earlier versions
-          request.usesCPUOnly = true
+            // Fallback on earlier versions
+            request.usesCPUOnly = true
         }
         #endif
 
         let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
 
-        //DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-          //  guard let self else { return }
-            do {
-                try handler.perform([request])
-                
-                guard let mask = request.results?.first else {
-                    completion(nil)
-                    return
-                }
-                let maskBuffer = mask.pixelBuffer
-                let newImage = self.putBackground(withMask: maskBuffer, newBackground: newBackground)
-               // DispatchQueue.main.async {
-                    completion(newImage)
-               // }
-            } catch {
-                print("Error performing segmentation: \(error)")
-                DispatchQueue.main.async {
-                    completion(nil)
-                }
+        // DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+        //  guard let self else { return }
+        do {
+            try handler.perform([request])
+
+            guard let mask = request.results?.first else {
+                completion(nil)
+                return
             }
-      //  }
+            let maskBuffer = mask.pixelBuffer
+            let newImage = self.putBackground(withMask: maskBuffer, newBackground: newBackground)
+            // DispatchQueue.main.async {
+            completion(newImage)
+            // }
+        } catch {
+            print("Error performing segmentation: \(error)")
+            DispatchQueue.main.async {
+                completion(nil)
+            }
+        }
+        //  }
     }
 
     private func putBackground(withMask maskBuffer: CVPixelBuffer, newBackground background: UIImage) -> UIImage? {
@@ -77,6 +76,11 @@ extension UIImage {
         blendFilter.maskImage = maskScaled
 
         guard let output = blendFilter.outputImage else { return nil }
-        return UIImage(ciImage: output, scale: self.scale, orientation: self.imageOrientation)
+
+        // Render the CIImage into a CGImage
+        let context = CIContext()
+        guard let cgImage = context.createCGImage(output, from: output.extent) else { return nil }
+
+        return UIImage(cgImage: cgImage, scale: self.scale, orientation: self.imageOrientation)
     }
 }
