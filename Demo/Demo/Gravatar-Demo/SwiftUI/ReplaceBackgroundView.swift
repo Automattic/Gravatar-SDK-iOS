@@ -16,10 +16,6 @@ struct ReplaceBackgroundView: View {
     @State private var selectedColor: Color = Color(uiColor: UIColor(red: 240/255, green: 184/255, blue: 73/255, alpha: 1))
     @State private var selectedImageNumber: Int = 1
     @State private var customBackgroundImage: UIImage?
-    var shouldShowTooltip: Bool {
-        return customBackgroundImage == nil && attemptSelect0
-    }
-    @State private var attemptSelect0: Bool = false
 
     var body: some View {
         ScrollView {
@@ -69,7 +65,7 @@ struct ReplaceBackgroundView: View {
                     VStack {
                         ScrollView(.horizontal) {
                             LazyHStack(spacing: 4) {
-                                ZStack(alignment: .bottomTrailing) {
+                                ZStack(alignment: customBackgroundImage == nil ? .center : .bottomTrailing) {
                                     Image(uiImage: customBackgroundImage ?? UIImage())
                                         .resizable()
                                         .scaledToFit()
@@ -78,22 +74,10 @@ struct ReplaceBackgroundView: View {
                                     
                                         .border(selectedImageNumber == 0 ? Color.blue : Color.clear, width: 3)
                                         .background(Color.gray.opacity(0.2))
-                                        .overlay(alignment: .trailing) {
-                                            if shouldShowTooltip {
-                                                Text("Pick Image👇")
-                                                    .foregroundColor(Color(UIColor.label))
-                                                    .font(.caption)
-                                                    .fontWeight(.bold)
-                                                    .padding(.horizontal, 2)
-                                            }
-                                        }
+
                                         .onTapGesture {
                                             if customBackgroundImage != nil {
                                                 selectedImageNumber = 0
-                                                attemptSelect0 = false
-                                            }
-                                            else {
-                                                attemptSelect0 = true
                                             }
                                         }
                                     
@@ -104,8 +88,8 @@ struct ReplaceBackgroundView: View {
                                         Image(systemName: "photo.on.rectangle.angled.fill")
                                             .renderingMode(.template)
                                             .tint(.white)
-                                            .padding(.horizontal, 4)
-                                            .padding(.vertical, 6)
+                                            .padding(.horizontal, customBackgroundImage == nil ? 16 : 4)
+                                            .padding(.vertical, customBackgroundImage == nil ? 18 : 6)
                                             .background(Color(uiColor: .black.withAlphaComponent(0.4)))
                                             .cornerRadius(2)
                                             .padding(4)
@@ -211,7 +195,7 @@ struct ReplaceBackgroundView: View {
         }
     }
 
-    private func createImage(color: UIColor = .blue, size: CGSize) -> UIImage? {
+    private func createImage(color: UIColor = .clear, size: CGSize) -> UIImage? {
         UIGraphicsBeginImageContextWithOptions(size, false, 0)
         color.setFill()
         UIRectFill(CGRectMake(0, 0, size.width, size.height))
