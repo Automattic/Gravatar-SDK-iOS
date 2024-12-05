@@ -25,7 +25,6 @@ struct ReplaceBackgroundView: View {
                         .resizable()
                         .scaledToFit()
                         .frame(width: 300, height: 300)
-                        .background(Color.blue.opacity(0.5))
                         .padding(12)
                 }
                 else {
@@ -149,7 +148,7 @@ struct ReplaceBackgroundView: View {
             }
         }
         .sheet(isPresented: $isSharing) {
-            if let url = try? outputImage?.image.saveToFile() {
+            if let url = try? outputImage?.image.saveToFile(format: .png) {
                 ShareSheet(items: [url])
                     .presentationDetents([.fraction(0.6), .large])
             }
