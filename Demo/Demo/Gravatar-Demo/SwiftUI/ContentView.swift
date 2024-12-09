@@ -7,6 +7,7 @@ struct ContentView: View {
     enum Page: String, CaseIterable, Identifiable {
         case avatarView = "Avatar view"
         case avatarPickerView = "Avatar picker view"
+        case faceDetectionView = "Face detection view"
         case oauth = "Profile editor with oauth"
 
         var id: Int {
@@ -50,6 +51,8 @@ struct ContentView: View {
             DemoAvatarPickerView()
         case .oauth:
             DemoProfileEditorView()
+        case .faceDetectionView:
+            DemoFaceDetectionView()
         }
     }
 }
