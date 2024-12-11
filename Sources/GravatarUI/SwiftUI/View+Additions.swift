@@ -118,11 +118,11 @@ extension View {
 
     /// Caution: `InnerHeightPreferenceKey` accumulates the values so DO NOT use this on  a View and one of its ancestors at the same time.
     @ViewBuilder
-    func accumulateIntrinsicHeight() -> some View {
+    func accumulateIntrinsicHeight<K>(key: K.Type = InnerHeightPreferenceKey.self) -> some View where K: PreferenceKey, K.Value == CGFloat {
         self.background {
             GeometryReader { proxy in
                 Color.clear.preference(
-                    key: InnerHeightPreferenceKey.self,
+                    key: key,
                     value: proxy.size.height
                 )
             }

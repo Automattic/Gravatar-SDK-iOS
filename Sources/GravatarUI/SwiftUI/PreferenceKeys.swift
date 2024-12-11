@@ -8,6 +8,13 @@ struct InnerHeightPreferenceKey: PreferenceKey {
     }
 }
 
+struct AltTextHeightPreferenceKey: PreferenceKey {
+    static let defaultValue: CGFloat = .zero
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+        value += nextValue()
+    }
+}
+
 protocol SizeClassPreferenceKey: PreferenceKey {}
 
 /// A `PreferenceKey` to tell the `ViewModifier` about the size class.

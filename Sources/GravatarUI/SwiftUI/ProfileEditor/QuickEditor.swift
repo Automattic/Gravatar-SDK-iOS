@@ -122,7 +122,8 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
             actionButtonDisabled: true,
             onDoneButtonPressed: {
                 isPresented = false
-            }
+            },
+            preferenceKey: InnerHeightPreferenceKey.self
         )
         .task {
             performAuthentication()

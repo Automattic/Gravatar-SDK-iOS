@@ -50,7 +50,8 @@ struct AltTextEditorView: View {
             actionButtonDisabled: false,
             onDoneButtonPressed: {
                 onCancel()
-            }
+            },
+            preferenceKey: AltTextHeightPreferenceKey.self
         )
         .fullScreenCover(item: $safariURL) { url in
             SafariView(url: url)

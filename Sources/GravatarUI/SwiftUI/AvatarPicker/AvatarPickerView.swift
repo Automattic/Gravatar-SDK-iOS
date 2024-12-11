@@ -153,7 +153,8 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
             actionButtonDisabled: model.profileModel?.profileURL == nil,
             onDoneButtonPressed: {
                 isPresented = false
-            }
+            },
+            preferenceKey: InnerHeightPreferenceKey.self
         )
         .fullScreenCover(item: $safariURL) { url in
             SafariView(url: url)
