@@ -43,7 +43,7 @@ steps:
   #################
   - group: "📦 Build and Test Swift Package"
     steps:
-      - label: "📦 Build and Test Swift Package ($CURRENT_SWIFT_VERSION)"
+      - label: "📦 Build and Test Swift Package (Swift $CURRENT_SWIFT_VERSION)"
         command: |
           validate_swift_package test device_model:"$CURRENT_DEVICE" os:"$CURRENT_OS"
         key: "test_swift_current"
@@ -51,7 +51,7 @@ steps:
           IMAGE_ID: "$CURRENT_IMAGE_ID"
         plugins: [$CI_TOOLKIT]
 
-      - label: "📦 Build and Test Swift Package ($SWIFT_6_0_VERSION)"
+      - label: "📦 Build and Test Swift Package (Swift $SWIFT_6_0_VERSION)"
         command: |
           validate_swift_package test device_model:"$SWIFT_6_0_DEVICE" os:"$SWIFT_6_0_OS"
         key: "test_swift_6_0"
@@ -59,7 +59,7 @@ steps:
           IMAGE_ID: "$SWIFT_6_0_IMAGE_ID"
         plugins: [$CI_TOOLKIT]
         
-      - label: "📦 Build and Test Swift Package ($SWIFT_5_9_VERSION)"
+      - label: "📦 Build and Test Swift Package (Swift $SWIFT_5_9_VERSION)"
         command: |
           validate_swift_package test device_model:"$SWIFT_5_9_DEVICE" os:"$SWIFT_5_9_OS"
         key: "test_swift_5_9"
@@ -73,18 +73,18 @@ steps:
   - group: "🔬 Validate Podspecs"
     steps:
       - <<: *validate_pods
-        label: "🔬 Validate Podspecs ($CURRENT_SWIFT_VERSION)"
+        label: "🔬 Validate Podspecs (Swift $CURRENT_SWIFT_VERSION)"
         key: "validate"
         env:
           IMAGE_ID: "$CURRENT_IMAGE_ID"
 
       - <<: *validate_pods
-        label: "🔬 Validate Podspecs ($SWIFT_6_0_VERSION)"
+        label: "🔬 Validate Podspecs (Swift $SWIFT_6_0_VERSION)"
         env:
           IMAGE_ID: "$SWIFT_6_0_IMAGE_ID"
 
       - <<: *validate_pods
-        label: "🔬 Validate Podspecs ($SWIFT_5_9_VERSION)"
+        label: "🔬 Validate Podspecs (Swift $SWIFT_5_9_VERSION)"
         env:
           IMAGE_ID: "$SWIFT_5_9_IMAGE_ID"
 
@@ -112,7 +112,7 @@ steps:
       # Build/Upload SwiftUI Demo
       ###################
       - <<: *demo_build_swiftUI
-        label: "🛠️ Build SwiftUI Demo"
+        label: "🛠️ Build SwiftUI Demo (Swift $CURRENT_SWIFT_VERSION)"
         key: build_swiftui
         depends_on: test_swift_current
         env:
@@ -122,13 +122,13 @@ steps:
           - ".build/artifacts/*.dSYM.zip"
 
       - <<: *demo_build_swiftUI
-        label: "🛠️ Build SwiftUI Demo ($SWIFT_6_0_VERSION)"
+        label: "🛠️ Build SwiftUI Demo (Swift $SWIFT_6_0_VERSION)"
         depends_on: test_swift_6_0
         env:
           IMAGE_ID: "$SWIFT_6_0_IMAGE_ID"
 
       - <<: *demo_build_swiftUI
-        label: "🛠️ Build SwiftUI Demo ($SWIFT_5_9_VERSION)"
+        label: "🛠️ Build SwiftUI Demo (Swift $SWIFT_5_9_VERSION)"
         depends_on: test_swift_5_9
         env:
           IMAGE_ID: "$SWIFT_5_9_IMAGE_ID"
@@ -143,7 +143,7 @@ steps:
       # Build/Upload UIKit Demo
       ###################
       - <<: *demo_build_uikit
-        label: "🛠️ Build UIKit Demo"
+        label: "🛠️ Build UIKit Demo (Swift $CURRENT_SWIFT_VERSION)"
         key: build_uikit
         depends_on: test_swift_current
         env:
@@ -153,14 +153,14 @@ steps:
           - ".build/artifacts/*.dSYM.zip"
 
       - <<: *demo_build_uikit
-        label: "🛠️ Build UIKit Demo ($SWIFT_6_0_VERSION)"
+        label: "🛠️ Build UIKit Demo (Swift $SWIFT_6_0_VERSION)"
         key: build_uikit_swift_6_0
         depends_on: test_swift_6_0
         env:
           IMAGE_ID: "$SWIFT_6_0_IMAGE_ID"
 
       - <<: *demo_build_uikit
-        label: "🛠️ Build UIKit Demo ($SWIFT_5_9_VERSION)"
+        label: "🛠️ Build UIKit Demo (Swift $SWIFT_5_9_VERSION)"
         key: build_uikit_swift_5_9
         depends_on: test_swift_5_9
         env:
