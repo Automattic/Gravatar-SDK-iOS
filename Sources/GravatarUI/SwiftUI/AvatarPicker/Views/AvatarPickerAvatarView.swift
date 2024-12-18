@@ -84,11 +84,13 @@ struct AvatarPickerAvatarView: View {
         Menu {
             Section {
                 button(for: .share)
+                #if canImport(ImagePlayground)
                 if #available(iOS 18.2, *) {
                     if EnvironmentValues().supportsImagePlayground {
                         button(for: .playground)
                     }
                 }
+                #endif
             }
             Section {
                 button(for: .altText)

@@ -163,11 +163,15 @@ extension View {
         onCompletion: @escaping (URL) -> Void,
         onCancellation: (() -> Void)? = nil
     ) -> some View {
+        #if canImport(ImagePlayground)
         if #available(iOS 18.2, *) {
             self.imagePlaygroundSheet(isPresented: isPresented, sourceImage: sourceImage, onCompletion: onCompletion, onCancellation: onCancellation)
         } else {
             self
         }
+        #else
+        self
+        #endif
     }
 
     @ViewBuilder

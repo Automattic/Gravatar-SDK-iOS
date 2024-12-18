@@ -118,6 +118,7 @@ struct AltTextEditorView: View {
         }.font(.footnote)
     }
 
+    @MainActor
     var imageView: some View {
         AvatarView(
             url: avatar?.url,

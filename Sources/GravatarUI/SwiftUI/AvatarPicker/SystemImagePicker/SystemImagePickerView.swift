@@ -1,4 +1,6 @@
+#if canImport(ImagePlayground)
 import ImagePlayground
+#endif
 import PhotosUI
 import SwiftUI
 
@@ -20,11 +22,13 @@ private struct ImagePicker<Label, ImageEditor: ImageEditorView>: View where Labe
 
         static var allCases: [SourceType] {
             var cases: [SourceType] = [.camera, .photoLibrary]
+            #if canImport(ImagePlayground)
             if #available(iOS 18.2, *) {
                 if EnvironmentValues().supportsImagePlayground {
                     cases.append(.playground)
                 }
             }
+            #endif
             return cases
         }
 
@@ -121,7 +125,13 @@ private struct ImagePicker<Label, ImageEditor: ImageEditorView>: View where Labe
     }
 
     private func pickerDidSelectImage(_ item: ImagePickerItem) {
+        #if swift(>=6)
         UIApplication.shared.dismissKeyboard()
+        #else
+        Task { @MainActor in
+            UIApplication.shared.dismissKeyboard()
+        }
+        #endif
         imagePickerSelectedItem = item
     }
 }

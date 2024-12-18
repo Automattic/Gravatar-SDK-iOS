@@ -28,12 +28,10 @@ struct CustomizableImageEditor<ImageEditor: ImageEditorView>: View {
 }
 
 #Preview {
-    if let image = UIImage(systemName: "person") {
-        CustomizableImageEditor<NoCustomEditor>(
-            item: .init(id: "", image: image),
-            customEditor: nil
-        ) { _ in
-        }
-        onCancel: {}
+    CustomizableImageEditor<NoCustomEditor>(
+        item: .init(id: "", image: UIImage(systemName: "person")!),
+        customEditor: nil
+    ) { _ in
     }
+    onCancel: {}
 }
