@@ -50,10 +50,10 @@ end
 
 platform :ios do
   desc 'Builds the project and runs tests'
-  lane :test do |device_model: "default", os: "default"|
-    device_model = IPHONE_MODEL if device_model == "default"
-    os = OS if os == "default"
-    
+  lane :test do |device_model: 'default', os: 'default'|
+    device_model = IPHONE_MODEL if device_model == 'default'
+    os = OS if os == 'default'
+
     run_tests(
       package_path: '.',
       scheme: 'Gravatar-Package',
