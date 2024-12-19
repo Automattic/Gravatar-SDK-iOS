@@ -15,17 +15,5 @@ export SWIFT_6_0_OS="18.0"
 # Swift 5.10
 export SWIFT_5_10_IMAGE_ID="xcode-15.4"
 export SWIFT_5_10_VERSION="5_10"  # Use `_` instead of `.` since these are used in labels
-export SWIFT_5_10_DEVICE="default"
+export SWIFT_5_10_DEVICE="default"  # Use the default value in Fastlane
 export SWIFT_5_10_OS="17.5"
-
-# Swift 5.9
-export SWIFT_5_9_IMAGE_ID="xcode-15.2-xl"
-export SWIFT_5_9_VERSION="5_9"  # Use `_` instead of `.` since these are used in labels
-export SWIFT_5_9_DEVICE="default"  # Use the default value in Fastlane
-export SWIFT_5_9_OS="17.2"
-
-# Current Development Environment
-export CURRENT_IMAGE_ID=$SWIFT_5_10_IMAGE_ID
-export CURRENT_SWIFT_VERSION=$SWIFT_5_10_VERSION
-export CURRENT_DEVICE=$SWIFT_5_10_DEVICE
-export CURRENT_OS="default"  # Use the default value in Fastlane
