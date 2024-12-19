@@ -23,7 +23,7 @@ package struct CheckTokenAuthorizationService: Sendable {
         var request = URLRequest(url: url).settingAuthorizationHeaderField(with: token)
         request.httpMethod = "GET"
         do {
-            let (data, _) = try await client.fetchData(with: request)
+            let (data, _) = try await client.data(with: request)
             let result: AssociatedResponse = try data.decode()
             return result.associated
         } catch {

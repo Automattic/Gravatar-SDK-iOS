@@ -16,10 +16,6 @@ public enum QuickEditorScope: Sendable {
     }
 }
 
-private enum QuickEditorConstants {
-    static let title: String = "Gravatar" // defined here to avoid translations
-}
-
 struct QuickEditor<ImageEditor: ImageEditorView>: View {
     fileprivate typealias Constants = QuickEditorConstants
 
@@ -55,6 +51,9 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
         self.avatarUpdatedHandler = avatarUpdatedHandler
     }
 
+    let authorizationFinishedNotification = NotificationCenter.default.publisher(for: .authorizationFinished)
+    let authorizationErrorNotification = NotificationCenter.default.publisher(for: .authorizationError)
+
     var body: some View {
         NavigationView {
             if let token {
@@ -63,6 +62,12 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
                 noticeView()
                     .accumulateIntrinsicHeight()
             }
+        }.onReceive(authorizationFinishedNotification) { _ in
+            onAuthenticationFinished()
+        }.onReceive(authorizationErrorNotification) { notification in
+            guard let error = notification.object as? OAuthError else { return }
+            oauthError = error
+            onAuthenticationFinished()
         }
     }
 
@@ -114,11 +119,11 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
                 ProgressView()
             }
         }.gravatarNavigation(
-            title: Constants.title,
             actionButtonDisabled: true,
             onDoneButtonPressed: {
                 isPresented = false
-            }
+            },
+            preferenceKey: InnerHeightPreferenceKey.self
         )
         .task {
             performAuthentication()
@@ -131,8 +136,7 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
             isAuthenticating = true
             if !oauthSession.hasValidSession(with: email) {
                 do {
-                    _ = try await oauthSession.retrieveAccessToken(with: email)
-                    oauthError = nil
+                    try await oauthSession.retrieveAccessToken(with: email)
                 } catch OAuthError.oauthResponseError(_, let code) where code == .canceledLogin {
                     // ignore the error if the user has cancelled the operation.
                 } catch let error as OAuthError {
@@ -141,13 +145,20 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
                     oauthError = nil
                 }
             }
-            fetchedToken = oauthSession.sessionToken(with: email)?.token
-            isAuthenticating = false
+            onAuthenticationFinished()
         }
+    }
+
+    func onAuthenticationFinished() {
+        if let fetchedToken = oauthSession.sessionToken(with: email)?.token {
+            self.fetchedToken = fetchedToken
+            oauthError = nil
+        }
+        isAuthenticating = false
     }
 }
 
-extension QuickEditorConstants {
+enum QuickEditorConstants {
     enum ErrorView {
         static func title(for oauthError: OAuthError?) -> String {
             switch oauthError {

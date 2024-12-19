@@ -67,7 +67,7 @@ public actor ImageDownloadService: ImageDownloader, Sendable {
 
     private func fetchAndProcessImage(request: URLRequest, processor: ImageProcessor) async throws -> UIImage {
         do {
-            let (data, _) = try await client.fetchData(with: request)
+            let (data, _) = try await client.data(with: request)
             try Task.checkCancellation()
             guard let image = processor.process(data) else {
                 throw ImageFetchingError.imageProcessorFailed

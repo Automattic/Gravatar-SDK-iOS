@@ -41,6 +41,7 @@ class ToastManager: ObservableObject {
 
 enum ToastType: Int {
     case info
+    case warning
     case error
 }
 
@@ -56,4 +57,12 @@ struct ToastItem: Identifiable, Equatable {
     let message: String
     let type: ToastType
     let stackingBehavior: ToastStackingBehavior
+    let shouldShowShadow: Bool
+
+    init(message: String, type: ToastType, stackingBehavior: ToastStackingBehavior = .avoidStackingWithSameMessage, shouldShowShadow: Bool = true) {
+        self.message = message
+        self.type = type
+        self.stackingBehavior = stackingBehavior
+        self.shouldShowShadow = shouldShowShadow
+    }
 }

@@ -21,6 +21,11 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
     @State private var safariURL: URL?
     @State private var uploadError: FailedUploadInfo?
     @State private var isUploadErrorDialogPresented: Bool = false
+    @State private var avatarToDelete: AvatarImageModel?
+    @State private var shareSheetItem: AvatarShareItem?
+    @State private var playgroundInputItem: PlaygroundInputItem?
+    @State private var altTextEditorAvatar: AvatarImageModel?
+    @State private var shouldDisplayNoSelectedAvatarWarning: Bool = false
 
     var contentLayoutProvider: AvatarPickerContentLayoutProviding
     var customImageEditor: ImageEditorBlock<ImageEditor>?
@@ -75,6 +80,8 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
             VStack(spacing: 0) {
                 EmailText(email: model.email)
                     .accumulateIntrinsicHeight()
+                noSelectedAvatarWarning()
+                    .accumulateIntrinsicHeight()
                 profileView()
                     .accumulateIntrinsicHeight()
                 ScrollView {
@@ -115,6 +122,30 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
                 } message: { error in
                     Text(error.errorMessage)
                 }
+                .confirmationDialog(
+                    Localized.deletionConfirmationTitle,
+                    isPresented: Binding(
+                        get: { avatarToDelete != nil },
+                        set: { if !$0 { avatarToDelete = nil } }
+                    ),
+                    titleVisibility: .visible,
+                    presenting: avatarToDelete
+                ) { avatar in
+                    Button(role: .destructive) {
+                        Task {
+                            // The animation won't run during the action-sheet dismissal
+                            // This delay will allow the avatar deletion animation to run.
+                            try? await Task.sleep(nanoseconds: 10_000_000)
+                            let isDeletingSelected = model.grid.selectedAvatar == avatar
+                            if await model.delete(avatar), isDeletingSelected {
+                                notifyAvatarSelection()
+                            }
+                        }
+                    } label: {
+                        Label(Localized.deletionConfirmationButtonTitle, systemImage: "trash")
+                    }
+                    Button(Localized.dismissButtonTitle, role: .cancel) {}
+                }
             }
 
             ToastContainerView(toastManager: model.toastManager)
@@ -122,22 +153,60 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
         }
         .preference(key: VerticalSizeClassPreferenceKey.self, value: verticalSizeClass)
         .gravatarNavigation(
-            title: Constants.title,
             actionButtonDisabled: model.profileModel?.profileURL == nil,
-            onActionButtonPressed: {
-                openProfileEditInSafari()
-            },
             onDoneButtonPressed: {
                 isPresented = false
-            }
+            },
+            preferenceKey: InnerHeightPreferenceKey.self
         )
-        .fullScreenCover(item: $safariURL) { url in
-            SafariView(url: url)
-                .edgesIgnoringSafeArea(.all)
-        }
+        .presentSafariView(url: $safariURL, colorScheme: colorScheme)
         .onChange(of: authToken ?? "") { newValue in
             model.update(authToken: newValue)
         }
+        .onChange(of: model.backendSelectedAvatarURL) { _ in
+            notifyAvatarSelection()
+        }
+        .onChange(of: model.selectedAvatarURL) { _ in
+            updateShouldDisplayNoSelectedAvatarWarning()
+        }
+        .onChange(of: model.grid.avatars.count) { _ in
+            updateShouldDisplayNoSelectedAvatarWarning()
+        }
+        .sheet(item: $shareSheetItem) { item in
+            ShareSheet(items: [item.fileURL])
+                .colorScheme(colorScheme)
+                .presentationDetentsIfAvailable(
+                    [contentLayoutProvider.shareSheetInitialDetent, .large]
+                )
+        }
+        .modifier(ImagePlaygroundModifier(
+            isPresented: Binding(
+                get: { playgroundInputItem != nil },
+                set: { if !$0 { playgroundInputItem = nil } }
+            ),
+            customEditor: customImageEditor,
+            sourceImage: playgroundInputItem?.image,
+            onCompletion: { image in
+                uploadImage(image)
+            }
+        ))
+        .altTextSheet(
+            model: $altTextEditorAvatar,
+            email: model.email,
+            onSave: { modifiedModel in
+                altTextEditorAvatar = nil
+                Task {
+                    await model.update(altText: modifiedModel.altText, for: modifiedModel)
+                }
+            },
+            onCancel: {
+                altTextEditorAvatar = nil
+            }
+        )
+    }
+
+    private func updateShouldDisplayNoSelectedAvatarWarning() {
+        shouldDisplayNoSelectedAvatarWarning = model.selectedAvatarURL == nil && model.grid.avatars.count > 0
     }
 
     private func header() -> some View {
@@ -288,6 +357,9 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
                 onFailedUploadTapped: { failedUploadInfo in
                     uploadError = failedUploadInfo
                     isUploadErrorDialogPresented = true
+                },
+                onAvatarActionTap: { avatar, action in
+                    handleAvatarAction(avatar: avatar, action: action)
                 }
             )
             .padding(.horizontal, Constants.horizontalPadding)
@@ -301,6 +373,9 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
                 onFailedUploadTapped: { failedUploadInfo in
                     uploadError = failedUploadInfo
                     isUploadErrorDialogPresented = true
+                },
+                onAvatarActionTap: { avatar, action in
+                    handleAvatarAction(avatar: avatar, action: action)
                 }
             )
             .padding(.top, .DS.Padding.medium)
@@ -313,20 +388,45 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
         }
     }
 
+    func handleAvatarAction(avatar: AvatarImageModel, action: AvatarAction) {
+        switch action {
+        case .share:
+            Task {
+                if let fileURL = await model.fetchAndSaveToFile(avatar: avatar) {
+                    shareSheetItem = AvatarShareItem(id: avatar.id, fileURL: fileURL)
+                }
+            }
+        case .delete:
+            avatarToDelete = avatar
+        case .playground:
+            Task {
+                if let image = await model.fetchOriginalSizeAvatar(for: avatar) {
+                    playgroundInputItem = PlaygroundInputItem(id: avatar.id, image: Image(uiImage: image))
+                }
+            }
+        case .altText:
+            showAltTextEditor(with: avatar)
+        case .rating(let rating):
+            Task {
+                await model.update(rating: rating, for: avatar)
+            }
+        }
+    }
+
+    func showAltTextEditor(with avatar: AvatarImageModel) {
+        altTextEditorAvatar = avatar
+    }
+
     func selectAvatar(with id: String) {
         Task {
             if await model.selectAvatar(with: id) != nil {
-                if let avatarUpdatedHandler {
-                    // Delay to wait until the server has updated the selected avatar before updating the UI.
-                    // Without the delay the cache busting remains insufficient to capture the new avatar.
-                    // With less than 800 ms, we can still see the issue.
-                    // Hopefully, we can remove this delay soon.
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
-                        avatarUpdatedHandler()
-                    }
-                }
+                notifyAvatarSelection()
             }
         }
+    }
+
+    func notifyAvatarSelection() {
+        avatarUpdatedHandler?()
     }
 
     private func content() -> some View {
@@ -356,9 +456,21 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
         safariURL = model.profileModel?.profileURL
     }
 
-    private func openProfileEditInSafari() {
-        guard let url = URL(string: "https://gravatar.com/profile") else { return }
-        safariURL = url
+    @ViewBuilder
+    private func noSelectedAvatarWarning() -> some View {
+        if shouldDisplayNoSelectedAvatarWarning {
+            Toast(toast: .init(
+                message: Localized.noImageSelectedMessage,
+                type: .warning,
+                shouldShowShadow: false
+            )) { _ in
+                withAnimation {
+                    shouldDisplayNoSelectedAvatarWarning = false
+                }
+            }
+            .padding(.horizontal, Constants.horizontalPadding)
+            .padding(.bottom, .DS.Padding.single)
+        }
     }
 
     @ViewBuilder
@@ -410,7 +522,6 @@ private enum AvatarPicker {
     enum Constants {
         static let horizontalPadding: CGFloat = .DS.Padding.double
         static let lightModeShadowColor = Color(uiColor: UIColor.rgba(25, 30, 35, alpha: 0.2))
-        static let title: String = "Gravatar" // defined here to avoid translations
         static let vStackVerticalSpacing: CGFloat = .DS.Padding.medium
         static let profileViewTopSpacing: CGFloat = .DS.Padding.double
     }
@@ -446,7 +557,21 @@ private enum AvatarPicker {
             value: "Try again",
             comment: "Title of a button that allows the user to try loading their avatars again"
         )
-
+        static let deletionConfirmationTitle = SDKLocalizedString(
+            "AvatarPicker.Deletion.Confirmation.title",
+            value: "Are you sure you want to delete this image?",
+            comment: "Title of the confirmation dialog to delete an avatar"
+        )
+        static let deletionConfirmationButtonTitle = SDKLocalizedString(
+            "AvatarPicker.Deletion.Confirmation.ctaButtonTitle",
+            value: "Delete",
+            comment: "The title button which confirms the avatar deletion."
+        )
+        static let noImageSelectedMessage = SDKLocalizedString(
+            "AvatarPicker.NoImageSelected.message",
+            value: "No image selected. Please select one or the default will be used.",
+            comment: "Message displayed when no image is selected"
+        )
         enum Header {
             static let title = SDKLocalizedString(
                 "AvatarPicker.Header.title",
@@ -564,15 +689,15 @@ private enum AvatarPicker {
     }
 
     let avatarImageModels: [AvatarImageModel] = [
-        .init(id: "0", source: .local(image: UIImage()), state: .loading),
-        .init(id: "1", source: .remote(url: "https://gravatar.com/userimage/110207384/aa5f129a2ec75162cee9a1f0c472356a.jpeg?size=256")),
-        .init(id: "2", source: .remote(url: "https://gravatar.com/userimage/110207384/db73834576b01b69dd8da1e29877ca07.jpeg?size=256")),
-        .init(id: "3", source: .remote(url: "https://gravatar.com/userimage/110207384/3f7095bf2580265d1801d128c6410016.jpeg?size=256")),
-        .init(id: "4", source: .remote(url: "https://gravatar.com/userimage/110207384/fbbd335e57862e19267679f19b4f9db8.jpeg?size=256")),
-        .init(id: "5", source: .remote(url: "https://gravatar.com/userimage/110207384/96c6950d6d8ce8dd1177a77fe738101e.jpeg?size=256")),
-        .init(id: "6", source: .remote(url: "https://gravatar.com/userimage/110207384/4a4f9385b0a6fa5c00342557a098f480.jpeg?size=256")),
-        .init(id: "7", source: .local(image: UIImage()), state: .error(supportsRetry: true, errorMessage: "Something went wrong.")),
-        .init(id: "8", source: .local(image: UIImage()), state: .error(supportsRetry: false, errorMessage: "Something went wrong.")),
+        .preview_init(id: "0", source: .local(image: UIImage()), state: .loading),
+        .preview_init(id: "1", source: .remote(url: "https://gravatar.com/userimage/110207384/aa5f129a2ec75162cee9a1f0c472356a.jpeg?size=256")),
+        .preview_init(id: "2", source: .remote(url: "https://gravatar.com/userimage/110207384/db73834576b01b69dd8da1e29877ca07.jpeg?size=256")),
+        .preview_init(id: "3", source: .remote(url: "https://gravatar.com/userimage/110207384/3f7095bf2580265d1801d128c6410016.jpeg?size=256")),
+        .preview_init(id: "4", source: .remote(url: "https://gravatar.com/userimage/110207384/fbbd335e57862e19267679f19b4f9db8.jpeg?size=256")),
+        .preview_init(id: "5", source: .remote(url: "https://gravatar.com/userimage/110207384/96c6950d6d8ce8dd1177a77fe738101e.jpeg?size=256")),
+        .preview_init(id: "6", source: .remote(url: "https://gravatar.com/userimage/110207384/4a4f9385b0a6fa5c00342557a098f480.jpeg?size=256")),
+        .preview_init(id: "7", source: .local(image: UIImage()), state: .error(supportsRetry: true, errorMessage: "Something went wrong.")),
+        .preview_init(id: "8", source: .local(image: UIImage()), state: .error(supportsRetry: false, errorMessage: "Something went wrong.")),
     ]
     let selectedImageID = "5"
     let profileModel = PreviewModel()

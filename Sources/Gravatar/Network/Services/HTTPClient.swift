@@ -8,7 +8,7 @@ protocol HTTPClient: Sendable {
     /// Performs a data request using the  information provided,  and delivers the result asynchronously.
     /// - Parameter request: A URL request object that provides request-specific information such as the URL and cache policy.
     /// - Returns: An asynchronously-delivered tuple that contains the URL contents as a Data instance, and a HTTPURLResponse.
-    func fetchData(with request: URLRequest) async throws -> (Data, HTTPURLResponse)
+    func data(with request: URLRequest) async throws -> (Data, HTTPURLResponse)
 
     /// Uploads data to a URL based on the specified URL request and delivers the result asynchronously.
     /// - Parameters:

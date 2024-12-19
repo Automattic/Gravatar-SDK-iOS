@@ -33,8 +33,12 @@ class AvatarGridModel: ObservableObject {
 
     func setState(to state: AvatarImageModel.State, onAvatarWithID id: String) {
         guard let imageModel = model(with: id) else { return }
-        let toggledModel = imageModel.settingStatus(to: state)
+        let toggledModel = imageModel.updating { $0.state = state }
         replaceModel(withID: id, with: toggledModel)
+    }
+
+    func insert(_ newModel: AvatarImageModel, at index: Int) {
+        avatars.insert(newModel, at: index)
     }
 
     func append(_ newModel: AvatarImageModel) {
@@ -50,7 +54,9 @@ class AvatarGridModel: ObservableObject {
             selectedAvatar = nil
             return
         }
-        selectedAvatar = model(with: selectedID)
+        if let selectedModel = model(with: selectedID) {
+            selectedAvatar = selectedModel
+        }
     }
 
     func setAvatars(_ avatars: [AvatarImageModel]) {
@@ -60,7 +66,12 @@ class AvatarGridModel: ObservableObject {
         }
     }
 
-    func deleteModel(_ id: String) {
+    func deleteModel(_ id: String) -> Int? {
+        guard let index = avatars.firstIndex(where: { $0.id == id }) else { return nil }
         avatars.removeAll { $0.id == id }
+        if selectedAvatar?.id == id {
+            selectedAvatar = nil
+        }
+        return index
     }
 }

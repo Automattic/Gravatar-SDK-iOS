@@ -44,6 +44,10 @@ extension UIColor {
     static let bovineGray: UIColor = .rgba(80, 87, 94)
     static let errorBackgroundRed: UIColor = .rgba(244, 162, 162)
     static let alertRed: UIColor = .rgba(204, 24, 24)
+    static let chocolateBrown: UIColor = .rgba(73, 31, 0)
+    static let harvestYellow: UIColor = .rgba(225, 183, 123)
+    static let yellowishWhite: UIColor = .rgba(254, 248, 238)
+    static let butterscotchYellow: UIColor = rgba(240, 184, 73)
 
     static func rgba(_ red: CGFloat, _ green: CGFloat, _ blue: CGFloat, alpha: CGFloat = 1.0) -> UIColor {
         UIColor(red: red / 255, green: green / 255, blue: blue / 255, alpha: alpha)

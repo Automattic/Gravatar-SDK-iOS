@@ -2,16 +2,17 @@ import Gravatar
 import SwiftUI
 
 @MainActor
-public struct AvatarView<LoadingView: View>: View {
+public struct AvatarView<LoadingView: View, Placeholder: View>: View {
     @ViewBuilder private let loadingView: (() -> LoadingView)?
     @Binding private var forceRefresh: Bool
     @State private var isLoading: Bool = false
     private var url: URL?
-    private let placeholder: Image?
+    private let placeholderView: (() -> Placeholder)?
     private let cache: ImageCaching
     private let urlSession: URLSession
     private let transaction: Transaction
 
+    @available(*, deprecated, message: "Use the initializer with `placeholderView: (() -> Placeholder)?` instead.")
     public init(
         url: URL?,
         placeholder: Image?,
@@ -20,9 +21,33 @@ public struct AvatarView<LoadingView: View>: View {
         forceRefresh: Binding<Bool> = .constant(false),
         loadingView: (() -> LoadingView)?,
         transaction: Transaction = Transaction()
+    ) where Placeholder == AnyView {
+        self.url = url
+        if let placeholder {
+            self.placeholderView = {
+                AnyView(placeholder.resizable())
+            }
+        } else {
+            self.placeholderView = nil
+        }
+        self.cache = cache
+        self.loadingView = loadingView
+        self.urlSession = urlSession
+        self._forceRefresh = forceRefresh
+        self.transaction = transaction
+    }
+
+    public init(
+        url: URL?,
+        placeholderView: (() -> Placeholder)? = nil,
+        cache: ImageCaching = ImageCache.shared,
+        urlSession: URLSession = .shared,
+        forceRefresh: Binding<Bool> = .constant(false),
+        loadingView: (() -> LoadingView)?,
+        transaction: Transaction = Transaction()
     ) {
         self.url = url
-        self.placeholder = placeholder
+        self.placeholderView = placeholderView
         self.cache = cache
         self.loadingView = loadingView
         self.urlSession = urlSession
@@ -57,9 +82,9 @@ public struct AvatarView<LoadingView: View>: View {
         case .success(let image):
             image.resizable()
         case .failure, .empty:
-            placeholder?.resizable()
+            placeholderView?()
         @unknown default:
-            placeholder?.resizable()
+            placeholderView?()
         }
     }
 }

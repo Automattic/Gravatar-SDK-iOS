@@ -37,6 +37,10 @@ public struct Profile: Codable, Hashable, Sendable {
     public private(set) var lastName: String?
     /// Whether user is an organization. This is only provided in authenticated API requests.
     public private(set) var isOrganization: Bool?
+    /// The header image used in the main profile card.
+    public private(set) var headerImage: String?
+    /// The profile background color.
+    public private(set) var backgroundColor: String?
     /// A list of links the user has added to their profile. This is only provided in authenticated API requests.
     public private(set) var links: [Link]?
     /// A list of interests the user has added to their profile. This is only provided in authenticated API requests.
@@ -71,6 +75,8 @@ public struct Profile: Codable, Hashable, Sendable {
         firstName: String? = nil,
         lastName: String? = nil,
         isOrganization: Bool? = nil,
+        headerImage: String? = nil,
+        backgroundColor: String? = nil,
         links: [Link]? = nil,
         interests: [Interest]? = nil,
         payments: ProfilePayments? = nil,
@@ -97,6 +103,8 @@ public struct Profile: Codable, Hashable, Sendable {
         self.firstName = firstName
         self.lastName = lastName
         self.isOrganization = isOrganization
+        self.headerImage = headerImage
+        self.backgroundColor = backgroundColor
         self.links = links
         self.interests = interests
         self.payments = payments
@@ -125,6 +133,8 @@ public struct Profile: Codable, Hashable, Sendable {
         case firstName = "first_name"
         case lastName = "last_name"
         case isOrganization = "is_organization"
+        case headerImage = "header_image"
+        case backgroundColor = "background_color"
         case links
         case interests
         case payments
@@ -156,6 +166,8 @@ public struct Profile: Codable, Hashable, Sendable {
         try container.encodeIfPresent(firstName, forKey: .firstName)
         try container.encodeIfPresent(lastName, forKey: .lastName)
         try container.encodeIfPresent(isOrganization, forKey: .isOrganization)
+        try container.encodeIfPresent(headerImage, forKey: .headerImage)
+        try container.encodeIfPresent(backgroundColor, forKey: .backgroundColor)
         try container.encodeIfPresent(links, forKey: .links)
         try container.encodeIfPresent(interests, forKey: .interests)
         try container.encodeIfPresent(payments, forKey: .payments)

@@ -1,7 +1,13 @@
-/* Translation-Revision-Date: 2024-10-17 09:54:03+0000 */
+/* Translation-Revision-Date: 2024-12-04 09:54:09+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
+
+/* An option in the avatar menu that deletes the avatar */
+"AvatarPicker.AvatarAction.delete" = "削除";
+
+/* An option in the avatar menu that shares the avatar */
+"AvatarPicker.AvatarAction.share" = "共有...";
 
 /* Title of a message advising the user that something went wrong while trying to log in. */
 "AvatarPicker.ContentLoading.Failure.LogInError.title" = "ログインが必須です";
@@ -48,6 +54,12 @@
 /* Title of a message advising the user to setup their avatar */
 "AvatarPicker.ContentLoading.success.title" = "アバターを設定しましょう";
 
+/* The title button which confirms the avatar deletion. */
+"AvatarPicker.Deletion.Confirmation.ctaButtonTitle" = "削除";
+
+/* Title of the confirmation dialog to delete an avatar */
+"AvatarPicker.Deletion.Confirmation.title" = "この画像を削除してもよろしいですか ?";
+
 /* The title of the dismiss button on a confirmation dialog. */
 "AvatarPicker.Dismiss.title" = "閉じる";
 
@@ -72,11 +84,17 @@
 /* Title of a button that will take you to your Gravatar profile, with an arrow indicating that this action will cause you to leave this view */
 "AvatarPickerProfile.Button.ViewProfile.title" = "プロフィールを表示→";
 
+/* This error message shows when the user attempts to delete an avatar and fails. */
+"AvatarPickerViewModel.Delete.Error" = "画像の削除中にエラーが発生しました。";
+
+/* This error message shows when the user attempts to share an avatar and fails. */
+"AvatarPickerViewModel.Share.Fail" = "アバターの共有中にエラーが発生しました。";
+
 /* This error message shows when the user attempts to pick a different avatar and fails. */
 "AvatarPickerViewModel.Update.Fail" = "アバターの変更中にエラーが発生しました。";
 
 /* This confirmation message shows when the user picks a different avatar. */
-"AvatarPickerViewModel.Update.Success" = "アバターを更新しました。 すべてのサイトで表示されるまでに数分かかります。";
+"AvatarPickerViewModel.Update.Success" = "アバターを更新しました。 すべての場所で表示されるまでには数分かかる可能性があります。";
 
 /* A generic error message to show on an error dialog when the upload fails. */
 "AvatarPickerViewModel.Upload.Error.message" = "画像のアップロード中にエラーが発生しました。";
@@ -110,4 +128,7 @@
 
 /* An option in a menu that display the user's Photo Library and allow them to choose a photo from it */
 "SystemImagePickerView.Source.PhotoLibrary.title" = "写真を選択";
+
+/* An option to show the image playground */
+"SystemImagePickerView.Source.Playground.title" = "Playground";
 

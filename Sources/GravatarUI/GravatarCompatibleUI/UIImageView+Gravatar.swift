@@ -132,6 +132,7 @@ extension GravatarWrapper where Component: UIImageView {
     ///   - rating: Image rating accepted to be downloaded.
     ///   - preferredSize: Preferred "point" size of the image that will be downloaded. If not provided, `layoutIfNeeded()` is called on this view to get its
     /// real bounds and those bounds are used.
+    ///   - defaultAvatarOption: Specifies what should be returned if the requested avatar is not found.
     ///   You can get a performance benefit by setting this value since it will avoid the `layoutIfNeeded()` call.
     ///   - options: A set of options to define image setting behaviour. See ``ImageSettingOption`` for more info.
     /// - Returns: The ``ImageDownloadResult``.

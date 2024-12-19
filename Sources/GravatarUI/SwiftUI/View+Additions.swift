@@ -97,6 +97,33 @@ extension View {
         }
     }
 
+    func altTextSheet(
+        model: Binding<AvatarImageModel?>,
+        email: Email?,
+        onSave: @escaping (AvatarImageModel) -> Void,
+        onCancel: @escaping () -> Void
+    ) -> some View {
+        let altTextEditor = NavigationView {
+            AltTextEditorView(avatar: model.wrappedValue, email: email, onSave: onSave, onCancel: onCancel)
+        }
+        if #available(iOS 16.0, *) {
+            return self.sheet(item: model, onDismiss: onCancel) { _ in
+                altTextEditor.presentationDetents([.height(AltTextEditorView.Constants.sheetHeight)])
+            }
+        } else {
+            return modifier(
+                ModalPresentationModifier(
+                    isPresented: Binding(
+                        get: { model.wrappedValue != nil },
+                        set: { if !$0 { model.wrappedValue = nil }}
+                    ),
+                    onDismiss: onCancel,
+                    modalView: altTextEditor
+                )
+            )
+        }
+    }
+
     func presentationContentInteraction(shouldPrioritizeScrolling: Bool) -> some View {
         if #available(iOS 16.4, *) {
             let behavior: PresentationContentInteraction = shouldPrioritizeScrolling ? .scrolls : .automatic
@@ -107,16 +134,56 @@ extension View {
         }
     }
 
+    /// Applies detents for iOS 16+.
+    func presentationDetentsIfAvailable(_ detents: [QEDetent]) -> some View {
+        if #available(iOS 16.0, *) {
+            return self.presentationDetents(detents.map())
+        } else {
+            return self
+        }
+    }
+
     /// Caution: `InnerHeightPreferenceKey` accumulates the values so DO NOT use this on  a View and one of its ancestors at the same time.
     @ViewBuilder
-    func accumulateIntrinsicHeight() -> some View {
+    func accumulateIntrinsicHeight<K>(key: K.Type = InnerHeightPreferenceKey.self) -> some View where K: PreferenceKey, K.Value == CGFloat {
         self.background {
             GeometryReader { proxy in
                 Color.clear.preference(
-                    key: InnerHeightPreferenceKey.self,
+                    key: key,
                     value: proxy.size.height
                 )
             }
+        }
+    }
+
+    @ViewBuilder
+    public func imagePlaygroundSheetIfAvailable(
+        isPresented: Binding<Bool>,
+        sourceImage: Image? = nil,
+        onCompletion: @escaping (URL) -> Void,
+        onCancellation: (() -> Void)? = nil
+    ) -> some View {
+        if #available(iOS 18.2, *) {
+            self.imagePlaygroundSheet(isPresented: isPresented, sourceImage: sourceImage, onCompletion: onCompletion, onCancellation: onCancellation)
+        } else {
+            self
+        }
+    }
+
+    @ViewBuilder
+    func `if`(_ condition: Bool, transform: (Self) -> some View) -> some View {
+        if condition {
+            transform(self)
+        } else {
+            self
+        }
+    }
+
+    func presentSafariView(url: Binding<URL?>, colorScheme: ColorScheme) -> some View {
+        self.sheet(item: url) { url in
+            SafariView(url: url)
+                .edgesIgnoringSafeArea(.all)
+                .colorScheme(colorScheme)
         }
     }
 }

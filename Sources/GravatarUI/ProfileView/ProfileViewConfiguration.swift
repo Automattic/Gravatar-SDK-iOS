@@ -112,6 +112,11 @@ extension ProfileViewConfiguration {
         public var borderWidth: CGFloat = 1
         /// The border color of the avatar. If not set, the border color from the palette is used. See ``Palette`` . ``Palette/avatar`` .
         /// ``AvatarColors/border``.
+        @available(
+            *,
+            deprecated,
+            message: "Use 'Palette.avatar.border' instead. You can set your `ProfileViewConfiguration`'s `paletteCustomizer` property to customize any color in the palette, see `ProfileViewConfiguration.claimProfile(...)` implementation for an example usage."
+        )
         public var borderColor: UIColor? = nil
         /// Length of the avatar. If not set, a suitable length is chosen according to the ``ProfileViewConfiguration/Style``.
         public var avatarLength: CGFloat? = nil

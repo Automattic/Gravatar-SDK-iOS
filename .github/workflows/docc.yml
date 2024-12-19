@@ -25,12 +25,12 @@ jobs:
       # Must be set to this for deploying to GitHub Pages
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: macos-14
+    runs-on: macos-15
     steps:
       - name: Checkout 🛎️
         uses: actions/checkout@v4
       - name: Switch Xcode 🔄
-        run: sudo xcode-select --switch /Applications/Xcode_15.4.app
+        run: sudo xcode-select --switch /Applications/Xcode_16.2.app
 
       - name: Prepare Site
         run: |

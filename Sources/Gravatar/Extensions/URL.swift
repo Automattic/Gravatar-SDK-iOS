@@ -22,4 +22,23 @@ extension URL {
         return (host.hasSuffix(".gravatar.com") || host == "gravatar.com")
             && components.scheme == "https"
     }
+
+    func appendingQueryItems(for selectionBehavior: AvatarSelection) -> URL {
+        let queryItems = selectionBehavior.queryItems
+        if #available(iOS 16.0, *) {
+            return self.appending(queryItems: queryItems)
+        } else {
+            var components = URLComponents(string: absoluteString)
+            components?.queryItems = queryItems
+            return components?.url ?? self
+        }
+    }
+}
+
+// MARK: - Endpoints
+
+extension URL {
+    static var avatarsURL: URL {
+        APIConfig.baseURL.appendingPathComponent("v3/me/avatars")
+    }
 }

@@ -8,9 +8,7 @@ final class ProfileServiceTests: XCTestCase {
     }
 
     func testProfileRequest() async {
-        guard let data = Bundle.fullProfileJsonData else {
-            return XCTFail("Could not create data")
-        }
+        let data = Bundle.fullProfileJsonData
         let session = URLSessionMock(returnData: data, response: .successResponse())
         let service = ProfileService(urlSession: session)
 
@@ -42,9 +40,7 @@ final class ProfileServiceTests: XCTestCase {
     }
 
     func testProfileRequestInvalidHTTPStatusError() async {
-        guard let data = Bundle.fullProfileJsonData else {
-            return XCTFail("Could not create data")
-        }
+        let data = Bundle.fullProfileJsonData
         let session = URLSessionMock(returnData: data, response: .errorResponse(code: 404))
         let service = ProfileService(urlSession: session)
 
@@ -59,9 +55,7 @@ final class ProfileServiceTests: XCTestCase {
     }
 
     func testProfileRequestWithApiKey() async {
-        guard let data = Bundle.fullProfileJsonData else {
-            return XCTFail("Could not create data")
-        }
+        let data = Bundle.fullProfileJsonData
 
         await Configuration.shared.configure(with: "somekey")
 
@@ -75,22 +69,5 @@ final class ProfileServiceTests: XCTestCase {
         } catch {
             XCTFail(error.localizedDescription)
         }
-    }
-}
-
-extension Bundle {
-    func jsonData(forResource resource: String) -> Data? {
-        guard let url = Bundle.testsBundle.url(forResource: resource, withExtension: "json") else {
-            return nil
-        }
-        return try? Data(contentsOf: url)
-    }
-
-    static var fullProfileJsonData: Data? {
-        testsBundle.jsonData(forResource: "fullProfile")
-    }
-
-    static var imageUploadJsonData: Data? {
-        testsBundle.jsonData(forResource: "avatarUploadResponse")
     }
 }

@@ -7,7 +7,7 @@ export CI_TOOLKIT="automattic/a8c-ci-toolkit#3.2.2"
 
 ## Supported versions of Swift
 # Swift 6.0
-export SWIFT_6_0_IMAGE_ID="xcode-16.0-v7"
+export SWIFT_6_0_IMAGE_ID="xcode-16.2-macos-14.7.1-v1"
 export SWIFT_6_0_VERSION="6_0"  # Use `_` instead of `.` since these are used in labels
 export SWIFT_6_0_DEVICE="default"  # Use the default value in Fastlane
 export SWIFT_6_0_OS="18.0"

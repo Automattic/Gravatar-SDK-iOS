@@ -21,7 +21,7 @@ struct URLSessionHTTPClient: HTTPClient {
         self.urlSession = urlSession ?? URLSession(configuration: configuration)
     }
 
-    func fetchData(with request: URLRequest) async throws -> (Data, HTTPURLResponse) {
+    func data(with request: URLRequest) async throws -> (Data, HTTPURLResponse) {
         let result: (data: Data, response: URLResponse)
         do {
             result = try await urlSession.data(for: request)

@@ -8,6 +8,11 @@ struct InnerHeightPreferenceKey: PreferenceKey {
     }
 }
 
+struct ConstantHeightPreferenceKey: PreferenceKey {
+    static let defaultValue: CGFloat = .zero
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {}
+}
+
 protocol SizeClassPreferenceKey: PreferenceKey {}
 
 /// A `PreferenceKey` to tell the `ViewModifier` about the size class.

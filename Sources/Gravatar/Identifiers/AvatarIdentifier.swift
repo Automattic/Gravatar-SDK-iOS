@@ -19,7 +19,7 @@ extension AvatarIdentifier {
     }
 
     /// Creates an `AvatarIdenfitier` using a hash  passed as a `String`
-    /// - Parameter hashId: a properly formatted hashID
+    /// - Parameter hashID: a properly formatted hashID
     /// - Returns: an `AvatarIdentifier`
     public static func hashID(_ hashID: String) -> AvatarIdentifier {
         .hashID(.init(hashID))

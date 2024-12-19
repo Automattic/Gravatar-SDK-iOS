@@ -7,9 +7,10 @@ final class ProfileSummaryViewTests: XCTestCase {
         static let width: CGFloat = 320
     }
 
-    override func setUp() async throws {
-        try await super.setUp()
-        // isRecording = true
+    override func invokeTest() {
+        withSnapshotTesting(record: .failed) {
+            super.invokeTest()
+        }
     }
 
     @MainActor

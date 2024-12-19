@@ -14,10 +14,18 @@ class CropFrameOverlayView: UIView {
         context.setFillColor(UIColor.black.withAlphaComponent(0.5).cgColor)
         context.fill(rect)
 
-        // Clear the scrollView's area to make it transparent
+        // Create a circular path for the transparent hole
+        let circlePath = UIBezierPath(ovalIn: scrollViewFrame)
+
+        // Clear the circular area
+        context.addPath(circlePath.cgPath)
+        context.clip(using: .evenOdd)
         context.clear(scrollViewFrame)
 
-        // Draw a border around the crop frame
+        // Restore context to draw the square border
+        context.resetClip()
+
+        // Draw a white border around the square
         context.setStrokeColor(UIColor.white.cgColor)
         context.setLineWidth(1)
         context.stroke(scrollViewFrame)

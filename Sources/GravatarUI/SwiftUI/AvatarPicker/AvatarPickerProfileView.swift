@@ -72,7 +72,12 @@ struct AvatarPickerProfileView: View {
     func avatarView() -> some View {
         AvatarView(
             url: avatarURL,
-            placeholder: nil,
+            placeholderView: {
+                Image("empty-profile-avatar", bundle: .module)
+                    .renderingMode(.template)
+                    .foregroundColor(avatarTint)
+                    .background(Color(UIColor.systemBackground))
+            },
             loadingView: {
                 ProgressView()
                     .progressViewStyle(CircularProgressViewStyle())
@@ -82,7 +87,31 @@ struct AvatarPickerProfileView: View {
         .frame(width: Constants.avatarLength, height: Constants.avatarLength)
         .background(placeholderColorManager.placeholderColor)
         .aspectRatio(1, contentMode: .fill)
-        .shape(Circle())
+        .shape(Circle(), borderColor: avatarBorderColor, borderWidth: 1)
+    }
+
+    private var paletteType: PaletteType? {
+        switch colorScheme {
+        case .light:
+            .light
+        case .dark:
+            .dark
+        @unknown default:
+            nil
+        }
+    }
+
+    private var avatarTint: Color {
+        let color: UIColor = colorScheme == .dark ? .bovineGray : .porpoiseGray
+        return Color(uiColor: color)
+    }
+
+    private var avatarBorderColor: Color {
+        if let color = paletteType?.palette.avatar.border {
+            Color(uiColor: color)
+        } else {
+            avatarTint
+        }
     }
 }
 

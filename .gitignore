@@ -49,5 +49,5 @@ fastlane/test_output
 vendor/swiftgen
 
 # Other
-openapi-generator/
+openapi/GravatarOpenAPIClient/Sources/
 Demo/Demo/Secrets.swift

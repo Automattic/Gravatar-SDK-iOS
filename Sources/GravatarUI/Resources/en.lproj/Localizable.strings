@@ -1,3 +1,24 @@
+/* Rating that indicates that the avatar is suitable for everyone */
+"Avatar.Rating.G.subtitle" = "General";
+
+/* Rating that indicates that the avatar may not be suitable for children */
+"Avatar.Rating.PG.subtitle" = "Parental Guidance";
+
+/* Rating that indicates that the avatar may not be suitable for children */
+"Avatar.Rating.R.subtitle" = "Restricted";
+
+/* Rating that indicates that the avatar is obviously and extremely unsuitable for children */
+"Avatar.Rating.X.subtitle" = "Extreme";
+
+/* An option in the avatar menu that deletes the avatar */
+"AvatarPicker.AvatarAction.delete" = "Delete";
+
+/* An option in the avatar menu that shows the current rating, and allows the user to change that rating. The rating is used to indicate the appropriateness of an avatar for different audiences, and follows the US system of Motion Picture ratings: G, PG, R, and X. */
+"AvatarPicker.AvatarAction.rate" = "Rating: %@";
+
+/* An option in the avatar menu that shares the avatar */
+"AvatarPicker.AvatarAction.share" = "Share...";
+
 /* Title of a message advising the user that something went wrong while trying to log in. */
 "AvatarPicker.ContentLoading.Failure.LogInError.title" = "Login required";
 
@@ -43,6 +64,12 @@
 /* Title of a message advising the user to setup their avatar */
 "AvatarPicker.ContentLoading.success.title" = "Let's setup your avatar";
 
+/* The title button which confirms the avatar deletion. */
+"AvatarPicker.Deletion.Confirmation.ctaButtonTitle" = "Delete";
+
+/* Title of the confirmation dialog to delete an avatar */
+"AvatarPicker.Deletion.Confirmation.title" = "Are you sure you want to delete this image?";
+
 /* The title of the dismiss button on a confirmation dialog. */
 "AvatarPicker.Dismiss.title" = "Dismiss";
 
@@ -51,6 +78,9 @@
 
 /* Title appearing in the header of a view that allows users to manage their avatars */
 "AvatarPicker.Header.title" = "Avatars";
+
+/* Message displayed when no image is selected */
+"AvatarPicker.NoImageSelected.message" = "No image selected. Please select one or the default will be used.";
 
 /* Error message to show when the upload fails because the image is too big. */
 "AvatarPicker.Upload.Error.ImageTooBig.Error" = "The provided image exceeds the maximum size: 10MB";
@@ -66,6 +96,18 @@
 
 /* Title of a button that will take you to your Gravatar profile, with an arrow indicating that this action will cause you to leave this view */
 "AvatarPickerProfile.Button.ViewProfile.title" = "View profile →";
+
+/* This error message shows when the user attempts to delete an avatar and fails. */
+"AvatarPickerViewModel.Delete.Error" = "Oops, there was an error deleting the image.";
+
+/* This error message shows when the user attempts to change the rating of an avatar and fails. */
+"AvatarPickerViewModel.Rating.Error" = "Oops, something didn't quite work out while trying to rate your avatar.";
+
+/* This confirmation message shows when the user picks a different avatar rating and the change was applied successfully. */
+"AvatarPickerViewModel.RatingUpdate.Success" = "Avatar rating was changed successfully.";
+
+/* This error message shows when the user attempts to share an avatar and fails. */
+"AvatarPickerViewModel.Share.Fail" = "Oops, something didn't quite work out while trying to share your avatar.";
 
 /* This error message shows when the user attempts to pick a different avatar and fails. */
 "AvatarPickerViewModel.Update.Fail" = "Oops, something didn't quite work out while trying to change your avatar.";
@@ -106,3 +148,26 @@
 /* An option in a menu that display the user's Photo Library and allow them to choose a photo from it */
 "SystemImagePickerView.Source.PhotoLibrary.title" = "Choose a Photo";
 
+/* An option to show the image playground */
+"SystemImagePickerView.Source.Playground.title" = "Playground";
+
+/* The title of Alt Text editor screen */
+"AltText.Editor.title" = "Alt Text";
+
+/* Placeholder text for Alt Text editor text field */
+"AltText.Editor.placeholder" = "Write alt text...";
+
+/* Title for Save button */
+"AltText.Editor.saveButtonTitle" = "Save";
+
+/* Title for Cancel button */
+"AltText.Editor.cancelButtonTitle" = "Cancel";
+
+/* This confirmation message shows when the user has updated the alt text */
+"AvatarPickerViewModel.AltText.Success" = "Image alt text was changed successfully.";
+
+/* This error message shows when the user attempts to change the alt text of an avatar and fails */
+"AvatarPickerViewModel.AltText.Error" = "Oops, something didn't quite work out while trying to update the alt text.";
+
+/* Title for Help button which opens a view explaining what alt text is */
+"AltText.Editor.helpButtonTitle" = "What is alt text?";

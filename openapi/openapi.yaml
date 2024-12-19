@@ -1,0 +1,855 @@
+openapi: 3.1.0
+info:
+  title: Gravatar Public API
+  version: 3.0.0
+  description: Gravatar's public API endpoints
+  contact:
+    name: Gravatar
+    url: https://gravatar.com
+servers:
+  - url: https://api.gravatar.com/v3
+    description: Production server
+tags:
+  - name: profiles
+    description: Operations about user profiles
+  - name: avatars
+    description: Operations about user avatars
+components:
+  headers:
+    X-RateLimit-Limit:
+      description: The number of allowed requests in the current period.
+      schema:
+        type: integer
+    X-RateLimit-Remaining:
+      description: The number of remaining requests in the current period.
+      schema:
+        type: integer
+    X-RateLimit-Reset:
+      description: >-
+        The time at which the current rate limit period resets, in Unix
+        timestamp format.
+      schema:
+        type: integer
+  schemas:
+    Avatar:
+      type: object
+      description: An avatar that the user has already uploaded to their Gravatar account.
+      required:
+        - image_id
+        - image_url
+        - rating
+        - updated_date
+        - alt_text
+      properties:
+        image_id:
+          type: string
+          description: Unique identifier for the image.
+          examples:
+            - 38be15a98a2bbc40df69172a2a8349
+        image_url:
+          type: string
+          description: Image URL
+          format: uri
+          examples:
+            - >-
+              https://gravatar.com/userimage/252014526/d38bele5a98a2bbc40df69172a2a8348.jpeg
+        rating:
+          type: string
+          description: Rating associated with the image.
+          enum:
+            - G
+            - PG
+            - R
+            - X
+        alt_text:
+          type: string
+          description: Alternative text description of the image.
+          examples:
+            - >-
+              Gravatar's avatar image. Gravatar is a service for providing
+              globally unique avatars.
+        selected:
+          type: boolean
+          description: >-
+            Whether the image is currently selected as the provided selected
+            email's avatar.
+          examples:
+            - true
+        updated_date:
+          type: string
+          format: date-time
+          description: Date and time when the image was last updated.
+          pattern: ^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$
+          examples:
+            - '2021-10-01T12:00:00Z'
+    AvatarRating:
+      type: string
+      description: Rating associated with the image.
+      enum:
+        - G
+        - PG
+        - R
+        - X
+    Link:
+      type: object
+      description: A link the user has added to their profile.
+      required:
+        - label
+        - url
+      properties:
+        label:
+          type: string
+          description: The label for the link.
+          examples:
+            - Personal Website
+        url:
+          type: string
+          format: uri
+          description: The URL to the link.
+          examples:
+            - https://example.com
+    Interest:
+      type: object
+      description: An interest the user has added to their profile.
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: integer
+          description: The unique identifier for the interest.
+          examples:
+            - 1
+        name:
+          type: string
+          description: The name of the interest.
+          examples:
+            - Photography
+    CryptoWalletAddress:
+      type: object
+      description: A crypto currency wallet address the user accepts.
+      required:
+        - label
+        - address
+      properties:
+        label:
+          type: string
+          description: The label for the crypto currency.
+          examples:
+            - ETH
+        address:
+          type: string
+          description: The wallet address for the crypto currency.
+          examples:
+            - 0xABC123...
+    VerifiedAccount:
+      type: object
+      description: A verified account on a user's profile.
+      required:
+        - service_type
+        - service_label
+        - service_icon
+        - url
+        - is_hidden
+      properties:
+        service_type:
+          type: string
+          description: The type of the service.
+          examples:
+            - tumblr
+        service_label:
+          type: string
+          description: The name of the service.
+          examples:
+            - Tumblr
+        service_icon:
+          type: string
+          description: The URL to the service's icon.
+          format: uri
+          examples:
+            - https://gravatar.com/icons/tumblr-alt.svg
+        url:
+          type: string
+          description: The URL to the user's profile on the service.
+          format: uri
+          examples:
+            - https://example.tumblr.com/
+        is_hidden:
+          type: boolean
+          description: Whether the verified account is hidden from the user's profile.
+          examples:
+            - false
+    GalleryImage:
+      type: object
+      description: A gallery image a user has uploaded.
+      required:
+        - url
+      properties:
+        url:
+          type: string
+          description: The URL to the image.
+          format: uri
+          examples:
+            - >-
+              https://0.gravatar.com/userimage/5/04bbd674f72c703f6335e2e7a00acc9a
+        alt_text:
+          type: string
+          description: The image alt text.
+          examples:
+            - A beautiful sunset
+    Language:
+      type: object
+      description: >-
+        The languages the user knows. This is only provided in authenticated API
+        requests.
+      required:
+        - code
+        - name
+        - is_primary
+        - order
+      properties:
+        code:
+          type: string
+          description: The language code.
+          examples:
+            - en
+        name:
+          type: string
+          description: The language name.
+          examples:
+            - English
+        is_primary:
+          type: boolean
+          description: Whether the language is the user's primary language.
+          examples:
+            - true
+        order:
+          type: integer
+          description: The order of the language in the user's profile.
+          examples:
+            - 1
+    Profile:
+      type: object
+      description: A user's profile information.
+      required:
+        - hash
+        - display_name
+        - profile_url
+        - avatar_url
+        - avatar_alt_text
+        - location
+        - description
+        - job_title
+        - company
+        - verified_accounts
+        - pronunciation
+        - pronouns
+      properties:
+        hash:
+          type: string
+          description: The SHA256 hash of the user's primary email address.
+          examples:
+            - 31c5543c1734d25c7206f5fd591525d0295bec6fe84ff82f946a34fe970a1e66
+        display_name:
+          type: string
+          description: >-
+            The user's display name. This is the name that is displayed on their
+            profile.
+          examples:
+            - Alex Morgan
+        profile_url:
+          type: string
+          description: The full URL for the user's profile.
+          format: uri
+          examples:
+            - https://gravatar.com/example
+        avatar_url:
+          type: string
+          format: uri
+          description: The URL for the user's avatar image if it has been set.
+          examples:
+            - >-
+              https://0.gravatar.com/avatar/33252cd1f33526af53580fcb1736172f06e6716f32afdd1be19ec3096d15dea5
+        avatar_alt_text:
+          type: string
+          description: The alt text for the user's avatar image if it has been set.
+          examples:
+            - >-
+              Alex Morgan's avatar image. Alex is smiling and standing in beside
+              a large dog who is looking up at Alex.
+        location:
+          type: string
+          description: The user's location.
+          examples:
+            - New York, USA
+        description:
+          type: string
+          description: The about section on a user's profile.
+          examples:
+            - I like playing hide and seek.
+        job_title:
+          type: string
+          description: The user's job title.
+          examples:
+            - Landscape Architect
+        company:
+          type: string
+          description: The user's current company's name.
+          examples:
+            - ACME Corp
+        verified_accounts:
+          type: array
+          description: >-
+            A list of verified accounts the user has added to their profile.
+            This is limited to a max of 4 in unauthenticated requests.
+          items:
+            $ref: '#/components/schemas/VerifiedAccount'
+        pronunciation:
+          type: string
+          description: The phonetic pronunciation of the user's name.
+          examples:
+            - Al-ex Mor-gan
+        pronouns:
+          type: string
+          description: The pronouns the user uses.
+          examples:
+            - She/They
+        timezone:
+          type: string
+          description: >-
+            The timezone the user has. This is only provided in authenticated
+            API requests.
+          examples:
+            - Europe/Bratislava
+        languages:
+          type: array
+          description: >-
+            The languages the user knows. This is only provided in authenticated
+            API requests.
+          items:
+            $ref: '#/components/schemas/Language'
+        first_name:
+          type: string
+          description: >-
+            User's first name. This is only provided in authenticated API
+            requests.
+          examples:
+            - Alex
+        last_name:
+          type: string
+          description: >-
+            User's last name. This is only provided in authenticated API
+            requests.
+          examples:
+            - Morgan
+        is_organization:
+          type: boolean
+          description: >-
+            Whether user is an organization. This is only provided in
+            authenticated API requests.
+          examples:
+            - false
+        header_image:
+          type: string
+          description: The header image used in the main profile card.
+          examples:
+            - >-
+              url('https://gravatar.com/userimage/209234789/cdebd0ed415kfa2g562ba5c34b1570c2')
+              no-repeat 50% 1% / 100%
+        background_color:
+          type: string
+          description: The profile background color.
+          examples:
+            - rgb(33, 0, 166)
+            - linear-gradient(135deg, rgb(2, 3, 129) 0%, rgb(40, 116, 252) 100%)
+        links:
+          type: array
+          description: >-
+            A list of links the user has added to their profile. This is only
+            provided in authenticated API requests.
+          items:
+            $ref: '#/components/schemas/Link'
+        interests:
+          type: array
+          description: >-
+            A list of interests the user has added to their profile. This is
+            only provided in authenticated API requests.
+          items:
+            $ref: '#/components/schemas/Interest'
+        payments:
+          type: object
+          required:
+            - links
+            - crypto_wallets
+          description: >-
+            The user's public payment information. This is only provided in
+            authenticated API requests.
+          properties:
+            links:
+              type: array
+              description: A list of payment URLs the user has added to their profile.
+              items:
+                $ref: '#/components/schemas/Link'
+            crypto_wallets:
+              type: array
+              description: A list of crypto currencies the user accepts.
+              items:
+                $ref: '#/components/schemas/CryptoWalletAddress'
+        contact_info:
+          type: object
+          description: >-
+            The user's contact information. This is only available if the user
+            has chosen to make it public. This is only provided in authenticated
+            API requests.
+          properties:
+            home_phone:
+              type: string
+              description: The user's home phone number.
+              examples:
+                - +1-555-555-0100
+            work_phone:
+              type: string
+              description: The user's work phone number.
+              examples:
+                - +1-555-555-0101
+            cell_phone:
+              type: string
+              description: The user's cell phone number.
+              examples:
+                - +1-555-555-0102
+            email:
+              type: string
+              description: >-
+                The user's email address as provided on the contact section of
+                the profile. Might differ from their account emails.
+              format: email
+              examples:
+                - alex@example.com
+            contact_form:
+              type: string
+              description: The URL to the user's contact form.
+              format: uri
+              examples:
+                - https://example.com/contact-me
+            calendar:
+              type: string
+              description: The URL to the user's calendar.
+              format: uri
+              examples:
+                - https://example.com/calendar
+        gallery:
+          type: array
+          description: >-
+            Additional images a user has uploaded. This is only provided in
+            authenticated API requests.
+          items:
+            $ref: '#/components/schemas/GalleryImage'
+        number_verified_accounts:
+          type: integer
+          description: >-
+            The number of verified accounts the user has added to their profile.
+            This count includes verified accounts the user is hiding from their
+            profile. This is only provided in authenticated API requests.
+          examples:
+            - 3
+        last_profile_edit:
+          type:
+            - string
+            - 'null'
+          nullable: true
+          description: >-
+            The date and time (UTC) the user last edited their profile. This is
+            only provided in authenticated API requests.
+          format: date-time
+          pattern: ^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$
+          examples:
+            - '2021-10-01T12:00:00Z'
+        registration_date:
+          type:
+            - string
+            - 'null'
+          nullable: true
+          description: >-
+            The date the user registered their account. This is only provided in
+            authenticated API requests.
+          format: date-time
+          pattern: ^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$
+          examples:
+            - '2021-10-01T12:00:00Z'
+    AssociatedResponse:
+      type: object
+      required:
+        - associated
+      properties:
+        associated:
+          type: boolean
+          description: Whether the entity is associated with the account.
+          examples:
+            - true
+    Error:
+      type: object
+      description: An error response from the API.
+      properties:
+        error:
+          type: string
+          description: The error message
+        code:
+          type: string
+          description: The error code for the error message
+      required:
+        - error
+  securitySchemes:
+    apiKey:
+      type: http
+      scheme: bearer
+      description: >-
+        Bearer token to authenticate the request. Full profile information is
+        only available in authenticated requests.
+    oauth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: https://public-api.wordpress.com/oauth2/authorize
+          scopes: {}
+      description: WordPress OAuth token to authenticate the request.
+  responses:
+    not_authorized:
+      description: Not Authorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            unauthorized:
+              value:
+                error: You are not authorized to perform this action
+    insufficient_scope:
+      description: Insufficient Scope
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            insufficient_scope:
+              value:
+                code: insufficient_scope
+                error: >-
+                  The provided token does not contain the required scope for
+                  this request.
+    rate_limit_exceeded:
+      description: Rate Limit Exceeded
+      headers:
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/X-RateLimit-Limit'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/X-RateLimit-Remaining'
+        X-RateLimit-Reset:
+          $ref: '#/components/headers/X-RateLimit-Reset'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            rate_limit_exceeded:
+              value:
+                error: Rate limit exceeded
+                code: rate_limit_exceeded
+paths:
+  /profiles/{profileIdentifier}:
+    get:
+      summary: Get profile by identifier
+      description: Returns a profile by the given identifier.
+      tags:
+        - profiles
+      operationId: getProfileById
+      parameters:
+        - name: profileIdentifier
+          in: path
+          required: true
+          description: >-
+            This can either be an SHA256 hash of an email address or profile URL
+            slug.
+          schema:
+            type: string
+      security:
+        - apiKey: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/X-RateLimit-Limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/X-RateLimit-Remaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/X-RateLimit-Reset'
+        '404':
+          description: Profile not found
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/X-RateLimit-Limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/X-RateLimit-Remaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/X-RateLimit-Reset'
+        '429':
+          description: Rate limit exceeded
+          $ref: '#/components/responses/rate_limit_exceeded'
+        '500':
+          description: Internal server error
+  /me/associated-email:
+    get:
+      summary: Check if the email is associated with the authenticated user
+      description: >-
+        Checks if the provided email address is associated with the
+        authenticated user.
+      tags:
+        - profiles
+      operationId: associatedEmail
+      security:
+        - oauth: []
+      parameters:
+        - name: email_hash
+          in: query
+          required: true
+          description: The hash of the email address to check.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The email is associated with the authenticated user
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/AssociatedResponse'
+        '401':
+          description: Not Authorized
+          $ref: '#/components/responses/not_authorized'
+        '403':
+          description: Insufficient Scope
+          $ref: '#/components/responses/insufficient_scope'
+  /me/avatars:
+    get:
+      summary: List avatars
+      description: Retrieves a list of available avatars for the authenticated user.
+      tags:
+        - avatars
+      operationId: getAvatars
+      security:
+        - oauth: []
+      parameters:
+        - name: selected_email_hash
+          in: query
+          description: >-
+            The SHA256 hash of the email address used to determine which avatar
+            is selected. The 'selected' attribute in the avatar list will be set
+            to 'true' for the avatar associated with this email.
+          schema:
+            type: string
+            default: ''
+      responses:
+        '200':
+          description: Successful retrieval of avatars
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Avatar'
+        '401':
+          description: Not Authorized
+          $ref: '#/components/responses/not_authorized'
+        '403':
+          description: Insufficient Scope
+          $ref: '#/components/responses/insufficient_scope'
+    post:
+      summary: Upload new avatar image
+      description: Uploads a new avatar image for the authenticated user.
+      tags:
+        - avatars
+      operationId: uploadAvatar
+      security:
+        - oauth: []
+      parameters:
+        - name: selected_email_hash
+          in: query
+          description: >-
+            The SHA256 hash of email. If provided, the uploaded image will be
+            selected as the avatar for this email.
+          required: false
+          schema:
+            type: string
+        - name: select_avatar
+          in: query
+          description: >-
+            Determines if the uploaded image should be set as the avatar for the
+            email. If not passed, the image is only selected as the email's
+            avatar if no previous avatar has been set. Accepts '1'/'true' to
+            always set the avatar or '0'/'false' to never set the avatar.
+          required: false
+          schema:
+            type:
+              - boolean
+              - 'null'
+            default: null
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: string
+                  format: binary
+                  description: The avatar image file
+              required:
+                - data
+      responses:
+        '200':
+          description: Avatar uploaded successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Avatar'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                uncropped_image:
+                  value:
+                    error: Only square images are accepted
+                    code: uncropped_image
+                unsupported_image:
+                  value:
+                    error: Unsupported image type
+                    code: unsupported_image
+        '401':
+          description: Not Authorized
+          $ref: '#/components/responses/not_authorized'
+        '403':
+          description: Insufficient Scope
+          $ref: '#/components/responses/insufficient_scope'
+  /me/avatars/{imageId}:
+    delete:
+      summary: Delete avatar
+      description: Deletes a specific avatar for the authenticated user.
+      tags:
+        - avatars
+      operationId: deleteAvatar
+      security:
+        - oauth: []
+      parameters:
+        - name: imageId
+          in: path
+          required: true
+          description: The ID of the avatar to delete.
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Avatar deleted successfully
+        '401':
+          description: Not Authorized
+          $ref: '#/components/responses/not_authorized'
+        '403':
+          description: Insufficient Scope
+          $ref: '#/components/responses/insufficient_scope'
+    patch:
+      summary: Update avatar data
+      description: Updates the avatar data for a given avatar for the authenticated user.
+      tags:
+        - avatars
+      operationId: updateAvatar
+      security:
+        - oauth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: >-
+                The avatar data to update. Partial updates are supported, so
+                only the provided fields will be updated.
+              properties:
+                rating:
+                  description: Rating associated with the image.
+                  $ref: '#/components/schemas/AvatarRating'
+                alt_text:
+                  type: string
+                  description: Alternative text description of the image.
+                  examples:
+                    - >-
+                      Gravatar's avatar image. Gravatar is a service for
+                      providing globally unique avatars.
+              required: []
+      parameters:
+        - name: imageId
+          in: path
+          required: true
+          description: The ID of the avatar to update.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Avatar updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Avatar'
+        '401':
+          description: Not Authorized
+          $ref: '#/components/responses/not_authorized'
+        '403':
+          description: Insufficient Scope
+          $ref: '#/components/responses/insufficient_scope'
+  /me/avatars/{imageId}/email:
+    post:
+      summary: Set avatar for the hashed email
+      description: Sets the avatar for the provided email hash.
+      tags:
+        - avatars
+      parameters:
+        - name: imageId
+          in: path
+          description: Image ID of the avatar to set as the provided hashed email avatar.
+          required: true
+          schema:
+            type: string
+      operationId: setEmailAvatar
+      requestBody:
+        description: Avatar selection details
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email_hash:
+                  type: string
+                  description: The email SHA256 hash to set the avatar for.
+                  examples:
+                    - >-
+                      31c5543c1734d25c7206f5fd591525d0295bec6fe84ff82f946a34fe970a1e66
+              required:
+                - email_hash
+      security:
+        - oauth: []
+      responses:
+        '204':
+          description: Avatar successfully set
+        '401':
+          description: Not Authorized
+          $ref: '#/components/responses/not_authorized'
+        '403':
+          description: Insufficient Scope
+          $ref: '#/components/responses/insufficient_scope'

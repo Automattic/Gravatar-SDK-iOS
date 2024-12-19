@@ -1,3 +1,4 @@
+import Gravatar
 import SwiftUI
 
 struct Toast: View {
@@ -6,6 +7,12 @@ struct Toast: View {
         static let backgroundDark: Color = .init(uiColor: .rgba(225, 225, 225))
         static let errorBackgroundLight: Color = .init(uiColor: UIColor.errorBackgroundRed)
         static let errorLineRed: Color = .init(uiColor: UIColor.alertRed)
+        static let warningBackgroundLight: Color = .init(uiColor: .yellowishWhite)
+        static let warningLineLight: Color = .init(uiColor: .butterscotchYellow)
+        static let warningTextLight: Color = .init(uiColor: .gravatarBlack)
+        static let warningBackgroundDark: Color = .init(uiColor: .chocolateBrown)
+        static let warningLineDark: Color = .init(uiColor: .harvestYellow)
+        static let warningTextDark: Color = .init(uiColor: .harvestYellow)
     }
 
     @Environment(\.colorScheme) var colorScheme: ColorScheme
@@ -31,12 +38,14 @@ struct Toast: View {
         .background(backgroundColor)
         .overlay(
             Rectangle()
-                .frame(width: toast.type == .error ? 4 : 0, height: nil, alignment: .leading)
-                .foregroundColor(Color.red), alignment: .leading
+                .frame(width: toast.type != .info ? 4 : 0, height: nil, alignment: .leading)
+                .foregroundColor(lineColor), alignment: .leading
         )
         .cornerRadius(4)
         .foregroundColor(foregroundColor)
-        .shadow(radius: 3, y: 3)
+        .if(toast.shouldShowShadow, transform: { view in
+            view.shadow(radius: 3, y: 3)
+        })
         .zIndex(1)
     }
 
@@ -44,6 +53,8 @@ struct Toast: View {
         switch toast.type {
         case .info:
             colorScheme == .dark ? Constants.backgroundDark : Constants.backgroundLight
+        case .warning:
+            colorScheme == .dark ? Constants.warningBackgroundDark : Constants.warningBackgroundLight
         case .error:
             colorScheme == .dark ? Constants.errorBackgroundLight : Constants.errorBackgroundLight
         }
@@ -53,8 +64,21 @@ struct Toast: View {
         switch toast.type {
         case .info:
             Color(UIColor.systemBackground)
+        case .warning:
+            colorScheme == .dark ? Constants.warningTextDark : Constants.warningTextLight
         case .error:
             colorScheme == .dark ? Color(UIColor.gravatarBlack) : Color(UIColor.gravatarBlack)
+        }
+    }
+
+    var lineColor: Color {
+        switch toast.type {
+        case .info:
+            .clear
+        case .warning:
+            colorScheme == .dark ? Constants.warningLineDark : Constants.warningLineLight
+        case .error:
+            Constants.errorLineRed
         }
     }
 }
@@ -69,10 +93,18 @@ struct Toast: View {
         }
 
         Toast(toast: .init(
+            message: "No image selected. Please select one or the default will be used.",
+            type: .warning,
+            stackingBehavior: .avoidStackingWithSameMessage
+        )) { _ in
+        }
+
+        Toast(toast: .init(
             message: "Something went wrong.",
             type: .error,
             stackingBehavior: .alwaysStack
         )) { _ in
         }
     }
+    .padding()
 }

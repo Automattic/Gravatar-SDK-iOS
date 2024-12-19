@@ -37,7 +37,7 @@ public struct ProfileService: ProfileFetching, Sendable {
                 throw APIError.requestError(reason: .urlInitializationFailed)
             }
             let request = URLRequest(url: url).settingAuthorizationHeaderField(with: token)
-            let (data, _) = try await client.fetchData(with: request)
+            let (data, _) = try await client.data(with: request)
             return try data.decode()
         } catch {
             throw error.apiError()
@@ -53,7 +53,7 @@ public struct ProfileService: ProfileFetching, Sendable {
             var request = URLRequest(url: url).settingAuthorizationHeaderField(with: token)
             request.httpMethod = "POST"
             request.httpBody = try SelectAvatarBody(emailHash: profileID.id).data
-            let (data, _) = try await client.fetchData(with: request)
+            let (data, _) = try await client.data(with: request)
             return try data.decode()
         } catch {
             throw error.apiError()
@@ -64,7 +64,7 @@ public struct ProfileService: ProfileFetching, Sendable {
 extension ProfileService {
     private func fetch(with request: URLRequest) async throws -> Profile {
         do {
-            let (data, _) = try await client.fetchData(with: request)
+            let (data, _) = try await client.data(with: request)
             let profileResult: Profile = try data.decode()
             return profileResult
         } catch {

@@ -16,17 +16,11 @@ validate_pods: &validate_pods
     .buildkite/commands/validate-pods.sh
   plugins: [$CI_TOOLKIT]
 
-demo_build_swiftUI: &demo_build_swiftUI
+demo_build: &demo_build
   plugins: [$CI_TOOLKIT]
   command: |
     install_gems
-    BUILD_NUMBER=$BUILDKITE_BUILD_NUMBER make build-demo-for-distribution-swiftui
-
-demo_build_uikit: &demo_build_uikit
-  plugins: [$CI_TOOLKIT]
-  command: |
-    install_gems
-    BUILD_NUMBER=$BUILDKITE_BUILD_NUMBER make build-demo-for-distribution-uikit
+    BUILD_NUMBER=$BUILDKITE_BUILD_NUMBER make build-demo-for-distribution
 
 steps:
   #################
@@ -37,6 +31,16 @@ steps:
     command: |
       echo "--- 🛠 Linting"
       make lint
+
+  - label: ☢️ Danger - PR Check
+    command: danger
+    key: danger
+    if: build.pull_request.id != null
+    retry:
+      manual:
+        permit_on_passed: true
+    agents:
+      queue: linter
 
   #################
   # Build and Test
@@ -109,11 +113,11 @@ steps:
   - group: "🛠️ Build SwiftUI Demo"
     steps:
       ###################
-      # Build/Upload SwiftUI Demo
+      # Build/Upload Demo
       ###################
-      - <<: *demo_build_swiftUI
-        label: "🛠️ Build SwiftUI Demo (Swift $CURRENT_SWIFT_VERSION)"
-        key: build_swiftui
+      - <<: *demo_build
+        label: "🛠️ Build Demo (Swift $CURRENT_SWIFT_VERSION)"
+        key: build_demo
         depends_on: test_swift_current
         env:
           IMAGE_ID: "$CURRENT_IMAGE_ID"
@@ -121,53 +125,22 @@ steps:
           - ".build/artifacts/*.ipa"
           - ".build/artifacts/*.dSYM.zip"
 
-      - <<: *demo_build_swiftUI
-        label: "🛠️ Build SwiftUI Demo (Swift $SWIFT_6_0_VERSION)"
+      - <<: *demo_build
+        label: "🛠️ Build Demo (Swift $SWIFT_6_0_VERSION)"
+        key: build_swift_6_0
         depends_on: test_swift_6_0
         env:
           IMAGE_ID: "$SWIFT_6_0_IMAGE_ID"
 
-      - <<: *demo_build_swiftUI
-        label: "🛠️ Build SwiftUI Demo (Swift $SWIFT_5_9_VERSION)"
+      - <<: *demo_build
+        label: "🛠️ Build Demo (Swift $SWIFT_5_9_VERSION)"
+        key: build_swift_5_9
         depends_on: test_swift_5_9
         env:
           IMAGE_ID: "$SWIFT_5_9_IMAGE_ID"
 
-      - label: "⬆️ Upload SwiftUI Demo to App Center"
-        depends_on: build_swiftui
+      - label: "⬆️ Upload Demo to App Center"
+        depends_on: build_demo
         plugins: [$CI_TOOLKIT]
-        command: .buildkite/commands/upload-to-appcenter.sh SwiftUI
-        if: build.pull_request.id != null
-
-      ###################
-      # Build/Upload UIKit Demo
-      ###################
-      - <<: *demo_build_uikit
-        label: "🛠️ Build UIKit Demo (Swift $CURRENT_SWIFT_VERSION)"
-        key: build_uikit
-        depends_on: test_swift_current
-        env:
-          IMAGE_ID: "$CURRENT_IMAGE_ID"
-        artifact_paths: # Archive artifacts only for the production version of Swift
-          - ".build/artifacts/*.ipa"
-          - ".build/artifacts/*.dSYM.zip"
-
-      - <<: *demo_build_uikit
-        label: "🛠️ Build UIKit Demo (Swift $SWIFT_6_0_VERSION)"
-        key: build_uikit_swift_6_0
-        depends_on: test_swift_6_0
-        env:
-          IMAGE_ID: "$SWIFT_6_0_IMAGE_ID"
-
-      - <<: *demo_build_uikit
-        label: "🛠️ Build UIKit Demo (Swift $SWIFT_5_9_VERSION)"
-        key: build_uikit_swift_5_9
-        depends_on: test_swift_5_9
-        env:
-          IMAGE_ID: "$SWIFT_5_9_IMAGE_ID"
-
-      - label: "⬆️ Upload UIKit Demo to App Center"
-        depends_on: build_uikit
-        plugins: [$CI_TOOLKIT]
-        command: .buildkite/commands/upload-to-appcenter.sh UIKit
+        command: .buildkite/commands/upload-to-appcenter.sh
         if: build.pull_request.id != null

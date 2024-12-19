@@ -1,5 +1,5 @@
 /// Defines how to handle avatar selection after uploading a new avatar
-enum AvatarSelection: Equatable {
+public enum AvatarSelection: Equatable {
     case preserveSelection
     case selectUploadedImage(for: Email)
     case selectUploadedImageIfNoneSelected(for: Email)

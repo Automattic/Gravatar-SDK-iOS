@@ -24,12 +24,15 @@ This SDK offers ways to adapt Gravatar profiles to your application with stylish
     - <doc:UIImageViewExtension>
     - <doc:AvatarViewArticle>
     - <doc:ProfileViews>
+    - <doc:GravatarOAuth>
+    - <doc:QuickEditorArticle>
 }
 
 ## Tutorials
 
 @Links(visualStyle: list) {
     - <doc:ContactsList>
+    - <doc:QuickEditor>
 }
 
 ## Important Types

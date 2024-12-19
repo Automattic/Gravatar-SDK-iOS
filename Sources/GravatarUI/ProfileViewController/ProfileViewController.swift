@@ -1,5 +1,6 @@
 import Combine
 import Gravatar
+import SafariServices
 import UIKit
 
 /// A view controller which displays a Profile View.
@@ -32,6 +33,12 @@ public class ProfileViewController: UIViewController {
         self.configuration = configuration
         self.profileIdentifier = profileIdentifier
         super.init(nibName: nil, bundle: nil)
+        if configuration.delegate == nil {
+            // Set delegate to `self` if no delegate was set.
+            var newConfig = configuration
+            newConfig.delegate = self
+            self.configuration = newConfig
+        }
     }
 
     override public func viewDidLoad() {
@@ -101,5 +108,24 @@ public class ProfileViewController: UIViewController {
 
     private func refresh(paletteType: PaletteType) {
         view.backgroundColor = paletteType.palette.background.primary
+    }
+}
+
+extension ProfileViewController: ProfileViewDelegate {
+    public func profileView(_ view: BaseProfileView, didTapOnAvatarWithID avatarID: Gravatar.AvatarIdentifier?) {
+        // No op.
+    }
+
+    public func profileView(_ view: BaseProfileView, didTapOnProfileButtonWithStyle style: ProfileButtonStyle, profileURL: URL?) {
+        guard let profileURL else { return }
+        let safari = SFSafariViewController(url: profileURL)
+        present(safari, animated: true)
+    }
+
+    public func profileView(_ view: BaseProfileView, didTapOnAccountButtonWithModel accountModel: AccountModel) {
+        guard let accountURL = accountModel.accountURL else { return }
+        let safari = SFSafariViewController(url: accountURL)
+
+        present(safari, animated: true)
     }
 }

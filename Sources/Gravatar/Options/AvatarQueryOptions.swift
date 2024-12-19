@@ -16,7 +16,7 @@ public struct AvatarQueryOptions {
     /// - Parameters:
     ///   - preferredSize: The preferred image size. Note that many users have lower resolution images, so requesting larger sizes may result in
     /// pixelation/low-quality images.
-    ///   - gravatarRating: The lowest rating allowed to be displayed. If the requested email hash does not have an image meeting the requested rating level,
+    ///   - rating: The lowest rating allowed to be displayed. If the requested email hash does not have an image meeting the requested rating level,
     ///   - defaultAvatarOption: Choose what will happen if no Gravatar image is found. See ``DefaultAvatarOption`` for more info.
     /// then the default avatar is returned.
     ///   - forceDefaultAvatar: If set to `true`, the returned image will always be the default avatar, determined by the `defaultAvatarOption` parameter.

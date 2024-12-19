@@ -132,7 +132,7 @@ open class BaseProfileView: UIView, UIContentView {
     /// Provides the avatar to show in this view.
     let avatarProvider: AvatarProviding
 
-    /// Type of the avatar. See: ``AvatarType``.
+    /// Type of the avatar. See: ``AvatarType-enum``.
     public let avatarType: AvatarType
 
     public var avatarView: UIView {

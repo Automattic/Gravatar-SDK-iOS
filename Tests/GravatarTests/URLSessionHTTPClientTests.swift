@@ -7,7 +7,7 @@ final class URLSessionHTTPClientTests: XCTestCase {
         let sessionMock = URLSessionMock(returnData: URLSessionMock.jsonData, response: HTTPURLResponse())
         let client = URLSessionHTTPClient(urlSession: sessionMock)
         let mockURLRequest = URLRequest(url: URL(string: "https://a-host.com")!)
-        let result: (data: Data, response: HTTPURLResponse) = try await client.fetchData(with: mockURLRequest)
+        let result: (data: Data, response: HTTPURLResponse) = try await client.data(with: mockURLRequest)
 
         XCTAssertEqual(result.data, URLSessionMock.jsonData)
     }
@@ -23,7 +23,7 @@ final class URLSessionHTTPClientTests: XCTestCase {
         let mockURLRequest = URLRequest(url: URL(string: "https://a-host.com")!)
 
         do {
-            let _ = try await client.fetchData(with: mockURLRequest)
+            let _ = try await client.data(with: mockURLRequest)
             XCTFail("This should throw")
         } catch HTTPClientError.URLSessionError(let error) {
             XCTAssertEqual((error as NSError).code, 400)
@@ -42,7 +42,7 @@ final class URLSessionHTTPClientTests: XCTestCase {
             let mockURLRequest = URLRequest(url: URL(string: "https://a-host.com")!)
 
             do {
-                let _ = try await client.fetchData(with: mockURLRequest)
+                let _ = try await client.data(with: mockURLRequest)
                 XCTFail("This should throw")
             } catch HTTPClientError.invalidHTTPStatusCodeError(let response, _) {
                 XCTAssertEqual(response.statusCode, invalidStatusCode)
@@ -66,7 +66,7 @@ final class URLSessionHTTPClientTests: XCTestCase {
             let client = URLSessionHTTPClient(urlSession: sessionMock)
             let mockURLRequest = URLRequest(url: url)
 
-            let result: (data: Data, response: HTTPURLResponse) = try await client.fetchData(with: mockURLRequest)
+            let result: (data: Data, response: HTTPURLResponse) = try await client.data(with: mockURLRequest)
 
             XCTAssertEqual(result.response.statusCode, validStatusCode)
         }

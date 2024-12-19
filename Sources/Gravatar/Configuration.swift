@@ -25,7 +25,9 @@ public actor Configuration {
     private init() {}
 
     /// Updates the current configuration instance.
-    /// - Parameter apiKey: The new authorisation API key.
+    /// - Parameter
+    ///   - apiKey: The new authorisation API key.
+    ///   - oauthSecrets: An instance containing the secrets for the OAuth flow.
     public func configure(with apiKey: String?, oauthSecrets: OAuthSecrets? = nil) {
         self.apiKey = apiKey
         self.oauthSecrets = oauthSecrets
