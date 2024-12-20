@@ -9,6 +9,7 @@ require 'tmpdir'
 module Fastlane
   module Actions
     # rubocop:disable Metrics/ClassLength
+    # rubocop: disable Style/Documentation
     class InstallSwiftlintAction < Action
       def self.run(params)
         # Prepare paths and settings
@@ -152,7 +153,10 @@ module Fastlane
         version
       end
 
-      # Fastlane metadata
+      #####################################################
+      # Documentation
+      #####################################################
+
       def self.description
         "This action installs SwiftLint, ensuring the specified version is present. \
          If 'latest' is specified as the version, it will download the most recent version available. \
@@ -184,6 +188,7 @@ module Fastlane
         [:mac].include?(platform)
       end
     end
+    # rubocop:enable Style/Documentation
     # rubocop:enable Metrics/ClassLength
   end
 end
