@@ -7,9 +7,24 @@ require 'zip'
 
 module Fastlane
   module Actions
+    # rubocop:disable Metrics/ClassLength
     class InstallSwiftlintAction < Action
       def self.run(params)
-        # Parameters
+        # Prepare paths and settings
+        swiftlint_version, install_binary_path, zip_file = prepare_paths(params)
+
+        # Skip if the correct version is already installed
+        return if swiftlint_installed?(install_binary_path, swiftlint_version)
+
+        # Download SwiftLint if needed
+        download_swiftlint_if_needed(swiftlint_version, zip_file)
+
+        # Install SwiftLint
+        install_swiftlint(zip_file, install_binary_path)
+      end
+
+      # Prepares paths and returns key variables
+      def self.prepare_paths(params)
         swiftlint_version = params[:version]
         install_dir = params[:install_path]
 
@@ -20,34 +35,13 @@ module Fastlane
 
         download_version = swiftlint_version == 'latest' ? fetch_latest_release_tag : swiftlint_version
         zip_file = File.join(cache_dir, "portable_swiftlint_#{download_version}.zip")
-        download_url = "https://github.com/realm/SwiftLint/releases/download/#{download_version}/portable_swiftlint.zip"
 
         # Ensure directories exist
         FileUtils.mkdir_p(bin_dir)
         FileUtils.mkdir_p(cache_dir)
         FileUtils.mkdir_p(temp_dir)
 
-        # Check if SwiftLint is already installed
-        return if swiftlint_installed?(install_binary_path, download_version)
-
-        # Download SwiftLint if not cached
-        if File.exist?(zip_file)
-          UI.message("Using cached SwiftLint version #{download_version}")
-        else
-          UI.message("Downloading SwiftLint version #{download_version}...")
-          download_swiftlint(download_url, zip_file)
-        end
-
-        # Remove old SwiftLint if needed
-        if File.exist?(install_binary_path)
-          UI.important('Removing old SwiftLint version...')
-          FileUtils.rm_f(install_binary_path)
-        end
-
-        # Install SwiftLint
-        UI.message("Installing SwiftLint version #{download_version}...")
-        install_swiftlint(zip_file, temp_dir, install_binary_path)
-        UI.success("SwiftLint version #{download_version} installed successfully at #{install_dir}")
+        [download_version, install_binary_path, zip_file]
       end
 
       def self.swiftlint_installed?(install_binary_path, expected_version)
@@ -67,7 +61,19 @@ module Fastlane
         end
       end
 
-      def self.download_swiftlint(url, destination)
+      # Downloads SwiftLint if not cached
+      def self.download_swiftlint_if_needed(version, zip_file)
+        if File.exist?(zip_file)
+          UI.message("Using cached SwiftLint version #{version}.")
+        else
+          UI.message("Downloading SwiftLint version #{version}...")
+          download_swiftlint(version, zip_file)
+        end
+      end
+
+      def self.download_swiftlint(version, destination)
+        url = "https://github.com/realm/SwiftLint/releases/download/#{version}/portable_swiftlint.zip"
+
         URI.parse(url).open do |download|
           File.binwrite(destination, download.read)
         end
@@ -75,7 +81,10 @@ module Fastlane
         UI.user_error!("Failed to download SwiftLint: #{e.message}")
       end
 
-      def self.install_swiftlint(zip_file, temp_dir, install_binary_path)
+      def self.install_swiftlint(zip_file, install_binary_path)
+        UI.message('Installing SwiftLint...')
+        temp_dir = '/tmp/swiftlint_install'
+
         # Extract the zip file
         Zip::File.open(zip_file) do |zip|
           zip.each do |entry|
@@ -92,6 +101,7 @@ module Fastlane
         swiftlint_binary = File.join(temp_dir, 'swiftlint')
         FileUtils.mv(swiftlint_binary, install_binary_path)
         FileUtils.chmod('+x', install_binary_path)
+        UI.success("SwiftLint installed successfully at #{install_binary_path}")
       rescue StandardError => e
         UI.user_error!("Failed to install SwiftLint: #{e.message}")
       ensure
@@ -115,9 +125,12 @@ module Fastlane
         latest_version
       end
 
+      # Fastlane metadata
       def self.description
-        "This action installs SwiftLint, checking for the desired version and downloading if necessary. \
-         It uses a cache directory to avoid redundant downloads and ensures proper binary installation."
+        "This action installs SwiftLint, ensuring the specified version is present. \
+         If 'latest' is specified as the version, it will download the most recent version available. \
+         It avoids redundant downloads by using a cache directory and ensures proper binary installation. \
+         For more details, visit: https://github.com/realm/SwiftLint"
       end
 
       def self.available_options
@@ -144,5 +157,6 @@ module Fastlane
         [:mac].include?(platform)
       end
     end
+    # rubocop:enable Metrics/ClassLength
   end
 end
