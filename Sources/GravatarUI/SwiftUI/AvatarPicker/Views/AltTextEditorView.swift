@@ -10,7 +10,7 @@ struct AltTextEditorView: View {
     @State var charCount: Int = 0
     @State var safariURL: URL? = nil
     @State var isLoading: Bool = false
-    @ObservedObject var toastManager: ToastManager = .init()
+    @ObservedObject var toastManager: ToastManager
 
     @FocusState var focused: Bool
 
@@ -122,7 +122,7 @@ struct AltTextEditorView: View {
 
     var characterCountText: some View {
         Text("\(Constants.characterLimit - altText.count)")
-            .font(.callout)
+            .font(.footnote)
             .monospacedDigit()
             .foregroundColor(altText.count >= Constants.characterLimit ? .red : .secondary)
     }
