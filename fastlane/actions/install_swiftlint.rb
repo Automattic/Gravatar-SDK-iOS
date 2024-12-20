@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'fileutils'
 require 'open3'
 require 'open-uri'
@@ -13,10 +15,10 @@ module Fastlane
 
         bin_dir = File.join(install_dir, 'bin')
         cache_dir = File.join(install_dir, 'cache')
-        temp_dir = "/tmp/swiftlint_install"
+        temp_dir = '/tmp/swiftlint_install'
         install_binary_path = File.join(bin_dir, 'swiftlint')
 
-        download_version = swiftlint_version == "latest" ? fetch_latest_release_tag : swiftlint_version
+        download_version = swiftlint_version == 'latest' ? fetch_latest_release_tag : swiftlint_version
         zip_file = File.join(cache_dir, "portable_swiftlint_#{download_version}.zip")
         download_url = "https://github.com/realm/SwiftLint/releases/download/#{download_version}/portable_swiftlint.zip"
 
@@ -29,17 +31,17 @@ module Fastlane
         return if swiftlint_installed?(install_binary_path, download_version)
 
         # Download SwiftLint if not cached
-        unless File.exist?(zip_file)
+        if File.exist?(zip_file)
+          UI.message("Using cached SwiftLint version #{download_version}")
+        else
           UI.message("Downloading SwiftLint version #{download_version}...")
           download_swiftlint(download_url, zip_file)
-        else
-          UI.message("Using cached SwiftLint version #{download_version}")
         end
 
         # Remove old SwiftLint if needed
         if File.exist?(install_binary_path)
-            UI.important("Removing old SwiftLint version...")
-            FileUtils.rm_f(install_binary_path)
+          UI.important('Removing old SwiftLint version...')
+          FileUtils.rm_f(install_binary_path)
         end
 
         # Install SwiftLint
@@ -50,58 +52,62 @@ module Fastlane
 
       def self.swiftlint_installed?(install_binary_path, expected_version)
         return false unless File.exist?(install_binary_path) && File.executable?(install_binary_path)
-      
-        installed_version = `#{install_binary_path} --version`.strip rescue nil
+
+        installed_version = begin
+          `#{install_binary_path} --version`.strip
+        rescue StandardError
+          nil
+        end
         if installed_version == expected_version
           UI.success("SwiftLint version #{installed_version} is installed")
           true
         else
-          UI.message("Expected SwiftLint version #{expected_version}, but found #{installed_version}")
+          UI.important("Expected SwiftLint version #{expected_version}, but found #{installed_version}")
           false
         end
       end
 
       def self.download_swiftlint(url, destination)
-        URI.open(url) do |download|
-          File.open(destination, "wb") do |file|
-            file.write(download.read)
-          end
+        URI.parse(url).open do |download|
+          File.binwrite(destination, download.read)
         end
-      rescue => e
+      rescue StandardError => e
         UI.user_error!("Failed to download SwiftLint: #{e.message}")
       end
 
       def self.install_swiftlint(zip_file, temp_dir, install_binary_path)
-        begin
-          # Extract the zip file
-          Zip::File.open(zip_file) do |zip|
-            zip.each do |entry|
-                target_path = File.join(temp_dir, entry.name)
-                entry.extract(target_path) { true } rescue UI.user_error!("Failed to extract #{entry.name}")
+        # Extract the zip file
+        Zip::File.open(zip_file) do |zip|
+          zip.each do |entry|
+            target_path = File.join(temp_dir, entry.name)
+            begin
+              entry.extract(target_path) { true }
+            rescue StandardError
+              UI.user_error!("Failed to extract #{entry.name}")
             end
           end
-
-          # Move the binary to the install path
-          swiftlint_binary = File.join(temp_dir, "swiftlint")
-          FileUtils.mv(swiftlint_binary, install_binary_path)
-          FileUtils.chmod("+x", install_binary_path)
-        rescue => e
-          UI.user_error!("Failed to install SwiftLint: #{e.message}")
-        ensure
-          FileUtils.rm_rf(temp_dir) # Clean up temp directory
         end
+
+        # Move the binary to the install path
+        swiftlint_binary = File.join(temp_dir, 'swiftlint')
+        FileUtils.mv(swiftlint_binary, install_binary_path)
+        FileUtils.chmod('+x', install_binary_path)
+      rescue StandardError => e
+        UI.user_error!("Failed to install SwiftLint: #{e.message}")
+      ensure
+        FileUtils.rm_rf(temp_dir) # Clean up temp directory
       end
 
       def self.fetch_latest_release_tag
-        UI.message("Fetching the latest SwiftLint version...")
-        api_url = "https://api.github.com/repos/realm/SwiftLint/releases/latest"
+        UI.message('Fetching the latest SwiftLint version...')
+        api_url = 'https://api.github.com/repos/realm/SwiftLint/releases/latest'
         latest_version = nil
 
         begin
-          response = URI.open(api_url).read
+          response = URI.parse(api_url).open.read
           json = JSON.parse(response)
-          latest_version = json["tag_name"]
-        rescue => e
+          latest_version = json['tag_name']
+        rescue StandardError => e
           UI.user_error!("Failed to fetch the latest SwiftLint version: #{e.message}")
         end
 
@@ -119,22 +125,22 @@ module Fastlane
           FastlaneCore::ConfigItem.new(
             key: :version,
             description: "The version of SwiftLint to install (default: 'latest')",
-            default_value: "latest",
+            default_value: 'latest',
             optional: true
           ),
           FastlaneCore::ConfigItem.new(
             key: :install_path,
-            description: "The installation path for the SwiftLint binary",
+            description: 'The installation path for the SwiftLint binary',
             optional: false
           )
         ]
       end
 
       def self.authors
-        ["Automattic"]
+        ['Automattic']
       end
 
-      def self.is_supported?(platform)
+      def self.supported?(platform)
         [:mac].include?(platform)
       end
     end
