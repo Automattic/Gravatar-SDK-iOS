@@ -5,6 +5,7 @@ struct AltTextEditorView: View {
     let email: Email
 
     @Environment(\.colorScheme) var colorScheme
+    @Environment(\.dynamicTypeSize) var dynamicTypeSize
 
     @State var altText: String = ""
     @State var charCount: Int = 0
@@ -16,6 +17,35 @@ struct AltTextEditorView: View {
 
     let onSave: (AvatarImageModel) async -> Void
     let onCancel: () -> Void
+
+    var counterPadding: CGFloat {
+        switch dynamicTypeSize {
+        case let size where size <= .large: 0
+        case let size where size < .xxxLarge: -10
+        case let size where size >= .xxxLarge: -18
+        default: 0
+        }
+    }
+
+    var normalSizeTextEditorLayout: some View {
+        ZStack(alignment: .bottomTrailing) {
+            HStack(alignment: .top) {
+                imageView
+                altTextField
+            }
+            characterCountText.padding(.bottom, counterPadding)
+        }.padding(.bottom, 12)
+    }
+
+    var accessibilitySizeTextEditorLayout: some View {
+        VStack(alignment: .trailing) {
+            HStack(alignment: .top) {
+                imageView
+                altTextField
+            }
+            characterCountText.padding(.top, -6).padding(.bottom, -4)
+        }
+    }
 
     var body: some View {
         // Scroll view helps detaching the height of the child view from the height of the parent view.
@@ -31,17 +61,14 @@ struct AltTextEditorView: View {
                             Spacer()
                             altTextHelpButton
                         }
-                        ZStack(alignment: .bottomTrailing) {
-                            HStack(alignment: .top) {
-                                imageView
-                                altTextField
-                            }
-                            characterCountText
+                        if dynamicTypeSize >= .accessibility1 {
+                            accessibilitySizeTextEditorLayout
+                        } else {
+                            normalSizeTextEditorLayout
                         }
-                        Spacer()
+
                         actionButton
                             .disabled(isLoading)
-                            .padding(.top)
                     }
                     .padding()
                     .avatarPickerBorder(colorScheme: .light)
@@ -78,7 +105,7 @@ struct AltTextEditorView: View {
                 }
             ))
             .multilineTextAlignment(.leading)
-            .frame(height: 100)
+            .frame(height: dynamicTypeSize >= .accessibility1 ? 120 : Constants.minLength)
             .font(.footnote)
             .focused($focused)
             .submitLabel(.done)
@@ -125,6 +152,7 @@ struct AltTextEditorView: View {
             .font(.footnote)
             .monospacedDigit()
             .foregroundColor(altText.count >= Constants.characterLimit ? .red : .secondary)
+            .padding(.trailing, 4)
     }
 
     var altTextHelpButton: some View {
