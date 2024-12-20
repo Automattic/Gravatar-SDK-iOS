@@ -48,6 +48,9 @@ fastlane/test_output
 # SwiftGen (part of wpmreleasetoolkit)
 vendor/swiftgen
 
+# SwiftLint
+SwiftLint/
+
 # Other
 openapi/GravatarOpenAPIClient/Sources/
 Demo/Demo/Secrets.swift
