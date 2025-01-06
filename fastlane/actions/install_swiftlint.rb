@@ -216,8 +216,8 @@ module Fastlane
         ['Automattic']
       end
 
-      def self.supported?(platform)
-        [:mac].include?(platform)
+      def self.is_supported?(platform)
+        [:ios, :mac].include?(platform)
       end
     end
     # rubocop:enable Style/Documentation

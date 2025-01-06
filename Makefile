@@ -130,11 +130,8 @@ generate-strings: bundle-install
 download-strings: bundle-install
 	bundle exec fastlane download_localized_strings
 
-swiftlint: swiftlint-install
-	$(SWIFTLINT_INSTALL_PATH)/bin/swiftlint
-
-swiftlint-install:
-	bundle exec fastlane run install_swiftlint version:$(SWIFTLINT_VERSION) install_path:"$(SWIFTLINT_INSTALL_PATH)"
+swiftlint: bundle-install
+	bundle exec fastlane run_swiftlint
 
 clean-generated:  # Delete the output directory used for generated sources.
 	@echo 'Delete entire directory: $(OUTPUT_DIRECTORY)? [y/N] ' && read ans && [ $${ans:-N} = y ] || (echo "Aborted"; exit 1)
