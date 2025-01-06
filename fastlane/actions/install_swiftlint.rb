@@ -9,7 +9,7 @@ require 'tmpdir'
 module Fastlane
   module Actions
     # rubocop:disable Metrics/ClassLength
-    # rubocop: disable Style/Documentation
+    # rubocop:disable Style/Documentation
     class InstallSwiftlintAction < Action
       def self.run(params)
         # Prepare paths and settings
@@ -112,8 +112,7 @@ module Fastlane
       end
 
       def self.install_swiftlint(zip_file, install_binary_path)
-        temp_dir = Dir.mktmpdir('swiftlint_install')
-        begin
+        Dir.mktmpdir('swiftlint_install') do |temp_dir|
           UI.message('Installing SwiftLint...')
           # Extract the zip file
           Zip::File.open(zip_file) do |zip|
@@ -127,19 +126,22 @@ module Fastlane
           FileUtils.mv(swiftlint_binary, install_binary_path)
           FileUtils.chmod('+x', install_binary_path)
           UI.success("SwiftLint installed successfully at #{install_binary_path}")
-        ensure
-          FileUtils.rm_rf(temp_dir) # Clean up temp directory
         end
       rescue StandardError => e
-        UI.user_error!("Failed to install SwiftLint: #{e.message}")
+        FastlaneCore::UI.user_error!("Failed to install SwiftLint: #{e.message}")
       end
 
       def self.fetch_latest_release_tag
         UI.message('Fetching the latest SwiftLint version...')
         api_url = URI('https://api.github.com/repos/realm/SwiftLint/releases/latest')
 
-        response = Net::HTTP.get(api_url)
-        json = JSON.parse(response)
+        response = Net::HTTP.get_response(api_url)
+
+        unless response.is_a?(Net::HTTPSuccess)
+          raise "#{response.code} #{response.message}"
+        end
+
+        json = JSON.parse(response.body)
         latest_version = json['tag_name']
 
         UI.message("Latest SwiftLint version: #{latest_version}")

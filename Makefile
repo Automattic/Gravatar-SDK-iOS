@@ -1,4 +1,4 @@
-.PHONY: all clean run swiftlint-check-version swiftlint-remove-old swiftlint-install
+.PHONY: all clean run swiftlint
 
 # To see how to drive this makefile use:
 #
@@ -21,12 +21,7 @@ OPENAPI_CLIENT_PROPERTIES ?= projectName=$(OPENAPI_PROJECT_NAME),useSPMFileStruc
 
 # SwiftLint Configuration
 SWIFTLINT_VERSION := 0.57.1
-SWIFTLINT_DOWNLOAD_URL := https://github.com/realm/SwiftLint/releases/download/$(SWIFTLINT_VERSION)/portable_swiftlint.zip
 SWIFTLINT_INSTALL_PATH := ./SwiftLint
-SWIFTLINT_BINARY_PATH := $(SWIFTLINT_INSTALL_PATH)/swiftlint
-SWIFTLINT_TEMP_DIR := /tmp/swiftlint_install
-SWIFTLINT_CACHE_DIR := $(SWIFTLINT_INSTALL_PATH)/cache
-SWIFTLINT_ZIP_FILE := portable_swiftlint_$(SWIFTLINT_VERSION).zip
 
 # Derived values (don't change these).
 CURRENT_MAKEFILE_PATH := $(abspath $(lastword $(MAKEFILE_LIST)))
@@ -49,6 +44,7 @@ dev-demo: # Open an xcode project with the package and a demo project
 	xed Demo/
 
 test: bundle-install
+	bundle exec rspec
 	bundle exec fastlane test
 
 build-demo: bundle-install
@@ -130,51 +126,8 @@ generate-strings: bundle-install
 download-strings: bundle-install
 	bundle exec fastlane download_localized_strings
 
-swiftlint-check-version: # Checks if SwiftLint is installed and the version matches
-	@if [ -x "$(SWIFTLINT_BINARY_PATH)" ]; then \
-		INSTALLED_VERSION=`$(SWIFTLINT_BINARY_PATH) --version`; \
-		if [ "$$INSTALLED_VERSION" = "$(SWIFTLINT_VERSION)" ]; then \
-			echo "SwiftLint version $(SWIFTLINT_VERSION) is already installed."; \
-			exit 0; \
-		else \
-			echo "SwiftLint version $$INSTALLED_VERSION is installed, but $(SWIFTLINT_VERSION) is required."; \
-			$(MAKE) swiftlint-remove-old; \
-			false ; \
-		fi \
-	else \
-		echo "SwiftLint is not installed."; \
-		false; \
-	fi
-
-swiftlint-remove-old: # Remove the currently installed SwiftLint
-	@if [ -f "$(SWIFTLINT_INSTALL_PATH)" ]; then \
-		echo "Removing old SwiftLint version..."; \
-		rm -f $(SWIFTLINT_INSTALL_PATH); \
-		echo "Old SwiftLint removed."; \
-	else \
-		echo "No existing SwiftLint installation found."; \
-	fi
-
-swiftlint-install: # Download and install SwiftLint
-	-@make swiftlint-check-version || make $(SWIFTLINT_INSTALL_PATH)
-
-$(SWIFTLINT_INSTALL_PATH): validate-dependencies $(SWIFTLINT_ZIP_FILE)
-	@echo "Installing SwiftLint version $(SWIFTLINT_VERSION) to $(SWIFTLINT_INSTALL_PATH)..."
-	@mkdir -p "$(SWIFTLINT_TEMP_DIR)"
-	@unzip -o "$(SWIFTLINT_CACHE_DIR)/$(SWIFTLINT_ZIP_FILE)" -d $(SWIFTLINT_TEMP_DIR)
-	@mv $(SWIFTLINT_TEMP_DIR)/swiftlint $(SWIFTLINT_INSTALL_PATH)
-	@chmod a+x $(SWIFTLINT_BINARY_PATH)
-	@echo "SwiftLint version $(SWIFTLINT_VERSION) successfully installed at $(SWIFTLINT_INSTALL_PATH)."
-
-$(SWIFTLINT_ZIP_FILE): validate-dependencies
-	@echo "Checking cache for SwiftLint version $(SWIFTLINT_VERSION)..."
-	@if [ ! -f "$(SWIFTLINT_CACHE_DIR)/$(SWIFTLINT_ZIP_FILE)" ]; then \
-		mkdir -p "$(SWIFTLINT_CACHE_DIR)" \
-		echo "SwiftLint version $(SWIFTLINT_VERSION) not found in cache. Downloading..."; \
-		curl -L $(SWIFTLINT_DOWNLOAD_URL) -o "$(SWIFTLINT_CACHE_DIR)/$(SWIFTLINT_ZIP_FILE)" || { echo "Download failed!"; exit 1; }; \
-	else \
-		echo "SwiftLint version $(SWIFTLINT_VERSION) found in cache. Using cached file."; \
-	fi
+swiftlint:
+	bundle exec fastlane run install_swiftlint version:$(SWIFTLINT_VERSION) install_path:"$(SWIFTLINT_INSTALL_PATH)"
 
 clean-generated:  # Delete the output directory used for generated sources.
 	@echo 'Delete entire directory: $(OUTPUT_DIRECTORY)? [y/N] ' && read ans && [ $${ans:-N} = y ] || (echo "Aborted"; exit 1)
@@ -185,8 +138,6 @@ clean:  # Clean everything, including the checkout of swift-openapi-generator.
 		rm -rf "$(OPENAPI_GENERATOR_CLONE_DIR)" || echo "Skipped deleting $(OPENAPI_GENERATOR_CLONE_DIR)"
 	@echo 'Delete SwiftLint installation $(SWIFTLINT_INSTALL_PATH)? [y/N] ' && read ans && [ $${ans:-N} = y ] && \
 		rm -rf "$(SWIFTLINT_INSTALL_PATH)" || echo "Skipped deleting $(SWIFTLINT_INSTALL_PATH)"
-	@rm -rf "$(SWIFTLINT_CACHE_DIR)"
-	@rm -rf "$(SWIFTLINT_TEMP_DIR)"
 
 dump:  # Dump all derived values used by the Makefile.
 	@echo "CURRENT_MAKEFILE_PATH = $(CURRENT_MAKEFILE_PATH)"
@@ -197,10 +148,6 @@ dump:  # Dump all derived values used by the Makefile.
 	@echo "OPENAPI_GENERATED_DIR = $(OPENAPI_GENERATED_DIR)"
 	@echo "OPENAPI_CLIENT_PROPERTIES = $(OPENAPI_CLIENT_PROPERTIES)"
 	@echo "OUTPUT_DIRECTORY = $(OUTPUT_DIRECTORY)"
-	@echo "SWIFTLINT_INSTALL_PATH = $(SWIFTLINT_INSTALL_PATH)"
-	@echo "SWIFTLINT_CACHE_DIR = $(SWIFTLINT_CACHE_DIR)"
-	@echo "SWIFTLINT_ZIP_FILE = $(SWIFTLINT_ZIP_FILE)"
-	@echo "SWIFTLINT_BINARY_PATH = $(SWIFTLINT_BINARY_PATH)"
 
 $(OPENAPI_GENERATED_DIR):
 	mkdir -p "$@"

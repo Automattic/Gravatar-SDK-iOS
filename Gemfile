@@ -8,3 +8,10 @@ gem 'fastlane', '~> 2.222'
 gem 'fastlane-plugin-appcenter', '~> 2.1'
 gem 'fastlane-plugin-wpmreleasetoolkit', '~> 12.0'
 gem 'rubocop', '~> 1.65'
+
+group :test do
+    gem 'webmock', "~> 3.24"
+    gem "rspec", "~> 3.13"
+end
+
+
