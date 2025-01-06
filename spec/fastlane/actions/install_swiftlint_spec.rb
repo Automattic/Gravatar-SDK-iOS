@@ -113,7 +113,32 @@ describe Fastlane::Actions::InstallSwiftlintAction do
       )
 
       expect(File.exist?(destination)).to be_truthy
-      expect(File.read(destination)).to eq("redirected content")
+      expect(File.read(destination)).to eq('redirected content')
+    end
+
+    it 'retries when rate limited (429 Too Many Requests)' do
+      stub_request(:get, portable_swiftlint_url)
+        .to_return(status: 429, headers: { 'Retry-After' => '1' })
+        .then.to_return(status: 200, body: latest_version_response)
+
+      destination = File.join(Dir.tmpdir, 'swiftlint.zip')
+      Fastlane::Actions::InstallSwiftlintAction.download_file(
+        portable_swiftlint_url,
+        destination
+      )
+
+      expect(File.exist?(destination)).to be_truthy
+      expect(File.read(destination)).to eq(latest_version_response)
+    end
+
+    it 'raises an error if the specified asset is not found' do
+      response_body = { 'tag_name' => '0.51.0', 'assets' => [] }.to_json
+      stub_request(:get, 'https://api.github.com/repos/realm/SwiftLint/releases/tags/0.51.0')
+        .to_return(status: 200, body: response_body)
+
+      expect do
+        Fastlane::Actions::InstallSwiftlintAction.fetch_browser_download_url('0.51.0', 'nonexistent_asset.zip')
+      end.to raise_error("Failed to fetch browser download URL: Asset 'nonexistent_asset.zip' not found for release 0.51.0")
     end
   end
 end
