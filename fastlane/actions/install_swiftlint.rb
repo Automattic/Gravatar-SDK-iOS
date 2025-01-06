@@ -46,11 +46,15 @@ module Fastlane
         [download_version, install_binary_path, zip_file]
       end
 
+      def self.run_command(command)
+        `#{command}`
+      end
+
       def self.swiftlint_installed?(install_binary_path, expected_version)
         return false unless File.exist?(install_binary_path) && File.executable?(install_binary_path)
 
         installed_version = begin
-          `#{install_binary_path} --version`.strip
+          run_command("#{install_binary_path} --version").strip
         rescue StandardError
           nil
         end
