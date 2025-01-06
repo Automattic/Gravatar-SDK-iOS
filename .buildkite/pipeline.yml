@@ -16,7 +16,9 @@ steps:
     key: "lint"
     command: |
       echo "--- 🛠 Linting"
+      install_gems
       make lint
+    plugins: [$CI_TOOLKIT]
 
   - label: ☢️ Danger - PR Check
     command: danger
