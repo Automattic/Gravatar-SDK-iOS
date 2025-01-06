@@ -1,4 +1,4 @@
-.PHONY: all clean run swiftlint
+.PHONY: all clean run swiftlint swiftlint-install
 
 # To see how to drive this makefile use:
 #
@@ -76,12 +76,16 @@ swiftformat: # Automatically find and fixes lint issues
 		--allow-writing-to-directory $(SWIFTFORMAT_CACHE) \
 		swiftformat
 
-lint: # Use swiftformat to warn about format issues
+swiftformat-lint:
 	swift package plugin \
 		--allow-writing-to-package-directory \
 		--allow-writing-to-directory $(SWIFTFORMAT_CACHE) \
 		swiftformat \
 		--lint
+
+lint: # Use swiftformat to warn about format issues
+	make swiftformat-lint
+	make swiftlint
 
 validate-pod: bundle-install
 	# For some reason this fixes a failure in `lib lint`
@@ -126,7 +130,10 @@ generate-strings: bundle-install
 download-strings: bundle-install
 	bundle exec fastlane download_localized_strings
 
-swiftlint:
+swiftlint: swiftlint-install
+	$(SWIFTLINT_INSTALL_PATH)/bin/swiftlint
+
+swiftlint-install:
 	bundle exec fastlane run install_swiftlint version:$(SWIFTLINT_VERSION) install_path:"$(SWIFTLINT_INSTALL_PATH)"
 
 clean-generated:  # Delete the output directory used for generated sources.
