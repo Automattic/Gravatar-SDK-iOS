@@ -2,7 +2,7 @@
 
 require 'rspec'
 require 'fastlane'
-require 'webmock/rspec'  # For stubbing HTTP requests
+require 'webmock/rspec' # For stubbing HTTP requests
 
 # Require your actions
 Dir[File.expand_path('../fastlane/actions/*.rb', __dir__)].each { |file| require file }

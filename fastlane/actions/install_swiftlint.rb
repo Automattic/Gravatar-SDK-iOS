@@ -11,6 +11,8 @@ module Fastlane
     # rubocop:disable Metrics/ClassLength
     # rubocop:disable Style/Documentation
     class InstallSwiftlintAction < Action
+      GITHUB_API_URL = 'https://api.github.com'
+
       def self.run(params)
         # Prepare paths and settings
         swiftlint_version, install_binary_path, zip_file = prepare_paths(params)
@@ -26,6 +28,7 @@ module Fastlane
       end
 
       def self.prepare_paths(params)
+        @github_api_url = "#{GITHUB_API_URL}/repos/#{params[:owner]}/#{params[:repo]}"
         swiftlint_version = params[:version]
         install_dir = params[:install_path]
 
@@ -65,7 +68,7 @@ module Fastlane
           UI.message("Using cached SwiftLint version #{version}")
         else
           UI.message("Downloading SwiftLint version #{version}...")
-          url = "https://github.com/realm/SwiftLint/releases/download/#{version}/portable_swiftlint.zip"
+          url = fetch_browser_download_url(version, 'portable_swiftlint.zip')
           download_file(url, zip_file)
         end
       end
@@ -131,15 +134,26 @@ module Fastlane
         FastlaneCore::UI.user_error!("Failed to install SwiftLint: #{e.message}")
       end
 
+      def self.fetch_browser_download_url(tag, asset_name)
+        url = URI("#{@github_api_url}/releases/tags/#{tag}")
+        response = Net::HTTP.get(url)
+        release_info = JSON.parse(response)
+
+        asset = release_info['assets'].find { |a| a['name'] == asset_name }
+        raise "Asset '#{asset_name}' not found for release #{tag}" unless asset
+
+        asset['browser_download_url']
+      rescue StandardError => e
+        raise "Failed to fetch browser download URL: #{e.message}"
+      end
+
       def self.fetch_latest_release_tag
         UI.message('Fetching the latest SwiftLint version...')
-        api_url = URI('https://api.github.com/repos/realm/SwiftLint/releases/latest')
+        api_url = URI("#{@github_api_url}/releases/latest")
 
         response = Net::HTTP.get_response(api_url)
 
-        unless response.is_a?(Net::HTTPSuccess)
-          raise "#{response.code} #{response.message}"
-        end
+        raise "#{response.code} #{response.message}" unless response.is_a?(Net::HTTPSuccess)
 
         json = JSON.parse(response.body)
         latest_version = json['tag_name']
@@ -168,6 +182,18 @@ module Fastlane
 
       def self.available_options
         [
+          FastlaneCore::ConfigItem.new(
+            key: :owner,
+            description: "The owner of the Github repository from which to download (default: 'realm')",
+            default_value: 'realm',
+            optional: true
+          ),
+          FastlaneCore::ConfigItem.new(
+            key: :repo,
+            description: "The name of the Github repository from which to download (default: 'SwiftLint')",
+            default_value: 'SwiftLint',
+            optional: true
+          ),
           FastlaneCore::ConfigItem.new(
             key: :version,
             description: "The version of SwiftLint to install (default: 'latest')",

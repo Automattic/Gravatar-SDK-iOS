@@ -10,8 +10,6 @@ gem 'fastlane-plugin-wpmreleasetoolkit', '~> 12.0'
 gem 'rubocop', '~> 1.65'
 
 group :test do
-    gem 'webmock', "~> 3.24"
-    gem "rspec", "~> 3.13"
+  gem 'rspec', '~> 3.13'
+  gem 'webmock', '~> 3.24'
 end
-
-
