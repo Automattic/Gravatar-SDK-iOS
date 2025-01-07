@@ -28,7 +28,7 @@ module Fastlane
       end
 
       def self.prepare_paths(params)
-        @github_api_url = "#{GITHUB_API_URL}/repos/#{params[:owner]}/#{params[:repo]}"
+        @github_api = "#{GITHUB_API_URL}/repos/#{params[:owner]}/#{params[:repo]}"
         swiftlint_version = params[:version]
         install_dir = params[:install_path]
 
@@ -139,7 +139,7 @@ module Fastlane
       end
 
       def self.fetch_browser_download_url(tag, asset_name)
-        url = URI("#{@github_api_url}/releases/tags/#{tag}")
+        url = URI("#{@github_api}/releases/tags/#{tag}")
         response = Net::HTTP.get(url)
         release_info = JSON.parse(response)
 
@@ -153,7 +153,7 @@ module Fastlane
 
       def self.fetch_latest_release_tag
         UI.message('Fetching the latest SwiftLint version...')
-        api_url = URI("#{@github_api_url}/releases/latest")
+        api_url = URI("#{@github_api}/releases/latest")
 
         response = Net::HTTP.get_response(api_url)
 
