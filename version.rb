@@ -3,6 +3,6 @@
 module Gravatar
   VERSION = '3.1.1'
   SWIFT_VERSIONS = [
-    '5.10'
+    '6.0'
   ].freeze
 end
