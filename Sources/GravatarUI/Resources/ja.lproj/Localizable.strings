@@ -1,16 +1,43 @@
-/* Translation-Revision-Date: 2024-12-04 09:54:09+0000 */
+/* Translation-Revision-Date: 2024-12-27 09:54:07+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
 
+/* Title for Cancel button. */
+"AltText.Editor.cancelButtonTitle" = "キャンセル";
+
+/* Placeholder text for Alt Text editor text field. */
+"AltText.Editor.placeholder" = "代替テキストを作成...";
+
+/* Title for Save button. */
+"AltText.Editor.saveButtonTitle" = "保存";
+
+/* The title of Alt Text editor screen. */
+"AltText.Editor.title" = "代替テキスト";
+
+/* Rating that indicates that the avatar is suitable for everyone */
+"Avatar.Rating.G.subtitle" = "一般";
+
+/* Rating that indicates that the avatar may not be suitable for children */
+"Avatar.Rating.PG.subtitle" = "保護者の助言と指導が必要";
+
+/* Rating that indicates that the avatar may not be suitable for children */
+"Avatar.Rating.R.subtitle" = "制限付き";
+
+/* Rating that indicates that the avatar is obviously and extremely unsuitable for children */
+"Avatar.Rating.X.subtitle" = "過激";
+
+/* An option in the avatar menu that edits the avatar's Alt Text. */
+"AvatarPicker.AvatarAction.altText" = "代替テキスト";
+
 /* An option in the avatar menu that deletes the avatar */
 "AvatarPicker.AvatarAction.delete" = "削除";
 
+/* An option in the avatar menu that shows the current rating, and allows the user to change that rating. The rating is used to indicate the appropriateness of an avatar for different audiences, and follows the US system of Motion Picture ratings: G, PG, R, and X. */
+"AvatarPicker.AvatarAction.rate" = "評価: %@";
+
 /* An option in the avatar menu that shares the avatar */
 "AvatarPicker.AvatarAction.share" = "共有...";
-
-/* Title of a message advising the user that something went wrong while trying to log in. */
-"AvatarPicker.ContentLoading.Failure.LogInError.title" = "ログインが必須です";
 
 /* Title of a button that allows the user to try loading their avatars again */
 "AvatarPicker.ContentLoading.Failure.Retry.ctaButtonTitle" = "再試行";
@@ -32,12 +59,6 @@
 
 /* A message describing the error and advising the user to login again to resolve the issue */
 "AvatarPicker.ContentLoading.Failure.SessionExpired.LogIn.subtext" = "セキュリティ上の理由でセッションの有効期限が切れました。 ログインしてアバターを更新してください。";
-
-/* Title of a button that will begin the process of authenticating the user, appearing beneath a message stating that a previous log in attept has failed. */
-"AvatarPicker.ContentLoading.Failure.SessionExpired.LogInError.buttonTitle" = "ログイン";
-
-/* A message describing the error and advising the user to login again to resolve the issue */
-"AvatarPicker.ContentLoading.Failure.SessionExpired.LogInError.subtext" = "Gravatar プロフィールを変更するには、まずログインする必要があります。";
 
 /* Title of a message advising the user that their login session has expired. */
 "AvatarPicker.ContentLoading.Failure.SessionExpired.title" = "セッションの有効期限が切れました";
@@ -69,6 +90,9 @@
 /* Title appearing in the header of a view that allows users to manage their avatars */
 "AvatarPicker.Header.title" = "アバター";
 
+/* Message displayed when no image is selected */
+"AvatarPicker.NoImageSelected.message" = "画像が選択されていません。 いずれかを選択してください。選択しない場合はデフォルトが使用されます。";
+
 /* Error message to show when the upload fails because the image is too big. */
 "AvatarPicker.Upload.Error.ImageTooBig.Error" = "提供された画像は最大サイズの10MB を超えています。";
 
@@ -84,8 +108,20 @@
 /* Title of a button that will take you to your Gravatar profile, with an arrow indicating that this action will cause you to leave this view */
 "AvatarPickerProfile.Button.ViewProfile.title" = "プロフィールを表示→";
 
+/* This error message shows when the user attempts to change the alt text of an avatar and fails. */
+"AvatarPickerViewModel.AltText.Error" = "代替テキストの変更中にエラーが発生しました。";
+
+/* This confirmation message shows when the user has updated the alt text. */
+"AvatarPickerViewModel.AltText.Success" = "画像の代替テキストの変更に成功しました。";
+
 /* This error message shows when the user attempts to delete an avatar and fails. */
 "AvatarPickerViewModel.Delete.Error" = "画像の削除中にエラーが発生しました。";
+
+/* This error message shows when the user attempts to change the rating of an avatar and fails. */
+"AvatarPickerViewModel.Rating.Error" = "アバターの評価中にエラーが発生しました。";
+
+/* This confirmation message shows when the user picks a different avatar rating and the change was applied successfully. */
+"AvatarPickerViewModel.RatingUpdate.Success" = "アバター評価の変更に成功しました。";
 
 /* This error message shows when the user attempts to share an avatar and fails. */
 "AvatarPickerViewModel.Share.Fail" = "アバターの共有中にエラーが発生しました。";

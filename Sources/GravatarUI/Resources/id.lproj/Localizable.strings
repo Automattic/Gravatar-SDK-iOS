@@ -1,16 +1,43 @@
-/* Translation-Revision-Date: 2024-12-04 09:54:06+0000 */
+/* Translation-Revision-Date: 2024-12-27 15:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: id */
 
+/* Title for Cancel button. */
+"AltText.Editor.cancelButtonTitle" = "Batal";
+
+/* Placeholder text for Alt Text editor text field. */
+"AltText.Editor.placeholder" = "Tulis teks alt ...";
+
+/* Title for Save button. */
+"AltText.Editor.saveButtonTitle" = "Simpan";
+
+/* The title of Alt Text editor screen. */
+"AltText.Editor.title" = "Teks Alt";
+
+/* Rating that indicates that the avatar is suitable for everyone */
+"Avatar.Rating.G.subtitle" = "Umum";
+
+/* Rating that indicates that the avatar may not be suitable for children */
+"Avatar.Rating.PG.subtitle" = "Bimbingan Orang Tua";
+
+/* Rating that indicates that the avatar may not be suitable for children */
+"Avatar.Rating.R.subtitle" = "Terbatas";
+
+/* Rating that indicates that the avatar is obviously and extremely unsuitable for children */
+"Avatar.Rating.X.subtitle" = "Ekstrem";
+
+/* An option in the avatar menu that edits the avatar's Alt Text. */
+"AvatarPicker.AvatarAction.altText" = "Teks Alt";
+
 /* An option in the avatar menu that deletes the avatar */
 "AvatarPicker.AvatarAction.delete" = "Hapus";
 
+/* An option in the avatar menu that shows the current rating, and allows the user to change that rating. The rating is used to indicate the appropriateness of an avatar for different audiences, and follows the US system of Motion Picture ratings: G, PG, R, and X. */
+"AvatarPicker.AvatarAction.rate" = "Rating: %@";
+
 /* An option in the avatar menu that shares the avatar */
 "AvatarPicker.AvatarAction.share" = "Bagikan";
-
-/* Title of a message advising the user that something went wrong while trying to log in. */
-"AvatarPicker.ContentLoading.Failure.LogInError.title" = "Wajib login";
 
 /* Title of a button that allows the user to try loading their avatars again */
 "AvatarPicker.ContentLoading.Failure.Retry.ctaButtonTitle" = "Coba lagi";
@@ -32,12 +59,6 @@
 
 /* A message describing the error and advising the user to login again to resolve the issue */
 "AvatarPicker.ContentLoading.Failure.SessionExpired.LogIn.subtext" = "Sesi telah kedaluwarsa karena alasan keamanan. Login untuk memperbarui Avatar Anda.";
-
-/* Title of a button that will begin the process of authenticating the user, appearing beneath a message stating that a previous log in attept has failed. */
-"AvatarPicker.ContentLoading.Failure.SessionExpired.LogInError.buttonTitle" = "Login";
-
-/* A message describing the error and advising the user to login again to resolve the issue */
-"AvatarPicker.ContentLoading.Failure.SessionExpired.LogInError.subtext" = "Untuk mengubah profil Gravatar, Anda harus login terlebih dahulu.";
 
 /* Title of a message advising the user that their login session has expired. */
 "AvatarPicker.ContentLoading.Failure.SessionExpired.title" = "Sesi telah kedaluwarsa";
@@ -69,6 +90,9 @@
 /* Title appearing in the header of a view that allows users to manage their avatars */
 "AvatarPicker.Header.title" = "Avatar";
 
+/* Message displayed when no image is selected */
+"AvatarPicker.NoImageSelected.message" = "Tidak ada gambar dipilih. Harap pilih satu gambar atau gambar default akan digunakan.";
+
 /* Error message to show when the upload fails because the image is too big. */
 "AvatarPicker.Upload.Error.ImageTooBig.Error" = "Ukuran gambar yang diberikan melebihi batas maksimal: 10 MB ";
 
@@ -84,8 +108,20 @@
 /* Title of a button that will take you to your Gravatar profile, with an arrow indicating that this action will cause you to leave this view */
 "AvatarPickerProfile.Button.ViewProfile.title" = "Lihat profil →";
 
+/* This error message shows when the user attempts to change the alt text of an avatar and fails. */
+"AvatarPickerViewModel.AltText.Error" = "Ups, terjadi kesalahan saat memperbarui teks alt.";
+
+/* This confirmation message shows when the user has updated the alt text. */
+"AvatarPickerViewModel.AltText.Success" = "Teks alt gambar berhasil diubah.";
+
 /* This error message shows when the user attempts to delete an avatar and fails. */
 "AvatarPickerViewModel.Delete.Error" = "Ups, terjadi error saat menghapus gambar.";
+
+/* This error message shows when the user attempts to change the rating of an avatar and fails. */
+"AvatarPickerViewModel.Rating.Error" = "Ups, terjadi kesalahan saat memberi rating avatar.";
+
+/* This confirmation message shows when the user picks a different avatar rating and the change was applied successfully. */
+"AvatarPickerViewModel.RatingUpdate.Success" = "Rating avatar berhasil diubah.";
 
 /* This error message shows when the user attempts to share an avatar and fails. */
 "AvatarPickerViewModel.Share.Fail" = "Ups, terjadi kesalahan saat berbagi avatar Anda.";

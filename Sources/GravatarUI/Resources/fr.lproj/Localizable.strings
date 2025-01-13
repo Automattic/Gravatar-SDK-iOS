@@ -1,16 +1,43 @@
-/* Translation-Revision-Date: 2024-12-04 09:54:07+0000 */
+/* Translation-Revision-Date: 2024-12-30 13:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: fr */
 
+/* Title for Cancel button. */
+"AltText.Editor.cancelButtonTitle" = "Annuler";
+
+/* Placeholder text for Alt Text editor text field. */
+"AltText.Editor.placeholder" = "Rédigez le texte alternatif…";
+
+/* Title for Save button. */
+"AltText.Editor.saveButtonTitle" = "Enregistrer";
+
+/* The title of Alt Text editor screen. */
+"AltText.Editor.title" = "Texte alternatif";
+
+/* Rating that indicates that the avatar is suitable for everyone */
+"Avatar.Rating.G.subtitle" = "Tous publics";
+
+/* Rating that indicates that the avatar may not be suitable for children */
+"Avatar.Rating.PG.subtitle" = "Accompagnement parental souhaitable";
+
+/* Rating that indicates that the avatar may not be suitable for children */
+"Avatar.Rating.R.subtitle" = "Restreint";
+
+/* Rating that indicates that the avatar is obviously and extremely unsuitable for children */
+"Avatar.Rating.X.subtitle" = "Extrême";
+
+/* An option in the avatar menu that edits the avatar's Alt Text. */
+"AvatarPicker.AvatarAction.altText" = "Texte alternatif";
+
 /* An option in the avatar menu that deletes the avatar */
 "AvatarPicker.AvatarAction.delete" = "Supprimer";
 
+/* An option in the avatar menu that shows the current rating, and allows the user to change that rating. The rating is used to indicate the appropriateness of an avatar for different audiences, and follows the US system of Motion Picture ratings: G, PG, R, and X. */
+"AvatarPicker.AvatarAction.rate" = "Classification : %@";
+
 /* An option in the avatar menu that shares the avatar */
 "AvatarPicker.AvatarAction.share" = "Partager…";
-
-/* Title of a message advising the user that something went wrong while trying to log in. */
-"AvatarPicker.ContentLoading.Failure.LogInError.title" = "Connexion obligatoire";
 
 /* Title of a button that allows the user to try loading their avatars again */
 "AvatarPicker.ContentLoading.Failure.Retry.ctaButtonTitle" = "Réessayer";
@@ -32,12 +59,6 @@
 
 /* A message describing the error and advising the user to login again to resolve the issue */
 "AvatarPicker.ContentLoading.Failure.SessionExpired.LogIn.subtext" = "La session a expiré pour des raisons de sécurité. Veuillez vous connecter pour mettre à jour votre avatar.";
-
-/* Title of a button that will begin the process of authenticating the user, appearing beneath a message stating that a previous log in attept has failed. */
-"AvatarPicker.ContentLoading.Failure.SessionExpired.LogInError.buttonTitle" = "Se connecter";
-
-/* A message describing the error and advising the user to login again to resolve the issue */
-"AvatarPicker.ContentLoading.Failure.SessionExpired.LogInError.subtext" = "Pour modifier votre profil Gravatar, vous devez d’abord vous connecter.";
 
 /* Title of a message advising the user that their login session has expired. */
 "AvatarPicker.ContentLoading.Failure.SessionExpired.title" = "La session a expiré";
@@ -69,6 +90,9 @@
 /* Title appearing in the header of a view that allows users to manage their avatars */
 "AvatarPicker.Header.title" = "Avatars";
 
+/* Message displayed when no image is selected */
+"AvatarPicker.NoImageSelected.message" = "Aucune image sélectionnée. Veuillez en sélectionner une, faute de quoi l’image par défaut sera utilisée.";
+
 /* Error message to show when the upload fails because the image is too big. */
 "AvatarPicker.Upload.Error.ImageTooBig.Error" = "L’image fournie dépasse la taille maximum : 10 Mo";
 
@@ -84,8 +108,20 @@
 /* Title of a button that will take you to your Gravatar profile, with an arrow indicating that this action will cause you to leave this view */
 "AvatarPickerProfile.Button.ViewProfile.title" = "Afficher le profil →";
 
+/* This error message shows when the user attempts to change the alt text of an avatar and fails. */
+"AvatarPickerViewModel.AltText.Error" = "Oups, un couac est survenu lors de la tentative de mise à jour du texte alternatif.";
+
+/* This confirmation message shows when the user has updated the alt text. */
+"AvatarPickerViewModel.AltText.Success" = "Le texte alternatif de l’image a bien été modifié.";
+
 /* This error message shows when the user attempts to delete an avatar and fails. */
 "AvatarPickerViewModel.Delete.Error" = "Oups, une erreur est survenue lors de la suppression de l’image.";
+
+/* This error message shows when the user attempts to change the rating of an avatar and fails. */
+"AvatarPickerViewModel.Rating.Error" = "Oups, un couac est survenu lors de la tentative de classification de votre avatar.";
+
+/* This confirmation message shows when the user picks a different avatar rating and the change was applied successfully. */
+"AvatarPickerViewModel.RatingUpdate.Success" = "La classification de l’avatar a bien été modifiée.";
 
 /* This error message shows when the user attempts to share an avatar and fails. */
 "AvatarPickerViewModel.Share.Fail" = "Oups, un couac est survenu lors de la tentative de partage de votre avatar.";
