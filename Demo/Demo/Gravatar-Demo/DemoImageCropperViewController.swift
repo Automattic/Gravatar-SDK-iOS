@@ -77,7 +77,8 @@ extension DemoImageCropperViewController: PHPickerViewControllerDelegate {
             result.itemProvider.loadObject(ofClass: UIImage.self) { [weak self] (object, error) in
                 if let image = object as? UIImage {
                     DispatchQueue.main.async {
-                        self?.showCropper(with: image)
+                        //self?.showCropper(with: image)
+                        self?.showCanvas(with: image)
                     }
                 }
             }
@@ -95,6 +96,18 @@ extension DemoImageCropperViewController: PHPickerViewControllerDelegate {
         }
 
         present(cropperVC, animated: true, completion: nil)
+    }
+    
+    func showCanvas(with image: UIImage) {
+        let canvasVC = CanvasViewController.init(inputImage: image) { image in
+            self.croppedImageView.image = image
+            self.sizeLabel.text = "\(image.size.width) x \(image.size.height) - scale: \(image.scale) - \(image.calculateSizeInMB())MB"
+            self.dismiss(animated: true)
+        } onCancel: {
+            self.dismiss(animated: true)
+        }
+        canvasVC.modalPresentationStyle = .fullScreen
+        present(canvasVC, animated: true, completion: nil)
     }
 }
 
