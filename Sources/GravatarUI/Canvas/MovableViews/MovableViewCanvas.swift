@@ -285,6 +285,11 @@ final class MovableViewCanvas: IgnoreTouchesView, UIGestureRecognizerDelegate, M
         case .changed:
             let newRotation = originTransformations.rotation + recognizer.rotation
             movableView.rotation = newRotation
+            print("movableViewRotated newRotation : \(newRotation)")
+            if let rotationSnapOffset = calculateRotationSnapOffsets(for: movableView) {
+                print("movableViewRotated rotationSnapOffset : \(rotationSnapOffset)")
+                movableView.rotation = rotationSnapOffset
+            }
         case .ended:
             onRecognizerEnded()
             movableView.onMove()
@@ -295,6 +300,22 @@ final class MovableViewCanvas: IgnoreTouchesView, UIGestureRecognizerDelegate, M
         @unknown default:
             break
         }
+    }
+
+    func calculateRotationSnapOffsets(for childView: MovableView, threshold: CGFloat = 0.1, interval: CGFloat = .pi / 4) -> CGFloat? {
+        let angle = childView.rotation
+        let twoPi = 2 * CGFloat.pi
+        let normalizedAngle = angle.truncatingRemainder(dividingBy: twoPi)
+        let positiveAngle = normalizedAngle >= 0 ? normalizedAngle : normalizedAngle + twoPi
+
+        // Calculate the closest snap point
+        let snappedAngle = round(positiveAngle / interval) * interval
+
+        return abs(snappedAngle - angle) <= threshold ? snappedAngle : nil
+    }
+
+    func isRotationVerticalOrHorizontal(for childView: MovableView) -> Bool {
+        calculateRotationSnapOffsets(for: childView, threshold: 0, interval: .pi / 2) != nil
     }
 
     @objc
@@ -308,6 +329,10 @@ final class MovableViewCanvas: IgnoreTouchesView, UIGestureRecognizerDelegate, M
         case .changed:
             let newScale = originTransformations.scale * recognizer.scale
             movableView.scale = newScale
+            print("movableViewPinched newScale : \(newScale)")
+            if let scaleSnapOffset = calculateScaleSnapOffsets(for: movableView) {
+                movableView.scale = scaleSnapOffset
+            }
         case .ended:
             onRecognizerEnded()
             movableView.onMove()
@@ -320,6 +345,13 @@ final class MovableViewCanvas: IgnoreTouchesView, UIGestureRecognizerDelegate, M
         }
     }
 
+    func calculateScaleSnapOffsets(for childView: MovableView, threshold: CGFloat = 0.05) -> CGFloat? {
+        if abs(childView.scale - 1) <= threshold {
+            return 1
+        }
+        return nil
+    }
+
     @objc
     func movableViewPanned(recognizer: UIPanGestureRecognizer) {
         guard let movableView = recognizer.view as? MovableView else { return }
@@ -330,7 +362,11 @@ final class MovableViewCanvas: IgnoreTouchesView, UIGestureRecognizerDelegate, M
             originTransformations.position = movableView.position
         case .changed:
             let newPosition = originTransformations.position + recognizer.translation(in: self)
+            print("movableViewPanned newPosition : \(newPosition)")
             movableView.position = newPosition
+            if let centerPointToSnap = calculateSnapOffsets(for: movableView, in: self) {
+                movableView.position = centerPointToSnap
+            }
         case .ended:
             onRecognizerEnded()
             movableView.onMove()
@@ -341,6 +377,59 @@ final class MovableViewCanvas: IgnoreTouchesView, UIGestureRecognizerDelegate, M
         @unknown default:
             break
         }
+    }
+
+    func calculateSnapOffsets(for childView: MovableView, in parentView: UIView, threshold: CGFloat = 10) -> CGPoint? {
+        //  guard childView.rotation == 0 else { return nil }
+
+        // Ensure the parent's frame is in the same coordinate space as the child's
+        let parentFrame = parentView.bounds
+        let childFrame = childView.convert(childView.bounds, to: parentView)
+
+        var offsetX: CGFloat = 0
+        var offsetY: CGFloat = 0
+        var shouldSnap = false
+
+        print("--parentFrame.center: \(parentFrame.center)")
+        print("--childFrame.center: \(childFrame.center)")
+        print("--parentFrame.origin: \(parentFrame.origin)")
+        print("--childFrame.origin: \(childFrame.origin)")
+
+        // Check center
+        if abs(parentFrame.center.x - childFrame.center.x) <= threshold {
+            offsetX = (parentFrame.center.x - childFrame.center.x) / 2
+            shouldSnap = true
+        }
+        if abs(parentFrame.center.y - childFrame.center.y) <= threshold {
+            offsetY = (parentFrame.center.y - childFrame.center.y) / 2
+            shouldSnap = true
+        }
+        if isRotationVerticalOrHorizontal(for: childView) {
+            // Check left edge
+            if abs(childFrame.minX - parentFrame.minX) <= threshold {
+                offsetX = parentFrame.minX - childFrame.minX
+                shouldSnap = true
+            }
+            // Check right edge
+            else if abs(childFrame.maxX - parentFrame.maxX) <= threshold {
+                offsetX = parentFrame.maxX - childFrame.maxX
+                shouldSnap = true
+            }
+
+            // Check top edge
+            if abs(childFrame.minY - parentFrame.minY) <= threshold {
+                offsetY = parentFrame.minY - childFrame.minY
+                shouldSnap = true
+            }
+            // Check bottom edge
+            else if abs(childFrame.maxY - parentFrame.maxY) <= threshold {
+                offsetY = parentFrame.maxY - childFrame.maxY
+                shouldSnap = true
+            }
+        }
+
+        // Return the offset as CGPoint if snapping is needed
+        return shouldSnap ? (CGPoint(x: offsetX, y: offsetY) + childView.position) : nil
     }
 
     @objc
@@ -374,11 +463,28 @@ final class MovableViewCanvas: IgnoreTouchesView, UIGestureRecognizerDelegate, M
         }
     }
 
+    // Helper function to calculate distance
+    func distance(from point1: CGPoint, to point2: CGPoint) -> CGFloat {
+        sqrt(pow(point1.x - point2.x, 2) + pow(point1.y - point2.y, 2))
+    }
+
     // MARK: - UIGestureRecognizerDelegate
 
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         let oneIsTapGesture = gestureRecognizer is UITapGestureRecognizer || otherGestureRecognizer is UITapGestureRecognizer
         return !oneIsTapGesture
+    }
+
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldBeRequiredToFailBy otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        // Prioritize gestures if needed (e.g., pan over pinch)
+        /* if gestureRecognizer is UIPanGestureRecognizer && otherGestureRecognizer is UIPinchGestureRecognizer {
+             return true
+         }
+         // Prioritize gestures if needed (e.g., pinch over rotate)
+         if gestureRecognizer is UIRotationGestureRecognizer && otherGestureRecognizer is UIPanGestureRecognizer {
+             return true
+         }*/
+        false
     }
 
     // MARK: - MovableViewDelegate
@@ -395,10 +501,18 @@ final class MovableViewCanvas: IgnoreTouchesView, UIGestureRecognizerDelegate, M
       */
 
     func didTapImageView(movableView: MovableView, imageView: StylableImageView) {
-        if let frontView = subviews.last, frontView != movableView {
-            bringSubviewToFront(movableView)
-        } else if let stickerImage = imageView.image {
-            imageView.image = stickerImage.withHorizontallyFlippedOrientation()
+        /* if let frontView = subviews.last, frontView != movableView {
+             bringSubviewToFront(movableView)
+         } else if let stickerImage = imageView.image {
+             imageView.image = stickerImage.withHorizontallyFlippedOrientation()
+         }*/
+        if selectedMovableView == movableView {
+            selectedMovableView?.layer.borderWidth = 0
+            selectedMovableView = nil
+        } else {
+            selectedMovableView = movableView
+            selectedMovableView?.layer.borderWidth = 2
+            selectedMovableView?.layer.borderColor = UIColor.tintColor.cgColor
         }
     }
 

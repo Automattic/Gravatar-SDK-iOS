@@ -71,6 +71,8 @@ public class CanvasViewController: UIViewController {
         view.addSubview(canvasHoleView)
         canvasHoleView.translatesAutoresizingMaskIntoConstraints = false
         canvasView.translatesAutoresizingMaskIntoConstraints = false
+        canvasView.layer.borderColor = UIColor.white.cgColor
+        canvasView.layer.borderWidth = 1
         NSLayoutConstraint.activate([
             canvasHoleView.topAnchor.constraint(equalTo: view.topAnchor),
             canvasHoleView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
