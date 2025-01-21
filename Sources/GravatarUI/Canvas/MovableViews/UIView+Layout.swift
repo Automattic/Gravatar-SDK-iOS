@@ -150,3 +150,73 @@ extension UIView {
         return image
     }
 }
+
+func createRoundGradientImage(size: CGSize, colors: [UIColor]) -> UIImage? {
+    let renderer = UIGraphicsImageRenderer(size: size)
+    return renderer.image { context in
+        let center = CGPoint(x: size.width / 2, y: size.height / 2)
+        let radius = min(size.width, size.height) / 2
+        let gradientLayer = CAGradientLayer()
+        gradientLayer.colors = colors.map { $0.cgColor }
+        gradientLayer.startPoint = CGPoint(x: 0.5, y: 0.0)
+        gradientLayer.endPoint = CGPoint(x: 0.5, y: 1.0)
+        gradientLayer.frame = CGRect(origin: .zero, size: size)
+        
+        let circularPath = UIBezierPath(ovalIn: CGRect(x: center.x - radius, y: center.y - radius, width: 2 * radius, height: 2 * radius))
+        context.cgContext.addPath(circularPath.cgPath)
+        context.cgContext.clip()
+        
+        if let gradientContext = UIGraphicsGetCurrentContext() {
+            gradientLayer.render(in: gradientContext)
+        }
+    }
+}
+
+// Function to create a CAShapeLayer with a circular hole
+func createCircleHoleMask(for frame: CGRect, holeCenter: CGPoint, holeRadius: CGFloat) -> CAShapeLayer {
+    let maskLayer = CAShapeLayer()
+    maskLayer.frame = frame
+
+    // Create the path for the entire view
+    let path = UIBezierPath(rect: frame)
+
+    // Define the circular hole
+    let circlePath = UIBezierPath(arcCenter: holeCenter, radius: holeRadius, startAngle: 0, endAngle: CGFloat.pi * 2, clockwise: true)
+
+    // Subtract the circular hole from the path
+    path.append(circlePath)
+    path.usesEvenOddFillRule = true
+
+    // Apply the path to the mask
+    maskLayer.path = path.cgPath
+    maskLayer.fillRule = .evenOdd
+
+    return maskLayer
+}
+
+extension UIView {
+    
+    func createCircleHoleView(frame: CGRect) {
+        // Calculate the circle parameters
+        let holeRadius = min(frame.width, frame.height) / 2
+        let holeCenter = CGPoint(x: frame.width / 2, y: frame.height / 2)
+
+        // Create and set the mask layer
+        let maskLayer = createCircleHoleMask(for: frame, holeCenter: holeCenter, holeRadius: holeRadius)
+        layer.mask = maskLayer
+    }
+
+    func applyGradientLayer(colors: [UIColor], startPoint: CGPoint = CGPoint(x: 0, y: 0), endPoint: CGPoint = CGPoint(x: 1, y: 1)) {
+        let gradient = Self.createGradientLayer(rect: bounds, colors: colors, startPoint: startPoint, endPoint: endPoint)
+        layer.insertSublayer(gradient, at: 0)
+    }
+    
+    static func createGradientLayer(rect: CGRect, colors: [UIColor], startPoint: CGPoint, endPoint: CGPoint) -> CAGradientLayer {
+        let gradientLayer = CAGradientLayer()
+        gradientLayer.frame = rect
+        gradientLayer.colors = colors.map { $0.cgColor }
+        gradientLayer.startPoint = startPoint
+        gradientLayer.endPoint = endPoint
+        return gradientLayer
+    }
+}

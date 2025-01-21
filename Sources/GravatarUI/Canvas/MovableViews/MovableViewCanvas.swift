@@ -285,9 +285,9 @@ final class MovableViewCanvas: IgnoreTouchesView, UIGestureRecognizerDelegate, M
         case .changed:
             let newRotation = originTransformations.rotation + recognizer.rotation
             movableView.rotation = newRotation
-            print("movableViewRotated newRotation : \(newRotation)")
+            //print("movableViewRotated newRotation : \(newRotation)")
             if let rotationSnapOffset = calculateRotationSnapOffsets(for: movableView) {
-                print("movableViewRotated rotationSnapOffset : \(rotationSnapOffset)")
+                //print("movableViewRotated rotationSnapOffset : \(rotationSnapOffset)")
                 movableView.rotation = rotationSnapOffset
             }
         case .ended:
@@ -329,7 +329,7 @@ final class MovableViewCanvas: IgnoreTouchesView, UIGestureRecognizerDelegate, M
         case .changed:
             let newScale = originTransformations.scale * recognizer.scale
             movableView.scale = newScale
-            print("movableViewPinched newScale : \(newScale)")
+            //print("movableViewPinched newScale : \(newScale)")
             if let scaleSnapOffset = calculateScaleSnapOffsets(for: movableView) {
                 movableView.scale = scaleSnapOffset
             }
@@ -362,7 +362,7 @@ final class MovableViewCanvas: IgnoreTouchesView, UIGestureRecognizerDelegate, M
             originTransformations.position = movableView.position
         case .changed:
             let newPosition = originTransformations.position + recognizer.translation(in: self)
-            print("movableViewPanned newPosition : \(newPosition)")
+            //print("movableViewPanned newPosition : \(newPosition)")
             movableView.position = newPosition
             if let centerPointToSnap = calculateSnapOffsets(for: movableView, in: self) {
                 movableView.position = centerPointToSnap
@@ -390,10 +390,10 @@ final class MovableViewCanvas: IgnoreTouchesView, UIGestureRecognizerDelegate, M
         var offsetY: CGFloat = 0
         var shouldSnap = false
 
-        print("--parentFrame.center: \(parentFrame.center)")
+    /*    print("--parentFrame.center: \(parentFrame.center)")
         print("--childFrame.center: \(childFrame.center)")
         print("--parentFrame.origin: \(parentFrame.origin)")
-        print("--childFrame.origin: \(childFrame.origin)")
+        print("--childFrame.origin: \(childFrame.origin)")*/
 
         // Check center
         if abs(parentFrame.center.x - childFrame.center.x) <= threshold {
@@ -507,12 +507,12 @@ final class MovableViewCanvas: IgnoreTouchesView, UIGestureRecognizerDelegate, M
              imageView.image = stickerImage.withHorizontallyFlippedOrientation()
          }*/
         if selectedMovableView == movableView {
-            selectedMovableView?.layer.borderWidth = 0
+        //    selectedMovableView?.layer.borderWidth = 0
             selectedMovableView = nil
         } else {
             selectedMovableView = movableView
-            selectedMovableView?.layer.borderWidth = 2
-            selectedMovableView?.layer.borderColor = UIColor.tintColor.cgColor
+           // selectedMovableView?.layer.borderWidth = 2
+           // selectedMovableView?.layer.borderColor = UIColor.tintColor.cgColor
         }
     }
 

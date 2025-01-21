@@ -1,5 +1,10 @@
 import UIKit
 
+enum Layer {
+    static let background: String = SDKLocalizedString("Background", comment: "Name of the background layer in an image editor")
+    static let image: String = SDKLocalizedString("Image layer", comment: "Name of the image layer in an image editor")
+}
+
 public class CanvasViewController: UIViewController {
     private let canvasView = MovableViewCanvas()
     private let canvasHoleView = UIView() // UIVisualEffectView()
@@ -72,7 +77,7 @@ public class CanvasViewController: UIViewController {
         canvasHoleView.translatesAutoresizingMaskIntoConstraints = false
         canvasView.translatesAutoresizingMaskIntoConstraints = false
         canvasView.layer.borderColor = UIColor.white.cgColor
-        canvasView.layer.borderWidth = 1
+        //canvasView.layer.borderWidth = 1
         NSLayoutConstraint.activate([
             canvasHoleView.topAnchor.constraint(equalTo: view.topAnchor),
             canvasHoleView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
@@ -101,7 +106,13 @@ public class CanvasViewController: UIViewController {
         // Add gesture recognizer for image addition
         // let tapGesture = UITapGestureRecognizer(target: self, action: #selector(addImage))
         //  canvasView.addGestureRecognizer(tapGesture)
+        addBackgroundLayer()
+        addBottomFrameLayer()
         addImageLayer()
+       // addSunglassLayer()
+        //addFrameLayer()
+        addTopFrameLayer()
+        
     }
 
     private func addCanvasHoleMask() {
@@ -121,8 +132,110 @@ public class CanvasViewController: UIViewController {
         canvasHoleView.layer.mask = maskLayer
     }
 
+    func addBackgroundLayer() {
+        /*let imageSize: CGSize = .init(width: canvasView.frame.width - 80, height: canvasView.frame.height - 80)
+        let image = createRoundGradientImage(size: imageSize, colors: [
+            UIColor(red: 205/255, green: 94/255, blue: 181/255, alpha: 1),
+            UIColor(red: 241/255, green: 203/255, blue: 77/255, alpha: 1)
+        ])*/
+        let imageView = StylableImageView(id: Layer.background, image: nil)
+        imageView.backgroundColor = .clear
+        imageView.contentMode = .scaleAspectFit
+        imageView.frame = canvasView.bounds
+        imageView.applyGradientLayer(colors: [
+           /* UIColor(red: 205/255, green: 94/255, blue: 181/255, alpha: 1),
+            UIColor(red: 241/255, green: 203/255, blue: 77/255, alpha: 1)*/
+            UIColor(red: 36/255, green: 214/255, blue: 132/255, alpha: 1),
+            UIColor(red: 85/255, green: 175/255, blue: 222/255, alpha: 1)
+        ])
+        canvasView.addView(
+            view: imageView,
+            transformations: ViewTransformations(),
+            location: canvasView.bounds.center,
+            size: canvasView.frame.size,
+            animated: false
+        )
+    }
+    
+    func addSunglassLayer() {
+        guard let image = UIImage(named: "sunglasses") else { return }
+        let imageView = StylableImageView(id: "sunglasses", image: image)
+       // imageView.tintColor = .white// UIColor(red: 240/255, green: 220/255, blue: 250/255, alpha: 1)
+        imageView.contentMode = .scaleAspectFit
+        let aspectRatio = image.size.width / image.size.height
+
+        let sunglassWidth = canvasView.frame.size.width / 1.5
+        let sunglassHeight = sunglassWidth * aspectRatio
+        canvasView.addView(
+            view: imageView,
+            transformations: ViewTransformations(),
+            location: canvasView.bounds.center + .init(x: 0, y: -25),
+            size: .init(width: sunglassWidth, height: sunglassHeight),
+            animated: false
+        )
+    }
+    
+    func addTopFrameLayer() {
+        let image = UIImage(named: "oilpaint1-frame-bottom")?.withRenderingMode(.alwaysTemplate)
+        let imageView = StylableImageView(id: "oilpaint1-frame-bottom", image: image)
+        imageView.frame = canvasView.bounds
+        imageView.tintColor = .white// UIColor(red: 240/255, green: 220/255, blue: 250/255, alpha: 1)
+        imageView.contentMode = .scaleAspectFit
+        canvasView.addView(
+            view: imageView,
+            transformations: ViewTransformations(),
+            location: canvasView.bounds.center,
+            size: canvasView.frame.size,
+            animated: false
+        )
+    }
+    func addBottomFrameLayer() {
+        let image = UIImage(named: "oilpaint1-frame-top")?.withRenderingMode(.alwaysTemplate)
+        let imageView = StylableImageView(id: "oilpaint1-frame-top", image: image)
+        imageView.frame = canvasView.bounds
+        imageView.tintColor = .white//UIColor(red: 240/255, green: 220/255, blue: 250/255, alpha: 1)
+        imageView.contentMode = .scaleAspectFit
+        canvasView.addView(
+            view: imageView,
+            transformations: ViewTransformations(),
+            location: canvasView.bounds.center,
+            size: canvasView.frame.size,
+            animated: false
+        )
+    }
+
+    
+    func addFrameLayer() {
+        let imageView = StylableImageView(id: Layer.background, image: nil)
+        imageView.backgroundColor = UIColor(red: 240/255, green: 220/255, blue: 250/255, alpha: 1)
+        imageView.frame = canvasView.bounds
+        imageView.createCircleHoleView(frame: canvasView.bounds)
+        imageView.contentMode = .scaleAspectFit
+        canvasView.addView(
+            view: imageView,
+            transformations: ViewTransformations(),
+            location: canvasView.bounds.center,
+            size: canvasView.frame.size,
+            animated: false
+        )
+    }
+    
+    func addSecondaryBackgroundLayer() {
+        let imageView = StylableImageView(id: "SecondaryBackground", image: nil)
+        imageView.backgroundColor = .black
+        imageView.contentMode = .scaleAspectFit
+        let size: CGSize = .init(width: canvasView.frame.width, height: canvasView.frame.height)
+        canvasView.addView(
+            view: imageView,
+            transformations: ViewTransformations(),
+            location: canvasView.bounds.center,
+            size: size,
+            animated: false
+        )
+    }
+
     func addImageLayer() {
-        let imageView = StylableImageView(id: UUID().uuidString, image: inputImage)
+        let imageView = StylableImageView(id: Layer.image, image: inputImage)
         //  imageView.translatesAutoresizingMaskIntoConstraints = false
         //  imageView.image = inputImage
         imageView.contentMode = .scaleAspectFit
