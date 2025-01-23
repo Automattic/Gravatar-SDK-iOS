@@ -1,3 +1,4 @@
+import Combine
 import UIKit
 
 enum Layer {
@@ -9,9 +10,12 @@ public class CanvasViewController: UIViewController {
     private let canvasView = MovableViewCanvas()
     private let canvasHoleView = UIView() // UIVisualEffectView()
     private var imageViews: [UIImageView] = []
+    private lazy var personSegmentationModel = PersonSegmentationModel()
+
     let inputImage: UIImage
     var onCompletion: ((UIImage) -> Void)?
     var onCancel: (() -> Void)?
+    private var cancellables = Set<AnyCancellable>()
 
     private lazy var cancelButton: UIButton = {
         let cancelButton = UIButton(type: .system)
@@ -27,6 +31,15 @@ public class CanvasViewController: UIViewController {
         doneButton.addTarget(self, action: #selector(doneButtonTapped), for: .touchUpInside)
         doneButton.translatesAutoresizingMaskIntoConstraints = false
         return doneButton
+    }()
+
+    private lazy var cutoutButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("Cutout", for: .normal)
+        button.setImage(UIImage(systemName: "scissors"), for: .normal)
+        button.addTarget(self, action: #selector(cutoutButtonTapped), for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
     }()
 
     public init(inputImage: UIImage, onCompletion: ((UIImage) -> Void)?, onCancel: (() -> Void)?) {
@@ -46,12 +59,42 @@ public class CanvasViewController: UIViewController {
     override public func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
+        listenForUpdates()
+        Task {
+            do {
+                try await personSegmentationModel.runSegmentationRequestOnImage(inputImage)
+            } catch {
+                print("Error running request: \(error)")
+            }
+        }
+    }
+
+    func listenForUpdates() {
+        personSegmentationModel.$segmentedImageMap.sink { [weak self] imageMap in
+            guard let self else { return }
+            let image = imageMap[self.personSegmentationModel.segmentationType]
+            print(image?.size ?? "nil")
+            if let image {
+                self.addBottomFrameLayer()
+                self.addImageLayer(inputImage: image)
+                // addSunglassLayer()
+                // addFrameLayer()
+                self.addTopFrameLayer()
+            }
+        }
+        .store(in: &cancellables)
     }
 
     // Action for Cancel button
     @objc
     func cancelButtonTapped() {
         onCancel?()
+    }
+
+    @objc
+    func cutoutButtonTapped() {
+        let viewController = SegmentationViewController(personSegmentationModel: personSegmentationModel, inputImage: inputImage)
+        present(viewController, animated: true)
     }
 
     // Action for Done button
@@ -74,10 +117,11 @@ public class CanvasViewController: UIViewController {
         canvasHoleView.alpha = 0.9
         view.addSubview(canvasView)
         view.addSubview(canvasHoleView)
+        view.addSubview(cutoutButton)
         canvasHoleView.translatesAutoresizingMaskIntoConstraints = false
         canvasView.translatesAutoresizingMaskIntoConstraints = false
         canvasView.layer.borderColor = UIColor.white.cgColor
-        //canvasView.layer.borderWidth = 1
+        // canvasView.layer.borderWidth = 1
         NSLayoutConstraint.activate([
             canvasHoleView.topAnchor.constraint(equalTo: view.topAnchor),
             canvasHoleView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
@@ -96,23 +140,21 @@ public class CanvasViewController: UIViewController {
             // Done button - Right of the screen, within safe area
             doneButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
             doneButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 16),
+            cutoutButton.leadingAnchor.constraint(equalTo: canvasView.leadingAnchor),
+            cutoutButton.topAnchor.constraint(equalTo: canvasView.bottomAnchor, constant: 12),
         ])
+
         canvasView.backgroundColor = UIColor.label.withAlphaComponent(0.1)
 
         // Add masking effect
         addCanvasHoleMask()
         view.bringSubviewToFront(doneButton)
         view.bringSubviewToFront(cancelButton)
+        view.bringSubviewToFront(cutoutButton)
         // Add gesture recognizer for image addition
         // let tapGesture = UITapGestureRecognizer(target: self, action: #selector(addImage))
         //  canvasView.addGestureRecognizer(tapGesture)
         addBackgroundLayer()
-        addBottomFrameLayer()
-        addImageLayer()
-       // addSunglassLayer()
-        //addFrameLayer()
-        addTopFrameLayer()
-        
     }
 
     private func addCanvasHoleMask() {
@@ -133,20 +175,20 @@ public class CanvasViewController: UIViewController {
     }
 
     func addBackgroundLayer() {
-        /*let imageSize: CGSize = .init(width: canvasView.frame.width - 80, height: canvasView.frame.height - 80)
-        let image = createRoundGradientImage(size: imageSize, colors: [
-            UIColor(red: 205/255, green: 94/255, blue: 181/255, alpha: 1),
-            UIColor(red: 241/255, green: 203/255, blue: 77/255, alpha: 1)
-        ])*/
+        /* let imageSize: CGSize = .init(width: canvasView.frame.width - 80, height: canvasView.frame.height - 80)
+         let image = createRoundGradientImage(size: imageSize, colors: [
+             UIColor(red: 205/255, green: 94/255, blue: 181/255, alpha: 1),
+             UIColor(red: 241/255, green: 203/255, blue: 77/255, alpha: 1)
+         ]) */
         let imageView = StylableImageView(id: Layer.background, image: nil)
         imageView.backgroundColor = .clear
         imageView.contentMode = .scaleAspectFit
         imageView.frame = canvasView.bounds
         imageView.applyGradientLayer(colors: [
-           /* UIColor(red: 205/255, green: 94/255, blue: 181/255, alpha: 1),
-            UIColor(red: 241/255, green: 203/255, blue: 77/255, alpha: 1)*/
-            UIColor(red: 36/255, green: 214/255, blue: 132/255, alpha: 1),
-            UIColor(red: 85/255, green: 175/255, blue: 222/255, alpha: 1)
+            /* UIColor(red: 205/255, green: 94/255, blue: 181/255, alpha: 1),
+             UIColor(red: 241/255, green: 203/255, blue: 77/255, alpha: 1)*/
+            UIColor(red: 36 / 255, green: 214 / 255, blue: 132 / 255, alpha: 1),
+            UIColor(red: 85 / 255, green: 175 / 255, blue: 222 / 255, alpha: 1),
         ])
         canvasView.addView(
             view: imageView,
@@ -156,11 +198,11 @@ public class CanvasViewController: UIViewController {
             animated: false
         )
     }
-    
+
     func addSunglassLayer() {
         guard let image = UIImage(named: "sunglasses") else { return }
         let imageView = StylableImageView(id: "sunglasses", image: image)
-       // imageView.tintColor = .white// UIColor(red: 240/255, green: 220/255, blue: 250/255, alpha: 1)
+        // imageView.tintColor = .white// UIColor(red: 240/255, green: 220/255, blue: 250/255, alpha: 1)
         imageView.contentMode = .scaleAspectFit
         let aspectRatio = image.size.width / image.size.height
 
@@ -174,26 +216,12 @@ public class CanvasViewController: UIViewController {
             animated: false
         )
     }
-    
+
     func addTopFrameLayer() {
         let image = UIImage(named: "oilpaint1-frame-bottom")?.withRenderingMode(.alwaysTemplate)
         let imageView = StylableImageView(id: "oilpaint1-frame-bottom", image: image)
         imageView.frame = canvasView.bounds
-        imageView.tintColor = .white// UIColor(red: 240/255, green: 220/255, blue: 250/255, alpha: 1)
-        imageView.contentMode = .scaleAspectFit
-        canvasView.addView(
-            view: imageView,
-            transformations: ViewTransformations(),
-            location: canvasView.bounds.center,
-            size: canvasView.frame.size,
-            animated: false
-        )
-    }
-    func addBottomFrameLayer() {
-        let image = UIImage(named: "oilpaint1-frame-top")?.withRenderingMode(.alwaysTemplate)
-        let imageView = StylableImageView(id: "oilpaint1-frame-top", image: image)
-        imageView.frame = canvasView.bounds
-        imageView.tintColor = .white//UIColor(red: 240/255, green: 220/255, blue: 250/255, alpha: 1)
+        imageView.tintColor = .white // UIColor(red: 240/255, green: 220/255, blue: 250/255, alpha: 1)
         imageView.contentMode = .scaleAspectFit
         canvasView.addView(
             view: imageView,
@@ -204,10 +232,24 @@ public class CanvasViewController: UIViewController {
         )
     }
 
-    
+    func addBottomFrameLayer() {
+        let image = UIImage(named: "oilpaint1-frame-top")?.withRenderingMode(.alwaysTemplate)
+        let imageView = StylableImageView(id: "oilpaint1-frame-top", image: image)
+        imageView.frame = canvasView.bounds
+        imageView.tintColor = .white // UIColor(red: 240/255, green: 220/255, blue: 250/255, alpha: 1)
+        imageView.contentMode = .scaleAspectFit
+        canvasView.addView(
+            view: imageView,
+            transformations: ViewTransformations(),
+            location: canvasView.bounds.center,
+            size: canvasView.frame.size,
+            animated: false
+        )
+    }
+
     func addFrameLayer() {
         let imageView = StylableImageView(id: Layer.background, image: nil)
-        imageView.backgroundColor = UIColor(red: 240/255, green: 220/255, blue: 250/255, alpha: 1)
+        imageView.backgroundColor = UIColor(red: 240 / 255, green: 220 / 255, blue: 250 / 255, alpha: 1)
         imageView.frame = canvasView.bounds
         imageView.createCircleHoleView(frame: canvasView.bounds)
         imageView.contentMode = .scaleAspectFit
@@ -219,7 +261,7 @@ public class CanvasViewController: UIViewController {
             animated: false
         )
     }
-    
+
     func addSecondaryBackgroundLayer() {
         let imageView = StylableImageView(id: "SecondaryBackground", image: nil)
         imageView.backgroundColor = .black
@@ -234,7 +276,7 @@ public class CanvasViewController: UIViewController {
         )
     }
 
-    func addImageLayer() {
+    func addImageLayer(inputImage: UIImage) {
         let imageView = StylableImageView(id: Layer.image, image: inputImage)
         //  imageView.translatesAutoresizingMaskIntoConstraints = false
         //  imageView.image = inputImage
