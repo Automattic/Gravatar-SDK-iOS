@@ -7,6 +7,10 @@ enum HTTPClientError: Error {
     case URLSessionError(Error)
 }
 
+private enum Constants {
+    static let sdkName = "Gravatar-SDK-iOS"
+}
+
 struct URLSessionHTTPClient: HTTPClient {
     private let urlSession: URLSessionProtocol
 
@@ -81,7 +85,7 @@ extension URLSessionHTTPClient {
 
     private static func sdkUserAgentString() -> String {
         userAgentProduct(
-            product: "SDK",
+            product: Constants.sdkName,
             version: BundleInfo.sdkVersion
         )
     }
