@@ -9,6 +9,10 @@ package enum BundleInfo {
         Bundle.main.object(forInfoDictionaryKey: "CFBundleName") as? String
     }
 
+    package static var appVersion: String? {
+        Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
+    }
+
     private static func getInfoValue(forKey key: String) -> Any? {
         // Access the SDKInfo.plist using Bundle.module
         guard let url = Bundle.module.url(forResource: "SDKInfo", withExtension: "plist"),

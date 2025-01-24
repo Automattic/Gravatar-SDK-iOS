@@ -17,6 +17,7 @@ struct URLSessionHTTPClient: HTTPClient {
             "X-Platform": "ios",
             "X-SDK-Version": BundleInfo.sdkVersion ?? "",
             "X-Source": BundleInfo.appName ?? "",
+            "User-Agent": Self.userAgent(),
         ]
         self.urlSession = urlSession ?? URLSession(configuration: configuration)
     }
@@ -48,6 +49,53 @@ extension URLRequest {
         var requestCopy = self
         requestCopy.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         return requestCopy
+    }
+}
+
+extension URLSessionHTTPClient {
+    private static func userAgent() -> String {
+        "\(appUserAgentString()) \(osUserAgentString()) \(sdkUserAgentString())"
+    }
+
+    private static func osName() -> String {
+        let osName: String
+        #if os(iOS)
+        osName = "iOS"
+        #else
+        osName = "Unknown OS"
+        assertionFailure("Update '\(#function)' to include the current OS name (iOS, macOS, tvOS, watchOS) when adding support for it.")
+        #endif
+        return osName
+    }
+
+    private static func appUserAgentString() -> String {
+        userAgentProduct(
+            product: BundleInfo.appName,
+            version: BundleInfo.appVersion
+        )
+    }
+
+    private static func osUserAgentString() -> String {
+        userAgentProduct(
+            product: osName(),
+            version: ProcessInfo.processInfo.osVersionDottedString
+        )
+    }
+
+    private static func sdkUserAgentString() -> String {
+        userAgentProduct(
+            product: "SDK",
+            version: BundleInfo.sdkVersion
+        )
+    }
+
+    private static func userAgentProduct(product: String?, version: String?) -> String {
+        var encodedProduct = product?.addingPercentEncoding(withAllowedCharacters: .productIdentifierAllowed) ?? "Unknown"
+
+        if let encodedVersion = version?.addingPercentEncoding(withAllowedCharacters: .productIdentifierAllowed) {
+            encodedProduct += "/\(encodedVersion)"
+        }
+        return encodedProduct
     }
 }
 
