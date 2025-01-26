@@ -15,6 +15,7 @@ struct SegmentationView: View {
     @State private var errorMessage: String?
 
     let inputImage: UIImage
+    let inputImageID: String
     let onDone: () -> Void
     let onCancel: () -> Void
 
@@ -108,8 +109,9 @@ struct SegmentationView: View {
             }
         }
         .onAppear {
-            if let segmentedImage = viewModel.segmentedImageMap[segmentationType] {
-                self.localImage = segmentedImage
+            let key = SegmentationResultKey(imageKey: inputImageID, segmentationType: segmentationType)
+            if let segmentedImage = viewModel.segmentedImageMap[key] {
+                self.localImage = segmentedImage.resultImage
             } else {
                 generateImage(for: segmentationType)
             }
@@ -122,15 +124,16 @@ struct SegmentationView: View {
     }
 
     func generateImage(for segmentationType: SegmentationType) {
-        if let segmentedImage = viewModel.segmentedImageMap[segmentationType] {
-            self.localImage = segmentedImage
+        let key = SegmentationResultKey(imageKey: inputImageID, segmentationType: segmentationType)
+        if let segmentedImage = viewModel.segmentedImageMap[key] {
+            self.localImage = segmentedImage.resultImage
             errorMessage = nil
         } else {
             Task {
                 do {
                     self.isLoading = true
-                    try await viewModel.runSegmentationRequestOnImage(inputImage, for: segmentationType)
-                    self.localImage = viewModel.segmentedImageMap[segmentationType]
+                    try await viewModel.runSegmentationRequestOnImage(inputImage, for: segmentationType, cacheKey: inputImageID)
+                    self.localImage = viewModel.segmentedImageMap[key]?.resultImage
                     errorMessage = nil
                     self.isLoading = false
                 } catch let error as SegmentationError {
@@ -189,6 +192,7 @@ struct OptionButton: View {
         segmentationType: .people,
         viewModel: PersonSegmentationModel(),
         inputImage: UIImage(),
+        inputImageID: UUID().uuidString,
         onDone: { print("Done") },
         onCancel: { print("Cancel") }
     )

@@ -14,6 +14,7 @@ public class CanvasViewController: UIViewController {
     private lazy var personSegmentationModel = PersonSegmentationModel()
 
     let inputImage: UIImage
+    let inputImageID = UUID().uuidString
     var onCompletion: ((UIImage) -> Void)?
     var onCancel: (() -> Void)?
     private var cancellables = Set<AnyCancellable>()
@@ -64,8 +65,8 @@ public class CanvasViewController: UIViewController {
         listenForUpdates()
         Task {
             do {
-                self.segmentationType = await personSegmentationModel.suggestedSegmentationType(for: inputImage)
-                try await personSegmentationModel.runSegmentationRequestOnImage(inputImage, for: segmentationType)
+                self.segmentationType = await personSegmentationModel.suggestedSegmentationType(for: inputImage, cacheKey: inputImageID)
+                try await personSegmentationModel.runSegmentationRequestOnImage(inputImage, for: segmentationType, cacheKey: inputImageID)
             } catch {
                 print("Error running request: \(error)")
             }
@@ -75,7 +76,8 @@ public class CanvasViewController: UIViewController {
     func listenForUpdates() {
         personSegmentationModel.$segmentedImageMap.sink { [weak self] imageMap in
             guard let self else { return }
-            let image = imageMap[segmentationType]
+            let key = SegmentationResultKey(imageKey: inputImageID, segmentationType: segmentationType)
+            let image = imageMap[key]?.croppedResultImage
             print(image?.size ?? "nil")
             if let image {
                 self.addBottomFrameLayer()
@@ -101,6 +103,7 @@ public class CanvasViewController: UIViewController {
                 segmentationType: segmentationType,
                 viewModel: personSegmentationModel,
                 inputImage: inputImage,
+                inputImageID: inputImageID,
                 onDone: {
                     self.presentedViewController?.dismiss(animated: true)
                 },
