@@ -44,12 +44,19 @@ class PersonSegmentationModel: ObservableObject {
     @MainActor @Published var segmentedImageMap: [SegmentationResultKey: SegmentationResult] = [:]
     private let processor = SegmentationProcessor()
 
-    func runSegmentationRequestOnImage(_ image: UIImage, for segmentationType: SegmentationType, cacheKey: String) async throws(SegmentationError) {
-        let result = try await processor.runSegmentationRequestOnImage(image, for: segmentationType, cacheKey: cacheKey)
-        Task { @MainActor in
-            let key = SegmentationResultKey(imageKey: cacheKey, segmentationType: segmentationType)
-            self.segmentedImageMap[key] = result
+    @discardableResult
+    func runSegmentationRequestOnImage(
+        _ image: UIImage,
+        for segmentationType: SegmentationType,
+        cacheKey: String
+    ) async throws(SegmentationError) -> SegmentationResult {
+        let key = SegmentationResultKey(imageKey: cacheKey, segmentationType: segmentationType)
+        if let cachedResult = segmentedImageMap[key] {
+            return cachedResult
         }
+        let result = try await processor.runSegmentationRequestOnImage(image, for: segmentationType, cacheKey: cacheKey)
+        self.segmentedImageMap[key] = result
+        return result
     }
 
     func suggestedSegmentationType(for image: UIImage, cacheKey: String) async -> SegmentationType {

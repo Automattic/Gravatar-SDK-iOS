@@ -132,8 +132,8 @@ struct SegmentationView: View {
             Task {
                 do {
                     self.isLoading = true
-                    try await viewModel.runSegmentationRequestOnImage(inputImage, for: segmentationType, cacheKey: inputImageID)
-                    self.localImage = viewModel.segmentedImageMap[key]?.resultImage
+                    let result = try await viewModel.runSegmentationRequestOnImage(inputImage, for: segmentationType, cacheKey: inputImageID)
+                    self.localImage = result.resultImage
                     errorMessage = nil
                     self.isLoading = false
                 } catch let error as SegmentationError {
