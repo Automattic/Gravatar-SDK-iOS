@@ -6,6 +6,8 @@ struct SegmentationView: View {
 
     // Track which type is selected
     @State private var selectedOption: SegmentationOption?
+    @State private(set) var segmentationType: SegmentationType
+
     @ObservedObject var viewModel: PersonSegmentationModel
     // @State var imageMap: [SegmentationType: UIImage] = [:]
     @State private var localImage: UIImage?
@@ -85,7 +87,7 @@ struct SegmentationView: View {
                     }
                     .padding(.horizontal, 16)
                     .onAppear {
-                        selectedOption = options.first(where: { $0.type == viewModel.segmentationType })
+                        selectedOption = options.first(where: { $0.type == segmentationType })
                     }
                 }
                 .padding(.top, 16)
@@ -106,10 +108,10 @@ struct SegmentationView: View {
             }
         }
         .onAppear {
-            if let segmentedImage = viewModel.segmentedImageMap[viewModel.segmentationType] {
+            if let segmentedImage = viewModel.segmentedImageMap[segmentationType] {
                 self.localImage = segmentedImage
             } else {
-                generateImage(for: viewModel.segmentationType)
+                generateImage(for: segmentationType)
             }
         }
     }
@@ -184,6 +186,7 @@ struct OptionButton: View {
 
 #Preview {
     SegmentationView(
+        segmentationType: .people,
         viewModel: PersonSegmentationModel(),
         inputImage: UIImage(),
         onDone: { print("Done") },

@@ -57,13 +57,15 @@ public class CanvasViewController: UIViewController {
 
     override public var prefersStatusBarHidden: Bool { true }
 
+    var segmentationType: SegmentationType = .foreground
     override public func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
         listenForUpdates()
         Task {
             do {
-                try await personSegmentationModel.runSegmentationRequestOnImage(inputImage, for: personSegmentationModel.segmentationType)
+                self.segmentationType = await personSegmentationModel.suggestedSegmentationType(for: inputImage)
+                try await personSegmentationModel.runSegmentationRequestOnImage(inputImage, for: segmentationType)
             } catch {
                 print("Error running request: \(error)")
             }
@@ -73,7 +75,7 @@ public class CanvasViewController: UIViewController {
     func listenForUpdates() {
         personSegmentationModel.$segmentedImageMap.sink { [weak self] imageMap in
             guard let self else { return }
-            let image = imageMap[self.personSegmentationModel.segmentationType]
+            let image = imageMap[segmentationType]
             print(image?.size ?? "nil")
             if let image {
                 self.addBottomFrameLayer()
@@ -94,10 +96,9 @@ public class CanvasViewController: UIViewController {
 
     @objc
     func cutoutButtonTapped() {
-        /* let viewController = SegmentationViewController(personSegmentationModel: personSegmentationModel, inputImage: inputImage)
-         present(viewController, animated: true)*/
         let controller = UIHostingController(
             rootView: SegmentationView(
+                segmentationType: segmentationType,
                 viewModel: personSegmentationModel,
                 inputImage: inputImage,
                 onDone: {

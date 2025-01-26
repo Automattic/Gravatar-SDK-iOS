@@ -19,6 +19,14 @@ enum SegmentationType: Int, Sendable {
             [.people]
         }
     }
+
+    static var defaultType: SegmentationType {
+        if #available(iOS 17.0, *) {
+            .foreground
+        } else {
+            .people
+        }
+    }
 }
 
 enum SegmentationError: Error {
@@ -41,25 +49,37 @@ enum SegmentationError: Error {
     }
 }
 
-actor PersonSegmentationModel: ObservableObject {
-    var selectedSegments: IndexSet = []
+@MainActor
+class PersonSegmentationModel: ObservableObject {
     var segmentationCount = 0
-    var segmentationResults: SegmentationResults?
-    var baseUIImage: UIImage?
-    var baseCIImage: CIImage?
     @MainActor @Published var segmentedImageMap: [SegmentationType: UIImage] = [:]
-    @MainActor @Published var segmentationType: SegmentationType = .foreground
+    private let processor = SegmentationProcessor()
 
     func runSegmentationRequestOnImage(_ image: UIImage, for segmentationType: SegmentationType) async throws(SegmentationError) {
-        self.baseUIImage = image
-        self.baseCIImage = CIImage(image: image)
+        let image = try await processor.runSegmentationRequestOnImage(image, for: segmentationType)
+        Task { @MainActor in
+            self.segmentedImageMap[segmentationType] = image
+        }
+    }
+
+    func suggestedSegmentationType(for image: UIImage) async -> SegmentationType {
+        await processor.suggestedSegmentationType(for: image)
+    }
+}
+
+actor SegmentationProcessor {
+    private var selectedSegments: IndexSet = []
+    private var imageDetectionResults: [Int: DetectionResults] = [:]
+
+    func runSegmentationRequestOnImage(_ image: UIImage, for segmentationType: SegmentationType) async throws(SegmentationError) -> UIImage {
+        let baseCIImage = CIImage(image: image)
         guard let baseImage = baseCIImage else {
             throw SegmentationError.failure
         }
 
         var numberOfFaces = 0
-        if segmentationType != .foreground {
-            numberOfFaces = await countFaces(image: baseImage)
+        if segmentationType == .people {
+            numberOfFaces = await imageDetectionResults(for: image)?.facesCount ?? 0
             print("numberOfFaces: \(numberOfFaces)")
         }
 
@@ -83,16 +103,6 @@ actor PersonSegmentationModel: ObservableObject {
             if #available(iOS 17.0, *) {
                 foregroundInstanceMaskRequest = VNGenerateForegroundInstanceMaskRequest()
             }
-            /* case .personInstance:
-             if #available(iOS 17.0, *) {
-                 guard numberOfFaces > 0 else {
-                     throw SegmentationError.noFaceDetected
-                 }
-                 let personInstanceMaskRequest = VNGeneratePersonInstanceMaskRequest()
-                 request = personInstanceMaskRequest
-             } else {
-                 throw SegmentationError.unsupportedRequest
-             }*/
         }
 
         let requestHandler = VNImageRequestHandler(ciImage: baseImage)
@@ -144,244 +154,90 @@ actor PersonSegmentationModel: ObservableObject {
 
                 segmentationResults = PeopleSegmentationResults(results: buffer, scale: image.scale, orientation: image.imageOrientation)
             }
-            /* case .personInstance:
-             if #available(iOS 17.0, *) {
-                 guard let maskObservation = request.results?.first as? VNInstanceMaskObservation else {
-                     throw .failure
-                 }
-                 let results = PersonInstanceMaskResults(
-                     results: maskObservation,
-                     requestHandler: requestHandler,
-                     faces: self.faces,
-                     scale: image.scale,
-                     orientation: image.imageOrientation
-                 )
-                 selectedSegments = /* guessBestSegmentsToInclude(
-                     segmentationResults: results,
-                     imageSize: baseImage.extent.size
-                 ) ?? */ maskObservation.allInstances
-                 segmentationResults = results
-             } else {
-                 throw .unsupportedRequest
-             }*/
         }
 
         guard let segmentationResults else {
             throw SegmentationError.failure
         }
 
-        guard let image = await segmentationResults.generateSegmentedImage(baseImage: baseImage, selectedSegments: selectedSegments),
-              let cgImage = image.cgImage
-        else {
+        guard let image = await segmentationResults.generateSegmentedImage(baseImage: baseImage, selectedSegments: selectedSegments) else {
             throw SegmentationError.failure
         }
-        Task { @MainActor in
-            // Sending CGImage to avoid the
-            self.segmentedImageMap[segmentationResults.type] = image
-        }
-
-        /* if #available(iOS 17.0, *) {
-         // Allows us to select/deselect each person one by one.
-         let personInstanceMaskRequest = VNGeneratePersonInstanceMaskRequest()
-         request = personInstanceMaskRequest
-         } else {
-         // Fallback on earlier versions. All humans are included in the picture.
-         let PeopleSegmentationResults = VNGeneratePersonSegmentationRequest()
-         PeopleSegmentationResults.qualityLevel = .accurate
-         PeopleSegmentationResults.outputPixelFormat = kCVPixelFormatType_OneComponent8
-         request = PeopleSegmentationResults
-
-         if #available(iOS 17.0, *) {
-         let foregroundInstanceRequest = VNGenerateForegroundInstanceMaskRequest()
-
-         let anotherRequestHandler = VNImageRequestHandler(ciImage: baseImage)
-         try anotherRequestHandler.perform([foregroundInstanceRequest])
-         if let result = foregroundInstanceRequest.results?.first as? VNInstanceMaskObservation {
-
-         let maskedResultImageBuffer = try result.generateMaskedImage(ofInstances: result.allInstances, from: anotherRequestHandler, croppedToInstancesExtent: false)
-         let maskedResultImage = CIImage(cvPixelBuffer: maskedResultImageBuffer)
-         if let cgImage = CIContext().createCGImage(maskedResultImage, from: maskedResultImage.extent) {
-         let outputImage = UIImage(cgImage: cgImage, scale: image.scale, orientation: image.imageOrientation)
-         Task { @MainActor in
-         // Sending CGImage to avoid the
-         self.segmentedImage = outputImage
-
-         }
-         }
-
-         }
-         return
-         } else {
-         // Fallback on earlier versions
-         }
-         // }
-
-         // Set up and run the request.
-         let requestHandler = VNImageRequestHandler(ciImage: baseImage)
-
-         do {
-         try requestHandler.perform([request])
-         if #available(iOS 17.0, *) {
-         guard let instanceMask = request.results?.first as? VNInstanceMaskObservation else {
-         throw SegmentationError.noFaceDetected
-         }
-         let results = PersonInstanceMaskResults(results: instanceMask, requestHandler: requestHandler, faces: faces, scale: image.scale, orientation: image.imageOrientation)
-         selectedSegments = guessBestSegmentsToInclude(
-         segmentationResults: results,
-         imageSize: baseImage.extent.size
-         ) ?? instanceMask.allInstances
-         segmentationResults = results
-         } else {
-         guard let buffer = request.results?.first as? VNPixelBufferObservation else {
-         throw SegmentationError.failure
-         }
-         selectedSegments = [1]
-         segmentationResults = PeopleSegmentationResults(results: buffer, scale: image.scale, orientation: image.imageOrientation)
-         // }
-         guard let segmentationResults else {
-         throw SegmentationError.failure
-         }
-         self.segmentationCount = segmentationResults.numSegments
-         guard let image = await segmentationResults.generateSegmentedImage(baseImage: baseImage, selectedSegments: selectedSegments),
-         let cgImage = image.cgImage else {
-         throw SegmentationError.failure
-         }
-         Task { @MainActor in
-         // Sending CGImage to avoid the
-         self.segmentedImage = UIImage(cgImage: cgImage, scale: image.scale, orientation: image.imageOrientation)
-
-         }
-         } catch {
-         print("Unable to perform the request: \(error).")
-         throw SegmentationError.failure
-         }*/
+        return image
     }
 
-    private var faces: [VNFaceObservation]?
-
-    // Returns the number of human faces in the image.
-    private func countFaces(image: CIImage) async -> Int {
-        let request = VNDetectFaceRectanglesRequest()
-        let requestHandler = VNImageRequestHandler(ciImage: image)
-        do {
-            try requestHandler.perform([request])
-            faces = request.results
-            if let results = request.results {
-                return results.count
-            }
-        } catch {
-            print("Unable to perform face detection: \(error).")
-        }
-        return 0
+    struct DetectionResults: Sendable {
+        let facesCount: Int
+        let animalsCount: Int
     }
 
-    /// Include the instances with face
-    func guessBestSegmentsToInclude(segmentationResults: SegmentationResults, imageSize: CGSize) -> IndexSet? {
-        guard let faces else { return nil }
-        for face in faces {
-            print("confidence: \(face.confidence)")
-        }
-        // include high quality faces
-        let filteredFaces = faces.filter { $0.confidence > 0.7 }
-        let maps = mapFacesToInstances(faces: filteredFaces, mask: segmentationResults.segmentationMask)
-
-        let faceIndexes: [Int] = maps.map { faceMap in
-            if let index = faceMap.instanceIndex {
-                return Int(index)
-            }
+    private func imageDetectionResults(for image: UIImage) async -> DetectionResults? {
+        guard let ciImage = CIImage(image: image) else {
             return nil
-        }.compactMap { $0 }
-        return IndexSet(faceIndexes)
-    }
-
-    func mapFacesToInstances(
-        faces: [VNFaceObservation],
-        mask: CVPixelBuffer
-    ) -> [FaceToInstanceResult] {
-        faces.map { face in
-            // Dictionary: instanceIndex -> overlapPixelCount
-            let overlapCounts = countInstanceOverlapPixels(faceObservation: face, maskPixelBuffer: mask)
-
-            // If every pixel is 0 (background), dictionary might be empty
-            if overlapCounts.isEmpty {
-                return FaceToInstanceResult(face: face, instanceIndex: nil, overlapCount: 0)
-            } else {
-                // Pick the instance ID with the greatest overlap
-                let (bestID, bestCount) = overlapCounts.max(by: { $0.value < $1.value })!
-                return FaceToInstanceResult(face: face, instanceIndex: bestID, overlapCount: bestCount)
+        }
+        if let result = imageDetectionResults[ciImage.hash] {
+            return result
+        } else {
+            do {
+                let results = try await performFaceAndAnimalDetection(on: ciImage)
+                return results
+            } catch {
+                return nil
             }
         }
     }
 
-    func countInstanceOverlapPixels(
-        faceObservation: VNFaceObservation,
-        maskPixelBuffer: CVPixelBuffer
-    ) -> [UInt8: Int] {
-        CVPixelBufferLockBaseAddress(maskPixelBuffer, .readOnly)
-        defer {
-            CVPixelBufferUnlockBaseAddress(maskPixelBuffer, .readOnly)
+    // Analyzes the image and suggests the proper segmentation type.
+    func suggestedSegmentationType(for image: UIImage) async -> SegmentationType {
+        guard #available(iOS 17.0, *) else {
+            return .people
         }
-
-        let width = CVPixelBufferGetWidth(maskPixelBuffer)
-        let height = CVPixelBufferGetHeight(maskPixelBuffer)
-        guard let baseAddr = CVPixelBufferGetBaseAddress(maskPixelBuffer)?.assumingMemoryBound(to: UInt8.self)
-        else {
-            return [:]
+        do {
+            guard let ciImage = CIImage(image: image) else {
+                return SegmentationType.defaultType
+            }
+            let results = try await performFaceAndAnimalDetection(on: ciImage)
+            imageDetectionResults[ciImage.hash] = results
+            if results.animalsCount > 0 {
+                return .foreground
+            } else if results.facesCount > 2 || results.facesCount == 0 {
+                return .foreground
+            }
+            return .people
+        } catch {
+            return SegmentationType.defaultType
         }
-        let bytesPerRow = CVPixelBufferGetBytesPerRow(maskPixelBuffer)
+    }
 
-        // Vision bounding box: (x, y, w, h) in normalized [0..1], origin is bottom-left
-        let faceBox = faceObservation.boundingBox
+    private func performFaceAndAnimalDetection(on image: CIImage) async throws -> DetectionResults {
+        try await withCheckedThrowingContinuation { continuation in
+            // Create face detection request
+            let faceRequest = VNDetectFaceRectanglesRequest()
 
-        // Convert to pixel coords (flip Y).
-        let minX = Int(round(faceBox.minX * CGFloat(width)))
-        let faceHeightPx = Int(round(faceBox.height * CGFloat(height)))
-        let flippedMinY = Int(round((1.0 - faceBox.maxY) * CGFloat(height)))
-
-        let maxX = minX + Int(round(faceBox.width * CGFloat(width)))
-        let maxY = flippedMinY + faceHeightPx
-
-        // Clamp
-        let clampedMinX = max(0, min(width, minX))
-        let clampedMaxX = max(0, min(width, maxX))
-        let clampedMinY = max(0, min(height, flippedMinY))
-        let clampedMaxY = max(0, min(height, maxY))
-
-        var resultDict = [UInt8: Int]()
-
-        for row in clampedMinY ..< clampedMaxY {
-            let rowStart = row * bytesPerRow
-            for col in clampedMinX ..< clampedMaxX {
-                let pixelVal = baseAddr[rowStart + col]
-
-                // pixelVal == 0 -> background
-                // pixelVal == 1 -> first person
-                // pixelVal == 2 -> second person, etc.
-                if pixelVal != 0 {
-                    resultDict[pixelVal, default: 0] += 1
+            // Create animal recognition request
+            let animalRequest = VNRecognizeAnimalsRequest { request, error in
+                if let error {
+                    continuation.resume(throwing: error)
+                    return
                 }
+                // Extract animal observations
+                let animalObservations = request.results as? [VNRecognizedObjectObservation] ?? []
+
+                // Extract face observations from the faceRequest's results
+                let faceObservations = faceRequest.results ?? []
+
+                // Resume with combined results
+                let results = DetectionResults(facesCount: faceObservations.count, animalsCount: animalObservations.count)
+                continuation.resume(returning: results)
+            }
+            // Create a request handler
+            let handler = VNImageRequestHandler(ciImage: image, options: [:])
+            do {
+                try handler.perform([faceRequest, animalRequest])
+            } catch {
+                continuation.resume(throwing: error)
             }
         }
-        return resultDict
-    }
-}
-
-struct FaceToInstanceResult {
-    let face: VNFaceObservation
-    let instanceIndex: UInt8?
-    let overlapCount: Int
-}
-
-extension CGRect {
-    private var area: Double {
-        width * height
-    }
-}
-
-struct SendableData: @unchecked Sendable {
-    let data: Data
-    init(data: Data) {
-        self.data = data
     }
 }
 
