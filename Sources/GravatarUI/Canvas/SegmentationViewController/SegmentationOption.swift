@@ -1,10 +1,15 @@
 import UIKit
 
-struct SegmentationOption {
+struct SegmentationOption: Identifiable, Equatable {
+    let id = UUID()
     let type: SegmentationType
     let title: String
     let description: String
     let icon: UIImage?
+
+    public static func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.id == rhs.id
+    }
 
     static func makeSegmentationOptions() -> [SegmentationOption] {
         SegmentationType.supportedTypes.map { type in
@@ -27,24 +32,24 @@ struct SegmentationOption {
                     type: .people,
                     title: SDKLocalizedString("People", comment: "Describes a people segmentation operation that is applied to a photo."),
                     description: SDKLocalizedString(
-                        "Includes all the people.",
+                        "Includes all the people. Provides nice details on the edges.",
                         comment: "Descriptive text about a background removal functionality."
                     ),
                     icon: UIImage(systemName: "person.3.fill")
                 )
-            case .personInstance:
-                SegmentationOption(
-                    type: .personInstance,
-                    title: SDKLocalizedString(
-                        "People (Selective)",
-                        comment: "Describes a selective people segmentation operation that is applied to a photo."
-                    ),
-                    description: SDKLocalizedString(
-                        "Includes the people who have clear faces.",
-                        comment: "Descriptive text about a background removal functionality."
-                    ),
-                    icon: UIImage(systemName: "person.and.background.dotted")
-                )
+                /* case .personInstance:
+                 SegmentationOption(
+                     type: .personInstance,
+                     title: SDKLocalizedString(
+                         "People (Selective)",
+                         comment: "Describes a selective people segmentation operation that is applied to a photo."
+                     ),
+                     description: SDKLocalizedString(
+                         "Includes the individuals based on the quality of their images.",
+                         comment: "Descriptive text about a background removal functionality."
+                     ),
+                     icon: UIImage(systemName: "person.and.background.dotted")
+                 )*/
             }
         }
     }

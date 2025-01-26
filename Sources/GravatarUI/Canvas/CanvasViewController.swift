@@ -1,4 +1,5 @@
 import Combine
+import SwiftUI
 import UIKit
 
 enum Layer {
@@ -62,7 +63,7 @@ public class CanvasViewController: UIViewController {
         listenForUpdates()
         Task {
             do {
-                try await personSegmentationModel.runSegmentationRequestOnImage(inputImage)
+                try await personSegmentationModel.runSegmentationRequestOnImage(inputImage, for: personSegmentationModel.segmentationType)
             } catch {
                 print("Error running request: \(error)")
             }
@@ -93,8 +94,21 @@ public class CanvasViewController: UIViewController {
 
     @objc
     func cutoutButtonTapped() {
-        let viewController = SegmentationViewController(personSegmentationModel: personSegmentationModel, inputImage: inputImage)
-        present(viewController, animated: true)
+        /* let viewController = SegmentationViewController(personSegmentationModel: personSegmentationModel, inputImage: inputImage)
+         present(viewController, animated: true)*/
+        let controller = UIHostingController(
+            rootView: SegmentationView(
+                viewModel: personSegmentationModel,
+                inputImage: inputImage,
+                onDone: {
+                    self.presentedViewController?.dismiss(animated: true)
+                },
+                onCancel: {
+                    self.presentedViewController?.dismiss(animated: true)
+                }
+            )
+        )
+        present(controller, animated: true)
     }
 
     // Action for Done button

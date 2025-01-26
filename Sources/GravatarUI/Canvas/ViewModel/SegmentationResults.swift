@@ -1,3 +1,4 @@
+import Accelerate
 import CoreImage.CIFilterBuiltins
 import CoreVideo
 import Foundation
@@ -41,55 +42,56 @@ extension SegmentationResults {
     }
 }
 
-@available(iOS 17.0, *)
-struct PersonInstanceMaskResults: SegmentationResults {
-    var numSegments: Int
-    // var includedSegments: [Int] = []
-    var segmentationMask: CVPixelBuffer
-    let instanceMasks: VNInstanceMaskObservation
-    let requestHandler: VNImageRequestHandler
-    let faces: [VNFaceObservation]?
-    let scale: CGFloat
-    let orientation: UIImage.Orientation
-    var type: SegmentationType { .personInstance }
-    init(
-        results: VNInstanceMaskObservation,
-        requestHandler: VNImageRequestHandler,
-        faces: [VNFaceObservation]?,
-        scale: CGFloat,
-        orientation: UIImage.Orientation
-    ) {
-        self.instanceMasks = results
-        self.segmentationMask = results.instanceMask
-        self.numSegments = results.allInstances.count + 1
-        self.requestHandler = requestHandler
-        self.faces = faces
-        self.scale = scale
-        self.orientation = orientation
-    }
+/*
+ @available(iOS 17.0, *)
+ struct PersonInstanceMaskResults: SegmentationResults {
+     var numSegments: Int
+     // var includedSegments: [Int] = []
+     var segmentationMask: CVPixelBuffer
+     let instanceMasks: VNInstanceMaskObservation
+     let requestHandler: VNImageRequestHandler
+     let faces: [VNFaceObservation]?
+     let scale: CGFloat
+     let orientation: UIImage.Orientation
+     var type: SegmentationType { .personInstance }
+     init(
+         results: VNInstanceMaskObservation,
+         requestHandler: VNImageRequestHandler,
+         faces: [VNFaceObservation]?,
+         scale: CGFloat,
+         orientation: UIImage.Orientation
+     ) {
+         self.instanceMasks = results
+         self.segmentationMask = results.instanceMask
+         self.numSegments = results.allInstances.count + 1
+         self.requestHandler = requestHandler
+         self.faces = faces
+         self.scale = scale
+         self.orientation = orientation
+     }
 
-    /// The segmentation mask is an image in which each pixel’s value corresponds to the class (or segment) that pixel belongs to.
-    func segmentForPixelValue(_ value: UInt8) -> Int {
-        Int(value)
-    }
+     /// The segmentation mask is an image in which each pixel’s value corresponds to the class (or segment) that pixel belongs to.
+     func segmentForPixelValue(_ value: UInt8) -> Int {
+         Int(value)
+     }
 
-    func generateSegmentedImage(baseImage: CIImage, selectedSegments: IndexSet) async -> UIImage? {
-        do {
-            let maskedResultImageBuffer = try instanceMasks.generateMaskedImage(
-                ofInstances: selectedSegments,
-                from: requestHandler,
-                croppedToInstancesExtent: true
-            )
-            let maskedResultImage = CIImage(cvPixelBuffer: maskedResultImageBuffer)
-            if let image = CIContext().createCGImage(maskedResultImage, from: maskedResultImage.extent) {
-                return UIImage(cgImage: image, scale: scale, orientation: orientation)
-            }
-        } catch {
-            print("Error generating mask: \(error).")
-        }
-        return nil
-    }
-}
+     func generateSegmentedImage(baseImage: CIImage, selectedSegments: IndexSet) async -> UIImage? {
+         do {
+             let maskedResultImageBuffer = try instanceMasks.generateMaskedImage(
+                 ofInstances: selectedSegments,
+                 from: requestHandler,
+                 croppedToInstancesExtent: false
+             )
+             let maskedResultImage = CIImage(cvPixelBuffer: maskedResultImageBuffer)
+             if let image = CIContext().createCGImage(maskedResultImage, from: maskedResultImage.extent) {
+                 return UIImage(cgImage: image, scale: scale, orientation: orientation)
+             }
+         } catch {
+             print("Error generating mask: \(error).")
+         }
+         return nil
+     }
+ }*/
 
 struct PeopleSegmentationResults: SegmentationResults {
     // var includedSegments: [Int]
@@ -118,26 +120,157 @@ struct PeopleSegmentationResults: SegmentationResults {
         maskImage = maskImage.transformed(by: .init(scaleX: scaleX, y: scaleY))
 
         let segmentedImage = isolateImageWithMask(image: baseImage, mask: maskImage)
-        /* let blendFilter = CIFilter.blendWithMask()
-         blendFilter.inputImage = baseImage
-         blendFilter.backgroundImage = CIImage(color: CIColor(color: .clear)).cropped(to: baseImage.extent)
-         blendFilter.maskImage = maskImage
-         let segmentedImage = blendFilter.outputImage!
-         */
         return UIImage(cgImage: CIContext().createCGImage(segmentedImage, from: segmentedImage.extent)!, scale: scale, orientation: orientation)
-        /* if selectedSegments.contains(1) {
-             // Foreground is selected.
-             segmentedImage = blendImageWithMask(image: baseImage, mask: maskImage, color: SegmentationModel.colors[1])
-         }
-         if selectedSegments.contains(0) {
-             // Background is selected.
-             let blendFilter = CIFilter.blendWithMask()
-             blendFilter.inputImage = baseImage
-             blendFilter.backgroundImage = CIImage(color: CIColor(color: SegmentationModel.colors[0])).cropped(to: baseImage.extent)
-             blendFilter.maskImage = maskImage
-             segmentedImage = blendFilter.outputImage!
-         }
-         return UIImage(cgImage: CIContext().createCGImage(segmentedImage, from: segmentedImage.extent)!) */
+    }
+}
+
+/// Removes unwanted people from background by making use of the results of `VNGenerateForegroundInstanceMaskRequest`
+@available(iOS 17.0, *)
+struct ForegroundPeopleSegmentation: SegmentationResults {
+    var numSegments: Int
+    var segmentationMask: CVPixelBuffer
+    let scale: CGFloat
+    let orientation: UIImage.Orientation
+    var type: SegmentationType { .people }
+    let foregroundObservation: VNInstanceMaskObservation
+
+    init(results: VNPixelBufferObservation, scale: CGFloat, orientation: UIImage.Orientation, foregroundObservation: VNInstanceMaskObservation) {
+        numSegments = 2
+        segmentationMask = results.pixelBuffer
+        self.scale = scale
+        self.orientation = orientation
+        self.foregroundObservation = foregroundObservation
+    }
+
+    func segmentForPixelValue(_ value: UInt8) -> Int {
+        value > 0 ? 1 : 0
+    }
+
+    func generateSegmentedImage(baseImage: CIImage, selectedSegments: IndexSet) async -> UIImage? {
+        let personMaskWidth = CVPixelBufferGetWidth(segmentationMask)
+        let personMaskHeight = CVPixelBufferGetHeight(segmentationMask)
+
+        if let scaledForegroundMask = resizeMask(
+            foregroundObservation.instanceMask,
+            toWidth: personMaskWidth,
+            height: personMaskHeight
+        ) {
+            Self.removeBackgroundPixels(peopleMask: segmentationMask, foregroundMask: scaledForegroundMask)
+        }
+
+        var maskImage = CIImage(cvPixelBuffer: segmentationMask)
+        // Scale mask to image size.
+        let scaleX = baseImage.extent.width / maskImage.extent.width
+        let scaleY = baseImage.extent.height / maskImage.extent.height
+        maskImage = maskImage.transformed(by: .init(scaleX: scaleX, y: scaleY))
+
+        let segmentedImage = isolateImageWithMask(image: baseImage, mask: maskImage)
+
+        return UIImage(cgImage: CIContext().createCGImage(segmentedImage, from: segmentedImage.extent)!, scale: scale, orientation: orientation)
+    }
+
+    static func removeBackgroundPixels(
+        peopleMask: CVPixelBuffer, // from VNGeneratePersonSegmentationRequest
+        foregroundMask: CVPixelBuffer // from VNGenerateForegroundInstanceMaskRequest
+    ) {
+        CVPixelBufferLockBaseAddress(peopleMask, [])
+        CVPixelBufferLockBaseAddress(foregroundMask, .readOnly)
+        defer {
+            CVPixelBufferUnlockBaseAddress(peopleMask, [])
+            CVPixelBufferUnlockBaseAddress(foregroundMask, .readOnly)
+        }
+        let width = CVPixelBufferGetWidth(peopleMask)
+        let height = CVPixelBufferGetHeight(peopleMask)
+
+        let width2 = CVPixelBufferGetWidth(foregroundMask)
+        let height2 = CVPixelBufferGetHeight(foregroundMask)
+
+        guard width == width2, height == height2 else {
+            // out of bounds risk
+            return
+        }
+
+        guard let peopleBase = CVPixelBufferGetBaseAddress(peopleMask)?.assumingMemoryBound(to: UInt8.self),
+              let foregroundBase = CVPixelBufferGetBaseAddress(foregroundMask)?.assumingMemoryBound(to: UInt8.self)
+        else {
+            return
+        }
+
+        let peopleBytesPerRow = CVPixelBufferGetBytesPerRow(peopleMask)
+        let foregroundBytesPerRow = CVPixelBufferGetBytesPerRow(foregroundMask)
+
+        for row in 0 ..< height {
+            let peopleRowStart = row * peopleBytesPerRow
+            let foregroundRowStart = row * foregroundBytesPerRow
+            for col in 0 ..< width {
+                let instanceVal = foregroundBase[foregroundRowStart + col]
+                // If this pixel belongs to "background" in the foregroundMask,
+                // force background in the peopleMask as well.
+                if instanceVal == 0 {
+                    peopleBase[peopleRowStart + col] = 0
+                }
+            }
+        }
+    }
+
+    func resizeMask(
+        _ srcBuffer: CVPixelBuffer,
+        toWidth dstWidth: Int,
+        height dstHeight: Int
+    ) -> CVPixelBuffer? {
+        // 1) Verify pixel format is 8-bit one-channel
+        let srcFmt = CVPixelBufferGetPixelFormatType(srcBuffer)
+        guard srcFmt == kCVPixelFormatType_OneComponent8 else { return nil }
+
+        // 2) Create destination CVPixelBuffer
+        var dstBuffer: CVPixelBuffer?
+        let status = CVPixelBufferCreate(
+            nil,
+            dstWidth,
+            dstHeight,
+            kCVPixelFormatType_OneComponent8,
+            nil,
+            &dstBuffer
+        )
+        guard status == kCVReturnSuccess, let dstBufferUnwrapped = dstBuffer else {
+            return nil
+        }
+
+        // Lock both
+        CVPixelBufferLockBaseAddress(srcBuffer, .readOnly)
+        CVPixelBufferLockBaseAddress(dstBufferUnwrapped, [])
+        defer {
+            CVPixelBufferUnlockBaseAddress(srcBuffer, .readOnly)
+            CVPixelBufferUnlockBaseAddress(dstBufferUnwrapped, [])
+        }
+
+        // vImage setup
+        var srcVImage = vImage_Buffer(
+            data: CVPixelBufferGetBaseAddress(srcBuffer)!,
+            height: vImagePixelCount(CVPixelBufferGetHeight(srcBuffer)),
+            width: vImagePixelCount(CVPixelBufferGetWidth(srcBuffer)),
+            rowBytes: CVPixelBufferGetBytesPerRow(srcBuffer)
+        )
+
+        var dstVImage = vImage_Buffer(
+            data: CVPixelBufferGetBaseAddress(dstBufferUnwrapped)!,
+            height: vImagePixelCount(dstHeight),
+            width: vImagePixelCount(dstWidth),
+            rowBytes: CVPixelBufferGetBytesPerRow(dstBufferUnwrapped)
+        )
+
+        // 3) Scale
+        let scaleError = vImageScale_Planar8(
+            &srcVImage,
+            &dstVImage,
+            nil,
+            vImage_Flags(kvImageHighQualityResampling)
+        )
+        guard scaleError == kvImageNoError else {
+            return nil
+        }
+
+        return dstBufferUnwrapped
     }
 }
 

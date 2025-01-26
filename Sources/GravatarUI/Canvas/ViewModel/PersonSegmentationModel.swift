@@ -10,24 +10,38 @@ enum SegmentationType: Int, Sendable {
     /// Separates people as a whole from the background.
     case people
     /// Separates each person instance from background up to 4 people. Not as good quality as `.people` though.
-    case personInstance
+    //  case personInstance
 
     static var supportedTypes: [SegmentationType] {
         if #available(iOS 17.0, *) {
-            [.foreground, .people, .personInstance]
+            [.foreground, .people /* , .personInstance */ ]
         } else {
             [.people]
         }
     }
 }
 
-class PersonSegmentationModel: ObservableObject {
-    enum SegmentationError: Error {
-        case noFaceDetected
-        case unsupportedRequest
-        case failure
-    }
+enum SegmentationError: Error {
+    case noFaceDetected
+    case unsupportedRequest
+    case failure
 
+    var localizedMessage: String {
+        switch self {
+        case .noFaceDetected:
+            SDKLocalizedString(
+                "No human face detected. This option only works with images containing a human face.",
+                comment: "Error message for removing the background of an image"
+            )
+        case .unsupportedRequest:
+            SDKLocalizedString("The requested operation is not supported.", comment: "Error message for removing the background of an image")
+        case .failure:
+            SDKLocalizedString("Failed to perform segmentation.", comment: "Error message for removing the background of an image")
+        }
+    }
+}
+
+actor PersonSegmentationModel: ObservableObject {
     var selectedSegments: IndexSet = []
     var segmentationCount = 0
     var segmentationResults: SegmentationResults?
@@ -36,14 +50,12 @@ class PersonSegmentationModel: ObservableObject {
     @MainActor @Published var segmentedImageMap: [SegmentationType: UIImage] = [:]
     @MainActor @Published var segmentationType: SegmentationType = .foreground
 
-    func runSegmentationRequestOnImage(_ image: UIImage) async throws {
+    func runSegmentationRequestOnImage(_ image: UIImage, for segmentationType: SegmentationType) async throws(SegmentationError) {
         self.baseUIImage = image
         self.baseCIImage = CIImage(image: image)
         guard let baseImage = baseCIImage else {
             throw SegmentationError.failure
         }
-        var request: VNImageBasedRequest?
-        let segmentationType = await segmentationType
 
         var numberOfFaces = 0
         if segmentationType != .foreground {
@@ -51,46 +63,55 @@ class PersonSegmentationModel: ObservableObject {
             print("numberOfFaces: \(numberOfFaces)")
         }
 
+        var foregroundInstanceMaskRequest: VNImageBasedRequest?
+        var personSegmentationRequest: VNGeneratePersonSegmentationRequest?
+
         switch segmentationType {
         case .foreground:
             if #available(iOS 17.0, *) {
-                let foregroundInstanceMaskRequest = VNGenerateForegroundInstanceMaskRequest()
-                request = foregroundInstanceMaskRequest
+                foregroundInstanceMaskRequest = VNGenerateForegroundInstanceMaskRequest()
+            } else {
+                throw SegmentationError.unsupportedRequest
             }
         case .people:
             guard numberOfFaces > 0 else {
                 throw SegmentationError.noFaceDetected
             }
-            let personSegmentationRequest = VNGeneratePersonSegmentationRequest()
-            personSegmentationRequest.qualityLevel = .accurate
-            personSegmentationRequest.outputPixelFormat = kCVPixelFormatType_OneComponent8
-            request = personSegmentationRequest
-        case .personInstance:
+            personSegmentationRequest = VNGeneratePersonSegmentationRequest()
+            personSegmentationRequest?.qualityLevel = .accurate
+            personSegmentationRequest?.outputPixelFormat = kCVPixelFormatType_OneComponent8
             if #available(iOS 17.0, *) {
-                guard numberOfFaces > 0 else {
-                    throw SegmentationError.noFaceDetected
-                }
-                let personInstanceMaskRequest = VNGeneratePersonInstanceMaskRequest()
-                request = personInstanceMaskRequest
+                foregroundInstanceMaskRequest = VNGenerateForegroundInstanceMaskRequest()
             }
-        }
-        guard let request else {
-            throw SegmentationError.unsupportedRequest
+            /* case .personInstance:
+             if #available(iOS 17.0, *) {
+                 guard numberOfFaces > 0 else {
+                     throw SegmentationError.noFaceDetected
+                 }
+                 let personInstanceMaskRequest = VNGeneratePersonInstanceMaskRequest()
+                 request = personInstanceMaskRequest
+             } else {
+                 throw SegmentationError.unsupportedRequest
+             }*/
         }
 
         let requestHandler = VNImageRequestHandler(ciImage: baseImage)
 
         do {
-            try requestHandler.perform([request])
+            try requestHandler.perform([foregroundInstanceMaskRequest, personSegmentationRequest].compactMap { $0 })
         } catch {
             print("Unable to perform the request: \(error).")
             throw SegmentationError.failure
         }
 
         var segmentationResults: SegmentationResults?
-        if #available(iOS 17.0, *) {
-            // Foreground result
-            if let maskObservation = request.results?.first as? VNInstanceMaskObservation {
+
+        switch segmentationType {
+        case .foreground:
+            if #available(iOS 17.0, *) {
+                guard let maskObservation = foregroundInstanceMaskRequest?.results?.first as? VNInstanceMaskObservation else {
+                    throw .failure
+                }
                 segmentationResults = ForegroundInstanceMaskResult(
                     results: maskObservation,
                     requestHandler: requestHandler,
@@ -98,28 +119,55 @@ class PersonSegmentationModel: ObservableObject {
                     orientation: image.imageOrientation
                 )
                 selectedSegments = [1]
-            } else if let instanceMask = request.results?.first as? VNInstanceMaskObservation {
-                let results = PersonInstanceMaskResults(
-                    results: instanceMask,
-                    requestHandler: requestHandler,
-                    faces: self.faces,
-                    scale: image.scale,
-                    orientation: image.imageOrientation
-                )
-                selectedSegments = guessBestSegmentsToInclude(
-                    segmentationResults: results,
-                    imageSize: baseImage.extent.size
-                ) ?? instanceMask.allInstances
-                segmentationResults = results
+            } else {
+                throw .unsupportedRequest
             }
+        case .people:
+            if #available(iOS 17.0, *) {
+                guard let foregroundObservation = foregroundInstanceMaskRequest?.results?.first as? VNInstanceMaskObservation,
+                      let buffer = personSegmentationRequest?.results?.first as? VNPixelBufferObservation
+                else {
+                    throw .failure
+                }
+                segmentationResults = ForegroundPeopleSegmentation(
+                    results: buffer,
+                    scale: image.scale,
+                    orientation: image.imageOrientation,
+                    foregroundObservation: foregroundObservation
+                )
+                selectedSegments = [1]
+            } else {
+                guard let buffer = personSegmentationRequest?.results?.first as? VNPixelBufferObservation else {
+                    throw .failure
+                }
+                selectedSegments = [1]
 
-        } else if let buffer = request.results?.first as? VNPixelBufferObservation {
-            selectedSegments = [1]
-            segmentationResults = PeopleSegmentationResults(results: buffer, scale: image.scale, orientation: image.imageOrientation)
+                segmentationResults = PeopleSegmentationResults(results: buffer, scale: image.scale, orientation: image.imageOrientation)
+            }
+            /* case .personInstance:
+             if #available(iOS 17.0, *) {
+                 guard let maskObservation = request.results?.first as? VNInstanceMaskObservation else {
+                     throw .failure
+                 }
+                 let results = PersonInstanceMaskResults(
+                     results: maskObservation,
+                     requestHandler: requestHandler,
+                     faces: self.faces,
+                     scale: image.scale,
+                     orientation: image.imageOrientation
+                 )
+                 selectedSegments = /* guessBestSegmentsToInclude(
+                     segmentationResults: results,
+                     imageSize: baseImage.extent.size
+                 ) ?? */ maskObservation.allInstances
+                 segmentationResults = results
+             } else {
+                 throw .unsupportedRequest
+             }*/
         }
 
         guard let segmentationResults else {
-            throw SegmentationError.unsupportedRequest
+            throw SegmentationError.failure
         }
 
         guard let image = await segmentationResults.generateSegmentedImage(baseImage: baseImage, selectedSegments: selectedSegments),
@@ -234,7 +282,7 @@ class PersonSegmentationModel: ObservableObject {
             print("confidence: \(face.confidence)")
         }
         // include high quality faces
-        let filteredFaces = faces.filter { $0.confidence > 0.5 }
+        let filteredFaces = faces.filter { $0.confidence > 0.7 }
         let maps = mapFacesToInstances(faces: filteredFaces, mask: segmentationResults.segmentationMask)
 
         let faceIndexes: [Int] = maps.map { faceMap in
