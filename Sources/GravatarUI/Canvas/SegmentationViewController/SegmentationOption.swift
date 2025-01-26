@@ -19,7 +19,7 @@ struct SegmentationOption: Identifiable, Equatable {
                     type: .foreground,
                     title: SDKLocalizedString(
                         "Foreground",
-                        comment: "Describes foreground of a photo that can be isolated from the background."
+                        comment: "Suitable for any photo featuring objects, people, or animals in the foreground."
                     ),
                     description: SDKLocalizedString(
                         "Includes the objects or people that are in the foreground.",
@@ -32,7 +32,7 @@ struct SegmentationOption: Identifiable, Equatable {
                     type: .people,
                     title: SDKLocalizedString("People", comment: "Describes a people segmentation operation that is applied to a photo."),
                     description: SDKLocalizedString(
-                        "Includes all the people. Provides nice details on the edges.",
+                        "Suitable for portraits. It features detailed edges on a person, but cannot detect objects or animals.",
                         comment: "Descriptive text about a background removal functionality."
                     ),
                     icon: UIImage(systemName: "person.3.fill")
