@@ -20,7 +20,7 @@ struct URLSessionHTTPClient: HTTPClient {
             "Accept": "application/json",
             "X-Platform": osName().lowercased(),
             "X-SDK-Version": BundleInfo.sdkVersion ?? "",
-            "X-Source": BundleInfo.appName ?? "",
+            "X-Source": BundleInfo.executableName ?? "",
             "User-Agent": Self.userAgent,
         ]
         self.urlSession = urlSession ?? URLSession(configuration: configuration)
@@ -62,7 +62,7 @@ extension URLSessionHTTPClient {
             product: .init(productIdentifier: Constants.sdkName, version: BundleInfo.sdkVersion),
             subProducts: [
                 .init(productIdentifier: osName(), version: ProcessInfo.processInfo.osVersionDottedString),
-                .init(productIdentifier: BundleInfo.appName),
+                .init(productIdentifier: BundleInfo.executableName),
             ]
         ).encodedHeaderValue
     }
