@@ -55,7 +55,7 @@ extension URLRequest {
 
 extension URLSessionHTTPClient {
     private static func userAgent() -> String {
-        "\(appUserAgentString()) \(osUserAgentString()) \(sdkUserAgentString())"
+        "\(sdkUserAgentString()) \(osUserAgentString())  \(appUserAgentString())"
     }
 
     private static func osName() -> String {
