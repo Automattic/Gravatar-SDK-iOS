@@ -62,7 +62,7 @@ extension URLSessionHTTPClient {
             product: .init(productIdentifier: Constants.sdkName, version: BundleInfo.sdkVersion),
             subProducts: [
                 .init(productIdentifier: osName(), version: ProcessInfo.processInfo.osVersionDottedString),
-                .init(productIdentifier: BundleInfo.appName, version: BundleInfo.appVersion),
+                .init(productIdentifier: BundleInfo.appName),
             ]
         ).encodedHeaderValue
     }

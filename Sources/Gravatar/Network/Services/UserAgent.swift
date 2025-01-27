@@ -13,6 +13,11 @@ struct UserAgent {
             }
             return encodedProduct
         }
+
+        init(productIdentifier: String?, version: String? = nil) {
+            self.productIdentifier = productIdentifier
+            self.version = version
+        }
     }
 
     private let product: Product
