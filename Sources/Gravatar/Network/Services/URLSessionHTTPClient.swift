@@ -18,7 +18,7 @@ struct URLSessionHTTPClient: HTTPClient {
         let configuration = URLSessionConfiguration.default
         configuration.httpAdditionalHeaders = [
             "Accept": "application/json",
-            "X-Platform": "ios",
+            "X-Platform": osName().lowercased(),
             "X-SDK-Version": BundleInfo.sdkVersion ?? "",
             "X-Source": BundleInfo.appName ?? "",
             "User-Agent": Self.userAgent,
@@ -66,17 +66,17 @@ extension URLSessionHTTPClient {
             ]
         ).encodedHeaderValue
     }
+}
 
-    private static func osName() -> String {
-        let osName: String
-        #if os(iOS)
-        osName = "iOS"
-        #else
-        osName = "Unknown OS"
-        assertionFailure("Update '\(#function)' to include the current OS name (iOS, macOS, tvOS, watchOS) when adding support for it.")
-        #endif
-        return osName
-    }
+private func osName() -> String {
+    let osName: String
+    #if os(iOS)
+    osName = "iOS"
+    #else
+    osName = "Unknown OS"
+    assertionFailure("Update '\(#function)' to include the current OS name (iOS, macOS, tvOS, watchOS) when adding support for it.")
+    #endif
+    return osName
 }
 
 private func validatedHTTPResponse(_ response: URLResponse, data: Data) throws -> HTTPURLResponse {
