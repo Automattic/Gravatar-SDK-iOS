@@ -18,7 +18,7 @@ struct URLSessionHTTPClient: HTTPClient {
         let configuration = URLSessionConfiguration.default
         configuration.httpAdditionalHeaders = [
             "Accept": "application/json",
-            "User-Agent": Self.userAgent(),
+            "User-Agent": Self.userAgent,
         ]
         self.urlSession = urlSession ?? URLSession(configuration: configuration)
     }
@@ -54,8 +54,14 @@ extension URLRequest {
 }
 
 extension URLSessionHTTPClient {
-    private static func userAgent() -> String {
-        "\(sdkUserAgentString()) \(osUserAgentString())  \(appUserAgentString())"
+    private static var userAgent: String {
+        UserAgent(
+            product: .init(productIdentifier: Constants.sdkName, version: BundleInfo.sdkVersion),
+            subProducts: [
+                .init(productIdentifier: osName(), version: ProcessInfo.processInfo.osVersionDottedString),
+                .init(productIdentifier: BundleInfo.appName, version: BundleInfo.appVersion),
+            ]
+        ).encodedHeaderValue
     }
 
     private static func osName() -> String {
@@ -67,36 +73,6 @@ extension URLSessionHTTPClient {
         assertionFailure("Update '\(#function)' to include the current OS name (iOS, macOS, tvOS, watchOS) when adding support for it.")
         #endif
         return osName
-    }
-
-    private static func appUserAgentString() -> String {
-        userAgentProduct(
-            product: BundleInfo.appName,
-            version: BundleInfo.appVersion
-        )
-    }
-
-    private static func osUserAgentString() -> String {
-        userAgentProduct(
-            product: osName(),
-            version: ProcessInfo.processInfo.osVersionDottedString
-        )
-    }
-
-    private static func sdkUserAgentString() -> String {
-        userAgentProduct(
-            product: Constants.sdkName,
-            version: BundleInfo.sdkVersion
-        )
-    }
-
-    private static func userAgentProduct(product: String?, version: String?) -> String {
-        var encodedProduct = product?.addingPercentEncoding(withAllowedCharacters: .productIdentifierAllowed) ?? "Unknown"
-
-        if let encodedVersion = version?.addingPercentEncoding(withAllowedCharacters: .productIdentifierAllowed) {
-            encodedProduct += "/\(encodedVersion)"
-        }
-        return encodedProduct
     }
 }
 
