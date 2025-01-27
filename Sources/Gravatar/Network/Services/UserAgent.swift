@@ -27,6 +27,7 @@ struct UserAgent {
         self.subProducts = subProducts
     }
 
+    /// The encoded value for a `User-Agent` header
     var encodedHeaderValue: String {
         let allProducts: [Product] = [product] + subProducts
         return allProducts.map { String(describing: $0) }.joined(separator: " ")
