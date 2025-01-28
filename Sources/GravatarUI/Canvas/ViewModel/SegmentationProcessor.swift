@@ -104,7 +104,8 @@ actor SegmentationProcessor {
                     results: buffer,
                     scale: image.scale,
                     orientation: image.imageOrientation,
-                    foregroundObservation: foregroundObservation
+                    foregroundObservation: foregroundObservation,
+                    requestHandler: requestHandler
                 )
                 selectedSegments = [1]
             } else {
