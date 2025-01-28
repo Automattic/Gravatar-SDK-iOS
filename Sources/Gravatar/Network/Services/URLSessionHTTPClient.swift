@@ -59,11 +59,11 @@ extension URLRequest {
 extension URLSessionHTTPClient {
     private static var userAgent: String {
         UserAgent(
-            product: .init(productIdentifier: Constants.sdkName, version: BundleInfo.sdkVersion),
-            subProducts: [
-                .init(productIdentifier: osName(), version: ProcessInfo.processInfo.osVersionDottedString),
-                .init(productIdentifier: BundleInfo.executableName),
-            ]
+            product: .init(
+                productIdentifier: Constants.sdkName,
+                version: BundleInfo.sdkVersion,
+                comment: "\(osName()) \(ProcessInfo.processInfo.osVersionDottedString); AppID \(BundleInfo.appIdentifier ?? "Unknown")"
+            )
         ).encodedHeaderValue
     }
 }

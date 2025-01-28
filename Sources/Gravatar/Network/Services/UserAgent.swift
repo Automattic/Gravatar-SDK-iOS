@@ -4,6 +4,7 @@ struct UserAgent {
     struct Product: CustomStringConvertible {
         let productIdentifier: String?
         let version: String?
+        let comment: String?
 
         var description: String {
             var encodedProduct = productIdentifier?.addingPercentEncoding(withAllowedCharacters: .productIdentifierAllowed) ?? "Unknown"
@@ -11,12 +12,18 @@ struct UserAgent {
             if let encodedVersion = version?.addingPercentEncoding(withAllowedCharacters: .productIdentifierAllowed) {
                 encodedProduct += "/\(encodedVersion)"
             }
+
+            if let comment {
+                encodedProduct += " (\(comment))"
+            }
+
             return encodedProduct
         }
 
-        init(productIdentifier: String?, version: String? = nil) {
+        init(productIdentifier: String?, version: String? = nil, comment: String? = nil) {
             self.productIdentifier = productIdentifier
             self.version = version
+            self.comment = comment
         }
     }
 

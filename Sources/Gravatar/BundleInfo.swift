@@ -17,6 +17,11 @@ package enum BundleInfo {
         Bundle.main.object(forInfoDictionaryKey: "CFBundleExecutable") as? String
     }
 
+    package static var appIdentifier: String? {
+        guard let bundleID = Bundle.main.bundleIdentifier else { return nil }
+        return String(bundleID.hashed().prefix(10))
+    }
+
     private static func getInfoValue(forKey key: String) -> Any? {
         // Access the SDKInfo.plist using Bundle.module
         guard let url = Bundle.module.url(forResource: "SDKInfo", withExtension: "plist"),
