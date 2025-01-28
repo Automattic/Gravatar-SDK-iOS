@@ -8,7 +8,7 @@ enum HTTPClientError: Error {
 }
 
 private enum Constants {
-    static let sdkName = "Gravatar-SDK-iOS"
+    static let sdkName = "Gravatar-SDK"
 }
 
 struct URLSessionHTTPClient: HTTPClient {
@@ -58,13 +58,7 @@ extension URLRequest {
 
 extension URLSessionHTTPClient {
     private static var userAgent: String {
-        UserAgent(
-            product: .init(
-                productIdentifier: Constants.sdkName,
-                version: BundleInfo.sdkVersion,
-                comment: "\(osName()) \(ProcessInfo.processInfo.osVersionDottedString); AppID \(BundleInfo.appIdentifier ?? "Unknown")"
-            )
-        ).encodedHeaderValue
+        "\(Constants.sdkName)/\(BundleInfo.sdkVersion) (\(osName()) \(ProcessInfo.processInfo.osVersionDottedString); AppID \(BundleInfo.appIdentifier ?? "Unknown"))"
     }
 }
 
