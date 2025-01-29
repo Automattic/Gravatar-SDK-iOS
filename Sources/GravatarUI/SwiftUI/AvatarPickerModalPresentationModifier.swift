@@ -19,6 +19,7 @@ struct AvatarPickerModalPresentationModifier<ModalView: View>: ViewModifier, Mod
     @Binding var isPresented: Bool
     @State private var isPresentedInner: Bool
     @State private var sheetHeight: CGFloat = Constants.bottomSheetEstimatedHeight
+    @State private var isEditModeAvatar: Bool = false
     @State private(set) var verticalSizeClass: UserInterfaceSizeClass?
     @State private var presentationDetents: Set<PresentationDetent>
     @State private var prioritizeScrollOverResize: Bool = false
@@ -35,6 +36,7 @@ struct AvatarPickerModalPresentationModifier<ModalView: View>: ViewModifier, Mod
         self.presentationDetents = QEDetent.detents(
             for: contentLayout,
             intrinsicHeight: Constants.bottomSheetEstimatedHeight,
+            isEditModeAvatar: false,
             verticalSizeClass: nil
         ).map()
     }
@@ -50,6 +52,7 @@ struct AvatarPickerModalPresentationModifier<ModalView: View>: ViewModifier, Mod
                     self.presentationDetents = QEDetent.detents(
                         for: contentLayoutWithPresentation,
                         intrinsicHeight: max(sheetHeight, Constants.bottomSheetEstimatedHeight),
+                        isEditModeAvatar: isEditModeAvatar,
                         verticalSizeClass: verticalSizeClass
                     ).map()
                 }
@@ -63,7 +66,8 @@ struct AvatarPickerModalPresentationModifier<ModalView: View>: ViewModifier, Mod
                     .frame(minHeight: Constants.bottomSheetMinHeight)
                     .onPreferenceChange(InnerHeightPreferenceKey.self) { newHeight in
                         Task { @MainActor in
-                            if shouldAcceptHeight(newHeight) {
+                            if shouldAcceptHeight(newHeight, isEditModeAvatar: isEditModeAvatar) {
+                                print("newHeight: \(newHeight)")
                                 sheetHeight = newHeight
                             }
                             updateDetents()
@@ -76,6 +80,13 @@ struct AvatarPickerModalPresentationModifier<ModalView: View>: ViewModifier, Mod
                             updateDetents()
                         }
                     }
+                    .onPreferenceChange(IsEditModeAvatarPreferenceKey.self) { newValue in
+                        print("IsEditModeAvatarPreferenceKey: \(newValue) ")
+                        Task { @MainActor in
+                            self.isEditModeAvatar = newValue
+                            updateDetents()
+                        }
+                    }
                     .presentationDetents(presentationDetents)
                     .presentationContentInteraction(shouldPrioritizeScrolling: prioritizeScrollOverResize)
             }
@@ -85,6 +96,7 @@ struct AvatarPickerModalPresentationModifier<ModalView: View>: ViewModifier, Mod
         self.presentationDetents = QEDetent.detents(
             for: contentLayoutWithPresentation,
             intrinsicHeight: sheetHeight,
+            isEditModeAvatar: isEditModeAvatar,
             verticalSizeClass: verticalSizeClass
         ).map()
         self.prioritizeScrollOverResize = contentLayoutWithPresentation.prioritizeScrollOverResize
@@ -98,8 +110,8 @@ protocol ModalPresentationWithIntrinsicSize {
 }
 
 extension ModalPresentationWithIntrinsicSize {
-    func shouldAcceptHeight(_ newHeight: CGFloat) -> Bool {
-        newHeight > QEModalPresentationConstants.bottomSheetMinHeight && shouldUseIntrinsicSize
+    func shouldAcceptHeight(_ newHeight: CGFloat, isEditModeAvatar: Bool) -> Bool {
+        newHeight > QEModalPresentationConstants.bottomSheetMinHeight && shouldUseIntrinsicSize && isEditModeAvatar
     }
 
     var shouldUseIntrinsicSize: Bool {

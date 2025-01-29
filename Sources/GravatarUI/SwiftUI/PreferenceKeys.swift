@@ -1,5 +1,13 @@
 import SwiftUI
 
+struct IsEditModeAvatarPreferenceKey: PreferenceKey {
+    static let defaultValue: Bool = true
+    static func reduce(value: inout Bool, nextValue: () -> Bool) {
+        print("IsEditModeAvatarPreferenceKey: \(value), nextValue: \(nextValue())")
+        value = nextValue()
+    }
+}
+
 /// A `PreferenceKey` that is used to sum up all the heights of subviews.
 struct InnerHeightPreferenceKey: PreferenceKey {
     static let defaultValue: CGFloat = .zero

@@ -28,6 +28,7 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
     @State private var oauthError: OAuthError?
     @State private var safariURL: IdentifiableURL?
     @Binding private var isPresented: Bool
+
     // Declare "@StateObject"s as private to prevent setting them from a
     // memberwise initializer, which can conflict with the storage
     // management that SwiftUI provides.
@@ -145,7 +146,12 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
             },
             preferenceKey: InnerHeightPreferenceKey.self
         )
-        .presentSafariView(identifiableURL: $safariURL, colorScheme: colorScheme)
+        .sheet(item: $safariURL, content: { _ in
+            VStack {
+                Text("Profile editing")
+            }
+        })
+        // .presentSafariView(identifiableURL: $safariURL, colorScheme: colorScheme)
         .task(id: email) {
             await model.fetchProfile()
         }

@@ -16,10 +16,14 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
     @State private var safariURL: IdentifiableURL?
     @State private var uploadError: FailedUploadInfo?
     @State private var isUploadErrorDialogPresented: Bool = false
+    @State private var isEditModeAvatar: Bool = false
     @State private var avatarToDelete: AvatarImageModel?
     @State private var shareSheetItem: AvatarShareItem?
     @State private var playgroundInputItem: PlaygroundInputItem?
     @State private var altTextEditorAvatar: AvatarImageModel?
+    @State private var name: String
+    @State private var location: String
+    @FocusState var isNameFocused: Bool
 
     var contentLayoutProvider: AvatarPickerContentLayoutProviding
     var customImageEditor: ImageEditorBlock<ImageEditor>?
@@ -40,6 +44,8 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
         self.tokenErrorHandler = tokenErrorHandler
         self.avatarUpdatedHandler = avatarUpdatedHandler
         self.model = model
+        self.name = model.profileModel?.displayName ?? ""
+        self.location = model.profileModel?.location ?? ""
     }
 
     fileprivate init(
@@ -62,128 +68,262 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
             selectedImageID: selectedImageID,
             profileModel: profileModel
         )
+        self.name = profileModel?.displayName ?? ""
+        self.location = profileModel?.location ?? ""
     }
 
     public var body: some View {
-        ZStack {
-            VStack(spacing: 0) {
-                EmailText(email: model.email)
-                    .accumulateIntrinsicHeight()
-                noSelectedAvatarWarning()
-                    .accumulateIntrinsicHeight()
-                profileView()
-                    .accumulateIntrinsicHeight()
-                ScrollView {
-                    VStack(spacing: 0) {
-                        errorView()
-                        if !model.grid.isEmpty {
-                            content()
-                        } else if model.isAvatarsLoading {
-                            avatarsLoadingView()
+        GeometryReader { _ in
+            ZStack {
+                VStack(spacing: 0) {
+                    EmailText(email: model.email)
+                        .accumulateIntrinsicHeight()
+                    noSelectedAvatarWarning()
+                        .accumulateIntrinsicHeight()
+                    profileView()
+                        .accumulateIntrinsicHeight()
+                    InteractiveKeyboardScrollView {
+                        VStack(spacing: 0) {
+                            if isEditModeAvatar {
+                                errorView()
+                                if !model.grid.isEmpty {
+                                    content()
+                                } else if model.isAvatarsLoading {
+                                    avatarsLoadingView()
+                                }
+                            } else {
+                                VStack(alignment: .leading, spacing: 0) {
+                                    HStack {
+                                        Text("Display name")
+                                            .foregroundStyle(.primary)
+                                            .multilineTextAlignment(.leading)
+                                            // .background(Color.secondary)
+                                            .frame(alignment: .leading)
+                                            .padding(.bottom, 4)
+                                        Spacer()
+                                    }
+                                    TextField(model.profileModel?.displayName ?? "", text: $name)
+                                        .focused($isNameFocused)
+                                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                                    Spacer().frame(height: 24)
+                                    HStack {
+                                        Text("Location")
+                                            .foregroundStyle(.primary)
+                                            .multilineTextAlignment(.leading)
+                                            // .background(Color.secondary)
+                                            .frame(alignment: .leading)
+                                            .padding(.bottom, 4)
+                                        Spacer()
+                                    }
+
+                                    TextField(model.profileModel?.location ?? "", text: $location)
+                                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                                    Spacer().frame(height: 24)
+
+                                    /*
+
+                                     HStack {
+                                     Text("Display name")
+                                     .foregroundStyle(.primary)
+                                     .multilineTextAlignment(.leading)
+                                     //.background(Color.secondary)
+                                     .frame(alignment: .leading)
+                                     .padding(.bottom, 4)
+                                     Spacer()
+                                     }
+                                     TextField(model.profileModel?.displayName ?? "", text: $name)
+                                     .focused($isNameFocused)
+                                     .textFieldStyle(RoundedBorderTextFieldStyle())
+                                     Spacer().frame(height: 24)
+                                     HStack {
+                                     Text("Location")
+                                     .foregroundStyle(.primary)
+                                     .multilineTextAlignment(.leading)
+                                     //.background(Color.secondary)
+                                     .frame(alignment: .leading)
+                                     .padding(.bottom, 4)
+                                     Spacer()
+                                     }
+                                     TextField(model.profileModel?.location ?? "", text: $location)
+                                     .textFieldStyle(RoundedBorderTextFieldStyle())
+                                     Spacer().frame(height: 24)
+
+                                     HStack {
+                                     Text("Display name")
+                                     .foregroundStyle(.primary)
+                                     .multilineTextAlignment(.leading)
+                                     //.background(Color.secondary)
+                                     .frame(alignment: .leading)
+                                     .padding(.bottom, 4)
+                                     Spacer()
+                                     }
+                                     TextField(model.profileModel?.displayName ?? "", text: $name)
+                                     .focused($isNameFocused)
+                                     .textFieldStyle(RoundedBorderTextFieldStyle())
+                                     Spacer().frame(height: 24)
+                                     HStack {
+                                     Text("Location")
+                                     .foregroundStyle(.primary)
+                                     .multilineTextAlignment(.leading)
+                                     //.background(Color.secondary)
+                                     .frame(alignment: .leading)
+                                     .padding(.bottom, 4)
+                                     Spacer()
+                                     }
+                                     TextField(model.profileModel?.location ?? "", text: $location)
+                                     .textFieldStyle(RoundedBorderTextFieldStyle())
+                                     Spacer().frame(height: 24)
+
+                                     HStack {
+                                     Text("Display name")
+                                     .foregroundStyle(.primary)
+                                     .multilineTextAlignment(.leading)
+                                     //.background(Color.secondary)
+                                     .frame(alignment: .leading)
+                                     .padding(.bottom, 4)
+                                     Spacer()
+                                     }
+                                     TextField(model.profileModel?.displayName ?? "", text: $name)
+                                     .focused($isNameFocused)
+                                     .textFieldStyle(RoundedBorderTextFieldStyle())
+                                     Spacer().frame(height: 24)
+                                     HStack {
+                                     Text("Location")
+                                     .foregroundStyle(.primary)
+                                     .multilineTextAlignment(.leading)
+                                     //.background(Color.secondary)
+                                     .frame(alignment: .leading)
+                                     .padding(.bottom, 4)
+                                     Spacer()
+                                     }
+                                     TextField(model.profileModel?.location ?? "", text: $location)
+                                     .textFieldStyle(RoundedBorderTextFieldStyle())
+                                     Spacer().frame(height: 24)
+                                     */
+                                }
+                                .padding()
+                                .frame(maxWidth: .infinity)
+                                .avatarPickerBorder(colorScheme: colorScheme, borderWidth: 1)
+                                .padding(.horizontal, Constants.horizontalPadding)
+                            }
+                            Spacer()
+                                .frame(height: Constants.vStackVerticalSpacing)
                         }
-                        Spacer()
-                            .frame(height: Constants.vStackVerticalSpacing)
+                        .accumulateIntrinsicHeight()
                     }
-                    .accumulateIntrinsicHeight()
-                }
-                .task {
-                    model.refresh()
-                }
-                .confirmationDialog(
-                    Localized.uploadErrorTitle,
-                    isPresented: $isUploadErrorDialogPresented,
-                    titleVisibility: .visible,
-                    presenting: uploadError
-                ) { error in
-                    Button(role: .destructive) {
-                        deleteFailedUpload(error.avatarLocalID)
-                    } label: {
-                        Label(Localized.removeButtonTitle, systemImage: "trash")
+                    .task {
+                        model.refresh()
                     }
-                    if error.supportsRetry {
-                        Button {
-                            retryUpload(error.avatarLocalID)
+                    .confirmationDialog(
+                        Localized.uploadErrorTitle,
+                        isPresented: $isUploadErrorDialogPresented,
+                        titleVisibility: .visible,
+                        presenting: uploadError
+                    ) { error in
+                        Button(role: .destructive) {
+                            deleteFailedUpload(error.avatarLocalID)
                         } label: {
-                            Label(Localized.retryButtonTitle, systemImage: "arrow.clockwise")
+                            Label(Localized.removeButtonTitle, systemImage: "trash")
                         }
-                    }
-                    Button(Localized.dismissButtonTitle, role: .cancel) {}
-                } message: { error in
-                    Text(error.errorMessage)
-                }
-                .confirmationDialog(
-                    Localized.deletionConfirmationTitle,
-                    isPresented: Binding(
-                        get: { avatarToDelete != nil },
-                        set: { if !$0 { avatarToDelete = nil } }
-                    ),
-                    titleVisibility: .visible,
-                    presenting: avatarToDelete
-                ) { avatar in
-                    Button(role: .destructive) {
-                        Task {
-                            // The animation won't run during the action-sheet dismissal
-                            // This delay will allow the avatar deletion animation to run.
-                            try? await Task.sleep(nanoseconds: 10_000_000)
-                            let isDeletingSelected = model.grid.selectedAvatar == avatar
-                            if await model.delete(avatar), isDeletingSelected {
-                                notifyAvatarSelection()
+                        if error.supportsRetry {
+                            Button {
+                                retryUpload(error.avatarLocalID)
+                            } label: {
+                                Label(Localized.retryButtonTitle, systemImage: "arrow.clockwise")
                             }
                         }
-                    } label: {
-                        Label(Localized.deletionConfirmationButtonTitle, systemImage: "trash")
+                        Button(Localized.dismissButtonTitle, role: .cancel) {}
+                    } message: { error in
+                        Text(error.errorMessage)
                     }
-                    Button(Localized.dismissButtonTitle, role: .cancel) {}
+                    .confirmationDialog(
+                        Localized.deletionConfirmationTitle,
+                        isPresented: Binding(
+                            get: { avatarToDelete != nil },
+                            set: { if !$0 { avatarToDelete = nil } }
+                        ),
+                        titleVisibility: .visible,
+                        presenting: avatarToDelete
+                    ) { avatar in
+                        Button(role: .destructive) {
+                            Task {
+                                // The animation won't run during the action-sheet dismissal
+                                // This delay will allow the avatar deletion animation to run.
+                                try? await Task.sleep(nanoseconds: 10_000_000)
+                                let isDeletingSelected = model.grid.selectedAvatar == avatar
+                                if await model.delete(avatar), isDeletingSelected {
+                                    notifyAvatarSelection()
+                                }
+                            }
+                        } label: {
+                            Label(Localized.deletionConfirmationButtonTitle, systemImage: "trash")
+                        }
+                        Button(Localized.dismissButtonTitle, role: .cancel) {}
+                    }
+                    if !isEditModeAvatar {
+                        CTAButtonView("Save")
+                            .padding(.horizontal, Constants.horizontalPadding)
+                            .padding(.bottom, .DS.Padding.medium)
+                            .accumulateIntrinsicHeight()
+                    }
                 }
-            }
 
-            ToastContainerView(toastManager: model.toastManager)
-                .padding(.horizontal, Constants.horizontalPadding * 2)
-        }
-        .preference(key: VerticalSizeClassPreferenceKey.self, value: verticalSizeClass)
-        .gravatarNavigation(
-            actionButtonDisabled: model.profileModel?.profileURL == nil,
-            onDoneButtonPressed: {
-                isPresented = false
-            },
-            preferenceKey: InnerHeightPreferenceKey.self
-        )
-        .presentSafariView(identifiableURL: $safariURL, colorScheme: colorScheme)
-        .onChange(of: model.backendSelectedAvatarURL) { _ in
-            notifyAvatarSelection()
-        }
-        .sheet(item: $shareSheetItem) { item in
-            ShareSheet(items: [item.fileURL])
-                .colorScheme(colorScheme)
-                .presentationDetentsIfAvailable(
-                    [contentLayoutProvider.shareSheetInitialDetent, .large]
-                )
-        }
-        .modifier(ImagePlaygroundModifier(
-            isPresented: Binding(
-                get: { playgroundInputItem != nil },
-                set: { if !$0 { playgroundInputItem = nil } }
-            ),
-            customEditor: customImageEditor,
-            sourceImage: playgroundInputItem?.image,
-            onCompletion: { image in
-                uploadImage(image)
+                ToastContainerView(toastManager: model.toastManager)
+                    .padding(.horizontal, Constants.horizontalPadding * 2)
             }
-        ))
-        .altTextSheet(
-            model: $altTextEditorAvatar,
-            email: model.email,
-            toastManager: model.toastManager,
-            colorScheme: colorScheme,
-            onSave: { modifiedModel in
-                if await model.update(altText: modifiedModel.altText, for: modifiedModel) {
+            .preference(key: VerticalSizeClassPreferenceKey.self, value: verticalSizeClass)
+            .gravatarNavigation(
+                actionButtonDisabled: model.profileModel?.profileURL == nil,
+                onDoneButtonPressed: {
+                    isPresented = false
+                },
+                preferenceKey: InnerHeightPreferenceKey.self
+            )
+            /* .sheet(item: $safariURL, content: { url in
+             if #available(iOS 16.0, *) {
+             ProfileEditView(model: model, safariURL: $safariURL)
+             } else {
+             // Fallback on earlier versions
+             }
+             }) */
+            // .presentSafariView(identifiableURL: $safariURL, colorScheme: colorScheme)
+            .onChange(of: model.backendSelectedAvatarURL) { _ in
+                notifyAvatarSelection()
+            }
+            .sheet(item: $shareSheetItem) { item in
+                ShareSheet(items: [item.fileURL])
+                    .colorScheme(colorScheme)
+                    .presentationDetentsIfAvailable(
+                        [contentLayoutProvider.shareSheetInitialDetent, .large]
+                    )
+            }
+            .modifier(ImagePlaygroundModifier(
+                isPresented: Binding(
+                    get: { playgroundInputItem != nil },
+                    set: { if !$0 { playgroundInputItem = nil } }
+                ),
+                customEditor: customImageEditor,
+                sourceImage: playgroundInputItem?.image,
+                onCompletion: { image in
+                    uploadImage(image)
+                }
+            ))
+            .altTextSheet(
+                model: $altTextEditorAvatar,
+                email: model.email,
+                toastManager: model.toastManager,
+                colorScheme: colorScheme,
+                onSave: { modifiedModel in
+                    if await model.update(altText: modifiedModel.altText, for: modifiedModel) {
+                        altTextEditorAvatar = nil
+                    }
+                },
+                onCancel: {
                     altTextEditorAvatar = nil
                 }
-            },
-            onCancel: {
-                altTextEditorAvatar = nil
-            }
-        )
+            )
+        }
+        .preference(key: IsEditModeAvatarPreferenceKey.self, value: isEditModeAvatar)
     }
 
     private func header() -> some View {
@@ -357,11 +497,16 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
             )
             .padding(.top, .DS.Padding.medium)
             .padding(.bottom, .DS.Padding.double)
-            imagePicker {
-                CTAButtonView(Localized.buttonUploadImage)
+
+            if isEditModeAvatar {
+                imagePicker {
+                    CTAButtonView(Localized.buttonUploadImage)
+                }
+                .padding(.horizontal, Constants.horizontalPadding)
+                .padding(.bottom, .DS.Padding.medium)
             }
-            .padding(.horizontal, Constants.horizontalPadding)
-            .padding(.bottom, .DS.Padding.medium)
+            // .padding(.horizontal, 16)
+            // .padding(.vertical, 16)
         }
     }
 
@@ -460,7 +605,8 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
             forceRefreshAvatar: $model.forceRefreshAvatar,
             model: $model.profileModel,
             isLoading: $model.isProfileLoading,
-            safariURL: $safariURL
+            safariURL: $safariURL,
+            isEditModeAvatar: $isEditModeAvatar
         )
         .padding(.top, AvatarPicker.Constants.profileViewTopSpacing / 2)
         .padding(.bottom, AvatarPicker.Constants.vStackVerticalSpacing)

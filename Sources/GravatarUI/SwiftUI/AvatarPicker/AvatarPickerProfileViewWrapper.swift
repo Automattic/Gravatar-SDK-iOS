@@ -9,11 +9,13 @@ struct AvatarPickerProfileViewWrapper: View {
     @Binding var model: AvatarPickerProfileView.Model?
     @Binding var isLoading: Bool
     @Binding var safariURL: IdentifiableURL?
+    @Binding var isEditModeAvatar: Bool
 
     public var body: some View {
         VStack(alignment: .leading, content: {
             AvatarPickerProfileView(
                 avatarID: $avatarID,
+                isEditModeAvatar: $isEditModeAvatar,
                 forceRefreshAvatar: $forceRefreshAvatar,
                 model: $model,
                 isLoading: $isLoading

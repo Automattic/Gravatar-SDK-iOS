@@ -11,6 +11,7 @@ enum QEDetent {
     static func detents(
         for presentation: AvatarPickerContentLayout,
         intrinsicHeight: CGFloat,
+        isEditModeAvatar: Bool,
         verticalSizeClass: UserInterfaceSizeClass?
     ) -> [QEDetent] {
         switch presentation {
@@ -19,6 +20,19 @@ enum QEDetent {
                 // in landscape mode where the device height is small we display the full size sheet(which is
                 // also the default value of the detent).
                 .init([.large])
+            } else if !isEditModeAvatar {
+                if intrinsicHeight >= QEModalPresentationConstants.bottomSheetEstimatedHeight {
+                    .init([.height(intrinsicHeight), .large])
+                } else {
+                    .init([.fraction(0.7), .large])
+                }
+                /* if intrinsicHeight > QEModalPresentationConstants.bottomSheetEstimatedHeight {
+                     .init([.fraction(0.7), .large])
+                 }
+                 else {
+                    .init([.fraction(0.7), .large])
+                    // .init([.height(intrinsicHeight)])
+                 }*/
             } else {
                 .init([.height(intrinsicHeight)])
             }

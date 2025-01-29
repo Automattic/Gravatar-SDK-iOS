@@ -19,6 +19,8 @@ final class QuickEditorViewController: UIViewController, ModalPresentationWithIn
         }
     }
 
+    var isEditModeAvatarInner: Bool = true
+
     var verticalSizeClass: UserInterfaceSizeClass?
     var sheetHeight: CGFloat = QEModalPresentationConstants.bottomSheetEstimatedHeight
     var contentLayoutWithPresentation: AvatarPickerContentLayout {
@@ -28,25 +30,34 @@ final class QuickEditorViewController: UIViewController, ModalPresentationWithIn
         }
     }
 
-    private lazy var quickEditor: InnerHeightUIHostingController = .init(rootView: QuickEditor(
-        email: email,
-        scope: scope.scopeType,
-        token: token,
-        isPresented: isPresented,
-        customImageEditor: nil as NoCustomEditorBlock?,
-        contentLayoutProvider: contentLayoutWithPresentation,
-        avatarUpdatedHandler: onAvatarUpdated
-    ), onHeightChange: { [weak self] newHeight in
-        guard let self else { return }
-        if self.shouldAcceptHeight(newHeight) {
-            self.sheetHeight = newHeight
+    private lazy var quickEditor: InnerHeightUIHostingController = .init(
+        rootView: QuickEditor(
+            email: email,
+            scope: scope.scopeType,
+            token: token,
+            isPresented: isPresented,
+            customImageEditor: nil as NoCustomEditorBlock?,
+            contentLayoutProvider: contentLayoutWithPresentation,
+            avatarUpdatedHandler: onAvatarUpdated
+        ),
+        onHeightChange: { [weak self] newHeight in
+            guard let self else { return }
+            if self.shouldAcceptHeight(newHeight, isEditModeAvatar: isEditModeAvatarInner) {
+                self.sheetHeight = newHeight
+            }
+            self.updateDetents()
+        },
+        onVerticalSizeClassChange: { [weak self] verticalSizeClass in
+            guard let self, verticalSizeClass != nil else { return }
+            self.verticalSizeClass = verticalSizeClass
+            self.updateDetents()
+        },
+        onEditModeChange: { [weak self] newValue in
+            guard let self else { return }
+            self.isEditModeAvatarInner = newValue
+            self.updateDetents()
         }
-        self.updateDetents()
-    }, onVerticalSizeClassChange: { [weak self] verticalSizeClass in
-        guard let self, verticalSizeClass != nil else { return }
-        self.verticalSizeClass = verticalSizeClass
-        self.updateDetents()
-    })
+    )
 
     init(
         email: Email,
@@ -100,6 +111,7 @@ final class QuickEditorViewController: UIViewController, ModalPresentationWithIn
                 sheet.detents = QEDetent.detents(
                     for: contentLayoutWithPresentation,
                     intrinsicHeight: sheetHeight,
+                    isEditModeAvatar: isEditModeAvatarInner,
                     verticalSizeClass: verticalSizeClass
                 ).map()
             }
@@ -112,10 +124,17 @@ final class QuickEditorViewController: UIViewController, ModalPresentationWithIn
 private class InnerHeightUIHostingController: UIHostingController<AnyView> {
     let onHeightChange: (CGFloat) -> Void
     let onVerticalSizeClassChange: (UserInterfaceSizeClass?) -> Void
+    let onEditModeChange: (Bool) -> Void
 
-    init(rootView: some View, onHeightChange: @escaping (CGFloat) -> Void, onVerticalSizeClassChange: @escaping (UserInterfaceSizeClass?) -> Void) {
+    init(
+        rootView: some View,
+        onHeightChange: @escaping (CGFloat) -> Void,
+        onVerticalSizeClassChange: @escaping (UserInterfaceSizeClass?) -> Void,
+        onEditModeChange: @escaping (Bool) -> Void
+    ) {
         self.onHeightChange = onHeightChange
         self.onVerticalSizeClassChange = onVerticalSizeClassChange
+        self.onEditModeChange = onEditModeChange
         weak var weakSelf: InnerHeightUIHostingController?
         super.init(rootView: AnyView(
             rootView
@@ -129,6 +148,12 @@ private class InnerHeightUIHostingController: UIHostingController<AnyView> {
                         weakSelf?._innerVerticalSizeClass = newSizeClass
                     }
                 }
+                .onPreferenceChange(IsEditModeAvatarPreferenceKey.self) { newValue in
+                    print("IsEditModeAvatarPreferenceKey: \(newValue) ")
+                    Task { @MainActor in
+                        weakSelf?._innerIsEditModeAvatar = newValue
+                    }
+                }
         ))
         weakSelf = self
     }
@@ -137,6 +162,10 @@ private class InnerHeightUIHostingController: UIHostingController<AnyView> {
     @objc
     dynamic required init?(coder aDecoder: NSCoder) {
         fatalError()
+    }
+
+    private var _innerIsEditModeAvatar: Bool = true {
+        didSet { onEditModeChange(_innerIsEditModeAvatar) }
     }
 
     private var _innerSwiftUIContentHeight: CGFloat = 0 {
