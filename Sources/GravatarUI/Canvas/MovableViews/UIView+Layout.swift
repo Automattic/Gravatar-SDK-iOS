@@ -172,23 +172,92 @@ func createRoundGradientImage(size: CGSize, colors: [UIColor]) -> UIImage? {
     }
 }
 
+/// Creates a UIImage mask of the same size as `bounds`,
+/// where everything is white (fully opaque),
+/// except a circle + top rectangle area drawn in black (transparent hole).
+func makeRasterMask(
+    bounds: CGRect,
+    circleCenter: CGPoint,
+    circleRadius: CGFloat
+) -> UIImage? {
+    let width = Int(bounds.width)
+    let height = Int(bounds.height)
+
+    // 1) Begin a bitmap context
+    UIGraphicsBeginImageContextWithOptions(bounds.size, false, 0.0)
+    guard let ctx = UIGraphicsGetCurrentContext() else {
+        UIGraphicsEndImageContext()
+        return nil
+    }
+
+    // Fill entire context with white => everything opaque
+    ctx.setFillColor(UIColor.white.cgColor)
+    ctx.fill(CGRect(origin: .zero, size: bounds.size))
+
+    // Set blend mode to clear => drawing now sets alpha=0
+
+    ctx.setBlendMode(.clear)
+
+    // Now draw the holes in black => these become transparent
+    // ctx.setFillColor(UIColor.black.cgColor)
+    // ctx.addPath(UIBezierPath(rect: bounds).cgPath)
+    // Circle
+
+    let centerPoint = CGPoint(x: bounds.width / 2, y: bounds.height / 2)
+    let roundedRect = UIBezierPath(
+        roundedRect: CGRect.rectFromCenter(center: centerPoint, width: circleRadius, height: circleRadius),
+        byRoundingCorners: .allCorners,
+        cornerRadii: .init(width: 0.1 * circleRadius, height: 0.3 * circleRadius)
+    )
+    ctx.addPath(roundedRect.cgPath)
+
+    /* ctx.addEllipse(in: CGRect(x: circleCenter.x - circleRadius,
+     y: circleCenter.y - circleRadius,
+     width: circleRadius * 2,
+     height: circleRadius * 2))*/
+    ctx.fillPath()
+    let holeRect = UIBezierPath(rect: .init(x: 0, y: 0, width: bounds.width, height: bounds.height * 0.3))
+    ctx.addPath(holeRect.cgPath)
+    ctx.fillPath()
+    // Top rectangle hole (e.g. top 30%)
+    /* let topRectHeight = bounds.height * 0.3
+     let holeRect = CGRect(x: 0, y: 0,
+                           width: bounds.width,
+                           height: topRectHeight)
+     ctx.fill(holeRect) */
+
+    ctx.setBlendMode(.normal)
+    // Extract the image
+    let maskImage = UIGraphicsGetImageFromCurrentImageContext()
+    UIGraphicsEndImageContext()
+
+    return maskImage
+}
+
 // Function to create a CAShapeLayer with a circular hole
 func createCircleHoleMask(for frame: CGRect, holeCenter: CGPoint, holeRadius: CGFloat) -> CAShapeLayer {
     let maskLayer = CAShapeLayer()
     maskLayer.frame = frame
 
     // Create the path for the entire view
-    let path = UIBezierPath(rect: frame)
+    let boundingPath = UIBezierPath(rect: frame)
 
     // Define the circular hole
     let circlePath = UIBezierPath(arcCenter: holeCenter, radius: holeRadius, startAngle: 0, endAngle: CGFloat.pi * 2, clockwise: true)
+    let rectPath = UIBezierPath(rect: .init(x: 0, y: 0, width: frame.width, height: frame.height * 0.3))
+    let combinedPath = UIBezierPath()
+    combinedPath.usesEvenOddFillRule = true
 
-    // Subtract the circular hole from the path
-    path.append(circlePath)
-    path.usesEvenOddFillRule = true
+    // First, append bounding rect (the entire area)
+    combinedPath.append(boundingPath)
+
+    // Then append the circle hole
+    combinedPath.append(circlePath)
+
+    combinedPath.append(rectPath)
 
     // Apply the path to the mask
-    maskLayer.path = path.cgPath
+    maskLayer.path = combinedPath.cgPath
     maskLayer.fillRule = .evenOdd
 
     return maskLayer
@@ -200,22 +269,43 @@ extension UIView {
         let holeRadius = min(frame.width, frame.height) / 2
         let holeCenter = CGPoint(x: frame.width / 2, y: frame.height / 2)
 
+        guard let maskImg = makeRasterMask(bounds: bounds, circleCenter: holeCenter, circleRadius: holeRadius) else { return }
+
+        let maskLayer = CALayer()
+        maskLayer.contents = maskImg.cgImage
+        maskLayer.frame = bounds
+
         // Create and set the mask layer
-        let maskLayer = createCircleHoleMask(for: frame, holeCenter: holeCenter, holeRadius: holeRadius)
+        // let maskLayer = createCircleHoleMask(for: frame, holeCenter: holeCenter, holeRadius: holeRadius)
         layer.mask = maskLayer
+        layer.masksToBounds = true
     }
 
-    func applyGradientLayer(colors: [UIColor], startPoint: CGPoint = CGPoint(x: 0, y: 0), endPoint: CGPoint = CGPoint(x: 1, y: 1)) {
-        let gradient = Self.createGradientLayer(rect: bounds, colors: colors, startPoint: startPoint, endPoint: endPoint)
+    func applyGradientLayer(
+        colors: [UIColor],
+        locations: [NSNumber]? = nil,
+        startPoint: CGPoint = CGPoint(x: 0, y: 0),
+        endPoint: CGPoint = CGPoint(x: 1, y: 1)
+    ) {
+        let gradient = Self.createGradientLayer(rect: bounds, colors: colors, locations: locations, startPoint: startPoint, endPoint: endPoint)
         layer.insertSublayer(gradient, at: 0)
     }
 
-    static func createGradientLayer(rect: CGRect, colors: [UIColor], startPoint: CGPoint, endPoint: CGPoint) -> CAGradientLayer {
+    static func createGradientLayer(rect: CGRect, colors: [UIColor], locations: [NSNumber]?, startPoint: CGPoint, endPoint: CGPoint) -> CAGradientLayer {
         let gradientLayer = CAGradientLayer()
         gradientLayer.frame = rect
+        gradientLayer.locations = locations
         gradientLayer.colors = colors.map(\.cgColor)
         gradientLayer.startPoint = startPoint
         gradientLayer.endPoint = endPoint
         return gradientLayer
+    }
+}
+
+extension CGRect {
+    static func rectFromCenter(center: CGPoint, width: CGFloat, height: CGFloat) -> CGRect {
+        let x = center.x - width / 2
+        let y = center.y - height / 2
+        return CGRect(x: x, y: y, width: width, height: height)
     }
 }

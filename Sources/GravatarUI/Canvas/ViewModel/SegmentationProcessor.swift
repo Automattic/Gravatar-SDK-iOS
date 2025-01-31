@@ -172,7 +172,7 @@ actor SegmentationProcessor {
     }
 
     private func performFaceAndAnimalDetection(on image: CIImage) async throws -> DetectionResults {
-        try await withCheckedThrowingContinuation { continuation in
+        try await withUnsafeThrowingContinuation { continuation in
             // Create face detection request
             let faceRequest = VNDetectFaceRectanglesRequest()
 

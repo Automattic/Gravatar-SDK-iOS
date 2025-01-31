@@ -88,8 +88,14 @@ struct ForegroundPeopleSegmentation: SegmentationResults {
     var type: SegmentationType { .people }
     let foregroundObservation: VNInstanceMaskObservation
     let requestHandler: VNImageRequestHandler
-    
-    init(results: VNPixelBufferObservation, scale: CGFloat, orientation: UIImage.Orientation, foregroundObservation: VNInstanceMaskObservation, requestHandler: VNImageRequestHandler) {
+
+    init(
+        results: VNPixelBufferObservation,
+        scale: CGFloat,
+        orientation: UIImage.Orientation,
+        foregroundObservation: VNInstanceMaskObservation,
+        requestHandler: VNImageRequestHandler
+    ) {
         numSegments = 2
         segmentationMask = results.pixelBuffer
         self.scale = scale
@@ -106,7 +112,7 @@ struct ForegroundPeopleSegmentation: SegmentationResults {
         let personMaskWidth = CVPixelBufferGetWidth(segmentationMask)
         let personMaskHeight = CVPixelBufferGetHeight(segmentationMask)
 
-        //foregroundObservation.generateScaledMaskForImage(forInstances:foregroundObservation.allInstances, from: requestHandler)
+        // foregroundObservation.generateScaledMaskForImage(forInstances:foregroundObservation.allInstances, from: requestHandler)
         if let scaledForegroundMask = resizeMask(
             foregroundObservation.instanceMask,
             toWidth: personMaskWidth,

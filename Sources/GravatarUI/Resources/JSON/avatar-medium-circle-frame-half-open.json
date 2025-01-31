@@ -1,0 +1,87 @@
+{
+  "layers": [
+    {
+      "type": "background",
+      "color": {"hex": "F29BA2", "alpha": 1},
+      "size": {"width": 1, "height": 1},
+      "position": {
+        "center": {"x": 0.5, "y": 0.5}
+      }
+    },
+    {
+      "type": "frame",
+      "color": {"hex": "FFFFFF", "alpha": 1},
+      "size": {"width": 1, "height": 1},
+      "position": {
+        "center": {"x": 0.5, "y": 0.5}
+      },
+      "mask_layers" : [
+        {
+          "type": "rectangle",
+          "size": {"width": 1, "height": 1},
+          "position": {
+            "origin": {"x": 0, "y": 0},
+          },
+          "blend_mode": "normal"
+        },
+        {
+          "type": "circle",
+          "position": {
+            "center": {"x": 0.5, "y": 0.5},
+          },
+          "size": {"width": 0.8, "height": 0.8},
+          "blend_mode": "clear"
+        },
+        {
+          "type": "rectangle",
+          "size": {"width": 1, "height": 0.5},
+          "position": {
+            "origin": {"x": 0, "y": 0.5},
+          },
+          "blend_mode": "clear"
+        }
+      ]
+    },
+    {
+      "type": "person",
+      "size": {"width": 1, "height": 1},
+      "position": {
+        "center": {"x": 0.5, "y": 0.5}
+      },
+    },
+    {
+      "type": "frame",
+      "color": {"hex": "FFFFFF", "alpha": 1},
+      "size": {"width": 1, "height": 1},
+      "position": {
+        "center": {"x": 0.5, "y": 0.5}
+      },
+      "mask_layers" : [
+        {
+          "type": "rectangle",
+          "size": {"width": 1, "height": 1},
+          "position": {
+            "origin": {"x": 0, "y": 0},
+          },
+          "blend_mode": "normal"
+        },
+        {
+          "type": "circle",
+          "size": {"width": 0.8, "height": 0.8},
+          "position": {
+            "center": {"x": 0.5, "y": 0.5},
+          },
+          "blend_mode": "clear"
+        },
+        {
+          "type": "rectangle",
+          "size": {"width": 1, "height": 0.5},
+          "position": {
+            "origin": {"x": 0, "y": 0},
+          },
+          "blend_mode": "clear"
+        }
+      ]
+    },
+  ]
+}

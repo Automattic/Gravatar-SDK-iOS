@@ -61,6 +61,7 @@ public class CanvasViewController: UIViewController {
     var segmentationType: SegmentationType = .foreground
     override public func viewDidLoad() {
         super.viewDidLoad()
+        decodeTemplates()
         setupUI()
         listenForUpdates()
         Task {
@@ -71,6 +72,13 @@ public class CanvasViewController: UIViewController {
                 print("Error running request: \(error)")
             }
         }
+        decodeTemplates()
+    }
+
+    var templates: [CanvasLayers] = []
+    func decodeTemplates() {
+        templates = CanvasLayersParser.decodeAllTemplates()
+        print("templates: \(templates)")
     }
 
     func listenForUpdates() {
@@ -79,12 +87,13 @@ public class CanvasViewController: UIViewController {
             let key = SegmentationResultKey(imageKey: inputImageID, segmentationType: segmentationType)
             let image = imageMap[key]?.croppedResultImage
             print(image?.size ?? "nil")
-            if let image {
-                self.addBottomFrameLayer()
-                self.addImageLayer(inputImage: image)
+            if let image, let template = templates.first {
+                canvasView.addLayers(template, personImage: image)
+                // self.addBottomFrameLayer()
+                // self.addImageLayer(inputImage: image)
                 // addSunglassLayer()
                 // addFrameLayer()
-                self.addTopFrameLayer()
+                // self.addTopFrameLayer()
             }
         }
         .store(in: &cancellables)
