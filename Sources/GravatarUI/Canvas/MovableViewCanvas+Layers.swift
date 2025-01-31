@@ -29,11 +29,6 @@ extension MovableViewCanvas {
 
     func addView(
         layer: CanvasLayer
-        // transformations: ViewTransformations,
-        // location: CGPoint,
-        // origin: CGPoint? = nil,
-        // size: CGSize,
-        // animated: Bool = false
     ) {
         let imageView = StylableImageView(id: layer.id, image: nil)
         imageView.contentMode = .scaleAspectFit
