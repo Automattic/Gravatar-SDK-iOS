@@ -1,33 +1,58 @@
 import UIKit
 
 extension UIImage {
-    /// Crops a UIImage to the specified CGRect by ensuring that the rect is within image bounds.
-    /// - Parameters:
-    ///   - rect: The CGRect defining the crop area.
-    /// - Returns: A cropped UIImage or nil if cropping fails.
-    private func safeCropImage(to rect: CGRect) -> UIImage? {
-        guard let cgImage = self.cgImage else {
-            print("Failed to get CGImage from UIImage.")
-            return nil
+    func cropTransparent() -> UIImage {
+        guard let cgImage = self.cgImage else { return self }
+
+        let width = cgImage.width
+        let height = cgImage.height
+
+        let colorSpace = CGColorSpaceCreateDeviceRGB()
+        let bytesPerPixel = 4
+        let bytesPerRow = bytesPerPixel * width
+        let bitsPerComponent = 8
+        let bitmapInfo: UInt32 = CGImageAlphaInfo.premultipliedLast.rawValue | CGBitmapInfo.byteOrder32Big.rawValue
+
+        guard let context = CGContext(
+            data: nil,
+            width: width,
+            height: height,
+            bitsPerComponent: bitsPerComponent,
+            bytesPerRow: bytesPerRow,
+            space: colorSpace,
+            bitmapInfo: bitmapInfo
+        ),
+            let ptr = context.data?.assumingMemoryBound(to: UInt8.self)
+        else {
+            return self
         }
 
-        // Ensure the rect is within image bounds
-        let imageWidth = CGFloat(cgImage.width)
-        let imageHeight = CGFloat(cgImage.height)
-        let safeRect = rect.intersection(CGRect(x: 0, y: 0, width: imageWidth, height: imageHeight))
+        context.draw(cgImage, in: CGRect(x: 0, y: 0, width: width, height: height))
 
-        guard let croppedCGImage = cgImage.cropping(to: safeRect) else {
-            print("Failed to crop CGImage.")
-            return nil
+        var minX = width
+        var minY = height
+        var maxX = 0
+        var maxY = 0
+
+        for x in 1 ..< width {
+            for y in 1 ..< height {
+                let i = bytesPerRow * Int(y) + bytesPerPixel * Int(x)
+                let a = CGFloat(ptr[i + 3]) / 255.0
+
+                if a > 0 {
+                    if x < minX { minX = x }
+                    if x > maxX { maxX = x }
+                    if y < minY { minY = y }
+                    if y > maxY { maxY = y }
+                }
+            }
         }
 
-        return UIImage(cgImage: croppedCGImage, scale: self.scale, orientation: self.imageOrientation)
-    }
+        let rect = CGRect(x: CGFloat(minX), y: CGFloat(minY), width: CGFloat(maxX - minX), height: CGFloat(maxY - minY))
+        let imageScale: CGFloat = self.scale
+        guard let croppedImage = cgImage.cropping(to: rect) else { return self }
+        let ret = UIImage(cgImage: croppedImage, scale: imageScale, orientation: self.imageOrientation)
 
-    func safeCropImage(toVisionRect rect: CGRect) -> UIImage? {
-        // UIKit's Y-axis is inverted compared to Core Graphics
-        let convertedY = rect.height - rect.origin.y - rect.height
-        let newRect = CGRect(x: rect.origin.x, y: convertedY, width: rect.width, height: rect.height)
-        return safeCropImage(to: rect)
+        return ret
     }
 }
