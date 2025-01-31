@@ -241,6 +241,11 @@ final class MovableViewCanvas: IgnoreTouchesView, UIGestureRecognizerDelegate, M
         selectedMovableView = nil
     }
 
+    func removeAllSubviews() {
+        subviews.forEach { $0.removeFromSuperview() }
+        selectedMovableView = nil
+    }
+
     /// shows the trash icon opened with its red background
     /*  func openTrash() {
            trashView.open()

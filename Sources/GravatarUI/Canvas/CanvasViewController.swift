@@ -67,7 +67,7 @@ public class CanvasViewController: UIViewController {
         Task {
             do {
                 self.segmentationType = await personSegmentationModel.suggestedSegmentationType(for: inputImage, cacheKey: inputImageID)
-                try await personSegmentationModel.runSegmentationRequestOnImage(inputImage, for: segmentationType, cacheKey: inputImageID)
+                try await personSegmentationModel.runSegmentationRequestOnImage(inputImage, for: segmentationType, cacheKey: inputImageID, setAsCurrent: true)
             } catch {
                 print("Error running request: \(error)")
             }
@@ -81,12 +81,10 @@ public class CanvasViewController: UIViewController {
     }
 
     func listenForUpdates() {
-        personSegmentationModel.$segmentedImageMap.sink { [weak self] imageMap in
+        personSegmentationModel.$currentSegmentationResult.sink { [weak self] segmentationResult in
             guard let self else { return }
-            let key = SegmentationResultKey(imageKey: inputImageID, segmentationType: segmentationType)
-            let image = imageMap[key]?.croppedResultImage
-            print(image?.size ?? "nil")
-            if let image, let template = templates.first {
+            if let image = segmentationResult?.croppedResultImage, let template = templates.first {
+                canvasView.removeAllSubviews()
                 canvasView.addLayers(template, personImage: image)
             }
         }

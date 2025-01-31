@@ -10,7 +10,7 @@ struct SegmentationView: View {
 
     @ObservedObject var viewModel: PersonSegmentationModel
     // @State var imageMap: [SegmentationType: UIImage] = [:]
-    @State private var localImage: UIImage?
+    @State private var localImage: SegmentationResult?
     @State private var isLoading: Bool = false
     @State private var errorMessage: String?
 
@@ -33,7 +33,7 @@ struct SegmentationView: View {
                         // .clipped()
                     }
                     if let localImage {
-                        Image(uiImage: localImage)
+                        Image(uiImage: localImage.resultImage)
                             .resizable(resizingMode: .stretch)
                             .scaledToFit()
                         // .ignoresSafeArea()
@@ -103,6 +103,7 @@ struct SegmentationView: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") {
+                        viewModel.currentSegmentationResult = localImage
                         onDone()
                     }
                 }
@@ -111,7 +112,7 @@ struct SegmentationView: View {
         .onAppear {
             let key = SegmentationResultKey(imageKey: inputImageID, segmentationType: segmentationType)
             if let segmentedImage = viewModel.segmentedImageMap[key] {
-                self.localImage = segmentedImage.resultImage
+                self.localImage = segmentedImage
             } else {
                 generateImage(for: segmentationType)
             }
@@ -126,14 +127,14 @@ struct SegmentationView: View {
     func generateImage(for segmentationType: SegmentationType) {
         let key = SegmentationResultKey(imageKey: inputImageID, segmentationType: segmentationType)
         if let segmentedImage = viewModel.segmentedImageMap[key] {
-            self.localImage = segmentedImage.resultImage
+            self.localImage = segmentedImage
             errorMessage = nil
         } else {
             Task {
                 do {
                     self.isLoading = true
                     let result = try await viewModel.runSegmentationRequestOnImage(inputImage, for: segmentationType, cacheKey: inputImageID)
-                    self.localImage = result.resultImage
+                    self.localImage = result
                     errorMessage = nil
                     self.isLoading = false
                 } catch let error as SegmentationError {

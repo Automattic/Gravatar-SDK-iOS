@@ -42,13 +42,15 @@ struct SegmentationResultKey: Identifiable, Hashable {
 class PersonSegmentationModel: ObservableObject {
     var segmentationCount = 0
     @MainActor @Published var segmentedImageMap: [SegmentationResultKey: SegmentationResult] = [:]
+    @MainActor @Published var currentSegmentationResult: SegmentationResult?
     private let processor = SegmentationProcessor()
 
     @discardableResult
     func runSegmentationRequestOnImage(
         _ image: UIImage,
         for segmentationType: SegmentationType,
-        cacheKey: String
+        cacheKey: String,
+        setAsCurrent: Bool = false
     ) async throws(SegmentationError) -> SegmentationResult {
         let key = SegmentationResultKey(imageKey: cacheKey, segmentationType: segmentationType)
         if let cachedResult = segmentedImageMap[key] {
@@ -56,6 +58,9 @@ class PersonSegmentationModel: ObservableObject {
         }
         let result = try await processor.runSegmentationRequestOnImage(image, for: segmentationType, cacheKey: cacheKey)
         self.segmentedImageMap[key] = result
+        if setAsCurrent {
+            currentSegmentationResult = result
+        }
         return result
     }
 
