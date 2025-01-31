@@ -19,7 +19,7 @@ struct CanvasLayer: Decodable {
 
     enum SizeType {
         case normal(Size2D)
-        case aspectRatio(SizeFromAspectRatio)
+        case intrinsicSize(IntrinsicSize)
     }
 
     let type: LayerType
@@ -32,13 +32,13 @@ struct CanvasLayer: Decodable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         if let size = try container.decodeIfPresent(Size2D.self, forKey: .size) {
             sizeType = .normal(size)
-        } else if let size = try container.decodeIfPresent(SizeFromAspectRatio.self, forKey: .sizeFromAspectRatio) {
-            sizeType = .aspectRatio(size)
+        } else if let size = try container.decodeIfPresent(IntrinsicSize.self, forKey: .intrinsicSize) {
+            sizeType = .intrinsicSize(size)
         } else {
             throw DecodingError.dataCorruptedError(
                 forKey: CodingKeys.size,
                 in: container,
-                debugDescription: "Expected either 'size' or 'sizeFromAspectRatio'."
+                debugDescription: "Expected either 'size' or 'IntrinsicSize'."
             )
         }
         self.type = try container.decode(LayerType.self, forKey: .type)
@@ -61,7 +61,7 @@ struct CanvasLayer: Decodable {
         case type
         case remoteImage = "remote_image"
         case imageName = "image_name"
-        case sizeFromAspectRatio = "size_from_aspect_ratio"
+        case intrinsicSize = "intrinsic_size"
         case linearGradient = "linear_gradient"
         case maskLayers = "mask_layers"
         case color

@@ -44,7 +44,7 @@
     },
     {
       "type": "person",
-      "size": {"width": 1, "height": 1},
+      "intrinsic_size": {"ratio": 1},
       "position": {
         "center": {"x": 0.5, "y": 0.5}
       },

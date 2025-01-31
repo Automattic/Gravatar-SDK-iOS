@@ -1,13 +1,11 @@
 import Foundation
 
-// "size_from_aspect_ratio": { "width": 1, "aspect_ratio": 1 }
-struct SizeFromAspectRatio: Decodable {
-    let width: Double
-    let aspectRatio: Double
+// "intrinsic_size": { "ratio": 1 }
+struct IntrinsicSize: Decodable {
+    let ratio: Double
 
     enum CodingKeys: String, CodingKey {
-        case width
-        case aspectRatio = "aspect_ratio"
+        case ratio
     }
 }
 
