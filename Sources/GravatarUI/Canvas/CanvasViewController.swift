@@ -78,7 +78,6 @@ public class CanvasViewController: UIViewController {
     var templates: [CanvasLayers] = []
     func decodeTemplates() {
         templates = CanvasLayersParser.decodeAllTemplates()
-        print("templates: \(templates)")
     }
 
     func listenForUpdates() {
@@ -89,11 +88,6 @@ public class CanvasViewController: UIViewController {
             print(image?.size ?? "nil")
             if let image, let template = templates.first {
                 canvasView.addLayers(template, personImage: image)
-                // self.addBottomFrameLayer()
-                // self.addImageLayer(inputImage: image)
-                // addSunglassLayer()
-                // addFrameLayer()
-                // self.addTopFrameLayer()
             }
         }
         .store(in: &cancellables)
@@ -181,7 +175,6 @@ public class CanvasViewController: UIViewController {
         // Add gesture recognizer for image addition
         // let tapGesture = UITapGestureRecognizer(target: self, action: #selector(addImage))
         //  canvasView.addGestureRecognizer(tapGesture)
-        addBackgroundLayer()
     }
 
     private func addCanvasHoleMask() {
@@ -199,189 +192,5 @@ public class CanvasViewController: UIViewController {
         maskLayer.fillRule = .evenOdd
 
         canvasHoleView.layer.mask = maskLayer
-    }
-
-    func addBackgroundLayer() {
-        /* let imageSize: CGSize = .init(width: canvasView.frame.width - 80, height: canvasView.frame.height - 80)
-         let image = createRoundGradientImage(size: imageSize, colors: [
-             UIColor(red: 205/255, green: 94/255, blue: 181/255, alpha: 1),
-             UIColor(red: 241/255, green: 203/255, blue: 77/255, alpha: 1)
-         ]) */
-        let imageView = StylableImageView(id: Layer.background, image: nil)
-        imageView.backgroundColor = .clear
-        imageView.contentMode = .scaleAspectFit
-        imageView.frame = canvasView.bounds
-        imageView.applyGradientLayer(colors: [
-            /* UIColor(red: 205/255, green: 94/255, blue: 181/255, alpha: 1),
-             UIColor(red: 241/255, green: 203/255, blue: 77/255, alpha: 1)*/
-            UIColor(red: 36 / 255, green: 214 / 255, blue: 132 / 255, alpha: 1),
-            UIColor(red: 85 / 255, green: 175 / 255, blue: 222 / 255, alpha: 1),
-        ])
-        canvasView.addView(
-            view: imageView,
-            transformations: ViewTransformations(),
-            location: canvasView.bounds.center,
-            size: canvasView.frame.size,
-            animated: false
-        )
-    }
-
-    func addSunglassLayer() {
-        guard let image = UIImage(named: "sunglasses") else { return }
-        let imageView = StylableImageView(id: "sunglasses", image: image)
-        // imageView.tintColor = .white// UIColor(red: 240/255, green: 220/255, blue: 250/255, alpha: 1)
-        imageView.contentMode = .scaleAspectFit
-        let aspectRatio = image.size.width / image.size.height
-
-        let sunglassWidth = canvasView.frame.size.width / 1.5
-        let sunglassHeight = sunglassWidth * aspectRatio
-        canvasView.addView(
-            view: imageView,
-            transformations: ViewTransformations(),
-            location: canvasView.bounds.center + .init(x: 0, y: -25),
-            size: .init(width: sunglassWidth, height: sunglassHeight),
-            animated: false
-        )
-    }
-
-    func addTopFrameLayer() {
-        let image = UIImage(named: "oilpaint1-frame-bottom")?.withRenderingMode(.alwaysTemplate)
-        let imageView = StylableImageView(id: "oilpaint1-frame-bottom", image: image)
-        imageView.frame = canvasView.bounds
-        imageView.tintColor = .white // UIColor(red: 240/255, green: 220/255, blue: 250/255, alpha: 1)
-        imageView.contentMode = .scaleAspectFit
-        canvasView.addView(
-            view: imageView,
-            transformations: ViewTransformations(),
-            location: canvasView.bounds.center,
-            size: canvasView.frame.size,
-            animated: false
-        )
-    }
-
-    func addBottomFrameLayer() {
-        let image = UIImage(named: "oilpaint1-frame-top")?.withRenderingMode(.alwaysTemplate)
-        let imageView = StylableImageView(id: "oilpaint1-frame-top", image: image)
-        imageView.frame = canvasView.bounds
-        imageView.tintColor = .white // UIColor(red: 240/255, green: 220/255, blue: 250/255, alpha: 1)
-        imageView.contentMode = .scaleAspectFit
-        canvasView.addView(
-            view: imageView,
-            transformations: ViewTransformations(),
-            location: canvasView.bounds.center,
-            size: canvasView.frame.size,
-            animated: false
-        )
-    }
-
-    func addFrameLayer() {
-        let imageView = StylableImageView(id: Layer.background, image: nil)
-        imageView.backgroundColor = UIColor(red: 240 / 255, green: 220 / 255, blue: 250 / 255, alpha: 1)
-        imageView.frame = canvasView.bounds
-        imageView.createCircleHoleView(frame: canvasView.bounds)
-        imageView.contentMode = .scaleAspectFit
-        canvasView.addView(
-            view: imageView,
-            transformations: ViewTransformations(),
-            location: canvasView.bounds.center,
-            size: canvasView.frame.size,
-            animated: false
-        )
-    }
-
-    func addSecondaryBackgroundLayer() {
-        let imageView = StylableImageView(id: "SecondaryBackground", image: nil)
-        imageView.backgroundColor = .black
-        imageView.contentMode = .scaleAspectFit
-        let size: CGSize = .init(width: canvasView.frame.width, height: canvasView.frame.height)
-        canvasView.addView(
-            view: imageView,
-            transformations: ViewTransformations(),
-            location: canvasView.bounds.center,
-            size: size,
-            animated: false
-        )
-    }
-
-    func addImageLayer(inputImage: UIImage) {
-        let imageView = StylableImageView(id: Layer.image, image: inputImage)
-        //  imageView.translatesAutoresizingMaskIntoConstraints = false
-        //  imageView.image = inputImage
-        imageView.contentMode = .scaleAspectFit
-        let size: CGSize
-        let aspectRatio = inputImage.size.width / inputImage.size.height
-        if inputImage.size.width > inputImage.size.height {
-            size = .init(width: canvasView.frame.height * aspectRatio, height: canvasView.frame.height)
-        } else {
-            size = .init(width: canvasView.frame.width, height: canvasView.frame.width / aspectRatio)
-        }
-        canvasView.addView(
-            view: imageView,
-            transformations: ViewTransformations(),
-            location: canvasView.bounds.center,
-            size: size,
-            animated: true
-        )
-        /*    let borderView = UIView()
-         borderView.translatesAutoresizingMaskIntoConstraints = false
-         borderView.isUserInteractionEnabled = true
-
-         borderView.backgroundColor = .clear
-         borderView.layer.borderColor = UIColor.tintColor.cgColor
-         borderView.layer.borderWidth = 2
-         borderView.layer.cornerRadius = 4
-         borderView.layer.zPosition = 10
-
-         canvasHoleView.addSubview(borderView)
-         NSLayoutConstraint.activate([
-             borderView.widthAnchor.constraint(equalTo: imageView.widthAnchor, constant: 3),
-             borderView.heightAnchor.constraint(equalTo: imageView.heightAnchor, constant: 3),
-             borderView.centerXAnchor.constraint(equalTo: imageView.centerXAnchor),
-             borderView.centerYAnchor.constraint(equalTo: imageView.centerYAnchor)
-         ])
-         canvasHoleView.bringSubviewToFront(borderView)
-         */
-        /*
-         let imageView = UIImageView()
-         imageView.translatesAutoresizingMaskIntoConstraints = false
-         imageView.isUserInteractionEnabled = true
-         imageView.image = inputImage
-         imageView.contentMode = .scaleAspectFit
-         let borderView = UIView()
-         borderView.translatesAutoresizingMaskIntoConstraints = false
-         borderView.isUserInteractionEnabled = true
-
-         borderView.backgroundColor = .clear
-         borderView.layer.borderColor = UIColor.tintColor.cgColor
-         borderView.layer.borderWidth = 2
-         borderView.layer.cornerRadius = 4
-         borderView.layer.zPosition = 10
-
-         canvasHoleView.addSubview(borderView)
-
-         let aspectRatio = inputImage.size.width / inputImage.size.height
-
-         view.addSubview(imageView)
-         imageViews.append(imageView)
-
-         if inputImage.size.width > inputImage.size.height {
-             imageView.heightAnchor.constraint(equalTo: canvasView.heightAnchor).isActive = true
-             imageView.widthAnchor.constraint(equalTo: canvasView.heightAnchor, multiplier: aspectRatio).isActive = true
-         }
-         else {
-             imageView.widthAnchor.constraint(equalTo: canvasView.widthAnchor).isActive = true
-             imageView.heightAnchor.constraint(equalTo: canvasView.heightAnchor, multiplier: 1 / aspectRatio).isActive = true
-         }
-         NSLayoutConstraint.activate([
-             imageView.centerXAnchor.constraint(equalTo: canvasView.centerXAnchor),
-             imageView.centerYAnchor.constraint(equalTo: canvasView.centerYAnchor),
-             borderView.widthAnchor.constraint(equalTo: imageView.widthAnchor, constant: 3),
-             borderView.heightAnchor.constraint(equalTo: imageView.heightAnchor, constant: 3),
-             borderView.centerXAnchor.constraint(equalTo: imageView.centerXAnchor),
-             borderView.centerYAnchor.constraint(equalTo: imageView.centerYAnchor)
-         ])
-         view.bringSubviewToFront(canvasHoleView)
-         canvasHoleView.bringSubviewToFront(borderView)
-         */
     }
 }
