@@ -1,0 +1,128 @@
+{
+    "layers": [
+        {
+            "type": "background",
+            "color": {
+                "hex": "F29BA2",
+                "alpha": 1
+            },
+            "size": {
+                "width": 1,
+                "height": 1
+            },
+            "position": {
+                "center": {
+                    "x": 0.5,
+                    "y": 0.5
+                }
+            }
+        },
+        {
+            "type": "person",
+            "intrinsic_size": {
+                "ratio": 1
+            },
+            "position": {
+                "center": {
+                    "x": 0.5,
+                    "y": 0.5
+                }
+            }
+        },
+        {
+            "type": "frame",
+            "color": {
+                "hex": "FFFFFF",
+                "alpha": 1
+            },
+            "size": {
+                "width": 1,
+                "height": 1
+            },
+            "position": {
+                "center": {
+                    "x": 0.5,
+                    "y": 0.5
+                }
+            },
+            "mask_layers": [
+                {
+                    "type": "rectangle",
+                    "size": {
+                        "width": 1,
+                        "height": 1
+                    },
+                    "position": {
+                        "origin": {
+                            "x": 0,
+                            "y": 0
+                        }
+                    },
+                    "blend_mode": "normal"
+                },
+                {
+                    "type": "circle",
+                    "size": {
+                        "width": 1,
+                        "height": 1
+                    },
+                    "position": {
+                        "center": {
+                            "x": 0.5,
+                            "y": 0.5
+                        }
+                    },
+                    "blend_mode": "clear"
+                }
+            ]
+        },
+        {
+            "type": "none",
+            "color": {
+                "hex": "FFFFFF",
+                "alpha": 1
+            },
+            "size": {
+                "width": 1,
+                "height": 1
+            },
+            "position": {
+                "center": {
+                    "x": 0.5,
+                    "y": 0.5
+                }
+            },
+            "mask_layers": [
+                {
+                    "type": "rectangle",
+                    "size": {
+                        "width": 1,
+                        "height": 1
+                    },
+                    "position": {
+                        "origin": {
+                            "x": 0,
+                            "y": 0
+                        }
+                    },
+                    "blend_mode": "clear"
+                },
+                {
+                    "type": "local-image",
+                    "image_name": "frame-circle-brush.png",
+                    "size": {
+                        "width": 1,
+                        "height": 1
+                    },
+                    "position": {
+                        "center": {
+                            "x": 0.5,
+                            "y": 0.5
+                        }
+                    },
+                    "blend_mode": "normal"
+                }
+            ]
+        }
+    ]
+}
