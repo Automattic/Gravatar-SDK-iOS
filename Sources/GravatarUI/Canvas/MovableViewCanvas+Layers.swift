@@ -52,6 +52,8 @@ extension MovableViewCanvas {
             )
         case .undetermined:
             break
+        case .maskedImage:
+            break
         }
 
         // Add mask if exists

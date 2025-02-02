@@ -19,6 +19,7 @@
         },
         {
             "type": "person",
+            "cropped": true,
             "intrinsic_size": {
                 "ratio": 1
             },
@@ -108,7 +109,7 @@
                     "blend_mode": "clear"
                 },
                 {
-                    "type": "local-image",
+                    "type": "local_image",
                     "image_name": "frame-circle-brush.png",
                     "size": {
                         "width": 1,

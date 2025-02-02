@@ -17,7 +17,7 @@
       },
       "mask_layers" : [
         {
-          "type": "local-image",
+          "type": "local_image",
           "image_name": "frame-circle-brush.png",
           "size": {"width": 1, "height": 1},
           "position": {
@@ -41,6 +41,7 @@
       "position": {
         "center": {"x": 0.5, "y": 0.5}
       },
+      "cropped": true
     },
     {
       "type": "frame",
@@ -51,7 +52,7 @@
       },
       "mask_layers" : [
         {
-          "type": "local-image",
+          "type": "local_image",
           "image_name": "frame-circle-brush.png",
           "size": {"width": 1, "height": 1},
           "position": {

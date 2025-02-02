@@ -14,6 +14,7 @@ struct CanvasLayer: Decodable {
         case localImage(String)
         case linearGradient(LinearGradientInfo)
         case color(HexColor)
+        case maskedImage(cropped: Bool)
         case undetermined
     }
 
@@ -27,6 +28,14 @@ struct CanvasLayer: Decodable {
     let sizeType: SizeType
     let maskLayers: [MaskLayer]?
     let position: Position
+    var isCropped: Bool {
+        switch kind {
+        case .maskedImage(let cropped):
+            cropped
+        default:
+            false
+        }
+    }
 
     init(type: LayerType, kind: Kind, sizeType: SizeType, position: Position, maskLayers: [MaskLayer]?) {
         self.type = type
@@ -60,6 +69,8 @@ struct CanvasLayer: Decodable {
             kind = .linearGradient(linearGradient)
         } else if let color = try container.decodeIfPresent(HexColor.self, forKey: .color) {
             kind = .color(color)
+        } else if let isCropped = try container.decodeIfPresent(Bool.self, forKey: .cropped) {
+            kind = .maskedImage(cropped: isCropped)
         } else {
             kind = .undetermined
         }
@@ -67,6 +78,7 @@ struct CanvasLayer: Decodable {
 
     enum CodingKeys: String, CodingKey {
         case type
+        case cropped
         case remoteImage = "remote_image"
         case imageName = "image_name"
         case intrinsicSize = "intrinsic_size"

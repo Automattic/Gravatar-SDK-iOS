@@ -25,7 +25,7 @@
           "blend_mode": "normal"
         },
         {
-          "type": "local-image",
+          "type": "local_image",
           "image_name": "frame-human-shape-brush.png",
           "size": {"width": 1, "height": 1},
           "position": {
@@ -38,6 +38,7 @@
     {
       "type": "person",
       "intrinsic_size": {"ratio": 1},
+      "cropped": true,
       "position": {
         "center": {"x": 0.5, "y": 0.5}
       }

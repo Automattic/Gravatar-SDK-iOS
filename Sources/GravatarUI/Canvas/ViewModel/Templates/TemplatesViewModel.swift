@@ -7,7 +7,6 @@ class TemplatesViewModel: ObservableObject {
     static let linearGradients = CanvasLayersParser.decodeLinearGradients()
 
     @MainActor @Published var templates: [ImageTemplate] = []
-    @MainActor @Published var personImage: UIImage?
     @MainActor @Published var selectedTemplateIndex: Int = 0
 
     init() {

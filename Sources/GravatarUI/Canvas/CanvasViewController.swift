@@ -12,6 +12,7 @@ public class CanvasViewController: UIViewController {
     private let canvasHoleView = UIView() // UIVisualEffectView()
     private var imageViews: [UIImageView] = []
     private lazy var personSegmentationModel = PersonSegmentationModel()
+    private lazy var templatesViewModel = TemplatesViewModel()
 
     let inputImage: UIImage
     let inputImageID = UUID().uuidString
@@ -71,15 +72,14 @@ public class CanvasViewController: UIViewController {
                 print("Error running request: \(error)")
             }
         }
-        decodeTemplates()
     }
 
     func listenForUpdates() {
         personSegmentationModel.$currentSegmentationResult.sink { [weak self] segmentationResult in
             guard let self else { return }
-            if let image = segmentationResult?.croppedResultImage, let template = templates.first {
+            if let image = segmentationResult?.croppedResultImage, let template = templatesViewModel.templates.first {
                 canvasView.removeAllSubviews()
-                canvasView.addLayers(template, personImage: image)
+                canvasView.addLayers(template.template, personImage: image)
             }
         }
         .store(in: &cancellables)

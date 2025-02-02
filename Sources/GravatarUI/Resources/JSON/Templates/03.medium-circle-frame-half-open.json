@@ -48,6 +48,7 @@
       "position": {
         "center": {"x": 0.5, "y": 0.5}
       },
+      "cropped": true
     },
     {
       "type": "frame",
