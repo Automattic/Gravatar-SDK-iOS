@@ -1,0 +1,180 @@
+[
+{
+  "start_point": { "x": 1.0, "y": 0.0 },
+  "end_point":   { "x": 0.0, "y": 1.0 },
+  "stops": [
+    { "color": { "hex": "8ffca0", "alpha": 1 }, "position": 0.4286 },
+    { "color": { "hex": "0bcbfb", "alpha": 1 }, "position": 0.5714 }
+  ]
+},
+{
+  "start_point": { "x": 1.0, "y": 0.0 },
+  "end_point":   { "x": 0.0, "y": 1.0 },
+  "stops": [
+    { "color": { "hex": "f0c8d5", "alpha": 1 }, "position": 0.4286 },
+    { "color": { "hex": "9895e8", "alpha": 1 }, "position": 0.5714 }
+  ]
+},
+{
+  "start_point": { "x": 0.0, "y": 0.0 },
+  "end_point":   { "x": 0.0, "y": 1.0 },
+  "stops": [
+    { "color": { "hex": "f2f067", "alpha": 1 }, "position": 0.7 },
+    { "color": { "hex": "66d662", "alpha": 1 }, "position": 0.8 }
+  ]
+},
+{
+  "start_point": { "x": 0.0, "y": 0.0 },
+  "end_point":   { "x": 0.0, "y": 1.0 },
+  "stops": [
+    { "color": { "hex": "c8bbca", "alpha": 1 }, "position": 0.6 },
+    { "color": { "hex": "417eae", "alpha": 1 }, "position": 0.7 }
+  ]
+},
+{
+  "start_point": { "x": 0.0, "y": 0.0 },
+  "end_point":   { "x": 0.0, "y": 1.0 },
+  "stops": [
+    { "color": { "hex": "f4c4d7", "alpha": 1 }, "position": 0.0 },
+    { "color": { "hex": "f0aa6b", "alpha": 1 }, "position": 0.33 },
+    { "color": { "hex": "ee8186", "alpha": 1 }, "position": 0.66 },
+    { "color": { "hex": "07127d", "alpha": 1 }, "position": 1.0 }
+  ]
+},
+{
+  "start_point": { "x": 1.0, "y": 0.0 },
+  "end_point":   { "x": 0.0, "y": 1.0 },
+  "stops": [
+    { "color": { "hex": "ecc0a5", "alpha": 1 }, "position": 0.6 },
+    { "color": { "hex": "d08ed9", "alpha": 1 }, "position": 0.8 }
+  ]
+},
+{
+  "start_point": { "x": 1.0, "y": 0.0 },
+  "end_point":   { "x": 0.0, "y": 1.0 },
+  "stops": [
+    { "color": { "hex": "f0cc7a", "alpha": 1 }, "position": 0.3 },
+    { "color": { "hex": "efac87", "alpha": 1 }, "position": 0.5 }
+  ]
+},
+{
+  "start_point": { "x": 1.0, "y": 0.0 },
+  "end_point":   { "x": 0.0, "y": 1.0 },
+  "stops": [
+    { "color": { "hex": "e3c89f", "alpha": 1 }, "position": 0.0 },
+    { "color": { "hex": "e0bf8f", "alpha": 1 }, "position": 0.1 }
+  ]
+},
+{
+  "start_point": { "x": 0.0, "y": 0.0 },
+  "end_point":   { "x": 0.0, "y": 1.0 },
+  "stops": [
+    { "color": { "hex": "003f5b", "alpha": 1 }, "position": 0.0     },
+    { "color": { "hex": "2b4b7d", "alpha": 1 }, "position": 0.1429  },
+    { "color": { "hex": "5f5195", "alpha": 1 }, "position": 0.2857  },
+    { "color": { "hex": "98509d", "alpha": 1 }, "position": 0.4286  },
+    { "color": { "hex": "cc4c91", "alpha": 1 }, "position": 0.5714  },
+    { "color": { "hex": "f25375", "alpha": 1 }, "position": 0.7143  },
+    { "color": { "hex": "ff6f4e", "alpha": 1 }, "position": 0.8571  },
+    { "color": { "hex": "ff9913", "alpha": 1 }, "position": 1.0     }
+  ]
+},
+{
+  "start_point": { "x": 0.0, "y": 0.0 },
+  "end_point":   { "x": 1.0, "y": 1.0 },
+  "stops": [
+    { "color": { "hex": "FFE5CE", "alpha": 1 }, "position": 0.0 },
+    { "color": { "hex": "FFD0BA", "alpha": 1 }, "position": 0.1429 },
+    { "color": { "hex": "FFB9B0", "alpha": 1 }, "position": 0.2857 },
+    { "color": { "hex": "FFA2B0", "alpha": 1 }, "position": 0.4286 },
+    { "color": { "hex": "FD8DBA", "alpha": 1 }, "position": 0.5714 },
+    { "color": { "hex": "EC7CCA", "alpha": 1 }, "position": 0.7143 },
+    { "color": { "hex": "CD72DE", "alpha": 1 }, "position": 0.8571 },
+    { "color": { "hex": "9C71F2", "alpha": 1 }, "position": 1.0 }
+  ]
+},
+{
+  "start_point": { "x": 0.0, "y": 0.0 },
+  "end_point":   { "x": 1.0,  "y": 1.0 },
+  "stops": [
+    { "color": { "hex": "FF8B17", "alpha": 1 }, "position": 0.0    },
+    { "color": { "hex": "E6751F", "alpha": 1 }, "position": 0.1429 },
+    { "color": { "hex": "CC6021", "alpha": 1 }, "position": 0.2857 },
+    { "color": { "hex": "B24D22", "alpha": 1 }, "position": 0.4286 },
+    { "color": { "hex": "963B1F", "alpha": 1 }, "position": 0.5714 },
+    { "color": { "hex": "7B2B1C", "alpha": 1 }, "position": 0.7143 },
+    { "color": { "hex": "601D16", "alpha": 1 }, "position": 0.8571 },
+    { "color": { "hex": "45100E", "alpha": 1 }, "position": 1.0    }
+  ]
+},
+{
+  "start_point": { "x": 0.0, "y": 1.0 },
+  "end_point":   { "x": 1.0, "y": 0.0 },
+  "stops": [
+    { "color": { "hex": "FFDF42", "alpha": 1 }, "position": 0.0    },
+    { "color": { "hex": "FFCB2A", "alpha": 1 }, "position": 0.1429 },
+    { "color": { "hex": "FFB60E", "alpha": 1 }, "position": 0.2857 },
+    { "color": { "hex": "FFA000", "alpha": 1 }, "position": 0.4286 },
+    { "color": { "hex": "FF8900", "alpha": 1 }, "position": 0.5714 },
+    { "color": { "hex": "FF6F00", "alpha": 1 }, "position": 0.7143 },
+    { "color": { "hex": "FF5000", "alpha": 1 }, "position": 0.8571 },
+    { "color": { "hex": "FF2212", "alpha": 1 }, "position": 1.0    }
+  ]
+},
+{
+  "start_point": { "x": 0.0, "y": 1.0 },
+  "end_point":   { "x": 1.0, "y": 0.5 },
+  "stops": [
+    { "color": { "hex": "F9D751", "alpha": 1 }, "position": 0.0    },
+    { "color": { "hex": "FFAD53", "alpha": 1 }, "position": 0.1429 },
+    { "color": { "hex": "F7875F", "alpha": 1 }, "position": 0.2857 },
+    { "color": { "hex": "E5686B", "alpha": 1 }, "position": 0.4286 },
+    { "color": { "hex": "CC5075", "alpha": 1 }, "position": 0.5714 },
+    { "color": { "hex": "AE3F7A", "alpha": 1 }, "position": 0.7143 },
+    { "color": { "hex": "8E3479", "alpha": 1 }, "position": 0.8571 },
+    { "color": { "hex": "6C2D72", "alpha": 1 }, "position": 1.0    }
+  ]
+},
+{
+  "start_point": { "x": 0.0, "y": 0.0 },
+  "end_point":   { "x": 1.0, "y": 0.85 },
+  "stops": [
+    { "color": { "hex": "FFC8C8", "alpha": 1 }, "position": 0.0    },
+    { "color": { "hex": "FDA3B8", "alpha": 1 }, "position": 0.1429 },
+    { "color": { "hex": "F57CB8", "alpha": 1 }, "position": 0.2857 },
+    { "color": { "hex": "DB5FBF", "alpha": 1 }, "position": 0.4286 },
+    { "color": { "hex": "B056BA", "alpha": 1 }, "position": 0.5714 },
+    { "color": { "hex": "8451A8", "alpha": 1 }, "position": 0.7143 },
+    { "color": { "hex": "5D498C", "alpha": 1 }, "position": 0.8571 },
+    { "color": { "hex": "3E3E6B", "alpha": 1 }, "position": 1.0    }
+  ]
+},
+{
+  "start_point": { "x": 0.0, "y": 1.0 },
+  "end_point":   { "x": 0.85, "y": 0.0 },
+  "stops": [
+    { "color": { "hex": "142850", "alpha": 1 }, "position": 0.0    },
+    { "color": { "hex": "14365F", "alpha": 1 }, "position": 0.1429 },
+    { "color": { "hex": "13476F", "alpha": 1 }, "position": 0.2857 },
+    { "color": { "hex": "125D80", "alpha": 1 }, "position": 0.4286 },
+    { "color": { "hex": "107792", "alpha": 1 }, "position": 0.5714 },
+    { "color": { "hex": "0D96A5", "alpha": 1 }, "position": 0.7143 },
+    { "color": { "hex": "09B8B4", "alpha": 1 }, "position": 0.8571 },
+    { "color": { "hex": "04CCB1", "alpha": 1 }, "position": 1.0    }
+  ]
+},
+{
+  "start_point": { "x": 0.0, "y": 1.0 },
+  "end_point":   { "x": 0.9, "y": 0.1 },
+  "stops": [
+    { "color": { "hex": "F9F9F9", "alpha": 1 }, "position": 0.0    },
+    { "color": { "hex": "D4DAD6", "alpha": 1 }, "position": 0.1429 },
+    { "color": { "hex": "AFBBB6", "alpha": 1 }, "position": 0.2857 },
+    { "color": { "hex": "8B9D9B", "alpha": 1 }, "position": 0.4286 },
+    { "color": { "hex": "698083", "alpha": 1 }, "position": 0.5714 },
+    { "color": { "hex": "49636F", "alpha": 1 }, "position": 0.7143 },
+    { "color": { "hex": "2C475C", "alpha": 1 }, "position": 0.8571 },
+    { "color": { "hex": "142B4E", "alpha": 1 }, "position": 1.0    }
+  ]
+}
+]

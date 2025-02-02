@@ -28,6 +28,14 @@ struct CanvasLayer: Decodable {
     let maskLayers: [MaskLayer]?
     let position: Position
 
+    init(type: LayerType, kind: Kind, sizeType: SizeType, position: Position, maskLayers: [MaskLayer]?) {
+        self.type = type
+        self.kind = kind
+        self.sizeType = sizeType
+        self.position = position
+        self.maskLayers = maskLayers
+    }
+    
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         if let size = try container.decodeIfPresent(Size2D.self, forKey: .size) {
@@ -67,5 +75,9 @@ struct CanvasLayer: Decodable {
         case color
         case size
         case position
+    }
+    
+    func copyOverriding(kind newKind: Kind) -> CanvasLayer {
+        CanvasLayer(type: type, kind: newKind, sizeType: sizeType, position: position, maskLayers: maskLayers)
     }
 }

@@ -61,7 +61,6 @@ public class CanvasViewController: UIViewController {
     var segmentationType: SegmentationType = .foreground
     override public func viewDidLoad() {
         super.viewDidLoad()
-        decodeTemplates()
         setupUI()
         listenForUpdates()
         Task {
@@ -73,11 +72,6 @@ public class CanvasViewController: UIViewController {
             }
         }
         decodeTemplates()
-    }
-
-    var templates: [CanvasLayers] = []
-    func decodeTemplates() {
-        templates = CanvasLayersParser.decodeAllTemplates()
     }
 
     func listenForUpdates() {

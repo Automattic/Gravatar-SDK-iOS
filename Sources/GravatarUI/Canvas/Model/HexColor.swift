@@ -4,4 +4,9 @@ import Foundation
 struct HexColor: Decodable {
     let hex: String
     let alpha: Double
+
+    init(hex: String, alpha: Double = 1) {
+        self.hex = hex
+        self.alpha = alpha
+    }
 }
