@@ -9,7 +9,7 @@ extension MovableViewCanvas {
                 imageView.contentMode = .scaleAspectFit
                 let aspectRatio = personImage.size.width / personImage.size.height
                 let location = layer.position.cgCenterPosition(in: bounds)
-                let size = layer.sizeType.cgSize(in: bounds, aspectRatio: aspectRatio)
+                let size = layer.sizeType.cgSize(in: bounds, aspectRatio: aspectRatio, isCropped: layer.isCropped)
                 addView(
                     view: imageView,
                     transformations: ViewTransformations(),
@@ -27,7 +27,7 @@ extension MovableViewCanvas {
         layer: CanvasLayer
     ) {
         let location = layer.position.cgCenterPosition(in: bounds)
-        let size = layer.sizeType.cgSize(in: bounds, aspectRatio: 1)
+        let size = layer.sizeType.cgSize(in: bounds, aspectRatio: 1, isCropped: layer.isCropped)
 
         let imageView = StylableImageView(id: layer.id, image: nil)
         imageView.contentMode = .scaleAspectFit
@@ -177,19 +177,30 @@ extension CanvasLayer: Identifiable {
 }
 
 extension CanvasLayer.SizeType {
-    func cgSize(in bounds: CGRect, aspectRatio: CGFloat) -> CGSize {
+    func cgSize(in bounds: CGRect, aspectRatio: CGFloat, isCropped: Bool) -> CGSize {
         switch self {
         case .normal(let size):
             return size.cgSize(in: bounds)
         case .intrinsicSize(let intrinsicSize):
             var size: CGSize
-            if aspectRatio > 1 {
-                let adjustedHeight = intrinsicSize.ratio * bounds.height
-                size = .init(width: adjustedHeight * aspectRatio, height: adjustedHeight)
+            if isCropped {
+                if aspectRatio > 1 {
+                    let adjustedWidth = intrinsicSize.ratio * bounds.width
+                    size = .init(width: adjustedWidth, height: adjustedWidth / aspectRatio)
+                } else {
+                    let adjustedHeight = intrinsicSize.ratio * bounds.height
+                    size = .init(width: adjustedHeight * aspectRatio, height: adjustedHeight)
+                }
             } else {
-                let adjustedWidth = intrinsicSize.ratio * bounds.width
-                size = .init(width: adjustedWidth, height: adjustedWidth / aspectRatio)
+                if aspectRatio > 1 {
+                    let adjustedHeight = intrinsicSize.ratio * bounds.height
+                    size = .init(width: adjustedHeight * aspectRatio, height: adjustedHeight)
+                } else {
+                    let adjustedWidth = intrinsicSize.ratio * bounds.width
+                    size = .init(width: adjustedWidth, height: adjustedWidth / aspectRatio)
+                }
             }
+
             return size
         }
     }

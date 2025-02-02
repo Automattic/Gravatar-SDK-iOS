@@ -37,8 +37,8 @@
     },
     {
       "type": "person",
-      "intrinsic_size": {"ratio": 1},
-      "cropped": false,
+      "intrinsic_size": {"ratio": 0.9},
+      "cropped": true,
       "position": {
         "center": {"x": 0.5, "y": 0.5}
       }
