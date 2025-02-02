@@ -11,10 +11,8 @@ struct GridItemCanvasView: UIViewRepresentable {
         myView.isUserInteractionEnabled = false
         myView.translatesAutoresizingMaskIntoConstraints = false
         myView.backgroundColor = .gray
-        // myView.isUserInteractionEnabled = false
         let containerView = UIView(frame: CGRect(x: 0, y: 0, width: Self.length, height: Self.length))
         containerView.addSubview(myView) // Add it to a superview so the canvas can have size
-        // containerView.isUserInteractionEnabled = false
         myView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             myView.widthAnchor.constraint(equalToConstant: Self.length),

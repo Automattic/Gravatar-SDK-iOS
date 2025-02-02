@@ -19,7 +19,7 @@
         },
         {
             "type": "person",
-            "cropped": true,
+            "cropped": false,
             "intrinsic_size": {
                 "ratio": 1
             },

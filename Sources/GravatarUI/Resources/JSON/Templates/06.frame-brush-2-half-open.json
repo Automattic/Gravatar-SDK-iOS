@@ -17,12 +17,20 @@
       },
       "mask_layers" : [
         {
-          "type": "local_image",
-          "image_name": "frame-brush-2.png",
+          "type": "rectangle",
           "size": {"width": 1, "height": 1},
           "position": {
             "origin": {"x": 0, "y": 0},
           },
+          "blend_mode": "clear"
+        },
+        {
+          "type": "local_image",
+          "image_name": "frame-brush-2.png",
+          "position": {
+            "center": {"x": 0.5, "y": 0.5},
+          },
+          "size": {"width": 1, "height": 1},
           "blend_mode": "normal"
         },
         {
@@ -52,11 +60,19 @@
       },
       "mask_layers" : [
         {
+          "type": "rectangle",
+          "size": {"width": 1, "height": 1},
+          "position": {
+            "origin": {"x": 0, "y": 0},
+          },
+          "blend_mode": "clear"
+        },
+        {
           "type": "local_image",
           "image_name": "frame-brush-2.png",
           "size": {"width": 1, "height": 1},
           "position": {
-            "origin": {"x": 0, "y": 0},
+            "center": {"x": 0.5, "y": 0.5},
           },
           "blend_mode": "normal"
         },

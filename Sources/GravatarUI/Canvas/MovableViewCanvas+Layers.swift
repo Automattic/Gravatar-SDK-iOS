@@ -15,7 +15,7 @@ extension MovableViewCanvas {
                     transformations: ViewTransformations(),
                     location: location,
                     size: size,
-                    animated: true
+                    animated: false
                 )
             } else {
                 addView(layer: layer)
@@ -26,8 +26,12 @@ extension MovableViewCanvas {
     func addView(
         layer: CanvasLayer
     ) {
+        let location = layer.position.cgCenterPosition(in: bounds)
+        let size = layer.sizeType.cgSize(in: bounds, aspectRatio: 1)
+
         let imageView = StylableImageView(id: layer.id, image: nil)
         imageView.contentMode = .scaleAspectFit
+        imageView.frame = CGRect(origin: .zero, size: size)
 
         switch layer.kind {
         case .color(let hexColor):
@@ -68,8 +72,8 @@ extension MovableViewCanvas {
         addView(
             view: imageView,
             transformations: ViewTransformations(),
-            location: layer.position.cgCenterPosition(in: bounds),
-            size: layer.sizeType.cgSize(in: bounds, aspectRatio: 1),
+            location: location,
+            size: size,
             animated: false
         )
     }
@@ -90,6 +94,7 @@ extension CanvasLayer: Identifiable {
     func createRasterMask(bounds: CGRect) -> UIImage? {
         guard let maskLayers, !maskLayers.isEmpty else { return nil }
         // 1) Begin a bitmap context
+        // UIKit automatically uses the scale factor of the device's main screen when passed 0.0
         UIGraphicsBeginImageContextWithOptions(bounds.size, false, 0.0)
         guard let ctx = UIGraphicsGetCurrentContext() else {
             UIGraphicsEndImageContext()
@@ -128,7 +133,22 @@ extension CanvasLayer: Identifiable {
 
             case .localImage(let name):
                 if let image = UIImage(named: name)?.cgImage {
-                    ctx.draw(image, in: maskRect)
+                    // Fix the image orientation
+                    // (CGContext) uses a different coordinate system than UIKit.
+                    // Apply a vertical flip transform to the CGContext before drawing the image.
+                    ctx.saveGState() // ✅ Save original state before transforming
+
+                    // Flip the context vertically
+                    ctx.translateBy(x: 0, y: maskRect.height)
+                    ctx.scaleBy(x: 1.0, y: -1.0)
+
+                    // Adjust rect since it's now flipped
+                    let flippedRect = CGRect(x: maskRect.origin.x, y: 0, width: maskRect.width, height: maskRect.height)
+
+                    // Draw image in the transformed context
+                    ctx.draw(image, in: flippedRect)
+
+                    ctx.restoreGState() // Restore original state
                 }
 
             // ctx.fillPath() ?
@@ -146,7 +166,10 @@ extension CanvasLayer: Identifiable {
                 break
             }
         }
-        let maskImage = UIGraphicsGetImageFromCurrentImageContext()
+        guard let maskImage = UIGraphicsGetImageFromCurrentImageContext() else {
+            UIGraphicsEndImageContext()
+            return nil
+        }
         UIGraphicsEndImageContext()
 
         return maskImage

@@ -22,7 +22,7 @@
           "position": {
             "origin": {"x": 0, "y": 0}
           },
-          "blend_mode": "normal"
+          "blend_mode": "clear"
         },
         {
           "type": "local_image",
@@ -31,14 +31,14 @@
           "position": {
             "center": {"x": 0.5, "y": 0.5}
           },
-          "blend_mode": "clear"
+          "blend_mode": "normal"
         }
       ]
     },
     {
       "type": "person",
       "intrinsic_size": {"ratio": 1},
-      "cropped": true,
+      "cropped": false,
       "position": {
         "center": {"x": 0.5, "y": 0.5}
       }

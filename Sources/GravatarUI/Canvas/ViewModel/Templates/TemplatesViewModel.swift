@@ -41,6 +41,7 @@ class TemplatesViewModel: ObservableObject {
                         fullCircleFrameDesigns(segmentationResult: segmentationResult) +
                         mediumCircleFrameHalfOpenDesigns(segmentationResult: segmentationResult) +
                         backgroundCircleBrushDesigns(segmentationResult: segmentationResult) +
+                        frameCircleBrushHalfOpenDesigns(segmentationResult: segmentationResult) +
                         backgroundHumanShapeBrushDesigns(segmentationResult: segmentationResult) +
                         fullCircleFrameSplashOverlayDesigns(segmentationResult: segmentationResult)
                 )
@@ -125,10 +126,10 @@ class TemplatesViewModel: ObservableObject {
         let colorBackgroundTemplates2 = HexBackgroundColors.colors[7 ... 8].map { color in
             imageTemplate.withUpdatingLayer(atIndex: 1, with: .color(color))
         }
-        let linearBackgroundTemplates1 = Self.linearGradients[11 ... 13].map { gradient in
+        let linearBackgroundTemplates1 = Self.linearGradients[11 ... 14].map { gradient in
             imageTemplate.withUpdatingLayer(atIndex: 0, with: .linearGradient(gradient))
         }
-        let linearBackgroundTemplates2 = Self.linearGradients[14 ... 15].map { gradient in
+        let linearBackgroundTemplates2 = Self.linearGradients[12 ... 15].map { gradient in
             imageTemplate.withUpdatingLayer(atIndex: 1, with: .linearGradient(gradient))
         }
 
