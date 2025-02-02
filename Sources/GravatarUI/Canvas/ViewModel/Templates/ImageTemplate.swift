@@ -1,7 +1,7 @@
 import Combine
 import Foundation
 
-struct ImageTemplate: Identifiable {
+struct ImageTemplate: Identifiable, Hashable {
     let id: String
     let template: CanvasLayers
     let isLoading: Bool

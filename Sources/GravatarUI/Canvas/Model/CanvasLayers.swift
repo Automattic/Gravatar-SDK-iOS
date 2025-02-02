@@ -1,5 +1,5 @@
 import Foundation
 
-struct CanvasLayers: Decodable {
+struct CanvasLayers: Decodable, Hashable {
     let layers: [CanvasLayer]
 }

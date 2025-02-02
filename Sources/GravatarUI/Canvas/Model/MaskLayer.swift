@@ -1,7 +1,7 @@
 import Foundation
 
-struct MaskLayer: Decodable {
-    enum Kind {
+struct MaskLayer: Decodable, Hashable {
+    enum Kind: Hashable {
         case remoteImage(RemoteImage)
         case localImage(String)
         case circle
@@ -53,7 +53,7 @@ struct MaskLayer: Decodable {
     }
 }
 
-enum MaskLayerType: String, Decodable {
+enum MaskLayerType: String, Decodable, Hashable {
     case remoteImage = "remote_image"
     case localImage = "local_image"
     case rectangle
@@ -62,7 +62,7 @@ enum MaskLayerType: String, Decodable {
     case oval
 }
 
-enum MaskBlendMode: String, Decodable {
+enum MaskBlendMode: String, Decodable, Hashable {
     case normal
     case clear
 }

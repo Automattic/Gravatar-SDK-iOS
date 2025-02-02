@@ -1,6 +1,6 @@
 import Foundation
 
-struct LinearGradientInfo: Decodable {
+struct LinearGradientInfo: Decodable, Hashable {
     let startPoint: Point
     let endPoint: Point
     let stops: [GradientStop]
@@ -12,12 +12,12 @@ struct LinearGradientInfo: Decodable {
     }
 }
 
-struct Point: Decodable {
+struct Point: Decodable, Hashable {
     let x: Double
     let y: Double
 }
 
-struct GradientStop: Decodable {
+struct GradientStop: Decodable, Hashable {
     let color: HexColor
     let position: Double
 }

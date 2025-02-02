@@ -1,7 +1,7 @@
 import Foundation
 
-struct Position: Decodable {
-    enum Kind {
+struct Position: Decodable, Hashable {
+    enum Kind: Hashable {
         case center(Point)
         case origin(Point)
     }

@@ -1,6 +1,6 @@
 import Foundation
 
-enum LayerType: String, Decodable {
+enum LayerType: String, Decodable, Hashable {
     case background
     case frame
     case person
@@ -8,8 +8,8 @@ enum LayerType: String, Decodable {
     // potentially add more if needed like "someOtherType"
 }
 
-struct CanvasLayer: Decodable {
-    enum Kind {
+struct CanvasLayer: Decodable, Hashable {
+    enum Kind: Hashable {
         case remoteImage(RemoteImage)
         case localImage(String)
         case linearGradient(LinearGradientInfo)
@@ -18,7 +18,7 @@ struct CanvasLayer: Decodable {
         case undetermined
     }
 
-    enum SizeType {
+    enum SizeType: Hashable {
         case normal(Size2D)
         case intrinsicSize(IntrinsicSize)
     }

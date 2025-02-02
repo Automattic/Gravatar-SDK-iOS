@@ -1,7 +1,7 @@
 import Foundation
 
 /// Represents a color specification with a hex string and alpha channel
-struct HexColor: Decodable {
+struct HexColor: Decodable, Hashable {
     let hex: String
     let alpha: Double
 
