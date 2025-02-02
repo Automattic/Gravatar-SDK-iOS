@@ -12,7 +12,7 @@ public class CanvasViewController: UIViewController {
     private let canvasHoleView = UIView() // UIVisualEffectView()
     private var imageViews: [UIImageView] = []
     private lazy var personSegmentationModel = PersonSegmentationModel()
-    private lazy var templatesViewModel = TemplatesViewModel()
+    private lazy var templatesViewModel = TemplatesViewModel(originalImage: inputImage)
 
     let inputImage: UIImage
     let inputImageID = UUID().uuidString
@@ -81,6 +81,7 @@ public class CanvasViewController: UIViewController {
                 canvasView.removeAllSubviews()
                 canvasView.addLayers(template.template, personImage: image)
             }
+            self.templatesViewModel.segmentationResult = segmentationResult
         }
         .store(in: &cancellables)
     }
@@ -119,6 +120,12 @@ public class CanvasViewController: UIViewController {
     }
 
     private func setupUI() {
+        let hostingController = GridHostingViewController(swiftUIView: ImageTemplatesHorizontalGrid(templatesViewModel: templatesViewModel))
+        addChild(hostingController)
+        hostingController.view.translatesAutoresizingMaskIntoConstraints = false
+        let templatesGridView = hostingController.view!
+        // templatesGridView.isUserInteractionEnabled = false
+
         view.addSubview(cancelButton)
         view.addSubview(doneButton)
         view.backgroundColor = .black
@@ -131,6 +138,7 @@ public class CanvasViewController: UIViewController {
         view.addSubview(canvasView)
         view.addSubview(canvasHoleView)
         view.addSubview(cutoutButton)
+        view.addSubview(templatesGridView)
         canvasHoleView.translatesAutoresizingMaskIntoConstraints = false
         canvasView.translatesAutoresizingMaskIntoConstraints = false
         canvasView.layer.borderColor = UIColor.white.cgColor
@@ -155,6 +163,12 @@ public class CanvasViewController: UIViewController {
             doneButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 16),
             cutoutButton.leadingAnchor.constraint(equalTo: canvasView.leadingAnchor),
             cutoutButton.topAnchor.constraint(equalTo: canvasView.bottomAnchor, constant: 12),
+
+            // templatesGridView
+            templatesGridView.leadingAnchor.constraint(equalTo: canvasHoleView.leadingAnchor),
+            templatesGridView.bottomAnchor.constraint(equalTo: canvasHoleView.safeLayoutGuide.bottomAnchor, constant: 30),
+            templatesGridView.trailingAnchor.constraint(equalTo: canvasHoleView.trailingAnchor),
+            templatesGridView.heightAnchor.constraint(lessThanOrEqualToConstant: 200),
         ])
 
         canvasView.backgroundColor = UIColor.label.withAlphaComponent(0.1)
@@ -164,9 +178,12 @@ public class CanvasViewController: UIViewController {
         view.bringSubviewToFront(doneButton)
         view.bringSubviewToFront(cancelButton)
         view.bringSubviewToFront(cutoutButton)
+        view.bringSubviewToFront(templatesGridView)
+
         // Add gesture recognizer for image addition
         // let tapGesture = UITapGestureRecognizer(target: self, action: #selector(addImage))
         //  canvasView.addGestureRecognizer(tapGesture)
+        hostingController.didMove(toParent: self)
     }
 
     private func addCanvasHoleMask() {
@@ -184,5 +201,68 @@ public class CanvasViewController: UIViewController {
         maskLayer.fillRule = .evenOdd
 
         canvasHoleView.layer.mask = maskLayer
+    }
+}
+
+class GridHostingViewController: UIViewController {
+    let swiftUIView: ImageTemplatesHorizontalGrid
+
+    init(swiftUIView: ImageTemplatesHorizontalGrid) {
+        self.swiftUIView = swiftUIView
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        let hostingController = UIHostingController(rootView: swiftUIView)
+
+        // Use the custom SwiftUIContainerView
+        let containerView = SwiftUIContainerView()
+        containerView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(containerView)
+
+        // Add UIHostingController's view inside the container
+        hostingController.view.translatesAutoresizingMaskIntoConstraints = false
+        containerView.addSubview(hostingController.view)
+
+        NSLayoutConstraint.activate([
+            containerView.topAnchor.constraint(equalTo: view.topAnchor),
+            containerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            containerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            containerView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+
+            hostingController.view.topAnchor.constraint(equalTo: containerView.topAnchor),
+            hostingController.view.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+            hostingController.view.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+            hostingController.view.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
+        ])
+
+        hostingController.didMove(toParent: self)
+    }
+}
+
+class SwiftUIContainerView: UIView {
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        self.isUserInteractionEnabled = true // ✅ Ensure it receives touches
+        self.backgroundColor = .clear // ✅ Transparent but still interactive
+    }
+
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        let hitView = super.hitTest(point, with: event)
+
+        // If touch lands on this container, return nil so it passes to subviews (SwiftUI)
+        return hitView == self ? nil : hitView
     }
 }
