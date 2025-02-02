@@ -12,6 +12,10 @@ class TemplatesViewModel: ObservableObject {
     @MainActor @Published var templates: [ImageTemplate] = []
     @MainActor @Published var selectedTemplateIndex: Int = 0
     private var cancellables: Set<AnyCancellable> = []
+    var selectedTemplate: ImageTemplate? {
+        guard selectedTemplateIndex >= 0, selectedTemplateIndex < templates.count else { return nil }
+        return templates[selectedTemplateIndex]
+    }
 
     init(originalImage: UIImage) {
         self.originalImage = originalImage

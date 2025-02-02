@@ -110,7 +110,7 @@
                 },
                 {
                     "type": "local_image",
-                    "image_name": "frame-circle-brush.png",
+                    "image_name": "overlay-splash.png",
                     "size": {
                         "width": 1,
                         "height": 1

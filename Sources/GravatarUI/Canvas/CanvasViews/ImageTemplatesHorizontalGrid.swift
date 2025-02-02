@@ -5,7 +5,7 @@ struct ImageTemplatesHorizontalGrid: View {
 
     var body: some View {
         ScrollView(.horizontal) {
-            HStack(spacing: .DS.Padding.half) {
+            HStack(spacing: 0) {
                 ForEach(templatesViewModel.templates, id: \.self) { template in
                     Button {
                         if let index = templatesViewModel.templates.firstIndex(of: template) {
@@ -13,8 +13,15 @@ struct ImageTemplatesHorizontalGrid: View {
                         }
                     } label: {
                         GridItemCanvasView(imageTemplate: template)
-                            .frame(width: 100, height: 100)
+                            .frame(width: 125, height: 125)
                     }
+                    .shape(
+                        RoundedRectangle(cornerSize: .init(width: 6, height: 6)),
+                        borderColor: .accentColor,
+                        borderWidth: templatesViewModel.selectedTemplate?.id == template.id ? 4 : 0
+                    )
+                    .padding(.horizontal, .DS.Padding.single)
+                    .padding(.vertical, .DS.Padding.single)
                 }
             }
         }

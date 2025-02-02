@@ -84,6 +84,14 @@ public class CanvasViewController: UIViewController {
             self.templatesViewModel.segmentationResult = segmentationResult
         }
         .store(in: &cancellables)
+
+        templatesViewModel.$selectedTemplateIndex.sink { [weak self] index in
+            guard let self else { return }
+            let template = self.templatesViewModel.templates[index]
+            self.canvasView.removeAllSubviews()
+            canvasView.addLayers(template.template, personImage: template.image)
+        }
+        .store(in: &cancellables)
     }
 
     // Action for Cancel button
@@ -166,7 +174,7 @@ public class CanvasViewController: UIViewController {
 
             // templatesGridView
             templatesGridView.leadingAnchor.constraint(equalTo: canvasHoleView.leadingAnchor),
-            templatesGridView.bottomAnchor.constraint(equalTo: canvasHoleView.safeLayoutGuide.bottomAnchor, constant: 30),
+            templatesGridView.bottomAnchor.constraint(equalTo: canvasHoleView.safeLayoutGuide.bottomAnchor, constant: -50),
             templatesGridView.trailingAnchor.constraint(equalTo: canvasHoleView.trailingAnchor),
             templatesGridView.heightAnchor.constraint(lessThanOrEqualToConstant: 200),
         ])
