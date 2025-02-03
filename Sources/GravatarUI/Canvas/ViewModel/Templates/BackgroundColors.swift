@@ -1,8 +1,8 @@
 import Foundation
 
 enum HexBackgroundColors {
-    static let colors: [HexColor] = [.init(hex: "000000"),
-                                     .init(hex: "FFFFFF"),
+    static let colors: [HexColor] = [.init(hex: "FFFFFF"),
+                                     .init(hex: "000000"),
                                      .init(hex: "5BB5D9"),
                                      .init(hex: "F2B6C6"),
                                      .init(hex: "BF2A70"),

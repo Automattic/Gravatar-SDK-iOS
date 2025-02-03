@@ -10,7 +10,7 @@
     },
     {
       "type": "person",
-      "intrinsic_size": {"ratio": 0.9},
+      "intrinsic_size": {"ratio": 1},
       "position": {
         "center": {"x": 0.5, "y": 0.5}
       },

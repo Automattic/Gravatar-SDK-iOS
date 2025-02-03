@@ -77,10 +77,6 @@ public class CanvasViewController: UIViewController {
     func listenForUpdates() {
         personSegmentationModel.$currentSegmentationResult.sink { [weak self] segmentationResult in
             guard let self else { return }
-            if let image = segmentationResult?.croppedResultImage, let template = templatesViewModel.templates.first {
-                canvasView.removeAllSubviews()
-                canvasView.addLayers(template.template, personImage: image)
-            }
             self.templatesViewModel.segmentationResult = segmentationResult
         }
         .store(in: &cancellables)
@@ -132,6 +128,7 @@ public class CanvasViewController: UIViewController {
         addChild(hostingController)
         hostingController.view.translatesAutoresizingMaskIntoConstraints = false
         let templatesGridView = hostingController.view!
+        
         // templatesGridView.isUserInteractionEnabled = false
 
         view.addSubview(cancelButton)

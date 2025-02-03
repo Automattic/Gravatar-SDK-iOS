@@ -26,7 +26,8 @@ struct ImageTemplatesHorizontalGrid: View {
             }
         }
         .padding(.horizontal, .DS.Padding.double)
-        .padding(.bottom, .DS.Padding.double)
+        .padding(.vertical, .DS.Padding.double)
+        .background(Color.black)
         // .frame(maxWidth: .infinity, maxHeight: .infinity) // ✅ Important for UIKit embedding
     }
 }
