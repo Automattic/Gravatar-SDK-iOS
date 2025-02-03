@@ -128,7 +128,7 @@ public class CanvasViewController: UIViewController {
         addChild(hostingController)
         hostingController.view.translatesAutoresizingMaskIntoConstraints = false
         let templatesGridView = hostingController.view!
-        
+
         // templatesGridView.isUserInteractionEnabled = false
 
         view.addSubview(cancelButton)
