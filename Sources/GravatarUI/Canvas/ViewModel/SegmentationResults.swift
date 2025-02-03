@@ -111,17 +111,6 @@ struct ForegroundPeopleSegmentation: SegmentationResults {
     }
 
     func generateSegmentedImage(baseImage: CIImage, selectedSegments: IndexSet) async -> SegmentationResult? {
-        /*
-         do {
-             let requestHandler = VNImageRequestHandler(ciImage: peopleSegmentedImage)
-
-             try requestHandler.perform([foregroundInstanceMaskRequest].compactMap { $0 })
-         } catch {
-             print("Unable to perform the request: \(error).")
-             throw SegmentationError.failure
-         }
-*/
-        
         var maskImage = CIImage(cvPixelBuffer: segmentationMask)
         // Scale mask to image size.
         let scaleX = baseImage.extent.width / maskImage.extent.width
@@ -140,34 +129,23 @@ struct ForegroundPeopleSegmentation: SegmentationResults {
             return nil
         }
 
-        let fullSizeSegmentedImage = try? newForegroundObservation.generateMaskedImage(ofInstances: newForegroundObservation.allInstances, from: newForegroundRequestHandler, croppedToInstancesExtent: false)
-        let croppedSegmentedImage = try? newForegroundObservation.generateMaskedImage(ofInstances: newForegroundObservation.allInstances, from: newForegroundRequestHandler, croppedToInstancesExtent: true)
+        let fullSizeSegmentedImage = try? newForegroundObservation.generateMaskedImage(
+            ofInstances: newForegroundObservation.allInstances,
+            from: newForegroundRequestHandler,
+            croppedToInstancesExtent: false
+        )
+
+        let croppedSegmentedImage = try? newForegroundObservation.generateMaskedImage(
+            ofInstances: newForegroundObservation.allInstances,
+            from: newForegroundRequestHandler,
+            croppedToInstancesExtent: true
+        )
         guard let resultImage = fullSizeSegmentedImage?.convertToUIImage(scale: scale, orientation: orientation),
-              let croppedResultImage = croppedSegmentedImage?.convertToUIImage(scale: scale, orientation: orientation) else {
+              let croppedResultImage = croppedSegmentedImage?.convertToUIImage(scale: scale, orientation: orientation)
+        else {
             return nil
         }
-        
-       /* let personMaskWidth = CVPixelBufferGetWidth(segmentationMask)
-        let personMaskHeight = CVPixelBufferGetHeight(segmentationMask)
 
-        // foregroundObservation.generateScaledMaskForImage(forInstances:foregroundObservation.allInstances, from: requestHandler)
-        if let scaledForegroundMask = try? foregroundObservation.generateScaledMaskForImage(forInstances: foregroundObservation.allInstances, from: requestHandler) {
-            Self.removeBackgroundPixels(peopleMask: segmentationMask, foregroundMask: scaledForegroundMask)
-        }
-
-        var maskImage = CIImage(cvPixelBuffer: segmentationMask)
-        // Scale mask to image size.
-        let scaleX = baseImage.extent.width / maskImage.extent.width
-        let scaleY = baseImage.extent.height / maskImage.extent.height
-        maskImage = maskImage.transformed(by: .init(scaleX: scaleX, y: scaleY))
-
-        let segmentedImage = isolateImageWithMask(image: baseImage, mask: maskImage)
-
-        guard let cgImage = CIContext().createCGImage(segmentedImage, from: segmentedImage.extent) else {
-            return nil
-        }
-        let image = UIImage(cgImage: cgImage, scale: scale, orientation: orientation)
-        */
         return .init(resultImage: resultImage, croppedResultImage: croppedResultImage)
     }
 
