@@ -1,7 +1,5 @@
-#if DEBUG
-
 import UIKit
-@testable import GravatarUI
+import GravatarUI
 import PhotosUI
 
 class DemoImageCropperViewController: UIViewController {
@@ -85,19 +83,6 @@ extension DemoImageCropperViewController: PHPickerViewControllerDelegate {
         }
     }
     
-    // Show the cropper with the selected image
-    func showCropper(with image: UIImage) {
-        let cropperVC = ImageCropperViewController.wrappedInNavigationViewController(image: image) { image in
-            self.croppedImageView.image = image
-            self.sizeLabel.text = "\(image.size.width) x \(image.size.height) - scale: \(image.scale) - \(image.calculateSizeInMB())MB"
-            self.dismiss(animated: true)
-        } onCancel: {
-            self.dismiss(animated: true)
-        }
-
-        present(cropperVC, animated: true, completion: nil)
-    }
-    
     func showCanvas(with image: UIImage) {
         let canvasVC = CanvasViewController.init(inputImage: image) { image in
             self.croppedImageView.image = image
@@ -133,4 +118,3 @@ private extension UIImage {
     }
 }
 
-#endif

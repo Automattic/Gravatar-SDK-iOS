@@ -17,8 +17,9 @@ class MainTableViewController: UITableViewController {
         case quickEditor
         #if DEBUG
         case displayRemoteSVG
-        case imageCropper
         #endif
+        case imageCropper
+        
     }
 
     private static let reuseID =  "DefaultCell"
@@ -102,9 +103,10 @@ class MainTableViewController: UITableViewController {
         #if DEBUG
         case .displayRemoteSVG:
             navigationController?.pushViewController(DemoRemoteSVGViewController(), animated: true)
+        #endif
         case .imageCropper:
             navigationController?.pushViewController(DemoImageCropperViewController(), animated: true)
-        #endif
+        
         }
     }
 }
