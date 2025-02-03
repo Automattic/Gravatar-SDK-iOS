@@ -61,9 +61,10 @@ class MainTableViewController: UITableViewController {
         #if DEBUG
         case .displayRemoteSVG:
             content.text = "Display remote SVG"
-        case .imageCropper:
-            content.text = "Image Cropper"
         #endif
+        case .imageCropper:
+            content.text = "Fancy Image Editor"
+        
         }
         cell.contentConfiguration = content
         return cell
