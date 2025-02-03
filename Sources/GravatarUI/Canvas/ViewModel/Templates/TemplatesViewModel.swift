@@ -26,33 +26,34 @@ class TemplatesViewModel: ObservableObject {
     func listenSegmentationResultChange() {
         $segmentationResult.sink { [weak self] result in
             guard let self else { return }
+            var newTemplates: [ImageTemplate] = []
             if let result {
-                self.addTemplatesForMaskedImage(segmentationResult: result)
+                newTemplates.append(contentsOf: self.originalImageDesigns(image: self.originalImage))
+                newTemplates.append(contentsOf: self.templatesForMaskedImage(segmentationResult: result))
             } else {
-                self.templates.removeAll()
-                templates.append(contentsOf: originalImageDesigns(image: originalImage))
+                newTemplates.append(contentsOf: self.originalImageDesigns(image: self.originalImage))
+            }
+            withAnimation {
+                self.templates = newTemplates
+                self.selectedTemplateIndex = self.selectedTemplateIndex // trigger update because the image has changed
             }
         }
         .store(in: &cancellables)
     }
 
-    private func addTemplatesForMaskedImage(segmentationResult: SegmentationResult) {
-        withAnimation {
-            templates
-                .append(
-                    contentsOf:
-                    plainBackgroundDesigns(segmentationResult: segmentationResult) +
-                        fullCircleFrameDesigns(segmentationResult: segmentationResult) +
-                        //  fullCircleFrameImageBackgroundDesigns(segmentationResult: segmentationResult) +
-                        mediumCircleFrameHalfOpenDesigns(segmentationResult: segmentationResult) +
-                        mediumRoundedRectFrameHalfOpenDesigns(segmentationResult: segmentationResult) +
-                        backgroundCircleBrushDesigns(segmentationResult: segmentationResult) +
-                        frameCircleBrushHalfOpenDesigns(segmentationResult: segmentationResult) +
-                        frameBrush2HalfOpenDesigns(segmentationResult: segmentationResult) +
-                        //   backgroundHumanShapeBrushDesigns(segmentationResult: segmentationResult) +
-                        fullCircleFrameSplashOverlayDesigns(segmentationResult: segmentationResult)
-                )
-        }
+    private func templatesForMaskedImage(segmentationResult: SegmentationResult) -> [ImageTemplate] {
+        let templates =
+            plainBackgroundDesigns(segmentationResult: segmentationResult) +
+            fullCircleFrameDesigns(segmentationResult: segmentationResult) +
+            //  fullCircleFrameImageBackgroundDesigns(segmentationResult: segmentationResult) +
+            mediumCircleFrameHalfOpenDesigns(segmentationResult: segmentationResult) +
+            mediumRoundedRectFrameHalfOpenDesigns(segmentationResult: segmentationResult) +
+            backgroundCircleBrushDesigns(segmentationResult: segmentationResult) +
+            frameCircleBrushHalfOpenDesigns(segmentationResult: segmentationResult) +
+            frameBrush2HalfOpenDesigns(segmentationResult: segmentationResult) +
+            //   backgroundHumanShapeBrushDesigns(segmentationResult: segmentationResult) +
+            fullCircleFrameSplashOverlayDesigns(segmentationResult: segmentationResult)
+        return templates
     }
 
     func originalImageDesigns(image: UIImage) -> [ImageTemplate] {
