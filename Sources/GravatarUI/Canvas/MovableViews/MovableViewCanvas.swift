@@ -384,7 +384,7 @@ final class MovableViewCanvas: IgnoreTouchesView, UIGestureRecognizerDelegate, M
         }
     }
 
-    func calculateSnapOffsets(for childView: MovableView, in parentView: UIView, threshold: CGFloat = 10) -> CGPoint? {
+    func calculateSnapOffsets(for childView: MovableView, in parentView: UIView, threshold: CGFloat = 6) -> CGPoint? {
         //  guard childView.rotation == 0 else { return nil }
 
         // Ensure the parent's frame is in the same coordinate space as the child's

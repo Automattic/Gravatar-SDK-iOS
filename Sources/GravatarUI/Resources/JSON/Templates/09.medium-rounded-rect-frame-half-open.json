@@ -22,16 +22,16 @@
           "position": {
             "origin": {"x": 0, "y": 0},
           },
-          "blend_mode": "clear"
+          "blend_mode": "normal"
         },
         {
-          "type": "local_image",
-          "image_name": "frame-circle-brush-zoomed.png",
+          "type": "rounded_rectangle",
           "position": {
             "center": {"x": 0.5, "y": 0.5},
           },
-          "size": {"width": 1, "height": 1},
-          "blend_mode": "normal"
+          "corner_radii": {"width": 0.1, "height": 0.1},
+          "size": {"width": 0.7, "height": 0.7},
+          "blend_mode": "clear"
         },
         {
           "type": "rectangle",
@@ -65,16 +65,16 @@
           "position": {
             "origin": {"x": 0, "y": 0},
           },
-          "blend_mode": "clear"
+          "blend_mode": "normal"
         },
         {
-          "type": "local_image",
-          "image_name": "frame-circle-brush-zoomed.png",
-          "size": {"width": 1, "height": 1},
+          "type": "rounded_rectangle",
+          "size": {"width": 0.7, "height": 0.7},
+          "corner_radii": {"width": 0.1, "height": 0.1},
           "position": {
             "center": {"x": 0.5, "y": 0.5},
           },
-          "blend_mode": "normal"
+          "blend_mode": "clear"
         },
         {
           "type": "rectangle",

@@ -153,8 +153,13 @@ extension CanvasLayer: Identifiable {
 
             // ctx.fillPath() ?
             case .roundedRectangle(let cornerRadii, let roundCorners):
+                let centerPoint = position.cgCenterPosition(in: bounds)
+                let size = size.cgSize(in: bounds)
+                let originX = centerPoint.x - (size.width * 0.5)
+                let originyY = centerPoint.y - (size.height * 0.5)
+
                 let bezierPath = UIBezierPath(
-                    roundedRect: maskRect,
+                    roundedRect: .init(x: originX, y: originyY, width: size.width, height: size.height),
                     byRoundingCorners: UIRectCorner(strings: roundCorners),
                     cornerRadii: cornerRadii.cgSize(in: maskRect)
                 )

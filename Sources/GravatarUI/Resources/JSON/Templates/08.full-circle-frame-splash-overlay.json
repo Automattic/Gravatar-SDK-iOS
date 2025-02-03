@@ -21,7 +21,7 @@
             "type": "person",
             "cropped": true,
             "intrinsic_size": {
-                "ratio": 1
+                "ratio": 0.9
             },
             "position": {
                 "center": {

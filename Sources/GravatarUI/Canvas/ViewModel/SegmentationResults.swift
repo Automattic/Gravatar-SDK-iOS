@@ -111,15 +111,47 @@ struct ForegroundPeopleSegmentation: SegmentationResults {
     }
 
     func generateSegmentedImage(baseImage: CIImage, selectedSegments: IndexSet) async -> SegmentationResult? {
-        let personMaskWidth = CVPixelBufferGetWidth(segmentationMask)
+        /*
+         do {
+             let requestHandler = VNImageRequestHandler(ciImage: peopleSegmentedImage)
+
+             try requestHandler.perform([foregroundInstanceMaskRequest].compactMap { $0 })
+         } catch {
+             print("Unable to perform the request: \(error).")
+             throw SegmentationError.failure
+         }
+*/
+        
+        var maskImage = CIImage(cvPixelBuffer: segmentationMask)
+        // Scale mask to image size.
+        let scaleX = baseImage.extent.width / maskImage.extent.width
+        let scaleY = baseImage.extent.height / maskImage.extent.height
+        maskImage = maskImage.transformed(by: .init(scaleX: scaleX, y: scaleY))
+
+        let segmentedImage = isolateImageWithMask(image: baseImage, mask: maskImage)
+        let newForegroundRequestHandler = VNImageRequestHandler(ciImage: segmentedImage)
+        let foregroundInstanceMaskRequest = VNGenerateForegroundInstanceMaskRequest()
+        do {
+            try requestHandler.perform([foregroundInstanceMaskRequest].compactMap { $0 })
+        } catch {
+            print("Unable to perform the request: \(error).")
+        }
+        guard let newForegroundObservation = foregroundInstanceMaskRequest.results?.first as? VNInstanceMaskObservation else {
+            return nil
+        }
+
+        let fullSizeSegmentedImage = try? newForegroundObservation.generateMaskedImage(ofInstances: newForegroundObservation.allInstances, from: newForegroundRequestHandler, croppedToInstancesExtent: false)
+        let croppedSegmentedImage = try? newForegroundObservation.generateMaskedImage(ofInstances: newForegroundObservation.allInstances, from: newForegroundRequestHandler, croppedToInstancesExtent: true)
+        guard let resultImage = fullSizeSegmentedImage?.convertToUIImage(scale: scale, orientation: orientation),
+              let croppedResultImage = croppedSegmentedImage?.convertToUIImage(scale: scale, orientation: orientation) else {
+            return nil
+        }
+        
+       /* let personMaskWidth = CVPixelBufferGetWidth(segmentationMask)
         let personMaskHeight = CVPixelBufferGetHeight(segmentationMask)
 
         // foregroundObservation.generateScaledMaskForImage(forInstances:foregroundObservation.allInstances, from: requestHandler)
-        if let scaledForegroundMask = resizeMask(
-            foregroundObservation.instanceMask,
-            toWidth: personMaskWidth,
-            height: personMaskHeight
-        ) {
+        if let scaledForegroundMask = try? foregroundObservation.generateScaledMaskForImage(forInstances: foregroundObservation.allInstances, from: requestHandler) {
             Self.removeBackgroundPixels(peopleMask: segmentationMask, foregroundMask: scaledForegroundMask)
         }
 
@@ -135,8 +167,8 @@ struct ForegroundPeopleSegmentation: SegmentationResults {
             return nil
         }
         let image = UIImage(cgImage: cgImage, scale: scale, orientation: orientation)
-
-        return .init(resultImage: image, croppedResultImage: image.cropTransparent())
+        */
+        return .init(resultImage: resultImage, croppedResultImage: croppedResultImage)
     }
 
     static func removeBackgroundPixels(
@@ -286,5 +318,16 @@ struct ForegroundInstanceMaskResult: SegmentationResults {
 
     func segmentForPixelValue(_ value: UInt8) -> Int {
         Int(value)
+    }
+}
+
+extension CVPixelBuffer {
+    func convertToUIImage(scale: CGFloat, orientation: UIImage.Orientation) -> UIImage? {
+        let maskedResultImage = CIImage(cvPixelBuffer: self)
+        if let cgImage = CIContext().createCGImage(maskedResultImage, from: maskedResultImage.extent) {
+            let image = UIImage(cgImage: cgImage, scale: scale, orientation: orientation)
+            return image
+        }
+        return nil
     }
 }

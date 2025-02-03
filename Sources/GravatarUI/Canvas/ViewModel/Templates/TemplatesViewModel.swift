@@ -44,9 +44,11 @@ class TemplatesViewModel: ObservableObject {
                     plainBackgroundDesigns(segmentationResult: segmentationResult) +
                         fullCircleFrameDesigns(segmentationResult: segmentationResult) +
                         mediumCircleFrameHalfOpenDesigns(segmentationResult: segmentationResult) +
+                        mediumRoundedRectFrameHalfOpenDesigns(segmentationResult: segmentationResult) +
                         backgroundCircleBrushDesigns(segmentationResult: segmentationResult) +
                         frameCircleBrushHalfOpenDesigns(segmentationResult: segmentationResult) +
-                        backgroundHumanShapeBrushDesigns(segmentationResult: segmentationResult) +
+                        frameBrush2HalfOpenDesigns(segmentationResult: segmentationResult) +
+                     //   backgroundHumanShapeBrushDesigns(segmentationResult: segmentationResult) +
                         fullCircleFrameSplashOverlayDesigns(segmentationResult: segmentationResult)
                 )
         }
@@ -96,26 +98,49 @@ class TemplatesViewModel: ObservableObject {
         }
         return colorBackgroundTemplates + linearBackgroundTemplates
     }
+    
+    func mediumRoundedRectFrameHalfOpenDesigns(segmentationResult: SegmentationResult) -> [ImageTemplate] {
+        guard let template = TemplateDesign.mediumRoundedRectFrameHalfOpen.getLayers() else { return [] }
+        let imageTemplate = ImageTemplate(template: template, segmentationResult: segmentationResult)
+        let colorBackgroundTemplates = HexBackgroundColors.colors[6 ... 8].map { color in
+            imageTemplate.withUpdatingLayer(atIndex: 0, with: .color(color))
+        }
+        let linearBackgroundTemplates = Self.linearGradients[10 ... 13].map { gradient in
+            imageTemplate.withUpdatingLayer(atIndex: 0, with: .linearGradient(gradient))
+        }
+        return colorBackgroundTemplates + linearBackgroundTemplates
+    }
 
     func backgroundCircleBrushDesigns(segmentationResult: SegmentationResult) -> [ImageTemplate] {
         guard let template = TemplateDesign.backgroundCircleBrush.getLayers() else { return [] }
         let imageTemplate = ImageTemplate(template: template, segmentationResult: segmentationResult)
         let colorBackgroundTemplates = HexBackgroundColors.colors[8 ... 10].map { color in
-            imageTemplate.withUpdatingLayer(atIndex: 1, with: .color(color))
+            imageTemplate.withUpdatingLayer(atIndex: 0, with: .color(color))
         }
         let linearBackgroundTemplates = Self.linearGradients[11 ... 14].map { gradient in
-            imageTemplate.withUpdatingLayer(atIndex: 1, with: .linearGradient(gradient))
+            imageTemplate.withUpdatingLayer(atIndex: 0, with: .linearGradient(gradient))
         }
         return colorBackgroundTemplates + linearBackgroundTemplates
     }
 
     func frameCircleBrushHalfOpenDesigns(segmentationResult: SegmentationResult) -> [ImageTemplate] {
-        guard let template = TemplateDesign.frameBrush2HalfOpen.getLayers() else { return [] }
+        guard let template = TemplateDesign.frameCircleBrushHalfOpen.getLayers() else { return [] }
         let imageTemplate = ImageTemplate(template: template, segmentationResult: segmentationResult)
         let colorBackgroundTemplates = HexBackgroundColors.colors[2 ... 4].map { color in
             imageTemplate.withUpdatingLayer(atIndex: 0, with: .color(color))
         }
         let linearBackgroundTemplates = Self.linearGradients[11 ... 14].map { gradient in
+            imageTemplate.withUpdatingLayer(atIndex: 0, with: .linearGradient(gradient))
+        }
+        return colorBackgroundTemplates + linearBackgroundTemplates
+    }
+    func frameBrush2HalfOpenDesigns(segmentationResult: SegmentationResult) -> [ImageTemplate] {
+        guard let template = TemplateDesign.frameBrush2HalfOpen.getLayers() else { return [] }
+        let imageTemplate = ImageTemplate(template: template, segmentationResult: segmentationResult)
+        let colorBackgroundTemplates = HexBackgroundColors.colors[6 ... 9].map { color in
+            imageTemplate.withUpdatingLayer(atIndex: 0, with: .color(color))
+        }
+        let linearBackgroundTemplates = Self.linearGradients[9 ... 15].map { gradient in
             imageTemplate.withUpdatingLayer(atIndex: 0, with: .linearGradient(gradient))
         }
         return colorBackgroundTemplates + linearBackgroundTemplates

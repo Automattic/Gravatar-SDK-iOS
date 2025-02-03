@@ -10,11 +10,11 @@
     },
     {
       "type": "person",
-      "intrinsic_size": {"ratio": 1},
+      "intrinsic_size": {"ratio": 0.9},
       "position": {
         "center": {"x": 0.5, "y": 0.5}
       },
-      "cropped": false
+      "cropped": true
     },
     {
       "type": "frame",
