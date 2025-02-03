@@ -43,12 +43,13 @@ class TemplatesViewModel: ObservableObject {
                     contentsOf:
                     plainBackgroundDesigns(segmentationResult: segmentationResult) +
                         fullCircleFrameDesigns(segmentationResult: segmentationResult) +
+                        //  fullCircleFrameImageBackgroundDesigns(segmentationResult: segmentationResult) +
                         mediumCircleFrameHalfOpenDesigns(segmentationResult: segmentationResult) +
                         mediumRoundedRectFrameHalfOpenDesigns(segmentationResult: segmentationResult) +
                         backgroundCircleBrushDesigns(segmentationResult: segmentationResult) +
                         frameCircleBrushHalfOpenDesigns(segmentationResult: segmentationResult) +
                         frameBrush2HalfOpenDesigns(segmentationResult: segmentationResult) +
-                     //   backgroundHumanShapeBrushDesigns(segmentationResult: segmentationResult) +
+                        //   backgroundHumanShapeBrushDesigns(segmentationResult: segmentationResult) +
                         fullCircleFrameSplashOverlayDesigns(segmentationResult: segmentationResult)
                 )
         }
@@ -87,6 +88,28 @@ class TemplatesViewModel: ObservableObject {
         return colorBackgroundTemplates + linearBackgroundTemplates
     }
 
+    func fullCircleFrameImageBackgroundDesigns(segmentationResult: SegmentationResult) -> [ImageTemplate] {
+        guard let template1 = TemplateDesign.fullCircleFrame.getLayers() else { return [] }
+        guard let template2 = TemplateDesign.fullCircleFrameDoubleBackgrounds.getLayers() else { return [] }
+        let images = ["bg01", "bg02", "bg03", "bg04", "bg05", "bg06"]
+        let imageTemplate1 = ImageTemplate(template: template1, segmentationResult: segmentationResult)
+        let imageTemplate2 = ImageTemplate(template: template2, segmentationResult: segmentationResult)
+
+        var result: [ImageTemplate] = []
+        for (index, name) in images.enumerated() {
+            let templateWithImage1 = imageTemplate1.withUpdatingLayer(atIndex: 0, with: .localImage(name))
+            result.append(templateWithImage1)
+
+            let templateWithImage2 = imageTemplate2.withUpdatingLayer(atIndex: 0, with: .localImage(name))
+            result.append(templateWithImage2)
+            let index = (5 + index) % (Self.linearGradients.count)
+            let gradient = Self.linearGradients[index].withAlpha(0.2)
+            result.append(templateWithImage2.withUpdatingLayer(atIndex: 1, with: .linearGradient(gradient)))
+        }
+
+        return result
+    }
+
     func mediumCircleFrameHalfOpenDesigns(segmentationResult: SegmentationResult) -> [ImageTemplate] {
         guard let template = TemplateDesign.mediumCircleFrameHalfOpen.getLayers() else { return [] }
         let imageTemplate = ImageTemplate(template: template, segmentationResult: segmentationResult)
@@ -98,7 +121,7 @@ class TemplatesViewModel: ObservableObject {
         }
         return colorBackgroundTemplates + linearBackgroundTemplates
     }
-    
+
     func mediumRoundedRectFrameHalfOpenDesigns(segmentationResult: SegmentationResult) -> [ImageTemplate] {
         guard let template = TemplateDesign.mediumRoundedRectFrameHalfOpen.getLayers() else { return [] }
         let imageTemplate = ImageTemplate(template: template, segmentationResult: segmentationResult)
@@ -134,6 +157,7 @@ class TemplatesViewModel: ObservableObject {
         }
         return colorBackgroundTemplates + linearBackgroundTemplates
     }
+
     func frameBrush2HalfOpenDesigns(segmentationResult: SegmentationResult) -> [ImageTemplate] {
         guard let template = TemplateDesign.frameBrush2HalfOpen.getLayers() else { return [] }
         let imageTemplate = ImageTemplate(template: template, segmentationResult: segmentationResult)

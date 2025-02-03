@@ -10,6 +10,11 @@ struct LinearGradientInfo: Decodable, Hashable {
         case endPoint = "end_point"
         case stops
     }
+
+    func withAlpha(_ alpha: Double) -> LinearGradientInfo {
+        let newStops = stops.map { $0.withAlpha(alpha) }
+        return LinearGradientInfo(startPoint: startPoint, endPoint: endPoint, stops: newStops)
+    }
 }
 
 struct Point: Decodable, Hashable {
@@ -20,4 +25,8 @@ struct Point: Decodable, Hashable {
 struct GradientStop: Decodable, Hashable {
     let color: HexColor
     let position: Double
+
+    func withAlpha(_ newAlpha: Double) -> GradientStop {
+        GradientStop(color: HexColor(hex: color.hex, alpha: newAlpha), position: position)
+    }
 }

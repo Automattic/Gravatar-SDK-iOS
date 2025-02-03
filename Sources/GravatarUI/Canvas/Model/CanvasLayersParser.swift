@@ -10,7 +10,8 @@ enum TemplateDesign: String, CaseIterable {
     case backgroundHumanShapeBrush = "07.background-human-shape-brush"
     case fullCircleFrameSplashOverlay = "08.full-circle-frame-splash-overlay"
     case mediumRoundedRectFrameHalfOpen = "09.medium-rounded-rect-frame-half-open"
-    
+    case fullCircleFrameDoubleBackgrounds = "10.full-circle-frame-double-bg-layers"
+
     static let dict: [TemplateDesign: CanvasLayers] = {
         var result: [TemplateDesign: CanvasLayers] = [:]
         for template in TemplateDesign.allCases {
