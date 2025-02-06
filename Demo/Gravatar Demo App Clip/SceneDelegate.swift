@@ -5,6 +5,7 @@
 //  Created by Andrew Montgomery on 2/6/25.
 //
 
+import GravatarUI
 import UIKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
@@ -47,6 +48,24 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // to restore the scene back to its current state.
     }
 
+    func scene(_ scene: UIScene, continue userActivity: NSUserActivity) {
+        guard let url = userActivity.webpageURL else { return }
+
+        if url.path() == "/select-avatar" {
+            guard let navigationController = window?.rootViewController as? (UINavigationController & DeepLinkHandling) else {
+                return
+            }
+            
+            Task {
+                _ = await navigationController.handleDeepLink(url)
+            }
+            
+            return
+        }
+        
+        Task {
+            _ = await OAuthSession.handleCallback(url)
+        }
+    }
 
 }
-

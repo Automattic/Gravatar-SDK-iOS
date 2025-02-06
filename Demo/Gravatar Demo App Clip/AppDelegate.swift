@@ -1,10 +1,4 @@
-//
-//  AppDelegate.swift
-//  Gravatar Demo App Clip
-//
-//  Created by Andrew Montgomery on 2/6/25.
-//
-
+import Gravatar
 import UIKit
 
 @main
@@ -14,6 +8,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        Task {
+            await Configuration.shared.configure(
+                with: Secrets.apiKey,
+                oauthSecrets: .init(
+                    clientID: Secrets.clientID,
+                    redirectURI: Secrets.redirectURI
+                )
+            )
+        }
         return true
     }
 
