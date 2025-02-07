@@ -282,7 +282,6 @@
 		49C5D6012B5B33E20067C2A8 = {
 			isa = PBXGroup;
 			children = (
-				1E09931F2CF76A870031D33A /* Gravatar Demo.entitlements */,
 				49C5D60C2B5B33E20067C2A8 /* Demo */,
 				4948C4E92B61C3FD00AC4875 /* Gravatar-SDK-iOS */,
 				3FA7E38C2D55911800CE5611 /* Demo-App-Clip */,
@@ -309,6 +308,7 @@
 				495775E02B5B34970082812A /* Gravatar-Demo */,
 				498060C82C6FF20B00C6848C /* Localizations */,
 				1E3FA23D2C74B7B5002901F2 /* Secrets.tpl */,
+				1E09931F2CF76A870031D33A /* Gravatar Demo.entitlements */,
 			);
 			path = Demo;
 			sourceTree = "<group>";
@@ -677,7 +677,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = "Gravatar Demo.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "${SRCROOT}/Demo/Gravatar Demo.entitlements";
 				CODE_SIGN_STYLE = Manual;
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = PZYM8XX95Q;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
@@ -710,7 +710,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = "Gravatar Demo.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "${SRCROOT}/Demo/Gravatar Demo.entitlements";
 				CODE_SIGN_STYLE = Manual;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
