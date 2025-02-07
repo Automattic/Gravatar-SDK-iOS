@@ -809,10 +809,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "Gravatar Demo App Clip/Gravatar_Demo_App_Clip.entitlements";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = PZYM8XX95Q;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Gravatar Demo App Clip/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Gravatar Demo";
@@ -827,10 +825,8 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.automattic.gravatar-sdk-demo-uikit.clip";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.automattic.gravatar-sdk-demo-uikit.prototype-build.Clip";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Gravatar Demo App Clip Development";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

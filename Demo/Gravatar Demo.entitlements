@@ -6,7 +6,6 @@
 	<array>
 		<string>webcredentials:gravatar.com</string>
 		<string>applinks:gravatar.com</string>
-		<string>appclips:gravatar.com</string>
 	</array>
 </dict>
 </plist>
