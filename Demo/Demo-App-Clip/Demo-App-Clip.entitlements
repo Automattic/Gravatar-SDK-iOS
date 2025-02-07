@@ -7,6 +7,8 @@
 		<string>appclips:gravatar.com</string>
 	</array>
 	<key>com.apple.developer.parent-application-identifiers</key>
-	<string></string>
+	<array>
+		<string>$(AppIdentifierPrefix)com.automattic.gravatar-sdk-demo-uikit</string>
+	</array>
 </dict>
 </plist>
