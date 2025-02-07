@@ -1,7 +1,7 @@
 import SwiftUI
 
 @main
-struct Gravatar_Demo_App_ClipApp: App {
+struct DemoAppClipApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
