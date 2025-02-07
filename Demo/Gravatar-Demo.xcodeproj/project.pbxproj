@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -27,6 +27,7 @@
 		1E6263222CD13DB700FC362F /* TestImageCropper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 917DEEC82C7F619100E43774 /* TestImageCropper.swift */; };
 		1EA26DE22CA5677700AACF58 /* DemoQuickEditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E93D3C82CA566D90085139A /* DemoQuickEditorViewController.swift */; };
 		1ECAB5072BC984440043A331 /* DemoProfileConfigurationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ECAB5062BC984440043A331 /* DemoProfileConfigurationViewController.swift */; };
+		3FA7E39A2D55911A00CE5611 /* Gravatar Demo App Clip.app in Embed App Clips */ = {isa = PBXBuildFile; fileRef = 3FA7E38B2D55911800CE5611 /* Gravatar Demo App Clip.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		49018E2D2C8110C600B1207D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 49018E2B2C8110C600B1207D /* Localizable.strings */; };
 		4948C4EC2B61C41100AC4875 /* Gravatar in Frameworks */ = {isa = PBXBuildFile; productRef = 4948C4EB2B61C41100AC4875 /* Gravatar */; };
 		495775E22B5B34970082812A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 495775E12B5B34970082812A /* AppDelegate.swift */; };
@@ -48,6 +49,30 @@
 		91F0B3E32B6281A60025C4F8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 91F0B3E12B6281A60025C4F8 /* Main.storyboard */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		3FA7E3982D55911A00CE5611 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 49C5D6022B5B33E20067C2A8 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3FA7E38A2D55911800CE5611;
+			remoteInfo = "Gravatar Demo App Clip";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		3FA7E39B2D55911A00CE5611 /* Embed App Clips */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/AppClips";
+			dstSubfolderSpec = 16;
+			files = (
+				3FA7E39A2D55911A00CE5611 /* Gravatar Demo App Clip.app in Embed App Clips */,
+			);
+			name = "Embed App Clips";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		1E0087922B63CFFE0012ECEA /* DemoFetchProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoFetchProfileViewController.swift; sourceTree = "<group>"; };
 		1E0087942B63DBCB0012ECEA /* DemoUploadImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoUploadImageViewController.swift; sourceTree = "<group>"; };
@@ -65,6 +90,7 @@
 		1E3FA2442C75E403002901F2 /* DemoProfileEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoProfileEditorView.swift; sourceTree = "<group>"; };
 		1E93D3C82CA566D90085139A /* DemoQuickEditorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoQuickEditorViewController.swift; sourceTree = "<group>"; };
 		1ECAB5062BC984440043A331 /* DemoProfileConfigurationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoProfileConfigurationViewController.swift; sourceTree = "<group>"; };
+		3FA7E38B2D55911800CE5611 /* Gravatar Demo App Clip.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Gravatar Demo App Clip.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3FD4781E2C50D6FD0071B8B9 /* Base.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Base.xcconfig; sourceTree = "<group>"; };
 		3FD478212C51D5CE0071B8B9 /* Gravatar-Demo.Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Gravatar-Demo.Release.xcconfig"; sourceTree = "<group>"; };
 		3FD478232C51D9280071B8B9 /* Enterprise.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Enterprise.xcconfig; sourceTree = "<group>"; };
@@ -145,7 +171,28 @@
 		91F0B3E22B6281A60025C4F8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		3FA7E39E2D55911A00CE5611 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 3FA7E38A2D55911800CE5611 /* Gravatar Demo App Clip */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		3FA7E38C2D55911800CE5611 /* Gravatar Demo App Clip */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3FA7E39E2D55911A00CE5611 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = "Gravatar Demo App Clip"; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
+
 /* Begin PBXFrameworksBuildPhase section */
+		3FA7E3882D55911800CE5611 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		495775DC2B5B34970082812A /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -238,6 +285,7 @@
 				1E09931F2CF76A870031D33A /* Gravatar Demo.entitlements */,
 				49C5D60C2B5B33E20067C2A8 /* Demo */,
 				4948C4E92B61C3FD00AC4875 /* Gravatar-SDK-iOS */,
+				3FA7E38C2D55911800CE5611 /* Gravatar Demo App Clip */,
 				49C5D60B2B5B33E20067C2A8 /* Products */,
 				4948C4EA2B61C41100AC4875 /* Frameworks */,
 			);
@@ -247,6 +295,7 @@
 			isa = PBXGroup;
 			children = (
 				495775DF2B5B34970082812A /* Gravatar Demo.app */,
+				3FA7E38B2D55911800CE5611 /* Gravatar Demo App Clip.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -277,6 +326,28 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		3FA7E38A2D55911800CE5611 /* Gravatar Demo App Clip */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3FA7E39F2D55911A00CE5611 /* Build configuration list for PBXNativeTarget "Gravatar Demo App Clip" */;
+			buildPhases = (
+				3FA7E3872D55911800CE5611 /* Sources */,
+				3FA7E3882D55911800CE5611 /* Frameworks */,
+				3FA7E3892D55911800CE5611 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				3FA7E38C2D55911800CE5611 /* Gravatar Demo App Clip */,
+			);
+			name = "Gravatar Demo App Clip";
+			packageProductDependencies = (
+			);
+			productName = "Gravatar Demo App Clip";
+			productReference = 3FA7E38B2D55911800CE5611 /* Gravatar Demo App Clip.app */;
+			productType = "com.apple.product-type.application.on-demand-install-capable";
+		};
 		495775DE2B5B34970082812A /* Gravatar Demo */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 495775F02B5B34980082812A /* Build configuration list for PBXNativeTarget "Gravatar Demo" */;
@@ -285,10 +356,12 @@
 				495775DB2B5B34970082812A /* Sources */,
 				495775DC2B5B34970082812A /* Frameworks */,
 				495775DD2B5B34970082812A /* Resources */,
+				3FA7E39B2D55911A00CE5611 /* Embed App Clips */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				3FA7E3992D55911A00CE5611 /* PBXTargetDependency */,
 			);
 			name = "Gravatar Demo";
 			packageProductDependencies = (
@@ -306,9 +379,12 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1510;
+				LastSwiftUpdateCheck = 1620;
 				LastUpgradeCheck = 1510;
 				TargetAttributes = {
+					3FA7E38A2D55911800CE5611 = {
+						CreatedOnToolsVersion = 16.2;
+					};
 					495775DE2B5B34970082812A = {
 						CreatedOnToolsVersion = 15.1;
 					};
@@ -346,11 +422,19 @@
 			projectRoot = "";
 			targets = (
 				495775DE2B5B34970082812A /* Gravatar Demo */,
+				3FA7E38A2D55911800CE5611 /* Gravatar Demo App Clip */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		3FA7E3892D55911800CE5611 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		495775DD2B5B34970082812A /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -388,6 +472,13 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		3FA7E3872D55911800CE5611 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		495775DB2B5B34970082812A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -429,6 +520,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		3FA7E3992D55911A00CE5611 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 3FA7E38A2D55911800CE5611 /* Gravatar Demo App Clip */;
+			targetProxy = 3FA7E3982D55911A00CE5611 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		49018E2B2C8110C600B1207D /* Localizable.strings */ = {
@@ -506,6 +605,70 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		3FA7E39C2D55911A00CE5611 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Gravatar Demo App Clip/Gravatar_Demo_App_Clip.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"Gravatar Demo App Clip/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Gravatar Demo App Clip/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Gravatar Demo";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.automattic.gravatar-sdk-demo-uikit.prototype-build.Clip";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		3FA7E39D2D55911A00CE5611 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Gravatar Demo App Clip/Gravatar_Demo_App_Clip.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"Gravatar Demo App Clip/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Gravatar Demo App Clip/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Gravatar Demo";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.automattic.gravatar-sdk-demo-uikit.prototype-build.Clip";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		495775F12B5B34980082812A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 49EFFB552C51AA280086589A /* Gravatar-Demo.Base.xcconfig */;
@@ -695,6 +858,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		3FA7E39F2D55911A00CE5611 /* Build configuration list for PBXNativeTarget "Gravatar Demo App Clip" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3FA7E39C2D55911A00CE5611 /* Debug */,
+				3FA7E39D2D55911A00CE5611 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		495775F02B5B34980082812A /* Build configuration list for PBXNativeTarget "Gravatar Demo" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
