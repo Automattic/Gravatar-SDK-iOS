@@ -182,7 +182,7 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		3FA7E38C2D55911800CE5611 /* Gravatar Demo App Clip */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3FA7E39E2D55911A00CE5611 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = "Gravatar Demo App Clip"; sourceTree = "<group>"; };
+		3FA7E38C2D55911800CE5611 /* Demo-App-Clip */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3FA7E39E2D55911A00CE5611 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = "Demo-App-Clip"; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -285,7 +285,7 @@
 				1E09931F2CF76A870031D33A /* Gravatar Demo.entitlements */,
 				49C5D60C2B5B33E20067C2A8 /* Demo */,
 				4948C4E92B61C3FD00AC4875 /* Gravatar-SDK-iOS */,
-				3FA7E38C2D55911800CE5611 /* Gravatar Demo App Clip */,
+				3FA7E38C2D55911800CE5611 /* Demo-App-Clip */,
 				49C5D60B2B5B33E20067C2A8 /* Products */,
 				4948C4EA2B61C41100AC4875 /* Frameworks */,
 			);
@@ -339,7 +339,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				3FA7E38C2D55911800CE5611 /* Gravatar Demo App Clip */,
+				3FA7E38C2D55911800CE5611 /* Demo-App-Clip */,
 			);
 			name = "Gravatar Demo App Clip";
 			packageProductDependencies = (
@@ -610,13 +610,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = "Gravatar Demo App Clip/Gravatar_Demo_App_Clip.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "${SRCROOT}/Demo-App-Clip/Gravatar_Demo_App_Clip.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"Gravatar Demo App Clip/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"${SRCROOT}/Demo-App-Clip/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "Gravatar Demo App Clip/Info.plist";
+				INFOPLIST_FILE = "${SRCROOT}/Demo-App-Clip/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Gravatar Demo";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -642,13 +642,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = "Gravatar Demo App Clip/Gravatar_Demo_App_Clip.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "${SRCROOT}/Demo-App-Clip/Gravatar_Demo_App_Clip.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"Gravatar Demo App Clip/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"${SRCROOT}/Demo-App-Clip/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "Gravatar Demo App Clip/Info.plist";
+				INFOPLIST_FILE = "${SRCROOT}/Demo-App-Clip/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Gravatar Demo";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
