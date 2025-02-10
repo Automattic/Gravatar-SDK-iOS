@@ -5,6 +5,8 @@
 	<key>com.apple.developer.associated-domains</key>
 	<array>
 		<string>appclips:gravatar.com</string>
+		<string>applinks:gravatar.com</string>
+		<string>webcredentials:gravatar.com</string>
 	</array>
 	<key>com.apple.developer.parent-application-identifiers</key>
 	<array>
