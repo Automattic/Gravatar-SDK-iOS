@@ -235,6 +235,15 @@
 			path = SwiftUI;
 			sourceTree = "<group>";
 		};
+		3FE19E832D597A2B00B09D94 /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				3FD4781E2C50D6FD0071B8B9 /* Base.xcconfig */,
+				3FD478232C51D9280071B8B9 /* Enterprise.xcconfig */,
+			);
+			path = Config;
+			sourceTree = "<group>";
+		};
 		4948C4EA2B61C41100AC4875 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -282,6 +291,7 @@
 		49C5D6012B5B33E20067C2A8 = {
 			isa = PBXGroup;
 			children = (
+				3FE19E832D597A2B00B09D94 /* Config */,
 				49C5D60C2B5B33E20067C2A8 /* Demo */,
 				4948C4E92B61C3FD00AC4875 /* Gravatar-SDK-iOS */,
 				3FA7E38C2D55911800CE5611 /* Demo-App-Clip */,
@@ -302,8 +312,6 @@
 		49C5D60C2B5B33E20067C2A8 /* Demo */ = {
 			isa = PBXGroup;
 			children = (
-				3FD4781E2C50D6FD0071B8B9 /* Base.xcconfig */,
-				3FD478232C51D9280071B8B9 /* Enterprise.xcconfig */,
 				1E3FA23F2C74B8CC002901F2 /* Secrets.swift */,
 				495775E02B5B34970082812A /* Gravatar-Demo */,
 				498060C82C6FF20B00C6848C /* Localizations */,
