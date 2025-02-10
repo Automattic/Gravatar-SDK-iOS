@@ -19,6 +19,9 @@ public protocol ImageCaching: Sendable {
     /// `.inProgress(task)`  is used by the image downloader to check if there's already an ongoing download task for the same image. If yes, the image
     /// downloader  awaits that ask instead of starting a new one.
     func getEntry(with key: String) -> CacheEntry?
+
+    /// Clears all entries from the cache
+    func clear()
 }
 
 /// The default `ImageCaching` used by this SDK.
@@ -41,9 +44,13 @@ public struct ImageCache: ImageCaching {
     public func getEntry(with key: String) -> CacheEntry? {
         cache[key]
     }
+
+    public func clear() {
+        cache.removeAllObjects()
+    }
 }
 
-package class NSCacheForImage: NSCache<NSString, CacheEntryObject>, @unchecked Sendable {}
+private class NSCacheForImage: NSCache<NSString, CacheEntryObject>, @unchecked Sendable {}
 
 /// ImageCache can save an in-progress task of retreiving an image from remote.
 /// This enum represent both possible states for an image in the cache system.
@@ -54,13 +61,13 @@ public enum CacheEntry: Sendable {
     case ready(UIImage)
 }
 
-package final class CacheEntryObject: Sendable {
+private final class CacheEntryObject: Sendable {
     let entry: CacheEntry
     init(entry: CacheEntry) { self.entry = entry }
 }
 
 extension NSCache where KeyType == NSString, ObjectType == CacheEntryObject {
-    package subscript(_ key: String) -> CacheEntry? {
+    fileprivate subscript(_ key: String) -> CacheEntry? {
         get {
             let key = key as NSString
             let value = object(forKey: key)

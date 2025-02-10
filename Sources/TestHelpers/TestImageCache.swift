@@ -2,7 +2,7 @@ import Gravatar
 import UIKit
 
 package final class TestImageCache: ImageCaching, @unchecked Sendable {
-    private let cache = NSCacheForImage()
+    private var cache: [String: CacheEntry] = [:]
 
     package typealias CacheMessage = (operation: CacheMessageType, key: String)
     private var cacheMessages = [CacheMessage]()
@@ -19,26 +19,26 @@ package final class TestImageCache: ImageCaching, @unchecked Sendable {
     package var setTaskCallsCount: Int { messageCount(type: .inProgress) }
 
     // Serial queue to synchronize access to shared mutable state
-    private let accessQueue = DispatchQueue(label: "com.testImageCache.accessQueue")
+    private let accessQueue = DispatchQueue(label: "com.testImageCache.accessQueue", attributes: .concurrent)
 
     package init() {}
 
     package func setEntry(_ entry: Gravatar.CacheEntry?, for key: String) {
-        accessQueue.sync {
-            var message: CacheMessage
-            defer { cacheMessages.append(message) }
+        accessQueue.async(flags: .barrier) {
             guard let entry else {
-                cache[key] = nil
-                message = (operation: .setToNil, key: key)
+                self.cache[key] = nil
+                self.cacheMessages.append((operation: .setToNil, key: key))
                 return
             }
+
             switch entry {
             case .inProgress:
-                message = (operation: .inProgress, key: key)
+                self.cacheMessages.append((operation: .inProgress, key: key))
             case .ready:
-                message = (operation: .ready, key: key)
+                self.cacheMessages.append((operation: .ready, key: key))
             }
-            cache[key] = entry
+
+            self.cache[key] = entry
         }
     }
 
@@ -46,6 +46,12 @@ package final class TestImageCache: ImageCaching, @unchecked Sendable {
         accessQueue.sync {
             cacheMessages.append(CacheMessage(operation: .get, key: key))
             return cache[key]
+        }
+    }
+
+    package func clear() {
+        accessQueue.async(flags: .barrier) {
+            self.cache.removeAll()
         }
     }
 
