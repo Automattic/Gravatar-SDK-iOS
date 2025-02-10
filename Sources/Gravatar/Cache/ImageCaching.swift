@@ -28,7 +28,7 @@ public struct ImageCache: ImageCaching {
     /// The default cache used by the image dowloader.
     public static let shared: ImageCaching = ImageCache()
 
-    public init() {}
+    private init() {}
 
     public func setEntry(_ entry: CacheEntry?, for key: String) {
         if let entry {
@@ -43,7 +43,7 @@ public struct ImageCache: ImageCaching {
     }
 }
 
-private class NSCacheForImage: NSCache<NSString, CacheEntryObject>, @unchecked Sendable {}
+package class NSCacheForImage: NSCache<NSString, CacheEntryObject>, @unchecked Sendable {}
 
 /// ImageCache can save an in-progress task of retreiving an image from remote.
 /// This enum represent both possible states for an image in the cache system.
@@ -54,13 +54,13 @@ public enum CacheEntry: Sendable {
     case ready(UIImage)
 }
 
-private final class CacheEntryObject: Sendable {
+package final class CacheEntryObject: Sendable {
     let entry: CacheEntry
     init(entry: CacheEntry) { self.entry = entry }
 }
 
 extension NSCache where KeyType == NSString, ObjectType == CacheEntryObject {
-    fileprivate subscript(_ key: String) -> CacheEntry? {
+    package subscript(_ key: String) -> CacheEntry? {
         get {
             let key = key as NSString
             let value = object(forKey: key)

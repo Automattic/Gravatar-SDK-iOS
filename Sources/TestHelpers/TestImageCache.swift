@@ -2,7 +2,7 @@ import Gravatar
 import UIKit
 
 package final class TestImageCache: ImageCaching, @unchecked Sendable {
-    let imageCache = ImageCache()
+    private let cache = NSCacheForImage()
 
     package typealias CacheMessage = (operation: CacheMessageType, key: String)
     private var cacheMessages = [CacheMessage]()
@@ -28,7 +28,7 @@ package final class TestImageCache: ImageCaching, @unchecked Sendable {
             var message: CacheMessage
             defer { cacheMessages.append(message) }
             guard let entry else {
-                imageCache.setEntry(nil, for: key)
+                cache[key] = nil
                 message = (operation: .setToNil, key: key)
                 return
             }
@@ -38,14 +38,14 @@ package final class TestImageCache: ImageCaching, @unchecked Sendable {
             case .ready:
                 message = (operation: .ready, key: key)
             }
-            imageCache.setEntry(entry, for: key)
+            cache[key] = entry
         }
     }
 
     package func getEntry(with key: String) -> Gravatar.CacheEntry? {
         accessQueue.sync {
             cacheMessages.append(CacheMessage(operation: .get, key: key))
-            return imageCache.getEntry(with: key)
+            return cache[key]
         }
     }
 
