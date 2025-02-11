@@ -34,6 +34,9 @@
 		495775E42B5B34970082812A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 495775E32B5B34970082812A /* SceneDelegate.swift */; };
 		495775EE2B5B34980082812A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 495775EC2B5B34980082812A /* LaunchScreen.storyboard */; };
 		497783312BAC8A99008C29F7 /* GravatarUI in Frameworks */ = {isa = PBXBuildFile; productRef = 497783302BAC8A99008C29F7 /* GravatarUI */; };
+		4982E2F22D5C12780054D505 /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E3FA23F2C74B8CC002901F2 /* Secrets.swift */; };
+		4982E2F42D5C12AD0054D505 /* Gravatar in Frameworks */ = {isa = PBXBuildFile; productRef = 4982E2F32D5C12AD0054D505 /* Gravatar */; };
+		4982E2F62D5C12AD0054D505 /* GravatarUI in Frameworks */ = {isa = PBXBuildFile; productRef = 4982E2F52D5C12AD0054D505 /* GravatarUI */; };
 		49EFFB542C51A47C0086589A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 495775EA2B5B34980082812A /* Assets.xcassets */; };
 		9133058E2C91F8D1009F5C0B /* DemoImageCropperViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9133058D2C91F2C8009F5C0B /* DemoImageCropperViewController.swift */; };
 		914AC0192BD7FF08005DA4A5 /* DemoBaseProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914AC0172BD7FF08005DA4A5 /* DemoBaseProfileViewController.swift */; };
@@ -190,6 +193,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4982E2F62D5C12AD0054D505 /* GravatarUI in Frameworks */,
+				4982E2F42D5C12AD0054D505 /* Gravatar in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -351,6 +356,8 @@
 			);
 			name = "Gravatar Demo App Clip";
 			packageProductDependencies = (
+				4982E2F32D5C12AD0054D505 /* Gravatar */,
+				4982E2F52D5C12AD0054D505 /* GravatarUI */,
 			);
 			productName = "Gravatar Demo App Clip";
 			productReference = 3FA7E38B2D55911800CE5611 /* Gravatar Demo App Clip.app */;
@@ -392,6 +399,7 @@
 				TargetAttributes = {
 					3FA7E38A2D55911800CE5611 = {
 						CreatedOnToolsVersion = 16.2;
+						LastSwiftMigration = 1620;
 					};
 					495775DE2B5B34970082812A = {
 						CreatedOnToolsVersion = 15.1;
@@ -484,6 +492,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4982E2F22D5C12780054D505 /* Secrets.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -618,15 +627,15 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = "${SRCROOT}/Demo-App-Clip/Demo-App-Clip.entitlements";
 				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_ASSET_PATHS = "\"${SRCROOT}/Demo-App-Clip/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = PZYM8XX95Q;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "${SRCROOT}/Demo-App-Clip/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Gravatar Demo";
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -640,6 +649,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "Gravatar Demo App Clip Development";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -650,14 +660,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = "${SRCROOT}/Demo-App-Clip/Demo-App-Clip.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_ASSET_PATHS = "\"${SRCROOT}/Demo-App-Clip/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "${SRCROOT}/Demo-App-Clip/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Gravatar Demo";
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -897,6 +907,14 @@
 			productName = Gravatar;
 		};
 		497783302BAC8A99008C29F7 /* GravatarUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = GravatarUI;
+		};
+		4982E2F32D5C12AD0054D505 /* Gravatar */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Gravatar;
+		};
+		4982E2F52D5C12AD0054D505 /* GravatarUI */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = GravatarUI;
 		};
