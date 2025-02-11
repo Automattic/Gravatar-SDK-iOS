@@ -4,7 +4,7 @@ import UIKit
 package final class TestImageCache: ImageCaching, @unchecked Sendable {
     private var cache: [String: CacheEntry] = [:]
 
-    package typealias CacheMessage = (operation: CacheMessageType, key: String)
+    typealias CacheMessage = (operation: CacheMessageType, key: String?)
     private var cacheMessages = [CacheMessage]()
 
     package enum CacheMessageType {
@@ -12,14 +12,17 @@ package final class TestImageCache: ImageCaching, @unchecked Sendable {
         case inProgress
         case ready
         case get
+        case clear
     }
 
     package var getImageCallsCount: Int { messageCount(type: .get) }
     package var setImageCallsCount: Int { messageCount(type: .ready) }
     package var setTaskCallsCount: Int { messageCount(type: .inProgress) }
+    package var setToNilCount: Int { messageCount(type: .setToNil) }
+    package var clearCallsCount: Int { messageCount(type: .clear) }
 
     // Serial queue to synchronize access to shared mutable state
-    private let accessQueue = DispatchQueue(label: "com.testImageCache.accessQueue", attributes: .concurrent)
+    private let accessQueue = DispatchQueue(label: "com.testImageCache.accessQueue")
 
     package init() {}
 
@@ -44,7 +47,7 @@ package final class TestImageCache: ImageCaching, @unchecked Sendable {
 
     package func getEntry(with key: String) -> Gravatar.CacheEntry? {
         accessQueue.sync {
-            cacheMessages.append(CacheMessage(operation: .get, key: key))
+            self.cacheMessages.append((operation: .get, key: key))
             return cache[key]
         }
     }
@@ -52,6 +55,7 @@ package final class TestImageCache: ImageCaching, @unchecked Sendable {
     package func clear() {
         accessQueue.async(flags: .barrier) {
             self.cache.removeAll()
+            self.cacheMessages.append((operation: .clear, key: nil))
         }
     }
 
