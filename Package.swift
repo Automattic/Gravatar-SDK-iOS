@@ -73,14 +73,6 @@ let package = Package(
                 .swiftLanguageMode(.v5),
                 .enableUpcomingFeature("StrictConcurrency")
             ]
-        ),
-        .testTarget(
-            name: "TestHelpersTests",
-            dependencies: ["TestHelpers", "Gravatar"],
-            swiftSettings: [
-                .swiftLanguageMode(.v5),
-                .enableUpcomingFeature("StrictConcurrency")
-            ]
-        ),
+        )
     ]
 )
