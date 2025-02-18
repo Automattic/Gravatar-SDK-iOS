@@ -19,9 +19,6 @@ public protocol ImageCaching: Sendable {
     /// `.inProgress(task)`  is used by the image downloader to check if there's already an ongoing download task for the same image. If yes, the image
     /// downloader  awaits that ask instead of starting a new one.
     func getEntry(with key: String) -> CacheEntry?
-
-    /// Clears all entries from the cache
-    func clear()
 }
 
 /// The default `ImageCaching` used by this SDK.
@@ -45,7 +42,7 @@ public struct ImageCache: ImageCaching {
         cache[key]
     }
 
-    public func clear() {
+    package func clear() {
         cache.removeAllObjects()
     }
 }

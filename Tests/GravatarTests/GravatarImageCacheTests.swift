@@ -6,8 +6,7 @@ final class GravatarImageCacheTests: XCTestCase {
     private let key = "ImageKey"
 
     override func tearDown() {
-        super.tearDown()
-        ImageCache.shared.clear() // Ensure cache is reset between tests
+        (ImageCache.shared as! ImageCache).clear() // Ensure cache is reset between tests
     }
 
     func testSetAndGet() {
