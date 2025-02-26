@@ -41,12 +41,12 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
     private let customImageEditor: ImageEditorBlock<ImageEditor>?
     private let contentLayoutProvider: AvatarPickerContentLayoutProviding
     private let avatarUpdatedHandler: (() -> Void)?
-
     init(
         email: Email,
         scope: QuickEditorScopeType,
         token: String? = nil,
         isPresented: Binding<Bool>,
+        imageToUpload: UIImage? = nil,
         customImageEditor: ImageEditorBlock<ImageEditor>? = nil,
         contentLayoutProvider: AvatarPickerContentLayoutProviding = AvatarPickerContentLayoutType.vertical,
         avatarUpdatedHandler: (() -> Void)? = nil
@@ -58,7 +58,7 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
         self.contentLayoutProvider = contentLayoutProvider
         self.externalToken = token
         self.avatarUpdatedHandler = avatarUpdatedHandler
-        self._model = StateObject(wrappedValue: AvatarPickerViewModel(email: email, authToken: token))
+        self._model = StateObject(wrappedValue: AvatarPickerViewModel(email: email, authToken: token, imageToUpload: imageToUpload))
     }
 
     let authorizationFinishedNotification = NotificationCenter.default.publisher(for: .authorizationFinished)

@@ -40,10 +40,11 @@ class AvatarPickerViewModel: ObservableObject {
     @ObservedObject var toastManager: ToastManager = .init()
     private var cancellables = Set<AnyCancellable>()
     private(set) var compensatingFetchProfileTask: Task<Void, Never>? // for unit testing
-
+    private var imageToUpload: UIImage?
     init(
         email: Email,
         authToken: String?,
+        imageToUpload: UIImage? = nil,
         profileService: ProfileService? = nil,
         avatarService: AvatarService? = nil,
         imageDownloader: ImageDownloader? = nil
@@ -51,6 +52,7 @@ class AvatarPickerViewModel: ObservableObject {
         self.email = email
         avatarIdentifier = .email(email)
         self.authToken = authToken
+        self.imageToUpload = imageToUpload
         self.profileService = profileService ?? ProfileService()
         self.avatarService = avatarService ?? AvatarService()
         self.imageDownloader = imageDownloader ?? ImageDownloadService()
@@ -69,7 +71,7 @@ class AvatarPickerViewModel: ObservableObject {
         self.profileService = profileService ?? ProfileService()
         self.avatarService = avatarService ?? AvatarService()
         self.imageDownloader = imageDownloader ?? ImageDownloadService()
-
+        self.imageToUpload = nil
         if let selectedImageID {
             self.selectedAvatarResult = .success(selectedImageID)
         }
@@ -237,6 +239,9 @@ class AvatarPickerViewModel: ObservableObject {
             }
             isAvatarsLoading = false
             gridResponseStatus = .success(())
+            if let imageToUpload {
+                await upload(imageToUpload, shouldSquareImage: true)
+            }
         } catch {
             gridResponseStatus = .failure(error)
             isAvatarsLoading = false

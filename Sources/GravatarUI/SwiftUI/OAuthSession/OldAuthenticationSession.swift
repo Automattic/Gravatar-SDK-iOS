@@ -56,6 +56,7 @@ final class OldAuthenticationSession: NSObject, Sendable {
     private func authSessionCompletionHandler(with continuation: CheckedContinuation<URL, any Error>) -> ASWebAuthenticationSession.CompletionHandler {
         { callbackURL, error in
             if let error {
+                print(String(describing: error))
                 continuation.resume(throwing: error)
             } else if let callbackURL {
                 continuation.resume(returning: callbackURL)

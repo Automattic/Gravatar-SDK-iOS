@@ -73,6 +73,7 @@ extension View {
         email: String,
         authToken: String? = nil,
         scope: QuickEditorScope,
+        imageToUpload: UIImage? = nil,
         customImageEditor: ImageEditorBlock<some ImageEditorView>? = nil as NoCustomEditorBlock?,
         avatarUpdatedHandler: (() -> Void)? = nil,
         onDismiss: (() -> Void)? = nil
@@ -84,6 +85,7 @@ extension View {
                 scope: scope.scopeType,
                 token: authToken,
                 isPresented: isPresented,
+                imageToUpload: imageToUpload,
                 customImageEditor: customImageEditor,
                 contentLayoutProvider: config.contentLayout,
                 avatarUpdatedHandler: avatarUpdatedHandler
