@@ -13,6 +13,20 @@
 		497783312BAC8A99008C29F7 /* GravatarUI in Frameworks */ = {isa = PBXBuildFile; productRef = 497783302BAC8A99008C29F7 /* GravatarUI */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXBuildRule section */
+		49E093822D8E1BEB00714567 /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.proxy.script;
+			fileType = text.plist;
+			inputFiles = (
+			);
+			isEditable = 1;
+			outputFiles = (
+			);
+			script = "# builtin-copyPlist\n";
+		};
+/* End PBXBuildRule section */
+
 /* Begin PBXFileReference section */
 		1E09931F2CF76A870031D33A /* Gravatar Demo.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Gravatar Demo.entitlements"; sourceTree = "<group>"; };
 		1E3FA23D2C74B7B5002901F2 /* Secrets.tpl */ = {isa = PBXFileReference; lastKnownFileType = text; path = Secrets.tpl; sourceTree = "<group>"; };
@@ -46,7 +60,7 @@
 			membershipExceptions = (
 				"Gravatar-Demo.Base.xcconfig",
 				"Gravatar-Demo.Release.xcconfig",
-				Info.plist,
+				Resources/Info.plist,
 			);
 			target = 495775DE2B5B34970082812A /* Gravatar Demo */;
 		};
@@ -129,6 +143,7 @@
 				495775DD2B5B34970082812A /* Resources */,
 			);
 			buildRules = (
+				49E093822D8E1BEB00714567 /* PBXBuildRule */,
 			);
 			dependencies = (
 			);
@@ -280,7 +295,7 @@
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = PZYM8XX95Q;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "Demo/Gravatar-Demo/Info.plist";
+				INFOPLIST_FILE = "Demo/Gravatar-Demo/Resources/Info.plist";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Accessing camera to create an avatar.";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Accessing photo library to save the avatar.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -313,7 +328,7 @@
 				CODE_SIGN_STYLE = Manual;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "Demo/Gravatar-Demo/Info.plist";
+				INFOPLIST_FILE = "Demo/Gravatar-Demo/Resources/Info.plist";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Accessing camera to create an avatar.";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Accessing photo library to save the avatar.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
