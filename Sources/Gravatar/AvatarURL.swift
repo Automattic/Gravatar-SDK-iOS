@@ -4,7 +4,6 @@ public struct AvatarURL {
     public let canonicalURL: URL
     public let hash: String
     public let url: URL
-
     let options: AvatarQueryOptions
     let components: URLComponents
 
