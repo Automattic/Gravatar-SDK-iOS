@@ -1,5 +1,5 @@
 #include "Gravatar-Demo.Base.xcconfig"
-#include "../Enterprise.xcconfig"
+#include "../../Enterprise.xcconfig"
 
 // Declared explicitly rather than by building on top of what's defined in Base so it can be read by other tools such as Fastlane
 PRODUCT_BUNDLE_IDENTIFIER = com.automattic.gravatar-sdk-demo-uikit.prototype-build
