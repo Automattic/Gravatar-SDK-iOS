@@ -32,6 +32,7 @@ final class OldAuthenticationSession: NSObject, Sendable {
             Task { @MainActor in
                 await sessionStorage.save(session)
                 session.presentationContextProvider = self
+                session.prefersEphemeralWebBrowserSession = true
                 session.start()
             }
         }
