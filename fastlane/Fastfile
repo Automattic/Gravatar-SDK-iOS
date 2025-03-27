@@ -96,6 +96,8 @@ platform :ios do
       # See:
       # - https://github.com/Automattic/Gravatar-SDK-iOS/pull/676
       # - https://buildkite.com/automattic/gravatar-sdk-ios/builds/2135/steps?sid=0195d364-32bb-47c4-a10c-0da0a39806ce
+      # - https://github.com/fastlane/fastlane/issues/29256
+      # - https://github.com/CocoaPods/Xcodeproj/pull/985
       export_options: {
         provisioningProfiles: {
           "#{bundle_id_prototype_build!}": read_from_xcconfig!(
