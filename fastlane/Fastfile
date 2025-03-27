@@ -89,6 +89,20 @@ platform :ios do
       scheme: scheme,
       configuration: 'Release',
       export_method: 'enterprise',
+      # Somehow, switching to Xcode synchronized folders broke Fastlane's ability to generate the export_options automatically.
+      # As such, we specify them manually for the time being.
+      #
+      # See:
+      # - https://github.com/Automattic/Gravatar-SDK-iOS/pull/676
+      # - https://buildkite.com/automattic/gravatar-sdk-ios/builds/2135/steps?sid=0195d364-32bb-47c4-a10c-0da0a39806ce
+      export_options: {
+        # FIXME: Compute the value
+        provisioningProfiles: {
+          "com.automattic.gravatar-sdk-demo-uikit.prototype-build": "match InHouse com.automattic.gravatar-sdk-demo-uikit.prototype-build"
+        },
+        method: 'enterprise',
+        signingSytle: 'manual'
+      },
       output_directory: ARTIFACTS_FOLDER,
       xcargs: [
         "CURRENT_PROJECT_VERSION=#{build_number}",
