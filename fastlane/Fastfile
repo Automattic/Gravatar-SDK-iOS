@@ -12,7 +12,7 @@ DERIVED_DATA_FOLDER = File.join(BUILD_FOLDER, 'derived-data')
 ARTIFACTS_FOLDER = File.join(BUILD_FOLDER, 'artifacts')
 XCODEPROJ_PATH = File.join(PROJECT_ROOT_FOLDER, 'Gravatar-Demo.xcodeproj')
 DEMO_APPS_SOURCES_FOLDER = File.join(PROJECT_ROOT_FOLDER, 'Demo')
-XCCONFIG_PROTOTYPE_BUILD = File.join(DEMO_APPS_SOURCES_FOLDER, 'Gravatar-Demo', 'Gravatar-Demo.Release.xcconfig')
+XCCONFIG_PROTOTYPE_BUILD = File.join(DEMO_APPS_SOURCES_FOLDER, 'Gravatar-Demo', 'Configurations', 'Gravatar-Demo.Release.xcconfig')
 COMMON_XCARGS = ['-skipPackagePluginValidation'].freeze # Allow SwiftPM plugins (e.g. swiftlint) called from Xcode to be used on CI without prior manual approval
 
 GITHUB_REPO = 'Automattic/Gravatar-SDK-iOS'
@@ -63,7 +63,7 @@ platform :ios do
   end
 
   desc 'Builds the Gravatar-Demo project with a specific scheme'
-  lane :build_demo do |scheme: 'Gravatar-Demo'|
+  lane :build_demo do |scheme: 'Gravatar Demo'|
     # We only need to build for testing to ensure that the project builds.
     # There are no tests in the the Demo apps
     run_tests(
@@ -90,6 +90,24 @@ platform :ios do
       scheme: scheme,
       configuration: 'Release',
       export_method: 'enterprise',
+      # Somehow, switching to Xcode synchronized folders broke Fastlane's ability to generate the export_options automatically.
+      # As such, we specify them manually for the time being.
+      #
+      # See:
+      # - https://github.com/Automattic/Gravatar-SDK-iOS/pull/676
+      # - https://buildkite.com/automattic/gravatar-sdk-ios/builds/2135/steps?sid=0195d364-32bb-47c4-a10c-0da0a39806ce
+      # - https://github.com/fastlane/fastlane/issues/29256
+      # - https://github.com/CocoaPods/Xcodeproj/pull/985
+      export_options: {
+        provisioningProfiles: {
+          "#{bundle_id_prototype_build!}": read_from_xcconfig!(
+            key: 'PROVISIONING_PROFILE_SPECIFIER',
+            xcconfig: XCCONFIG_PROTOTYPE_BUILD
+          )
+        },
+        method: 'enterprise',
+        signingSytle: 'manual'
+      },
       output_directory: ARTIFACTS_FOLDER,
       xcargs: [
         "MARKETING_VERSION=#{pr_or_branch}",
