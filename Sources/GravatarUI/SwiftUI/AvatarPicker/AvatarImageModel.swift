@@ -24,6 +24,7 @@ struct AvatarImageModel: Hashable, Identifiable, Sendable {
         guard case .remote(let url) = source else {
             return nil
         }
+
         return URL(string: url)
     }
 
@@ -46,6 +47,17 @@ struct AvatarImageModel: Hashable, Identifiable, Sendable {
             return nil
         }
         return image
+    }
+
+    func accessibilityLabel(altText: String) -> String {
+        String(
+            format: SDKLocalizedString(
+                "Avatar.Accessibility.AvatarButton.Label",
+                value: "Avatar Image. %@",
+                comment: "Accessibility label spoken outloud by VoiceOver when an avatar is selected. The '%@' is the Alt text of the avatar image."
+            ),
+            altText
+        )
     }
 
     init(id: String, source: Source, state: State, isSelected: Bool, rating: AvatarRating, altText: String) {

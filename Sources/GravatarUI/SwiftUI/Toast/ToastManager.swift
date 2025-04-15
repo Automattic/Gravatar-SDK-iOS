@@ -8,6 +8,7 @@ class ToastManager: ObservableObject {
         let toast = ToastItem(message: message, type: type, stackingBehavior: stackingBehavior)
         dismissExistingIfNeeded(upcomingToast: toast)
         toasts.append(toast)
+        UIAccessibility.post(notification: .announcement, argument: message)
         DispatchQueue.main.asyncAfter(deadline: .now() + calculateToastDuration(for: message)) {
             self.removeToast(toast.id)
         }
@@ -34,7 +35,7 @@ class ToastManager: ObservableObject {
 
     private func calculateToastDuration(for message: String) -> TimeInterval {
         let baseTime: TimeInterval = 2.0
-        let timePerCharacter: TimeInterval = 0.03
+        let timePerCharacter: TimeInterval = 0.05
         return baseTime + timePerCharacter * Double(message.count)
     }
 }

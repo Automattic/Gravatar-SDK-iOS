@@ -60,8 +60,15 @@ struct AvatarPickerAvatarView: View {
                 case .loaded:
                     EmptyView()
                 }
-            }.onTapGesture {
+            }
+            .onTapGesture {
                 onAvatarTap(avatar)
+            }
+            .accessibilityRepresentation {
+                Button("", action: { onAvatarTap(avatar) })
+                    .accessibilityLabel(Text(avatar.accessibilityLabel(altText: avatar.altText)))
+                    .accessibilityHint(shouldSelect() ? "" : .accessibilityAvatarHint)
+                    .accessibilityAddTraits(shouldSelect() ? .isSelected : [])
             }
             switch avatar.state {
             case .loaded:
@@ -78,6 +85,8 @@ struct AvatarPickerAvatarView: View {
             .background(Color(uiColor: UIColor.gravatarBlack.withAlphaComponent(0.4)))
             .cornerRadius(2)
             .padding(CGFloat.DS.Padding.half)
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(Text(String.accessibilityAvatarOptionsLabel))
     }
 
     func actionsMenu() -> some View {
@@ -175,13 +184,26 @@ extension AvatarRating {
     }
 }
 
+extension String {
+    fileprivate static let accessibilityAvatarHint = SDKLocalizedString(
+        "Avatar.Accessibility.AvatarButton.Hint",
+        value: "Double tap to select avatar",
+        comment: "Hint spoken outloud by VoiceOver when an avatar is selected"
+    )
+    fileprivate static let accessibilityAvatarOptionsLabel = SDKLocalizedString(
+        "Avatar.Accessibility.AvatarButton.OptionsLabel",
+        value: "Avatar options",
+        comment: "Accessibility label spoken outloud by VoiceOver when the avatar options button is selected"
+    )
+}
+
 #Preview {
     let avatar = AvatarImageModel.preview_init(
         id: "1",
         source: .remote(url: "https://gravatar.com/userimage/110207384/aa5f129a2ec75162cee9a1f0c472356a.jpeg?size=256"),
         rating: .pg
     )
-    return AvatarPickerAvatarView(avatar: avatar, maxLength: AvatarGridConstants.maxAvatarWidth, minLength: AvatarGridConstants.minAvatarWidth) {
+    AvatarPickerAvatarView(avatar: avatar, maxLength: AvatarGridConstants.maxAvatarWidth, minLength: AvatarGridConstants.minAvatarWidth) {
         false
     } onAvatarTap: { _ in
     } onFailedUploadTapped: { _ in
