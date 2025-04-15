@@ -465,6 +465,22 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
         .padding(.top, AvatarPicker.Constants.profileViewTopSpacing / 2)
         .padding(.bottom, AvatarPicker.Constants.vStackVerticalSpacing)
         .padding(.horizontal, AvatarPicker.Constants.horizontalPadding)
+        .accessibilityRepresentation {
+            if let profileModel = model.profileModel {
+                Button("", action: {  })
+                    .accessibilityElement(children: .ignore)
+                    .accessibilityLabel(
+                        profileModel.displayName
+                        + (profileModel.location.isEmpty ? "" : ". \(profileModel.location)")
+                    )
+                    .accessibilityHint(Localized.Accessibility.profileCardHint)
+                    .accessibilityAction {
+                        openProfileInSafari()
+                    }
+            } else {
+                EmptyView()
+            }
+        }
     }
 }
 
@@ -599,6 +615,14 @@ enum AvatarPicker {
                     )
                 }
             }
+        }
+
+        enum Accessibility {
+            static let profileCardHint = SDKLocalizedString(
+                "AvatarPicker.Accessibility.Hint",
+                value: "Double tap to open the full profile on a web view",
+                comment: "Accessibility label spoken outloud by VoiceOver when the profile card is selected"
+            )
         }
     }
 }
