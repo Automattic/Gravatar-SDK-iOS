@@ -467,11 +467,11 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
         .padding(.horizontal, AvatarPicker.Constants.horizontalPadding)
         .accessibilityRepresentation {
             if let profileModel = model.profileModel {
-                Button("", action: {  })
+                Button("", action: {})
                     .accessibilityElement(children: .ignore)
                     .accessibilityLabel(
                         profileModel.displayName
-                        + (profileModel.location.isEmpty ? "" : ". \(profileModel.location)")
+                            + (profileModel.location.isEmpty ? "" : ". \(profileModel.location)")
                     )
                     .accessibilityHint(Localized.Accessibility.profileCardHint)
                     .accessibilityAction {
