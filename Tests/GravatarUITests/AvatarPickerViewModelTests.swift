@@ -98,6 +98,46 @@ final class AvatarPickerViewModelTests {
     }
 
     @Test
+    func testSelectAvatarFailNoInternet() async throws {
+        let toSelectID = "9862792c565394"
+        let model = Self.createModel(session: URLSessionAvatarPickerMock(shouldSimulateNoNetworkConnection: true))
+        model.grid.setAvatars([Self.createImageModel(id: toSelectID, source: .remote(url: ""))])
+
+        await confirmation(expectedCount: 1) { confirmation in
+            model.toastManager.$toasts.sink { toasts in
+                #expect(toasts.count <= 1)
+                if toasts.count == 1 {
+                    #expect(toasts.first?.message == URLSessionAvatarPickerMock.internetLostErrorMessage)
+                    #expect(toasts.first?.type == .error)
+                    confirmation.confirm()
+                }
+            }.store(in: &cancellables)
+            let avatar = await model.selectAvatar(with: toSelectID)
+            #expect(avatar == nil)
+        }
+    }
+
+    @Test
+    func testSelectAvatarFailInvalidHTTPStatusCode() async throws {
+        let toSelectID = "9862792c565394"
+        let model = Self.createModel(session: URLSessionAvatarPickerMock(returnErrorCode: 400))
+        model.grid.setAvatars([Self.createImageModel(id: toSelectID, source: .remote(url: ""))])
+
+        await confirmation(expectedCount: 1) { confirmation in
+            model.toastManager.$toasts.sink { toasts in
+                #expect(toasts.count <= 1)
+                if toasts.count == 1 {
+                    #expect(toasts.first?.message == AvatarPickerViewModel.Localized.avatarUpdateFail)
+                    #expect(toasts.first?.type == .error)
+                    confirmation.confirm()
+                }
+            }.store(in: &cancellables)
+            let avatar = await model.selectAvatar(with: toSelectID)
+            #expect(avatar == nil)
+        }
+    }
+
+    @Test
     func testFetchOriginalSizeAvatarSuccess() async throws {
         await model.refresh()
         let avatar = try #require(model.grid.avatars.first, "No avatar found")
@@ -346,8 +386,7 @@ final class AvatarPickerViewModelTests {
     func changeAvatarRatingReturnsError(httpStatus: HTTPStatus) async throws {
         let testAvatarID = "991a7b71cf9f34..."
         model = Self.createModel(session: URLSessionAvatarPickerMock(returnErrorCode: httpStatus.rawValue))
-
-        await model.refresh()
+        model.grid.setAvatars([Self.createImageModel(id: testAvatarID, source: .remote(url: ""))])
         let avatar = try #require(model.grid.avatars.first(where: { $0.id == testAvatarID }), "No avatar found")
         try #require(avatar.rating == .g)
 
@@ -388,7 +427,7 @@ final class AvatarPickerViewModelTests {
 
     func testUpdateAltTextError(httpStatus: HTTPStatus) async throws {
         model = Self.createModel(session: URLSessionAvatarPickerMock(returnErrorCode: httpStatus.rawValue))
-        await model.refresh()
+        model.grid.setAvatars([Self.createImageModel(id: "1", source: .remote(url: ""))])
         let avatar = model.grid.avatars[0]
         let originalAltText = avatar.altText
 
@@ -422,47 +461,48 @@ extension AvatarPickerViewModelTests {
 }
 
 final class URLSessionAvatarPickerMock: URLSessionProtocol {
+    static let internetLostErrorMessage: String = "The network connection was lost"
     let returnErrorCode: Int?
+    let shouldSimulateNoNetworkConnection: Bool
 
-    init(returnErrorCode: Int? = nil) {
+    init(returnErrorCode: Int? = nil, shouldSimulateNoNetworkConnection: Bool = false) {
         self.returnErrorCode = returnErrorCode
+        self.shouldSimulateNoNetworkConnection = shouldSimulateNoNetworkConnection
     }
 
     func data(for request: URLRequest) async throws -> (Data, URLResponse) {
+        if shouldSimulateNoNetworkConnection {
+            throw NSError(
+                domain: NSURLErrorDomain,
+                code: -1005,
+                userInfo: [NSLocalizedDescriptionKey: URLSessionAvatarPickerMock.internetLostErrorMessage]
+            )
+        }
+
+        if let returnErrorCode {
+            return (Data("".utf8), HTTPURLResponse.errorResponse(code: returnErrorCode))
+        }
+
         if request.isSetAvatarForEmailRequest {
             return (Bundle.postAvatarSelectedJsonData, HTTPURLResponse.successResponse()) // Avatars data
         }
 
         if request.isDeleteAvatarRequest {
-            if let returnErrorCode {
-                return (Data("".utf8), HTTPURLResponse.errorResponse(code: returnErrorCode))
-            } else {
-                return (Data("".utf8), HTTPURLResponse.successResponse())
-            }
+            return (Data("".utf8), HTTPURLResponse.successResponse())
         }
 
         if request.isSetAvatarRatingRequest {
-            if let returnErrorCode {
-                return (Data("".utf8), HTTPURLResponse.errorResponse(code: returnErrorCode))
-            } else {
-                return (Bundle.setRatingJsonData, HTTPURLResponse.successResponse()) // Avatar data
-            }
+            return (Bundle.setRatingJsonData, HTTPURLResponse.successResponse()) // Avatar data
         }
 
         if request.isSetAvatarAltTextRequest {
-            if let returnErrorCode {
-                return (Data("".utf8), HTTPURLResponse.errorResponse(code: returnErrorCode))
-            } else {
-                return (Bundle.setAltTextJsonData, HTTPURLResponse.successResponse()) // Avatar data
-            }
+            return (Bundle.setAltTextJsonData, HTTPURLResponse.successResponse()) // Avatar data
         }
 
         if request.isProfilesRequest {
             return (Bundle.fullProfileJsonData, HTTPURLResponse.successResponse()) // Profile data
         } else if request.isAvatarsRequest == true {
             return (Bundle.getAvatarsJsonData, HTTPURLResponse.successResponse()) // Avatars data
-        } else if let returnErrorCode {
-            return ("{\"error\":\"error\"".data(using: .utf8)!, HTTPURLResponse.errorResponse(code: returnErrorCode))
         }
 
         fatalError("Request not mocked: \(request.url?.absoluteString ?? "unknown request")")

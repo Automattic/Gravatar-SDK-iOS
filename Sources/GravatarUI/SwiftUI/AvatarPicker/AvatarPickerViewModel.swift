@@ -187,7 +187,13 @@ class AvatarPickerViewModel: ObservableObject {
         } catch APIError.responseError(let .invalidHTTPStatusCode(response, errorPayload)) where response.statusCode == HTTPStatus.unauthorized.rawValue {
             handleUnrecoverableClientError(APIError.responseError(reason: .invalidHTTPStatusCode(response: response, errorPayload: errorPayload)))
         } catch {
-            toastManager.showToast(Localized.avatarUpdateFail, type: .error)
+            let message: String = switch error {
+            case APIError.responseError(reason: let reason):
+                reason.urlSessionErrorLocalizedDescription ?? Localized.avatarUpdateFail
+            default:
+                Localized.avatarUpdateFail
+            }
+            toastManager.showToast(message, type: .error)
             grid.selectAvatar(withID: selectedAvatarResult?.value())
         }
         return nil
