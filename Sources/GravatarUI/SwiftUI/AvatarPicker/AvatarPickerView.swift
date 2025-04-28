@@ -67,11 +67,7 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
     public var body: some View {
         ZStack {
             VStack(spacing: 0) {
-                EmailText(email: model.email)
-                    .accumulateIntrinsicHeight()
                 noSelectedAvatarWarning()
-                    .accumulateIntrinsicHeight()
-                profileView()
                     .accumulateIntrinsicHeight()
                 ScrollView {
                     VStack(spacing: 0) {
@@ -443,20 +439,6 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
             .padding(.horizontal, Constants.horizontalPadding)
             .padding(.bottom, .DS.Padding.single)
         }
-    }
-
-    @ViewBuilder
-    private func profileView() -> some View {
-        AvatarPickerProfileViewWrapper(
-            avatarID: $model.avatarIdentifier,
-            forceRefreshAvatar: $model.forceRefreshAvatar,
-            model: $model.profileModel,
-            isLoading: $model.isProfileLoading,
-            safariURL: $safariURL
-        )
-        .padding(.top, AvatarPicker.Constants.profileViewTopSpacing / 2)
-        .padding(.bottom, AvatarPicker.Constants.vStackVerticalSpacing)
-        .padding(.horizontal, AvatarPicker.Constants.horizontalPadding)
     }
 }
 

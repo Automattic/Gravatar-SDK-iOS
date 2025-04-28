@@ -96,7 +96,7 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
 
     var body: some View {
         NavigationView {
-            Group {
+            VStack {
                 if let token {
                     editorView(with: token)
                 } else {
@@ -110,8 +110,8 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
                 },
                 preferenceKey: InnerHeightPreferenceKey.self
             )
-            .presentSafariView(identifiableURL: $safariURL, colorScheme: colorScheme)
         }
+        .presentSafariView(identifiableURL: $safariURL, colorScheme: colorScheme)
         .onAppear {
             fetchedToken = oauthSession.sessionToken(with: email)?.token
         }
@@ -132,6 +132,7 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
     @MainActor
     @ViewBuilder
     func editorView(with token: String) -> some View {
+        profileCardHeaderView()
         switch scope.scope {
         case .avatarPicker:
             AvatarPickerView(
@@ -149,10 +150,31 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
             )
         case .aboutInfoEditor:
             Text("About info view")
+            Spacer()
         }
     }
 
-    @MainActor
+    private func profileView() -> some View {
+        AvatarPickerProfileViewWrapper(
+            avatarID: $model.avatarIdentifier,
+            forceRefreshAvatar: $model.forceRefreshAvatar,
+            model: $model.profileModel,
+            isLoading: $model.isProfileLoading,
+            safariURL: $safariURL
+        )
+        .padding(.top, AvatarPicker.Constants.profileViewTopSpacing / 2)
+        .padding(.bottom, AvatarPicker.Constants.vStackVerticalSpacing)
+        .padding(.horizontal, AvatarPicker.Constants.horizontalPadding)
+    }
+
+    @ViewBuilder
+    func profileCardHeaderView() -> some View {
+        EmailText(email: model.email)
+            .accumulateIntrinsicHeight()
+        profileView()
+            .accumulateIntrinsicHeight()
+    }
+
     func noticeView() -> some View {
         VStack(spacing: 0) {
             if !isAuthenticating {
