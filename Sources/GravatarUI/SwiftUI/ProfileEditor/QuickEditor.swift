@@ -96,11 +96,21 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
 
     var body: some View {
         NavigationView {
-            if let token {
-                editorView(with: token)
-            } else {
-                noticeView()
+            Group {
+                if let token {
+                    editorView(with: token)
+                } else {
+                    noticeView()
+                }
             }
+            .gravatarNavigation(
+                actionButtonDisabled: model.profileModel?.profileURL == nil,
+                onDoneButtonPressed: {
+                    isPresented = false
+                },
+                preferenceKey: InnerHeightPreferenceKey.self
+            )
+            .presentSafariView(identifiableURL: $safariURL, colorScheme: colorScheme)
         }
         .onAppear {
             fetchedToken = oauthSession.sessionToken(with: email)?.token
@@ -173,14 +183,6 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
                     .accumulateIntrinsicHeight()
             }
         }
-        .gravatarNavigation(
-            actionButtonDisabled: model.profileModel?.profileURL == nil,
-            onDoneButtonPressed: {
-                isPresented = false
-            },
-            preferenceKey: InnerHeightPreferenceKey.self
-        )
-        .presentSafariView(identifiableURL: $safariURL, colorScheme: colorScheme)
         .task(id: email) {
             await model.fetchProfile()
         }

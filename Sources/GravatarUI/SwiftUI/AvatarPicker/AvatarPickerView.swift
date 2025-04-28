@@ -141,14 +141,6 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
                 .padding(.horizontal, Constants.horizontalPadding * 2)
         }
         .preference(key: VerticalSizeClassPreferenceKey.self, value: verticalSizeClass)
-        .gravatarNavigation(
-            actionButtonDisabled: model.profileModel?.profileURL == nil,
-            onDoneButtonPressed: {
-                isPresented = false
-            },
-            preferenceKey: InnerHeightPreferenceKey.self
-        )
-        .presentSafariView(identifiableURL: $safariURL, colorScheme: colorScheme)
         .onChange(of: model.backendSelectedAvatarURL) { _ in
             notifyAvatarSelection()
         }
