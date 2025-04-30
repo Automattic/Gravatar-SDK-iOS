@@ -75,7 +75,7 @@ public enum AvatarPickerContentLayout: AvatarPickerContentLayoutProviding, Equat
 
 extension VerticalContentPresentationStyle {
     @available(iOS 16.0, *)
-    var detents: [PresentationDetent] {
+    var detents: [QEDetent] {
         switch self {
         case .large:
             [.large]

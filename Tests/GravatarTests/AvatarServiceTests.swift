@@ -1,4 +1,4 @@
-import Gravatar
+@testable import Gravatar
 import TestHelpers
 import XCTest
 
@@ -106,13 +106,12 @@ final class AvatarServiceTests: XCTestCase {
         let response = HTTPURLResponse.successResponse(with: TestData.urlFromEmail)
         let sessionMock = URLSessionMock(returnData: ImageHelper.testImageData, response: response)
         let service = avatarService(with: sessionMock)
-        let identifier = "Test"
-        let testProcessor = TestImageProcessor(identifier: identifier)
+        let testProcessor = TestImageProcessor(image: ImageHelper.testImage)
         let options = ImageDownloadOptions(processingMethod: .custom(processor: testProcessor))
 
         let result = try await service.fetch(with: .email(TestData.email), options: options)
 
-        XCTAssertTrue(result.image.accessibilityIdentifier == identifier)
+        XCTAssertTrue(result.image.pngData() == ImageHelper.testImage.pngData())
     }
 
     func testFetchAvatarWithDefaultAvatarOption() async throws {
@@ -138,13 +137,13 @@ final class AvatarServiceTests: XCTestCase {
         decoder.dateDecodingStrategy = .iso8601
 
         let referenceAvatar = try decoder.decode(Avatar.self, from: data)
-        let avatar = try await service.update(
-            rating: .g,
-            avatarID: AvatarIdentifier.email("test@example.com"),
-            accessToken: "faketoken"
+        let avatar = try await service.updateAvatar(
+            imageID: "991a7b71cf9f34...",
+            accessToken: "faketoken",
+            rating: .general
         )
 
-        XCTAssertEqual(avatar, referenceAvatar)
+        XCTAssertTrue(avatar.isEqual(to: referenceAvatar))
     }
 
     func testSetRatingHandlesError() async {
@@ -152,10 +151,10 @@ final class AvatarServiceTests: XCTestCase {
         let service = avatarService(with: session)
 
         do {
-            try await service.update(
-                rating: .g,
-                avatarID: AvatarIdentifier.email("test@example.com"),
-                accessToken: "faketoken"
+            try await service.updateAvatar(
+                imageID: "a3f20365241",
+                accessToken: "faketoken",
+                rating: .general
             )
         } catch APIError.responseError(reason: .invalidHTTPStatusCode(let response, _)) {
             XCTAssertEqual(response.statusCode, 403)
@@ -173,13 +172,13 @@ final class AvatarServiceTests: XCTestCase {
         decoder.dateDecodingStrategy = .iso8601
 
         let referenceAvatar = try decoder.decode(Avatar.self, from: data)
-        let avatar = try await service.update(
-            altText: "Updated alt text",
-            avatarID: AvatarIdentifier.email("test@example.com"),
-            accessToken: "faketoken"
+        let avatar = try await service.updateAvatar(
+            imageID: "991a7b71cf9f34...",
+            accessToken: "faketoken",
+            altText: "Updated alt text"
         )
 
-        XCTAssertEqual(avatar, referenceAvatar)
+        XCTAssertTrue(avatar.isEqual(to: referenceAvatar))
     }
 
     func testSetAltTextSendsCorrectDataToTheServer() async throws {
@@ -188,10 +187,10 @@ final class AvatarServiceTests: XCTestCase {
         let service = avatarService(with: session)
         let expectedAltText = "Updated alt text"
 
-        try await service.update(
-            altText: expectedAltText,
-            avatarID: AvatarIdentifier.email("test@example.com"),
-            accessToken: "faketoken"
+        try await service.updateAvatar(
+            imageID: "991a7b71cf9f34...",
+            accessToken: "faketoken",
+            altText: expectedAltText
         )
 
         let requestBody = await session.request!.httpBody!
@@ -204,4 +203,15 @@ final class AvatarServiceTests: XCTestCase {
 private func avatarService(with session: URLSessionProtocol, cache: ImageCaching? = nil) -> AvatarService {
     let service = AvatarService(urlSession: session, cache: cache)
     return service
+}
+
+extension AvatarDetails {
+    func isEqual(to other: Avatar) -> Bool {
+        other.imageId == imageID &&
+            other.imageURL == imageURL &&
+            other.imageRating == imageRating &&
+            other.altText == altText &&
+            other.selected == selected &&
+            other.updatedDate == updatedDate
+    }
 }

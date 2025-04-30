@@ -33,7 +33,7 @@ final class AvatarPickerViewModelTests {
             source: source,
             state: .loaded,
             isSelected: isSelected,
-            rating: .g,
+            rating: .general,
             altText: "fake alt text"
         )
     }
@@ -67,13 +67,13 @@ final class AvatarPickerViewModelTests {
         let avatarStates: [AvatarImageModel.State] = [.loading, .loaded]
         for state in avatarStates {
             let model = AvatarPickerViewModel(avatarImageModels: [
-                .init(id: "123", source: .remote(url: "https://example.com"), state: state, isSelected: false, rating: .g, altText: ""),
+                .init(id: "123", source: .remote(url: "https://example.com"), state: state, isSelected: false, rating: .general, altText: ""),
             ])
             #expect(model.shouldDisplayNoSelectedAvatarWarning == (state == .loaded))
         }
 
         let model = AvatarPickerViewModel(avatarImageModels: [
-            .init(id: "123", source: .remote(url: "https://example.com"), state: .loaded, isSelected: false, rating: .g, altText: ""),
+            .init(id: "123", source: .remote(url: "https://example.com"), state: .loaded, isSelected: false, rating: .general, altText: ""),
         ])
         model.selectedAvatarURL = nil
         #expect(model.shouldDisplayNoSelectedAvatarWarning == true)
@@ -93,7 +93,7 @@ final class AvatarPickerViewModelTests {
                 confirmation.confirm()
             }.store(in: &cancellables)
             let selected = await model.selectAvatar(with: toSelectID)
-            #expect(selected?.id == toSelectID)
+            #expect(selected?.imageID == toSelectID)
         }
     }
 
@@ -361,7 +361,7 @@ final class AvatarPickerViewModelTests {
 
         await model.refresh()
         let avatar = try #require(model.grid.avatars.first(where: { $0.id == testAvatarID }), "No avatar found")
-        try #require(avatar.rating == .g)
+        try #require(avatar.rating == .general)
 
         await confirmation { confirmation in
             model.toastManager.$toasts.sink { toasts in
@@ -373,10 +373,10 @@ final class AvatarPickerViewModelTests {
                 }
             }.store(in: &cancellables)
 
-            await model.update(rating: .pg, for: avatar)
+            await model.update(rating: .parentalGuidance, for: avatar)
         }
         let resultAvatar = try #require(model.grid.avatars.first(where: { $0.id == testAvatarID }))
-        #expect(resultAvatar.rating == .pg)
+        #expect(resultAvatar.rating == .parentalGuidance)
     }
 
     @Test(
@@ -388,7 +388,7 @@ final class AvatarPickerViewModelTests {
         model = Self.createModel(session: URLSessionAvatarPickerMock(returnErrorCode: httpStatus.rawValue))
         model.grid.setAvatars([Self.createImageModel(id: testAvatarID, source: .remote(url: ""))])
         let avatar = try #require(model.grid.avatars.first(where: { $0.id == testAvatarID }), "No avatar found")
-        try #require(avatar.rating == .g)
+        try #require(avatar.rating == .general)
 
         await confirmation { confirmation in
             model.toastManager.$toasts.sink { toasts in
@@ -400,11 +400,11 @@ final class AvatarPickerViewModelTests {
                 }
             }.store(in: &cancellables)
 
-            await model.update(rating: .pg, for: avatar)
+            await model.update(rating: .parentalGuidance, for: avatar)
         }
 
         let resultAvatar = try #require(model.grid.avatars.first(where: { $0.id == testAvatarID }))
-        #expect(resultAvatar.rating == .g, "The rating should not be changed")
+        #expect(resultAvatar.rating == .general, "The rating should not be changed")
     }
 
     @Test

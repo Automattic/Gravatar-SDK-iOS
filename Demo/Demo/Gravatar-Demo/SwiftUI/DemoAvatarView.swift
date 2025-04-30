@@ -44,7 +44,11 @@ struct DemoAvatarView: View {
                 Divider()
                 AvatarView(
                     url: avatarURL?.url,
-                    placeholder: Image("profileAvatar").renderingMode(.template),
+                    placeholderView: {
+                        Image("profileAvatar")
+                            .renderingMode(.template)
+                            .resizable()
+                    },
                     forceRefresh: $forceRefresh,
                     loadingView: {
                         ProgressView()

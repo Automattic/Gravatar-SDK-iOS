@@ -4,7 +4,7 @@ import SwiftUI
 enum AvatarAction: Identifiable {
     case share
     case delete
-    case rating(AvatarRating)
+    case rating(Rating)
     case playground
     case altText
 

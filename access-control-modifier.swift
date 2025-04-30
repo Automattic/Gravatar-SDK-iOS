@@ -5,13 +5,13 @@ import Foundation
 let internalTypes: [String] = [
     "ModelError",
     "SetEmailAvatarRequest",
-    "AssociatedResponse"
+    "AssociatedResponse",
+    "Avatar",
+    "AvatarRating",
+    "UpdateAvatarRequest"
 ]
 
 let packageTypes: [String] = [
-    "Avatar",
-    "AvatarRating",
-    "UpdateAvatarRequest",
     "UpdateProfileRequest"
 ]
 

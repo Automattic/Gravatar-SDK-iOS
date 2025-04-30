@@ -13,15 +13,4 @@ extension Avatar: AvatarType {
     public var url: String {
         imageUrl
     }
-
-    package func url(withSize size: String) -> String {
-        if let newURL = URLComponents(string: url)?.replacingQueryItem(name: "size", value: size).string {
-            return newURL
-        }
-        return url
-    }
-
-    package var isSelected: Bool {
-        selected ?? false
-    }
 }

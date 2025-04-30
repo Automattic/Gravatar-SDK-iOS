@@ -21,36 +21,6 @@ struct ModalPresentationModifier<ModalView: View>: ViewModifier {
     }
 }
 
-@available(iOS 16.0, *)
-struct ModalVerticalPresentationWithStylesModifier<ModalView: View>: ViewModifier {
-    @Binding var isPresented: Bool
-    @Environment(\.colorScheme) var colorScheme: ColorScheme
-    let onDismiss: (() -> Void)?
-    let modalView: ModalView
-    let detents: [PresentationDetent]
-
-    init(
-        isPresented: Binding<Bool>,
-        presentationStyle: VerticalContentPresentationStyle,
-        onDismiss: (() -> Void)? = nil,
-        modalView: ModalView
-    ) {
-        self._isPresented = isPresented
-        self.onDismiss = onDismiss
-        self.modalView = modalView
-        self.detents = presentationStyle.detents
-    }
-
-    func body(content: Content) -> some View {
-        content
-            .sheet(isPresented: $isPresented, onDismiss: onDismiss) {
-                modalView
-                    .preferredColorScheme(colorScheme)
-                    .presentationDetents(Set(detents))
-            }
-    }
-}
-
 struct ModalItemPresentationModifier<ModalView: View, T>: ViewModifier where T: Identifiable {
     @Binding var item: T?
 

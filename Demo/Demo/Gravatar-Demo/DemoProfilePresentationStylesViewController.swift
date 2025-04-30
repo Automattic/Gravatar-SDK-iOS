@@ -78,19 +78,23 @@ class DemoProfilePresentationStylesViewController: DemoBaseProfileViewController
     
     func newConfig(profileIdentifier: ProfileIdentifier?) -> ProfileViewConfiguration {
         var config: ProfileViewConfiguration
+        let paletteType: PaletteType = customizeAvatarSwitchWithLabel.isOn ? .custom {
+            self.preferredPaletteType.palette.withReplacing { avatarColors in
+                avatarColors.withReplacing(border: .green)
+            }
+        } : preferredPaletteType
         switch preferredProfileStyle {
         case .large:
-            config = ProfileViewConfiguration.large(palette: preferredPaletteType)
+            config = ProfileViewConfiguration.large(palette: paletteType)
         case .largeSummary:
-            config = ProfileViewConfiguration.largeSummary(palette: preferredPaletteType)
+            config = ProfileViewConfiguration.largeSummary(palette: paletteType)
         case .standard:
-            config = ProfileViewConfiguration.standard(palette: preferredPaletteType)
+            config = ProfileViewConfiguration.standard(palette: paletteType)
         case .summary:
-            config = ProfileViewConfiguration.summary(palette: preferredPaletteType)
+            config = ProfileViewConfiguration.summary(palette: paletteType)
         }
         config.avatarIdentifier = profileIdentifier?.avatarIdentifier
         if customizeAvatarSwitchWithLabel.isOn {
-            config.avatarConfiguration.borderColor = .green
             config.avatarConfiguration.borderWidth = 3
             config.avatarConfiguration.cornerRadiusCalculator = { avatarLength in
                 return avatarLength / 8

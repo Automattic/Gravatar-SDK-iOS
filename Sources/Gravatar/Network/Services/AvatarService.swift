@@ -47,10 +47,16 @@ public struct AvatarService: Sendable {
     /// - Parameters:
     ///   - image: The image to be uploaded.
     ///   - selectionBehavior: How to handle avatar selection after uploading a new avatar
-    ///   - accessToken: The authentication token for the user. This is a WordPress.com OAuth2 access token.
+    ///   - accessToken: The authentication token for the user. This is a Gravatar OAuth2 access token.
     /// - Returns: An asynchronously-delivered `AvatarType` instance, containing data of the newly created avatar.
     @discardableResult
     public func upload(_ image: UIImage, selectionBehavior: AvatarSelection, accessToken: String) async throws -> AvatarType {
+        let avatar: Avatar = try await upload(image, accessToken: accessToken, selectionBehavior: selectionBehavior)
+        return avatar
+    }
+
+    @discardableResult
+    package func upload(_ image: UIImage, accessToken: String, selectionBehavior: AvatarSelection) async throws -> AvatarDetails {
         let avatar: Avatar = try await upload(image, accessToken: accessToken, selectionBehavior: selectionBehavior)
         return avatar
     }
@@ -59,11 +65,11 @@ public struct AvatarService: Sendable {
     /// ``ImageUploadError``.
     /// - Parameters:
     ///   - image: The image to be uploaded.
-    ///   - accessToken: The authentication token for the user. This is a WordPress.com OAuth2 access token.
+    ///   - accessToken: The authentication token for the user. This is a Gravatar OAuth2 access token.
     ///   - avatarSelection: How to handle avatar selection after uploading a new avatar
     /// - Returns: An asynchronously-delivered `Avatar` instance, containing data of the newly created avatar.
     @discardableResult
-    package func upload(_ image: UIImage, accessToken: String, selectionBehavior: AvatarSelection) async throws -> Avatar {
+    private func upload(_ image: UIImage, accessToken: String, selectionBehavior: AvatarSelection) async throws -> Avatar {
         do {
             let (data, _) = try await imageUploader.uploadImage(
                 image.squared(),
@@ -71,7 +77,8 @@ public struct AvatarService: Sendable {
                 avatarSelection: selectionBehavior,
                 additionalHTTPHeaders: nil
             )
-            return try data.decode()
+            let avatar: Avatar = try data.decode()
+            return avatar
         } catch let error as ImageUploadError {
             throw error
         } catch {
@@ -79,8 +86,12 @@ public struct AvatarService: Sendable {
         }
     }
 
-    package func delete(avatarID: String, accessToken: String) async throws {
-        var request = URLRequest(url: .avatarsURL.appendingPathComponent(avatarID))
+    /// Deletes the avatar.
+    /// - Parameters:
+    ///   - imageID: Image ID of the avatar to be deleted returned from the `/v3/me/avatars` endpoint. See: ``ProfileService/fetchAvatars(profileID:token:)``.
+    ///   - accessToken: Gravatar OAuth2 access token.
+    public func delete(imageID: ImageID, accessToken: String) async throws {
+        var request = URLRequest(url: .avatarsURL.appendingPathComponent(imageID))
         request.httpMethod = "DELETE"
         let authorizedRequest = request.settingAuthorizationHeaderField(with: accessToken)
         do {
@@ -90,22 +101,30 @@ public struct AvatarService: Sendable {
         }
     }
 
+    /// Updates the avatar properties.
+    /// - Parameters:
+    ///   - imageID: Image ID of the avatar to be deleted returned from the `/v3/me/avatars` endpoint. See: ``ProfileService/fetchAvatars(profileID:token:)``.
+    ///   - accessToken: The authentication token for the user. This is a Gravatar OAuth2 access token.
+    ///   - altText: The new alt text of the avatar. Passing `nil` keeps the current value.
+    ///   - rating: The new rating of the avatar. Passing `nil` keeps the current value.
+    /// - Returns: Updated avatar.
     @discardableResult
-    package func update(
+    public func updateAvatar(
+        imageID: ImageID,
+        accessToken: String,
         altText: String? = nil,
-        rating: AvatarRating? = nil,
-        avatarID: AvatarIdentifier,
-        accessToken: String
-    ) async throws -> Avatar {
-        var request = URLRequest(url: .avatarsURL.appendingPathComponent(avatarID.id))
+        rating: Rating? = nil
+    ) async throws -> AvatarDetails {
+        var request = URLRequest(url: .avatarsURL.appendingPathComponent(imageID))
         request.httpMethod = "PATCH"
-        let updateBody = UpdateAvatarRequest(rating: rating, altText: altText)
+        let updateBody = UpdateAvatarRequest(rating: rating?.toAvatarRating(), altText: altText)
         request.httpBody = try JSONEncoder().encode(updateBody)
 
         let authorizedRequest = request.settingAuthorizationHeaderField(with: accessToken)
         do {
             let (data, _) = try await client.data(with: authorizedRequest)
-            return try data.decode()
+            let avatar: Avatar = try data.decode()
+            return avatar
         } catch {
             throw error.apiError()
         }

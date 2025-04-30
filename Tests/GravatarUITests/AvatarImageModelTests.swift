@@ -43,7 +43,7 @@ struct AvatarImageModelTests {
 
     @Test("Test changing all avatar properties")
     func testAvatarPropertiesChanges() {
-        let model = AvatarImageModel(id: "id", source: .remote(url: ""), state: .loaded, isSelected: true, rating: .g, altText: "")
+        let model = AvatarImageModel(id: "id", source: .remote(url: ""), state: .loaded, isSelected: true, rating: .general, altText: "")
         let newID = "NewID"
         let newAltText = "NewAltText"
 
@@ -52,14 +52,14 @@ struct AvatarImageModelTests {
             $0.source = .local(image: ImageHelper.testImage)
             $0.state = .loading
             $0.isSelected = false
-            $0.rating = .pg
+            $0.rating = .parentalGuidance
             $0.altText = newAltText
         }
 
         #expect(updatedModel.id == newID)
         #expect(updatedModel.state == .loading)
         #expect(updatedModel.isSelected == false)
-        #expect(updatedModel.rating == .pg)
+        #expect(updatedModel.rating == .parentalGuidance)
         #expect(updatedModel.altText == newAltText)
 
         switch updatedModel.source {
@@ -75,7 +75,7 @@ struct AvatarImageModelTests {
         let id = "id"
         let altText = "altText"
 
-        let model = AvatarImageModel(id: id, source: .remote(url: ""), state: .loaded, isSelected: true, rating: .g, altText: altText)
+        let model = AvatarImageModel(id: id, source: .remote(url: ""), state: .loaded, isSelected: true, rating: .general, altText: altText)
 
         let updatedModel = model.updating {
             $0.isSelected = false
@@ -84,7 +84,7 @@ struct AvatarImageModelTests {
         #expect(updatedModel.id == id)
         #expect(updatedModel.state == .loaded)
         #expect(updatedModel.isSelected == false)
-        #expect(updatedModel.rating == .g)
+        #expect(updatedModel.rating == .general)
         #expect(updatedModel.altText == altText)
 
         switch updatedModel.source {

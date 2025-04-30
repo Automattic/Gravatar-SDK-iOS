@@ -105,7 +105,7 @@ struct AvatarPickerAvatarView: View {
             Section {
                 button(for: .altText)
                 Menu {
-                    ForEach(AvatarRating.allCases, id: \.self) { rating in
+                    ForEach(Rating.allCases, id: \.self) { rating in
                         button(for: .rating(rating), isSelected: rating == avatar.rating)
                     }
                 } label: {
@@ -156,22 +156,22 @@ struct AvatarPickerAvatarView: View {
     }
 }
 
-extension AvatarRating {
+extension Rating {
     fileprivate var localizedSubtitle: String {
         switch self {
-        case .g:
+        case .general:
             SDKLocalizedString(
                 "Avatar.Rating.G.subtitle",
                 value: "General",
                 comment: "Rating that indicates that the avatar is suitable for everyone"
             )
-        case .pg:
+        case .parentalGuidance:
             SDKLocalizedString(
                 "Avatar.Rating.PG.subtitle",
                 value: "Parental Guidance",
                 comment: "Rating that indicates that the avatar may not be suitable for children"
             )
-        case .r:
+        case .restricted:
             SDKLocalizedString(
                 "Avatar.Rating.R.subtitle",
                 value: "Restricted",
@@ -204,7 +204,7 @@ extension String {
     let avatar = AvatarImageModel.preview_init(
         id: "1",
         source: .remote(url: "https://gravatar.com/userimage/110207384/aa5f129a2ec75162cee9a1f0c472356a.jpeg?size=256"),
-        rating: .pg
+        rating: .parentalGuidance
     )
     AvatarPickerAvatarView(avatar: avatar, maxLength: AvatarGridConstants.maxAvatarWidth, minLength: AvatarGridConstants.minAvatarWidth) {
         false

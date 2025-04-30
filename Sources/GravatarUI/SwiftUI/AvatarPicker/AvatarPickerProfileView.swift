@@ -113,6 +113,7 @@ struct AvatarPickerProfileView: View {
         .background(placeholderColorManager.placeholderColor)
         .aspectRatio(1, contentMode: .fill)
         .shape(Circle())
+        .accessibilityLabel(Localized.avatarAccessibilityLabel)
     }
 
     private var paletteType: PaletteType? {
@@ -145,6 +146,11 @@ extension AvatarPickerProfileView {
             "AvatarPickerProfile.ProfileFields.placeholder",
             value: "Location",
             comment: "Placeholder text for the profile card. Will show as subtitle bellow the name placeholder."
+        )
+        static let avatarAccessibilityLabel = SDKLocalizedString(
+            "AvatarPickerProfile.ProfileFields.avatarAccessibilityLabel",
+            value: "Your avatar",
+            comment: "VoiceOver readout for the avatar image in the profile card."
         )
     }
 }

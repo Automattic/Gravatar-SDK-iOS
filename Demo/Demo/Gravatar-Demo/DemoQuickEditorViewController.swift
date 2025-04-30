@@ -77,8 +77,8 @@ final class DemoQuickEditorViewController: UIViewController {
         case .aboutEditor:
             .aboutEditor(.init(presentationStyle: selectedVerticalContentPresentationStyle))
         }
-
     }
+
     private var selectedScope: QEScope = .avatarPicker {
         didSet {
             scopeButton.setTitle("Scope: \(selectedScope.rawValue)", for: .normal)
@@ -93,13 +93,12 @@ final class DemoQuickEditorViewController: UIViewController {
     private var selectedVerticalContentPresentationStyle: VerticalContentPresentationStyle {
         switch selectedVerticalContentPresentationStyleRepresentation {
         case .expandableMedium:
-            print("MEDIUM")
-            return .expandableMedium()
+            .expandableMedium()
         case .large:
-            print("LARGE")
-            return .large
+            .large
         }
     }
+
     private var selectedVerticalContentPresentationStyleRepresentation: VerticalContentPresentationStyleRepresentation = .expandableMedium {
         didSet {
             aboutPresentationStyleButton.setTitle(
@@ -144,7 +143,6 @@ final class DemoQuickEditorViewController: UIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("Vertical Presentation Style: \(selectedVerticalContentPresentationStyleRepresentation.rawValue)", for: .normal)
         button.addTarget(self, action: #selector(presentVerticalPresentationStyleOptions), for: .touchUpInside)
-        button.isHiddenForAnimation = true
         return button
     }()
 
@@ -263,6 +261,7 @@ final class DemoQuickEditorViewController: UIViewController {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical
         stackView.spacing = 12
+        stackView.isHiddenForAnimation = true
         return stackView
     }()
 

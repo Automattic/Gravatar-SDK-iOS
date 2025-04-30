@@ -2,8 +2,8 @@ import Foundation
 
 /// An avatar that the user has already uploaded to their Gravatar account.
 ///
-package struct Avatar: Codable, Hashable, Sendable {
-    package enum Rating: String, Codable, CaseIterable, Sendable {
+struct Avatar: Codable, Hashable, Sendable {
+    enum Rating: String, Codable, CaseIterable, Sendable {
         case g = "G"
         case pg = "PG"
         case r = "R"
@@ -11,19 +11,19 @@ package struct Avatar: Codable, Hashable, Sendable {
     }
 
     /// Unique identifier for the image.
-    package private(set) var imageId: String
+    private(set) var imageId: String
     /// Image URL
-    package private(set) var imageUrl: String
+    private(set) var imageUrl: String
     /// Rating associated with the image.
-    package private(set) var rating: Rating
+    private(set) var rating: Rating
     /// Alternative text description of the image.
-    package private(set) var altText: String
+    private(set) var altText: String
     /// Whether the image is currently selected as the provided selected email's avatar.
-    package private(set) var selected: Bool?
+    private(set) var selected: Bool?
     /// Date and time when the image was last updated.
-    package private(set) var updatedDate: Date
+    private(set) var updatedDate: Date
 
-    package init(imageId: String, imageUrl: String, rating: Rating, altText: String, selected: Bool? = nil, updatedDate: Date) {
+    init(imageId: String, imageUrl: String, rating: Rating, altText: String, selected: Bool? = nil, updatedDate: Date) {
         self.imageId = imageId
         self.imageUrl = imageUrl
         self.rating = rating
@@ -43,7 +43,7 @@ package struct Avatar: Codable, Hashable, Sendable {
 
     // Encodable protocol methods
 
-    package func encode(to encoder: Encoder) throws {
+    func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(imageId, forKey: .imageId)
         try container.encode(imageUrl, forKey: .imageUrl)

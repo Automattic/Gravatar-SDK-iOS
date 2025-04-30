@@ -14,8 +14,9 @@ enum QEModalPresentationConstants {
 }
 
 @available(iOS 16.0, *)
-struct AvatarPickerModalPresentationModifier<ModalView: View>: ViewModifier, ModalPresentationWithIntrinsicSize {
+struct QuickEditorModalPresentationModifier<ModalView: View>: ViewModifier, ModalPresentationWithIntrinsicSize {
     fileprivate typealias Constants = QEModalPresentationConstants
+
     @Binding var isPresented: Bool
     @State private var isPresentedInner: Bool
     @State private var sheetHeight: CGFloat = Constants.bottomSheetEstimatedHeight
@@ -23,6 +24,7 @@ struct AvatarPickerModalPresentationModifier<ModalView: View>: ViewModifier, Mod
     @State private var presentationDetents: Set<PresentationDetent>
     @State private var prioritizeScrollOverResize: Bool = false
     @Environment(\.colorScheme) var colorScheme: ColorScheme
+
     let onDismiss: (() -> Void)?
     let modalView: ModalView
     var contentLayoutWithPresentation: AvatarPickerContentLayout

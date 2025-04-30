@@ -140,7 +140,7 @@ private class AuthenticationSessionMock: AuthenticationSession, @unchecked Senda
     }
 }
 
-final class TestStorage: SecureStorage {
+final class TestStorage: SecureStorage, @unchecked Sendable {
     private var store: [String: KeychainToken] = [:]
 
     func setSecret(_ secret: GravatarUI.KeychainToken, for key: String) throws {

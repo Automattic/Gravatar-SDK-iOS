@@ -1,10 +1,9 @@
 import Gravatar
 import SwiftUI
 
-@available(iOS, deprecated: 16.0, renamed: "QuickEditorScopeOption", message: "This will become internal in a next mayor release.")
+@available(iOS, deprecated: 16.0, renamed: "QuickEditorScopeOption", message: "This will become internal in a next major release.")
 public enum QuickEditorScopeType: Sendable {
     case avatarPicker
-    case aboutInfoEditor
 }
 
 @available(*, deprecated, renamed: "QuickEditorScopeOption")
@@ -56,7 +55,7 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
     private let scope: QuickEditorScopeOption
     private let email: Email
     private let customImageEditor: ImageEditorBlock<ImageEditor>?
-    private let updatedHandler: ((QuickEditorUpdateType) -> Void)?
+    private let updateHandler: ((QuickEditorUpdateType) -> Void)?
 
     init(
         email: Email,
@@ -64,31 +63,15 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
         token: String? = nil,
         isPresented: Binding<Bool>,
         customImageEditor: ImageEditorBlock<ImageEditor>? = nil,
-        updatedHandler: ((QuickEditorUpdateType) -> Void)? = nil
+        updateHandler: ((QuickEditorUpdateType) -> Void)? = nil
     ) {
         self.email = email
         self.scope = scope
         self._isPresented = isPresented
         self.customImageEditor = customImageEditor
         self.externalToken = token
-        self.updatedHandler = updatedHandler
+        self.updateHandler = updateHandler
         self._model = StateObject(wrappedValue: AvatarPickerViewModel(email: email, authToken: token))
-    }
-
-    init(
-        email: Email,
-        scope: QuickEditorScopeOption,
-        token: String? = nil,
-        isPresented: Binding<Bool>,
-        updatedHandler: ((QuickEditorUpdateType) -> Void)? = nil
-    ) {
-        self.email = email
-        self._isPresented = isPresented
-        self.externalToken = token
-        self.updatedHandler = updatedHandler
-        self._model = StateObject(wrappedValue: AvatarPickerViewModel(email: email, authToken: token))
-        self.scope = scope
-        self.customImageEditor = nil
     }
 
     let authorizationFinishedNotification = NotificationCenter.default.publisher(for: .authorizationFinished)
@@ -145,7 +128,7 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
                     performAuthentication()
                 },
                 avatarUpdatedHandler: {
-                    updatedHandler?(.avatarUpdate)
+                    updateHandler?(.avatarUpdate)
                 }
             )
         case .aboutInfoEditor:

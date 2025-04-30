@@ -18,7 +18,7 @@ struct AvatarImageModel: Hashable, Identifiable, Sendable {
     let isSelected: Bool
     let state: State
     let altText: String
-    let rating: AvatarRating
+    let rating: Rating
 
     var url: URL? {
         guard case .remote(let url) = source else {
@@ -60,7 +60,7 @@ struct AvatarImageModel: Hashable, Identifiable, Sendable {
         )
     }
 
-    init(id: String, source: Source, state: State, isSelected: Bool, rating: AvatarRating, altText: String) {
+    init(id: String, source: Source, state: State, isSelected: Bool, rating: Rating, altText: String) {
         self.id = id
         self.source = source
         self.state = state
@@ -83,7 +83,7 @@ extension AvatarImageModel {
         var isSelected: Bool
         var state: State
         var altText: String
-        var rating: AvatarRating
+        var rating: Rating
 
         fileprivate init(_ model: AvatarImageModel) {
             self.id = model.id
@@ -102,7 +102,7 @@ extension AvatarImageModel {
 
 extension AvatarImageModel {
     /// This is meant to be used in previews and unit tests only.
-    static func preview_init(id: String, source: Source, state: State = .loaded, isSelected: Bool = false, rating: AvatarRating = .g) -> Self {
+    static func preview_init(id: String, source: Source, state: State = .loaded, isSelected: Bool = false, rating: Rating = .general) -> Self {
         AvatarImageModel(id: id, source: source, state: state, isSelected: isSelected, rating: rating, altText: "")
     }
 }
