@@ -132,8 +132,8 @@ extension View {
             updateHandler: updateHandler
         )
         let contentLayout = switch scope.scope {
-            case .avatarPicker: scope.avatarPickerConfig.contentLayout
-            case .aboutInfoEditor: AvatarPickerContentLayout.vertical(
+        case .avatarPicker: scope.avatarPickerConfig.contentLayout
+        case .aboutInfoEditor: AvatarPickerContentLayout.vertical(
                 presentationStyle: scope.aboutEditorConfig.presentationStyle
             )
         }
