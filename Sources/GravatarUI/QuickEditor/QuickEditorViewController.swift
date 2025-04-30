@@ -7,7 +7,7 @@ final class QuickEditorViewController: UIViewController, ModalPresentationWithIn
     private typealias CustomImageEditorProvider = ImageEditorBlock<CustomImageEditorControllerRepresentable>?
 
     let email: Email
-    let scope: QuickEditorScopeOption
+    let scope: QuickEditorScopeOptionUIKit
     let token: String?
     let configuration: QuickEditorConfiguration
     let updateHandler: ((QuickEditorUpdateType) -> Void)?
@@ -49,7 +49,7 @@ final class QuickEditorViewController: UIViewController, ModalPresentationWithIn
 
         return QuickEditor(
             email: email,
-            scope: scope,
+            scope: scope.map(),
             token: token,
             isPresented: isPresented,
             customImageEditor: provider,
@@ -75,7 +75,7 @@ final class QuickEditorViewController: UIViewController, ModalPresentationWithIn
 
     init(
         email: Email,
-        scope: QuickEditorScopeOption,
+        scope: QuickEditorScopeOptionUIKit,
         configuration: QuickEditorConfiguration? = nil,
         token: String? = nil,
         onUpdate: ((QuickEditorUpdateType) -> Void)? = nil,
@@ -176,7 +176,7 @@ private class InnerHeightUIHostingController: UIHostingController<AnyView> {
 /// A struct responsible for presenting the Quick Editor from a UIKit context.
 public struct QuickEditorPresenter {
     let email: Email
-    let scope: QuickEditorScopeOption
+    let scope: QuickEditorScopeOptionUIKit
     let configuration: QuickEditorConfiguration
     let token: String?
 
@@ -195,12 +195,10 @@ public struct QuickEditorPresenter {
         token: String? = nil
     ) {
         self.email = email
-        if case .avatarPicker(let config) = scope, #available(iOS 16, *) {
-            self.scope = QuickEditorScopeOption.avatarPicker(.init(contentLayout: config.contentLayout))
-        } else if #available(iOS 16, *) {
-            self.scope = QuickEditorScopeOption.avatarPicker(.init(contentLayout: .horizontal(presentationStyle: .intrinsicHeight)))
+        if case .avatarPicker(let config) = scope {
+            self.scope = QuickEditorScopeOptionUIKit.avatarPicker(.init(contentLayout: config.contentLayout))
         } else {
-            self.scope = QuickEditorScopeOption.avatarPicker()
+            self.scope = QuickEditorScopeOptionUIKit.avatarPicker(.horizontalInstrinsicHeight)
         }
         self.configuration = configuration ?? .default
         self.token = token
@@ -215,7 +213,7 @@ public struct QuickEditorPresenter {
     /// <doc:GravatarOAuth> for more info.
     public init(
         email: Email,
-        scopeOption scope: QuickEditorScopeOption,
+        scopeOption scope: QuickEditorScopeOptionUIKit,
         configuration: QuickEditorConfiguration? = nil,
         token: String? = nil
     ) {

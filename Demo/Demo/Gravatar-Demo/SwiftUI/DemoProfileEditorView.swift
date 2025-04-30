@@ -18,7 +18,7 @@ struct DemoProfileEditorView: View {
     @State var enableCustomImageCropper: Bool = false
     @State var prefersEphemeralWebBrowserSession: Bool = false
     @State private var scope: QEScope = .avatarPicker
-    @State private var verticalPresentationStyle: VerticalContentPresentationStyle = .expandableMedium()
+    @State private var aboutEditorPresentationStyle: VerticalContentPresentationStyle = .expandableMedium()
 
     var body: some View {
         VStack(spacing: 20) {
@@ -117,7 +117,11 @@ struct DemoProfileEditorView: View {
                 return QuickEditorScopeOption.avatarPicker()
             }
         case .aboutEditor:
-            return QuickEditorScopeOption.aboutEditor(.init(presentationStyle: verticalPresentationStyle))
+            if #available(iOS 16.0, *) {
+                return QuickEditorScopeOption.aboutEditor(.init(presentationStyle: aboutEditorPresentationStyle))
+            } else {
+                return QuickEditorScopeOption.aboutEditor()
+            }
         }
     }
 
@@ -131,7 +135,7 @@ struct DemoProfileEditorView: View {
             }
             Toggle("Custom image cropper", isOn: $enableCustomImageCropper)
         case .aboutEditor:
-                QEVerticalStylePickerRow(verticalStyle: $verticalPresentationStyle)
+                QEVerticalStylePickerRow(verticalStyle: $aboutEditorPresentationStyle)
         }
     }
 

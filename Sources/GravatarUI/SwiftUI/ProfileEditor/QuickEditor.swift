@@ -270,9 +270,17 @@ enum QuickEditorConstants {
 }
 
 #Preview {
-    QuickEditor<NoCustomEditor>(
-        email: .init(""),
-        scope: .aboutEditor(.init()),
-        isPresented: .constant(true)
-    )
+    if #available(iOS 16.0, *) {
+        QuickEditor<NoCustomEditor>(
+            email: .init(""),
+            scope: .aboutEditor(.init()),
+            isPresented: .constant(true)
+        )
+    } else {
+        QuickEditor<NoCustomEditor>(
+            email: .init(""),
+            scope: .aboutEditor(),
+            isPresented: .constant(true)
+        )
+    }
 }
