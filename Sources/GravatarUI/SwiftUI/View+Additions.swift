@@ -21,7 +21,7 @@ extension View {
             .padding(.vertical, borderWidth) // to prevent borders from getting clipped
     }
 
-    /// A modifier to display the QuickEditor sheet. The QuickEditor can be used to modify the information and avatar images of your Gravatar profile.
+    /// A modifier to display the QuickEditor sheet. The QuickEditor allows updating the Gravatar profile information and avatar.
     /// - Parameters:
     ///   - isPresented: A Binding boolean to manage showing/hiding the sheet.
     ///   - email: Email for the Gravatar account.
