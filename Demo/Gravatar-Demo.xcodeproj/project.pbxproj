@@ -47,6 +47,7 @@
 		91C76B432D970F5600F248B9 /* SafariView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91C76B422D970F5600F248B9 /* SafariView.swift */; };
 		91CB2CD42D2EB2E100569581 /* View+Demo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91CB2CD32D2EB2E100569581 /* View+Demo.swift */; };
 		91E2FB042BC0276E00265E8E /* DemoProfileViewsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91E2FB032BC0276E00265E8E /* DemoProfileViewsViewController.swift */; };
+		91E993622DC38EB800C0BE7F /* AboutInfoChecklistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91E993612DC38EB800C0BE7F /* AboutInfoChecklistView.swift */; };
 		91F0B3DD2B62815F0025C4F8 /* MainTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91F0B3DB2B62815F0025C4F8 /* MainTableViewController.swift */; };
 		91F0B3DE2B62815F0025C4F8 /* DemoAvatarDownloadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91F0B3DC2B62815F0025C4F8 /* DemoAvatarDownloadViewController.swift */; };
 		91F0B3E32B6281A60025C4F8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 91F0B3E12B6281A60025C4F8 /* Main.storyboard */; };
@@ -148,6 +149,7 @@
 		91C76B422D970F5600F248B9 /* SafariView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariView.swift; sourceTree = "<group>"; };
 		91CB2CD32D2EB2E100569581 /* View+Demo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+Demo.swift"; sourceTree = "<group>"; };
 		91E2FB032BC0276E00265E8E /* DemoProfileViewsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoProfileViewsViewController.swift; sourceTree = "<group>"; };
+		91E993612DC38EB800C0BE7F /* AboutInfoChecklistView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutInfoChecklistView.swift; sourceTree = "<group>"; };
 		91F0B3DB2B62815F0025C4F8 /* MainTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainTableViewController.swift; sourceTree = "<group>"; };
 		91F0B3DC2B62815F0025C4F8 /* DemoAvatarDownloadViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoAvatarDownloadViewController.swift; sourceTree = "<group>"; };
 		91F0B3E22B6281A60025C4F8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -204,6 +206,7 @@
 				1E741C452DBB9BF800216752 /* QEVerticalStylePickerRow.swift */,
 				1E741C432DBB9BDC00216752 /* QEScopesPickerRow.swift */,
 				919C70562CAAF28E0036B03C /* QEColorSchemePickerRow.swift */,
+				91E993612DC38EB800C0BE7F /* AboutInfoChecklistView.swift */,
 			);
 			path = Controls;
 			sourceTree = "<group>";
@@ -448,6 +451,7 @@
 				1E15CA722D3FB48900B5FCB4 /* SwitchField.swift in Sources */,
 				1E15CA782D3FB84700B5FCB4 /* TextFormField.swift in Sources */,
 				91CB2CD42D2EB2E100569581 /* View+Demo.swift in Sources */,
+				91E993622DC38EB800C0BE7F /* AboutInfoChecklistView.swift in Sources */,
 				9133058E2C91F8D1009F5C0B /* DemoImageCropperViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

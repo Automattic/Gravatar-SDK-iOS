@@ -1,4 +1,5 @@
 import UIKit
+import SwiftUI
 import GravatarUI
 
 final class DemoQuickEditorViewController: UIViewController {
@@ -17,6 +18,19 @@ final class DemoQuickEditorViewController: UIViewController {
         }
         set {
             UserDefaults.standard.setValue(newValue, forKey: "QETokenKey")
+        }
+    }
+
+    private var selectedAboutInfoFields: AboutInfoField  {
+        get {
+            if let rawValue = UserDefaults.standard.object(forKey: "demoSelectedAboutInfoFields") as? AboutInfoField.RawValue {
+                return AboutInfoField(rawValue: rawValue)
+            } else {
+                return AboutInfoField.all
+            }
+        }
+        set {
+            UserDefaults.standard.setValue(newValue.rawValue, forKey: "demoSelectedAboutInfoFields")
         }
     }
 
@@ -75,7 +89,12 @@ final class DemoQuickEditorViewController: UIViewController {
         case .avatarPicker:
             .avatarPicker(.init(contentLayout: selectedLayout.contentLayout))
         case .aboutEditor:
-            .aboutEditor(.init(presentationStyle: selectedVerticalContentPresentationStyle))
+            .aboutEditor(
+                .init(
+                    presentationStyle: selectedVerticalContentPresentationStyle,
+                    fields: selectedAboutInfoFields
+                )
+            )
         }
     }
 
@@ -146,6 +165,14 @@ final class DemoQuickEditorViewController: UIViewController {
         return button
     }()
 
+    lazy var aboutFieldsButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setTitle("Select input fields", for: .normal)
+        button.addTarget(self, action: #selector(aboutFieldsButtonTapped), for: .touchUpInside)
+        return button
+    }()
+    
     @objc func presentLayoutOptions() {
         let sheet = UIAlertController(title: "Layout Options", message: nil, preferredStyle: .actionSheet)
         AvatarPickerLayoutOptions.allCases.forEach { layout in
@@ -174,6 +201,23 @@ final class DemoQuickEditorViewController: UIViewController {
             })
         }
         present(sheet, animated: true)
+    }
+
+    @objc func aboutFieldsButtonTapped() {
+        let aboutChecklistHostingController = UIHostingController(
+            rootView: AboutInfoChecklistView(
+                selectedFields: Binding(
+                    get: {
+                        self.selectedAboutInfoFields
+                    },
+                    set: { fields in
+                        self.selectedAboutInfoFields = fields
+                    }
+                )
+            )
+        )
+        aboutChecklistHostingController.sheetPresentationController?.detents = [.medium(), .large()]
+        present(aboutChecklistHostingController, animated: true)
     }
 
     lazy var colorSchemeLabel: UILabel = {
@@ -257,6 +301,7 @@ final class DemoQuickEditorViewController: UIViewController {
     lazy var aboutEditorOptionsStackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [
             aboutPresentationStyleButton,
+            aboutFieldsButton
         ])
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical

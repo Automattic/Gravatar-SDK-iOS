@@ -17,8 +17,10 @@ struct DemoProfileEditorView: View {
     @State private var isSecure: Bool = true
     @State var enableCustomImageCropper: Bool = false
     @State var prefersEphemeralWebBrowserSession: Bool = false
-    @State private var scope: QEScope = .avatarPicker
+    @AppStorage("demoSelectedScope") private var scope: QEScope = .avatarPicker
     @State private var verticalPresentationStyle: VerticalContentPresentationStyle = .expandableMedium()
+    @State private var isPresentingAboutFieldsSheet: Bool = false
+    @AppStorage("demoSelectedAboutInfoFields") var selectedAboutInfoFields: AboutInfoField = .all
 
     var body: some View {
         VStack(spacing: 20) {
@@ -129,6 +131,14 @@ struct DemoProfileEditorView: View {
                 await oauthSession.setPrefersEphemeralWebBrowserSession(prefersEphemeralWebBrowserSession)
             }
         }
+        .sheet(isPresented: $isPresentingAboutFieldsSheet) {
+            if #available(iOS 16.0, *) {
+                AboutInfoChecklistView(selectedFields: $selectedAboutInfoFields)
+                    .presentationDetents([.medium, .large])
+            } else {
+                AboutInfoChecklistView(selectedFields: $selectedAboutInfoFields)
+            }
+        }
     }
 
     var finalScope: QuickEditorScopeOption {
@@ -136,7 +146,8 @@ struct DemoProfileEditorView: View {
         case .avatarPicker:
             .avatarPicker(.init(contentLayout: contentLayoutOptions.contentLayout))
         case .aboutEditor:
-            .aboutEditor(.init(presentationStyle: verticalPresentationStyle))
+                .aboutEditor(.init(presentationStyle: verticalPresentationStyle,
+                                   fields: selectedAboutInfoFields))
         }
     }
 
@@ -162,7 +173,19 @@ struct DemoProfileEditorView: View {
             if #available(iOS 16.0, *) {
                 QEVerticalStylePickerRow(verticalStyle: $verticalPresentationStyle)
             }
+            aboutFieldsButton()
         }
+    }
+
+    func aboutFieldsButton() -> some View {
+        HStack(alignment: .center) {
+            Spacer()
+            Button("Select input fields") {
+                isPresentingAboutFieldsSheet = true
+            }
+            .buttonStyle(.bordered)
+        }
+        .frame(maxWidth: .infinity)
     }
 
     func requestProfile() {
