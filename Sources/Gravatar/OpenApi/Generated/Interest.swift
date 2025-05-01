@@ -5,7 +5,7 @@ import Foundation
 public struct Interest: Codable, Hashable, Sendable {
     /// The unique identifier for the interest.
     public private(set) var id: Int
-    /// The name of the interest.
+    /// The name of the interest as originally defined (most often in English).
     public private(set) var name: String
 
     init(id: Int, name: String) {
