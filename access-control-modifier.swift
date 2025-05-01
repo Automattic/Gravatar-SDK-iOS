@@ -12,6 +12,12 @@ let internalTypes: [String] = [
 ]
 
 let packageTypes: [String] = [
+]
+
+// By default, we want public types to have internal inits.
+// In some case we want the init to be public also.
+// Add those types here.
+let publicInitTypes: [String] = [
     "UpdateProfileRequest"
 ]
 
@@ -46,6 +52,11 @@ for case let fileURL as URL in filesEnumerator {
             .replacingOccurrences(of: "public enum", with: "package enum")
             .replacingOccurrences(of: "public init", with: "package init")
             .replacingOccurrences(of: "init", with: "package init")
+        try modified.write(to: fileURL, atomically: true, encoding: .utf8)
+    }
+    else if publicInitTypes.map({ $0 + ".swift" }).contains(fileURL.lastPathComponent) {
+        let modified = content
+            .replacingOccurrences(of: "init", with: "public init")
         try modified.write(to: fileURL, atomically: true, encoding: .utf8)
     }
 }

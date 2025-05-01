@@ -2,23 +2,23 @@ import Foundation
 
 /// The subset of data available for update. Field names match the ones in `Profile`. Only the provided fields will be updated.
 ///
-package struct UpdateProfileRequest: Codable, Hashable, Sendable {
+public struct UpdateProfileRequest: Codable, Hashable, Sendable {
     /// The user's display name. This is the name that is displayed on their profile.
-    package private(set) var displayName: String?
+    public private(set) var displayName: String?
     /// The about section on a user's profile.
-    package private(set) var description: String?
+    public private(set) var description: String?
     /// The phonetic pronunciation of the user's name.
-    package private(set) var pronunciation: String?
+    public private(set) var pronunciation: String?
     /// The pronouns the user uses.
-    package private(set) var pronouns: String?
+    public private(set) var pronouns: String?
     /// The user's location.
-    package private(set) var location: String?
+    public private(set) var location: String?
     /// The user's job title.
-    package private(set) var jobTitle: String?
+    public private(set) var jobTitle: String?
     /// The user's current company's name.
-    package private(set) var company: String?
+    public private(set) var company: String?
 
-    package init(
+    public init(
         displayName: String? = nil,
         description: String? = nil,
         pronunciation: String? = nil,
@@ -48,7 +48,7 @@ package struct UpdateProfileRequest: Codable, Hashable, Sendable {
 
     // Encodable protocol methods
 
-    package func encode(to encoder: Encoder) throws {
+    public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encodeIfPresent(displayName, forKey: .displayName)
         try container.encodeIfPresent(description, forKey: .description)

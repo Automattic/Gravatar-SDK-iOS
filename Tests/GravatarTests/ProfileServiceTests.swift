@@ -70,4 +70,17 @@ final class ProfileServiceTests: XCTestCase {
             XCTFail(error.localizedDescription)
         }
     }
+
+    func testProfileUpdateRequest() async {
+        let data = Bundle.fullProfileJsonData
+
+        let session = URLSessionMock(returnData: data, response: .successResponse())
+        let service = ProfileService(urlSession: session)
+
+        do {
+            _ = try await service.updateProfile(with: .init(displayName: "new name"), token: "some token")
+        } catch {
+            XCTFail(error.localizedDescription)
+        }
+    }
 }

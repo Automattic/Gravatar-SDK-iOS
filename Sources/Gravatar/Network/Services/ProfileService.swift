@@ -80,6 +80,23 @@ public struct ProfileService: ProfileFetching, Sendable {
             throw error.apiError()
         }
     }
+
+    /// Update profile information for the authenticated user
+    ///
+    /// Updates the profile information for the authenticated user. Only a subset of `Profile` fields are available for supported, so only the provided fields
+    /// will be updated. To unset a field, set it explicitly to an empty string.
+    ///
+    /// - Parameters:
+    ///   - props: The subset of data available for update. Only the provided fields will be updated.
+    ///   - token: Gravatar OAuth2 token.
+    /// - Returns: An asynchronously-delivered user profile with the fields updated.
+    public func updateProfile(with props: UpdateProfileRequest, token: String) async throws -> Profile {
+        var request = URLRequest(url: meProfileURL).settingAuthorizationHeaderField(with: token)
+        request.httpMethod = "PATCH"
+        request.httpBody = try? JSONEncoder().encode(props)
+        let response = try await fetch(with: request)
+        return response
+    }
 }
 
 extension ProfileService {
