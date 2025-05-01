@@ -59,6 +59,7 @@ struct QuickEditorNoticeView: View {
             )
             .padding(.bottom, .DS.Padding.double)
         }
+        .fixedSize(horizontal: false, vertical: true)
     }
 
     var shouldShowIntro: Bool {

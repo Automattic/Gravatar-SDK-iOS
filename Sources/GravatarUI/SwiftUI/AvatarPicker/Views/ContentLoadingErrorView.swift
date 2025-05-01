@@ -40,6 +40,7 @@ struct ContentLoadingErrorView<ActionButton: View>: View {
             .padding(innerPadding)
             .avatarPickerBorder(colorScheme: colorScheme)
         }
+        .fixedSize(horizontal: false, vertical: true)
     }
 }
 
