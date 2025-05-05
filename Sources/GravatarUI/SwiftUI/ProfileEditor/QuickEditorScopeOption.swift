@@ -45,11 +45,13 @@ public struct QuickEditorScopeOption {
     }
 
     public static func avatarPickerAndAboutInfoEditor(
-        avatarPickerConfig: AvatarPickerConfiguration = .horizontalInstrinsicHeight
+        avatarPickerConfig: AvatarPickerConfiguration = .horizontalInstrinsicHeight,
+        aboutEditorFields fields: AboutInfoField = .all
     ) -> Self {
         .init(
             scope: .avatarPickerAndAboutInfoEditor,
-            avatarPickerConfig: avatarPickerConfig
+            avatarPickerConfig: avatarPickerConfig,
+            aboutEditorConfig: .init(presentationStyle: .expandableMedium(), fields: fields)
         )
     }
 }

@@ -95,7 +95,8 @@ final class DemoQuickEditorViewController: UIViewController {
             ))
         case .avatarAndAboutEditor:
             .avatarPickerAndAboutInfoEditor(
-                avatarPickerConfig: .init(contentLayout: selectedLayout.contentLayout)
+                avatarPickerConfig: .init(contentLayout: selectedLayout.contentLayout),
+                aboutEditorFields: selectedAboutInfoFields
             )
         }
     }

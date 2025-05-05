@@ -152,7 +152,8 @@ struct DemoProfileEditorView: View {
             )
         case .avatarAndAboutEditor:
             .avatarPickerAndAboutInfoEditor(
-                avatarPickerConfig: .init(contentLayout: contentLayoutOptions.contentLayout)
+                avatarPickerConfig: .init(contentLayout: contentLayoutOptions.contentLayout),
+                aboutEditorFields: selectedAboutInfoFields
             )
         }
     }
@@ -188,6 +189,7 @@ struct DemoProfileEditorView: View {
                 Divider()
             }
             Toggle("Custom image cropper", isOn: $enableCustomImageCropper)
+            aboutFieldsButton()
         }
     }
 
