@@ -447,7 +447,7 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
 enum AvatarPicker {
     enum Constants {
         static let horizontalPadding: CGFloat = .DS.Padding.double
-        static let lightModeShadowColor = Color(uiColor: UIColor.rgba(25, 30, 35, alpha: 0.2))
+        static let lightModeShadowColor = Color(uiColor: UIColor.rgba(25, 30, 35, alpha: 0.15))
         static let vStackVerticalSpacing: CGFloat = .DS.Padding.medium
         static let profileViewTopSpacing: CGFloat = .DS.Padding.double
     }

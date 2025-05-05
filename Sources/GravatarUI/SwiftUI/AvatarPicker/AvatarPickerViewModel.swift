@@ -84,8 +84,7 @@ class AvatarPickerViewModel: ObservableObject {
             self.profileModel = .init(
                 displayName: profileModel.displayName,
                 location: profileModel.location,
-                profileURL: profileModel.profileURL,
-                showScopeSwitchButtons: true
+                profileURL: profileModel.profileURL
             )
             switch profileModel.avatarIdentifier {
             case .email(let email):
@@ -118,8 +117,7 @@ class AvatarPickerViewModel: ObservableObject {
                 self?.profileModel = .init(
                     displayName: value.displayName,
                     location: value.location,
-                    profileURL: value.profileURL,
-                    showScopeSwitchButtons: true
+                    profileURL: value.profileURL
                 )
             default:
                 self?.profileModel = nil

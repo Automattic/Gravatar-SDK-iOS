@@ -26,7 +26,8 @@ final class AvatarPickerProfileViewTests: XCTestCase {
                             profileURL: URL(string: "https://gravatar.com")
                         )
                     ),
-                    isLoading: .constant(false)
+                    isLoading: .constant(false),
+                    avatarAccessoryView: { EmptyView() }
                 )
                 .frame(maxWidth: .infinity, alignment: .leading)
             })
@@ -55,7 +56,8 @@ final class AvatarPickerProfileViewTests: XCTestCase {
                             profileURL: URL(string: "https://gravatar.com")
                         )
                     ),
-                    isLoading: .constant(false)
+                    isLoading: .constant(false),
+                    avatarAccessoryView: { EmptyView() }
                 )
                 .frame(maxWidth: .infinity, alignment: .leading)
             })
@@ -78,7 +80,8 @@ final class AvatarPickerProfileViewTests: XCTestCase {
                     avatarID: .constant(.email("")),
                     forceRefreshAvatar: .constant(false),
                     model: .constant(nil),
-                    isLoading: .constant(false)
+                    isLoading: .constant(false),
+                    avatarAccessoryView: { EmptyView() }
                 )
                 .frame(maxWidth: .infinity, alignment: .leading)
             })

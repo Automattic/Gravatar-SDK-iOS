@@ -46,7 +46,6 @@ struct AvatarPickerProfileViewWrapper: View {
                 ))
                 .background(profileBackground)
                 .cornerRadius(8)
-                .shadow(color: profileShadowColor, radius: profileShadowRadius, y: 3)
                 if case .aboutInfo = buttonsMode {
                     editButton {
                         buttonTapHandler?(.aboutInfo)
@@ -54,6 +53,7 @@ struct AvatarPickerProfileViewWrapper: View {
                 }
             }
         }
+        .shadow(color: profileShadowColor, radius: profileShadowRadius, y: 3)
     }
 
     @ViewBuilder

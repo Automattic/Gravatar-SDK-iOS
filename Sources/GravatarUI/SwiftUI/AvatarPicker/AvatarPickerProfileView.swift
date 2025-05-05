@@ -144,7 +144,6 @@ struct AvatarPickerProfileViewModel {
     var displayName: String
     var location: String
     var profileURL: URL?
-    var showScopeSwitchButtons: Bool
 
     var profileDetails: String? {
         location.nilIfEmpty()
@@ -190,8 +189,7 @@ private enum Localized {
             .init(
                 displayName: "Shelly Kimbrough",
                 location: "San Antonio, TX",
-                profileURL: URL(string: "https://gravatar.com"),
-                showScopeSwitchButtons: false
+                profileURL: URL(string: "https://gravatar.com")
             )
         ),
         isLoading: .constant(false),
@@ -207,8 +205,7 @@ private enum Localized {
             .init(
                 displayName: "Shelly Kimbrough",
                 location: "San Antonio, TX",
-                profileURL: URL(string: "https://gravatar.com"),
-                showScopeSwitchButtons: true
+                profileURL: URL(string: "https://gravatar.com")
             )
         ),
         isLoading: .constant(false),
