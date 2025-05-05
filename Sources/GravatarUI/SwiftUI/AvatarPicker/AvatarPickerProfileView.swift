@@ -2,20 +2,8 @@ import Gravatar
 import SwiftUI
 
 @MainActor
-struct AvatarPickerProfileView: View {
-    private enum Constants {
-        static let avatarLength: CGFloat = 72
-    }
-
-    struct Model {
-        var displayName: String
-        var location: String
-        var profileURL: URL?
-
-        var profileDetails: String? {
-            location.nilIfEmpty()
-        }
-    }
+struct AvatarPickerProfileView<AccessoryView>: View where AccessoryView: View {
+    typealias Model = AvatarPickerProfileViewModel
 
     @Binding var avatarID: AvatarIdentifier?
     private var avatarURL: URL? {
@@ -36,11 +24,35 @@ struct AvatarPickerProfileView: View {
     @StateObject private var placeholderColorManager: ProfileViewPlaceholderColorManager = .init()
     @Environment(\.colorScheme) var colorScheme: ColorScheme
 
+    var avatarAccessoryView: () -> AccessoryView
+
     private(set) var viewProfileAction: (() -> Void)? = nil
 
+    init(
+        avatarID: Binding<AvatarIdentifier?>,
+        forceRefreshAvatar: Binding<Bool>,
+        model: Binding<Model?>,
+        isLoading: Binding<Bool>,
+        @ViewBuilder avatarAccessoryView: @escaping () -> AccessoryView,
+        viewProfileAction: (() -> Void)? = nil
+    ) {
+        self._avatarID = avatarID
+        self._forceRefreshAvatar = forceRefreshAvatar
+        self._model = model
+        self._isLoading = isLoading
+        self.avatarAccessoryView = avatarAccessoryView
+        self.viewProfileAction = viewProfileAction
+    }
+
     var body: some View {
+        Button {} label: {}
+
         HStack(alignment: .center, spacing: .DS.Padding.single) {
-            avatarView()
+            ZStack(alignment: .bottomTrailing) {
+                avatarView()
+                avatarAccessoryView()
+            }
+
             if model == nil && isLoading {
                 emptyViews()
             } else {
@@ -128,31 +140,44 @@ struct AvatarPickerProfileView: View {
     }
 }
 
+struct AvatarPickerProfileViewModel {
+    var displayName: String
+    var location: String
+    var profileURL: URL?
+    var showScopeSwitchButtons: Bool
+
+    var profileDetails: String? {
+        location.nilIfEmpty()
+    }
+}
+
+private enum Constants {
+    static let avatarLength: CGFloat = 72
+}
+
 // MARK: - Localized Strings
 
-extension AvatarPickerProfileView {
-    private enum Localized {
-        static let viewProfileButtonTitle = SDKLocalizedString(
-            "AvatarPickerProfile.Button.ViewProfile.title",
-            value: "View profile →",
-            comment: "Title of a button that will take you to your Gravatar profile, with an arrow indicating that this action will cause you to leave this view"
-        )
-        static let namePlaceholder = SDKLocalizedString(
-            "AvatarPickerProfile.Name.placeholder",
-            value: "Your Name",
-            comment: "Placeholder text for the name field"
-        )
-        static let profileDetailsPlaceholder = SDKLocalizedString(
-            "AvatarPickerProfile.ProfileFields.placeholder",
-            value: "Location",
-            comment: "Placeholder text for the profile card. Will show as subtitle bellow the name placeholder."
-        )
-        static let avatarAccessibilityLabel = SDKLocalizedString(
-            "AvatarPickerProfile.ProfileFields.avatarAccessibilityLabel",
-            value: "Your avatar",
-            comment: "VoiceOver readout for the avatar image in the profile card."
-        )
-    }
+private enum Localized {
+    static let viewProfileButtonTitle = SDKLocalizedString(
+        "AvatarPickerProfile.Button.ViewProfile.title",
+        value: "View profile →",
+        comment: "Title of a button that will take you to your Gravatar profile, with an arrow indicating that this action will cause you to leave this view"
+    )
+    static let namePlaceholder = SDKLocalizedString(
+        "AvatarPickerProfile.Name.placeholder",
+        value: "Your Name",
+        comment: "Placeholder text for the name field"
+    )
+    static let profileDetailsPlaceholder = SDKLocalizedString(
+        "AvatarPickerProfile.ProfileFields.placeholder",
+        value: "Location",
+        comment: "Placeholder text for the profile card. Will show as subtitle bellow the name placeholder."
+    )
+    static let avatarAccessibilityLabel = SDKLocalizedString(
+        "AvatarPickerProfile.ProfileFields.avatarAccessibilityLabel",
+        value: "Your avatar",
+        comment: "VoiceOver readout for the avatar image in the profile card."
+    )
 }
 
 // MARK: - Previews
@@ -165,10 +190,29 @@ extension AvatarPickerProfileView {
             .init(
                 displayName: "Shelly Kimbrough",
                 location: "San Antonio, TX",
-                profileURL: URL(string: "https://gravatar.com")
+                profileURL: URL(string: "https://gravatar.com"),
+                showScopeSwitchButtons: false
             )
         ),
-        isLoading: .constant(false)
+        isLoading: .constant(false),
+        avatarAccessoryView: { EmptyView() }
+    )
+}
+
+#Preview("Scope Switch") {
+    AvatarPickerProfileView(
+        avatarID: .constant(.email("email@domain.com")),
+        forceRefreshAvatar: .constant(false),
+        model: .constant(
+            .init(
+                displayName: "Shelly Kimbrough",
+                location: "San Antonio, TX",
+                profileURL: URL(string: "https://gravatar.com"),
+                showScopeSwitchButtons: true
+            )
+        ),
+        isLoading: .constant(false),
+        avatarAccessoryView: { EmptyView() }
     )
 }
 
@@ -177,7 +221,8 @@ extension AvatarPickerProfileView {
         avatarID: .constant(.email("email@domain.com")),
         forceRefreshAvatar: .constant(false),
         model: .constant(nil),
-        isLoading: .constant(false)
+        isLoading: .constant(false),
+        avatarAccessoryView: { EmptyView() }
     )
 }
 
@@ -186,6 +231,7 @@ extension AvatarPickerProfileView {
         avatarID: .constant(.email("email@domain.com")),
         forceRefreshAvatar: .constant(false),
         model: .constant(nil),
-        isLoading: .constant(true)
+        isLoading: .constant(true),
+        avatarAccessoryView: { EmptyView() }
     )
 }

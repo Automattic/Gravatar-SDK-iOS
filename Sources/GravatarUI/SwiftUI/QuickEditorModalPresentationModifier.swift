@@ -123,6 +123,18 @@ extension ModalPresentationWithIntrinsicSize {
             }
         case .aboutInfoEditor:
             false
+        case .avatarPickerAndAboutInfoEditor:
+            switch scopeOption.avatarPickerConfig.contentLayout {
+            case .horizontal:
+                switch verticalSizeClass {
+                case .compact:
+                    false
+                default:
+                    true
+                }
+            case .vertical:
+                false
+            }
         }
     }
 
@@ -132,6 +144,8 @@ extension ModalPresentationWithIntrinsicSize {
             scopeOption.avatarPickerConfig.contentLayout.prioritizeScrollOverResize
         case .aboutInfoEditor:
             scopeOption.aboutEditorConfig.presentationStyle.prioritizeScrollOverResize
+        case .avatarPickerAndAboutInfoEditor:
+            scopeOption.avatarPickerConfig.contentLayout.prioritizeScrollOverResize
         }
     }
 }

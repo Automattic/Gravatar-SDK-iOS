@@ -26,6 +26,12 @@ enum QEDetent {
                 intrinsicHeight: intrinsicHeight,
                 verticalSizeClass: verticalSizeClass
             )
+        case .avatarPickerAndAboutInfoEditor:
+            avatarPickerDetents(
+                for: scopeOption.avatarPickerConfig.contentLayout,
+                intrinsicHeight: intrinsicHeight,
+                verticalSizeClass: verticalSizeClass
+            )
         }
     }
 

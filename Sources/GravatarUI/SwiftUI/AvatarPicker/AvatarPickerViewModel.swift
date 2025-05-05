@@ -35,7 +35,7 @@ class AvatarPickerViewModel: ObservableObject {
     @Published private(set) var isAvatarsLoading: Bool = false
     @Published var avatarIdentifier: AvatarIdentifier?
     @Published var forceRefreshAvatar: Bool = false
-    @Published var profileModel: AvatarPickerProfileView.Model?
+    @Published var profileModel: AvatarPickerProfileView<EmptyView>.Model?
     @Published var shouldDisplayNoSelectedAvatarWarning: Bool = false
     @ObservedObject var toastManager: ToastManager = .init()
     private var cancellables = Set<AnyCancellable>()
@@ -84,7 +84,8 @@ class AvatarPickerViewModel: ObservableObject {
             self.profileModel = .init(
                 displayName: profileModel.displayName,
                 location: profileModel.location,
-                profileURL: profileModel.profileURL
+                profileURL: profileModel.profileURL,
+                showScopeSwitchButtons: true
             )
             switch profileModel.avatarIdentifier {
             case .email(let email):
@@ -117,7 +118,8 @@ class AvatarPickerViewModel: ObservableObject {
                 self?.profileModel = .init(
                     displayName: value.displayName,
                     location: value.location,
-                    profileURL: value.profileURL
+                    profileURL: value.profileURL,
+                    showScopeSwitchButtons: true
                 )
             default:
                 self?.profileModel = nil

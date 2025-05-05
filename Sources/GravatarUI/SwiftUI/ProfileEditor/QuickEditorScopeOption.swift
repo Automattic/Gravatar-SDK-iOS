@@ -3,6 +3,7 @@ public struct QuickEditorScopeOption {
     enum Scope {
         case avatarPicker
         case aboutInfoEditor
+        case avatarPickerAndAboutInfoEditor
     }
 
     let avatarPickerConfig: AvatarPickerConfiguration
@@ -42,6 +43,15 @@ public struct QuickEditorScopeOption {
             aboutEditorConfig: config
         )
     }
+
+    public static func avatarPickerAndAboutInfoEditor(
+        avatarPickerConfig: AvatarPickerConfiguration = .horizontalInstrinsicHeight
+    ) -> Self {
+        .init(
+            scope: .avatarPickerAndAboutInfoEditor,
+            avatarPickerConfig: avatarPickerConfig
+        )
+    }
 }
 
 /// Represents a profile editing scope with configuration options for each scope.
@@ -74,6 +84,11 @@ public struct QuickEditorScopeOptionOld {
     /// - Returns: A configured instance of `QuickEditorScopeOption` for the about info editor scope.
     public static func aboutEditor() -> Self {
         .init(scope: .aboutInfoEditor)
+    }
+
+    public static func avatarPickerAndAboutInfoEditor(
+    ) -> Self {
+        .init(scope: .avatarPickerAndAboutInfoEditor)
     }
 
     func map() -> QuickEditorScopeOption {

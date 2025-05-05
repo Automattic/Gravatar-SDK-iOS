@@ -89,11 +89,13 @@ final class DemoQuickEditorViewController: UIViewController {
         case .avatarPicker:
             .avatarPicker(.init(contentLayout: selectedLayout.contentLayout))
         case .aboutEditor:
-            .aboutEditor(
-                .init(
-                    presentationStyle: selectedVerticalContentPresentationStyle,
-                    fields: selectedAboutInfoFields
-                )
+            .aboutEditor(.init(
+                presentationStyle: selectedVerticalContentPresentationStyle,
+                fields: selectedAboutInfoFields
+            ))
+        case .avatarAndAboutEditor:
+            .avatarPickerAndAboutInfoEditor(
+                avatarPickerConfig: .init(contentLayout: selectedLayout.contentLayout)
             )
         }
     }
@@ -103,7 +105,7 @@ final class DemoQuickEditorViewController: UIViewController {
             scopeButton.setTitle("Scope: \(selectedScope.rawValue)", for: .normal)
 
             UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0) {
-                self.avatarPickerOptionsStackView.isHiddenForAnimation = self.selectedScope != .avatarPicker
+                self.avatarPickerOptionsStackView.isHiddenForAnimation = self.selectedScope == .aboutEditor
                 self.aboutEditorOptionsStackView.isHiddenForAnimation = self.selectedScope != .aboutEditor
             }
         }
@@ -518,6 +520,7 @@ class MyCustomImageEditorController: UIViewController, CustomImageEditorControll
 enum QEScope: String, CaseIterable, Hashable {
     case avatarPicker = "Avatar Picker"
     case aboutEditor = "About Editor"
+    case avatarAndAboutEditor = "Avatar & About Editor"
 }
 
 private enum VerticalContentPresentationStyleRepresentation: String, CaseIterable, Hashable {

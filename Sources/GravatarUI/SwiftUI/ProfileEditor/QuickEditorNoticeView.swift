@@ -35,7 +35,8 @@ struct QuickEditorNoticeView: View {
                 forceRefreshAvatar: $model.forceRefreshAvatar,
                 model: $model.profileModel,
                 isLoading: $model.isProfileLoading,
-                safariURL: $safariURL
+                safariURL: $safariURL,
+                buttonsMode: .constant(.none)
             )
             .padding(.top, AvatarPicker.Constants.profileViewTopSpacing / 2)
             .padding(.bottom, AvatarPicker.Constants.vStackVerticalSpacing)
