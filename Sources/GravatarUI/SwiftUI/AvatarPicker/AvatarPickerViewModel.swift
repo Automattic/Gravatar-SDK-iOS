@@ -35,7 +35,7 @@ class AvatarPickerViewModel: ObservableObject {
     @Published private(set) var isAvatarsLoading: Bool = false
     @Published var avatarIdentifier: AvatarIdentifier?
     @Published var forceRefreshAvatar: Bool = false
-    @Published var profileModel: AvatarPickerProfileView<EmptyView>.Model?
+    @Published var profileModel: AvatarPickerProfileViewModel?
     @Published var aboutInfoModel: AboutInfoModel = .init()
 
     @Published var shouldDisplayNoSelectedAvatarWarning: Bool = false

@@ -110,33 +110,28 @@ extension ModalPresentationWithIntrinsicSize {
     var shouldUseIntrinsicSize: Bool {
         switch scopeOption.scope {
         case .avatarPicker:
-            switch scopeOption.avatarPickerConfig.contentLayout {
-            case .horizontal:
-                switch verticalSizeClass {
-                case .compact:
-                    false
-                default:
-                    true
-                }
-            case .vertical:
-                false
-            }
+            shouldAvatarPickerUseIntrinsicSize
         case .aboutInfoEditor:
             false
         case .avatarPickerAndAboutInfoEditor:
-            switch scopeOption.avatarPickerConfig.contentLayout {
-            case .horizontal:
-                switch verticalSizeClass {
-                case .compact:
-                    false
-                default:
-                    true
-                }
-            case .vertical:
-                false
-            }
+            shouldAvatarPickerUseIntrinsicSize
         }
     }
+
+    var shouldAvatarPickerUseIntrinsicSize: Bool {
+        switch scopeOption.avatarPickerConfig.contentLayout {
+        case .horizontal:
+            switch verticalSizeClass {
+            case .compact:
+                false
+            default:
+                true
+            }
+        case .vertical:
+            false
+        }
+    }
+
 
     var shouldPrioritizeScrollOverResize: Bool {
         switch scopeOption.scope {

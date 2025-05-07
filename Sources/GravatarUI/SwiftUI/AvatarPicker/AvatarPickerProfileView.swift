@@ -3,8 +3,6 @@ import SwiftUI
 
 @MainActor
 struct AvatarPickerProfileView<AccessoryView>: View where AccessoryView: View {
-    typealias Model = AvatarPickerProfileViewModel
-
     @Binding var avatarID: AvatarIdentifier?
     private var avatarURL: URL? {
         guard let avatarID else { return nil }
@@ -19,7 +17,7 @@ struct AvatarPickerProfileView<AccessoryView>: View where AccessoryView: View {
     }
 
     @Binding var forceRefreshAvatar: Bool
-    @Binding var model: Model?
+    @Binding var model: AvatarPickerProfileViewModel?
     @Binding var isLoading: Bool
     @StateObject private var placeholderColorManager: ProfileViewPlaceholderColorManager = .init()
     @Environment(\.colorScheme) var colorScheme: ColorScheme
@@ -31,7 +29,7 @@ struct AvatarPickerProfileView<AccessoryView>: View where AccessoryView: View {
     init(
         avatarID: Binding<AvatarIdentifier?>,
         forceRefreshAvatar: Binding<Bool>,
-        model: Binding<Model?>,
+        model: Binding<AvatarPickerProfileViewModel?>,
         isLoading: Binding<Bool>,
         @ViewBuilder avatarAccessoryView: @escaping () -> AccessoryView,
         viewProfileAction: (() -> Void)? = nil
