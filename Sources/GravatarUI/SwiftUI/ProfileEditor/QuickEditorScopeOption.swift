@@ -8,6 +8,7 @@ public struct QuickEditorScopeOption {
 
     let avatarPickerConfig: AvatarPickerConfiguration
     let aboutEditorConfig: AboutEditorConfiguration
+
     let scope: Scope
 
     init(
@@ -45,13 +46,12 @@ public struct QuickEditorScopeOption {
     }
 
     public static func avatarPickerAndAboutInfoEditor(
-        avatarPickerConfig: AvatarPickerConfiguration = .horizontalInstrinsicHeight,
-        aboutEditorFields fields: AboutInfoField = .all
+        _ avatarPickerAndAboutEditorConfig: AvatarPickerAndAboutEditorConfiguration = .init()
     ) -> Self {
         .init(
             scope: .avatarPickerAndAboutInfoEditor,
-            avatarPickerConfig: avatarPickerConfig,
-            aboutEditorConfig: .init(presentationStyle: .expandableMedium(), fields: fields)
+            avatarPickerConfig: .init(contentLayout: avatarPickerAndAboutEditorConfig.contentLayout),
+            aboutEditorConfig: .init(fields: avatarPickerAndAboutEditorConfig.fields)
         )
     }
 }

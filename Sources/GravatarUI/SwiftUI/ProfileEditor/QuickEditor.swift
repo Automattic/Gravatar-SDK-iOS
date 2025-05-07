@@ -48,6 +48,8 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
     @State private var isAuthenticating: Bool = false
     @State private var oauthError: OAuthError?
     @State private var safariURL: IdentifiableURL?
+    /// If the QE is open with the scope switch option, this property will track which scope is currently being presented.
+    /// It's nil when a single scope option was selected.
     @State private var multipleEditorMode: MultipleScopeMode? = nil
 
     @Binding private var isPresented: Bool

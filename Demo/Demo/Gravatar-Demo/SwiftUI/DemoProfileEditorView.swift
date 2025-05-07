@@ -152,8 +152,10 @@ struct DemoProfileEditorView: View {
             )
         case .avatarAndAboutEditor:
             .avatarPickerAndAboutInfoEditor(
-                avatarPickerConfig: .init(contentLayout: contentLayoutOptions.contentLayout),
-                aboutEditorFields: selectedAboutInfoFields
+                .init(
+                    contentLayout: contentLayoutOptions.contentLayout,
+                    fields: selectedAboutInfoFields
+                )
             )
         }
     }

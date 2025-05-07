@@ -40,6 +40,20 @@ public struct AboutEditorConfiguration: Sendable {
     }
 }
 
+/// Configuration which will be applied to the scope which allows switching between Avatar Picker and About info editor.
+public struct AvatarPickerAndAboutEditorConfiguration: Sendable {
+    let contentLayout: AvatarPickerContentLayout
+    let fields: AboutInfoField
+
+    public init(
+        contentLayout: AvatarPickerContentLayout = .horizontal(presentationStyle: .intrinsicHeight),
+        fields: AboutInfoField = AboutInfoField.all
+    ) {
+        self.contentLayout = contentLayout
+        self.fields = fields
+    }
+}
+
 extension AvatarPickerConfiguration {
     /// Configuration where the avatars collection scrolls horizontally, and the modal sheet height is equal to the content height.
     public static var horizontalInstrinsicHeight: AvatarPickerConfiguration { .init(contentLayout: .horizontal(presentationStyle: .intrinsicHeight)) }
