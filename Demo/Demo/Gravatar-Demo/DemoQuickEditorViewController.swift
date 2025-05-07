@@ -107,9 +107,19 @@ final class DemoQuickEditorViewController: UIViewController {
         didSet {
             scopeButton.setTitle("Scope: \(selectedScope.rawValue)", for: .normal)
 
-            UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0) {
-                self.avatarPickerOptionsStackView.isHiddenForAnimation = self.selectedScope == .aboutEditor
-                self.aboutEditorOptionsStackView.isHiddenForAnimation = self.selectedScope != .aboutEditor
+            (avatarPickerOptionsViews + aboutEditorOptionsStackView + avatarAndAboutEditorOptionsStackView).forEach {
+                $0.isHiddenForAnimation = true
+            }
+
+            switch selectedScope {
+            case .avatarPicker:
+                avatarPickerOptionsViews.forEach { $0.isHiddenForAnimation = false }
+            case .aboutEditor:
+                aboutEditorOptionsStackView.forEach { $0.isHiddenForAnimation = false }
+            case .avatarAndAboutEditor:
+                avatarAndAboutEditorOptionsStackView.forEach {
+                    $0.isHiddenForAnimation = false
+                }
             }
         }
     }
@@ -292,28 +302,21 @@ final class DemoQuickEditorViewController: UIViewController {
         return button
     }()
 
-    lazy var avatarPickerOptionsStackView: UIStackView = {
-        let stackView = UIStackView(arrangedSubviews: [
-            imageEditorToggle,
-            layoutButton,
-        ])
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.axis = .vertical
-        stackView.spacing = 12
-        return stackView
-    }()
+    lazy var avatarPickerOptionsViews: [UIView] = [
+        imageEditorToggle,
+        layoutButton,
+    ]
 
-    lazy var aboutEditorOptionsStackView: UIStackView = {
-        let stackView = UIStackView(arrangedSubviews: [
-            aboutPresentationStyleButton,
-            aboutFieldsButton
-        ])
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.axis = .vertical
-        stackView.spacing = 12
-        stackView.isHiddenForAnimation = true
-        return stackView
-    }()
+    lazy var aboutEditorOptionsStackView: [UIView] = [
+        aboutPresentationStyleButton,
+        aboutFieldsButton
+    ]
+
+    lazy var avatarAndAboutEditorOptionsStackView: [UIView] = [
+        imageEditorToggle,
+        layoutButton,
+        aboutFieldsButton
+    ]
 
     lazy var rootStackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [
@@ -324,8 +327,10 @@ final class DemoQuickEditorViewController: UIViewController {
             schemeToggle,
             prefersEphemeralSessionToggle,
             scopeButton,
-            avatarPickerOptionsStackView,
-            aboutEditorOptionsStackView,
+            imageEditorToggle,
+            layoutButton,
+            aboutPresentationStyleButton,
+            aboutFieldsButton,
             logoutButton,
             showButton
         ])
