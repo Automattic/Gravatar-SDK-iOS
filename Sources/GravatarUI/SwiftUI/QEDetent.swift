@@ -14,21 +14,21 @@ enum QEDetent {
         verticalSizeClass: UserInterfaceSizeClass?
     ) -> [QEDetent] {
         switch scopeOption.scope {
-        case .avatarPicker:
+        case .avatarPicker(let config):
             avatarPickerDetents(
-                for: scopeOption.avatarPickerConfig.contentLayout,
+                for: config.contentLayout,
                 intrinsicHeight: intrinsicHeight,
                 verticalSizeClass: verticalSizeClass
             )
-        case .aboutInfoEditor:
+        case .aboutInfoEditor(let config):
             aboutEditorDetents(
-                for: scopeOption.aboutEditorConfig.presentationStyle,
+                for: config.presentationStyle,
                 intrinsicHeight: intrinsicHeight,
                 verticalSizeClass: verticalSizeClass
             )
-        case .avatarPickerAndAboutInfoEditor:
+        case .avatarPickerAndAboutInfoEditor(let config):
             avatarPickerDetents(
-                for: scopeOption.avatarPickerConfig.contentLayout,
+                for: config.contentLayout,
                 intrinsicHeight: intrinsicHeight,
                 verticalSizeClass: verticalSizeClass
             )

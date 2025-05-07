@@ -81,7 +81,7 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
         self.externalToken = token
         self.updateHandler = updateHandler
         self._model = StateObject(wrappedValue: AvatarPickerViewModel(email: email, authToken: token))
-        if scopeOption.scope == .avatarPickerAndAboutInfoEditor {
+        if scopeOption.isAvatarPickerAndAboutInfoEditor {
             _multipleEditorMode = State(initialValue: .avatarPicker)
         }
     }
@@ -124,11 +124,11 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
         }
     }
 
-    var avatarPickerView: some View {
+    func avatarPickerView(config: AvatarPickerConfiguration) -> some View {
         AvatarPickerView(
             model: model,
             isPresented: $isPresented,
-            contentLayoutProvider: scopeOption.avatarPickerConfig.contentLayout,
+            contentLayoutProvider: config.contentLayout,
             customImageEditor: customImageEditor,
             tokenErrorHandler: externalToken != nil ? nil : {
                 oauthSession.markSessionAsExpired(with: email)
@@ -141,10 +141,10 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
     }
 
     @ViewBuilder
-    var aboutEditorView: some View {
+    func aboutEditorView(fields: AboutInfoField) -> some View {
         AboutEditorView(
             model: model,
-            fields: scopeOption.aboutEditorConfig.fields,
+            fields: fields,
             aboutUpdateHandler: {
                 updateHandler?(.aboutInfoUpdate)
             }
@@ -156,16 +156,16 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
     func editorView() -> some View {
         profileCardHeaderView()
         switch scopeOption.scope {
-        case .avatarPicker:
-            avatarPickerView
-        case .aboutInfoEditor:
-            aboutEditorView
-        case .avatarPickerAndAboutInfoEditor:
+        case .avatarPicker(let config):
+            avatarPickerView(config: config)
+        case .aboutInfoEditor(let config):
+            aboutEditorView(fields: config.fields)
+        case .avatarPickerAndAboutInfoEditor(let config):
             switch multipleEditorMode {
             case .avatarPicker:
-                avatarPickerView
+                avatarPickerView(config: .init(contentLayout: config.contentLayout))
             case .aboutEditor:
-                aboutEditorView
+                aboutEditorView(fields: config.fields)
             case nil:
                 EmptyView()
             }

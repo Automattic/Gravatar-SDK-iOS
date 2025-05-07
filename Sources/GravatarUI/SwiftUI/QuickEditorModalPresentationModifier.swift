@@ -109,17 +109,17 @@ extension ModalPresentationWithIntrinsicSize {
 
     var shouldUseIntrinsicSize: Bool {
         switch scopeOption.scope {
-        case .avatarPicker:
-            shouldAvatarPickerUseIntrinsicSize
+        case .avatarPicker(let config):
+            shouldUseIntrinsicSize(for: config.contentLayout)
         case .aboutInfoEditor:
             false
-        case .avatarPickerAndAboutInfoEditor:
-            shouldAvatarPickerUseIntrinsicSize
+        case .avatarPickerAndAboutInfoEditor(let config):
+            shouldUseIntrinsicSize(for: config.contentLayout)
         }
     }
 
-    var shouldAvatarPickerUseIntrinsicSize: Bool {
-        switch scopeOption.avatarPickerConfig.contentLayout {
+    func shouldUseIntrinsicSize(for contentLayout: AvatarPickerContentLayout) -> Bool {
+        switch contentLayout {
         case .horizontal:
             switch verticalSizeClass {
             case .compact:
@@ -132,15 +132,14 @@ extension ModalPresentationWithIntrinsicSize {
         }
     }
 
-
     var shouldPrioritizeScrollOverResize: Bool {
         switch scopeOption.scope {
-        case .avatarPicker:
-            scopeOption.avatarPickerConfig.contentLayout.prioritizeScrollOverResize
-        case .aboutInfoEditor:
-            scopeOption.aboutEditorConfig.presentationStyle.prioritizeScrollOverResize
-        case .avatarPickerAndAboutInfoEditor:
-            scopeOption.avatarPickerConfig.contentLayout.prioritizeScrollOverResize
+        case .avatarPicker(let config):
+            config.contentLayout.prioritizeScrollOverResize
+        case .aboutInfoEditor(let config):
+            config.presentationStyle.prioritizeScrollOverResize
+        case .avatarPickerAndAboutInfoEditor(let config):
+            config.contentLayout.prioritizeScrollOverResize
         }
     }
 }
