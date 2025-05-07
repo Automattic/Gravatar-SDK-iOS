@@ -77,7 +77,7 @@ struct DemoProfileEditorView: View {
                                     case .avatarUpdate:
                                         self.oneTimeAvatarForceRefresh = true
                                     case .aboutInfoUpdate:
-                                        break
+                                        self.requestProfile()
                                     default: break
                                     }
                                 },

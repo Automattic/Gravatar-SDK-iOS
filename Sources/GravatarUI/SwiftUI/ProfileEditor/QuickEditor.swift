@@ -90,8 +90,8 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
     var body: some View {
         NavigationView {
             VStack {
-                if let token {
-                    editorView(with: token)
+                if token != nil {
+                    editorView()
                 } else {
                     noticeView()
                 }
@@ -139,27 +139,31 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
     }
 
     @ViewBuilder
-    func aboutEditorView(token: String) -> some View {
-        Text("About info view")
-        UpdateProfileTestView(token: token)
-        Spacer()
+    var aboutEditorView: some View {
+        AboutEditorView(
+            model: model,
+            fields: scopeOption.aboutEditorConfig.fields,
+            aboutUpdateHandler: {
+                updateHandler?(.aboutInfoUpdate)
+            }
+        )
     }
 
     @MainActor
     @ViewBuilder
-    func editorView(with token: String) -> some View {
+    func editorView() -> some View {
         profileCardHeaderView()
         switch scopeOption.scope {
         case .avatarPicker:
             avatarPickerView
         case .aboutInfoEditor:
-            aboutEditorView(token: token)
+            aboutEditorView
         case .avatarPickerAndAboutInfoEditor:
             switch multipleEditorMode {
             case .avatarPicker:
                 avatarPickerView
             case .aboutEditor:
-                aboutEditorView(token: token)
+                aboutEditorView
             case nil:
                 EmptyView()
             }
@@ -353,54 +357,4 @@ enum QuickEditorConstants {
         scopeOption: .aboutEditor(.init()),
         isPresented: .constant(true)
     )
-}
-
-struct UpdateProfileTestView: View {
-    let token: String
-
-    @State private var userName: String = ""
-    @State private var responseUserName: String = ""
-    @State private var error: Error?
-
-    var body: some View {
-        TextField("User name", text: $userName)
-        Button(action: {
-            Task {
-                await updateUserName()
-            }
-        }, label: {
-            Text("Update user name")
-        })
-        Text("Response user name: \(responseUserName)")
-        if let error = error as? APIError {
-            ScrollView {
-                switch error {
-                case .responseError(let reason):
-                    switch reason {
-                    case .URLSessionError(let error):
-                        Text(error.localizedDescription)
-                    case .invalidHTTPStatusCode(let response, let errorPayload):
-                        Text("\(response.statusCode) " + (errorPayload?.message ?? ""))
-                    case .invalidURLResponse(let response):
-                        Text(String(describing: response))
-                    case .unexpected(let error):
-                        Text(String(describing: error))
-                    }
-                case .decodingError(let decodingError):
-                    Text(String(describing: decodingError.localizedDescription))
-                default: Text("Unknown error")
-                }
-            }
-        }
-    }
-
-    func updateUserName() async {
-        let service = ProfileService()
-        do {
-            let profile = try await service.updateProfile(with: .init(displayName: userName), token: token)
-            responseUserName = profile.displayName
-        } catch {
-            self.error = error
-        }
-    }
 }

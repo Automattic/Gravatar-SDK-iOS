@@ -178,13 +178,16 @@
 /* Label of a field that contains a short biography or description about the user. */
 "Profile.AboutInfoField.aboutMe" = "About Me";
 
-/* Label of a field that contains the user's company or organization the user is affiliated with. */
+/* Description for the 'About me' field in the profile editing screen. */
+"Profile.AboutInfoField.aboutMe.footer" = "Brief description for your profile.";
+
+/* Label of a field that contains the company or organization the user is affiliated with. */
 "Profile.AboutInfoField.company" = "Company";
 
 /* Label of a field that contains a user’s display name. */
 "Profile.AboutInfoField.displayName" = "Display Name";
 
-/* Label of a field that contains the The user's current job title or role. */
+/* Label of a field that contains the user's current job title or role. */
 "Profile.AboutInfoField.jobTitle" = "Job Title";
 
 /* Label of a field that contains the user's geographic location. */
@@ -195,6 +198,18 @@
 
 /* Label of a field that contains a phonetic pronunciation of the user’s name. */
 "Profile.AboutInfoField.pronunciation" = "Pronunciation";
+
+/* Description for the 'Pronunciation' field in the profile editing screen. */
+"Profile.AboutInfoField.pronunciation.footer" = "Let them know how your name sounds like.";
+
+/* Title of the button to save changes in the profile editing screen. */
+"Profile.Save.title" = "Save";
+
+/* Title of the personal info section in the profile editing screen. */
+"Profile.Section.Personal.header" = "Personal";
+
+/* Title of the professional/work info section in the profile editing screen. */
+"Profile.Section.Professional.header" = "Professional";
 
 /* Title for a button that allows you to claim a new Gravatar profile */
 "ProfileButton.title.create" = "Claim profile";

@@ -378,7 +378,7 @@ final class DemoQuickEditorViewController: UIViewController {
                     case .avatarUpdate:
                         self?.profileSummaryView.loadAvatar(with: .email(email), rating: .x, options: [.forceRefresh])
                     case .aboutInfoUpdate:
-                        break
+                        self?.fetchProfile(with: email)
                     default:
                         break
                 }

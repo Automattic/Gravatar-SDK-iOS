@@ -45,7 +45,7 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
     fileprivate init(
         avatarImageModels: [AvatarImageModel],
         selectedImageID: String? = nil,
-        profileModel: ProfileSummaryModel? = nil,
+        profileModel: Profile? = nil,
         isPresented: Binding<Bool>,
         contentLayoutProvider: AvatarPickerContentLayoutProviding = AvatarPickerContentLayoutType.vertical,
         customImageEditor: ImageEditorBlock<ImageEditor>? = nil as NoCustomEditorBlock?,
@@ -580,40 +580,6 @@ enum AvatarPicker {
 // MARK: - Previews
 
 #Preview("Existing elements") {
-    struct PreviewModel: ProfileSummaryModel {
-        var avatarIdentifier: Gravatar.AvatarIdentifier? {
-            .email("some@email.com")
-        }
-
-        var displayName: String {
-            "Shelly Kimbrough"
-        }
-
-        var jobTitle: String {
-            "Payroll clerk"
-        }
-
-        var pronunciation: String {
-            "shell-ee"
-        }
-
-        var pronouns: String {
-            "she/her"
-        }
-
-        var location: String {
-            "San Antonio, TX"
-        }
-
-        var profileURL: URL? {
-            URL(string: "https://gravatar.com")
-        }
-
-        var profileEditURL: URL? {
-            URL(string: "https://gravatar.com")
-        }
-    }
-
     let avatarImageModels: [AvatarImageModel] = [
         .preview_init(id: "0", source: .local(image: UIImage()), state: .loading),
         .preview_init(id: "1", source: .remote(url: "https://gravatar.com/userimage/110207384/aa5f129a2ec75162cee9a1f0c472356a.jpeg?size=256")),
@@ -626,12 +592,11 @@ enum AvatarPicker {
         .preview_init(id: "8", source: .local(image: UIImage()), state: .error(supportsRetry: false, errorMessage: "Something went wrong.")),
     ]
     let selectedImageID = "5"
-    let profileModel = PreviewModel()
 
-    return AvatarPickerView<NoCustomEditor>(
+    AvatarPickerView<NoCustomEditor>(
         avatarImageModels: avatarImageModels,
         selectedImageID: selectedImageID,
-        profileModel: profileModel,
+        profileModel: nil,
         isPresented: .constant(true),
         contentLayoutProvider: AvatarPickerContentLayoutType.horizontal
     )

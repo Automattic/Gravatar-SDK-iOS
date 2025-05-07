@@ -29,13 +29,15 @@ class AvatarPickerViewModel: ObservableObject {
     @Published private(set) var backendSelectedAvatarURL: URL?
     @Published private(set) var gridResponseStatus: Result<Void, Error>?
     @Published private(set) var grid: AvatarGridModel = .init(avatars: [])
-    @Published private(set) var profileResult: Result<ProfileSummaryModel, Error>?
+    @Published private(set) var profileResult: Result<Profile, Error>?
 
     @Published var isProfileLoading: Bool = false
     @Published private(set) var isAvatarsLoading: Bool = false
     @Published var avatarIdentifier: AvatarIdentifier?
     @Published var forceRefreshAvatar: Bool = false
     @Published var profileModel: AvatarPickerProfileView<EmptyView>.Model?
+    @Published var aboutInfoModel: AboutInfoModel = .init()
+
     @Published var shouldDisplayNoSelectedAvatarWarning: Bool = false
     @ObservedObject var toastManager: ToastManager = .init()
     private var cancellables = Set<AnyCancellable>()
@@ -60,7 +62,7 @@ class AvatarPickerViewModel: ObservableObject {
     init(
         avatarImageModels: [AvatarImageModel],
         selectedImageID: String? = nil,
-        profileModel: ProfileSummaryModel? = nil,
+        profileModel: Profile? = nil,
         profileService: ProfileService? = nil,
         avatarService: AvatarService? = nil,
         imageDownloader: ImageDownloader? = nil
@@ -118,6 +120,15 @@ class AvatarPickerViewModel: ObservableObject {
                     displayName: value.displayName,
                     location: value.location,
                     profileURL: value.profileURL
+                )
+                self?.aboutInfoModel = AboutInfoModel(
+                    displayName: value.displayName,
+                    aboutMe: value.description,
+                    pronunciation: value.pronunciation,
+                    pronouns: value.pronouns,
+                    location: value.location,
+                    jobTitle: value.jobTitle,
+                    company: value.company
                 )
             default:
                 self?.profileModel = nil
@@ -232,6 +243,20 @@ class AvatarPickerViewModel: ObservableObject {
         } catch {
             profileResult = .failure(error)
             isProfileLoading = false
+        }
+    }
+
+    func saveAboutInfo(for fields: AboutInfoField) async -> Bool {
+        guard let authToken else { return false }
+        do {
+            let request = aboutInfoModel.updateProfileRequest(for: fields)
+            let updatedProfile = try await profileService.updateProfile(with: request, token: authToken)
+            self.profileResult = .success(updatedProfile)
+            return true
+        } catch {
+            // TODO: Handle errors properly.
+            toastManager.showToast(error.localizedDescription, type: .error)
+            return false
         }
     }
 

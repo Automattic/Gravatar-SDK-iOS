@@ -6,3 +6,9 @@ extension Array {
         return self[index]
     }
 }
+
+extension [Bool] {
+    var hasMoreThanOneTrue: Bool {
+        count { $0 } > 1
+    }
+}
