@@ -1,23 +1,14 @@
 /// Represents a profile editing scope with configuration options for each scope.
 public struct QuickEditorScopeOption {
     enum Scope {
-        case avatarPicker
-        case aboutInfoEditor
-        case avatarPickerAndAboutInfoEditor
+        case avatarPicker(AvatarPickerConfiguration)
+        case aboutInfoEditor(AboutEditorConfiguration)
+        case avatarPickerAndAboutInfoEditor(AvatarPickerAndAboutEditorConfiguration)
     }
-
-    let avatarPickerConfig: AvatarPickerConfiguration
-    let aboutEditorConfig: AboutEditorConfiguration
 
     let scope: Scope
 
-    init(
-        scope: Scope,
-        avatarPickerConfig: AvatarPickerConfiguration = .horizontalInstrinsicHeight,
-        aboutEditorConfig: AboutEditorConfiguration = .init(presentationStyle: .expandableMedium())
-    ) {
-        self.avatarPickerConfig = avatarPickerConfig
-        self.aboutEditorConfig = aboutEditorConfig
+    init(scope: Scope) {
         self.scope = scope
     }
 
@@ -28,8 +19,7 @@ public struct QuickEditorScopeOption {
         _ config: AvatarPickerConfiguration = .horizontalInstrinsicHeight
     ) -> Self {
         .init(
-            scope: .avatarPicker,
-            avatarPickerConfig: config
+            scope: .avatarPicker(config)
         )
     }
 
@@ -40,8 +30,7 @@ public struct QuickEditorScopeOption {
         _ config: AboutEditorConfiguration = .init()
     ) -> Self {
         .init(
-            scope: .aboutInfoEditor,
-            aboutEditorConfig: config
+            scope: .aboutInfoEditor(config)
         )
     }
 
@@ -49,36 +38,48 @@ public struct QuickEditorScopeOption {
         _ avatarPickerAndAboutEditorConfig: AvatarPickerAndAboutEditorConfiguration = .init()
     ) -> Self {
         .init(
-            scope: .avatarPickerAndAboutInfoEditor,
-            avatarPickerConfig: .init(contentLayout: avatarPickerAndAboutEditorConfig.contentLayout),
-            aboutEditorConfig: .init(fields: avatarPickerAndAboutEditorConfig.fields)
+            scope: .avatarPickerAndAboutInfoEditor(avatarPickerAndAboutEditorConfig)
         )
+    }
+
+    var isAvatarPickerAndAboutInfoEditor: Bool {
+        switch scope {
+        case .avatarPickerAndAboutInfoEditor:
+            true
+        default:
+            false
+        }
     }
 }
 
 /// Represents a profile editing scope with configuration options for each scope.
 @available(iOS, deprecated: 16.0, renamed: "QuickEditorScopeOption")
 public struct QuickEditorScopeOptionOld {
+    enum ScopeOld {
+        case avatarPicker
+        case aboutInfoEditor
+        case avatarPickerAndAboutInfoEditor
+    }
+
     typealias Scope = QuickEditorScopeOption.Scope
 
-    let avatarPickerConfig: AvatarPickerConfiguration
-    let aboutEditorConfig: AboutEditorConfiguration
     let scope: Scope
 
-    init(
-        scope: Scope
-    ) {
-        self.avatarPickerConfig = .verticalLarge
-        self.aboutEditorConfig = .init(presentationStyle: .large)
-        self.scope = scope
+    init(scope: ScopeOld) {
+        self.scope = switch scope {
+        case .avatarPicker:
+            .avatarPicker(.verticalLarge)
+        case .aboutInfoEditor:
+            .aboutInfoEditor(.init(presentationStyle: .large))
+        case .avatarPickerAndAboutInfoEditor:
+            .avatarPickerAndAboutInfoEditor(.init(contentLayout: .vertical(presentationStyle: .large)))
+        }
     }
 
     /// Creates a `QuickEditorScopeOption` configured for the avatar picker scope.
     /// - Returns: An instance of `QuickEditorScopeOption` for the avatar picker scope.
     public static func avatarPicker() -> Self {
-        .init(
-            scope: .avatarPicker
-        )
+        .init(scope: .avatarPicker)
     }
 
     /// Creates a `QuickEditorScopeOption` configured for the about info editor scope.
@@ -94,6 +95,6 @@ public struct QuickEditorScopeOptionOld {
     }
 
     func map() -> QuickEditorScopeOption {
-        .init(scope: scope, avatarPickerConfig: avatarPickerConfig, aboutEditorConfig: aboutEditorConfig)
+        .init(scope: scope)
     }
 }
