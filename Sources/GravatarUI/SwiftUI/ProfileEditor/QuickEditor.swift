@@ -130,6 +130,7 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
         .notSavedChangesAlert(isPresented: $presentHasUnsavedChangesAlert) {
             isPresented = false
         }
+        .interactiveDismissDisabled(model.isAboutInfoDirty)
     }
 
     func avatarPickerView(config: AvatarPickerConfiguration) -> some View {
