@@ -14,6 +14,15 @@ struct AboutEditorView: View {
     var aboutUpdateHandler: (() -> Void)?
 
     var body: some View {
+        if model.profileResult == nil {
+            loadingView()
+        } else {
+            content()
+        }
+    }
+
+    @ViewBuilder
+    private func content() -> some View {
         VStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
@@ -34,6 +43,15 @@ struct AboutEditorView: View {
         saveButton()
             .padding(.horizontal, .DS.Padding.large)
             .padding(.bottom, .DS.Padding.double)
+    }
+
+    private func loadingView() -> some View {
+        VStack {
+            ProgressView()
+                .progressViewStyle(CircularProgressViewStyle())
+                .controlSize(.regular)
+            Spacer()
+        }
     }
 
     private func saveButton() -> some View {

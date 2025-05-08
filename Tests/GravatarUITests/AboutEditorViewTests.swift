@@ -115,6 +115,25 @@ struct AboutEditorViewTests {
     }
 
     @MainActor
+    @Test("Test about editor loading state snapshot")
+    func testLoadingState() async throws {
+        let testModel = testModel()
+
+        let view = AboutEditorView(
+            model: testModel,
+            fields: .all
+        )
+
+        assertSnapshots(
+            of: view,
+            as: [
+                .testStrategy(userInterfaceStyle: .light, layout: .fixed(width: 200, height: 300)),
+                .testStrategy(userInterfaceStyle: .dark, layout: .fixed(width: 200, height: 300)),
+            ]
+        )
+    }
+
+    @MainActor
     private func testModel() -> AvatarPickerViewModel {
         let profileService = ProfileService(urlSession: URLSessionMock(returnData: Bundle.fullProfileJsonData, response: .successResponse()))
 
