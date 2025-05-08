@@ -130,8 +130,6 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
         .notSavedChangesAlert(isPresented: $presentHasUnsavedChangesAlert) {
             isPresented = false
         }
-
-
     }
 
     func avatarPickerView(config: AvatarPickerConfiguration) -> some View {
@@ -296,8 +294,8 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
     }
 }
 
-private extension View {
-    func notSavedChangesAlert(
+extension View {
+    fileprivate func notSavedChangesAlert(
         isPresented: Binding<Bool>,
         onDiscard: @escaping () -> Void
     ) -> some View {

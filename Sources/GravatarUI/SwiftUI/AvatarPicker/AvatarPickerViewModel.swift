@@ -595,8 +595,8 @@ extension AvatarImageModel {
     }
 }
 
-private extension Profile {
-    func aboutModel() -> AboutInfoModel {
+extension Profile {
+    fileprivate func aboutModel() -> AboutInfoModel {
         AboutInfoModel(
             displayName: displayName,
             aboutMe: description,
