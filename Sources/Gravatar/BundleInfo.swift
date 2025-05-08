@@ -5,8 +5,21 @@ package enum BundleInfo {
         getInfoValue(forKey: "CFBundleShortVersionString") as? String
     }
 
+    /// The `CFBundleName`.
+    ///
+    /// This string may be localized.
     package static var appName: String? {
         Bundle.main.object(forInfoDictionaryKey: "CFBundleName") as? String
+    }
+
+    /// The `CFBundleExecutable` name.
+    package static var executableName: String? {
+        Bundle.main.object(forInfoDictionaryKey: "CFBundleExecutable") as? String
+    }
+
+    package static var appIdentifier: String? {
+        guard let bundleID = Bundle.main.bundleIdentifier else { return nil }
+        return String(bundleID.hashed().prefix(10))
     }
 
     private static func getInfoValue(forKey key: String) -> Any? {

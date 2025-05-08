@@ -7,6 +7,10 @@ enum HTTPClientError: Error {
     case URLSessionError(Error)
 }
 
+private enum Constants {
+    static let sdkName = "Gravatar-SDK"
+}
+
 struct URLSessionHTTPClient: HTTPClient {
     private let urlSession: URLSessionProtocol
 
@@ -14,9 +18,10 @@ struct URLSessionHTTPClient: HTTPClient {
         let configuration = URLSessionConfiguration.default
         configuration.httpAdditionalHeaders = [
             "Accept": "application/json",
-            "X-Platform": "ios",
+            "X-Platform": osName().lowercased(),
             "X-SDK-Version": BundleInfo.sdkVersion ?? "",
-            "X-Source": BundleInfo.appName ?? "",
+            "X-Source": BundleInfo.executableName ?? "",
+            "User-Agent": Self.userAgent,
         ]
         self.urlSession = urlSession ?? URLSession(configuration: configuration)
     }
@@ -49,6 +54,23 @@ extension URLRequest {
         requestCopy.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         return requestCopy
     }
+}
+
+extension URLSessionHTTPClient {
+    private static var userAgent: String {
+        "\(Constants.sdkName)/\(BundleInfo.sdkVersion) (\(osName()) \(ProcessInfo.processInfo.osVersionDottedString); AppID \(BundleInfo.appIdentifier ?? "Unknown"))"
+    }
+}
+
+private func osName() -> String {
+    let osName: String
+    #if os(iOS)
+    osName = "iOS"
+    #else
+    osName = "Unknown OS"
+    assertionFailure("Update '\(#function)' to include the current OS name (iOS, macOS, tvOS, watchOS) when adding support for it.")
+    #endif
+    return osName
 }
 
 private func validatedHTTPResponse(_ response: URLResponse, data: Data) throws -> HTTPURLResponse {
