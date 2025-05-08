@@ -53,6 +53,7 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
     @State private var multipleEditorMode: MultipleScopeMode? = nil
 
     @Binding private var isPresented: Bool
+    @State private var presentHasUnsavedChangesAlert = false
     // Declare "@StateObject"s as private to prevent setting them from a
     // memberwise initializer, which can conflict with the storage
     // management that SwiftUI provides.
@@ -101,7 +102,11 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
             .gravatarNavigation(
                 actionButtonDisabled: model.profileModel?.profileURL == nil,
                 onDoneButtonPressed: {
-                    isPresented = false
+                    if model.isAboutInfoDirty {
+                        presentHasUnsavedChangesAlert = true
+                    } else {
+                        isPresented = false
+                    }
                 },
                 preferenceKey: InnerHeightPreferenceKey.self
             )
@@ -119,9 +124,14 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
         }
         .onChange(of: token) { newValue in
             if let newValue {
-                model.update(authToken: newValue)
+                model.update(authToken: newValue, modelToRefresh: .all)
             }
         }
+        .notSavedChangesAlert(isPresented: $presentHasUnsavedChangesAlert) {
+            isPresented = false
+        }
+
+
     }
 
     func avatarPickerView(config: AvatarPickerConfiguration) -> some View {
@@ -286,6 +296,26 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
     }
 }
 
+private extension View {
+    func notSavedChangesAlert(
+        isPresented: Binding<Bool>,
+        onDiscard: @escaping () -> Void
+    ) -> some View {
+        self.alert(QuickEditorConstants.Localized.UnsavedChangesAlert.title, isPresented: isPresented) {
+            Button {} label: {
+                Text(QuickEditorConstants.Localized.UnsavedChangesAlert.keepEditingButtonTitle)
+            }
+            Button {
+                onDiscard()
+            } label: {
+                Text(QuickEditorConstants.Localized.UnsavedChangesAlert.discardChangesButtonTitle)
+            }
+        } message: {
+            Text(QuickEditorConstants.Localized.UnsavedChangesAlert.message)
+        }
+    }
+}
+
 enum QuickEditorConstants {
     enum ErrorView {
         static func title(for oauthError: OAuthError?) -> String? {
@@ -312,6 +342,29 @@ enum QuickEditorConstants {
     }
 
     enum Localized {
+        enum UnsavedChangesAlert {
+            static let title = SDKLocalizedString(
+                "AvatarPicker.UnsavedChangesAlert.title",
+                value: "Unsaved changes",
+                comment: "Title of an alert advising the user that they will lose their unsaved changes if they close the quick editor"
+            )
+            static let message = SDKLocalizedString(
+                "AvatarPicker.UnsavedChangesAlert.message",
+                value: "If you leave now your changes will be lost.",
+                comment: "A message advising the user that will lose their unsaved changes if they close the quick editor"
+            )
+            static let keepEditingButtonTitle = SDKLocalizedString(
+                "AvatarPicker.UnsavedChangesAlert.keepEditingButtonTitle",
+                value: "Keep editing",
+                comment: "Title of the action to keep editing"
+            )
+            static let discardChangesButtonTitle = SDKLocalizedString(
+                "AvatarPicker.UnsavedChangesAlert.discardChangesButtonTitle",
+                value: "Discard",
+                comment: "Title of the action to discard changes and close the quick editor"
+            )
+        }
+
         enum WrongEmailError {
             static let title = SDKLocalizedString(
                 "AvatarPicker.ContentLoading.Failure.Retry.title",

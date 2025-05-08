@@ -5,6 +5,12 @@ import SwiftUI
 
 @MainActor
 class AvatarPickerViewModel: ObservableObject {
+    enum ModelRefresh {
+        case avatarPickerModel
+        case aboutEditorModel
+        case all
+    }
+
     private let profileService: ProfileService
     private let avatarService: AvatarService
     private let imageDownloader: ImageDownloader
@@ -37,10 +43,15 @@ class AvatarPickerViewModel: ObservableObject {
     @Published var forceRefreshAvatar: Bool = false
     @Published var profileModel: AvatarPickerProfileViewModel?
     @Published var aboutInfoModel: AboutInfoModel = .init()
+    private var updatedAboutInfoModel: AboutInfoModel = .init()
 
     @Published var shouldDisplayNoSelectedAvatarWarning: Bool = false
     @ObservedObject var toastManager: ToastManager = .init()
     private var cancellables = Set<AnyCancellable>()
+
+    var isAboutInfoDirty: Bool {
+        updatedAboutInfoModel != aboutInfoModel
+    }
 
     init(
         email: Email,
@@ -115,21 +126,14 @@ class AvatarPickerViewModel: ObservableObject {
 
         $profileResult.sink { [weak self] profileResult in
             switch profileResult {
-            case .success(let value):
+            case .success(let updatedProfile):
                 self?.profileModel = .init(
-                    displayName: value.displayName,
-                    location: value.location,
-                    profileURL: value.profileURL
+                    displayName: updatedProfile.displayName,
+                    location: updatedProfile.location,
+                    profileURL: updatedProfile.profileURL
                 )
-                self?.aboutInfoModel = AboutInfoModel(
-                    displayName: value.displayName,
-                    aboutMe: value.description,
-                    pronunciation: value.pronunciation,
-                    pronouns: value.pronouns,
-                    location: value.location,
-                    jobTitle: value.jobTitle,
-                    company: value.company
-                )
+                self?.aboutInfoModel = updatedProfile.aboutModel()
+                self?.updatedAboutInfoModel = updatedProfile.aboutModel()
             default:
                 self?.profileModel = nil
             }
@@ -381,25 +385,32 @@ class AvatarPickerViewModel: ObservableObject {
         }
     }
 
-    func update(authToken: String) {
+    func update(authToken: String, modelToRefresh: ModelRefresh) {
         self.authToken = authToken
-        refresh()
+        refresh(modelToRefresh: modelToRefresh)
     }
 
-    func refresh() {
+    func refresh(modelToRefresh: ModelRefresh) {
         Task {
-            await refresh()
+            await refresh(modelToRefresh: modelToRefresh)
         }
     }
 
-    func refresh() async {
-        // We want them to be parallel child tasks so they don't wait each other.
-        async let avatars: () = fetchAvatars()
-        async let profile: () = fetchProfile()
+    func refresh(modelToRefresh: ModelRefresh) async {
+        switch modelToRefresh {
+        case .avatarPickerModel:
+            await fetchAvatars()
+        case .aboutEditorModel:
+            await fetchProfile()
+        case .all:
+            // We want them to be parallel child tasks so they don't wait each other.
+            async let avatars: () = fetchAvatars()
+            async let profile: () = fetchProfile()
 
-        // We need to await them otherwise network requests can be cancelled.
-        await avatars
-        await profile
+            // We need to await them otherwise network requests can be cancelled.
+            await avatars
+            await profile
+        }
     }
 
     @discardableResult
@@ -581,5 +592,19 @@ extension AvatarImageModel {
         isSelected = avatar.isSelected
         altText = avatar.altText
         rating = avatar.imageRating
+    }
+}
+
+private extension Profile {
+    func aboutModel() -> AboutInfoModel {
+        AboutInfoModel(
+            displayName: displayName,
+            aboutMe: description,
+            pronunciation: pronunciation,
+            pronouns: pronouns,
+            location: location,
+            jobTitle: jobTitle,
+            company: company
+        )
     }
 }

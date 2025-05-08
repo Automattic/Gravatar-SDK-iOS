@@ -229,3 +229,14 @@
 /* An option to show the image playground */
 "SystemImagePickerView.Source.Playground.title" = "Playground";
 
+/* Title of an alert advising the user that they will lose their unsaved changes if they close the quick editor */
+"AvatarPicker.UnsavedChangesAlert.title" = "Unsaved changes";
+
+/* A message advising the user that will lose their unsaved changes if they close the quick editor */
+"AvatarPicker.UnsavedChangesAlert.message" = "If you leave now your changes will be lost.";
+
+/* Title of the action to keep editing */
+"AvatarPicker.UnsavedChangesAlert.keepEditingButtonTitle" = "Keep editing";
+
+/* Title of the action to discard changes and close the quick editor */
+"AvatarPicker.UnsavedChangesAlert.discardChangesButtonTitle" = "Discard";
