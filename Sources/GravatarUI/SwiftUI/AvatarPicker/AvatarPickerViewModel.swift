@@ -312,7 +312,7 @@ class AvatarPickerViewModel: ObservableObject {
                 self.backendSelectedAvatarURL = URL(string: avatar.imageURL)
             }
         } catch ImageUploadError.responseError(reason: let .invalidHTTPStatusCode(response, errorPayload))
-                    where response.statusCode == HTTPStatus.badRequest.rawValue || response.statusCode == HTTPStatus.payloadTooLarge.rawValue
+            where response.statusCode == HTTPStatus.badRequest.rawValue || response.statusCode == HTTPStatus.payloadTooLarge.rawValue
         {
             let message: String = {
                 if response.statusCode == HTTPStatus.payloadTooLarge.rawValue {
@@ -330,7 +330,7 @@ class AvatarPickerViewModel: ObservableObject {
                 errorMessage: message
             )
         } catch ImageUploadError.responseError(reason: let .invalidHTTPStatusCode(response, errorPayload))
-                    where response.statusCode == HTTPStatus.unauthorized.rawValue
+            where response.statusCode == HTTPStatus.unauthorized.rawValue
         {
             // If the status code is 401 (unauthorized), then it means the token is not valid and we should prompt the user accordingly.
             handleUnrecoverableClientError(APIError.responseError(reason: .invalidHTTPStatusCode(response: response, errorPayload: errorPayload)))
