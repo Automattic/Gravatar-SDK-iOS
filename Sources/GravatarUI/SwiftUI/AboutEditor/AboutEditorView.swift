@@ -7,7 +7,7 @@ struct AboutEditorView: View {
         static let footerFont: Font = .footnote
     }
 
-    @State var isLoading: Bool = false
+    @State private var isSaving: Bool = false
     @ObservedObject var model: AvatarPickerViewModel
     let fields: AboutInfoField
     @Environment(\.colorScheme) var colorScheme: ColorScheme
@@ -50,17 +50,17 @@ struct AboutEditorView: View {
         ZStack {
             Button {
                 Task {
-                    isLoading = true
+                    isSaving = true
                     if await self.model.saveAboutInfo(for: fields) {
                         aboutUpdateHandler?()
                     }
-                    isLoading = false
+                    isSaving = false
                 }
             } label: {
                 CTAButtonView(Localized.saveButtonTitle)
             }
-            .disabled(!model.hasUnsavedChanges || isLoading)
-            if isLoading {
+            .disabled(!model.hasUnsavedChanges || isSaving)
+            if isSaving {
                 ProgressView()
             }
         }

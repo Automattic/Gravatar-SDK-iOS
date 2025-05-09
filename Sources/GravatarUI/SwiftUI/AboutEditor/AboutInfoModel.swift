@@ -33,15 +33,3 @@ class AboutInfoModel: ObservableObject {
         )
     }
 }
-
-extension AboutInfoModel: Equatable {
-    static func == (lhs: AboutInfoModel, rhs: AboutInfoModel) -> Bool {
-        lhs.displayName == rhs.displayName
-            && lhs.aboutMe == rhs.aboutMe
-            && lhs.pronunciation == rhs.pronunciation
-            && lhs.pronouns == rhs.pronouns
-            && lhs.location == rhs.location
-            && lhs.jobTitle == rhs.jobTitle
-            && lhs.company == rhs.company
-    }
-}

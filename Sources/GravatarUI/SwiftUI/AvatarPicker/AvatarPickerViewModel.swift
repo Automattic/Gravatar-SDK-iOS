@@ -43,14 +43,16 @@ class AvatarPickerViewModel: ObservableObject {
     @Published var forceRefreshAvatar: Bool = false
     @Published var profileModel: AvatarPickerProfileViewModel?
     @Published var aboutInfoModel: AboutInfoModel = .init()
-    private var updatedAboutInfoModel: AboutInfoModel = .init()
 
     @Published var shouldDisplayNoSelectedAvatarWarning: Bool = false
     @ObservedObject var toastManager: ToastManager = .init()
     private var cancellables = Set<AnyCancellable>()
 
     var hasUnsavedChanges: Bool {
-        updatedAboutInfoModel != aboutInfoModel
+        guard let profile = profileResult?.value() else {
+            return false
+        }
+        return !aboutInfoModel.hasEqualFields(than: profile)
     }
 
     init(
@@ -133,7 +135,6 @@ class AvatarPickerViewModel: ObservableObject {
                     profileURL: updatedProfile.profileURL
                 )
                 self?.aboutInfoModel = updatedProfile.aboutModel()
-                self?.updatedAboutInfoModel = updatedProfile.aboutModel()
             default:
                 self?.profileModel = nil
             }
@@ -606,5 +607,17 @@ extension Profile {
             jobTitle: jobTitle,
             company: company
         )
+    }
+}
+
+extension AboutInfoModel {
+    fileprivate func hasEqualFields(than profile: Profile) -> Bool {
+        displayName == profile.displayName
+            && aboutMe == profile.description
+            && pronunciation == profile.pronunciation
+            && pronouns == profile.pronouns
+            && location == profile.location
+            && jobTitle == profile.jobTitle
+            && company == profile.company
     }
 }
