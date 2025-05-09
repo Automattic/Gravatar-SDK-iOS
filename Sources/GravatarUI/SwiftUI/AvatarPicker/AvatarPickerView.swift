@@ -75,7 +75,7 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
                         if !model.grid.isEmpty {
                             content()
                         } else if model.isAvatarsLoading {
-                            avatarsLoadingView()
+                            LoadingIndicatorView()
                         }
                         Spacer()
                             .frame(height: Constants.vStackVerticalSpacing)
@@ -404,20 +404,6 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
         }
         .avatarPickerBorder(colorScheme: colorScheme)
         .padding(.horizontal, Constants.horizontalPadding)
-    }
-
-    private func avatarsLoadingView() -> some View {
-        VStack {
-            Spacer(minLength: .DS.Padding.large)
-
-            ProgressView()
-                .progressViewStyle(
-                    CircularProgressViewStyle()
-                )
-                .controlSize(.regular)
-
-            Spacer()
-        }
     }
 
     private func openProfileInSafari() {
