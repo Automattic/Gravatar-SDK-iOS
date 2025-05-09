@@ -46,7 +46,7 @@ final class AvatarPickerViewModelTests {
                 confirmation.confirm()
             }.store(in: &cancellables)
 
-            await model.refresh()
+            await model.refresh(modelToRefresh: .avatarPickerModel)
         }
     }
 
@@ -58,7 +58,7 @@ final class AvatarPickerViewModelTests {
                 confirmation.confirm()
             }.store(in: &cancellables)
 
-            await model.refresh()
+            await model.refresh(modelToRefresh: .all)
         }
     }
 
@@ -82,7 +82,7 @@ final class AvatarPickerViewModelTests {
     @Test
     func testSelectAvatar() async throws {
         let toSelectID = "9862792c565394..."
-        await model.refresh()
+        await model.refresh(modelToRefresh: .avatarPickerModel)
         await confirmation { confirmation in
             // First selectedAvatar change after setting the initial status.
             // Second selectedAvatar change is local set before the request.
@@ -139,7 +139,7 @@ final class AvatarPickerViewModelTests {
 
     @Test
     func testFetchOriginalSizeAvatarSuccess() async throws {
-        await model.refresh()
+        await model.refresh(modelToRefresh: .avatarPickerModel)
         let avatar = try #require(model.grid.avatars.first, "No avatar found")
 
         await confirmation(expectedCount: 2) { confirmation in
@@ -166,7 +166,7 @@ final class AvatarPickerViewModelTests {
     @Test
     func testFetchOriginalSizeFailsWithURLSessionError() async throws {
         let model = Self.createModel(imageDownloader: TestImageFetcher(result: .urlSessionError))
-        await model.refresh()
+        await model.refresh(modelToRefresh: .avatarPickerModel)
         let avatar = try #require(model.grid.avatars.first, "No avatar found")
 
         await confirmation(expectedCount: 2) { confirmation in
@@ -197,7 +197,7 @@ final class AvatarPickerViewModelTests {
     @Test
     func testFetchOriginalSizeFailsWithGenericError() async throws {
         let model = Self.createModel(imageDownloader: TestImageFetcher(result: .fail))
-        await model.refresh()
+        await model.refresh(modelToRefresh: .avatarPickerModel)
         let avatar = try #require(model.grid.avatars.first, "No avatar found")
 
         await confirmation(expectedCount: 2) { confirmation in
@@ -283,7 +283,7 @@ final class AvatarPickerViewModelTests {
 
     @Test
     func testDeleteAvatar() async throws {
-        await model.refresh()
+        await model.refresh(modelToRefresh: .avatarPickerModel)
         let avatarToDelete = model.grid.avatars.last!
         #expect(await model.delete(avatarToDelete), "Avatar deletion should be successfull")
         #expect(model.grid.index(of: avatarToDelete.id) == nil, "Deleted avatar should not be on the grid")
@@ -291,14 +291,14 @@ final class AvatarPickerViewModelTests {
 
     @Test
     func testDeletingNonExistentAvatarFails() async throws {
-        await model.refresh()
+        await model.refresh(modelToRefresh: .avatarPickerModel)
         let avatarToDelete = Self.createImageModel(id: "someID", source: .remote(url: ""))
         #expect(await model.delete(avatarToDelete) == false, "Avatar deletion should not succeed")
     }
 
     @Test
     func testDeleteSelectedAvatar() async throws {
-        await model.refresh()
+        await model.refresh(modelToRefresh: .avatarPickerModel)
         let selectedAvatar = model.grid.selectedAvatar!
 
         await confirmation { confirmation in
@@ -359,7 +359,7 @@ final class AvatarPickerViewModelTests {
     func changeAvatarRatingSucceeds() async throws {
         let testAvatarID = "991a7b71cf9f34..."
 
-        await model.refresh()
+        await model.refresh(modelToRefresh: .avatarPickerModel)
         let avatar = try #require(model.grid.avatars.first(where: { $0.id == testAvatarID }), "No avatar found")
         try #require(avatar.rating == .general)
 
@@ -410,7 +410,7 @@ final class AvatarPickerViewModelTests {
     @Test
     func testUpdateAltText() async throws {
         let newAltText = "Updated Alt Text"
-        await model.refresh()
+        await model.refresh(modelToRefresh: .avatarPickerModel)
         let avatar = model.grid.avatars[0]
         let success = await model.update(altText: newAltText, for: avatar)
 

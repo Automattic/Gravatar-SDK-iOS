@@ -10,7 +10,7 @@ struct AboutEditorViewTests {
     @Test
     func testAboutEditorViewAllFieldsIntrinsicHeight() async throws {
         let testModel = testModel()
-        await testModel.refresh()
+        await testModel.refresh(modelToRefresh: .aboutEditorModel)
 
         let view = AboutEditorView(
             model: testModel,
@@ -32,7 +32,7 @@ struct AboutEditorViewTests {
     @Test
     func testAboutEditorViewProfessionalFieldsIntrinsicHeight() async throws {
         let testModel = testModel()
-        await testModel.refresh()
+        await testModel.refresh(modelToRefresh: .aboutEditorModel)
 
         let view = AboutEditorView(
             model: testModel,
@@ -54,7 +54,7 @@ struct AboutEditorViewTests {
     @Test
     func testAboutEditorViewPersonalFieldsIntrinsicHeight() async throws {
         let testModel = testModel()
-        await testModel.refresh()
+        await testModel.refresh(modelToRefresh: .aboutEditorModel)
 
         let view = AboutEditorView(
             model: testModel,
@@ -76,7 +76,7 @@ struct AboutEditorViewTests {
     @Test
     func testAboutEditorViewAllFieldsFixedHeight() async throws {
         let testModel = testModel()
-        await testModel.refresh()
+        await testModel.refresh(modelToRefresh: .aboutEditorModel)
         let viewImageConfig: ViewImageConfig = .iPhoneSe
 
         let view = AboutEditorView(
@@ -95,9 +95,32 @@ struct AboutEditorViewTests {
 
     @MainActor
     @Test
+    func testAboutEditorWithUnsavedChanges() async throws {
+        let testModel = testModel()
+        await testModel.refresh(modelToRefresh: .aboutEditorModel)
+        let viewImageConfig: ViewImageConfig = .iPhoneSe
+
+        let view = AboutEditorView(
+            model: testModel,
+            fields: .all
+        )
+
+        testModel.aboutInfoModel.displayName = "New Unsaved Name"
+
+        assertSnapshots(
+            of: view,
+            as: [
+                .testStrategy(userInterfaceStyle: .light, layout: .device(config: viewImageConfig)),
+                .testStrategy(userInterfaceStyle: .dark, layout: .device(config: viewImageConfig)),
+            ]
+        )
+    }
+
+    @MainActor
+    @Test
     func testAboutEditorViewOneFieldFixedHeight() async throws {
         let testModel = testModel()
-        await testModel.refresh()
+        await testModel.refresh(modelToRefresh: .aboutEditorModel)
         let viewImageConfig: ViewImageConfig = .iPhoneSe
 
         let view = AboutEditorView(
