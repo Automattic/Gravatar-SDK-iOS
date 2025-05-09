@@ -119,7 +119,7 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
         }
         .onChange(of: token) { newValue in
             if let newValue {
-                model.update(authToken: newValue)
+                model.update(authToken: newValue, modelToRefresh: .all)
             }
         }
     }

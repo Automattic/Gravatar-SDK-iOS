@@ -83,7 +83,7 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
                     .accumulateIntrinsicHeight()
                 }
                 .task {
-                    model.refresh()
+                    model.refresh(modelToRefresh: .avatarPickerModel)
                 }
                 .confirmationDialog(
                     Localized.uploadErrorTitle,
@@ -233,7 +233,7 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
                     subtext: subtext,
                     actionButton: {
                         Button {
-                            model.refresh()
+                            model.refresh(modelToRefresh: .avatarPickerModel)
                         } label: {
                             CTAButtonView(Localized.buttonRetry)
                         }
@@ -246,7 +246,7 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
                     image: nil,
                     actionButton: {
                         Button {
-                            model.refresh()
+                            model.refresh(modelToRefresh: .avatarPickerModel)
                         } label: {
                             CTAButtonView(Localized.buttonRetry)
                         }
