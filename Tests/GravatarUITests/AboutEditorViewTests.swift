@@ -124,6 +124,11 @@ struct AboutEditorViewTests {
             fields: .all
         )
 
+        Task(priority: .high) {
+            await testModel.fetchProfile()
+        }
+        // Awaits for the previous task to start executing, and the view to start loading.
+        try await Task.sleep(nanoseconds: 1)
         assertSnapshots(
             of: view,
             as: [
