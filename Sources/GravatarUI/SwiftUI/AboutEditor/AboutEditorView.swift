@@ -45,8 +45,6 @@ struct AboutEditorView: View {
             .padding(.bottom, .DS.Padding.double)
     }
 
-
-
     private func saveButton() -> some View {
         Button {
             Task {
