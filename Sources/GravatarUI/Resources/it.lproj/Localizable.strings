@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-02-05 15:54:02+0000 */
+/* Translation-Revision-Date: 2025-05-06 15:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: it */
@@ -14,6 +14,15 @@
 
 /* The title of Alt Text editor screen. */
 "AltText.Editor.title" = "Testo alternativo";
+
+/* Hint spoken outloud by VoiceOver when an avatar is selected */
+"Avatar.Accessibility.AvatarButton.Hint" = "Seleziona questo avatar";
+
+/* Accessibility label spoken outloud by VoiceOver when an avatar is selected. The '%@' is the Alt text of the avatar image. */
+"Avatar.Accessibility.AvatarButton.Label" = "Immagine avatar. %@";
+
+/* Accessibility label spoken outloud by VoiceOver when the avatar options button is selected */
+"Avatar.Accessibility.AvatarButton.OptionsLabel" = "Opzioni avatar";
 
 /* Rating that indicates that the avatar is suitable for everyone */
 "Avatar.Rating.G.subtitle" = "Generale";
@@ -123,6 +132,9 @@
 /* Placeholder text for the name field */
 "AvatarPickerProfile.Name.placeholder" = "Il tuo nome";
 
+/* VoiceOver readout for the avatar image in the profile card. */
+"AvatarPickerProfile.ProfileFields.avatarAccessibilityLabel" = "Il tuo avatar";
+
 /* Placeholder text for the profile card. Will show as subtitle bellow the name placeholder. */
 "AvatarPickerProfile.ProfileFields.placeholder" = "Posizione";
 
@@ -167,6 +179,27 @@
 
 /* Screen title. Resize and crop an image. */
 "ImageCropper.title" = "Ridimensiona & Ritaglia";
+
+/* Label of a field that contains a short biography or description about the user. */
+"Profile.AboutInfoField.aboutMe" = "Informazioni";
+
+/* Label of a field that contains the company or organization the user is affiliated with. */
+"Profile.AboutInfoField.company" = "Società";
+
+/* Label of a field that contains a user’s display name. */
+"Profile.AboutInfoField.displayName" = "Nome visualizzato";
+
+/* Label of a field that contains the user's current job title or role. */
+"Profile.AboutInfoField.jobTitle" = "Titolo professionale";
+
+/* Label of a field that contains the user's geographic location. */
+"Profile.AboutInfoField.location" = "Posizione";
+
+/* Label of a field that contains the pronouns the user identifies with (e.g., she/her, they/them). */
+"Profile.AboutInfoField.pronouns" = "Pronomi";
+
+/* Label of a field that contains a phonetic pronunciation of the user’s name. */
+"Profile.AboutInfoField.pronunciation" = "Pronuncia";
 
 /* Title for a button that allows you to claim a new Gravatar profile */
 "ProfileButton.title.create" = "Rivendica profilo";

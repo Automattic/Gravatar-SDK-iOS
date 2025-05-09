@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-01-28 08:58:41+0000 */
+/* Translation-Revision-Date: 2025-05-07 09:54:06+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: tr */
@@ -14,6 +14,15 @@
 
 /* The title of Alt Text editor screen. */
 "AltText.Editor.title" = "Alt Metin";
+
+/* Hint spoken outloud by VoiceOver when an avatar is selected */
+"Avatar.Accessibility.AvatarButton.Hint" = "Bu avatarı seçin";
+
+/* Accessibility label spoken outloud by VoiceOver when an avatar is selected. The '%@' is the Alt text of the avatar image. */
+"Avatar.Accessibility.AvatarButton.Label" = "Avatar Görseli. %@";
+
+/* Accessibility label spoken outloud by VoiceOver when the avatar options button is selected */
+"Avatar.Accessibility.AvatarButton.OptionsLabel" = "Avatar seçenekleri";
 
 /* Rating that indicates that the avatar is suitable for everyone */
 "Avatar.Rating.G.subtitle" = "Genel";
@@ -123,6 +132,9 @@
 /* Placeholder text for the name field */
 "AvatarPickerProfile.Name.placeholder" = "İsminiz";
 
+/* VoiceOver readout for the avatar image in the profile card. */
+"AvatarPickerProfile.ProfileFields.avatarAccessibilityLabel" = "Avatarınız";
+
 /* Placeholder text for the profile card. Will show as subtitle bellow the name placeholder. */
 "AvatarPickerProfile.ProfileFields.placeholder" = "Konum";
 
@@ -167,6 +179,27 @@
 
 /* Screen title. Resize and crop an image. */
 "ImageCropper.title" = "Boyutlandır ve Kırp";
+
+/* Label of a field that contains a short biography or description about the user. */
+"Profile.AboutInfoField.aboutMe" = "Hakkımda";
+
+/* Label of a field that contains the company or organization the user is affiliated with. */
+"Profile.AboutInfoField.company" = "Şirket";
+
+/* Label of a field that contains a user’s display name. */
+"Profile.AboutInfoField.displayName" = "Görünen Ad";
+
+/* Label of a field that contains the user's current job title or role. */
+"Profile.AboutInfoField.jobTitle" = "İş Unvanı";
+
+/* Label of a field that contains the user's geographic location. */
+"Profile.AboutInfoField.location" = "Konum";
+
+/* Label of a field that contains the pronouns the user identifies with (e.g., she/her, they/them). */
+"Profile.AboutInfoField.pronouns" = "Zamirler";
+
+/* Label of a field that contains a phonetic pronunciation of the user’s name. */
+"Profile.AboutInfoField.pronunciation" = "Telaffuz";
 
 /* Title for a button that allows you to claim a new Gravatar profile */
 "ProfileButton.title.create" = "Profili sahiplen";
