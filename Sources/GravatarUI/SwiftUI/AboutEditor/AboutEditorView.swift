@@ -15,6 +15,15 @@ struct AboutEditorView: View {
     var aboutUpdateHandler: (() -> Void)?
 
     var body: some View {
+        if model.isProfileLoading {
+            LoadingIndicatorView()
+        } else {
+            content()
+        }
+    }
+
+    @ViewBuilder
+    private func content() -> some View {
         VStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
