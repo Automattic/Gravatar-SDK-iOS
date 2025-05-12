@@ -110,7 +110,7 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
             .gravatarNavigation(
                 actionButtonDisabled: model.profileModel?.profileURL == nil,
                 onDoneButtonPressed: {
-                    if model.isAboutInfoDirty {
+                    if model.hasUnsavedChanges {
                         unsavedChangesAlertPresentationModel.presentAlert = true
                     } else {
                         isPresented = false
@@ -138,9 +138,9 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
         .notSavedChangesAlert(isPresented: $unsavedChangesAlertPresentationModel.presentAlert) {
             isPresented = false
         }
-        .interactiveDismissDisabled(model.isAboutInfoDirty)
-        .onChange(of: model.isAboutInfoDirty) { _ in
-            unsavedChangesAlertPresentationModel.hasUnsavedChanges = model.isAboutInfoDirty
+        .interactiveDismissDisabled(model.hasUnsavedChanges)
+        .onChange(of: model.hasUnsavedChanges) { _ in
+            unsavedChangesAlertPresentationModel.hasUnsavedChanges = model.hasUnsavedChanges
         }
     }
 
