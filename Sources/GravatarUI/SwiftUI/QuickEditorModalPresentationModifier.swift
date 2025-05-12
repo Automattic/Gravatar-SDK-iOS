@@ -24,6 +24,8 @@ struct QuickEditorModalPresentationModifier<ModalView: View>: ViewModifier, Moda
     @State private var presentationDetents: Set<PresentationDetent>
     @State private var prioritizeScrollOverResize: Bool = false
     @Environment(\.colorScheme) var colorScheme: ColorScheme
+    @State private var viewPosition: CGPoint = .zero
+    @State private var initialViewPosition: CGPoint = .zero
 
     let onDismiss: (() -> Void)?
     let modalView: ModalView
@@ -82,6 +84,22 @@ struct QuickEditorModalPresentationModifier<ModalView: View>: ViewModifier, Moda
                     }
                     .presentationDetents(presentationDetents)
                     .presentationContentInteraction(shouldPrioritizeScrolling: prioritizeScrollOverResize)
+                    .overlay(
+                        GeometryReader { geo in
+                            Color.clear
+                                .onChange(of: geo.frame(in: .global)) { newFrame in
+                                    viewPosition = newFrame.origin
+                                }
+                        }
+                    )
+                    .onChange(of: viewPosition) { newValue in
+                        if initialViewPosition.y == 0 {
+                            initialViewPosition = newValue
+                        }
+                        if (newValue.y - initialViewPosition.y) > 40 {
+                            print("You dragged the sheet down! \(newValue)")
+                        }
+                    }
             }
     }
 
