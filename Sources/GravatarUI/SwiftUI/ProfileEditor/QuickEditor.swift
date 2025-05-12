@@ -139,9 +139,8 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
             isPresented = false
         }
         .interactiveDismissDisabled(model.isAboutInfoDirty)
-        .onChange(of: model.isAboutInfoDirty) { oldValue in
+        .onChange(of: model.isAboutInfoDirty) { _ in
             unsavedChangesAlertPresentationModel.hasUnsavedChanges = model.isAboutInfoDirty
-//            self.hasUnsavedChangesHandler?(model.isAboutInfoDirty)
         }
     }
 

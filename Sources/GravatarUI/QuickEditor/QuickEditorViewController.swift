@@ -130,7 +130,7 @@ final class QuickEditorViewController: UIViewController, ModalPresentationWithIn
 }
 
 extension QuickEditorViewController: UISheetPresentationControllerDelegate {
-    func presentationControllerShouldDismiss(_ presentationController: UIPresentationController) -> Bool {
+    func presentationControllerShouldDismiss(_: UIPresentationController) -> Bool {
         if unsavedChangesAlertPresentationModel.hasUnsavedChanges {
             unsavedChangesAlertPresentationModel.presentAlert = true
         }
