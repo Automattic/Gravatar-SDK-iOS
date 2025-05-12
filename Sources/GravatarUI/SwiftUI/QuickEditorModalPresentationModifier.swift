@@ -27,6 +27,7 @@ struct QuickEditorModalPresentationModifier<ModalView: View>: ViewModifier, Moda
     @State private var viewPosition: CGPoint = .zero
     @State private var initialViewPosition: CGPoint = .zero
     @State private var hasBeenDraggedDown = false
+    @State private var lastPosition: CGPoint = .zero
 
     let onDismiss: (() -> Void)?
     let modalView: ModalView
@@ -50,6 +51,7 @@ struct QuickEditorModalPresentationModifier<ModalView: View>: ViewModifier, Moda
             .onChange(of: isPresented) { newValue in
                 if newValue {
                     initialViewPosition = .zero
+                    lastPosition = .zero
                     // First init the detents and then present. This helps with starting off with the correct state.
                     // Otherwise the view remembers its previous height. And an animation glitch happens
                     // when switching between different presentation styles (especially between horizontal and vertical_large).
@@ -102,7 +104,7 @@ struct QuickEditorModalPresentationModifier<ModalView: View>: ViewModifier, Moda
                             initialViewPosition = newValue
                             print("initialViewPosition: \(newValue)")
                         }
-                        if hasBeenDraggedDown && newValue.y == initialViewPosition.y {
+                        if hasBeenDraggedDown, newValue.y == initialViewPosition.y, newValue.y < lastPosition.y {
                             print("Sheet is back up! \(newValue)") // The alert should be shown here!
                             hasBeenDraggedDown = false
                         }
@@ -110,6 +112,7 @@ struct QuickEditorModalPresentationModifier<ModalView: View>: ViewModifier, Moda
                             hasBeenDraggedDown = true
                             print("You dragged the sheet down! \(newValue)")
                         }
+                        lastPosition = newValue
                     }
             }
     }
