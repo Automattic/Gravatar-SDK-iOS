@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-02-05 09:54:02+0000 */
+/* Translation-Revision-Date: 2025-05-08 09:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -14,6 +14,15 @@
 
 /* The title of Alt Text editor screen. */
 "AltText.Editor.title" = "代替テキスト";
+
+/* Hint spoken outloud by VoiceOver when an avatar is selected */
+"Avatar.Accessibility.AvatarButton.Hint" = "このアバターを選択";
+
+/* Accessibility label spoken outloud by VoiceOver when an avatar is selected. The '%@' is the Alt text of the avatar image. */
+"Avatar.Accessibility.AvatarButton.Label" = "アバター画像。%@";
+
+/* Accessibility label spoken outloud by VoiceOver when the avatar options button is selected */
+"Avatar.Accessibility.AvatarButton.OptionsLabel" = "アバターオプション";
 
 /* Rating that indicates that the avatar is suitable for everyone */
 "Avatar.Rating.G.subtitle" = "一般";
@@ -123,6 +132,9 @@
 /* Placeholder text for the name field */
 "AvatarPickerProfile.Name.placeholder" = "あなたの名前";
 
+/* VoiceOver readout for the avatar image in the profile card. */
+"AvatarPickerProfile.ProfileFields.avatarAccessibilityLabel" = "アバター";
+
 /* Placeholder text for the profile card. Will show as subtitle bellow the name placeholder. */
 "AvatarPickerProfile.ProfileFields.placeholder" = "場所";
 
@@ -167,6 +179,27 @@
 
 /* Screen title. Resize and crop an image. */
 "ImageCropper.title" = "サイズ変更・切り抜き";
+
+/* Label of a field that contains a short biography or description about the user. */
+"Profile.AboutInfoField.aboutMe" = "自己紹介";
+
+/* Label of a field that contains the company or organization the user is affiliated with. */
+"Profile.AboutInfoField.company" = "会社";
+
+/* Label of a field that contains a user’s display name. */
+"Profile.AboutInfoField.displayName" = "表示名";
+
+/* Label of a field that contains the user's current job title or role. */
+"Profile.AboutInfoField.jobTitle" = "肩書";
+
+/* Label of a field that contains the user's geographic location. */
+"Profile.AboutInfoField.location" = "場所";
+
+/* Label of a field that contains the pronouns the user identifies with (e.g., she/her, they/them). */
+"Profile.AboutInfoField.pronouns" = "代名詞";
+
+/* Label of a field that contains a phonetic pronunciation of the user’s name. */
+"Profile.AboutInfoField.pronunciation" = "ふりがな";
 
 /* Title for a button that allows you to claim a new Gravatar profile */
 "ProfileButton.title.create" = "プロフィールを取得";

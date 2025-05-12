@@ -49,8 +49,11 @@ class AvatarPickerViewModel: ObservableObject {
     @ObservedObject var toastManager: ToastManager = .init()
     private var cancellables = Set<AnyCancellable>()
 
-    var isAboutInfoDirty: Bool {
-        updatedAboutInfoModel != aboutInfoModel
+    var hasUnsavedChanges: Bool {
+        guard let profile = profileResult?.value() else {
+            return false
+        }
+        return !aboutInfoModel.hasEqualFields(than: profile)
     }
 
     init(
@@ -133,7 +136,6 @@ class AvatarPickerViewModel: ObservableObject {
                     profileURL: updatedProfile.profileURL
                 )
                 self?.aboutInfoModel = updatedProfile.aboutModel()
-                self?.updatedAboutInfoModel = updatedProfile.aboutModel()
             default:
                 self?.profileModel = nil
             }
@@ -606,5 +608,17 @@ extension Profile {
             jobTitle: jobTitle,
             company: company
         )
+    }
+}
+
+extension AboutInfoModel {
+    fileprivate func hasEqualFields(than profile: Profile) -> Bool {
+        displayName == profile.displayName
+            && aboutMe == profile.description
+            && pronunciation == profile.pronunciation
+            && pronouns == profile.pronouns
+            && location == profile.location
+            && jobTitle == profile.jobTitle
+            && company == profile.company
     }
 }

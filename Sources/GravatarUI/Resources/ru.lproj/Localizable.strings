@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-02-04 09:54:03+0000 */
+/* Translation-Revision-Date: 2025-05-06 09:54:03+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
@@ -14,6 +14,15 @@
 
 /* The title of Alt Text editor screen. */
 "AltText.Editor.title" = "Альтернативный текст";
+
+/* Hint spoken outloud by VoiceOver when an avatar is selected */
+"Avatar.Accessibility.AvatarButton.Hint" = "Выбрать этот аватар";
+
+/* Accessibility label spoken outloud by VoiceOver when an avatar is selected. The '%@' is the Alt text of the avatar image. */
+"Avatar.Accessibility.AvatarButton.Label" = "Изображение аватара. %@";
+
+/* Accessibility label spoken outloud by VoiceOver when the avatar options button is selected */
+"Avatar.Accessibility.AvatarButton.OptionsLabel" = "Настройки аватара";
 
 /* Rating that indicates that the avatar is suitable for everyone */
 "Avatar.Rating.G.subtitle" = "Общедоступный";
@@ -123,6 +132,9 @@
 /* Placeholder text for the name field */
 "AvatarPickerProfile.Name.placeholder" = "Ваше имя";
 
+/* VoiceOver readout for the avatar image in the profile card. */
+"AvatarPickerProfile.ProfileFields.avatarAccessibilityLabel" = "Ваш аватар";
+
 /* Placeholder text for the profile card. Will show as subtitle bellow the name placeholder. */
 "AvatarPickerProfile.ProfileFields.placeholder" = "Местоположение";
 
@@ -167,6 +179,27 @@
 
 /* Screen title. Resize and crop an image. */
 "ImageCropper.title" = "Изменить размер и обрезать";
+
+/* Label of a field that contains a short biography or description about the user. */
+"Profile.AboutInfoField.aboutMe" = "Обо мне";
+
+/* Label of a field that contains the company or organization the user is affiliated with. */
+"Profile.AboutInfoField.company" = "Компания";
+
+/* Label of a field that contains a user’s display name. */
+"Profile.AboutInfoField.displayName" = "Отображаемое имя";
+
+/* Label of a field that contains the user's current job title or role. */
+"Profile.AboutInfoField.jobTitle" = "Название работы";
+
+/* Label of a field that contains the user's geographic location. */
+"Profile.AboutInfoField.location" = "Местоположение";
+
+/* Label of a field that contains the pronouns the user identifies with (e.g., she/her, they/them). */
+"Profile.AboutInfoField.pronouns" = "Местоимения";
+
+/* Label of a field that contains a phonetic pronunciation of the user’s name. */
+"Profile.AboutInfoField.pronunciation" = "Произношение";
 
 /* Title for a button that allows you to claim a new Gravatar profile */
 "ProfileButton.title.create" = "Зарегистрировать профиль";
