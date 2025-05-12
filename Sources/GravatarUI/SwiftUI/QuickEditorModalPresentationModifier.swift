@@ -26,6 +26,7 @@ struct QuickEditorModalPresentationModifier<ModalView: View>: ViewModifier, Moda
     @Environment(\.colorScheme) var colorScheme: ColorScheme
     @State private var viewPosition: CGPoint = .zero
     @State private var initialViewPosition: CGPoint = .zero
+    @State private var hasBeenDraggedDown = false
 
     let onDismiss: (() -> Void)?
     let modalView: ModalView
@@ -48,6 +49,7 @@ struct QuickEditorModalPresentationModifier<ModalView: View>: ViewModifier, Moda
         content
             .onChange(of: isPresented) { newValue in
                 if newValue {
+                    initialViewPosition = .zero
                     // First init the detents and then present. This helps with starting off with the correct state.
                     // Otherwise the view remembers its previous height. And an animation glitch happens
                     // when switching between different presentation styles (especially between horizontal and vertical_large).
@@ -90,13 +92,22 @@ struct QuickEditorModalPresentationModifier<ModalView: View>: ViewModifier, Moda
                                 .onChange(of: geo.frame(in: .global)) { newFrame in
                                     viewPosition = newFrame.origin
                                 }
+                                .onAppear {
+                                    viewPosition = geo.frame(in: .global).origin
+                                }
                         }
                     )
                     .onChange(of: viewPosition) { newValue in
                         if initialViewPosition.y == 0 {
                             initialViewPosition = newValue
+                            print("initialViewPosition: \(newValue)")
+                        }
+                        if hasBeenDraggedDown && newValue.y == initialViewPosition.y {
+                            print("Sheet is back up! \(newValue)") // The alert should be shown here!
+                            hasBeenDraggedDown = false
                         }
                         if (newValue.y - initialViewPosition.y) > 40 {
+                            hasBeenDraggedDown = true
                             print("You dragged the sheet down! \(newValue)")
                         }
                     }
