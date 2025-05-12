@@ -13,6 +13,8 @@ final class QuickEditorViewController: UIViewController, ModalPresentationWithIn
     let updateHandler: ((QuickEditorUpdateType) -> Void)?
     let onDismiss: (() -> Void)?
 
+    private let unsavedChangesAlertPresentationModel = UnsavedChangesAlertPresentationModel()
+
     private lazy var isPresented: Binding<Bool> = Binding {
         true
     } set: { isPresented in
@@ -45,7 +47,8 @@ final class QuickEditorViewController: UIViewController, ModalPresentationWithIn
             token: token,
             isPresented: isPresented,
             customImageEditor: provider,
-            updateHandler: updateHandler
+            updateHandler: updateHandler,
+            unsavedChangesAlertPresentationModel: unsavedChangesAlertPresentationModel
         )
     }()
 
@@ -121,7 +124,17 @@ final class QuickEditorViewController: UIViewController, ModalPresentationWithIn
                 ).map()
             }
             sheet.prefersScrollingExpandsWhenScrolledToEdge = !shouldPrioritizeScrollOverResize
+            sheet.delegate = self
         }
+    }
+}
+
+extension QuickEditorViewController: UISheetPresentationControllerDelegate {
+    func presentationControllerShouldDismiss(_ presentationController: UIPresentationController) -> Bool {
+        if unsavedChangesAlertPresentationModel.hasUnsavedChanges {
+            unsavedChangesAlertPresentationModel.presentAlert = true
+        }
+        return !unsavedChangesAlertPresentationModel.hasUnsavedChanges
     }
 }
 

@@ -18,6 +18,11 @@ public enum QuickEditorScope: Sendable {
     }
 }
 
+class UnsavedChangesAlertPresentationModel: ObservableObject {
+    @Published var presentAlert: Bool = false
+    @Published var hasUnsavedChanges: Bool = false
+}
+
 /// Represents the type of update that triggered a callback in the Quick Editor.
 public struct QuickEditorUpdateType: Sendable, Equatable {
     private enum QEUpdateType {
@@ -53,12 +58,13 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
     @State private var multipleEditorMode: MultipleScopeMode? = nil
 
     @Binding private var isPresented: Bool
-    @State private var presentHasUnsavedChangesAlert = false
     // Declare "@StateObject"s as private to prevent setting them from a
     // memberwise initializer, which can conflict with the storage
     // management that SwiftUI provides.
     // https://developer.apple.com/documentation/swiftui/stateobject
     @StateObject private var model: AvatarPickerViewModel
+
+    @ObservedObject private var unsavedChangesAlertPresentationModel: UnsavedChangesAlertPresentationModel
 
     private let externalToken: String?
     private var token: String? { externalToken ?? fetchedToken }
@@ -73,7 +79,8 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
         token: String? = nil,
         isPresented: Binding<Bool>,
         customImageEditor: ImageEditorBlock<ImageEditor>? = nil,
-        updateHandler: ((QuickEditorUpdateType) -> Void)? = nil
+        updateHandler: ((QuickEditorUpdateType) -> Void)? = nil,
+        unsavedChangesAlertPresentationModel: UnsavedChangesAlertPresentationModel = .init()
     ) {
         self.email = email
         self.scopeOption = scopeOption
@@ -82,6 +89,7 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
         self.externalToken = token
         self.updateHandler = updateHandler
         self._model = StateObject(wrappedValue: AvatarPickerViewModel(email: email, authToken: token))
+        self.unsavedChangesAlertPresentationModel = unsavedChangesAlertPresentationModel
         if scopeOption.isAvatarPickerAndAboutInfoEditor {
             _multipleEditorMode = State(initialValue: .avatarPicker)
         }
@@ -103,7 +111,7 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
                 actionButtonDisabled: model.profileModel?.profileURL == nil,
                 onDoneButtonPressed: {
                     if model.isAboutInfoDirty {
-                        presentHasUnsavedChangesAlert = true
+                        unsavedChangesAlertPresentationModel.presentAlert = true
                     } else {
                         isPresented = false
                     }
@@ -127,10 +135,14 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
                 model.update(authToken: newValue, modelToRefresh: .all)
             }
         }
-        .notSavedChangesAlert(isPresented: $presentHasUnsavedChangesAlert) {
+        .notSavedChangesAlert(isPresented: $unsavedChangesAlertPresentationModel.presentAlert) {
             isPresented = false
         }
         .interactiveDismissDisabled(model.isAboutInfoDirty)
+        .onChange(of: model.isAboutInfoDirty) { oldValue in
+            unsavedChangesAlertPresentationModel.hasUnsavedChanges = model.isAboutInfoDirty
+//            self.hasUnsavedChangesHandler?(model.isAboutInfoDirty)
+        }
     }
 
     func avatarPickerView(config: AvatarPickerConfiguration) -> some View {
