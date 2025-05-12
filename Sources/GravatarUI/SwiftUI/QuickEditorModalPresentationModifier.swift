@@ -83,6 +83,8 @@ struct QuickEditorModalPresentationModifier<ModalView: View>: ViewModifier, Moda
                         Task { @MainActor in
                             guard newSizeClass != nil else { return }
                             self.verticalSizeClass = newSizeClass
+                            initialViewPosition = .zero
+                            lastPosition = .zero
                             updateDetents()
                         }
                     }
