@@ -13,13 +13,13 @@ struct DismissDetectingModifier: ViewModifier {
         content
             .onChange(of: isPresented) { newValue in
                 if newValue {
-                    dismissDetectingModel.reset()
+                    dismissDetectingModel.reset(isLargeDetentOnly: isLargeDetentOnly)
                 }
             }
             .onPreferenceChange(VerticalSizeClassPreferenceKey.self) { newSizeClass in
                 Task { @MainActor in
                     guard newSizeClass != nil else { return }
-                    dismissDetectingModel.reset()
+                    dismissDetectingModel.reset(isLargeDetentOnly: isLargeDetentOnly)
                 }
             }
             .background(
@@ -46,12 +46,22 @@ struct DismissDetectingModifier: ViewModifier {
 }
 
 extension DismissDetectingModifier {
+    enum DragDirection {
+        case up
+        case down
+    }
+
     @MainActor
     fileprivate class DismissDetectingModel: ObservableObject {
+        private static let threshold: CGFloat = 20
+        /// Apply this threshold to avoid large to medium detent changes where dragging down does not mean closing.
+        private static let largeDetentThreshold: CGFloat = 100
         @Published var hasBeenDraggedDown = false
 
-        private var initialViewPosition: CGPoint = .zero
         private var lastPosition: CGPoint = .zero
+        private var dragDirection: DragDirection = .down
+        private var positionOnDirectionChange: CGPoint = .zero
+        var isLargeDetentOnly: Bool = false
         var viewPosition: CGPoint = .zero {
             didSet {
                 viewPositionUpdated()
@@ -60,25 +70,37 @@ extension DismissDetectingModifier {
 
         private func viewPositionUpdated() {
             let newValue = viewPosition
-            if initialViewPosition.y == 0 {
-                // store the initial position
-                initialViewPosition = newValue
+            if newValue.y <= lastPosition.y {
+                if dragDirection == .down {
+                    positionOnDirectionChange = newValue
+                }
+                dragDirection = .up
+
+                if newValue.y - positionOnDirectionChange.y == 0,
+                   isLargeDetentOnly || (!isLargeDetentOnly && newValue.y > Self.largeDetentThreshold)
+                {
+                    setHasBeenDraggedDown(false)
+                }
+            } else {
+                if dragDirection == .up {
+                    positionOnDirectionChange = newValue
+                }
+                dragDirection = .down
+                if (newValue.y - positionOnDirectionChange.y) > Self.threshold,
+                   isLargeDetentOnly || (!isLargeDetentOnly && newValue.y > Self.largeDetentThreshold)
+                {
+                    setHasBeenDraggedDown(true)
+                }
             }
-            if hasBeenDraggedDown, abs(newValue.y - initialViewPosition.y) < 5, newValue.y <= lastPosition.y {
-                // the sheet is back up
-                setHasBeenDraggedDown(false)
-            }
-            if (newValue.y - initialViewPosition.y) > 20 {
-                // the sheet is dragged down
-                setHasBeenDraggedDown(true)
-            }
+
             lastPosition = newValue
         }
 
         // Resets the internal state. Call it on sheet display, size class change etc.
-        func reset() {
-            initialViewPosition = .zero
+        func reset(isLargeDetentOnly: Bool) {
+            positionOnDirectionChange = .zero
             lastPosition = .zero
+            self.isLargeDetentOnly = isLargeDetentOnly
         }
 
         private func setHasBeenDraggedDown(_ value: Bool) {
