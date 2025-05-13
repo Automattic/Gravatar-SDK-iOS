@@ -48,11 +48,14 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
 
     @Environment(\.oauthSession) private var oauthSession
     @Environment(\.colorScheme) var colorScheme: ColorScheme
+    @Environment(\.dismissAttempt) var dismissAttempt
     @AppStorage("QuickEditor.startOAuthOnAppear") private var startOAuthOnAppear: Bool = false
     @State private var fetchedToken: String?
     @State private var isAuthenticating: Bool = false
     @State private var oauthError: OAuthError?
     @State private var safariURL: IdentifiableURL?
+    @FocusState private var isKeyobardPresented: Bool
+
     /// If the QE is open with the scope switch option, this property will track which scope is currently being presented.
     /// It's nil when a single scope option was selected.
     @State private var multipleEditorMode: MultipleScopeMode? = nil
@@ -142,6 +145,12 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
         .onChange(of: model.hasUnsavedChanges) { _ in
             unsavedChangesAlertPresentationModel.hasUnsavedChanges = model.hasUnsavedChanges
         }
+        .onChange(of: dismissAttempt) { _ in
+            guard dismissAttempt else { return }
+            if unsavedChangesAlertPresentationModel.hasUnsavedChanges {
+                unsavedChangesAlertPresentationModel.presentAlert = true
+            }
+        }
     }
 
     func avatarPickerView(config: AvatarPickerConfiguration) -> some View {
@@ -169,12 +178,20 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
                 updateHandler?(.aboutInfoUpdate)
             }
         )
+        .focused($isKeyobardPresented)
+        // Detects taps only on the background to avoid dismissing the keyboard when tapping in a text field.
+        .background(Color.clear.onTapGesture {
+            isKeyobardPresented = false
+        })
     }
 
     @MainActor
     @ViewBuilder
     func editorView() -> some View {
         profileCardHeaderView()
+            .simultaneousGesture(TapGesture().onEnded {
+                isKeyobardPresented = false
+            })
         switch scopeOption.scope {
         case .avatarPicker(let config):
             avatarPickerView(config: config)
