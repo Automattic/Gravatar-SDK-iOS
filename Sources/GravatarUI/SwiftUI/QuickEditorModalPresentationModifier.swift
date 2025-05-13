@@ -126,13 +126,15 @@ struct QuickEditorModalPresentationModifier<ModalView: View>: ViewModifier, Moda
                         GeometryReader { geo in
                             Color.clear
                                 .onChange(of: geo.frame(in: .global)) { newFrame in
-                                    let value = newFrame.origin
-                                    dismissDetectingModel.viewPosition = value
+                                    dismissDetectingModel.viewPosition = newFrame.origin
                                 }
                                 .onAppear {
+                                    /// If the sheet only uses .large detent, then SwiftUI doesn't update the layout in a way that triggers
+                                    /// .onChange(...) initially - it's probably because the frame is resolved immediately and doesn't change afterward.
+                                    /// If the sheet uses medium or fractional detent, the sheet's frame is not yet finalized in its medium position
+                                    /// on `onAppear`, so it produces invalid values. Therefore we limit this one to only `[.large]` detents.
                                     if presentationDetents == [.large] {
-                                        let value = geo.frame(in: .global).origin
-                                        dismissDetectingModel.viewPosition = value
+                                        dismissDetectingModel.viewPosition = geo.frame(in: .global).origin
                                     }
                                 }
                         }
