@@ -24,7 +24,6 @@ struct QuickEditorModalPresentationModifier<ModalView: View>: ViewModifier, Moda
     @State private var presentationDetents: Set<PresentationDetent>
     @State private var prioritizeScrollOverResize: Bool = false
     @Environment(\.colorScheme) var colorScheme: ColorScheme
-    @StateObject private var dismissDetectingModel: DismissDetectingModel = .init()
     @State private var dismissAttempt: Bool = false
     @State private var debounceWorkItem: DispatchWorkItem?
 
@@ -49,7 +48,6 @@ struct QuickEditorModalPresentationModifier<ModalView: View>: ViewModifier, Moda
         content
             .onChange(of: isPresented) { newValue in
                 if newValue {
-                    dismissDetectingModel.reset()
                     // First init the detents and then present. This helps with starting off with the correct state.
                     // Otherwise the view remembers its previous height. And an animation glitch happens
                     // when switching between different presentation styles (especially between horizontal and vertical_large).
@@ -81,33 +79,16 @@ struct QuickEditorModalPresentationModifier<ModalView: View>: ViewModifier, Moda
                         Task { @MainActor in
                             guard newSizeClass != nil else { return }
                             self.verticalSizeClass = newSizeClass
-                            dismissDetectingModel.reset()
                             updateDetents()
                         }
                     }
                     .presentationDetents(presentationDetents)
                     .presentationContentInteraction(shouldPrioritizeScrolling: prioritizeScrollOverResize)
-                    .background(
-                        GeometryReader { geo in
-                            Color.clear
-                                .onChange(of: geo.frame(in: .global)) { newFrame in
-                                    dismissDetectingModel.viewPosition = newFrame.origin
-                                }
-                                .onAppear {
-                                    /// If the sheet only uses .large detent, then SwiftUI doesn't update the layout in a way that triggers
-                                    /// .onChange(...) initially - it's probably because the frame is resolved immediately and doesn't change afterward.
-                                    /// If the sheet uses medium or fractional detent, the sheet's frame is not yet finalized in its medium position
-                                    /// on `onAppear`, so it produces invalid values. Therefore we limit this one to only `[.large]` detents.
-                                    if presentationDetents == [.large] {
-                                        dismissDetectingModel.viewPosition = geo.frame(in: .global).origin
-                                    }
-                                }
-                        }
+                    .dismissAttemptDetecting(
+                        dismissAttempt: $dismissAttempt,
+                        isPresented: $isPresented,
+                        isLargeDetentOnly: presentationDetents == [.large]
                     )
-                    .onReceive(dismissDetectingModel.$hasBeenDraggedDown.dropFirst().removeDuplicates()) { newValue in
-                        print("--hasBeenDraggedDown: \(newValue)")
-                        dismissAttempt = newValue
-                    }
                     .environment(\.dismissAttempt, dismissAttempt)
             }
     }
