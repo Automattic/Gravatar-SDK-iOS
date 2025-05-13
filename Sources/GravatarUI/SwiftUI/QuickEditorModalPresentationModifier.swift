@@ -13,39 +13,6 @@ enum QEModalPresentationConstants {
     static let bottomSheetMinHeight: CGFloat = 350
 }
 
-@MainActor
-class DismissDetectingModel: ObservableObject {
-    @Published var hasBeenDraggedDown = false
-
-    var initialViewPosition: CGPoint = .zero
-    var lastPosition: CGPoint = .zero
-    var viewPosition: CGPoint = .zero {
-        didSet {
-            viewPositionUpdated()
-        }
-    }
-
-    private func viewPositionUpdated() {
-        let newValue = viewPosition
-        if initialViewPosition.y == 0 {
-            initialViewPosition = newValue
-        }
-        if hasBeenDraggedDown, abs(newValue.y - initialViewPosition.y) < 5, newValue.y <= lastPosition.y {
-            setHasBeenDraggedDown(false)
-        }
-        if (newValue.y - initialViewPosition.y) > 20 {
-            setHasBeenDraggedDown(true)
-        }
-        lastPosition = newValue
-    }
-
-    private func setHasBeenDraggedDown(_ value: Bool) {
-        if hasBeenDraggedDown != value {
-            hasBeenDraggedDown = value
-        }
-    }
-}
-
 @available(iOS 16.0, *)
 struct QuickEditorModalPresentationModifier<ModalView: View>: ViewModifier, ModalPresentationWithIntrinsicSize {
     fileprivate typealias Constants = QEModalPresentationConstants
