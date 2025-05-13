@@ -13,6 +13,39 @@ enum QEModalPresentationConstants {
     static let bottomSheetMinHeight: CGFloat = 350
 }
 
+@MainActor
+class DismissDetectingModel: ObservableObject {
+    @Published var hasBeenDraggedDown = false
+
+    var initialViewPosition: CGPoint = .zero
+    var lastPosition: CGPoint = .zero
+    var viewPosition: CGPoint = .zero {
+        didSet {
+            viewPositionUpdated()
+        }
+    }
+
+    private func viewPositionUpdated() {
+        let newValue = viewPosition
+        if initialViewPosition.y == 0 {
+            initialViewPosition = newValue
+        }
+        if hasBeenDraggedDown, abs(newValue.y - initialViewPosition.y) < 5, newValue.y <= lastPosition.y {
+            setHasBeenDraggedDown(false)
+        }
+        if (newValue.y - initialViewPosition.y) > 20 {
+            setHasBeenDraggedDown(true)
+        }
+        lastPosition = newValue
+    }
+
+    private func setHasBeenDraggedDown(_ value: Bool) {
+        if hasBeenDraggedDown != value {
+            hasBeenDraggedDown = value
+        }
+    }
+}
+
 @available(iOS 16.0, *)
 struct QuickEditorModalPresentationModifier<ModalView: View>: ViewModifier, ModalPresentationWithIntrinsicSize {
     fileprivate typealias Constants = QEModalPresentationConstants
@@ -24,11 +57,9 @@ struct QuickEditorModalPresentationModifier<ModalView: View>: ViewModifier, Moda
     @State private var presentationDetents: Set<PresentationDetent>
     @State private var prioritizeScrollOverResize: Bool = false
     @Environment(\.colorScheme) var colorScheme: ColorScheme
-    @State private var viewPosition: CGPoint = .zero
-    @State private var initialViewPosition: CGPoint = .zero
-    @State private var hasBeenDraggedDown = false
-    @State private var lastPosition: CGPoint = .zero
+    @StateObject private var dismissDetectingModel: DismissDetectingModel = .init()
     @State private var dismissAttempt: Bool = false
+    @State private var debounceWorkItem: DispatchWorkItem?
 
     let onDismiss: (() -> Void)?
     let modalView: ModalView
@@ -51,8 +82,8 @@ struct QuickEditorModalPresentationModifier<ModalView: View>: ViewModifier, Moda
         content
             .onChange(of: isPresented) { newValue in
                 if newValue {
-                    initialViewPosition = .zero
-                    lastPosition = .zero
+                    dismissDetectingModel.initialViewPosition = .zero
+                    dismissDetectingModel.lastPosition = .zero
                     // First init the detents and then present. This helps with starting off with the correct state.
                     // Otherwise the view remembers its previous height. And an animation glitch happens
                     // when switching between different presentation styles (especially between horizontal and vertical_large).
@@ -84,37 +115,31 @@ struct QuickEditorModalPresentationModifier<ModalView: View>: ViewModifier, Moda
                         Task { @MainActor in
                             guard newSizeClass != nil else { return }
                             self.verticalSizeClass = newSizeClass
-                            initialViewPosition = .zero
-                            lastPosition = .zero
+                            dismissDetectingModel.initialViewPosition = .zero
+                            dismissDetectingModel.lastPosition = .zero
                             updateDetents()
                         }
                     }
                     .presentationDetents(presentationDetents)
                     .presentationContentInteraction(shouldPrioritizeScrolling: prioritizeScrollOverResize)
-                    .overlay(
+                    .background(
                         GeometryReader { geo in
                             Color.clear
                                 .onChange(of: geo.frame(in: .global)) { newFrame in
-                                    viewPosition = newFrame.origin
+                                    let value = newFrame.origin
+                                    dismissDetectingModel.viewPosition = value
                                 }
                                 .onAppear {
-                                    viewPosition = geo.frame(in: .global).origin
+                                    if presentationDetents == [.large] {
+                                        let value = geo.frame(in: .global).origin
+                                        dismissDetectingModel.viewPosition = value
+                                    }
                                 }
                         }
                     )
-                    .onChange(of: viewPosition) { newValue in
-                        if initialViewPosition.y == 0 {
-                            initialViewPosition = newValue
-                        }
-                        if hasBeenDraggedDown, newValue.y == initialViewPosition.y, newValue.y < lastPosition.y {
-                            hasBeenDraggedDown = false
-                        }
-                        if (newValue.y - initialViewPosition.y) > 20 {
-                            hasBeenDraggedDown = true
-                        }
-                        lastPosition = newValue
-                    }.onChange(of: hasBeenDraggedDown) { _ in
-                        dismissAttempt = hasBeenDraggedDown
+                    .onReceive(dismissDetectingModel.$hasBeenDraggedDown.dropFirst().removeDuplicates()) { newValue in
+                        print("--hasBeenDraggedDown: \(newValue)")
+                        dismissAttempt = newValue
                     }
                     .environment(\.dismissAttempt, dismissAttempt)
             }
