@@ -3,6 +3,8 @@ import SwiftUI
 struct ModalPresentationModifier<ModalView: View>: ViewModifier {
     @Binding var isPresented: Bool
     @Environment(\.colorScheme) var colorScheme: ColorScheme
+    @State private var dismissAttempt = false
+
     let onDismiss: (() -> Void)?
     let modalView: ModalView
 
@@ -17,6 +19,12 @@ struct ModalPresentationModifier<ModalView: View>: ViewModifier {
             .sheet(isPresented: $isPresented, onDismiss: onDismiss) {
                 modalView
                     .preferredColorScheme(colorScheme)
+                    .dismissAttemptDetecting(
+                        dismissAttempt: $dismissAttempt,
+                        isPresented: $isPresented,
+                        isLargeDetentOnly: true
+                    )
+                    .environment(\.dismissAttempt, dismissAttempt)
             }
     }
 }
