@@ -43,7 +43,6 @@ class AvatarPickerViewModel: ObservableObject {
     @Published var forceRefreshAvatar: Bool = false
     @Published var profileModel: AvatarPickerProfileViewModel?
     @Published var aboutInfoModel: AboutInfoModel = .init()
-    private var updatedAboutInfoModel: AboutInfoModel = .init()
 
     @Published var shouldDisplayNoSelectedAvatarWarning: Bool = false
     @ObservedObject var toastManager: ToastManager = .init()
