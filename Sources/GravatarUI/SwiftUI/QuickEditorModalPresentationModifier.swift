@@ -28,6 +28,7 @@ struct QuickEditorModalPresentationModifier<ModalView: View>: ViewModifier, Moda
     @State private var initialViewPosition: CGPoint = .zero
     @State private var hasBeenDraggedDown = false
     @State private var lastPosition: CGPoint = .zero
+    @State private var dismissAttempt: Bool = false
 
     let onDismiss: (() -> Void)?
     let modalView: ModalView
@@ -104,18 +105,18 @@ struct QuickEditorModalPresentationModifier<ModalView: View>: ViewModifier, Moda
                     .onChange(of: viewPosition) { newValue in
                         if initialViewPosition.y == 0 {
                             initialViewPosition = newValue
-                            print("initialViewPosition: \(newValue)")
                         }
                         if hasBeenDraggedDown, newValue.y == initialViewPosition.y, newValue.y < lastPosition.y {
-                            print("Sheet is back up! \(newValue)") // The alert should be shown here!
                             hasBeenDraggedDown = false
                         }
-                        if (newValue.y - initialViewPosition.y) > 40 {
+                        if (newValue.y - initialViewPosition.y) > 20 {
                             hasBeenDraggedDown = true
-                            print("You dragged the sheet down! \(newValue)")
                         }
                         lastPosition = newValue
+                    }.onChange(of: hasBeenDraggedDown) { _ in
+                        dismissAttempt = hasBeenDraggedDown
                     }
+                    .environment(\.dismissAttempt, dismissAttempt)
             }
     }
 
@@ -127,6 +128,10 @@ struct QuickEditorModalPresentationModifier<ModalView: View>: ViewModifier, Moda
         ).map()
         self.prioritizeScrollOverResize = shouldPrioritizeScrollOverResize
     }
+}
+
+extension EnvironmentValues {
+    @Entry var dismissAttempt: Bool = false
 }
 
 @MainActor
