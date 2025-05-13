@@ -49,8 +49,7 @@ struct QuickEditorModalPresentationModifier<ModalView: View>: ViewModifier, Moda
         content
             .onChange(of: isPresented) { newValue in
                 if newValue {
-                    dismissDetectingModel.initialViewPosition = .zero
-                    dismissDetectingModel.lastPosition = .zero
+                    dismissDetectingModel.reset()
                     // First init the detents and then present. This helps with starting off with the correct state.
                     // Otherwise the view remembers its previous height. And an animation glitch happens
                     // when switching between different presentation styles (especially between horizontal and vertical_large).
@@ -82,8 +81,7 @@ struct QuickEditorModalPresentationModifier<ModalView: View>: ViewModifier, Moda
                         Task { @MainActor in
                             guard newSizeClass != nil else { return }
                             self.verticalSizeClass = newSizeClass
-                            dismissDetectingModel.initialViewPosition = .zero
-                            dismissDetectingModel.lastPosition = .zero
+                            dismissDetectingModel.reset()
                             updateDetents()
                         }
                     }
