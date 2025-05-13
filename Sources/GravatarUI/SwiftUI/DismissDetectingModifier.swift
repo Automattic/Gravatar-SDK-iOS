@@ -39,7 +39,7 @@ struct DismissDetectingModifier: ViewModifier {
                         }
                 }
             )
-            .onReceive(dismissDetectingModel.$hasBeenDraggedDown.dropFirst().removeDuplicates()) { newValue in
+            .onReceive(dismissDetectingModel.$hasBeenBouncedBack.dropFirst().removeDuplicates()) { newValue in
                 dismissAttempt = newValue
             }
     }
@@ -56,7 +56,7 @@ extension DismissDetectingModifier {
         private static let threshold: CGFloat = 20
         /// Apply this threshold to avoid large to medium detent changes where dragging down does not mean closing.
         private static let largeDetentThreshold: CGFloat = 100
-        @Published var hasBeenDraggedDown = false
+        @Published private(set) var hasBeenBouncedBack = false
 
         private var lastPosition: CGPoint = .zero
         private var dragDirection: DragDirection = .down
@@ -79,7 +79,7 @@ extension DismissDetectingModifier {
                 if newValue.y - positionOnDirectionChange.y == 0,
                    isLargeDetentOnly || (!isLargeDetentOnly && newValue.y > Self.largeDetentThreshold)
                 {
-                    setHasBeenDraggedDown(false)
+                    setHasBeenBouncedBack(true)
                 }
             } else {
                 if dragDirection == .up {
@@ -89,7 +89,7 @@ extension DismissDetectingModifier {
                 if (newValue.y - positionOnDirectionChange.y) > Self.threshold,
                    isLargeDetentOnly || (!isLargeDetentOnly && newValue.y > Self.largeDetentThreshold)
                 {
-                    setHasBeenDraggedDown(true)
+                    setHasBeenBouncedBack(false)
                 }
             }
 
@@ -103,10 +103,10 @@ extension DismissDetectingModifier {
             self.isLargeDetentOnly = isLargeDetentOnly
         }
 
-        private func setHasBeenDraggedDown(_ value: Bool) {
+        private func setHasBeenBouncedBack(_ value: Bool) {
             // Avoid unnecessary updates.
-            if hasBeenDraggedDown != value {
-                hasBeenDraggedDown = value
+            if hasBeenBouncedBack != value {
+                hasBeenBouncedBack = value
             }
         }
     }

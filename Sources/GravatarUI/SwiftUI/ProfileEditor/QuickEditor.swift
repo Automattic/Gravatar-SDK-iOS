@@ -145,8 +145,9 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
         .onChange(of: model.hasUnsavedChanges) { _ in
             unsavedChangesAlertPresentationModel.hasUnsavedChanges = model.hasUnsavedChanges
         }
-        .onChange(of: dismissAttempt) { _ in
-            guard dismissAttempt else { return }
+        .onChange(of: dismissAttempt) { newValue in
+            print("-- dismissAttempt: \(newValue)")
+            guard newValue else { return }
             if unsavedChangesAlertPresentationModel.hasUnsavedChanges {
                 unsavedChangesAlertPresentationModel.presentAlert = true
             }
