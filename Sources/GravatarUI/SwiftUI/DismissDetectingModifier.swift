@@ -64,7 +64,7 @@ extension DismissDetectingModifier {
                 // store the initial position
                 initialViewPosition = newValue
             }
-            if hasBeenDraggedDown, abs(newValue.y - initialViewPosition.y) < 15, newValue.y <= lastPosition.y {
+            if hasBeenDraggedDown, newValue.y <= lastPosition.y {
                 // the sheet is back up
                 setHasBeenDraggedDown(false)
             }
