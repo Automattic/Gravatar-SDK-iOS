@@ -25,7 +25,6 @@ struct QuickEditorModalPresentationModifier<ModalView: View>: ViewModifier, Moda
     @State private var prioritizeScrollOverResize: Bool = false
     @Environment(\.colorScheme) var colorScheme: ColorScheme
     @State private var dismissAttempt: Bool = false
-    @State private var debounceWorkItem: DispatchWorkItem?
 
     let onDismiss: (() -> Void)?
     let modalView: ModalView
