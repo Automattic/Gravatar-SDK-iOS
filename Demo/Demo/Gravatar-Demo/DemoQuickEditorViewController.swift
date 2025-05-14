@@ -188,33 +188,36 @@ final class DemoQuickEditorViewController: UIViewController {
         return button
     }()
     
-    @objc func presentLayoutOptions() {
+    @objc func presentLayoutOptions(from button: UIButton) {
         let sheet = UIAlertController(title: "Layout Options", message: nil, preferredStyle: .actionSheet)
         AvatarPickerLayoutOptions.allCases.forEach { layout in
             sheet.addAction(.init(title: layout.rawValue, style: .default) { _ in
                 self.selectedLayout = layout
             })
         }
+        sheet.popoverPresentationController?.sourceView = button
         present(sheet, animated: true)
     }
 
-    @objc func presentScopeOptions() {
+    @objc func presentScopeOptions(from button: UIButton) {
         let sheet = UIAlertController(title: "Scope Options", message: nil, preferredStyle: .actionSheet)
         QEScope.allCases.forEach { scope in
             sheet.addAction(.init(title: scope.rawValue, style: .default) { _ in
                 self.selectedScope = scope
             })
         }
+        sheet.popoverPresentationController?.sourceView = button
         present(sheet, animated: true)
     }
 
-    @objc func presentVerticalPresentationStyleOptions() {
+    @objc func presentVerticalPresentationStyleOptions(from button: UIButton) {
         let sheet = UIAlertController(title: "Vertical Presentation Styles", message: nil, preferredStyle: .actionSheet)
         VerticalContentPresentationStyleRepresentation.allCases.forEach { style in
             sheet.addAction(.init(title: style.rawValue, style: .default) { _ in
                 self.selectedVerticalContentPresentationStyleRepresentation = style
             })
         }
+        sheet.popoverPresentationController?.sourceView = button
         present(sheet, animated: true)
     }
 
