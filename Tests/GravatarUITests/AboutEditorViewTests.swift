@@ -13,6 +13,7 @@ struct AboutEditorViewTests {
         await testModel.refresh(modelToRefresh: .aboutEditorModel)
 
         let view = AboutEditorView(
+            isPresented: .constant(true),
             model: testModel,
             fields: .all
         )
@@ -35,6 +36,7 @@ struct AboutEditorViewTests {
         await testModel.refresh(modelToRefresh: .aboutEditorModel)
 
         let view = AboutEditorView(
+            isPresented: .constant(true),
             model: testModel,
             fields: .professionalFields
         )
@@ -57,6 +59,7 @@ struct AboutEditorViewTests {
         await testModel.refresh(modelToRefresh: .aboutEditorModel)
 
         let view = AboutEditorView(
+            isPresented: .constant(true),
             model: testModel,
             fields: .personalFields
         )
@@ -80,6 +83,7 @@ struct AboutEditorViewTests {
         let viewImageConfig: ViewImageConfig = .iPhoneSe
 
         let view = AboutEditorView(
+            isPresented: .constant(true),
             model: testModel,
             fields: .all
         )
@@ -101,6 +105,7 @@ struct AboutEditorViewTests {
         let viewImageConfig: ViewImageConfig = .iPhoneSe
 
         let view = AboutEditorView(
+            isPresented: .constant(true),
             model: testModel,
             fields: .all
         )
@@ -124,6 +129,7 @@ struct AboutEditorViewTests {
         let viewImageConfig: ViewImageConfig = .iPhoneSe
 
         let view = AboutEditorView(
+            isPresented: .constant(true),
             model: testModel,
             fields: .displayName
         )
@@ -143,6 +149,7 @@ struct AboutEditorViewTests {
         let testModel = testModel()
 
         let view = AboutEditorView(
+            isPresented: .constant(true),
             model: testModel,
             fields: .all
         )
@@ -162,8 +169,31 @@ struct AboutEditorViewTests {
     }
 
     @MainActor
-    private func testModel() -> AvatarPickerViewModel {
-        let profileService = ProfileService(urlSession: URLSessionMock(returnData: Bundle.fullProfileJsonData, response: .successResponse()))
+    @Test("Test about editor shows loading error")
+    func testLoadingErrorState() async throws {
+        let testModel = testModel(response: .errorResponse(code: 401))
+        let viewImageConfig: ViewImageConfig = .iPhoneSe
+
+        let view = AboutEditorView(
+            isPresented: .constant(true),
+            model: testModel,
+            fields: .all
+        )
+
+        await testModel.fetchProfile()
+
+        assertSnapshots(
+            of: view,
+            as: [
+                .testStrategy(userInterfaceStyle: .light, layout: .device(config: viewImageConfig)),
+                .testStrategy(userInterfaceStyle: .dark, layout: .device(config: viewImageConfig)),
+            ]
+        )
+    }
+
+    @MainActor
+    private func testModel(response: HTTPURLResponse = .successResponse()) -> AvatarPickerViewModel {
+        let profileService = ProfileService(urlSession: URLSessionMock(returnData: Bundle.fullProfileJsonData, response: response))
 
         let imageURL = "https://gravatar.com/avatar/HASH"
         let response = HTTPURLResponse.successResponse(with: URL(string: imageURL)!)
