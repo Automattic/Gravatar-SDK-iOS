@@ -251,6 +251,7 @@ class AvatarPickerViewModel: ObservableObject {
             let request = aboutInfoModel.updateProfileRequest(for: fields)
             let updatedProfile = try await profileService.updateProfile(with: request, token: authToken)
             self.profileResult = .success(updatedProfile)
+            toastManager.showToast(Localized.profileUpdateSuccess, type: .info)
             return true
         } catch APIError.responseError(let .invalidHTTPStatusCode(response, errorPayload))
                     where response.statusCode == HTTPStatus.unauthorized.rawValue
@@ -543,6 +544,11 @@ extension AvatarPickerViewModel {
             "AvatarPickerViewModel.Update.Success",
             value: "Avatar updated! It may take a few minutes to appear everywhere.",
             comment: "This confirmation message shows when the user picks a different avatar."
+        )
+        static let profileUpdateSuccess = SDKLocalizedString(
+            "Profile.Update.Success",
+            value: "Profile updated successfully",
+            comment: "This confirmation message shows when the user updates fields of their profile."
         )
         static let avatarUpdateFail = SDKLocalizedString(
             "AvatarPickerViewModel.Update.Fail",

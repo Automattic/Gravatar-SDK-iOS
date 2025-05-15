@@ -249,3 +249,6 @@
 
 /* This error message shows when the user attempts to update fields of their profile and it fails. */
 "Profile.Update.Fail" = "Oops, something didn't quite work out while trying to update your profile.";
+
+/* This confirmation message shows when the user updates fields of their profile. */
+"Profile.Update.Success" = "Profile updated successfully";
