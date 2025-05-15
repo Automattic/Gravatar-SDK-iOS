@@ -8,17 +8,26 @@ struct AboutEditorView: View {
     }
 
     @State private var isSaving: Bool = false
+    @Binding var isPresented: Bool
     @ObservedObject var model: AvatarPickerViewModel
     let fields: AboutInfoField
     @Environment(\.colorScheme) var colorScheme: ColorScheme
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
+
+    var tokenErrorHandler: (() -> Void)?
     var aboutUpdateHandler: (() -> Void)?
 
     var body: some View {
-        if model.isProfileLoading {
-            LoadingIndicatorView()
-        } else {
-            content()
+        Group {
+            if model.isProfileLoading {
+                LoadingIndicatorView()
+            } else if let error = model.profileResult?.error() {
+                errorView(with: error)
+            } else {
+                content()
+            }
+        }.onAppear {
+            model.refresh(modelToRefresh: .aboutEditorModel)
         }
     }
 
@@ -171,6 +180,18 @@ struct AboutEditorView: View {
         .frame(maxWidth: .infinity)
     }
 
+    @ViewBuilder
+    func errorView(with error: any Error) -> some View {
+        ScopeLoadingErrorView(
+            error: error,
+            isPresented: $isPresented, tokenErrorHandler: tokenErrorHandler,
+            reloadHandler: {
+                model.refresh(modelToRefresh: .aboutEditorModel)
+            }
+        )
+        Spacer()
+    }
+
     private enum Localized {
         static let aboutMeFooterText = SDKLocalizedString(
             "Profile.AboutInfoField.aboutMe.footer",
@@ -211,13 +232,13 @@ extension View {
 }
 
 #Preview {
-    AboutEditorView(model: .init(avatarImageModels: []), fields: .all)
+    AboutEditorView(isPresented: .constant(true), model: .init(avatarImageModels: []), fields: .all)
 }
 
 #Preview("professional") {
-    AboutEditorView(model: .init(avatarImageModels: []), fields: .professionalFields)
+    AboutEditorView(isPresented: .constant(true), model: .init(avatarImageModels: []), fields: .professionalFields)
 }
 
 #Preview("personal") {
-    AboutEditorView(model: .init(avatarImageModels: []), fields: .personalFields)
+    AboutEditorView(isPresented: .constant(true), model: .init(avatarImageModels: []), fields: .personalFields)
 }
