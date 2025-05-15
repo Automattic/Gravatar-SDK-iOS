@@ -252,6 +252,16 @@ class AvatarPickerViewModel: ObservableObject {
             let updatedProfile = try await profileService.updateProfile(with: request, token: authToken)
             self.profileResult = .success(updatedProfile)
             return true
+        } catch APIError.responseError(let .invalidHTTPStatusCode(response, errorPayload))
+                    where response.statusCode == HTTPStatus.unauthorized.rawValue
+        {
+            handleUnrecoverableClientError(APIError.responseError(
+                reason: .invalidHTTPStatusCode(
+                    response: response,
+                    errorPayload: errorPayload
+                )
+            ))
+            return false
         } catch {
             showToast(for: error, fallbackText: Localized.profileUpdateFail)
             return false
@@ -361,6 +371,7 @@ class AvatarPickerViewModel: ObservableObject {
     private func handleUnrecoverableClientError(_ error: Error) {
         self.grid.setAvatars([])
         self.gridResponseStatus = .failure(error)
+        self.profileResult = .failure(error)
     }
 
     func showToast(for error: Error, fallbackText: String) {
