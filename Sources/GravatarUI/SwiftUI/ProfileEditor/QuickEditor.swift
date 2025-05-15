@@ -23,16 +23,6 @@ class UnsavedChangesAlertPresentationModel: ObservableObject {
     @Published var hasUnsavedChanges: Bool = false
 }
 
-public protocol QuickEditorUpdateType {}
-
-public enum QuickEditorUpdate {
-    public struct Avatar: QuickEditorUpdateType {}
-
-    public struct AboutInfo: QuickEditorUpdateType {
-        public let profile: Profile
-    }
-}
-
 struct QuickEditor<ImageEditor: ImageEditorView>: View {
     enum MultipleScopeMode {
         case avatarPicker
