@@ -175,7 +175,8 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
     @ViewBuilder
     func aboutEditorView(fields: AboutInfoField) -> some View {
         AboutEditorView(
-            isPresented: $isPresented, model: model,
+            isPresented: $isPresented,
+            model: model,
             fields: fields,
             tokenErrorHandler: externalToken != nil ? nil : {
                 oauthSession.markSessionAsExpired(with: email)
