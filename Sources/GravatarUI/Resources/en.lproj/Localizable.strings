@@ -246,3 +246,6 @@
 
 /* A message describing the error and advising the user to login again to resolve the issue */
 "ProfileEditor.ContentLoading.Failure.SessionExpired.LogIn.subtext" = "Session expired for security reasons. Please log in to update your Profile.";
+
+/* This error message shows when the user attempts to update fields of their profile and it fails. */
+"Profile.Update.Fail" = "Oops, something didn't quite work out while trying to update your profile.";

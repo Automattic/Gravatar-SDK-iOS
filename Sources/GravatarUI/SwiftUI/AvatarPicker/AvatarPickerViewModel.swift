@@ -203,7 +203,7 @@ class AvatarPickerViewModel: ObservableObject {
         } catch APIError.responseError(let .invalidHTTPStatusCode(response, errorPayload)) where response.statusCode == HTTPStatus.unauthorized.rawValue {
             handleUnrecoverableClientError(APIError.responseError(reason: .invalidHTTPStatusCode(response: response, errorPayload: errorPayload)))
         } catch {
-            showToast(for: error)
+            showToast(for: error, fallbackText: Localized.avatarUpdateFail)
             grid.selectAvatar(withID: selectedAvatarResult?.value())
         }
         return nil
@@ -253,7 +253,7 @@ class AvatarPickerViewModel: ObservableObject {
             self.profileResult = .success(updatedProfile)
             return true
         } catch {
-            showToast(for: error)
+            showToast(for: error, fallbackText: Localized.profileUpdateFail)
             return false
         }
     }
@@ -363,12 +363,12 @@ class AvatarPickerViewModel: ObservableObject {
         self.gridResponseStatus = .failure(error)
     }
 
-    func showToast(for error: Error) {
+    func showToast(for error: Error, fallbackText: String) {
         let message: String = switch error {
         case APIError.responseError(reason: let reason):
-            reason.urlSessionErrorLocalizedDescription ?? Localized.avatarUpdateFail
+            reason.urlSessionErrorLocalizedDescription ?? fallbackText
         default:
-            Localized.avatarUpdateFail
+            fallbackText
         }
         toastManager.showToast(message, type: .error)
     }
@@ -537,6 +537,11 @@ extension AvatarPickerViewModel {
             "AvatarPickerViewModel.Update.Fail",
             value: "Oops, something didn't quite work out while trying to change your avatar.",
             comment: "This error message shows when the user attempts to pick a different avatar and fails."
+        )
+        static let profileUpdateFail = SDKLocalizedString(
+            "Profile.Update.Fail",
+            value: "Oops, something didn't quite work out while trying to update your profile.",
+            comment: "This error message shows when the user attempts to update fields of their profile and it fails."
         )
         static let imageTooBigError = SDKLocalizedString(
             "AvatarPicker.Upload.Error.ImageTooBig.Error",
