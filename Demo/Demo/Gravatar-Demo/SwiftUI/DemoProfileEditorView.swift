@@ -74,10 +74,10 @@ struct DemoProfileEditorView: View {
                                 customImageEditor: customImageEditor(),
                                 updateHandler: { updateType in
                                     switch updateType {
-                                    case .avatarUpdate:
+                                    case is QuickEditorUpdate.Avatar:
                                         self.oneTimeAvatarForceRefresh = true
-                                    case .aboutInfoUpdate:
-                                        self.requestProfile()
+                                    case let update as QuickEditorUpdate.AboutInfo:
+                                        self.setNewProfile(update.profile)
                                     default: break
                                     }
                                 },
@@ -95,10 +95,10 @@ struct DemoProfileEditorView: View {
                                 customImageEditor: customImageEditor(),
                                 updateHandler: { updateType in
                                     switch updateType {
-                                    case .avatarUpdate:
+                                    case is QuickEditorUpdate.Avatar:
                                         self.oneTimeAvatarForceRefresh = true
-                                    case .aboutInfoUpdate:
-                                        break
+                                    case let update as QuickEditorUpdate.AboutInfo:
+                                        self.setNewProfile(update.profile)
                                     default: break
                                     }
                                 },
@@ -210,12 +210,16 @@ struct DemoProfileEditorView: View {
         Task {
             let service = ProfileService()
             let profile = try await service.fetch(with: .email(email))
-            var newConfig = self.profileConfiguration
-            newConfig.avatarIdentifier = profile.avatarIdentifier
-            newConfig.model = profile
-            newConfig.summaryModel = profile
-            self.profileConfiguration = newConfig
+            setNewProfile(profile)
         }
+    }
+
+    func setNewProfile(_ profile: Profile) {
+        var newConfig = self.profileConfiguration
+        newConfig.avatarIdentifier = profile.avatarIdentifier
+        newConfig.model = profile
+        newConfig.summaryModel = profile
+        self.profileConfiguration = newConfig
     }
 
     func updateHasSession(with email: String) {

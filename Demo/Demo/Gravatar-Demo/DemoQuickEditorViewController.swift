@@ -385,12 +385,12 @@ final class DemoQuickEditorViewController: UIViewController {
             in: self,
             onUpdate: { [weak self] updateType in
                 switch updateType {
-                    case .avatarUpdate:
-                        self?.profileSummaryView.loadAvatar(with: .email(email), rating: .x, options: [.forceRefresh])
-                    case .aboutInfoUpdate:
-                        self?.fetchProfile(with: email)
-                    default:
-                        break
+                case is QuickEditorUpdate.Avatar:
+                    self?.profileSummaryView.loadAvatar(with: .email(email), rating: .x, options: [.forceRefresh])
+                case let update as QuickEditorUpdate.AboutInfo:
+                    self?.profileSummaryView.update(with: update.profile)
+                default:
+                    break
                 }
             },
             onDismiss: { [weak self] in

@@ -12,7 +12,7 @@ struct AboutEditorView: View {
     let fields: AboutInfoField
     @Environment(\.colorScheme) var colorScheme: ColorScheme
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
-    var aboutUpdateHandler: (() -> Void)?
+    var aboutUpdateHandler: ((Profile) -> Void)?
 
     var body: some View {
         if model.isProfileLoading {
@@ -51,8 +51,8 @@ struct AboutEditorView: View {
             Button {
                 Task {
                     isSaving = true
-                    if await self.model.saveAboutInfo(for: fields) {
-                        aboutUpdateHandler?()
+                    if let profile = await self.model.saveAboutInfo(for: fields) {
+                        aboutUpdateHandler?(profile)
                     }
                     isSaving = false
                 }

@@ -251,17 +251,17 @@ class AvatarPickerViewModel: ObservableObject {
         }
     }
 
-    func saveAboutInfo(for fields: AboutInfoField) async -> Bool {
-        guard let authToken else { return false }
+    func saveAboutInfo(for fields: AboutInfoField) async -> Profile? {
+        guard let authToken else { return nil }
         do {
             let request = aboutInfoModel.updateProfileRequest(for: fields)
             let updatedProfile = try await profileService.updateProfile(with: request, token: authToken)
             self.profileResult = .success(updatedProfile)
-            return true
+            return updatedProfile
         } catch {
             // TODO: Handle errors properly.
             toastManager.showToast(error.localizedDescription, type: .error)
-            return false
+            return nil
         }
     }
 
