@@ -151,6 +151,9 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
                 unsavedChangesAlertPresentationModel.presentAlert = true
             }
         }
+        .task {
+            model.refresh(modelToRefresh: .all)
+        }
     }
 
     func avatarPickerView(config: AvatarPickerConfiguration) -> some View {

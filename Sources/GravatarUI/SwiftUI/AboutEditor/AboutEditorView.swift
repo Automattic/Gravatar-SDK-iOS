@@ -187,10 +187,8 @@ struct AboutEditorView: View {
     func errorView(with error: any Error) -> some View {
         ScopeLoadingErrorView(
             error: error,
-            isPresented: $isPresented, tokenErrorHandler: tokenErrorHandler,
-            reloadHandler: {
-                model.refresh(modelToRefresh: .aboutEditorModel)
-            }
+            isPresented: $isPresented,
+            model: model, tokenErrorHandler: tokenErrorHandler
         )
         Spacer()
     }

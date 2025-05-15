@@ -4,12 +4,12 @@ struct ScopeLoadingErrorView: View {
     let error: Error
 
     @Binding var isPresented: Bool
+    @ObservedObject var model: AvatarPickerViewModel
 
     var closeSubtextLocalizedString: String = Localized.SessionExpired.Close.subtext
     var logInSubtextLocalizedString: String = Localized.SessionExpired.LogIn.subtext
 
     var tokenErrorHandler: (() -> Void)?
-    var reloadHandler: () -> Void
 
     var body: some View {
         VStack(alignment: .center) {
@@ -45,7 +45,7 @@ struct ScopeLoadingErrorView: View {
                     subtext: subtext,
                     actionButton: {
                         Button {
-                            reloadHandler()
+                            model.refresh(modelToRefresh: .all)
                         } label: {
                             CTAButtonView(Localized.Retry.buttonTitle)
                         }
@@ -58,7 +58,7 @@ struct ScopeLoadingErrorView: View {
                     image: nil,
                     actionButton: {
                         Button {
-                            reloadHandler()
+                            model.refresh(modelToRefresh: .all)
                         } label: {
                             CTAButtonView(Localized.Retry.buttonTitle)
                         }

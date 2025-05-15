@@ -84,9 +84,6 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
                     }
                     .accumulateIntrinsicHeight()
                 }
-                .task {
-                    model.refresh(modelToRefresh: .avatarPickerModel)
-                }
                 .confirmationDialog(
                     Localized.uploadErrorTitle,
                     isPresented: $isUploadErrorDialogPresented,
@@ -235,12 +232,10 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
         ScopeLoadingErrorView(
             error: error,
             isPresented: $isPresented,
+            model: model,
             closeSubtextLocalizedString: Localized.ContentLoading.Failure.SessionExpired.Close.subtext,
             logInSubtextLocalizedString: Localized.ContentLoading.Failure.SessionExpired.LogIn.subtext,
-            tokenErrorHandler: tokenErrorHandler,
-            reloadHandler: {
-                model.refresh(modelToRefresh: .avatarPickerModel)
-            }
+            tokenErrorHandler: tokenErrorHandler
         )
     }
 
