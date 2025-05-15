@@ -5,6 +5,7 @@ struct AboutEditorView: View {
         static let primaryFont: Font = .subheadline
         static let sectionHeaderFont: Font = .subheadline.weight(.semibold)
         static let footerFont: Font = .footnote
+        static let horizontalPadding: CGFloat = .DS.Padding.double
     }
 
     @State private var isSaving: Bool = false
@@ -18,16 +19,18 @@ struct AboutEditorView: View {
     var aboutUpdateHandler: (() -> Void)?
 
     var body: some View {
-        Group {
-            if model.isProfileLoading {
-                LoadingIndicatorView()
-            } else if let error = model.profileResult?.error() {
-                errorView(with: error)
-            } else {
-                content()
+        ZStack {
+            VStack {
+                if model.isProfileLoading {
+                    LoadingIndicatorView()
+                } else if let error = model.profileResult?.error() {
+                    errorView(with: error)
+                } else {
+                    content()
+                }
             }
-        }.onAppear {
-            model.refresh(modelToRefresh: .aboutEditorModel)
+            ToastContainerView(toastManager: model.toastManager)
+                .padding(.horizontal, Constants.horizontalPadding * 2)
         }
     }
 

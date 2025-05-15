@@ -203,13 +203,7 @@ class AvatarPickerViewModel: ObservableObject {
         } catch APIError.responseError(let .invalidHTTPStatusCode(response, errorPayload)) where response.statusCode == HTTPStatus.unauthorized.rawValue {
             handleUnrecoverableClientError(APIError.responseError(reason: .invalidHTTPStatusCode(response: response, errorPayload: errorPayload)))
         } catch {
-            let message: String = switch error {
-            case APIError.responseError(reason: let reason):
-                reason.urlSessionErrorLocalizedDescription ?? Localized.avatarUpdateFail
-            default:
-                Localized.avatarUpdateFail
-            }
-            toastManager.showToast(message, type: .error)
+            showToast(for: error)
             grid.selectAvatar(withID: selectedAvatarResult?.value())
         }
         return nil
@@ -259,8 +253,7 @@ class AvatarPickerViewModel: ObservableObject {
             self.profileResult = .success(updatedProfile)
             return true
         } catch {
-            // TODO: Handle errors properly.
-            toastManager.showToast(error.localizedDescription, type: .error)
+            showToast(for: error)
             return false
         }
     }
@@ -368,6 +361,16 @@ class AvatarPickerViewModel: ObservableObject {
     private func handleUnrecoverableClientError(_ error: Error) {
         self.grid.setAvatars([])
         self.gridResponseStatus = .failure(error)
+    }
+
+    func showToast(for error: Error) {
+        let message: String = switch error {
+        case APIError.responseError(reason: let reason):
+            reason.urlSessionErrorLocalizedDescription ?? Localized.avatarUpdateFail
+        default:
+            Localized.avatarUpdateFail
+        }
+        toastManager.showToast(message, type: .error)
     }
 
     private func updateSelectedAvatarURL() {
