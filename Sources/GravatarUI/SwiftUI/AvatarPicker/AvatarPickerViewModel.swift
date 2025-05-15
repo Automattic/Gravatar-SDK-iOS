@@ -254,7 +254,7 @@ class AvatarPickerViewModel: ObservableObject {
             toastManager.showToast(Localized.profileUpdateSuccess, type: .info)
             return true
         } catch APIError.responseError(let .invalidHTTPStatusCode(response, errorPayload))
-                    where response.statusCode == HTTPStatus.unauthorized.rawValue
+            where response.statusCode == HTTPStatus.unauthorized.rawValue
         {
             handleUnrecoverableClientError(APIError.responseError(
                 reason: .invalidHTTPStatusCode(
