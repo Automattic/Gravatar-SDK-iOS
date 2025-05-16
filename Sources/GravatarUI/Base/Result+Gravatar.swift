@@ -12,6 +12,17 @@ extension Result {
     }
 }
 
+extension Result {
+    func error() -> Error? {
+        switch self {
+        case .failure(let error):
+            error
+        default:
+            nil
+        }
+    }
+}
+
 extension Result<ImageDownloadResult, ImageFetchingError> {
     func map() -> Result<ImageDownloadResult, ImageFetchingComponentError> {
         switch self {

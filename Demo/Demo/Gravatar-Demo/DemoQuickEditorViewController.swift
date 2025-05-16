@@ -84,6 +84,12 @@ final class DemoQuickEditorViewController: UIViewController {
         }
     }
 
+    var selectedInitialPage: InitialPage = .avatarPicker {
+        didSet {
+            initialPageButton.setTitle("Initial page: \(selectedInitialPage.rawValue)", for: .normal)
+        }
+    }
+
     private var selectedScopeOption: QuickEditorScopeOption {
         switch selectedScope {
         case .avatarPicker:
@@ -97,7 +103,8 @@ final class DemoQuickEditorViewController: UIViewController {
             .avatarPickerAndAboutInfoEditor(
                 .init(
                     contentLayout: selectedLayout.contentLayout,
-                    fields: selectedAboutInfoFields
+                    fields: selectedAboutInfoFields,
+                    initialPage: selectedInitialPage.map()
                 )
             )
         }
@@ -106,20 +113,23 @@ final class DemoQuickEditorViewController: UIViewController {
     private var selectedScope: QEScope = .avatarPicker {
         didSet {
             scopeButton.setTitle("Scope: \(selectedScope.rawValue)", for: .normal)
+            showOptionsPerScope()
+        }
+    }
 
-            (avatarPickerOptionsViews + aboutEditorOptionsStackView + avatarAndAboutEditorOptionsStackView).forEach {
-                $0.isHiddenForAnimation = true
-            }
+    func showOptionsPerScope() {
+        (avatarPickerOptionsViews + aboutEditorOptionsStackView + avatarAndAboutEditorOptionsStackView).forEach {
+            $0.isHiddenForAnimation = true
+        }
 
-            switch selectedScope {
-            case .avatarPicker:
-                avatarPickerOptionsViews.forEach { $0.isHiddenForAnimation = false }
-            case .aboutEditor:
-                aboutEditorOptionsStackView.forEach { $0.isHiddenForAnimation = false }
-            case .avatarAndAboutEditor:
-                avatarAndAboutEditorOptionsStackView.forEach {
-                    $0.isHiddenForAnimation = false
-                }
+        switch selectedScope {
+        case .avatarPicker:
+            avatarPickerOptionsViews.forEach { $0.isHiddenForAnimation = false }
+        case .aboutEditor:
+            aboutEditorOptionsStackView.forEach { $0.isHiddenForAnimation = false }
+        case .avatarAndAboutEditor:
+            avatarAndAboutEditorOptionsStackView.forEach {
+                $0.isHiddenForAnimation = false
             }
         }
     }
@@ -164,6 +174,14 @@ final class DemoQuickEditorViewController: UIViewController {
         return button
     }()
 
+    lazy var initialPageButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setTitle("InititalPage: \(selectedInitialPage.rawValue)", for: .normal)
+        button.addTarget(self, action: #selector(presentInitialPageOptions), for: .touchUpInside)
+        return button
+    }()
+
     lazy var scopeButton: UIButton = {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -193,6 +211,17 @@ final class DemoQuickEditorViewController: UIViewController {
         AvatarPickerLayoutOptions.allCases.forEach { layout in
             sheet.addAction(.init(title: layout.rawValue, style: .default) { _ in
                 self.selectedLayout = layout
+            })
+        }
+        sheet.popoverPresentationController?.sourceView = button
+        present(sheet, animated: true)
+    }
+
+    @objc func presentInitialPageOptions(from button: UIButton) {
+        let sheet = UIAlertController(title: "Initial Page", message: nil, preferredStyle: .actionSheet)
+        InitialPage.allCases.forEach { page in
+            sheet.addAction(.init(title: page.rawValue, style: .default) { _ in
+                self.selectedInitialPage = page
             })
         }
         sheet.popoverPresentationController?.sourceView = button
@@ -318,7 +347,8 @@ final class DemoQuickEditorViewController: UIViewController {
     lazy var avatarAndAboutEditorOptionsStackView: [UIView] = [
         imageEditorToggle,
         layoutButton,
-        aboutFieldsButton
+        aboutFieldsButton,
+        initialPageButton
     ]
 
     lazy var rootStackView: UIStackView = {
@@ -334,6 +364,7 @@ final class DemoQuickEditorViewController: UIViewController {
             layoutButton,
             aboutPresentationStyleButton,
             aboutFieldsButton,
+            initialPageButton,
             logoutButton,
             showButton
         ])
@@ -357,6 +388,7 @@ final class DemoQuickEditorViewController: UIViewController {
         if let savedEmail {
             fetchProfile(with: savedEmail)
         }
+        showOptionsPerScope()
     }
 
     func presentQuickEditor() {

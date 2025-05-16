@@ -17,6 +17,7 @@
 		1E15CA7A2D3FB8AF00B5FCB4 /* ImageFormField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E15CA792D3FB8AF00B5FCB4 /* ImageFormField.swift */; };
 		1E15CA7C2D3FB8F700B5FCB4 /* SegmentedControlField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E15CA7B2D3FB8F700B5FCB4 /* SegmentedControlField.swift */; };
 		1E1C5F342D42734800209999 /* LabelField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E1C5F332D42734800209999 /* LabelField.swift */; };
+		1E3C4AE02DD71111002867BC /* QEInitialPagePickerRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E3C4ADF2DD71111002867BC /* QEInitialPagePickerRow.swift */; };
 		1E3FA2412C74E539002901F2 /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E3FA23F2C74B8CC002901F2 /* Secrets.swift */; };
 		1E62631C2CD13DB700FC362F /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49C5D60F2B5B33E20067C2A8 /* ContentView.swift */; };
 		1E62631D2CD13DB700FC362F /* DemoAvatarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9146A7AD2C3BD8F000E07C63 /* DemoAvatarView.swift */; };
@@ -65,6 +66,7 @@
 		1E15CA792D3FB8AF00B5FCB4 /* ImageFormField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageFormField.swift; sourceTree = "<group>"; };
 		1E15CA7B2D3FB8F700B5FCB4 /* SegmentedControlField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentedControlField.swift; sourceTree = "<group>"; };
 		1E1C5F332D42734800209999 /* LabelField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelField.swift; sourceTree = "<group>"; };
+		1E3C4ADF2DD71111002867BC /* QEInitialPagePickerRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QEInitialPagePickerRow.swift; sourceTree = "<group>"; };
 		1E3FA23D2C74B7B5002901F2 /* Secrets.tpl */ = {isa = PBXFileReference; lastKnownFileType = text; path = Secrets.tpl; sourceTree = "<group>"; };
 		1E3FA23F2C74B8CC002901F2 /* Secrets.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Secrets.swift; sourceTree = "<group>"; };
 		1E3FA2442C75E403002901F2 /* DemoProfileEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoProfileEditorView.swift; sourceTree = "<group>"; };
@@ -204,6 +206,7 @@
 				9133DF1A2CA54D1B0028196F /* AvatarPickerLayoutOptions.swift */,
 				9133DF1D2CA54E080028196F /* QEContentLayoutPickerRow.swift */,
 				1E741C452DBB9BF800216752 /* QEVerticalStylePickerRow.swift */,
+				1E3C4ADF2DD71111002867BC /* QEInitialPagePickerRow.swift */,
 				1E741C432DBB9BDC00216752 /* QEScopesPickerRow.swift */,
 				919C70562CAAF28E0036B03C /* QEColorSchemePickerRow.swift */,
 				91E993612DC38EB800C0BE7F /* AboutInfoChecklistView.swift */,
@@ -431,6 +434,7 @@
 				1E15CA6F2D3E863400B5FCB4 /* BaseFormViewController.swift in Sources */,
 				91C76B3F2D96B1AD00F248B9 /* DemoProfileView.swift in Sources */,
 				914AC0192BD7FF08005DA4A5 /* DemoBaseProfileViewController.swift in Sources */,
+				1E3C4AE02DD71111002867BC /* QEInitialPagePickerRow.swift in Sources */,
 				1E0087932B63CFFE0012ECEA /* DemoFetchProfileViewController.swift in Sources */,
 				1E0087952B63DBCB0012ECEA /* DemoUploadImageViewController.swift in Sources */,
 				495775E22B5B34970082812A /* AppDelegate.swift in Sources */,

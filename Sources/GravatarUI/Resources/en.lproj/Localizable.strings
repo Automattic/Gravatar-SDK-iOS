@@ -240,3 +240,15 @@
 
 /* Title of the action to discard changes and close the quick editor */
 "AvatarPicker.UnsavedChangesAlert.discardChangesButtonTitle" = "Discard";
+
+/* A message describing the error and advising the user to login again to resolve the issue */
+"ProfileEditor.ContentLoading.Failure.SessionExpired.Close.subtext" = "Sorry, it looks like your session has expired. Make sure you're logged in to update your Profile.";
+
+/* A message describing the error and advising the user to login again to resolve the issue */
+"ProfileEditor.ContentLoading.Failure.SessionExpired.LogIn.subtext" = "Session expired for security reasons. Please log in to update your Profile.";
+
+/* This error message shows when the user attempts to update fields of their profile and it fails. */
+"Profile.Update.Fail" = "Oops, something didn't quite work out while trying to update your profile.";
+
+/* This confirmation message shows when the user updates fields of their profile. */
+"Profile.Update.Success" = "Profile updated successfully";

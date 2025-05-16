@@ -41,9 +41,8 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
     @State private var safariURL: IdentifiableURL?
     @FocusState private var isKeyobardPresented: Bool
 
-    /// If the QE is open with the scope switch option, this property will track which scope is currently being presented.
-    /// It's nil when a single scope option was selected.
-    @State private var multipleEditorMode: MultipleScopeMode? = nil
+    /// If the QE is open with the a scope with multiple pages, this property will track which page is currently being presented.
+    @State private var currentPage: QuickEditorPage
 
     @Binding private var isPresented: Bool
     // Declare "@StateObject"s as private to prevent setting them from a
@@ -78,9 +77,7 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
         self.updateHandler = updateHandler
         self._model = StateObject(wrappedValue: AvatarPickerViewModel(email: email, authToken: token))
         self.unsavedChangesAlertPresentationModel = unsavedChangesAlertPresentationModel
-        if scopeOption.isAvatarPickerAndAboutInfoEditor {
-            _multipleEditorMode = State(initialValue: .avatarPicker)
-        }
+        _currentPage = State(initialValue: scopeOption.initialPage)
     }
 
     let authorizationFinishedNotification = NotificationCenter.default.publisher(for: .authorizationFinished)
@@ -136,6 +133,9 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
                 unsavedChangesAlertPresentationModel.presentAlert = true
             }
         }
+        .task {
+            model.refresh(modelToRefresh: .all)
+        }
     }
 
     func avatarPickerView(config: AvatarPickerConfiguration) -> some View {
@@ -157,8 +157,13 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
     @ViewBuilder
     func aboutEditorView(fields: AboutInfoField) -> some View {
         AboutEditorView(
+            isPresented: $isPresented,
             model: model,
             fields: fields,
+            tokenErrorHandler: externalToken != nil ? nil : {
+                oauthSession.markSessionAsExpired(with: email)
+                performAuthentication()
+            },
             aboutUpdateHandler: { profile in
                 updateHandler?(QuickEditorUpdate.AboutInfo(profile: profile))
             }
@@ -183,13 +188,11 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
         case .aboutInfoEditor(let config):
             aboutEditorView(fields: config.fields)
         case .avatarPickerAndAboutInfoEditor(let config):
-            switch multipleEditorMode {
+            switch currentPage {
             case .avatarPicker:
                 avatarPickerView(config: .init(contentLayout: config.contentLayout))
             case .aboutEditor:
                 aboutEditorView(fields: config.fields)
-            case nil:
-                EmptyView()
             }
         }
     }
@@ -213,22 +216,23 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
         withAnimation {
             switch mode {
             case .avatar:
-                multipleEditorMode = .avatarPicker
+                currentPage = .avatarPicker
             case .aboutInfo:
-                multipleEditorMode = .aboutEditor
+                currentPage = .aboutEditor
             }
         }
     }
 
     var avatarProfileViewButtonMode: AvatarPickerProfileViewWrapper.ButtonsMode? {
-        // We show the opposite button on the card, so the button mode corresponds to the opposite current mode shown
-        switch multipleEditorMode {
+        guard scopeOption.isAvatarPickerAndAboutInfoEditor else {
+            return nil
+        }
+        // We show the opposite button on the card, so the button mode corresponds to the opposite current page being displayed
+        switch currentPage {
         case .avatarPicker:
-            .aboutInfo
+            return .aboutInfo
         case .aboutEditor:
-            .avatar
-        case .none:
-            nil
+            return .avatar
         }
     }
 

@@ -203,13 +203,7 @@ class AvatarPickerViewModel: ObservableObject {
         } catch APIError.responseError(let .invalidHTTPStatusCode(response, errorPayload)) where response.statusCode == HTTPStatus.unauthorized.rawValue {
             handleUnrecoverableClientError(APIError.responseError(reason: .invalidHTTPStatusCode(response: response, errorPayload: errorPayload)))
         } catch {
-            let message: String = switch error {
-            case APIError.responseError(reason: let reason):
-                reason.urlSessionErrorLocalizedDescription ?? Localized.avatarUpdateFail
-            default:
-                Localized.avatarUpdateFail
-            }
-            toastManager.showToast(message, type: .error)
+            showToast(for: error, fallbackText: Localized.avatarUpdateFail)
             grid.selectAvatar(withID: selectedAvatarResult?.value())
         }
         return nil
@@ -257,11 +251,21 @@ class AvatarPickerViewModel: ObservableObject {
             let request = aboutInfoModel.updateProfileRequest(for: fields)
             let updatedProfile = try await profileService.updateProfile(with: request, token: authToken)
             self.profileResult = .success(updatedProfile)
+            toastManager.showToast(Localized.profileUpdateSuccess, type: .info)
             return updatedProfile
+        } catch APIError.responseError(let .invalidHTTPStatusCode(response, errorPayload))
+            where response.statusCode == HTTPStatus.unauthorized.rawValue
+        {
+            handleUnrecoverableClientError(APIError.responseError(
+                reason: .invalidHTTPStatusCode(
+                    response: response,
+                    errorPayload: errorPayload
+                )
+            ))
+            return false
         } catch {
-            // TODO: Handle errors properly.
-            toastManager.showToast(error.localizedDescription, type: .error)
-            return nil
+            showToast(for: error, fallbackText: Localized.profileUpdateFail)
+            return false
         }
     }
 
@@ -368,6 +372,17 @@ class AvatarPickerViewModel: ObservableObject {
     private func handleUnrecoverableClientError(_ error: Error) {
         self.grid.setAvatars([])
         self.gridResponseStatus = .failure(error)
+        self.profileResult = .failure(error)
+    }
+
+    func showToast(for error: Error, fallbackText: String) {
+        let message: String = switch error {
+        case APIError.responseError(reason: let reason):
+            reason.urlSessionErrorLocalizedDescription ?? fallbackText
+        default:
+            fallbackText
+        }
+        toastManager.showToast(message, type: .error)
     }
 
     private func updateSelectedAvatarURL() {
@@ -530,10 +545,20 @@ extension AvatarPickerViewModel {
             value: "Avatar updated! It may take a few minutes to appear everywhere.",
             comment: "This confirmation message shows when the user picks a different avatar."
         )
+        static let profileUpdateSuccess = SDKLocalizedString(
+            "Profile.Update.Success",
+            value: "Profile updated successfully",
+            comment: "This confirmation message shows when the user updates fields of their profile."
+        )
         static let avatarUpdateFail = SDKLocalizedString(
             "AvatarPickerViewModel.Update.Fail",
             value: "Oops, something didn't quite work out while trying to change your avatar.",
             comment: "This error message shows when the user attempts to pick a different avatar and fails."
+        )
+        static let profileUpdateFail = SDKLocalizedString(
+            "Profile.Update.Fail",
+            value: "Oops, something didn't quite work out while trying to update your profile.",
+            comment: "This error message shows when the user attempts to update fields of their profile and it fails."
         )
         static let imageTooBigError = SDKLocalizedString(
             "AvatarPicker.Upload.Error.ImageTooBig.Error",

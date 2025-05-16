@@ -1,3 +1,5 @@
+import SwiftUI
+
 /// Represents a profile editing scope with configuration options for each scope.
 public struct QuickEditorScopeOption {
     enum Scope {
@@ -48,6 +50,24 @@ public struct QuickEditorScopeOption {
             true
         default:
             false
+        }
+    }
+}
+
+extension QuickEditorScopeOption {
+    var initialPage: QuickEditorPage {
+        switch scope {
+        case .avatarPicker:
+            .avatarPicker
+        case .aboutInfoEditor:
+            .aboutEditor
+        case .avatarPickerAndAboutInfoEditor(let config):
+            switch config.initialPage {
+            case .avatarPicker:
+                .avatarPicker
+            case .aboutEditor:
+                .aboutEditor
+            }
         }
     }
 }

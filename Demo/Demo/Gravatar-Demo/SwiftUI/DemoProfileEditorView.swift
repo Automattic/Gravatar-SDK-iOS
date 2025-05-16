@@ -21,6 +21,7 @@ struct DemoProfileEditorView: View {
     @State private var verticalPresentationStyle: VerticalContentPresentationStyle = .expandableMedium()
     @State private var isPresentingAboutFieldsSheet: Bool = false
     @AppStorage("demoSelectedAboutInfoFields") var selectedAboutInfoFields: AboutInfoField = .all
+    @AppStorage("demoSelectedAvatar&AboutInitialPage") var initialPage: InitialPage = .avatarPicker
 
     var body: some View {
         VStack(spacing: 20) {
@@ -154,7 +155,8 @@ struct DemoProfileEditorView: View {
             .avatarPickerAndAboutInfoEditor(
                 .init(
                     contentLayout: contentLayoutOptions.contentLayout,
-                    fields: selectedAboutInfoFields
+                    fields: selectedAboutInfoFields,
+                    initialPage: initialPage.map()
                 )
             )
         }
@@ -192,6 +194,7 @@ struct DemoProfileEditorView: View {
             }
             Toggle("Custom image cropper", isOn: $enableCustomImageCropper)
             aboutFieldsButton()
+            initialPageOption()
         }
     }
 
@@ -204,6 +207,19 @@ struct DemoProfileEditorView: View {
             .buttonStyle(.bordered)
         }
         .frame(maxWidth: .infinity)
+    }
+
+    func initialPageOption() -> some View {
+        HStack {
+            Text("Initial Page")
+            Spacer()
+            Picker("Initial Page", selection: $initialPage) {
+                ForEach(InitialPage.allCases) { option in
+                    Text(option.rawValue).tag(option)
+                }
+            }
+            .pickerStyle(MenuPickerStyle())
+        }
     }
 
     func requestProfile() {
