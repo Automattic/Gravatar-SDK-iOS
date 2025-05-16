@@ -262,10 +262,10 @@ class AvatarPickerViewModel: ObservableObject {
                     errorPayload: errorPayload
                 )
             ))
-            return false
+            return nil
         } catch {
             showToast(for: error, fallbackText: Localized.profileUpdateFail)
-            return false
+            return nil
         }
     }
 
