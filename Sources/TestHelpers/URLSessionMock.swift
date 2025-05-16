@@ -10,7 +10,7 @@ package actor URLSessionMock: URLSessionProtocol {
     """.data(using: .utf8)!
 
     let returnData: Data
-    let response: HTTPURLResponse
+    private(set) var response: HTTPURLResponse
     private(set) var error: NSError?
     private(set) var isCancellable: Bool = false
     private(set) var maxDurationSeconds: Double = 2
@@ -73,5 +73,9 @@ package actor URLSessionMock: URLSessionProtocol {
 
     package func update(maxDurationSeconds: Double) async {
         self.maxDurationSeconds = maxDurationSeconds
+    }
+
+    package func updateResponse(_ response: HTTPURLResponse) {
+        self.response = response
     }
 }

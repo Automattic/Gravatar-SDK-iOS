@@ -192,8 +192,42 @@ struct AboutEditorViewTests {
     }
 
     @MainActor
+    @Test("Test about editor shows auth error after save attempt with expired token")
+    func testAuthErrorStateAfterSave() async throws {
+        let session = URLSessionMock(returnData: Bundle.fullProfileJsonData, response: .successResponse())
+        
+        let testModel = testModel(session: session)
+        let viewImageConfig: ViewImageConfig = .iPhoneSe
+
+        let view = AboutEditorView(
+            isPresented: .constant(true),
+            model: testModel,
+            fields: .all
+        )
+
+        await testModel.fetchProfile()
+        // Simulate expired token response
+        await session.updateResponse(.errorResponse(code: 401))
+        _ = await testModel.saveAboutInfo(for: .all)
+
+        assertSnapshots(
+            of: view,
+            as: [
+                .testStrategy(userInterfaceStyle: .light, layout: .device(config: viewImageConfig)),
+                .testStrategy(userInterfaceStyle: .dark, layout: .device(config: viewImageConfig)),
+            ]
+        )
+    }
+
+    @MainActor
     private func testModel(response: HTTPURLResponse = .successResponse()) -> AvatarPickerViewModel {
-        let profileService = ProfileService(urlSession: URLSessionMock(returnData: Bundle.fullProfileJsonData, response: response))
+        let session = URLSessionMock(returnData: Bundle.fullProfileJsonData, response: response)
+        return testModel(session: session)
+    }
+
+    @MainActor
+    private func testModel(session: URLSessionProtocol) -> AvatarPickerViewModel {
+        let profileService = ProfileService(urlSession: session)
 
         let imageURL = "https://gravatar.com/avatar/HASH"
         let response = HTTPURLResponse.successResponse(with: URL(string: imageURL)!)
