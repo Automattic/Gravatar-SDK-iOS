@@ -195,7 +195,7 @@ struct AboutEditorViewTests {
     @Test("Test about editor shows auth error after save attempt with expired token")
     func testAuthErrorStateAfterSave() async throws {
         let session = URLSessionMock(returnData: Bundle.fullProfileJsonData, response: .successResponse())
-        
+
         let testModel = testModel(session: session)
         let viewImageConfig: ViewImageConfig = .iPhoneSe
 
