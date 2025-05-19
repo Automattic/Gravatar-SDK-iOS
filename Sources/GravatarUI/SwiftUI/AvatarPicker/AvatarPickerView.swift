@@ -131,6 +131,13 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
                     Button(Localized.dismissButtonTitle, role: .cancel) {}
                 }
             }
+            // Display the frame outside of the scroll view around the content, but not around the loading or error states.
+            .if(!model.isAvatarsLoading && !model.grid.isEmpty) { content in
+                content
+                    .avatarPickerBorder(colorScheme: colorScheme)
+                    .padding(.horizontal, .DS.Padding.double)
+                    .padding(.bottom, .DS.Padding.medium)
+            }
 
             ToastContainerView(toastManager: model.toastManager)
                 .padding(.horizontal, Constants.horizontalPadding * 2)
@@ -361,8 +368,6 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
             header()
             avatarGrid()
         }
-        .avatarPickerBorder(colorScheme: colorScheme)
-        .padding(.horizontal, Constants.horizontalPadding)
     }
 
     private func openProfileInSafari() {
