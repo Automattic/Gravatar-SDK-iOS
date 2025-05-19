@@ -133,12 +133,15 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
             }
             // Display the frame outside of the scroll view around the content, but not around the loading or error states.
             .if(!model.isAvatarsLoading && !model.grid.isEmpty) { content in
-                content
-                    .avatarPickerBorder(colorScheme: colorScheme)
-                    .padding(.horizontal, .DS.Padding.double)
-                    .padding(.bottom, .DS.Padding.medium)
+                VStack {
+                    content
+                        .avatarPickerBorder(colorScheme: colorScheme)
+                        .padding(.horizontal, .DS.Padding.double)
+                    Spacer()
+                        .frame(height: .DS.Padding.double)
+                        .accumulateIntrinsicHeight()
+                }
             }
-
             ToastContainerView(toastManager: model.toastManager)
                 .padding(.horizontal, Constants.horizontalPadding * 2)
         }
@@ -294,7 +297,6 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
                 }
             )
             .padding(.horizontal, Constants.horizontalPadding)
-            .padding(.vertical, .DS.Padding.medium)
         } else {
             HorizontalAvatarGrid(
                 grid: model.grid,
@@ -315,7 +317,6 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
                 CTAButtonView(Localized.buttonUploadImage)
             }
             .padding(.horizontal, Constants.horizontalPadding)
-            .padding(.bottom, .DS.Padding.medium)
         }
     }
 
@@ -514,7 +515,7 @@ enum AvatarPicker {
     ]
     let selectedImageID = "5"
 
-    AvatarPickerView<NoCustomEditor>(
+    return AvatarPickerView<NoCustomEditor>(
         avatarImageModels: avatarImageModels,
         selectedImageID: selectedImageID,
         profileModel: nil,
