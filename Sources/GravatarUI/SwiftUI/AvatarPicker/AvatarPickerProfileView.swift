@@ -43,8 +43,6 @@ struct AvatarPickerProfileView<AccessoryView>: View where AccessoryView: View {
     }
 
     var body: some View {
-        Button {} label: {}
-
         HStack(alignment: .center, spacing: .DS.Padding.single) {
             ZStack(alignment: .bottomTrailing) {
                 avatarView()
