@@ -23,8 +23,8 @@ class DemoAvatarDownloadViewController: BaseFormViewController {
         title: "Default Avatar Option:",
         subtitle: "Backend driven",
         buttonTitle: "Select"
-    ) { [weak self] _ in
-        self?.selectImageDefault()
+    ) { [weak self] action in
+        self?.selectImageDefault(sender: action.sender as? UIView)
     }
 
     lazy var fetchButton = ButtonField(
@@ -105,7 +105,7 @@ class DemoAvatarDownloadViewController: BaseFormViewController {
 
     private var preferredDefaultAvatar: DefaultAvatarOption? = nil
 
-    @objc private func selectImageDefault() {
+    @objc private func selectImageDefault(sender: UIView?) {
         let controller = UIAlertController(title: "Default Avatar Option", message: nil, preferredStyle: .actionSheet)
 
         DefaultAvatarOption.allCases.forEach { option in
@@ -119,6 +119,7 @@ class DemoAvatarDownloadViewController: BaseFormViewController {
         }
 
         controller.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        controller.popoverPresentationController?.sourceView = sender
 
         present(controller, animated: true)
     }

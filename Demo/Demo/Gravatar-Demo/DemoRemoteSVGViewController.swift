@@ -82,7 +82,7 @@ class DemoRemoteSVGViewController: UITableViewController {
         return cell
     }
     
-    @objc private func selectPalette() {
+    @objc private func selectPalette(sender: UIView?) {
         let controller = UIAlertController(title: "Palette", message: nil, preferredStyle: .actionSheet)
 
         paletteTypes.forEach { option in
@@ -102,6 +102,8 @@ class DemoRemoteSVGViewController: UITableViewController {
             })
         }
         controller.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        controller.popoverPresentationController?.sourceView = sender
+
         present(controller, animated: true)
     }
 }

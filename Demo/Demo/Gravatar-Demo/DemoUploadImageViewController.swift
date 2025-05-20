@@ -12,8 +12,8 @@ class DemoUploadImageViewController: BaseFormViewController {
         title: "Backend selection behavior",
         subtitle: "Preserve selection",
         buttonTitle: "Select"
-    ) { [weak self] _ in
-        self?.avatarSelectionTapped()
+    ) { [weak self] action in
+        self?.avatarSelectionTapped(sender: action.sender as? UIView)
     }
 
     lazy var selectAvatarButtonField = ButtonField(title: "Select Image") { [weak self] _ in
@@ -129,11 +129,11 @@ extension DemoUploadImageViewController: UIImagePickerControllerDelegate, UINavi
         }
     }
 
-    @objc private func avatarSelectionTapped() {
-        setAvatarSelectionMethod(with: emailFormField.text)
+    @objc private func avatarSelectionTapped(sender: UIView?) {
+        setAvatarSelectionMethod(with: emailFormField.text, sender: sender)
     }
 
-    @objc private func setAvatarSelectionMethod(with email: String) {
+    @objc private func setAvatarSelectionMethod(with email: String, sender: UIView?) {
         let controller = UIAlertController(title: "Avatar selection behavior:", message: nil, preferredStyle: .actionSheet)
 
 
@@ -147,6 +147,7 @@ extension DemoUploadImageViewController: UIImagePickerControllerDelegate, UINavi
         }
 
         controller.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        controller.popoverPresentationController?.sourceView = sender
 
         present(controller, animated: true)
     }

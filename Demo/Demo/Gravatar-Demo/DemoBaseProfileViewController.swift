@@ -82,7 +82,7 @@ open class DemoBaseProfileViewController: UIViewController {
         ])
     }
     
-    @objc private func selectPalette() {
+    @objc private func selectPalette(sender: UIView?) {
         let controller = UIAlertController(title: "Palette", message: nil, preferredStyle: .actionSheet)
 
         paletteTypes.forEach { option in
@@ -102,10 +102,11 @@ open class DemoBaseProfileViewController: UIViewController {
             })
         }
         controller.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        controller.popoverPresentationController?.sourceView = sender
         present(controller, animated: true)
     }
     
-    @objc private func selectProfileStyle() {
+    @objc private func selectProfileStyle(sender: UIView?) {
         let controller = UIAlertController(title: "Layout Styles", message: nil, preferredStyle: .actionSheet)
         ProfileViewConfiguration.Style.allCases.forEach { option in
             controller.addAction(UIAlertAction(title: "\(option.rawValue)", style: .default) { [weak self] action in
@@ -115,6 +116,7 @@ open class DemoBaseProfileViewController: UIViewController {
             })
         }
         controller.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        controller.popoverPresentationController?.sourceView = sender
         present(controller, animated: true)
     }
 }

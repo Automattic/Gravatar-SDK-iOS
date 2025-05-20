@@ -23,8 +23,8 @@ class DemoUIImageViewExtensionViewController: BaseFormViewController {
         title: "Default Avatar:",
         subtitle: "Backend driven",
         buttonTitle: "Select"
-    ) { [weak self] _ in
-        self?.selectImageDefault()
+    ) { [weak self] action in
+        self?.selectImageDefault(sender: action.sender as? UIView)
     }
 
     lazy var cancelOngoingButtonField = ButtonField(title: "Cancel") { [weak self] _ in
@@ -60,7 +60,7 @@ class DemoUIImageViewExtensionViewController: BaseFormViewController {
 
     private var preferredDefaultAvatar: DefaultAvatarOption? = nil
 
-    @objc private func selectImageDefault() {
+    @objc private func selectImageDefault(sender: UIView?) {
         let controller = UIAlertController(title: "Default Avatar", message: nil, preferredStyle: .actionSheet)
 
         DefaultAvatarOption.allCases.forEach { option in
@@ -71,6 +71,7 @@ class DemoUIImageViewExtensionViewController: BaseFormViewController {
         }
 
         controller.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        controller.popoverPresentationController?.sourceView = sender
 
         present(controller, animated: true)
     }
