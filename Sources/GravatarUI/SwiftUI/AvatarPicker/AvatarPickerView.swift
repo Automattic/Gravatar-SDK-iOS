@@ -133,7 +133,7 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
             }
             // Display the frame outside of the scroll view around the content, but not around the loading or error states.
             .if(!model.isAvatarsLoading && !model.grid.isEmpty) { content in
-                VStack {
+                VStack(spacing: 0) {
                     content
                         .avatarPickerBorder(colorScheme: colorScheme)
                         .padding(.horizontal, .DS.Padding.double)
