@@ -59,7 +59,7 @@ struct AvatarPickerProfileViewWrapper: View {
     @ViewBuilder
     private var profileBackground: some View {
         if colorScheme == .dark {
-            Color(UIColor.systemBackground).colorInvert().opacity(0.09)
+            Color(UIColor.secondarySystemBackground)
         } else {
             Color(UIColor.systemBackground)
         }
