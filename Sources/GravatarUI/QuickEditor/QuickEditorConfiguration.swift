@@ -28,11 +28,11 @@ public struct AvatarPickerConfiguration: Sendable {
 
 /// Configuration which will be applied to the About info editor.
 public struct AboutEditorConfiguration: Sendable {
-    let presentationStyle: VerticalContentPresentationStyle
+    let presentationStyle: SheetPresentationStyle
     let fields: AboutInfoField
 
     public init(
-        presentationStyle: VerticalContentPresentationStyle = .expandableMedium(),
+        presentationStyle: SheetPresentationStyle = .automatic(),
         fields: AboutInfoField = AboutInfoField.all
     ) {
         self.presentationStyle = presentationStyle

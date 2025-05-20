@@ -133,8 +133,13 @@ extension ModalPresentationWithIntrinsicSize {
         switch scopeOption.scope {
         case .avatarPicker(let config):
             shouldUseIntrinsicSize(for: config.contentLayout)
-        case .aboutInfoEditor:
-            false
+        case .aboutInfoEditor(let config):
+            switch config.presentationStyle.detentMode {
+            case .intrinsicHeight, .automatic:
+                true
+            case .expandableMedium(_, _), .large:
+                false
+            }
         case .avatarPickerAndAboutInfoEditor(let config):
             shouldUseIntrinsicSize(for: config.contentLayout)
         }

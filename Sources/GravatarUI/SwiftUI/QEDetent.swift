@@ -96,17 +96,25 @@ enum QEDetent {
     }
 
     private static func aboutEditorDetents(
-        for presentationStyle: VerticalContentPresentationStyle,
+        for presentationStyle: SheetPresentationStyle,
         intrinsicHeight: CGFloat,
         verticalSizeClass: UserInterfaceSizeClass?
     )
         -> [QEDetent]
     {
-        switch presentationStyle {
+        switch presentationStyle.detentMode {
         case .large:
             [.large]
         case .expandableMedium(initialFraction: let initialFraction, _):
             .init([.fraction(initialFraction), .large])
+        case .intrinsicHeight:
+            .init([.height(intrinsicHeight)])
+        case .automatic:
+            if intrinsicHeight >= QEModalPresentationConstants.bottomSheetEstimatedHeight {
+                .init([.height(QEModalPresentationConstants.bottomSheetEstimatedHeight), .large])
+            } else {
+                .init([.height(intrinsicHeight)])
+            }
         }
     }
 

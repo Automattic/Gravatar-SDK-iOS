@@ -96,7 +96,7 @@ final class DemoQuickEditorViewController: UIViewController {
             .avatarPicker(.init(contentLayout: selectedLayout.contentLayout))
         case .aboutEditor:
             .aboutEditor(.init(
-                presentationStyle: selectedVerticalContentPresentationStyle,
+                presentationStyle: selectedSheetPresentationStyle,
                 fields: selectedAboutInfoFields
             ))
         case .avatarAndAboutEditor:
@@ -134,19 +134,27 @@ final class DemoQuickEditorViewController: UIViewController {
         }
     }
 
-    private var selectedVerticalContentPresentationStyle: VerticalContentPresentationStyle {
-        switch selectedVerticalContentPresentationStyleRepresentation {
+    private var selectedSheetPresentationStyle: SheetPresentationStyle {
+        switch selectedSheetPresentationStyleRepresentation {
         case .expandableMedium:
             .expandableMedium()
+        case .expandableMediumPrioritizeScrolling:
+            .expandableMedium(prioritizeScrollOverResize: true)
         case .large:
-            .large
+            .large()
+        case .intrinsicHeight:
+            .intrinsicHeight()
+        case .automatic:
+            .automatic()
+        case .automaticPrioritizeScrolling:
+            .automatic(prioritizeScrollOverResize: true)
         }
     }
 
-    private var selectedVerticalContentPresentationStyleRepresentation: VerticalContentPresentationStyleRepresentation = .expandableMedium {
+    private var selectedSheetPresentationStyleRepresentation: SheetPresentationStyleRepresentation = .expandableMedium {
         didSet {
             aboutPresentationStyleButton.setTitle(
-                "Vertical Presentation Style: \(selectedVerticalContentPresentationStyleRepresentation.rawValue)",
+                "Sheet Presentation Style: \(selectedSheetPresentationStyleRepresentation.rawValue)",
                 for: .normal
             )
         }
@@ -193,7 +201,7 @@ final class DemoQuickEditorViewController: UIViewController {
     lazy var aboutPresentationStyleButton: UIButton = {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("Vertical Presentation Style: \(selectedVerticalContentPresentationStyleRepresentation.rawValue)", for: .normal)
+        button.setTitle("Sheet Presentation Style: \(selectedSheetPresentationStyleRepresentation.rawValue)", for: .normal)
         button.addTarget(self, action: #selector(presentVerticalPresentationStyleOptions), for: .touchUpInside)
         return button
     }()
@@ -241,9 +249,9 @@ final class DemoQuickEditorViewController: UIViewController {
 
     @objc func presentVerticalPresentationStyleOptions(from button: UIButton) {
         let sheet = UIAlertController(title: "Vertical Presentation Styles", message: nil, preferredStyle: .actionSheet)
-        VerticalContentPresentationStyleRepresentation.allCases.forEach { style in
+        SheetPresentationStyleRepresentation.allCases.forEach { style in
             sheet.addAction(.init(title: style.rawValue, style: .default) { _ in
-                self.selectedVerticalContentPresentationStyleRepresentation = style
+                self.selectedSheetPresentationStyleRepresentation = style
             })
         }
         sheet.popoverPresentationController?.sourceView = button
@@ -566,9 +574,13 @@ enum QEScope: String, CaseIterable, Hashable {
     case avatarAndAboutEditor = "Avatar & About Editor"
 }
 
-private enum VerticalContentPresentationStyleRepresentation: String, CaseIterable, Hashable {
+enum SheetPresentationStyleRepresentation: String, CaseIterable, Hashable {
     case large = "Large"
     case expandableMedium = "Expandable Medium"
+    case expandableMediumPrioritizeScrolling = "Expandable Medium - Prioritize scrolling"
+    case intrinsicHeight = "Intrinsic Height"
+    case automatic = "Automatic"
+    case automaticPrioritizeScrolling = "Automatic - Prioritize scrolling"
 }
 
 private extension UIView {

@@ -1,20 +1,16 @@
 import SwiftUI
 import GravatarUI
 
-struct QEVerticalStylePickerRow: View {
-    enum VerticalContentPresentationStyleRepresentation: String, CaseIterable, Hashable {
-        case large = "Large"
-        case expandableMedium = "Expandable Medium"
-    }
-    @Binding var verticalStyle: VerticalContentPresentationStyle
-    @State var verticalStyleRep: VerticalContentPresentationStyleRepresentation = .expandableMedium
+struct SheetStylePickerRow: View {
+    @Binding var sheetStyle: SheetPresentationStyle
+    @State var verticalStyleRep: SheetPresentationStyleRepresentation = .expandableMedium
 
     var body: some View {
         HStack {
-            Text("Vertical Style")
+            Text("Sheet Style")
             Spacer()
             Picker("Vertical Style", selection: $verticalStyleRep) {
-                ForEach(VerticalContentPresentationStyleRepresentation.allCases, id: \.self) { option in
+                ForEach(SheetPresentationStyleRepresentation.allCases, id: \.self) { option in
                     Text(option.rawValue).tag(option)
                 }
             }
@@ -22,10 +18,17 @@ struct QEVerticalStylePickerRow: View {
             .onChange(of: verticalStyleRep) { newValue in
                 switch newValue {
                 case .large:
-                    verticalStyle = .large
+                    sheetStyle = .large()
                 case .expandableMedium:
-                    verticalStyle = .expandableMedium()
-
+                    sheetStyle = .expandableMedium()
+                case .expandableMediumPrioritizeScrolling:
+                    sheetStyle = .expandableMedium(prioritizeScrollOverResize: true)
+                case .intrinsicHeight:
+                    sheetStyle = .intrinsicHeight()
+                case .automatic:
+                    sheetStyle = .automatic()
+                case .automaticPrioritizeScrolling:
+                    sheetStyle = .automatic(prioritizeScrollOverResize: true)
                 }
             }
         }

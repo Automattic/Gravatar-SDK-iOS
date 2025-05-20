@@ -18,7 +18,7 @@ struct DemoProfileEditorView: View {
     @State var enableCustomImageCropper: Bool = false
     @State var prefersEphemeralWebBrowserSession: Bool = false
     @AppStorage("demoSelectedScope") private var scope: QEScope = .avatarPicker
-    @State private var verticalPresentationStyle: VerticalContentPresentationStyle = .expandableMedium()
+    @State private var sheetPresentationStyle: SheetPresentationStyle = .expandableMedium()
     @State private var isPresentingAboutFieldsSheet: Bool = false
     @AppStorage("demoSelectedAboutInfoFields") var selectedAboutInfoFields: AboutInfoField = .all
     @AppStorage("demoSelectedAvatar&AboutInitialPage") var initialPage: InitialPage = .avatarPicker
@@ -148,7 +148,7 @@ struct DemoProfileEditorView: View {
             .avatarPicker(.init(contentLayout: contentLayoutOptions.contentLayout))
         case .aboutEditor:
             .aboutEditor(.init(
-                presentationStyle: verticalPresentationStyle,
+                presentationStyle: sheetPresentationStyle,
                 fields: selectedAboutInfoFields)
             )
         case .avatarAndAboutEditor:
@@ -184,7 +184,7 @@ struct DemoProfileEditorView: View {
             Toggle("Custom image cropper", isOn: $enableCustomImageCropper)
         case .aboutEditor:
             if #available(iOS 16.0, *) {
-                QEVerticalStylePickerRow(verticalStyle: $verticalPresentationStyle)
+                SheetStylePickerRow(sheetStyle: $sheetPresentationStyle)
             }
             aboutFieldsButton()
         case .avatarAndAboutEditor:

@@ -81,7 +81,7 @@ public struct QuickEditorScopeOptionOld {
         case .avatarPicker:
             .avatarPicker(.verticalLarge)
         case .aboutInfoEditor:
-            .aboutInfoEditor(.init(presentationStyle: .large))
+            .aboutInfoEditor(.init(presentationStyle: .large()))
         case .avatarPickerAndAboutInfoEditor:
             .avatarPickerAndAboutInfoEditor(.init(contentLayout: .vertical(presentationStyle: .large)))
         }
