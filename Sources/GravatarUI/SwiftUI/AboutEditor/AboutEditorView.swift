@@ -10,10 +10,15 @@ struct AboutEditorView: View {
 
     @State private var isSaving: Bool = false
     @Binding var isPresented: Bool
+
+    var isKeyobardPresented: FocusState<Bool>.Binding
+
     @ObservedObject var model: AvatarPickerViewModel
     let fields: AboutInfoField
     @Environment(\.colorScheme) var colorScheme: ColorScheme
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
+    @Environment(\.verticalSizeClass) var vertcalSizeClass
+
     var tokenErrorHandler: (() -> Void)?
     var aboutUpdateHandler: ((Profile) -> Void)?
 
@@ -39,6 +44,7 @@ struct AboutEditorView: View {
             ToastContainerView(toastManager: model.toastManager)
                 .padding(.horizontal, Constants.horizontalPadding * 2)
         }
+        .focused(isKeyobardPresented)
     }
 
     @ViewBuilder
@@ -68,10 +74,13 @@ struct AboutEditorView: View {
         Spacer().frame(height: .DS.Padding.double)
             .accumulateIntrinsicHeight()
 
-        saveButton()
-            .padding(.horizontal, .DS.Padding.large)
-            .padding(.bottom, .DS.Padding.double)
-            .accumulateIntrinsicHeight()
+        if !(isKeyobardPresented.wrappedValue && vertcalSizeClass == .compact) {
+            saveButton()
+                .padding(.horizontal, .DS.Padding.large)
+                .padding(.bottom, .DS.Padding.double)
+                .accumulateIntrinsicHeight()
+        }
+
     }
 
     private func saveButton() -> some View {
@@ -248,13 +257,16 @@ extension View {
 }
 
 #Preview {
-    AboutEditorView(isPresented: .constant(true), model: .init(avatarImageModels: []), fields: .all)
+    @FocusState var isFocused: Bool
+    return AboutEditorView(isPresented: .constant(true), isKeyobardPresented: $isFocused, model: .init(avatarImageModels: []), fields: .all)
 }
 
 #Preview("professional") {
-    AboutEditorView(isPresented: .constant(true), model: .init(avatarImageModels: []), fields: .professionalFields)
+    @FocusState var isFocused: Bool
+    AboutEditorView(isPresented: .constant(true), isKeyobardPresented: $isFocused, model: .init(avatarImageModels: []), fields: .professionalFields)
 }
 
 #Preview("personal") {
-    AboutEditorView(isPresented: .constant(true), model: .init(avatarImageModels: []), fields: .personalFields)
+    @FocusState var isFocused: Bool
+    AboutEditorView(isPresented: .constant(true), isKeyobardPresented: $isFocused, model: .init(avatarImageModels: []), fields: .personalFields)
 }

@@ -156,6 +156,7 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
     func aboutEditorView(fields: AboutInfoField) -> some View {
         AboutEditorView(
             isPresented: $isPresented,
+            isKeyobardPresented: $isKeyobardPresented,
             model: model,
             fields: fields,
             tokenErrorHandler: externalToken != nil ? nil : {
@@ -166,7 +167,6 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
                 updateHandler?(QuickEditorUpdate.AboutInfo(profile: profile))
             }
         )
-        .focused($isKeyobardPresented)
         // Detects taps only on the background to avoid dismissing the keyboard when tapping in a text field.
         .background(Color.clear.onTapGesture {
             isKeyobardPresented = false
