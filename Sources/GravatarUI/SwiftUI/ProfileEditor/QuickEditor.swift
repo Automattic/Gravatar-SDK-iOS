@@ -29,6 +29,8 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
     @Environment(\.oauthSession) private var oauthSession
     @Environment(\.colorScheme) var colorScheme: ColorScheme
     @Environment(\.dismissAttempt) var dismissAttempt
+    @Environment(\.verticalSizeClass) var vertcalSizeClass
+
     @AppStorage("QuickEditor.startOAuthOnAppear") private var startOAuthOnAppear: Bool = false
     @State private var fetchedToken: String?
     @State private var isAuthenticating: Bool = false
@@ -234,10 +236,14 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
 
     @ViewBuilder
     func profileCardHeaderView() -> some View {
-        EmailText(email: model.email)
-            .accumulateIntrinsicHeight()
-        profileView()
-            .accumulateIntrinsicHeight()
+        if !(vertcalSizeClass == .compact && isKeyobardPresented) {
+            EmailText(email: model.email)
+                .accumulateIntrinsicHeight()
+            profileView()
+                .accumulateIntrinsicHeight()
+        } else {
+            EmptyView()
+        }
     }
 
     func noticeView() -> some View {
