@@ -80,7 +80,6 @@ struct AboutEditorView: View {
                 .padding(.bottom, .DS.Padding.double)
                 .accumulateIntrinsicHeight()
         }
-
     }
 
     private func saveButton() -> some View {
