@@ -272,6 +272,5 @@ extension View {
 }
 
 #Preview("personal") {
-    @FocusState var isFocused: Bool
     AboutEditorView(isPresented: .constant(true), model: .init(avatarImageModels: []), fields: .personalFields)
 }
