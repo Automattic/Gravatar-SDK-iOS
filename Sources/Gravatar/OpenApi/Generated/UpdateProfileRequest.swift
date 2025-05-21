@@ -3,6 +3,10 @@ import Foundation
 /// The subset of data available for update. Field names match the ones in `Profile`. Only the provided fields will be updated.
 ///
 public struct UpdateProfileRequest: Codable, Hashable, Sendable {
+    /// The user's first name.
+    public private(set) var firstName: String?
+    /// The user's last name.
+    public private(set) var lastName: String?
     /// The user's display name. This is the name that is displayed on their profile.
     public private(set) var displayName: String?
     /// The about section on a user's profile.
@@ -19,6 +23,8 @@ public struct UpdateProfileRequest: Codable, Hashable, Sendable {
     public private(set) var company: String?
 
     public init(
+        firstName: String? = nil,
+        lastName: String? = nil,
         displayName: String? = nil,
         description: String? = nil,
         pronunciation: String? = nil,
@@ -27,6 +33,8 @@ public struct UpdateProfileRequest: Codable, Hashable, Sendable {
         jobTitle: String? = nil,
         company: String? = nil
     ) {
+        self.firstName = firstName
+        self.lastName = lastName
         self.displayName = displayName
         self.description = description
         self.pronunciation = pronunciation
@@ -37,6 +45,8 @@ public struct UpdateProfileRequest: Codable, Hashable, Sendable {
     }
 
     enum CodingKeys: String, CodingKey, CaseIterable {
+        case firstName = "first_name"
+        case lastName = "last_name"
         case displayName = "display_name"
         case description
         case pronunciation
@@ -50,6 +60,8 @@ public struct UpdateProfileRequest: Codable, Hashable, Sendable {
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encodeIfPresent(firstName, forKey: .firstName)
+        try container.encodeIfPresent(lastName, forKey: .lastName)
         try container.encodeIfPresent(displayName, forKey: .displayName)
         try container.encodeIfPresent(description, forKey: .description)
         try container.encodeIfPresent(pronunciation, forKey: .pronunciation)
