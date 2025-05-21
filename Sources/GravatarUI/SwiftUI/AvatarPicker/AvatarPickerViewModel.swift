@@ -44,6 +44,8 @@ class AvatarPickerViewModel: ObservableObject {
     @Published var profileModel: AvatarPickerProfileViewModel?
     @Published var aboutInfoModel: AboutInfoModel = .init()
 
+    @Published var isKeyboardPresented: Bool = false
+
     @Published var shouldDisplayNoSelectedAvatarWarning: Bool = false
     @ObservedObject var toastManager: ToastManager = .init()
     private var cancellables = Set<AnyCancellable>()
