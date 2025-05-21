@@ -6,6 +6,7 @@ struct AboutEditorView: View {
         static let sectionHeaderFont: Font = .subheadline.weight(.semibold)
         static let footerFont: Font = .footnote
         static let horizontalPadding: CGFloat = .DS.Padding.double
+        static let vStackVerticalSpacing: CGFloat = .DS.Padding.medium
     }
 
     @State private var isSaving: Bool = false
@@ -222,6 +223,9 @@ struct AboutEditorView: View {
             isPresented: $isPresented,
             model: model, tokenErrorHandler: tokenErrorHandler
         )
+
+        Spacer()
+            .frame(height: Constants.vStackVerticalSpacing)
     }
 
     private enum Localized {
