@@ -100,7 +100,7 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
                 preferenceKey: InnerHeightPreferenceKey.self
             )
         }
-        .navigationViewStyle(StackNavigationViewStyle())
+        .navigationViewStyle(.stack)
         .presentSafariView(identifiableURL: $safariURL, colorScheme: colorScheme)
         .onAppear {
             fetchedToken = oauthSession.sessionToken(with: email)?.token
