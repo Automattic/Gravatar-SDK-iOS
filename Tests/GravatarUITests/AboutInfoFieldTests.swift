@@ -33,6 +33,22 @@ struct AboutInfoFieldTests {
     }
 
     @Test
+    func testExtraFields() async throws {
+        let fields: AboutInfoField = [
+            .firstName,
+            .lastName,
+        ]
+        #expect(
+            AboutInfoField.extraFields.contains(fields),
+            "`AboutInfoField.extraFields` convenience property must contain the necessary fields"
+        )
+        #expect(
+            AboutInfoField.extraFields.symmetricDifference(fields).isEmpty,
+            "`AboutInfoField.extraFields` convenience must not have unwanted fields"
+        )
+    }
+
+    @Test
     func testAllFields() async throws {
         let fields: AboutInfoField = [
             .displayName,
@@ -42,6 +58,8 @@ struct AboutInfoFieldTests {
             .location,
             .jobTitle,
             .company,
+            .firstName,
+            .lastName,
         ]
 
         #expect(AboutInfoField.all.contains(fields), "`AboutInfoField.all` convenience property must contain the necessary fields")
@@ -65,7 +83,11 @@ struct AboutInfoFieldTests {
             for professionalField in professionalFields {
                 let mergedFields = personalField.union(professionalField)
                 #expect(
-                    mergedFields.hasMultipleCategories == true,
+                    mergedFields.hasMultipleCategories(containing: .personalFields),
+                    "Different combinations of `personal` and `professional` fields mean that there are multiple categories in this set. So we expect `hasMultipleCategories` to be true."
+                )
+                #expect(
+                    mergedFields.hasMultipleCategories(containing: .professionalFields),
                     "Different combinations of `personal` and `professional` fields mean that there are multiple categories in this set. So we expect `hasMultipleCategories` to be true."
                 )
             }
@@ -75,11 +97,15 @@ struct AboutInfoFieldTests {
     @Test
     func testMultipleSectionsDontExist() async throws {
         #expect(
-            AboutInfoField.personalFields.hasMultipleCategories == false,
+            AboutInfoField.personalFields.hasMultipleCategories(containing: .personalFields) == false,
             "`personalFields` convenience property corresponds to a single category. So we expect `hasMultipleCategories` to be false"
         )
         #expect(
-            AboutInfoField.professionalFields.hasMultipleCategories == false,
+            AboutInfoField.professionalFields.hasMultipleCategories(containing: .professionalFields) == false,
+            "`professionalFields` convenience property corresponds to a single category. So we expect `hasMultipleCategories` to be false"
+        )
+        #expect(
+            AboutInfoField.extraFields.hasMultipleCategories(containing: .extraFields) == false,
             "`professionalFields` convenience property corresponds to a single category. So we expect `hasMultipleCategories` to be false"
         )
     }

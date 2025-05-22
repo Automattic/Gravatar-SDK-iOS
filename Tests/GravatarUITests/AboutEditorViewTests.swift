@@ -77,6 +77,29 @@ struct AboutEditorViewTests {
 
     @MainActor
     @Test
+    func testAboutEditorViewExtraFieldsIntrinsicHeight() async throws {
+        let testModel = testModel()
+        await testModel.refresh(modelToRefresh: .aboutEditorModel)
+
+        let view = AboutEditorView(
+            isPresented: .constant(true),
+            model: testModel,
+            fields: .extraFields
+        )
+        .fixedSize(horizontal: false, vertical: true)
+        .frame(width: ViewImageConfig.iPhone13Pro.size?.width ?? 0)
+
+        assertSnapshots(
+            of: view,
+            as: [
+                .testStrategy(userInterfaceStyle: .light, layout: .sizeThatFits),
+                .testStrategy(userInterfaceStyle: .dark, layout: .sizeThatFits),
+            ]
+        )
+    }
+
+    @MainActor
+    @Test
     func testAboutEditorViewAllFieldsFixedHeight() async throws {
         let testModel = testModel()
         await testModel.refresh(modelToRefresh: .aboutEditorModel)
@@ -158,7 +181,7 @@ struct AboutEditorViewTests {
             await testModel.fetchProfile()
         }
         // Awaits for the previous task to start executing, and the view to start loading.
-        try await Task.sleep(nanoseconds: 1)
+        try await Task.sleep(nanoseconds: 10)
         assertSnapshots(
             of: view,
             as: [

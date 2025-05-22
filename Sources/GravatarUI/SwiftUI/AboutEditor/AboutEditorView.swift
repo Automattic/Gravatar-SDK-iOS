@@ -64,10 +64,14 @@ struct AboutEditorView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
                     personalInfoContent()
-                    if fields.hasMultipleCategories {
+                    if fields.hasMultipleCategories(containing: .professionalFields) {
                         Spacer().frame(height: .DS.Padding.double)
                     }
                     professionalInfoContent()
+                    if fields.hasMultipleCategories(containing: .extraFields) {
+                        Spacer().frame(height: .DS.Padding.double)
+                    }
+                    extraFieldsContent()
                 }
                 .fixedSize(horizontal: false, vertical: true)
                 .padding(.horizontal, .DS.Padding.double)
@@ -113,9 +117,10 @@ struct AboutEditorView: View {
 
     @ViewBuilder
     private func personalInfoContent() -> some View {
-        if fields.hasMultipleCategories {
+        if fields.hasMultipleCategories(containing: .personalFields) {
             sectionHeader(title: Localized.personalSectionHeaderText)
         }
+
         if fields.contains(.displayName) {
             inputField(
                 for: AboutInfoField.displayName.localizedName(),
@@ -125,7 +130,7 @@ struct AboutEditorView: View {
         if fields.contains(.aboutMe) {
             inputField(
                 for: AboutInfoField.aboutMe.localizedName(),
-                footerText: Localized.aboutMeFooterText,
+                footerText: AttributedString(Localized.aboutMeFooterText),
                 value: $model.aboutInfoModel.aboutMe,
                 isLarge: true
             )
@@ -133,7 +138,7 @@ struct AboutEditorView: View {
         if fields.contains(.pronunciation) {
             inputField(
                 for: AboutInfoField.pronunciation.localizedName(),
-                footerText: Localized.pronunciationFooterText,
+                footerText: AttributedString(Localized.pronunciationFooterText),
                 value: $model.aboutInfoModel.pronunciation
             )
         }
@@ -153,7 +158,7 @@ struct AboutEditorView: View {
 
     @ViewBuilder
     private func professionalInfoContent() -> some View {
-        if fields.hasMultipleCategories {
+        if fields.hasMultipleCategories(containing: .professionalFields) {
             sectionHeader(title: Localized.professionalSectionHeaderText)
         }
         if fields.contains(.jobTitle) {
@@ -170,6 +175,32 @@ struct AboutEditorView: View {
         }
     }
 
+    @ViewBuilder
+    private func extraFieldsContent() -> some View {
+        if fields.hasMultipleCategories(containing: .extraFields) {
+            sectionHeader(title: Localized.extraSectionHeaderText)
+        }
+        if fields.contains(.firstName) {
+            inputField(
+                for: AboutInfoField.firstName.localizedName(),
+                value: $model.aboutInfoModel.firstName
+            )
+        }
+        if fields.contains(.lastName) {
+            inputField(
+                for: AboutInfoField.lastName.localizedName(),
+                value: $model.aboutInfoModel.lastName
+            )
+        }
+        if fields.hasAccountFields {
+            Text(Localized.extraSectionFooterText)
+                .font(Constants.footerFont)
+                .multilineTextAlignment(.leading)
+                .foregroundColor(Color(uiColor: UIColor.secondaryLabel))
+                .padding(.top)
+        }
+    }
+
     private func sectionHeader(title: String) -> some View {
         Text(title)
             .font(Constants.sectionHeaderFont)
@@ -179,7 +210,7 @@ struct AboutEditorView: View {
 
     private func inputField(
         for title: String,
-        footerText: String? = nil,
+        footerText: AttributedString? = nil,
         value: Binding<String>,
         isLarge: Bool = false
     ) -> some View {
@@ -248,6 +279,16 @@ struct AboutEditorView: View {
             "Profile.Section.Professional.header",
             value: "Professional",
             comment: "Title of the professional/work info section in the profile editing screen."
+        )
+        static let extraSectionHeaderText = SDKLocalizedString(
+            "Profile.Section.Extra.header",
+            value: "Extras",
+            comment: "Title of the 'Extra' fields group section in the About Info editing screen."
+        )
+        static let extraSectionFooterText = SDKLocalizedString(
+            "Profile.Section.Extra.footer",
+            value: "This information will not appear on your Gravatar Web Profile, but other apps and services can use it.",
+            comment: "Footer text for the 'Extra' fields group section in the About Info editing screen."
         )
         static let saveButtonTitle = SDKLocalizedString(
             "Profile.Save.title",

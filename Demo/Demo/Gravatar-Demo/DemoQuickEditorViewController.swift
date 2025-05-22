@@ -271,7 +271,7 @@ final class DemoQuickEditorViewController: UIViewController {
                 )
             )
         )
-        aboutChecklistHostingController.sheetPresentationController?.detents = [.medium(), .large()]
+        aboutChecklistHostingController.sheetPresentationController?.detents = [.large()]
         present(aboutChecklistHostingController, animated: true)
     }
 

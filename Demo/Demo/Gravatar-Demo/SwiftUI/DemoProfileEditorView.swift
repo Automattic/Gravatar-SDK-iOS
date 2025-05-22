@@ -135,7 +135,7 @@ struct DemoProfileEditorView: View {
         .sheet(isPresented: $isPresentingAboutFieldsSheet) {
             if #available(iOS 16.0, *) {
                 AboutInfoChecklistView(selectedFields: $selectedAboutInfoFields)
-                    .presentationDetents([.medium, .large])
+                    .presentationDetents([.large])
             } else {
                 AboutInfoChecklistView(selectedFields: $selectedAboutInfoFields)
             }

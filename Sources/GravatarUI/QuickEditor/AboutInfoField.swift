@@ -22,17 +22,13 @@ public struct AboutInfoField: OptionSet, Sendable {
     public static let jobTitle = AboutInfoField(rawValue: 1 << 5)
     /// The company or organization the user is affiliated with.
     public static let company = AboutInfoField(rawValue: 1 << 6)
+    /// User's first name. This is only provided in authenticated API requests.
+    public static let firstName = AboutInfoField(rawValue: 1 << 7)
+    /// User's last name. This is only provided in authenticated API requests.
+    public static let lastName = AboutInfoField(rawValue: 1 << 8)
 
     /// A convenience set representing all possible about info fields.
-    public static let all: AboutInfoField = [
-        .displayName,
-        .aboutMe,
-        .pronunciation,
-        .pronouns,
-        .location,
-        .jobTitle,
-        .company,
-    ]
+    public static let all: AboutInfoField = personalFields.union(professionalFields).union(extraFields)
 
     /// A subset of fields that are personal.
     public static let personalFields: AboutInfoField = [
@@ -49,15 +45,38 @@ public struct AboutInfoField: OptionSet, Sendable {
         .company,
     ]
 
-    var hasMultipleCategories: Bool {
-        [
-            !self.intersection(.personalFields).isEmpty,
-            !self.intersection(.professionalFields).isEmpty,
-        ].hasMoreThanOneTrue
+    public static let extraFields: AboutInfoField = [
+        .firstName,
+        .lastName,
+    ]
+
+    func hasMultipleCategories(containing: AboutInfoField) -> Bool {
+        !self.intersection(containing).isEmpty
+            && [
+                !self.intersection(.personalFields).isEmpty,
+                !self.intersection(.professionalFields).isEmpty,
+                !self.intersection(.extraFields).isEmpty,
+            ].hasMoreThanOneTrue
+    }
+
+    var hasAccountFields: Bool {
+        !self.intersection(.extraFields).isEmpty
     }
 
     func localizedName() -> String {
         switch self {
+        case .firstName:
+            SDKLocalizedString(
+                "Profile.AboutInfoField.firstName",
+                value: "First Name",
+                comment: "Label of a field that contains a user’s first name."
+            )
+        case .lastName:
+            SDKLocalizedString(
+                "Profile.AboutInfoField.lastName",
+                value: "Last Name",
+                comment: "Label of a field that contains a user’s last name."
+            )
         case .displayName:
             SDKLocalizedString(
                 "Profile.AboutInfoField.displayName",

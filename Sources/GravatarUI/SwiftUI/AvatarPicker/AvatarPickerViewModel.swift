@@ -632,14 +632,18 @@ extension Profile {
             pronouns: pronouns,
             location: location,
             jobTitle: jobTitle,
-            company: company
+            company: company,
+            firstName: firstName ?? "",
+            lastName: lastName ?? ""
         )
     }
 }
 
 extension AboutInfoModel {
     fileprivate func hasEqualFields(than profile: Profile) -> Bool {
-        displayName == profile.displayName
+        firstName == profile.firstName
+            && lastName == profile.lastName
+            && displayName == profile.displayName
             && aboutMe == profile.description
             && pronunciation == profile.pronunciation
             && pronouns == profile.pronouns

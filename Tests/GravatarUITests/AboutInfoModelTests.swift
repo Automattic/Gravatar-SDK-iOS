@@ -37,7 +37,9 @@ struct AboutInfoModelTests {
             pronouns: "pronouns",
             location: "location",
             jobTitle: "jobTitle",
-            company: "company"
+            company: "company",
+            firstName: "fisrtName",
+            lastName: "lastName"
         )
     }
 }

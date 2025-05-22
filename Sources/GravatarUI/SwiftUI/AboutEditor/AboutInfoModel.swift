@@ -8,10 +8,22 @@ class AboutInfoModel: ObservableObject {
     @Published var location: String = ""
     @Published var jobTitle: String = ""
     @Published var company: String = ""
+    @Published var firstName: String = ""
+    @Published var lastName: String = ""
 
     init() {}
 
-    init(displayName: String, aboutMe: String, pronunciation: String, pronouns: String, location: String, jobTitle: String, company: String) {
+    init(
+        displayName: String,
+        aboutMe: String,
+        pronunciation: String,
+        pronouns: String,
+        location: String,
+        jobTitle: String,
+        company: String,
+        firstName: String,
+        lastName: String
+    ) {
         self.displayName = displayName
         self.aboutMe = aboutMe
         self.pronunciation = pronunciation
@@ -19,10 +31,14 @@ class AboutInfoModel: ObservableObject {
         self.location = location
         self.jobTitle = jobTitle
         self.company = company
+        self.firstName = firstName
+        self.lastName = lastName
     }
 
     func updateProfileRequest(for fields: AboutInfoField) -> UpdateProfileRequest {
         UpdateProfileRequest(
+            firstName: fields.contains(.firstName) ? firstName : nil,
+            lastName: fields.contains(.lastName) ? lastName : nil,
             displayName: fields.contains(.displayName) ? displayName : nil,
             description: fields.contains(.aboutMe) ? aboutMe : nil,
             pronunciation: fields.contains(.pronunciation) ? pronunciation : nil,

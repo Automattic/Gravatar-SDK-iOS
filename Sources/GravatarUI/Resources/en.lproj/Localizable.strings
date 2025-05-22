@@ -202,6 +202,18 @@
 /* Description for the 'Pronunciation' field in the profile editing screen. */
 "Profile.AboutInfoField.pronunciation.footer" = "Let them know how your name sounds like.";
 
+/* Label of a field that contains a user’s first name. */
+"Profile.AboutInfoField.firstName" = "First Name";
+
+/* Label of a field that contains a user’s last name. */
+"Profile.AboutInfoField.lastName" = "Last Name";
+
+/* Footer text for the 'Extra' fields group section in the About Info editing screen. */
+"Profile.Section.Extra.footer" = "This information will not appear on your Gravatar Web Profile, but other apps and services can use it.";
+
+/* Title of the 'Extra' fields group section in the About Info editing screen. */
+"Profile.Section.Extra.header" = "Extras";
+
 /* Title of the button to save changes in the profile editing screen. */
 "Profile.Save.title" = "Save";
 
