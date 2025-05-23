@@ -59,7 +59,7 @@ public struct AboutInfoField: OptionSet, Sendable {
             ].hasMoreThanOneTrue
     }
 
-    var hasAccountFields: Bool {
+    var hasExtraFields: Bool {
         !self.intersection(.extraFields).isEmpty
     }
 

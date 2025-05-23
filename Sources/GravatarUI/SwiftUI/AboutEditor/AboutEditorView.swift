@@ -180,6 +180,13 @@ struct AboutEditorView: View {
         if fields.hasMultipleCategories(containing: .extraFields) {
             sectionHeader(title: Localized.extraSectionHeaderText)
         }
+        if fields.hasExtraFields {
+            Text(Localized.extraSectionNoticeText)
+                .font(Constants.footerFont)
+                .multilineTextAlignment(.leading)
+                .foregroundColor(Color(uiColor: UIColor.secondaryLabel))
+                .padding(.bottom)
+        }
         if fields.contains(.firstName) {
             inputField(
                 for: AboutInfoField.firstName.localizedName(),
@@ -191,13 +198,6 @@ struct AboutEditorView: View {
                 for: AboutInfoField.lastName.localizedName(),
                 value: $model.aboutInfoModel.lastName
             )
-        }
-        if fields.hasAccountFields {
-            Text(Localized.extraSectionFooterText)
-                .font(Constants.footerFont)
-                .multilineTextAlignment(.leading)
-                .foregroundColor(Color(uiColor: UIColor.secondaryLabel))
-                .padding(.top)
         }
     }
 
@@ -285,10 +285,10 @@ struct AboutEditorView: View {
             value: "Extras",
             comment: "Title of the 'Extra' fields group section in the About Info editing screen."
         )
-        static let extraSectionFooterText = SDKLocalizedString(
-            "Profile.Section.Extra.footer",
+        static let extraSectionNoticeText = SDKLocalizedString(
+            "Profile.Section.Extra.notice",
             value: "This information will not appear on your Gravatar Web Profile, but other apps and services can use it.",
-            comment: "Footer text for the 'Extra' fields group section in the About Info editing screen."
+            comment: "Notice text for the 'Extra' fields group section in the About Info editing screen."
         )
         static let saveButtonTitle = SDKLocalizedString(
             "Profile.Save.title",

@@ -209,7 +209,7 @@
 "Profile.AboutInfoField.lastName" = "Last Name";
 
 /* Footer text for the 'Extra' fields group section in the About Info editing screen. */
-"Profile.Section.Extra.footer" = "This information will not appear on your Gravatar Web Profile, but other apps and services can use it.";
+"Profile.Section.Extra.notice" = "This information will not appear on your Gravatar Web Profile, but other apps and services can use it.";
 
 /* Title of the 'Extra' fields group section in the About Info editing screen. */
 "Profile.Section.Extra.header" = "Extras";
