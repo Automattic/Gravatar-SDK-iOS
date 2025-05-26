@@ -144,6 +144,10 @@ extension QuickEditorViewController: UISheetPresentationControllerDelegate {
         }
         return !unsavedChangesAlertPresentationModel.hasUnsavedChanges
     }
+
+    func presentationControllerDidDismiss(_: UIPresentationController) {
+        isPresented.wrappedValue = false
+    }
 }
 
 /// UIHostingController subclass which reads the InnerHeightPreferenceKey changes
@@ -314,8 +318,8 @@ public struct QuickEditorPresenter {
 
 /// A protocol defining a customizable image editor interface used in the Quick Editor flow.
 ///
-/// This `UIViewController` subclass is presented after the user selects an image from their photo library and before it is uploaded to Gravatar. It provides an
-/// opportunity to:
+/// This `UIViewController` subclass is presented modally after the user selects an image from their photo library and before it is uploaded to Gravatar.
+/// It provides an opportunity to:
 /// - Enforce a square aspect ratio.
 /// - Apply arbitrary, user-defined customizations to the image.
 ///
