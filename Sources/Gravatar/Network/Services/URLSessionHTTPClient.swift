@@ -11,17 +11,11 @@ struct URLSessionHTTPClient: HTTPClient {
     private let urlSession: URLSessionProtocol
 
     init(urlSession: URLSessionProtocol? = nil) {
-        let configuration = URLSessionConfiguration.default
-        configuration.httpAdditionalHeaders = [
-            "Accept": "application/json",
-            "X-Platform": "ios",
-            "X-SDK-Version": BundleInfo.sdkVersion ?? "",
-            "X-Source": BundleInfo.appName ?? "",
-        ]
-        self.urlSession = urlSession ?? URLSession(configuration: configuration)
+        self.urlSession = urlSession ?? URLSession(configuration: URLSessionConfiguration.default)
     }
 
     func data(with request: URLRequest) async throws -> (Data, HTTPURLResponse) {
+        let request = request.withHeaders()
         let result: (data: Data, response: URLResponse)
         do {
             result = try await urlSession.data(for: request)
@@ -33,6 +27,7 @@ struct URLSessionHTTPClient: HTTPClient {
     }
 
     func uploadData(with request: URLRequest, data: Data) async throws -> (Data, HTTPURLResponse) {
+        let request = request.withHeaders()
         let result: (data: Data, response: URLResponse)
         do {
             result = try await urlSession.upload(for: request, from: data)
@@ -48,6 +43,15 @@ extension URLRequest {
         var requestCopy = self
         requestCopy.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         return requestCopy
+    }
+
+    func withHeaders() -> URLRequest {
+        var request = self
+        request.addValue("application/json", forHTTPHeaderField: "Accept")
+        request.addValue("ios", forHTTPHeaderField: "X-Platform")
+        request.addValue(BundleInfo.sdkVersion ?? "", forHTTPHeaderField: "X-SDK-Version")
+        request.addValue(BundleInfo.appName ?? "", forHTTPHeaderField: "X-Source")
+        return request
     }
 }
 
