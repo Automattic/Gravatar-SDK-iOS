@@ -3,17 +3,19 @@ import UIKit
 
 public typealias CustomImageEditorControllerProvider = (UIImage, @escaping @Sendable (UIImage) -> Void) -> CustomImageEditorController
 
-final class QuickEditorViewController: UIViewController, ModalPresentationWithIntrinsicSize {
-    private typealias CustomImageEditorProvider = ImageEditorBlock<CustomImageEditorControllerRepresentable>?
-
-    let email: Email
-    let scopeOption: QuickEditorScopeOption
-    let token: String?
-    let configuration: QuickEditorConfiguration
-    let updateHandler: ((QuickEditorUpdateType) -> Void)?
-    let onDismiss: (() -> Void)?
+final class QuickEditorViewController<ImageEditor: ImageEditorView>: UIViewController,
+    ModalPresentationWithIntrinsicSize,
+    UISheetPresentationControllerDelegate
+{
+    private let email: Email
+    private let token: String?
+    private let customImageEditorProvider: ImageEditorBlock<ImageEditor>?
+    private let updateHandler: ((QuickEditorUpdateType) -> Void)?
+    private let onDismiss: (() -> Void)?
 
     private let unsavedChangesAlertPresentationModel = UnsavedChangesAlertPresentationModel()
+    private var sheetHeight: CGFloat = QEModalPresentationConstants.bottomSheetEstimatedHeight
+    private var currentPage: QuickEditorPage
 
     private lazy var isPresented: Binding<Bool> = Binding {
         true
@@ -26,32 +28,17 @@ final class QuickEditorViewController: UIViewController, ModalPresentationWithIn
     }
 
     var verticalSizeClass: UserInterfaceSizeClass?
-    var sheetHeight: CGFloat = QEModalPresentationConstants.bottomSheetEstimatedHeight
-    var currentPage: QuickEditorPage
+    let scopeOption: QuickEditorScopeOption
 
-    private lazy var rootView: QuickEditor = {
-        let provider: CustomImageEditorProvider = if let customProvider = configuration.customImageEditorProvider {
-            { image, callback in
-                CustomImageEditorControllerRepresentable(
-                    controllerProvider: customProvider,
-                    inputImage: image,
-                    editingDidFinish: callback
-                )
-            }
-        } else {
-            nil as ImageEditorBlock<CustomImageEditorControllerRepresentable>?
-        }
-
-        return QuickEditor(
-            email: email,
-            scopeOption: scopeOption,
-            token: token,
-            isPresented: isPresented,
-            customImageEditor: provider,
-            updateHandler: updateHandler,
-            unsavedChangesAlertPresentationModel: unsavedChangesAlertPresentationModel
-        )
-    }()
+    private lazy var rootView = QuickEditor(
+        email: email,
+        scopeOption: scopeOption,
+        token: token,
+        isPresented: isPresented,
+        customImageEditor: customImageEditorProvider,
+        updateHandler: updateHandler,
+        unsavedChangesAlertPresentationModel: unsavedChangesAlertPresentationModel
+    )
 
     private lazy var quickEditor: InnerHeightUIHostingController = .init(
         rootView: rootView,
@@ -77,18 +64,19 @@ final class QuickEditorViewController: UIViewController, ModalPresentationWithIn
     init(
         email: Email,
         scopeOption: QuickEditorScopeOption,
-        configuration: QuickEditorConfiguration? = nil,
+        customImageEditorProvider: ImageEditorBlock<ImageEditor>? = nil,
         token: String? = nil,
         onUpdate: ((QuickEditorUpdateType) -> Void)? = nil,
         onDismiss: (() -> Void)? = nil
     ) {
         self.email = email
         self.scopeOption = scopeOption
-        self.configuration = configuration ?? .default
+
         self.token = token
         self.onDismiss = onDismiss
         self.updateHandler = onUpdate
         self.currentPage = scopeOption.initialPage
+        self.customImageEditorProvider = customImageEditorProvider
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -135,9 +123,7 @@ final class QuickEditorViewController: UIViewController, ModalPresentationWithIn
             sheet.delegate = self
         }
     }
-}
 
-extension QuickEditorViewController: UISheetPresentationControllerDelegate {
     func presentationControllerShouldDismiss(_: UIPresentationController) -> Bool {
         if unsavedChangesAlertPresentationModel.hasUnsavedChanges {
             unsavedChangesAlertPresentationModel.presentAlert = true
@@ -207,7 +193,10 @@ private class InnerHeightUIHostingController: UIHostingController<AnyView> {
 }
 
 /// A struct responsible for presenting the Quick Editor from a UIKit context.
+@MainActor
 public struct QuickEditorPresenter {
+    private typealias CustomImageEditorProvider = ImageEditorBlock<CustomImageEditorControllerRepresentable>?
+
     let email: Email
     let scopeOption: QuickEditorScopeOption
     let configuration: QuickEditorConfiguration
@@ -272,11 +261,24 @@ public struct QuickEditorPresenter {
         onAvatarUpdated: (() -> Void)? = nil,
         onDismiss: (() -> Void)? = nil
     ) {
+        let customImageEditorProvider: CustomImageEditorProvider = if let customProvider = configuration.customImageEditorProvider {
+            { image, callback in
+                CustomImageEditorControllerRepresentable(
+                    controllerProvider: customProvider,
+                    inputImage: image,
+                    editingDidFinish: callback
+                )
+            }
+        } else {
+            nil as ImageEditorBlock<CustomImageEditorControllerRepresentable>?
+        }
+
         let quickEditor = QuickEditorViewController(
             email: email,
             scopeOption: scopeOption,
-            configuration: configuration,
+            customImageEditorProvider: customImageEditorProvider,
             token: token,
+
             onUpdate: { _ in
                 onAvatarUpdated?()
             },
@@ -302,10 +304,22 @@ public struct QuickEditorPresenter {
         onUpdate: ((QuickEditorUpdateType) -> Void)? = nil,
         onDismiss: (() -> Void)? = nil
     ) {
+        let customImageEditorProvider: CustomImageEditorProvider = if let customProvider = configuration.customImageEditorProvider {
+            { image, callback in
+                CustomImageEditorControllerRepresentable(
+                    controllerProvider: customProvider,
+                    inputImage: image,
+                    editingDidFinish: callback
+                )
+            }
+        } else {
+            nil as ImageEditorBlock<CustomImageEditorControllerRepresentable>?
+        }
+
         let quickEditor = QuickEditorViewController(
             email: email,
             scopeOption: scopeOption,
-            configuration: configuration,
+            customImageEditorProvider: customImageEditorProvider,
             token: token,
             onUpdate: onUpdate,
             onDismiss: onDismiss

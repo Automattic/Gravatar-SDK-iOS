@@ -3,29 +3,38 @@ import UIKit
 
 /// This is the view controller which will present the UIKit sheet from the SwiftUI context.
 ///
-class QuickEditorBottomSheetPresenterViewController: UIViewController {
-    let presenter: QuickEditorPresenter
+class QuickEditorBottomSheetPresenterViewController<ImageEditor: ImageEditorView>: UIViewController {
+    let email: Email
+    let scopeOption: QuickEditorScopeOption
+
+    let token: String?
+    let customImageEditor: ImageEditorBlock<ImageEditor>?
 
     let completion: (() -> Void)? = nil
     let onUpdate: ((QuickEditorUpdateType) -> Void)?
     let onDismiss: (() -> Void)?
 
+    override var overrideUserInterfaceStyle: UIUserInterfaceStyle {
+        didSet {
+            presentedViewController?.overrideUserInterfaceStyle = overrideUserInterfaceStyle
+        }
+    }
+
     init(
         email: Email,
         scopeOption: QuickEditorScopeOption,
-        configuration: QuickEditorConfiguration,
-        token: String?, completion: (() -> Void)? = nil,
+        token: String?,
+        customImageEditorProvider: ImageEditorBlock<ImageEditor>? = nil,
+        completion: (() -> Void)? = nil,
         onUpdate: ((QuickEditorUpdateType) -> Void)? = nil,
         onDismiss: (() -> Void)? = nil
     ) {
-        self.presenter = QuickEditorPresenter(
-            email: email,
-            scopeOption: scopeOption,
-            configuration: configuration,
-            token: token
-        )
+        self.email = email
+        self.scopeOption = scopeOption
+        self.token = token
         self.onUpdate = onUpdate
         self.onDismiss = onDismiss
+        self.customImageEditor = customImageEditorProvider
 
         super.init(nibName: nil, bundle: nil)
     }
@@ -42,22 +51,27 @@ class QuickEditorBottomSheetPresenterViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        presenter.present(in: self, animated: true) {
-            self.completion?()
-        } onUpdate: { update in
-            self.onUpdate?(update)
-        } onDismiss: {
-            self.onDismiss?()
-        }
+        let quickEditor = QuickEditorViewController(
+            email: email,
+            scopeOption: scopeOption,
+            customImageEditorProvider: customImageEditor,
+            token: token,
+            onUpdate: onUpdate,
+            onDismiss: onDismiss
+        )
+
+        quickEditor.overrideUserInterfaceStyle = overrideUserInterfaceStyle
+
+        present(quickEditor, animated: true)
     }
 }
 
 /// SwiftUI representable version of `QuickEditorBottomSheetPresenterViewController`
-struct QuickEditorBottomSheetPresenterViewControllerRepresentable: UIViewControllerRepresentable {
+struct QuickEditorBottomSheetPresenterViewControllerRepresentable<ImageEditor: ImageEditorView>: UIViewControllerRepresentable {
     let email: Email
     let scopeOption: QuickEditorScopeOption
-    let configuration: QuickEditorConfiguration
-    let token: String?, completion: (() -> Void)?
+    let token: String?
+    let customImageEditor: ImageEditorBlock<ImageEditor>?
     let onUpdate: ((QuickEditorUpdateType) -> Void)?
     let onDismiss: (() -> Void)?
 
@@ -65,12 +79,14 @@ struct QuickEditorBottomSheetPresenterViewControllerRepresentable: UIViewControl
         QuickEditorBottomSheetPresenterViewController(
             email: email,
             scopeOption: scopeOption,
-            configuration: configuration,
             token: token,
+            customImageEditorProvider: customImageEditor,
             onUpdate: onUpdate,
             onDismiss: onDismiss
         )
     }
 
-    func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {}
+    func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {
+        uiViewController.overrideUserInterfaceStyle = UIUserInterfaceStyle(context.environment.colorScheme)
+    }
 }

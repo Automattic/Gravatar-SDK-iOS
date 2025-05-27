@@ -47,9 +47,8 @@ extension View {
         let editor = QuickEditorBottomSheetPresenterViewControllerRepresentable(
             email: .init(email),
             scopeOption: QuickEditorScopeOption.avatarPicker(),
-            configuration: QuickEditorConfiguration.default,
             token: authToken,
-            completion: nil,
+            customImageEditor: customImageEditor,
             onUpdate: { _ in
                 avatarUpdatedHandler?()
             },
@@ -93,9 +92,8 @@ extension View {
             let editor = QuickEditorBottomSheetPresenterViewControllerRepresentable(
                 email: .init(email),
                 scopeOption: scopeOption,
-                configuration: QuickEditorConfiguration.default,
                 token: authToken,
-                completion: nil,
+                customImageEditor: customImageEditor,
                 onUpdate: { _ in
                     avatarUpdatedHandler?()
                 },
@@ -135,9 +133,8 @@ extension View {
         let editor = QuickEditorBottomSheetPresenterViewControllerRepresentable(
             email: .init(email),
             scopeOption: scopeOption,
-            configuration: QuickEditorConfiguration.default,
             token: authToken,
-            completion: nil,
+            customImageEditor: customImageEditor,
             onUpdate: updateHandler,
             onDismiss: {
                 isPresented.wrappedValue = false
@@ -176,9 +173,8 @@ extension View {
         let editor = QuickEditorBottomSheetPresenterViewControllerRepresentable(
             email: .init(email),
             scopeOption: scope.map(),
-            configuration: QuickEditorConfiguration.default,
             token: authToken,
-            completion: nil,
+            customImageEditor: customImageEditor,
             onUpdate: updateHandler,
             onDismiss: {
                 isPresented.wrappedValue = false

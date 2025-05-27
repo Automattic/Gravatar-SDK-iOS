@@ -13,9 +13,10 @@ enum QEModalPresentationConstants {
     static let bottomSheetMinHeight: CGFloat = 350
 }
 
-struct QuickEditorBottomSheetViewControllerPresentationModifier: ViewModifier {
+struct QuickEditorBottomSheetViewControllerPresentationModifier<QuickEditorPresenter: View>: ViewModifier {
     @Binding var isPresented: Bool
-    var quickEditorPresenter: QuickEditorBottomSheetPresenterViewControllerRepresentable
+
+    var quickEditorPresenter: QuickEditorPresenter
 
     func body(content: Content) -> some View {
         content.if(isPresented) { content in
