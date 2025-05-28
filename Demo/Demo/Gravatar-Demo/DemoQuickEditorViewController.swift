@@ -284,9 +284,9 @@ final class DemoQuickEditorViewController: UIViewController {
 
     lazy var schemeToggle: UISegmentedControl = {
         let control = UISegmentedControl(items: [
-            UIAction.init(title: "System") { _ in self.customColorScheme = .unspecified },
-            UIAction.init(title: "Light") { _ in self.customColorScheme = .light },
-            UIAction.init(title: "Dark") { _ in self.customColorScheme = .dark },
+            UIAction.init(title: "System") { [weak self] _ in self?.customColorScheme = .unspecified },
+            UIAction.init(title: "Light") { [weak self] _ in self?.customColorScheme = .light },
+            UIAction.init(title: "Dark") { [weak self] _ in self?.customColorScheme = .dark },
         ])
         control.selectedSegmentIndex = 0
         return control
@@ -294,8 +294,8 @@ final class DemoQuickEditorViewController: UIViewController {
 
     lazy var imageEditorToggle: UISegmentedControl = {
         let control = UISegmentedControl(items: [
-            UIAction.init(title: "Default Image Editor") { _ in self.useCustomImageEditor = false },
-            UIAction.init(title: "Custom Image Editor") { _ in self.useCustomImageEditor = true },
+            UIAction.init(title: "Default Image Editor") { [weak self] _ in self?.useCustomImageEditor = false },
+            UIAction.init(title: "Custom Image Editor") { [weak self] _ in self?.useCustomImageEditor = true },
         ])
         control.selectedSegmentIndex = 0
         return control
