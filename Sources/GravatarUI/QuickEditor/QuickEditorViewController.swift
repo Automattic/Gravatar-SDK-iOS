@@ -19,11 +19,11 @@ final class QuickEditorViewController<ImageEditor: ImageEditorView>: UIViewContr
 
     private lazy var isPresented: Binding<Bool> = Binding {
         true
-    } set: { isPresented in
+    } set: { [weak self] isPresented in
         Task { @MainActor in
             guard !isPresented else { return }
-            self.dismiss(animated: true)
-            self.onDismiss?()
+            self?.dismiss(animated: true)
+            self?.onDismiss?()
         }
     }
 
@@ -87,7 +87,6 @@ final class QuickEditorViewController<ImageEditor: ImageEditorView>: UIViewContr
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
         quickEditor.willMove(toParent: self)
         addChild(quickEditor)
         view.addSubview(quickEditor.view)
@@ -111,7 +110,8 @@ final class QuickEditorViewController<ImageEditor: ImageEditorView>: UIViewContr
 
     func updateDetents() {
         if let sheet = sheetPresentationController {
-            sheet.animateChanges {
+            sheet.animateChanges { [weak self] in
+                guard let self else { return }
                 sheet.detents = QEDetent.detents(
                     for: scopeOption,
                     intrinsicHeight: sheetHeight,

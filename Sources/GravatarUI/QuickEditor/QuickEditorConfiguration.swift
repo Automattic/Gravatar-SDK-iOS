@@ -1,6 +1,6 @@
 import UIKit
 
-public class QuickEditorConfiguration {
+public struct QuickEditorConfiguration {
     let interfaceStyle: UIUserInterfaceStyle
     let customImageEditorProvider: CustomImageEditorControllerProvider?
 
