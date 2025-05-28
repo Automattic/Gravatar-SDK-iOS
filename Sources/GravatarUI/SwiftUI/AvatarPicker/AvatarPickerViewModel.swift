@@ -121,9 +121,9 @@ class AvatarPickerViewModel: ObservableObject {
                 }.count
             }
             .combineLatest($selectedAvatarURL)
-            .map { [weak self] loadedAvatarCount, _ in
+            .map { loadedAvatarCount, selectedAvatarURL in
                 // Determine if the warning should be displayed
-                self?.selectedAvatarURL == nil && loadedAvatarCount > 0
+                selectedAvatarURL == nil && loadedAvatarCount > 0
             }
             .sink { [weak self] shouldShowWarning in
                 self?.shouldDisplayNoSelectedAvatarWarning = shouldShowWarning
