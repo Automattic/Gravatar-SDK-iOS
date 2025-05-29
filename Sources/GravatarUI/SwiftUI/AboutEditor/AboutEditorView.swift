@@ -226,6 +226,7 @@ struct AboutEditorView: View {
                     .padding(.vertical, 0)
                     .inputBorders(colorScheme: colorScheme)
                     .frame(height: dynamicTypeSize >= .accessibility1 ? 150 : 120)
+                    .disabled(isSaving)
             } else {
                 TextField(
                     "",
@@ -234,6 +235,7 @@ struct AboutEditorView: View {
                 .font(Constants.primaryFont)
                 .padding(.DS.Padding.split)
                 .inputBorders(colorScheme: colorScheme)
+                .disabled(isSaving)
             }
 
             if let footerText {
