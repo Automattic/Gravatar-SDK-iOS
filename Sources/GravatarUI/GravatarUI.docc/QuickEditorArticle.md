@@ -17,7 +17,16 @@ Full height sheet | Expandable sheet | Intrinsic height sheet, horizontal scroll
 
 #### About editor scope
 
-![](about-editor)
+Layout 1 | Layout 2 | Layout 3 |
+----- | ------ | ----- |
+![](about-editor.png) | ![](about-editor-medium.png) | ![](about-editor-intrinsic.png) |
+Full height sheet | Expandable sheet | Intrinsic height sheet |
+
+#### Avatar picker & About editor scope
+
+This scope combines the Avatar picker and the About editor, allowing to switch between them directly in the Quick Editor UI.
+
+![](avatar-and-about.gif)
 
 ## Quick Editor - SwiftUI
 
