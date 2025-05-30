@@ -5,23 +5,26 @@ class TextFormField: FormField, @unchecked Sendable, UITextFieldDelegate {
     let placeholder: String
     let keyboardType: UIKeyboardType
     let isSecure: Bool
+    let shouldShowDoneButton: Bool
 
     @Published var text: String
     @Published var didEndEditingText: String = ""
 
     private let cellID = "TextFieldCell"
 
-    init(placeholder: String, text: String = "", isSecure: Bool = false, keyboardType: UIKeyboardType = .default) {
+    init(placeholder: String, text: String = "", isSecure: Bool = false, keyboardType: UIKeyboardType = .default, shouldShowDoneButton: Bool = false) {
         self.text = text
         self.placeholder = placeholder
         self.keyboardType = keyboardType
         self.isSecure = isSecure
+        self.shouldShowDoneButton = shouldShowDoneButton
     }
 
     @MainActor
     override func dequeueCell(in tableView: UITableView, for indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellID) as? TextFieldCell ?? TextFieldCell(reuseIdentifier: cellID)
         cell.textField.delegate = self
+        cell.textField.rightView?.isHidden = !shouldShowDoneButton
         cell.update(with: self)
         return cell
     }
@@ -49,6 +52,14 @@ private final class TextFieldCell: UITableViewCell {
         textField.borderStyle = .roundedRect
         textField.backgroundColor = .systemBackground
         textField.autocapitalizationType = .none
+        textField.rightView = {
+            let button = UIButton(type: .system)
+            button.setTitle("Save", for: .normal)
+            button.addTarget(self, action: #selector(didTapDone), for: .touchUpInside)
+            button.sizeToFit()
+            return button
+        }()
+        textField.rightViewMode = .always
 
         self.contentView.addSubview(textField)
         NSLayoutConstraint.activate([
@@ -61,6 +72,10 @@ private final class TextFieldCell: UITableViewCell {
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    @objc private func didTapDone() {
+        textField.resignFirstResponder()
     }
 
     func update(with config: TextFormField) {

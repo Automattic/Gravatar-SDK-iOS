@@ -38,6 +38,7 @@ public struct AvatarService: Sendable {
         guard let gravatarURL = AvatarURL(with: avatarID, options: options.avatarQueryOptions)?.url else {
             throw ImageFetchingError.requestError(reason: .urlInitializationFailed)
         }
+        print("Fetching from URL: \(gravatarURL.absoluteString)")
 
         return try await imageDownloader.fetchImage(with: gravatarURL, forceRefresh: options.forceRefresh, processingMethod: options.processingMethod)
     }

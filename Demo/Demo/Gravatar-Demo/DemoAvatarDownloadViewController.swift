@@ -10,8 +10,10 @@ class DemoAvatarDownloadViewController: BaseFormViewController {
     let hashField = TextFormField(placeholder: "Enter a valid Gravatar Hash", keyboardType: .asciiCapable)
     let avatarLengthField = TextFormField(placeholder: "Preferred avatar length (optional)", keyboardType: .numberPad)
     let ratingField = TextFormField(placeholder: "Gravatar rating (optional) - [g|pg|r|x]")
-    let customDefaultURLField = TextFormField(placeholder: "Set custom avatar default URL")
+    let customDefaultURLField = TextFormField(placeholder: "Set custom avatar default URL", shouldShowDoneButton: true)
     let avatarImageField = ImageFormField(image: nil, size: .init(width: imageViewSize, height: imageViewSize))
+    let avatarImageField2 = ImageFormField(image: nil, size: .init(width: 250, height: 250))
+    let avatarImageField3 = ImageFormField(image: nil, size: .init(width: 200, height: 200))
 
     lazy var idTypeSelector = SegmentedControlField(
         segments: ["Email", "Hash"]
@@ -45,7 +47,9 @@ class DemoAvatarDownloadViewController: BaseFormViewController {
             defaultOptionButton,
             customDefaultURLField,
             fetchButton,
-            avatarImageField
+            avatarImageField,
+            avatarImageField2,
+            avatarImageField3
         ]
     }
 
@@ -84,7 +88,7 @@ class DemoAvatarDownloadViewController: BaseFormViewController {
         update([defaultOptionButton, customDefaultURLField])
     }
 
-    private var preferredSize: CGFloat {
+    private func preferredSize(for imageFormField: ImageFormField) -> CGFloat {
         let preferredLenghtStr = avatarLengthField.text
         if
            !preferredLenghtStr.isEmpty,
@@ -92,7 +96,7 @@ class DemoAvatarDownloadViewController: BaseFormViewController {
         {
             return CGFloat(preferredSize)
         }
-        return Self.imageViewSize
+        return imageFormField.size.width
     }
     
     private var preferredRating: Rating? {
@@ -123,10 +127,17 @@ class DemoAvatarDownloadViewController: BaseFormViewController {
 
         present(controller, animated: true)
     }
-
+    
     @objc private func fetchAvatarButtonHandler() {
+        fetchAvatar(for: avatarImageField)
+        fetchAvatar(for: avatarImageField2)
+        fetchAvatar(for: avatarImageField3)
+
+    }
+    
+    @objc private func fetchAvatar(for avatarImageField: ImageFormField) {
         let options: ImageDownloadOptions = .init(
-            preferredSize: .points(preferredSize),
+            preferredSize: .points(preferredSize(for: avatarImageField)),
             rating: preferredRating,
             forceRefresh: ignoreCacheSwitch.isOn,
             forceDefaultAvatar: forceDefaultSwitch.isOn,
@@ -152,7 +163,7 @@ class DemoAvatarDownloadViewController: BaseFormViewController {
                 let result = try await imageRetriever.fetch(with: identifier, options: options)
                 avatarImageField.image = result.image
                 update(avatarImageField)
-
+                print("success!")
             } catch {
                 print(error)
             }
