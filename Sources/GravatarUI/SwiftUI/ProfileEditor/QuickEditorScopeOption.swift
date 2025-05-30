@@ -15,6 +15,11 @@ public struct QuickEditorScopeOption {
     }
 
     /// Creates a `QuickEditorScopeOption` configured for the avatar picker scope.
+    ///
+    /// Displays the UI for managing user avatars.
+    ///
+    /// ![](vertical-large)
+    ///
     /// - Parameter config: Configuration to apply to the avatar picker.
     /// - Returns: A configured instance of `QuickEditorScopeOption` for the avatar picker scope.
     public static func avatarPicker(
@@ -26,6 +31,9 @@ public struct QuickEditorScopeOption {
     }
 
     /// Creates a `QuickEditorScopeOption` configured for the about info editor scope.
+    ///
+    /// Displays the UI for editing the "About" section of the Gravatar profile.
+    /// ![](about-editor)
     /// - Parameter config: Configuration to apply to the about editor. Defaults to the standard configuration.
     /// - Returns: A configured instance of `QuickEditorScopeOption` for the about info editor scope.
     public static func aboutEditor(
@@ -36,6 +44,11 @@ public struct QuickEditorScopeOption {
         )
     }
 
+    /// Creates a `QuickEditorScopeOption` configured for the avatar picker & about info editor scope.
+    ///
+    /// This scope  allows switching between Avatar Picker and About editor from within the Quick Editor.
+    /// - Parameter avatarPickerAndAboutEditorConfig: Configuration to apply to the avatar picker and about editor. Defaults to the standard configuration.
+    /// - Returns: A configured instance of `QuickEditorScopeOption` for the avatar picker & about info editor scope.
     public static func avatarPickerAndAboutInfoEditor(
         _ avatarPickerAndAboutEditorConfig: AvatarPickerAndAboutEditorConfiguration = .init()
     ) -> Self {
