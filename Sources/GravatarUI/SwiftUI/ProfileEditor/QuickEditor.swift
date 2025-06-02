@@ -28,7 +28,6 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
 
     @Environment(\.oauthSession) private var oauthSession
     @Environment(\.colorScheme) var colorScheme: ColorScheme
-    @Environment(\.dismissAttempt) var dismissAttempt
     @Environment(\.verticalSizeClass) var vertcalSizeClass
 
     @AppStorage("QuickEditor.startOAuthOnAppear") private var startOAuthOnAppear: Bool = false
@@ -123,12 +122,6 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
         .interactiveDismissDisabled(model.hasUnsavedChanges)
         .onChange(of: model.hasUnsavedChanges) { _ in
             unsavedChangesAlertPresentationModel.hasUnsavedChanges = model.hasUnsavedChanges
-        }
-        .onChange(of: dismissAttempt) { newValue in
-            guard newValue else { return }
-            if unsavedChangesAlertPresentationModel.hasUnsavedChanges {
-                unsavedChangesAlertPresentationModel.presentAlert = true
-            }
         }
         .preference(key: QuikcEditorCurrentPagePreferenceKey.self, value: currentPage)
         .task {

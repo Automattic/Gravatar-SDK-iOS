@@ -13,108 +13,20 @@ enum QEModalPresentationConstants {
     static let bottomSheetMinHeight: CGFloat = 350
 }
 
-@available(iOS 16.0, *)
-struct QuickEditorModalPresentationModifier<ModalView: View>: ViewModifier, ModalPresentationWithIntrinsicSize {
-    fileprivate typealias Constants = QEModalPresentationConstants
-
+struct QuickEditorBottomSheetViewControllerPresentationModifier<QuickEditorPresenter: View>: ViewModifier {
     @Binding var isPresented: Bool
-    @State private var isPresentedInner: Bool
-    @State private var sheetHeight: CGFloat = Constants.bottomSheetEstimatedHeight
-    @State private(set) var verticalSizeClass: UserInterfaceSizeClass?
-    @State private var presentationDetents: Set<PresentationDetent>
-    @State private var prioritizeScrollOverResize: Bool = false
-    @Environment(\.colorScheme) var colorScheme: ColorScheme
-    @State private var dismissAttempt: Bool = false
-    @State private var currentPage: QuickEditorPage
 
-    let onDismiss: (() -> Void)?
-    let modalView: ModalView
-    var scopeOption: QuickEditorScopeOption
-
-    init(isPresented: Binding<Bool>, onDismiss: (() -> Void)? = nil, modalView: ModalView, scopeOption: QuickEditorScopeOption) {
-        self._isPresented = isPresented
-        self.isPresentedInner = isPresented.wrappedValue
-        self.onDismiss = onDismiss
-        self.modalView = modalView
-        self.scopeOption = scopeOption
-        self.currentPage = scopeOption.initialPage
-        self.presentationDetents = QEDetent.detents(
-            for: scopeOption,
-            intrinsicHeight: Constants.bottomSheetEstimatedHeight,
-            verticalSizeClass: nil,
-            currentPage: scopeOption.initialPage
-        ).map()
-    }
+    var quickEditorPresenter: QuickEditorPresenter
 
     func body(content: Content) -> some View {
-        content
-            .onChange(of: isPresented) { newValue in
-                if newValue {
-                    // First init the detents and then present. This helps with starting off with the correct state.
-                    // Otherwise the view remembers its previous height. And an animation glitch happens
-                    // when switching between different presentation styles (especially between horizontal and vertical_large).
-                    // Doing the same thing in .onAppear of the "modalView" doesn't give as nice results as this one don't know why.
-                    self.presentationDetents = QEDetent.detents(
-                        for: scopeOption,
-                        intrinsicHeight: max(sheetHeight, Constants.bottomSheetEstimatedHeight),
-                        verticalSizeClass: verticalSizeClass,
-                        currentPage: currentPage
-                    ).map()
-                }
-                isPresentedInner = newValue
+        content.if(isPresented) { content in
+            ZStack {
+                content
+                quickEditorPresenter
+                    .frame(width: 0, height: 0)
             }
-            .onChange(of: isPresentedInner) { newValue in
-                self.isPresented = newValue
-            }
-            .sheet(isPresented: $isPresentedInner, onDismiss: onDismiss) {
-                modalView
-                    .preferredColorScheme(colorScheme)
-                    .frame(minHeight: Constants.bottomSheetMinHeight)
-                    .onPreferenceChange(InnerHeightPreferenceKey.self) { newHeight in
-                        Task { @MainActor in
-                            if shouldAcceptHeight(newHeight) {
-                                sheetHeight = newHeight
-                            }
-                            updateDetents()
-                        }
-                    }
-                    .onPreferenceChange(VerticalSizeClassPreferenceKey.self) { newSizeClass in
-                        Task { @MainActor in
-                            guard newSizeClass != nil else { return }
-                            self.verticalSizeClass = newSizeClass
-                            updateDetents()
-                        }
-                    }
-                    .onPreferenceChange(QuikcEditorCurrentPagePreferenceKey.self) { newValue in
-                        Task { @MainActor in
-                            self.currentPage = newValue
-                            updateDetents()
-                        }
-                    }
-                    .presentationDetents(presentationDetents)
-                    .presentationContentInteraction(shouldPrioritizeScrolling: prioritizeScrollOverResize)
-                    .dismissAttemptDetecting(
-                        dismissAttempt: $dismissAttempt,
-                        isPresented: $isPresented,
-                        isLargeDetentOnly: presentationDetents == [.large]
-                    )
-                    .environment(\.dismissAttempt, dismissAttempt)
-            }
+        }
     }
-
-    private func updateDetents() {
-        self.presentationDetents = QEDetent.detents(
-            for: scopeOption,
-            intrinsicHeight: sheetHeight,
-            verticalSizeClass: verticalSizeClass,
-            currentPage: currentPage
-        ).map()
-        self.prioritizeScrollOverResize = shouldPrioritizeScrollOverResize
-    }
-}
-
-extension EnvironmentValues {
-    @Entry var dismissAttempt: Bool = false
 }
 
 @MainActor

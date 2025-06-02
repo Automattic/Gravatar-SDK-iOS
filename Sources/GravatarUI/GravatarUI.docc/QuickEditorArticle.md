@@ -2,14 +2,33 @@
 
 This customizable sheet allows users to update their avatars. Available for both UIKit and SwiftUI.
 
-### Quick Editor Preview
+## Quick Editor Preview
+
+The Quick Editor offers different scopes that allow users to edit various sections of their Gravatar profile.
+
+See ``QuickEditorScopeOption`` for more info.
+
+#### Avatar Picker scope
 
 Layout 1 | Layout 2 | Layout 3 |
 ----- | ------ | ----- |
 ![](vertical-large.png) | ![](vertical-medium-expandable.png) | ![](horizontal-intrinsic-height.png) |
 Full height sheet | Expandable sheet | Intrinsic height sheet, horizontal scroll |
 
-### Quick Editor - SwiftUI
+#### About editor scope
+
+Layout 1 | Layout 2 | Layout 3 |
+----- | ------ | ----- |
+![](about-editor.png) | ![](about-editor-medium.png) | ![](about-editor-intrinsic.png) |
+Full height sheet | Expandable sheet | Intrinsic height sheet |
+
+#### Avatar picker & About editor scope
+
+This scope combines the Avatar picker and the About editor, allowing to switch between them directly in the Quick Editor UI.
+
+![](avatar-and-about.gif)
+
+## Quick Editor - SwiftUI
 
 SDK offers a modifier function to display the QuickEditor sheet. QuickEditor starts the OAuth flow internally to capture an access token. Please refer to <doc:GravatarOAuth> about how to configure the SDK about this.
 
@@ -30,16 +49,23 @@ var body: some View {
         .gravatarQuickEditorSheet(
             isPresented: $isPresenting,
             email: "email@domain.com",
-            scope: .avatarPicker(.init(contentLayout: .horizontal)),
-            avatarUpdatedHandler: {
-                // informs that the avatar has changed
+            scopeOption: .avatarPicker(.horizontalInstrinsicHeight),
+            updateHandler: { updateType in
+                switch updateType {
+                case is QuickEditorUpdate.Avatar:
+                    // Selected avatar has changed
+                case let update as QuickEditorUpdate.AboutInfo:
+                    // About profile info has been updated
+                    // `update.profile` contains the updated profile
+                default: break
+                }
             },
             onDismiss: {
                 // sheet was dismissed
             }
         )
+        .preferredColorScheme(.light) // Sets a preferred color scheme; omit to use the system default.
     }
-    .preferredColorScheme(.light) //set the preferred color scheme if you like, or omit this line to let the system settings apply.
 }
 
 // [...]
@@ -66,23 +92,30 @@ var body: some View {
         .gravatarQuickEditorSheet(
             isPresented: $isPresenting,
             email: "email@domain.com",
-            authToken: authToken,  // Pass the auth token
-            scope: .avatarPicker(.init(contentLayout: .horizontal)),
-            avatarUpdatedHandler: {
-                // informs that the avatar has changed
+            authToken: authToken, // Passes the authentication token
+            scopeOption: .avatarPicker(.horizontalInstrinsicHeight),
+            updateHandler: { updateType in
+                switch updateType {
+                case is QuickEditorUpdate.Avatar:
+                    // Selected avatar has changed
+                case let update as QuickEditorUpdate.AboutInfo:
+                    // About profile info has been updated
+                    // `update.profile` contains the updated profile 
+                default: break
+                }
             },
             onDismiss: {
                 // sheet was dismissed
             }
         )
+        .preferredColorScheme(.light) // Sets a preferred color scheme; omit to use the system default.
     }
-    .preferredColorScheme(.light) //set the preferred color scheme if you like, or omit this line to let the system settings apply.
 }
 ```
 
 Refer to ``AvatarPickerContentLayout`` to see all the content layout options.
 
-### Quick Editor - UIKit
+## Quick Editor - UIKit
 
 Similarly, ``QuickEditorPresenter`` can be used to display the QuickEditor in UIKit.
 
@@ -91,19 +124,30 @@ import GravatarUI
 
 // [...]
 
+// Example with About editor scope
 let presenter = QuickEditorPresenter(
     email: Email("email@domain.com"),
-    scope: .avatarPicker(AvatarPickerConfiguration(contentLayout: .horizontal)),
+    scopeOption: .aboutEditor(),
     configuration: .init(
         interfaceStyle: colorScheme
     )
 )
-presenter.present(in: self, 
-                  onAvatarUpdated: { [weak self] in
-                      // Informs that the avatar has changed
-                  } , onDismiss: { [weak self] in
-                      // sheet was dismissed
-                  })
+presenter.present(
+    in: self,
+    onUpdate: { [weak self] updateType in
+        switch updateType {
+        case is QuickEditorUpdate.Avatar:
+            // Selected avatar has changed
+        case let update as QuickEditorUpdate.AboutInfo:
+            // About profile info has been updated
+        default:
+            break
+        }
+    },
+    onDismiss: { [weak self] in
+        // sheet was dismissed
+    }
+)
 ```
 
 ### Delete the OAuth token

@@ -296,6 +296,7 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
                     handleAvatarAction(avatar: avatar, action: action)
                 }
             )
+            .padding(.top, .DS.Padding.double)
             .padding(.horizontal, Constants.horizontalPadding)
         } else {
             HorizontalAvatarGrid(

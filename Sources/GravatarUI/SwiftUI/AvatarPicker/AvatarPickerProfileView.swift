@@ -47,6 +47,7 @@ struct AvatarPickerProfileView<AccessoryView>: View where AccessoryView: View {
             ZStack(alignment: .bottomTrailing) {
                 avatarView()
                 avatarAccessoryView()
+                    .zIndex(1)
             }
 
             if model == nil && isLoading {

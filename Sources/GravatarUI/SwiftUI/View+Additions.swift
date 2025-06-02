@@ -44,17 +44,23 @@ extension View {
         avatarUpdatedHandler: (() -> Void)? = nil,
         onDismiss: (() -> Void)? = nil
     ) -> some View {
-        let editor = QuickEditor(
+        let editor = QuickEditorBottomSheetPresenterViewControllerRepresentable(
             email: .init(email),
             scopeOption: QuickEditorScopeOption.avatarPicker(),
             token: authToken,
-            isPresented: isPresented,
             customImageEditor: customImageEditor,
-            updateHandler: { _ in
+            onUpdate: { _ in
                 avatarUpdatedHandler?()
+            },
+            onDismiss: {
+                isPresented.wrappedValue = false
+                onDismiss?()
             }
         )
-        return modifier(ModalPresentationModifier(isPresented: isPresented, onDismiss: onDismiss, modalView: editor))
+        return modifier(QuickEditorBottomSheetViewControllerPresentationModifier(
+            isPresented: isPresented,
+            quickEditorPresenter: editor
+        ))
     }
 
     /// A modifier to display the QuickEditor sheet. The QuickEditor can be used to modify the information and avatar images of your Gravatar profile.
@@ -83,21 +89,22 @@ extension View {
         switch scope {
         case .avatarPicker(let config):
             let scopeOption = QuickEditorScopeOption.avatarPicker(.init(contentLayout: config.contentLayout))
-            let editor = QuickEditor(
+            let editor = QuickEditorBottomSheetPresenterViewControllerRepresentable(
                 email: .init(email),
                 scopeOption: scopeOption,
                 token: authToken,
-                isPresented: isPresented,
                 customImageEditor: customImageEditor,
-                updateHandler: { _ in
+                onUpdate: { _ in
                     avatarUpdatedHandler?()
+                },
+                onDismiss: {
+                    isPresented.wrappedValue = false
+                    onDismiss?()
                 }
             )
-            return modifier(QuickEditorModalPresentationModifier(
+            return modifier(QuickEditorBottomSheetViewControllerPresentationModifier(
                 isPresented: isPresented,
-                onDismiss: onDismiss,
-                modalView: editor,
-                scopeOption: scopeOption
+                quickEditorPresenter: editor
             ))
         }
     }
@@ -114,7 +121,6 @@ extension View {
     ///   - onDismiss: *(Optional)* A closure called when the sheet is dismissed.
     /// - Returns: A view modifier that presents the QuickEditor sheet.
     @ViewBuilder
-    @available(iOS 16, *)
     public func gravatarQuickEditorSheet(
         isPresented: Binding<Bool>,
         email: String,
@@ -124,19 +130,21 @@ extension View {
         updateHandler: ((QuickEditorUpdateType) -> Void)? = nil,
         onDismiss: (() -> Void)? = nil
     ) -> some View {
-        let editor = QuickEditor(
+        let editor = QuickEditorBottomSheetPresenterViewControllerRepresentable(
             email: .init(email),
             scopeOption: scopeOption,
             token: authToken,
-            isPresented: isPresented,
             customImageEditor: customImageEditor,
-            updateHandler: updateHandler
+            onUpdate: updateHandler,
+            onDismiss: {
+                isPresented.wrappedValue = false
+                onDismiss?()
+            }
         )
-        modifier(QuickEditorModalPresentationModifier(
+
+        modifier(QuickEditorBottomSheetViewControllerPresentationModifier(
             isPresented: isPresented,
-            onDismiss: onDismiss,
-            modalView: editor,
-            scopeOption: scopeOption
+            quickEditorPresenter: editor
         ))
     }
 
@@ -162,22 +170,22 @@ extension View {
         updateHandler: ((QuickEditorUpdateType) -> Void)? = nil,
         onDismiss: (() -> Void)? = nil
     ) -> some View {
-        let editor = QuickEditor(
+        let editor = QuickEditorBottomSheetPresenterViewControllerRepresentable(
             email: .init(email),
             scopeOption: scope.map(),
             token: authToken,
-            isPresented: isPresented,
             customImageEditor: customImageEditor,
-            updateHandler: updateHandler
+            onUpdate: updateHandler,
+            onDismiss: {
+                isPresented.wrappedValue = false
+                onDismiss?()
+            }
         )
 
-        modifier(
-            ModalPresentationModifier(
-                isPresented: isPresented,
-                onDismiss: onDismiss,
-                modalView: editor
-            )
-        )
+        modifier(QuickEditorBottomSheetViewControllerPresentationModifier(
+            isPresented: isPresented,
+            quickEditorPresenter: editor
+        ))
     }
 
     func altTextSheet(

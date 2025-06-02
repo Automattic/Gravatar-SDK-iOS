@@ -3,55 +3,42 @@ import UIKit
 
 public typealias CustomImageEditorControllerProvider = (UIImage, @escaping @Sendable (UIImage) -> Void) -> CustomImageEditorController
 
-final class QuickEditorViewController: UIViewController, ModalPresentationWithIntrinsicSize {
-    private typealias CustomImageEditorProvider = ImageEditorBlock<CustomImageEditorControllerRepresentable>?
-
-    let email: Email
-    let scopeOption: QuickEditorScopeOption
-    let token: String?
-    let configuration: QuickEditorConfiguration
-    let updateHandler: ((QuickEditorUpdateType) -> Void)?
-    let onDismiss: (() -> Void)?
+final class QuickEditorViewController<ImageEditor: ImageEditorView>: UIViewController,
+    ModalPresentationWithIntrinsicSize,
+    UISheetPresentationControllerDelegate
+{
+    private let email: Email
+    private let token: String?
+    private let customImageEditorProvider: ImageEditorBlock<ImageEditor>?
+    private let updateHandler: ((QuickEditorUpdateType) -> Void)?
+    private let onDismiss: (() -> Void)?
 
     private let unsavedChangesAlertPresentationModel = UnsavedChangesAlertPresentationModel()
+    private var sheetHeight: CGFloat = QEModalPresentationConstants.bottomSheetEstimatedHeight
+    private var currentPage: QuickEditorPage
 
     private lazy var isPresented: Binding<Bool> = Binding {
         true
-    } set: { isPresented in
+    } set: { [weak self] isPresented in
         Task { @MainActor in
             guard !isPresented else { return }
-            self.dismiss(animated: true)
-            self.onDismiss?()
+            self?.dismiss(animated: true)
+            self?.onDismiss?()
         }
     }
 
     var verticalSizeClass: UserInterfaceSizeClass?
-    var sheetHeight: CGFloat = QEModalPresentationConstants.bottomSheetEstimatedHeight
-    var currentPage: QuickEditorPage
+    let scopeOption: QuickEditorScopeOption
 
-    private lazy var rootView: QuickEditor = {
-        let provider: CustomImageEditorProvider = if let customProvider = configuration.customImageEditorProvider {
-            { image, callback in
-                CustomImageEditorControllerRepresentable(
-                    controllerProvider: customProvider,
-                    inputImage: image,
-                    editingDidFinish: callback
-                )
-            }
-        } else {
-            nil as ImageEditorBlock<CustomImageEditorControllerRepresentable>?
-        }
-
-        return QuickEditor(
-            email: email,
-            scopeOption: scopeOption,
-            token: token,
-            isPresented: isPresented,
-            customImageEditor: provider,
-            updateHandler: updateHandler,
-            unsavedChangesAlertPresentationModel: unsavedChangesAlertPresentationModel
-        )
-    }()
+    private lazy var rootView = QuickEditor(
+        email: email,
+        scopeOption: scopeOption,
+        token: token,
+        isPresented: isPresented,
+        customImageEditor: customImageEditorProvider,
+        updateHandler: updateHandler,
+        unsavedChangesAlertPresentationModel: unsavedChangesAlertPresentationModel
+    )
 
     private lazy var quickEditor: InnerHeightUIHostingController = .init(
         rootView: rootView,
@@ -77,18 +64,19 @@ final class QuickEditorViewController: UIViewController, ModalPresentationWithIn
     init(
         email: Email,
         scopeOption: QuickEditorScopeOption,
-        configuration: QuickEditorConfiguration? = nil,
+        customImageEditorProvider: ImageEditorBlock<ImageEditor>? = nil,
         token: String? = nil,
         onUpdate: ((QuickEditorUpdateType) -> Void)? = nil,
         onDismiss: (() -> Void)? = nil
     ) {
         self.email = email
         self.scopeOption = scopeOption
-        self.configuration = configuration ?? .default
+
         self.token = token
         self.onDismiss = onDismiss
         self.updateHandler = onUpdate
         self.currentPage = scopeOption.initialPage
+        self.customImageEditorProvider = customImageEditorProvider
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -99,7 +87,6 @@ final class QuickEditorViewController: UIViewController, ModalPresentationWithIn
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
         quickEditor.willMove(toParent: self)
         addChild(quickEditor)
         view.addSubview(quickEditor.view)
@@ -123,7 +110,8 @@ final class QuickEditorViewController: UIViewController, ModalPresentationWithIn
 
     func updateDetents() {
         if let sheet = sheetPresentationController {
-            sheet.animateChanges {
+            sheet.animateChanges { [weak self] in
+                guard let self else { return }
                 sheet.detents = QEDetent.detents(
                     for: scopeOption,
                     intrinsicHeight: sheetHeight,
@@ -135,14 +123,16 @@ final class QuickEditorViewController: UIViewController, ModalPresentationWithIn
             sheet.delegate = self
         }
     }
-}
 
-extension QuickEditorViewController: UISheetPresentationControllerDelegate {
     func presentationControllerShouldDismiss(_: UIPresentationController) -> Bool {
         if unsavedChangesAlertPresentationModel.hasUnsavedChanges {
             unsavedChangesAlertPresentationModel.presentAlert = true
         }
         return !unsavedChangesAlertPresentationModel.hasUnsavedChanges
+    }
+
+    func presentationControllerDidDismiss(_: UIPresentationController) {
+        isPresented.wrappedValue = false
     }
 }
 
@@ -203,7 +193,10 @@ private class InnerHeightUIHostingController: UIHostingController<AnyView> {
 }
 
 /// A struct responsible for presenting the Quick Editor from a UIKit context.
+@MainActor
 public struct QuickEditorPresenter {
+    private typealias CustomImageEditorProvider = ImageEditorBlock<CustomImageEditorControllerRepresentable>?
+
     let email: Email
     let scopeOption: QuickEditorScopeOption
     let configuration: QuickEditorConfiguration
@@ -268,11 +261,24 @@ public struct QuickEditorPresenter {
         onAvatarUpdated: (() -> Void)? = nil,
         onDismiss: (() -> Void)? = nil
     ) {
+        let customImageEditorProvider: CustomImageEditorProvider = if let customProvider = configuration.customImageEditorProvider {
+            { image, callback in
+                CustomImageEditorControllerRepresentable(
+                    controllerProvider: customProvider,
+                    inputImage: image,
+                    editingDidFinish: callback
+                )
+            }
+        } else {
+            nil as ImageEditorBlock<CustomImageEditorControllerRepresentable>?
+        }
+
         let quickEditor = QuickEditorViewController(
             email: email,
             scopeOption: scopeOption,
-            configuration: configuration,
+            customImageEditorProvider: customImageEditorProvider,
             token: token,
+
             onUpdate: { _ in
                 onAvatarUpdated?()
             },
@@ -298,10 +304,22 @@ public struct QuickEditorPresenter {
         onUpdate: ((QuickEditorUpdateType) -> Void)? = nil,
         onDismiss: (() -> Void)? = nil
     ) {
+        let customImageEditorProvider: CustomImageEditorProvider = if let customProvider = configuration.customImageEditorProvider {
+            { image, callback in
+                CustomImageEditorControllerRepresentable(
+                    controllerProvider: customProvider,
+                    inputImage: image,
+                    editingDidFinish: callback
+                )
+            }
+        } else {
+            nil as ImageEditorBlock<CustomImageEditorControllerRepresentable>?
+        }
+
         let quickEditor = QuickEditorViewController(
             email: email,
             scopeOption: scopeOption,
-            configuration: configuration,
+            customImageEditorProvider: customImageEditorProvider,
             token: token,
             onUpdate: onUpdate,
             onDismiss: onDismiss
@@ -314,8 +332,8 @@ public struct QuickEditorPresenter {
 
 /// A protocol defining a customizable image editor interface used in the Quick Editor flow.
 ///
-/// This `UIViewController` subclass is presented after the user selects an image from their photo library and before it is uploaded to Gravatar. It provides an
-/// opportunity to:
+/// This `UIViewController` subclass is presented modally after the user selects an image from their photo library and before it is uploaded to Gravatar.
+/// It provides an opportunity to:
 /// - Enforce a square aspect ratio.
 /// - Apply arbitrary, user-defined customizations to the image.
 ///
