@@ -134,14 +134,12 @@ class DemoAvatarDownloadViewController: BaseFormViewController {
         fetchAvatar(for: avatarImageField3)
 
     }
-    
+
     @objc private func fetchAvatar(for avatarImageField: ImageFormField) {
         let options: ImageDownloadOptions = .init(
-            preferredSize: .points(preferredSize(for: avatarImageField)),
-            rating: preferredRating,
-            forceRefresh: ignoreCacheSwitch.isOn,
-            forceDefaultAvatar: forceDefaultSwitch.isOn,
-            defaultAvatarOption: preferredDefaultAvatar
+            preferredSize: .points(300),
+            forceRefresh: true,
+            defaultAvatarOption: .customURL( URL(string: "https://assets.untappd.com/site/assets/images/default_avatar_v3_gravatar.jpg?v=2")!)
         )
 
         avatarImageField.image = nil // Setting to nil to make the effect of `forceRefresh more visible
@@ -157,7 +155,7 @@ class DemoAvatarDownloadViewController: BaseFormViewController {
             guard hash.isEmpty == false else { return }
             identifier = .hashID(hash)
         }
-        
+
         Task {
             do {
                 let result = try await imageRetriever.fetch(with: identifier, options: options)
