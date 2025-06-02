@@ -20,7 +20,9 @@ public actor ImageDownloadService: ImageDownloader, Sendable {
     }
 
     public func fetchImage(with url: URL, forceRefresh: Bool = false, processingMethod: ImageProcessingMethod = .common()) async throws -> ImageDownloadResult {
-        let request = URLRequest.imageRequest(url: url, forceRefresh: forceRefresh)
+        let request = URLRequest.imageRequest(url: url, forceRefresh: false)
+
+        print("Fetching from URL: \(String(describing: request.url?.absoluteString))")
 
         if !forceRefresh, let image = try await cachedImage(for: url) {
             try Task.checkCancellation()
