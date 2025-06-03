@@ -84,6 +84,7 @@ struct AvatarPickerView<ImageEditor: ImageEditorView>: View {
                     }
                     .accumulateIntrinsicHeight()
                 }
+                .scrollingEnabled(contentLayoutProvider.contentLayout == .vertical || verticalSizeClass == .compact)
                 .confirmationDialog(
                     Localized.uploadErrorTitle,
                     isPresented: $isUploadErrorDialogPresented,
@@ -532,4 +533,14 @@ enum AvatarPicker {
 #Preview("Load from network") {
     /// Enter valid email and auth token.
     AvatarPickerView<NoCustomEditor>(model: AvatarPickerViewModel(email: .init(""), authToken: ""), isPresented: .constant(true))
+}
+
+extension View {
+    func scrollingEnabled(_ enabled: Bool) -> some View {
+        if #available(iOS 16.0, *) {
+            return self.scrollDisabled(!enabled)
+        } else {
+            return self
+        }
+    }
 }
