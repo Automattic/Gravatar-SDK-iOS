@@ -3,11 +3,14 @@ import UIKit
 final class LabelField: FormField, @unchecked Sendable {
     var title: String?
     var subtitle: String?
+    var titleStyle: UIFont.TextStyle
+
     private let cellID = "LabelCell"
 
-    init(title: String? = nil, subtitle: String? = nil) {
+    init(title: String? = nil, subtitle: String? = nil, style: UIFont.TextStyle = .body) {
         self.title = title
         self.subtitle = subtitle
+        self.titleStyle = style
     }
 
     @MainActor
@@ -16,6 +19,7 @@ final class LabelField: FormField, @unchecked Sendable {
 
         var config = cell.defaultContentConfiguration()
         config.text = title
+        config.textProperties.font = UIFont.preferredFont(forTextStyle: titleStyle)
         config.secondaryText = subtitle
         cell.contentConfiguration = config
 

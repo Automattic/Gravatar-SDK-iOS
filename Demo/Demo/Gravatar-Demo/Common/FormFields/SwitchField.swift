@@ -2,7 +2,7 @@ import UIKit
 import Combine
 
 final class SwitchField: FormField, @unchecked Sendable {
-    typealias OnSwitchValueChange = (Bool) -> Void
+    typealias OnSwitchValueChange = @MainActor (Bool) -> Void
     @Published var isOn: Bool
     let title: String
     private let cellID = "SwitchCell"

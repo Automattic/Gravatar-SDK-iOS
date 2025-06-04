@@ -40,6 +40,7 @@ class BaseFormViewController: UITableViewController {
         tableView.separatorStyle = .none
         tableView.rowHeight = UITableView.automaticDimension
         tableView.delaysContentTouches = false
+        dataSource.defaultRowAnimation = .fade
     }
 
     func replace(_ oldFormField: FormField, with newFormField: FormField, after: FormField) {
@@ -51,15 +52,38 @@ class BaseFormViewController: UITableViewController {
     }
 
     func update(_ field: FormField, animated: Bool = false) {
-        update([field])
+        update([field], animated: animated)
     }
 
     func update(_ fields: [FormField], animated: Bool = false) {
+        guard Set(snapshot.itemIdentifiers).isSuperset(of: fields) else { return }
         snapshot.reloadItems(fields)
         dataSource.apply(snapshot, animatingDifferences: animated)
     }
 
+    func remove(fields: [FormField]) {
+        fields.forEach {
+            if snapshot.indexOfItem($0) != nil {
+                snapshot.deleteItems([$0])
+            }
+        }
+    }
 
+    func add(fields: [FormField], after: FormField? = nil) {
+        fields.forEach {
+            if snapshot.indexOfItem($0) == nil {
+                if let after {
+                    snapshot.insertItems([$0], afterItem: after)
+                } else {
+                    snapshot.appendItems([$0])
+                }
+            }
+        }
+    }
+
+    func commitUpdates() {
+        dataSource.apply(snapshot, animatingDifferences: true)
+    }
 }
 
 class SectionTitleTableViewDiffibleDataSource<SectionType: Hashable, ItemType: Hashable>: UITableViewDiffableDataSource<SectionType, ItemType> where SectionType: SectionTitle, SectionType: Sendable, ItemType: Sendable {

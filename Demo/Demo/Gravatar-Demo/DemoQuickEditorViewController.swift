@@ -2,91 +2,137 @@ import UIKit
 import SwiftUI
 import GravatarUI
 
-final class DemoQuickEditorViewController: UIViewController {
-    var savedEmail: String? {
-        get {
-            UserDefaults.standard.string(forKey: "QEEmailKey")
-        }
-        set {
-            UserDefaults.standard.setValue(newValue, forKey: "QEEmailKey")
-        }
-    }
+final class DemoQuickEditorViewController: BaseFormViewController {
+    @StoredValue(keyName: "QEEmailKey", defaultValue: "")
+    var savedEmail: String
 
-    var savedToken: String? {
-        get {
-            UserDefaults.standard.string(forKey: "QETokenKey")
-        }
-        set {
-            UserDefaults.standard.setValue(newValue, forKey: "QETokenKey")
-        }
-    }
+    @StoredValue(keyName: "QETokenKey", defaultValue: "")
+    var savedToken: String
 
-    private var selectedAboutInfoFields: AboutInfoField  {
-        get {
-            if let rawValue = UserDefaults.standard.object(forKey: "demoSelectedAboutInfoFields") as? AboutInfoField.RawValue {
-                return AboutInfoField(rawValue: rawValue)
-            } else {
-                return AboutInfoField.all
+    @StoredValue(keyName: "demoSelectedAboutInfoFields", defaultValue: AboutInfoField.all)
+    private var selectedAboutInfoFields: AboutInfoField
+
+    lazy var emailField = TextFormField(
+        placeholder: "Enter Gravatar Email",
+        text: savedEmail,
+        keyboardType: .emailAddress,
+        delegate: self
+    )
+
+    // Add "eye" for showing token
+    lazy var tokenField = TextFormField(
+        placeholder: "Auth token (optional)",
+        text: savedToken,
+        isSecure: true,
+        delegate: self
+    )
+
+    var profileConfig = ProfileViewConfiguration.summary()
+    lazy var profileSymmaryViewField = ContentField(contentConfig: profileConfig)
+
+    private lazy var prefersEphemeralSessionToggle = SwitchField(
+        title: "Prefers ephemeral browser session",
+        action: togglePrefersEphemeralSession
+    )
+
+    lazy var layoutButton = ButtonLabelField(
+        title: "Layout",
+        subtitle: selectedLayout.rawValue,
+        buttonTitle: "Select",
+        menuActions: AvatarPickerLayoutOptions.allCases.compactMap { [weak self] layout in
+            UIAction(title: layout.rawValue) { _ in
+                self?.selectedLayout = layout
             }
-        }
-        set {
-            UserDefaults.standard.setValue(newValue.rawValue, forKey: "demoSelectedAboutInfoFields")
-        }
+        },
+        selectedMenuActionTitle: selectedLayout.rawValue
+    )
+
+    lazy var initialPageButton = ButtonLabelField(
+        title: "Initital Page",
+        subtitle: selectedInitialPage.rawValue,
+        buttonTitle: "Select",
+        menuActions: InitialPage.allCases.compactMap { [weak self] page in
+            UIAction(title: page.rawValue) { _ in
+                self?.selectedInitialPage = page
+            }
+        },
+        selectedMenuActionTitle: selectedInitialPage.rawValue
+    )
+
+    lazy var colorSchemeLabel = LabelField(title: "Prefered color scheme:")
+
+    lazy var schemeToggle = SegmentedControlField(segments: ["System", "Light", "Dark"]) { title, index in
+        self.customColorScheme = [UIUserInterfaceStyle.unspecified, .light, .dark][index]
     }
 
-    lazy var emailField: UITextField = {
-        let field = UITextField()
-        field.translatesAutoresizingMaskIntoConstraints = false
-        field.textContentType = .emailAddress
-        field.keyboardType = .emailAddress
-        field.autocapitalizationType = .none
-        field.borderStyle = .roundedRect
-        field.placeholder = "email"
-        field.delegate = self
-        field.text = savedEmail
-        return field
-    }()
+    lazy var imageEditorToggle = SwitchField(title: "Custom image editor") { [weak self] value in
+        self?.useCustomImageEditor = value
+    }
 
-    lazy var tokenField: UITextField = {
-        let field = UITextField()
-        let showButton = UIButton(type: .custom, primaryAction: UIAction { action in
-            field.isSecureTextEntry = !field.isSecureTextEntry
-            (action.sender as? UIButton)?.isSelected = !field.isSecureTextEntry
+    lazy var scopeButton = ButtonLabelField(
+        title: "Scope",
+        subtitle: selectedScope.rawValue,
+        buttonTitle: "Select",
+        menuActions: QEScope.allCases.compactMap { [weak self] scope in
+            UIAction(title: scope.rawValue) { _ in
+                self?.selectedScope = scope
+            }
+        },
+        selectedMenuActionTitle: selectedScope.rawValue
+    )
 
-        })
-        showButton.tintColor = .systemGray
-        showButton.setImage(UIImage(systemName: "eye"), for: .normal)
-        showButton.setImage(UIImage(systemName: "eye.slash"), for: .selected)
+    lazy var scopeOptionsLabel = LabelField(title: "Scope options:", style: .headline)
 
-        field.rightView = showButton
-        field.rightViewMode = .always
+    lazy var aboutPresentationStyleButton = ButtonLabelField(
+        title: "Sheet Presentation Style",
+        subtitle: selectedSheetPresentationStyleRepresentation.rawValue,
+        buttonTitle: "Select",
+        menuActions: SheetPresentationStyleRepresentation.allCases.compactMap { [weak self] style in
+            UIAction(title: style.rawValue) { _ in
+                self?.selectedSheetPresentationStyleRepresentation = style
+            }
+        },
+        selectedMenuActionTitle: selectedSheetPresentationStyleRepresentation.rawValue
+    )
 
-        field.translatesAutoresizingMaskIntoConstraints = false
-        field.isSecureTextEntry = true
+    lazy var aboutFieldsButton = ButtonLabelField(
+        title: "Input fields",
+        buttonTitle: "Select",
+        action: { [weak self] action in
+            self?.aboutFieldsButtonTapped()
+        }
+    )
 
-        field.autocapitalizationType = .none
-        field.borderStyle = .roundedRect
-        field.placeholder = "Token (optional)"
-        field.text = savedToken
-        field.delegate = self
-        return field
-    }()
+    lazy var logoutButton = ButtonField(title: "Logout") { [weak self] action in
+        self?.logout()
+    }
+
+    lazy var showButton = ButtonField(title: "Show Quick Editor") { [weak self] _ in
+        self?.presentQuickEditor()
+    }
 
     var token: String? {
-        guard let token = tokenField.text, !token.isEmpty else { return nil }
+        let token = tokenField.text
+        guard !token.isEmpty else { return nil }
         savedToken = token
         return token
     }
 
-    var selectedLayout: AvatarPickerLayoutOptions = .horizontal {
+    @StoredValue(keyName: "QEAvatarPickerLayoutOptions", defaultValue: .horizontal)
+    var selectedLayout: AvatarPickerLayoutOptions {
         didSet {
-            layoutButton.setTitle(selectedLayout.rawValue, for: .normal)
+            layoutButton.subtitle = selectedLayout.rawValue
+            layoutButton.selectedMenuActionTitle = selectedLayout.rawValue
+            update(layoutButton)
         }
     }
 
-    var selectedInitialPage: InitialPage = .avatarPicker {
+    @StoredValue(keyName: "QEInitialPage", defaultValue: .avatarPicker)
+    var selectedInitialPage: InitialPage {
         didSet {
-            initialPageButton.setTitle("Initial page: \(selectedInitialPage.rawValue)", for: .normal)
+            initialPageButton.subtitle = selectedInitialPage.rawValue
+            initialPageButton.selectedMenuActionTitle = selectedInitialPage.rawValue
+            update(initialPageButton)
         }
     }
 
@@ -110,28 +156,30 @@ final class DemoQuickEditorViewController: UIViewController {
         }
     }
 
-    private var selectedScope: QEScope = .avatarPicker {
+    @StoredValue(keyName: "QEScopeValue", defaultValue: .avatarPicker)
+    private var selectedScope: QEScope {
         didSet {
-            scopeButton.setTitle("Scope: \(selectedScope.rawValue)", for: .normal)
+            scopeButton.subtitle = selectedScope.rawValue
+            scopeButton.selectedMenuActionTitle = selectedScope.rawValue
+            update(scopeButton, animated: true)
             showOptionsPerScope()
         }
     }
 
     func showOptionsPerScope() {
-        (avatarPickerOptionsViews + aboutEditorOptionsStackView + avatarAndAboutEditorOptionsStackView).forEach {
-            $0.isHiddenForAnimation = true
-        }
+        remove(
+            fields: avatarPickerOptionsViews + aboutEditorOptionsStackView + avatarAndAboutEditorOptionsStackView
+        )
 
         switch selectedScope {
         case .avatarPicker:
-            avatarPickerOptionsViews.forEach { $0.isHiddenForAnimation = false }
+            add(fields: avatarPickerOptionsViews, after: scopeOptionsLabel)
         case .aboutEditor:
-            aboutEditorOptionsStackView.forEach { $0.isHiddenForAnimation = false }
+            add(fields: aboutEditorOptionsStackView, after: scopeOptionsLabel)
         case .avatarAndAboutEditor:
-            avatarAndAboutEditorOptionsStackView.forEach {
-                $0.isHiddenForAnimation = false
-            }
+            add(fields: avatarAndAboutEditorOptionsStackView, after: scopeOptionsLabel)
         }
+        commitUpdates()
     }
 
     private var selectedSheetPresentationStyle: SheetPresentationStyle {
@@ -151,111 +199,18 @@ final class DemoQuickEditorViewController: UIViewController {
         }
     }
 
-    private var selectedSheetPresentationStyleRepresentation: SheetPresentationStyleRepresentation = .expandableMedium {
+    @StoredValue(keyName: "QESheetPresentationStyle", defaultValue: .expandableMedium)
+    private var selectedSheetPresentationStyleRepresentation: SheetPresentationStyleRepresentation {
         didSet {
-            aboutPresentationStyleButton.setTitle(
-                "Sheet Presentation Style: \(selectedSheetPresentationStyleRepresentation.rawValue)",
-                for: .normal
-            )
+            aboutPresentationStyleButton.subtitle = selectedSheetPresentationStyleRepresentation.rawValue
+            aboutPresentationStyleButton.selectedMenuActionTitle = selectedSheetPresentationStyleRepresentation.rawValue
+            update(aboutPresentationStyleButton)
         }
     }
 
-    lazy var profileSummaryView: ProfileSummaryView = {
-        let view = ProfileSummaryView(frame: .zero, paletteType: .system, profileButtonStyle: .edit)
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.avatarActivityIndicatorType = .activity
-        return view
-    }()
-
-    private lazy var prefersEphemeralSessionToggle: SwitchWithLabel = {
-        let view = SwitchWithLabel(labelText: "Prefers ephemeral browser session")
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.switchView.addTarget(self, action: #selector(togglePrefersEphemeralSession), for: .valueChanged)
-        return view
-    }()
-
-    lazy var layoutButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("Layout: \(selectedLayout.rawValue)", for: .normal)
-        button.addTarget(self, action: #selector(presentLayoutOptions), for: .touchUpInside)
-        return button
-    }()
-
-    lazy var initialPageButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("InititalPage: \(selectedInitialPage.rawValue)", for: .normal)
-        button.addTarget(self, action: #selector(presentInitialPageOptions), for: .touchUpInside)
-        return button
-    }()
-
-    lazy var scopeButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("Scope: \(selectedScope.rawValue)", for: .normal)
-        button.addTarget(self, action: #selector(presentScopeOptions), for: .touchUpInside)
-        return button
-    }()
-
-    lazy var aboutPresentationStyleButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("Sheet Presentation Style: \(selectedSheetPresentationStyleRepresentation.rawValue)", for: .normal)
-        button.addTarget(self, action: #selector(presentVerticalPresentationStyleOptions), for: .touchUpInside)
-        return button
-    }()
-
-    lazy var aboutFieldsButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("Select input fields", for: .normal)
-        button.addTarget(self, action: #selector(aboutFieldsButtonTapped), for: .touchUpInside)
-        return button
-    }()
-    
-    @objc func presentLayoutOptions(from button: UIButton) {
-        let sheet = UIAlertController(title: "Layout Options", message: nil, preferredStyle: .actionSheet)
-        AvatarPickerLayoutOptions.allCases.forEach { layout in
-            sheet.addAction(.init(title: layout.rawValue, style: .default) { _ in
-                self.selectedLayout = layout
-            })
-        }
-        sheet.popoverPresentationController?.sourceView = button
-        present(sheet, animated: true)
-    }
-
-    @objc func presentInitialPageOptions(from button: UIButton) {
-        let sheet = UIAlertController(title: "Initial Page", message: nil, preferredStyle: .actionSheet)
-        InitialPage.allCases.forEach { page in
-            sheet.addAction(.init(title: page.rawValue, style: .default) { _ in
-                self.selectedInitialPage = page
-            })
-        }
-        sheet.popoverPresentationController?.sourceView = button
-        present(sheet, animated: true)
-    }
-
-    @objc func presentScopeOptions(from button: UIButton) {
-        let sheet = UIAlertController(title: "Scope Options", message: nil, preferredStyle: .actionSheet)
-        QEScope.allCases.forEach { scope in
-            sheet.addAction(.init(title: scope.rawValue, style: .default) { _ in
-                self.selectedScope = scope
-            })
-        }
-        sheet.popoverPresentationController?.sourceView = button
-        present(sheet, animated: true)
-    }
-
-    @objc func presentVerticalPresentationStyleOptions(from button: UIButton) {
-        let sheet = UIAlertController(title: "Vertical Presentation Styles", message: nil, preferredStyle: .actionSheet)
-        SheetPresentationStyleRepresentation.allCases.forEach { style in
-            sheet.addAction(.init(title: style.rawValue, style: .default) { _ in
-                self.selectedSheetPresentationStyleRepresentation = style
-            })
-        }
-        sheet.popoverPresentationController?.sourceView = button
-        present(sheet, animated: true)
+    func presentMenu(on button: UIButton, actions: [UIAction]) {
+        button.menu = UIMenu(title: "",children: actions)
+        button.showsMenuAsPrimaryAction = true
     }
 
     @objc func aboutFieldsButtonTapped() {
@@ -275,133 +230,68 @@ final class DemoQuickEditorViewController: UIViewController {
         present(aboutChecklistHostingController, animated: true)
     }
 
-    lazy var colorSchemeLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Prefered color scheme:"
-        return label
-    }()
-
-    lazy var schemeToggle: UISegmentedControl = {
-        let control = UISegmentedControl(items: [
-            UIAction.init(title: "System") { [weak self] _ in self?.customColorScheme = .unspecified },
-            UIAction.init(title: "Light") { [weak self] _ in self?.customColorScheme = .light },
-            UIAction.init(title: "Dark") { [weak self] _ in self?.customColorScheme = .dark },
-        ])
-        control.selectedSegmentIndex = 0
-        return control
-    }()
-
-    lazy var imageEditorToggle: UISegmentedControl = {
-        let control = UISegmentedControl(items: [
-            UIAction.init(title: "Default Image Editor") { [weak self] _ in self?.useCustomImageEditor = false },
-            UIAction.init(title: "Custom Image Editor") { [weak self] _ in self?.useCustomImageEditor = true },
-        ])
-        control.selectedSegmentIndex = 0
-        return control
-    }()
-
     var customColorScheme: UIUserInterfaceStyle = .unspecified
     var useCustomImageEditor = false
 
-    lazy var logoutButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("Logout", for: .normal)
-        button.addAction(UIAction { [weak self] _ in self?.logout() }, for: .touchUpInside)
-        updateLogoutButton(button)
-        return button
-    }()
-
-    func updateLogoutButton(_ button: UIButton? = nil) {
-        guard let savedEmail else { return }
-        let button = button ?? logoutButton
-        if #available(iOS 17, *) {
-            UIView.animate {
-                button.isHidden = !OAuthSession.shared.hasSession(with: Email(savedEmail))
-                button.alpha = button.isHidden ? 0 : 1
-            }
+    func updateLogoutButton() {
+        if OAuthSession.shared.hasSession(with: Email(savedEmail)) {
+            add(fields: [logoutButton])
         } else {
-            button.isHidden = !OAuthSession.shared.hasSession(with: Email(savedEmail))
-            button.alpha = button.isHidden ? 0 : 1
+            remove(fields: [logoutButton])
         }
+        commitUpdates()
     }
 
     func logout() {
-        guard let savedEmail else { return }
         OAuthSession.shared.deleteSession(with: Email(savedEmail))
         updateLogoutButton()
     }
 
-    lazy var showButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("Show Quick Editor", for: .normal)
-        button.addAction(UIAction { [weak self] _ in self?.presentQuickEditor() }, for: .touchUpInside)
-        button.isEnabled = savedEmail != nil
-        return button
-    }()
-
-    lazy var avatarPickerOptionsViews: [UIView] = [
+    lazy var avatarPickerOptionsViews: [FormField] = [
         imageEditorToggle,
         layoutButton,
     ]
 
-    lazy var aboutEditorOptionsStackView: [UIView] = [
+    lazy var aboutEditorOptionsStackView: [FormField] = [
         aboutPresentationStyleButton,
         aboutFieldsButton
     ]
 
-    lazy var avatarAndAboutEditorOptionsStackView: [UIView] = [
+    lazy var avatarAndAboutEditorOptionsStackView: [FormField] = [
         imageEditorToggle,
         layoutButton,
         aboutFieldsButton,
         initialPageButton
     ]
 
-    lazy var rootStackView: UIStackView = {
-        let stackView = UIStackView(arrangedSubviews: [
+    override var form: [FormField] {
+        [
             emailField,
             tokenField,
-            profileSummaryView,
+            profileSymmaryViewField,
             colorSchemeLabel,
             schemeToggle,
             prefersEphemeralSessionToggle,
             scopeButton,
-            imageEditorToggle,
-            layoutButton,
-            aboutPresentationStyleButton,
-            aboutFieldsButton,
-            initialPageButton,
+            scopeOptionsLabel,
             logoutButton,
             showButton
-        ])
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.axis = .vertical
-        stackView.spacing = 12
-        stackView.isLayoutMarginsRelativeArrangement = true
-        stackView.layoutMargins = .init(top: 0, left: 24, bottom: 0, right: 24)
-        return stackView
-    }()
+        ]
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .secondarySystemBackground
-        view.addSubview(rootStackView)
-        NSLayoutConstraint.activate([
-            rootStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            rootStackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            rootStackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-        ])
-        if let savedEmail {
-            fetchProfile(with: savedEmail)
+
+        if !savedEmail.isEmpty {
+            fetchProfile()
         }
         showOptionsPerScope()
+        updateLogoutButton()
     }
 
     func presentQuickEditor() {
-        guard let email = emailField.text else { return }
-        savedEmail = email
+        let email = savedEmail
         let imageEditorProvider: CustomImageEditorControllerProvider? = {
             if self.useCustomImageEditor {
                 return { image, callback in
@@ -426,9 +316,9 @@ final class DemoQuickEditorViewController: UIViewController {
             onUpdate: { [weak self] updateType in
                 switch updateType {
                 case is QuickEditorUpdate.Avatar:
-                    self?.profileSummaryView.loadAvatar(with: .email(email), rating: .x, options: [.forceRefresh])
+                    self?.updateAvatar(with: email)
                 case let update as QuickEditorUpdate.AboutInfo:
-                    self?.profileSummaryView.update(with: update.profile)
+                    self?.updateProfileField(model: update.profile)
                 default:
                     break
                 }
@@ -438,44 +328,86 @@ final class DemoQuickEditorViewController: UIViewController {
             }
         )
     }
-    
-    @objc func togglePrefersEphemeralSession() {
+
+    func updateAvatar(with email: String) {
+        profileConfig.avatarIdentifier = .email(email)
+        profileConfig.avatarConfiguration.settingOptions = [.forceRefresh, .removeCurrentImageWhileLoading]
+        updateProfileField(config: profileConfig)
+    }
+
+    func updateProfile() async throws {
+        let service = ProfileService()
+        profileConfig = newProfileConfig()
+        profileConfig.isLoading = true
+        updateProfileField(config: profileConfig)
+
+        let profile = try await service.fetch(with: .email(savedEmail))
+        updateProfileField(model: profile)
+    }
+
+    func updateProfileField(model: ProfileModel) {
+        profileConfig = newProfileConfig(with: model)
+        profileConfig.avatarIdentifier = .email(savedEmail)
+        updateProfileField(config: profileConfig)
+    }
+
+    func updateProfileField(config: ProfileViewConfiguration) {
+        profileConfig = config
+        profileSymmaryViewField.contentConfig = profileConfig
+        update(profileSymmaryViewField)
+    }
+
+    func newProfileConfig(with model: ProfileModel? = nil) -> ProfileViewConfiguration {
+        var profileConfig = ProfileViewConfiguration.summary(model: model)
+        profileConfig.avatarConfiguration.settingOptions = [.removeCurrentImageWhileLoading]
+        profileConfig.avatarConfiguration.defaultAvatarOption = .status404
+        return profileConfig
+    }
+
+    func togglePrefersEphemeralSession(to value: Bool) {
         Task {
-            await OAuthSession.shared.setPrefersEphemeralWebBrowserSession(prefersEphemeralSessionToggle.isOn)
+            await OAuthSession.shared.setPrefersEphemeralWebBrowserSession(value)
         }
     }
 }
 
-extension DemoQuickEditorViewController: UITextFieldDelegate {
-    func textFieldDidChangeSelection(_ textField: UITextField) {
-        guard textField == emailField else { return }
-        if let emailText = textField.text, Email(emailText).isValid {
-            fetchProfile(with: emailText)
+extension DemoQuickEditorViewController: TextFormFieldDelegate {
+    func textFormDidChangeSelection(_ textForm: TextFormField) {
+        guard
+            textForm === emailField,
+            profileConfig.avatarIdentifier?.id != Email(textForm.text).id
+        else { return }
+
+        let emailText = textForm.text
+
+        if Email(emailText).isValid {
+            savedEmail = emailText
+            fetchProfile()
             showButton.isEnabled = true
+            updateLogoutButton()
         } else {
+            updateProfileField(config: ProfileViewConfiguration.summary())
             showButton.isEnabled = false
         }
     }
 
-    func fetchProfile(with email: String) {
-        Task {
-            let email = Email(email)
-            let service = ProfileService()
-            profileSummaryView.loadAvatar(with: .email(email))
-            let profile = try? await service.fetch(with: .email(email))
-            profileSummaryView.update(with: profile)
-        }
-    }
-
-    func textFieldDidEndEditing(_ textField: UITextField, reason: UITextField.DidEndEditingReason) {
-        if textField == tokenField {
-            savedToken = textField.text
-        }
-    }
-
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        textField.resignFirstResponder()
+    func textFormShouldReturn(_ textForm: TextFormField) -> Bool {
         return true
+    }
+
+    func textFormDidEndEditing(_ textForm: TextFormField) {
+        if textForm === tokenField {
+            savedToken = textForm.text
+        }
+        if textForm === emailField {
+            savedEmail = textForm.text
+        }
+    }
+
+    func fetchProfile() {
+        Task {
+            try? await updateProfile()
+        }
     }
 }
 
@@ -581,16 +513,4 @@ enum SheetPresentationStyleRepresentation: String, CaseIterable, Hashable {
     case intrinsicHeight = "Intrinsic Height"
     case automatic = "Automatic"
     case automaticPrioritizeScrolling = "Automatic - Prioritize scrolling"
-}
-
-private extension UIView {
-    var isHiddenForAnimation: Bool {
-        get {
-            return isHidden && alpha == 0
-        }
-        set {
-            self.alpha = newValue ? 0 : 1
-            self.isHidden = newValue
-        }
-    }
 }

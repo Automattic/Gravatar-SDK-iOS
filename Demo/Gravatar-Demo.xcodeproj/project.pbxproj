@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		1E0087932B63CFFE0012ECEA /* DemoFetchProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E0087922B63CFFE0012ECEA /* DemoFetchProfileViewController.swift */; };
 		1E0087952B63DBCB0012ECEA /* DemoUploadImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E0087942B63DBCB0012ECEA /* DemoUploadImageViewController.swift */; };
+		1E0212372DEDAA72000A72A5 /* StoredValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E0212362DEDAA72000A72A5 /* StoredValue.swift */; };
 		1E15CA6F2D3E863400B5FCB4 /* BaseFormViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E15CA6E2D3E863400B5FCB4 /* BaseFormViewController.swift */; };
 		1E15CA722D3FB48900B5FCB4 /* SwitchField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E15CA712D3FB48900B5FCB4 /* SwitchField.swift */; };
 		1E15CA742D3FB4FD00B5FCB4 /* ButtonField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E15CA732D3FB4FD00B5FCB4 /* ButtonField.swift */; };
@@ -28,6 +29,7 @@
 		1E741C442DBB9BDC00216752 /* QEScopesPickerRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E741C432DBB9BDC00216752 /* QEScopesPickerRow.swift */; };
 		1E741C462DBB9BF800216752 /* QEVerticalStylePickerRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E741C452DBB9BF800216752 /* QEVerticalStylePickerRow.swift */; };
 		1EA26DE22CA5677700AACF58 /* DemoQuickEditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E93D3C82CA566D90085139A /* DemoQuickEditorViewController.swift */; };
+		1EB0F2162DE8A99E0096497B /* ContentField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EB0F2152DE8A99E0096497B /* ContentField.swift */; };
 		1ECAB5072BC984440043A331 /* DemoProfileConfigurationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ECAB5062BC984440043A331 /* DemoProfileConfigurationViewController.swift */; };
 		49018E2D2C8110C600B1207D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 49018E2B2C8110C600B1207D /* Localizable.strings */; };
 		4948C4EC2B61C41100AC4875 /* Gravatar in Frameworks */ = {isa = PBXBuildFile; productRef = 4948C4EB2B61C41100AC4875 /* Gravatar */; };
@@ -57,6 +59,7 @@
 /* Begin PBXFileReference section */
 		1E0087922B63CFFE0012ECEA /* DemoFetchProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoFetchProfileViewController.swift; sourceTree = "<group>"; };
 		1E0087942B63DBCB0012ECEA /* DemoUploadImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoUploadImageViewController.swift; sourceTree = "<group>"; };
+		1E0212362DEDAA72000A72A5 /* StoredValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoredValue.swift; sourceTree = "<group>"; };
 		1E09931F2CF76A870031D33A /* Gravatar Demo.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Gravatar Demo.entitlements"; sourceTree = "<group>"; };
 		1E15CA6E2D3E863400B5FCB4 /* BaseFormViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseFormViewController.swift; sourceTree = "<group>"; };
 		1E15CA712D3FB48900B5FCB4 /* SwitchField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchField.swift; sourceTree = "<group>"; };
@@ -73,6 +76,7 @@
 		1E741C432DBB9BDC00216752 /* QEScopesPickerRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QEScopesPickerRow.swift; sourceTree = "<group>"; };
 		1E741C452DBB9BF800216752 /* QEVerticalStylePickerRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QEVerticalStylePickerRow.swift; sourceTree = "<group>"; };
 		1E93D3C82CA566D90085139A /* DemoQuickEditorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoQuickEditorViewController.swift; sourceTree = "<group>"; };
+		1EB0F2152DE8A99E0096497B /* ContentField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentField.swift; sourceTree = "<group>"; };
 		1ECAB5062BC984440043A331 /* DemoProfileConfigurationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoProfileConfigurationViewController.swift; sourceTree = "<group>"; };
 		3FD4781E2C50D6FD0071B8B9 /* Base.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Base.xcconfig; sourceTree = "<group>"; };
 		3FD478212C51D5CE0071B8B9 /* Gravatar-Demo.Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Gravatar-Demo.Release.xcconfig"; sourceTree = "<group>"; };
@@ -174,6 +178,7 @@
 			isa = PBXGroup;
 			children = (
 				1E15CA712D3FB48900B5FCB4 /* SwitchField.swift */,
+				1EB0F2152DE8A99E0096497B /* ContentField.swift */,
 				1E1C5F332D42734800209999 /* LabelField.swift */,
 				1E15CA732D3FB4FD00B5FCB4 /* ButtonField.swift */,
 				1E15CA752D3FB7D300B5FCB4 /* ButtonLabelField.swift */,
@@ -294,6 +299,7 @@
 			isa = PBXGroup;
 			children = (
 				1E15CA6E2D3E863400B5FCB4 /* BaseFormViewController.swift */,
+				1E0212362DEDAA72000A72A5 /* StoredValue.swift */,
 				1E15CA702D3FB46F00B5FCB4 /* FormFields */,
 				91956A512B6793AF00BF3CF0 /* SwitchWithLabel.swift */,
 			);
@@ -418,6 +424,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1E0212372DEDAA72000A72A5 /* StoredValue.swift in Sources */,
 				1E15CA742D3FB4FD00B5FCB4 /* ButtonField.swift in Sources */,
 				1E62631C2CD13DB700FC362F /* ContentView.swift in Sources */,
 				1E15CA7A2D3FB8AF00B5FCB4 /* ImageFormField.swift in Sources */,
@@ -435,6 +442,7 @@
 				91C76B3F2D96B1AD00F248B9 /* DemoProfileView.swift in Sources */,
 				914AC0192BD7FF08005DA4A5 /* DemoBaseProfileViewController.swift in Sources */,
 				1E3C4AE02DD71111002867BC /* QEInitialPagePickerRow.swift in Sources */,
+				1EB0F2162DE8A99E0096497B /* ContentField.swift in Sources */,
 				1E0087932B63CFFE0012ECEA /* DemoFetchProfileViewController.swift in Sources */,
 				1E0087952B63DBCB0012ECEA /* DemoUploadImageViewController.swift in Sources */,
 				495775E22B5B34970082812A /* AppDelegate.swift in Sources */,
