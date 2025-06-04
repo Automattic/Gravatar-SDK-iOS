@@ -1,21 +1,32 @@
 import UIKit
 import Combine
 
+@MainActor
+protocol TextFormFieldDelegate: NSObjectProtocol {
+    func textFormDidChangeSelection(_ textForm: TextFormField)
+
+    func textFormShouldReturn(_ textForm: TextFormField) -> Bool
+
+    func textFormDidEndEditing(_ textForm: TextFormField)
+}
+
 class TextFormField: FormField, @unchecked Sendable, UITextFieldDelegate {
     let placeholder: String
     let keyboardType: UIKeyboardType
     let isSecure: Bool
+    weak var delegate: TextFormFieldDelegate?
 
     @Published var text: String
     @Published var didEndEditingText: String = ""
 
     private let cellID = "TextFieldCell"
 
-    init(placeholder: String, text: String = "", isSecure: Bool = false, keyboardType: UIKeyboardType = .default) {
+    init(placeholder: String, text: String = "", isSecure: Bool = false, keyboardType: UIKeyboardType = .default, delegate: TextFormFieldDelegate? = nil) {
         self.text = text
         self.placeholder = placeholder
         self.keyboardType = keyboardType
         self.isSecure = isSecure
+        self.delegate = delegate
     }
 
     @MainActor
@@ -28,15 +39,17 @@ class TextFormField: FormField, @unchecked Sendable, UITextFieldDelegate {
 
     func textFieldDidChangeSelection(_ textField: UITextField) {
         text = textField.text ?? ""
+        delegate?.textFormDidChangeSelection(self)
     }
 
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
-        return true
+        return delegate?.textFormShouldReturn(self) ?? true
     }
 
     func textFieldDidEndEditing(_ textField: UITextField) {
         didEndEditingText = textField.text ?? ""
+        delegate?.textFormDidEndEditing(self)
     }
 }
 
@@ -59,6 +72,31 @@ private final class TextFieldCell: UITableViewCell {
         ])
     }
 
+    func addShowPasswordButton() {
+        let showButton = UIButton(type: .custom, primaryAction: UIAction { [weak self] action in
+            guard let self else { return }
+            textField.isSecureTextEntry = !textField.isSecureTextEntry
+            (action.sender as? UIButton)?.isSelected = !textField.isSecureTextEntry
+        })
+        var config = UIButton.Configuration.plain()
+        config.baseForegroundColor = .systemGray
+        showButton.configuration = config
+
+        showButton.configurationUpdateHandler = { button in
+            switch button.state {
+                case .normal:
+                button.configuration?.image = UIImage(systemName: "eye")
+            case .selected:
+                button.configuration?.image = UIImage(systemName: "eye.slash")
+                button.configuration?.baseBackgroundColor = .clear
+            default: break
+            }
+        }
+
+        textField.rightView = showButton
+        textField.rightViewMode = .always
+    }
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -68,5 +106,10 @@ private final class TextFieldCell: UITableViewCell {
         textField.text = config.text
         textField.keyboardType = config.keyboardType
         textField.isSecureTextEntry = config.isSecure
+        if config.isSecure {
+            addShowPasswordButton()
+        } else {
+            textField.rightView = nil
+        }
     }
 }
