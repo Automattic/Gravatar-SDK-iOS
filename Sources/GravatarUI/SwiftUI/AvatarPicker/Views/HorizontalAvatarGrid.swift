@@ -5,6 +5,14 @@ struct HorizontalAvatarGrid: View {
         static let avatarSpacing: CGFloat = .DS.Padding.single
     }
 
+    private let gridItems: [GridItem] = [GridItem(
+        .adaptive(
+            minimum: AvatarGridConstants.minAvatarWidth,
+            maximum: AvatarGridConstants.maxAvatarWidth
+        ),
+        spacing: AvatarGridConstants.avatarSpacing
+    )]
+
     @ObservedObject var grid: AvatarGridModel
 
     let onAvatarTap: (AvatarImageModel) -> Void
@@ -13,7 +21,7 @@ struct HorizontalAvatarGrid: View {
 
     var body: some View {
         ScrollView(.horizontal) {
-            HStack(spacing: Constants.avatarSpacing) {
+            LazyHGrid(rows: gridItems, spacing: Constants.avatarSpacing) {
                 ForEach(grid.avatars, id: \.self) { avatar in
                     AvatarPickerAvatarView(
                         avatar: avatar,
