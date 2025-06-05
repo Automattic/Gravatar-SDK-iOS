@@ -10,15 +10,24 @@ If you're also looking to integrate Gravatar in your Android app, check out our 
 
 ## Features
 
-- Display a profile view or an avatar through ready-to-use UI components.
-- Avatar URL calculator based on email and several [query options](https://docs.gravatar.com/general/images/).
-- Avatar downloading based on email or url.
-  - `UIImageView` extension to directly set the downloaded image.
-  - SwiftUI Avatar component(`AvatarView`)
-  - Built-in image cache (with the ability to inject your own cache).
-- Avatar uploading to a [Gravatar](https://gravatar.com/) account.
-- Gravatar profile fetching based on email.
-- QuickEditor: This customizable sheet allows you to manage your avatar and Gravatar profile. You can select an existing avatar or upload a new one, and it provides a summary of your Gravatar profile.
+#### Core services:
+- [Avatar URL calculator](https://automattic.github.io/Gravatar-SDK-iOS/gravatar/documentation/gravatar/5.-AvatarURLCalculator) based on email, email hash, and several [query options](https://docs.gravatar.com/general/images/).
+- [Avatar downloading](https://automattic.github.io/Gravatar-SDK-iOS/gravatar/documentation/gravatar/2.-downloadingavatar) based on [email](https://automattic.github.io/Gravatar-SDK-iOS/gravatar/documentation/gravatar/2.-downloadingavatar#Download-Avatar-via-email) or [url](https://automattic.github.io/Gravatar-SDK-iOS/gravatar/documentation/gravatar/2.-downloadingavatar#Download-Avatar-via-email).
+  - [Built-in image cache](https://automattic.github.io/Gravatar-SDK-iOS/gravatar/documentation/gravatar/2.-downloadingavatar#Providing-a-custom-Image-Cache) (with the ability to inject your own cache).
+- [Avatar uploading](https://automattic.github.io/Gravatar-SDK-iOS/gravatar/documentation/gravatar/3.-uploadingavatar) to a [Gravatar](https://gravatar.com/) account.
+- [Gravatar profile fetching](https://automattic.github.io/Gravatar-SDK-iOS/gravatar/documentation/gravatar/4.-fetchingprofile) based on email.
+
+#### Gravatar UI:
+- [Display a profile view](https://automattic.github.io/Gravatar-SDK-iOS/gravatarui/documentation/gravatarui/profileviews) or [an avatar](https://automattic.github.io/Gravatar-SDK-iOS/gravatarui/documentation/gravatarui/avatarviewarticle/) through ready-to-use UI components.
+- [Quick Editor](https://automattic.github.io/Gravatar-SDK-iOS/gravatarui/documentation/gravatarui/quickeditorarticle): This customizable sheet allows you to manage your avatar and Gravatar profile. 
+  - Select an existing avatar or upload a new one.
+  - Manage and update the "About" section of your Gravatar profile.
+- [`UIImageView` extension](https://automattic.github.io/Gravatar-SDK-iOS/gravatarui/documentation/gravatarui/uiimageviewextension/) to directly set the downloaded image.
+- [SwiftUI Avatar](https://automattic.github.io/Gravatar-SDK-iOS/gravatarui/documentation/gravatarui/avatarviewarticle/) component(`AvatarView`)
+
+## Tutorials
+- [Profile views as contacts list](https://automattic.github.io/Gravatar-SDK-iOS/gravatarui/tutorials/gravatarui/contactslist/)
+- [Adding the Quick Editor to a SwiftUI View](https://automattic.github.io/Gravatar-SDK-iOS/gravatarui/tutorials/gravatarui/quickeditor/)
 
 ## Installation
 
@@ -33,7 +42,29 @@ For installation instructions and examples, see out [getting started](Sources/Gr
 You can find some detailed articles, tutorials and API docs via these links:
 
 - [Gravatar docs](https://automattic.github.io/Gravatar-SDK-iOS/gravatar/documentation/gravatar/)
+  - [Getting started](https://automattic.github.io/Gravatar-SDK-iOS/gravatar/documentation/gravatar/1.-gettingstarted/)
+      - Install and start using Gravatar for iOS
+  - [Downloading an Avatar](https://automattic.github.io/Gravatar-SDK-iOS/gravatar/documentation/gravatar/2.-downloadingavatar/)
+    - Download an avatar provided by Gravatar.
+  - [Uploading an Avatar](https://automattic.github.io/Gravatar-SDK-iOS/gravatar/documentation/gravatar/3.-uploadingavatar/)
+    - Let a user to update their avatar.
+  - [Fetching Profile Information](https://automattic.github.io/Gravatar-SDK-iOS/gravatar/documentation/gravatar/4.-fetchingprofile/)
+    - Fetch a public Gravatar profile.
+  - [AvatarURL Calculator](https://automattic.github.io/Gravatar-SDK-iOS/gravatar/documentation/gravatar/5.-avatarcalculator/)
+    - Create and validate Gravatar image URLs
 - [GravatarUI docs](https://automattic.github.io/Gravatar-SDK-iOS/gravatarui/documentation/gravatarui/)
+  - [Getting started](https://automattic.github.io/Gravatar-SDK-iOS/gravatarui/documentation/gravatarui/gettingstarted/)
+    - Install and start using GravatarUI for iOS
+  - [UIImageView extension](https://automattic.github.io/Gravatar-SDK-iOS/gravatarui/documentation/gravatarui/uiimageviewextension/)
+    - Use UIImageView extension to easily set an avatar.
+  - [SwiftUI AvatarView](https://automattic.github.io/Gravatar-SDK-iOS/gravatarui/documentation/gravatarui/avatarviewarticle/)
+    - A customizable SwiftUI component to easily set an avatar.
+  - [Profile view designs](https://automattic.github.io/Gravatar-SDK-iOS/gravatarui/documentation/gravatarui/profileviews/)
+    - We offer a variety of profile view layouts for different usecases.
+  - [Gravatar OAuth](https://automattic.github.io/Gravatar-SDK-iOS/gravatarui/documentation/gravatarui/gravataroauth/)
+    - Set up the Gravatar OAuth2 to unlock some features.
+  - [Quick Editor](https://automattic.github.io/Gravatar-SDK-iOS/gravatarui/documentation/gravatarui/quickeditorarticle/)
+    - This customizable sheet allows users to update their avatars. Available for both UIKit and SwiftUI.
 
 ## Author
 
