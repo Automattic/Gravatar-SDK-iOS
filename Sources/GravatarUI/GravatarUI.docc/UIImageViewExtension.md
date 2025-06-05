@@ -37,9 +37,11 @@ do {
     try await avatarImageView.gravatar.setImage(
         avatarID: .email(""),
         placeholder: placeholder,
-        options: [.forceRefresh,
-                  .transition(.fade(0.3)),
-                  .imageCache(MyCache.shared)] // MyCache should conform to ``ImageCaching``.
+        options: [
+            .forceRefresh,
+            .transition(.fade(0.3)),
+            .imageCache(MyCache.shared) // MyCache should conform to ``ImageCaching``.
+        ] 
     )
     print("The image view is already displaying the avatar! 🎉")
 } catch {

@@ -1,6 +1,6 @@
 import Foundation
 
-/// An identifier used for interacting with the `AvatarService`
+/// An identifier used for interacting with the `AvatarService`.
 ///
 /// The `AvatarService` uses an `AvatarIdentifer` to specifiy which avatar to fetch.
 public enum AvatarIdentifier {
@@ -11,14 +11,14 @@ public enum AvatarIdentifier {
 extension AvatarIdentifier {
     // MARK: - Convience factories
 
-    /// Creates an `AvatarIdenfitier` using an email address passed as a `String`
+    /// Creates an `AvatarIdenfitier` using an email address passed as a `String`.
     /// - Parameter email: an email address
     /// - Returns: an `AvatarIdentifier`
     public static func email(_ email: String) -> AvatarIdentifier {
         .email(.init(email))
     }
 
-    /// Creates an `AvatarIdenfitier` using a hash  passed as a `String`
+    /// Creates an `AvatarIdenfitier` using a hash passed as a `String`.
     /// - Parameter hashID: a properly formatted hashID
     /// - Returns: an `AvatarIdentifier`
     public static func hashID(_ hashID: String) -> AvatarIdentifier {

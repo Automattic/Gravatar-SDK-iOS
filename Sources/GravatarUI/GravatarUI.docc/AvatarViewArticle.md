@@ -43,11 +43,11 @@ var body: some View {
 
 Here are some optional parameters for further customization:
 
-- cache: A cache that conforms to ``ImageCaching``.
-- urlSession: URLSession to manage the network tasks.
-- forceRefresh: A Binding boolean to skip the cache and fetch the most up to date avatar.
-- loadingView: A `View to display during loading.
-- transaction: A `Transaction` to animate setting the image.
+- **cache**: A cache that conforms to ``ImageCaching``.
+- **urlSession**: URLSession to manage the network tasks.
+- **forceRefresh**: A Binding boolean to skip the cache and fetch the most up to date avatar.
+- **loadingView**: A `View to display during loading.
+- **transaction**: A `Transaction` to animate setting the image.
 
 ```swift
 import GravatarUI
