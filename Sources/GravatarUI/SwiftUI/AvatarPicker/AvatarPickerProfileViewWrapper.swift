@@ -90,10 +90,19 @@ struct AvatarPickerProfileViewWrapper: View {
 
 extension String {
     fileprivate static var localizedEditAboutEditorButtonLabel: String {
-        SDKLocalizedString("AvatarPickerProfile.PageSwitchButton.AboutEditor", value: "Switch to about editor", comment: "Accessible label for button to switch to the About editor")
+        SDKLocalizedString(
+            "AvatarPickerProfile.PageSwitchButton.AboutEditor",
+            value: "Switch to about editor",
+            comment: "Accessible label for button to switch to the About editor"
+        )
     }
+
     fileprivate static var localizedEditAvatarsButtonLabel: String {
-        SDKLocalizedString("AvatarPickerProfile.PageSwitchButton.AvatarPicker", value: "Switch to avatar picker", comment: "Accessible label for button to switch to the Avatar picker")
+        SDKLocalizedString(
+            "AvatarPickerProfile.PageSwitchButton.AvatarPicker",
+            value: "Switch to avatar picker",
+            comment: "Accessible label for button to switch to the Avatar picker"
+        )
     }
 }
 
