@@ -48,7 +48,7 @@ final class DemoQuickEditorViewController: BaseFormViewController {
     )
 
     lazy var initialPageButton = ButtonLabelField(
-        title: "Initital Page",
+        title: "Initial Page",
         subtitle: selectedInitialPage.rawValue,
         buttonTitle: "Select",
         menuActions: InitialPage.allCases.compactMap { [weak self] page in
