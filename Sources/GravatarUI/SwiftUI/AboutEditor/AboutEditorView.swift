@@ -218,6 +218,7 @@ struct AboutEditorView: View {
             Text(title)
                 .font(Constants.primaryFont)
                 .multilineTextAlignment(.leading)
+                .accessibilityHidden(true)
             if isLarge {
                 TextEditor(text: value)
                     .font(Constants.primaryFont)
@@ -227,6 +228,7 @@ struct AboutEditorView: View {
                     .inputBorders(colorScheme: colorScheme)
                     .frame(height: dynamicTypeSize >= .accessibility1 ? 150 : 120)
                     .disabled(isSaving)
+                    .accessibilityLabel(title)
             } else {
                 TextField(
                     "",
@@ -236,6 +238,7 @@ struct AboutEditorView: View {
                 .padding(.DS.Padding.split)
                 .inputBorders(colorScheme: colorScheme)
                 .disabled(isSaving)
+                .accessibilityLabel(title)
             }
 
             if let footerText {
