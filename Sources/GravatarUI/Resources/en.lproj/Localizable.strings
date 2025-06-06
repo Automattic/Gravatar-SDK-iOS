@@ -266,7 +266,7 @@
 "Profile.Update.Success" = "Profile updated successfully";
 
 /* Accessible label for button to switch to the About editor. */
-"AvatarPickerProfile.PageSwitchButton.AboutEditor" = "Switch to About editor";
+"AvatarPickerProfile.PageSwitchButton.AboutEditor" = "Switch to about editor";
 
 /* Accessible label for button to switch to the Avatar picker. */
-"AvatarPickerProfile.PageSwitchButton.AvatarPicker" = "Switch to Avatar picker";
+"AvatarPickerProfile.PageSwitchButton.AvatarPicker" = "Switch to avatar picker";
