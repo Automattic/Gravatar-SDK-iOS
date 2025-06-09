@@ -410,7 +410,7 @@ open class BaseProfileView: UIView, UIContentView {
         if let avatarProvider = avatarProvider as? DefaultAvatarProvider {
             avatarProvider.cornerRadiusCalculator = config.avatarConfiguration.cornerRadiusCalculator
             avatarProvider.avatarBorderWidth = config.avatarConfiguration.borderWidth
-            avatarProvider.avatarBorderColor = config.avatarConfiguration.borderColor
+            avatarProvider.avatarBorderColor = config.palette.palette.border
         }
         if let length = config.avatarConfiguration.avatarLength {
             avatarLength = length
