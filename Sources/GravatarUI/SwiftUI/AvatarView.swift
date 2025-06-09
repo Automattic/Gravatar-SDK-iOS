@@ -111,7 +111,8 @@ public struct AvatarView<LoadingView: View, Placeholder: View>: View {
         loadingView: {
             ProgressView()
                 .progressViewStyle(CircularProgressViewStyle())
-        }, transaction:  Transaction(animation: .easeInOut(duration: 1))
+        },
+        transaction: Transaction(animation: .easeInOut(duration: 1))
     )
     .shape(RoundedRectangle(cornerRadius: 20), borderColor: Color.accentColor, borderWidth: 2)
     .frame(width: 100, height: 100, alignment: .center)
