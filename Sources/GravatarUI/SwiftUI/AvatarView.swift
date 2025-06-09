@@ -100,16 +100,18 @@ public struct AvatarView<LoadingView: View, Placeholder: View>: View {
         with: .email("email@google.com"),
         options: .init(preferredSize: .points(100))
     )
+
     return AvatarView(
         url: avatarURL?.url,
-        placeholder: Image(systemName: "person")
-            .renderingMode(.template)
-            .resizable(),
+        placeholderView: {
+            Image(systemName: "person")
+                .renderingMode(.template)
+                .resizable()
+        },
         loadingView: {
             ProgressView()
                 .progressViewStyle(CircularProgressViewStyle())
-        },
-        transaction: Transaction(animation: .easeInOut(duration: 1))
+        }, transaction:  Transaction(animation: .easeInOut(duration: 1))
     )
     .shape(RoundedRectangle(cornerRadius: 20), borderColor: Color.accentColor, borderWidth: 2)
     .frame(width: 100, height: 100, alignment: .center)
