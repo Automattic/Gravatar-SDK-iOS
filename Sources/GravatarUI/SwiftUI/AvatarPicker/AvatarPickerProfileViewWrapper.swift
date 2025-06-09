@@ -27,7 +27,7 @@ struct AvatarPickerProfileViewWrapper: View {
                     isLoading: $isLoading,
                     avatarAccessoryView: {
                         if case .avatar = buttonsMode {
-                            editButton {
+                            editButton(accessibilityLabel: .localizedEditAvatarsButtonLabel) {
                                 buttonTapHandler?(.avatar)
                             }
                         } else {
@@ -47,7 +47,7 @@ struct AvatarPickerProfileViewWrapper: View {
                 .background(profileBackground)
                 .cornerRadius(8)
                 if case .aboutInfo = buttonsMode {
-                    editButton {
+                    editButton(accessibilityLabel: .localizedEditAboutEditorButtonLabel) {
                         buttonTapHandler?(.aboutInfo)
                     }.padding()
                 }
@@ -74,7 +74,7 @@ struct AvatarPickerProfileViewWrapper: View {
     }
 
     @ViewBuilder
-    private func editButton(action: @escaping () -> Void) -> some View {
+    private func editButton(accessibilityLabel: String, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Image("pencil", bundle: Bundle.module)
                 .resizable()
@@ -83,7 +83,26 @@ struct AvatarPickerProfileViewWrapper: View {
                 .padding(6)
                 .background(Color.white)
                 .clipShape(Circle())
+                .accessibilityLabel(accessibilityLabel)
         }
+    }
+}
+
+extension String {
+    fileprivate static var localizedEditAboutEditorButtonLabel: String {
+        SDKLocalizedString(
+            "AvatarPickerProfile.PageSwitchButton.AboutEditor",
+            value: "Switch to about editor",
+            comment: "Accessible label for button to switch to the About editor"
+        )
+    }
+
+    fileprivate static var localizedEditAvatarsButtonLabel: String {
+        SDKLocalizedString(
+            "AvatarPickerProfile.PageSwitchButton.AvatarPicker",
+            value: "Switch to avatar picker",
+            comment: "Accessible label for button to switch to the Avatar picker"
+        )
     }
 }
 

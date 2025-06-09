@@ -264,3 +264,9 @@
 
 /* This confirmation message shows when the user updates fields of their profile. */
 "Profile.Update.Success" = "Profile updated successfully";
+
+/* Accessible label for button to switch to the About editor. */
+"AvatarPickerProfile.PageSwitchButton.AboutEditor" = "Switch to about editor";
+
+/* Accessible label for button to switch to the Avatar picker. */
+"AvatarPickerProfile.PageSwitchButton.AvatarPicker" = "Switch to avatar picker";
