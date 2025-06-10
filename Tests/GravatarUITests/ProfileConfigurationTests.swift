@@ -108,7 +108,7 @@ final class TestProfileConfiguration: XCTestCase {
         view.translatesAutoresizingMaskIntoConstraints = false
         config.palette = .custom {
             Palette.light.withReplacing { avatarColors in
-                AvatarColors(border: .green, background: avatarColors.background)
+                avatarColors.withReplacing(border: .green)
             }
         }
 
