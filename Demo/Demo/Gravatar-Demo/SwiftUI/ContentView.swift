@@ -30,7 +30,7 @@ struct ContentView: View {
                 }
                 .navigationTitle("Gravatar SwiftUI Demo")
                 .navigationBarTitleDisplayMode(.inline)
-                .toolbar<DemoToolbarContentView> {
+                .toolbar {
                     DemoToolbarContentView(onDismiss: onDismiss)
                 }
             }
@@ -46,7 +46,7 @@ struct ContentView: View {
                 .listStyle(.plain)
                 .navigationTitle("Gravatar SwiftUI Demo")
                 .navigationBarTitleDisplayMode(.inline)
-                .toolbar<DemoToolbarContentView> {
+                .toolbar {
                     DemoToolbarContentView(onDismiss: onDismiss)
                 }
             }

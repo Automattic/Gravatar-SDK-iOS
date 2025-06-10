@@ -100,11 +100,14 @@ public struct AvatarView<LoadingView: View, Placeholder: View>: View {
         with: .email("email@google.com"),
         options: .init(preferredSize: .points(100))
     )
+
     return AvatarView(
         url: avatarURL?.url,
-        placeholder: Image(systemName: "person")
-            .renderingMode(.template)
-            .resizable(),
+        placeholderView: {
+            Image(systemName: "person")
+                .renderingMode(.template)
+                .resizable()
+        },
         loadingView: {
             ProgressView()
                 .progressViewStyle(CircularProgressViewStyle())

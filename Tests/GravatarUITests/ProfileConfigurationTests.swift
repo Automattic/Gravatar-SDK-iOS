@@ -106,9 +106,13 @@ final class TestProfileConfiguration: XCTestCase {
         var config = ProfileViewConfiguration.largeSummary(model: model)
         let view = config.makeContentView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        config.palette = .light
+        config.palette = .custom {
+            Palette.light.withReplacing { avatarColors in
+                avatarColors.withReplacing(border: .green)
+            }
+        }
+
         config.avatarConfiguration.borderWidth = 2
-        config.avatarConfiguration.borderColor = .green
         config.avatarConfiguration.cornerRadiusCalculator = { avatarLength in
             avatarLength / 10
         }
