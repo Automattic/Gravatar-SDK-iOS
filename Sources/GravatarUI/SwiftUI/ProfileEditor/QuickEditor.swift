@@ -226,9 +226,16 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
         }
     }
 
+    var shouldHideProfileCardHeader: Bool {
+        let screenHeight = UIScreen.main.bounds.height
+        let iPhoneSE3rdGenScreenHeight: CGFloat = 667
+
+        return (vertcalSizeClass == .compact || screenHeight <= iPhoneSE3rdGenScreenHeight) && model.isKeyboardPresented
+    }
+
     @ViewBuilder
     func profileCardHeaderView() -> some View {
-        if !(vertcalSizeClass == .compact && model.isKeyboardPresented) {
+        if !shouldHideProfileCardHeader {
             EmailText(email: model.email)
                 .accumulateIntrinsicHeight()
             profileView()
