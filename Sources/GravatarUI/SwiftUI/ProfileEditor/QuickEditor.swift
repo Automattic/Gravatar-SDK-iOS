@@ -226,9 +226,18 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
         }
     }
 
+    var shouldHideProfileCardHeader: Bool {
+        let screenHeight = UIScreen.main.bounds.height
+        // The iPhone SE (1st Gen) only supports iOS 15.5 and lower.
+        // This can be removed after removing support for iOS 15
+        let iPhoneSE1stGenScreenHeight: CGFloat = 568
+
+        return (vertcalSizeClass == .compact || screenHeight <= iPhoneSE1stGenScreenHeight) && model.isKeyboardPresented
+    }
+
     @ViewBuilder
     func profileCardHeaderView() -> some View {
-        if !(vertcalSizeClass == .compact && model.isKeyboardPresented) {
+        if !shouldHideProfileCardHeader {
             EmailText(email: model.email)
                 .accumulateIntrinsicHeight()
             profileView()
