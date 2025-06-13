@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-05-07 09:54:06+0000 */
+/* Translation-Revision-Date: 2025-06-10 08:35:43+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: tr */
@@ -114,6 +114,18 @@
 /* Message displayed when no image is selected */
 "AvatarPicker.NoImageSelected.message" = "Görsel seçilmedi. Lütfen bir görsel seçin, aksi halde varsayılan görsel kullanılır.";
 
+/* Title of the action to discard changes and close the quick editor */
+"AvatarPicker.UnsavedChangesAlert.discardChangesButtonTitle" = "Sil";
+
+/* Title of the action to keep editing */
+"AvatarPicker.UnsavedChangesAlert.keepEditingButtonTitle" = "Düzenlemeye devam et";
+
+/* A message advising the user that will lose their unsaved changes if they close the quick editor */
+"AvatarPicker.UnsavedChangesAlert.message" = "Şimdi çıkarsanız değişikliklerinizi kaybedersiniz.";
+
+/* Title of an alert advising the user that they will lose their unsaved changes if they close the quick editor */
+"AvatarPicker.UnsavedChangesAlert.title" = "Kaydedilmemiş değişiklikler";
+
 /* Error message to show when the upload fails because the image is too big. */
 "AvatarPicker.Upload.Error.ImageTooBig.Error" = "Sağlanan görsel maksimum boyutu aşıyor: 10MB";
 
@@ -186,14 +198,23 @@
 /* Label of a field that contains a short biography or description about the user. */
 "Profile.AboutInfoField.aboutMe" = "Hakkımda";
 
+/* Description for the 'About me' field in the profile editing screen. */
+"Profile.AboutInfoField.aboutMe.footer" = "Profilinizin kısa açıklaması.";
+
 /* Label of a field that contains the company or organization the user is affiliated with. */
 "Profile.AboutInfoField.company" = "Şirket";
 
 /* Label of a field that contains a user’s display name. */
 "Profile.AboutInfoField.displayName" = "Görünen Ad";
 
+/* Label of a field that contains a user’s first name. */
+"Profile.AboutInfoField.firstName" = "Ad";
+
 /* Label of a field that contains the user's current job title or role. */
 "Profile.AboutInfoField.jobTitle" = "İş Unvanı";
+
+/* Label of a field that contains a user’s last name. */
+"Profile.AboutInfoField.lastName" = "Soyadı";
 
 /* Label of a field that contains the user's geographic location. */
 "Profile.AboutInfoField.location" = "Konum";
@@ -204,6 +225,30 @@
 /* Label of a field that contains a phonetic pronunciation of the user’s name. */
 "Profile.AboutInfoField.pronunciation" = "Telaffuz";
 
+/* Description for the 'Pronunciation' field in the profile editing screen. */
+"Profile.AboutInfoField.pronunciation.footer" = "Adınızın nasıl söylendiğini bildirin.";
+
+/* Title of the button to save changes in the profile editing screen. */
+"Profile.Save.title" = "Kaydet";
+
+/* Title of the 'Extra' fields group section in the About Info editing screen. */
+"Profile.Section.Extra.header" = "Ekstralar";
+
+/* Footer text for the 'Extra' fields group section in the About Info editing screen. */
+"Profile.Section.Extra.notice" = "Bu bilgiler Gravatar Web Profilinizde görüntülenmez ancak diğer uygulamalar ve hizmetler bunu kullanabilir.";
+
+/* Title of the personal info section in the profile editing screen. */
+"Profile.Section.Personal.header" = "Kişisel";
+
+/* Title of the professional/work info section in the profile editing screen. */
+"Profile.Section.Professional.header" = "Profesyonel";
+
+/* This error message shows when the user attempts to update fields of their profile and it fails. */
+"Profile.Update.Fail" = "Üzgünüz, profilinizi güncellemeye çalışırken bir sorun yaşandı.";
+
+/* This confirmation message shows when the user updates fields of their profile. */
+"Profile.Update.Success" = "Profil başarıyla güncellendi";
+
 /* Title for a button that allows you to claim a new Gravatar profile */
 "ProfileButton.title.create" = "Profili sahiplen";
 
@@ -212,6 +257,12 @@
 
 /* Title for a button that allows you to view your Gravatar profile */
 "ProfileButton.title.view" = "Profili görüntüle";
+
+/* A message describing the error and advising the user to login again to resolve the issue */
+"ProfileEditor.ContentLoading.Failure.SessionExpired.Close.subtext" = "Maalesef, görünüşe göre oturum süresi dolmuş. Profilinizi güncellemek için oturum açtığınızdan emin olun.";
+
+/* A message describing the error and advising the user to login again to resolve the issue */
+"ProfileEditor.ContentLoading.Failure.SessionExpired.LogIn.subtext" = "Güvenlik nedeniyle oturum süresi doldu. Profilinizi güncellemek için lütfen oturum açın.";
 
 /* An option in a menu that will display the camera for taking a picture */
 "SystemImagePickerView.Source.Camera.title" = "Fotoğraf Çek";

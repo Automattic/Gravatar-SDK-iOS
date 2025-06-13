@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-05-08 09:54:03+0000 */
+/* Translation-Revision-Date: 2025-05-28 09:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -114,6 +114,18 @@
 /* Message displayed when no image is selected */
 "AvatarPicker.NoImageSelected.message" = "画像が選択されていません。 いずれかを選択してください。選択しない場合はデフォルトが使用されます。";
 
+/* Title of the action to discard changes and close the quick editor */
+"AvatarPicker.UnsavedChangesAlert.discardChangesButtonTitle" = "破棄";
+
+/* Title of the action to keep editing */
+"AvatarPicker.UnsavedChangesAlert.keepEditingButtonTitle" = "編集を続行";
+
+/* A message advising the user that will lose their unsaved changes if they close the quick editor */
+"AvatarPicker.UnsavedChangesAlert.message" = "ここで終了すると、変更内容が失われます。";
+
+/* Title of an alert advising the user that they will lose their unsaved changes if they close the quick editor */
+"AvatarPicker.UnsavedChangesAlert.title" = "保存されていない変更";
+
 /* Error message to show when the upload fails because the image is too big. */
 "AvatarPicker.Upload.Error.ImageTooBig.Error" = "提供された画像は最大サイズの10MB を超えています。";
 
@@ -186,14 +198,23 @@
 /* Label of a field that contains a short biography or description about the user. */
 "Profile.AboutInfoField.aboutMe" = "自己紹介";
 
+/* Description for the 'About me' field in the profile editing screen. */
+"Profile.AboutInfoField.aboutMe.footer" = "プロフィールの簡単な説明文です。";
+
 /* Label of a field that contains the company or organization the user is affiliated with. */
 "Profile.AboutInfoField.company" = "会社";
 
 /* Label of a field that contains a user’s display name. */
 "Profile.AboutInfoField.displayName" = "表示名";
 
+/* Label of a field that contains a user’s first name. */
+"Profile.AboutInfoField.firstName" = "名";
+
 /* Label of a field that contains the user's current job title or role. */
 "Profile.AboutInfoField.jobTitle" = "肩書";
+
+/* Label of a field that contains a user’s last name. */
+"Profile.AboutInfoField.lastName" = "姓";
 
 /* Label of a field that contains the user's geographic location. */
 "Profile.AboutInfoField.location" = "場所";
@@ -204,6 +225,30 @@
 /* Label of a field that contains a phonetic pronunciation of the user’s name. */
 "Profile.AboutInfoField.pronunciation" = "ふりがな";
 
+/* Description for the 'Pronunciation' field in the profile editing screen. */
+"Profile.AboutInfoField.pronunciation.footer" = "名前をどのように発音するかを相手に伝えます。";
+
+/* Title of the button to save changes in the profile editing screen. */
+"Profile.Save.title" = "保存";
+
+/* Title of the 'Extra' fields group section in the About Info editing screen. */
+"Profile.Section.Extra.header" = "その他";
+
+/* Footer text for the 'Extra' fields group section in the About Info editing screen. */
+"Profile.Section.Extra.notice" = "この情報は Gravatar Web プロフィールには表示されませんが、他のアプリやサービスで使用できます。";
+
+/* Title of the personal info section in the profile editing screen. */
+"Profile.Section.Personal.header" = "パーソナル";
+
+/* Title of the professional/work info section in the profile editing screen. */
+"Profile.Section.Professional.header" = "プロフェッショナル";
+
+/* This error message shows when the user attempts to update fields of their profile and it fails. */
+"Profile.Update.Fail" = "プロフィールの更新中にエラーが発生しました。";
+
+/* This confirmation message shows when the user updates fields of their profile. */
+"Profile.Update.Success" = "プロフィールを正常に更新しました";
+
 /* Title for a button that allows you to claim a new Gravatar profile */
 "ProfileButton.title.create" = "プロフィールを取得";
 
@@ -212,6 +257,12 @@
 
 /* Title for a button that allows you to view your Gravatar profile */
 "ProfileButton.title.view" = "プロフィールを表示";
+
+/* A message describing the error and advising the user to login again to resolve the issue */
+"ProfileEditor.ContentLoading.Failure.SessionExpired.Close.subtext" = "セッションが期限切れになっているようです。 プロフィールを更新するには、ログインしていることを確認してください。";
+
+/* A message describing the error and advising the user to login again to resolve the issue */
+"ProfileEditor.ContentLoading.Failure.SessionExpired.LogIn.subtext" = "セキュリティ上の理由でセッションの有効期限が切れました。 プロフィールを更新するにはログインしてください。";
 
 /* An option in a menu that will display the camera for taking a picture */
 "SystemImagePickerView.Source.Camera.title" = "写真を撮る";
