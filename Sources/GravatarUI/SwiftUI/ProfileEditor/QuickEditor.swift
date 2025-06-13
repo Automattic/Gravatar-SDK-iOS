@@ -233,8 +233,8 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
 
         return model.isKeyboardPresented && (
             vertcalSizeClass == .compact ||
-            screenHeight <= iPhoneSE3rdGenScreenHeight ||
-            dynamicTypeSize >= .accessibility3
+                screenHeight <= iPhoneSE3rdGenScreenHeight ||
+                dynamicTypeSize >= .accessibility3
         )
     }
 
