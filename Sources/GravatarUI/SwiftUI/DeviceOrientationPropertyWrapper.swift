@@ -1,5 +1,5 @@
-import SwiftUI
 import Combine
+import SwiftUI
 
 enum Orientation {
     case landscape
@@ -7,7 +7,8 @@ enum Orientation {
     case unknown
 }
 
-@propertyWrapper struct DeviceOrientation: DynamicProperty {
+@propertyWrapper
+struct DeviceOrientation: DynamicProperty {
     @StateObject private var manager = DeviceOrientationManager()
 
     var wrappedValue: Orientation {
@@ -26,7 +27,7 @@ private class DeviceOrientationManager: ObservableObject {
 
         NotificationCenter.default
             .publisher(for: UIDevice.orientationDidChangeNotification)
-            .sink() { [weak self] _ in
+            .sink { [weak self] _ in
                 self?.orientation = UIDevice.current.orientation.map()
             }
             .store(in: &cancellables)
@@ -37,11 +38,11 @@ extension UIDeviceOrientation {
     fileprivate func map() -> Orientation {
         switch self {
         case .portrait, .portraitUpsideDown:
-            return .portrait
+            .portrait
         case .landscapeLeft, .landscapeRight:
-            return .landscape
+            .landscape
         default:
-            return .unknown
+            .unknown
         }
     }
 }
