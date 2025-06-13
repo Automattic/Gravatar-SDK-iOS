@@ -181,7 +181,7 @@ struct AboutEditorViewTests {
             await testModel.fetchProfile()
         }
         // Awaits for the previous task to start executing, and the view to start loading.
-        try await Task.sleep(nanoseconds: 10)
+        try await Task.sleep(nanoseconds: 20)
         assertSnapshots(
             of: view,
             as: [

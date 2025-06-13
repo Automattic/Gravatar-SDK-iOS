@@ -54,11 +54,7 @@ enum QEDetent {
                 case .avatarPicker:
                     .init([.height(intrinsicHeight)])
                 case .aboutEditor:
-                    if intrinsicHeight >= QEModalPresentationConstants.bottomSheetEstimatedHeight {
-                        .init([.height(QEModalPresentationConstants.bottomSheetEstimatedHeight), .large])
-                    } else {
-                        .init([.height(intrinsicHeight)])
-                    }
+                    .init([.height(intrinsicHeight)])
                 }
             }
         case .vertical(let presentationStyle):

@@ -1,0 +1,16 @@
+{
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  },
+  "properties" : {
+    "localizable" : true
+  },
+  "symbols" : [
+    {
+      "filename" : "square.and.arrow.top.right.svg",
+      "idiom" : "universal",
+      "language-direction" : "left-to-right"
+    }
+  ]
+}

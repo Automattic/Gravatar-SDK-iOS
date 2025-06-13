@@ -61,8 +61,13 @@ struct AvatarPickerProfileView<AccessoryView>: View where AccessoryView: View {
                         if let details = model.profileDetails {
                             secondaryText(text: details)
                         }
-                        Button(Localized.viewProfileButtonTitle) {
+                        Button {
                             viewProfileAction?()
+                        } label: {
+                            HStack(spacing: .DS.Padding.half) {
+                                Text(Localized.viewProfileButtonTitle)
+                                Image("square.and.arrow.top.right", bundle: .module)
+                            }
                         }
                         .font(.footnote)
                         .foregroundColor(Color(UIColor.label))
@@ -155,9 +160,9 @@ private enum Constants {
 
 private enum Localized {
     static let viewProfileButtonTitle = SDKLocalizedString(
-        "AvatarPickerProfile.Button.ViewProfile.title",
-        value: "View profile →",
-        comment: "Title of a button that will take you to your Gravatar profile, with an arrow indicating that this action will cause you to leave this view"
+        "Profile.Button.ViewProfile.title",
+        value: "View profile",
+        comment: "Title of a button that will take you to your Gravatar profile"
     )
     static let namePlaceholder = SDKLocalizedString(
         "AvatarPickerProfile.Name.placeholder",
