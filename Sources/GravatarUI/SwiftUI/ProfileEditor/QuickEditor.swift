@@ -28,8 +28,9 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
 
     @Environment(\.oauthSession) private var oauthSession
     @Environment(\.colorScheme) var colorScheme: ColorScheme
-    @Environment(\.verticalSizeClass) var vertcalSizeClass
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
+
+    @DeviceOrientation var deviceOrientation
 
     @AppStorage("QuickEditor.startOAuthOnAppear") private var startOAuthOnAppear: Bool = false
     @State private var fetchedToken: String?
@@ -232,7 +233,7 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
         let iPhoneSE3rdGenScreenHeight: CGFloat = 667
 
         return model.isKeyboardPresented && (
-            vertcalSizeClass == .compact ||
+            deviceOrientation == .landscape ||
                 screenHeight <= iPhoneSE3rdGenScreenHeight ||
                 dynamicTypeSize >= .accessibility3
         )
