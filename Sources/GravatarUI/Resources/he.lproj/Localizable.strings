@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-05-07 14:54:08+0000 */
+/* Translation-Revision-Date: 2025-05-30 09:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
@@ -114,6 +114,18 @@
 /* Message displayed when no image is selected */
 "AvatarPicker.NoImageSelected.message" = "לא נבחרה תמונה. יש לבחור לפחות תמונה אחת, אחרת נשתמש בברירת המחדל.";
 
+/* Title of the action to discard changes and close the quick editor */
+"AvatarPicker.UnsavedChangesAlert.discardChangesButtonTitle" = "ביטול";
+
+/* Title of the action to keep editing */
+"AvatarPicker.UnsavedChangesAlert.keepEditingButtonTitle" = "המשך עריכה";
+
+/* A message advising the user that will lose their unsaved changes if they close the quick editor */
+"AvatarPicker.UnsavedChangesAlert.message" = "אם ברצונך לצאת עכשיו מהמסך, השינויים יאבדו.";
+
+/* Title of an alert advising the user that they will lose their unsaved changes if they close the quick editor */
+"AvatarPicker.UnsavedChangesAlert.title" = "שינויים שלא נשמרו";
+
 /* Error message to show when the upload fails because the image is too big. */
 "AvatarPicker.Upload.Error.ImageTooBig.Error" = "התמונה שהוספת חורגת ממגבלות הגודל: 10‎ MB";
 
@@ -186,14 +198,23 @@
 /* Label of a field that contains a short biography or description about the user. */
 "Profile.AboutInfoField.aboutMe" = "אודותיי";
 
+/* Description for the 'About me' field in the profile editing screen. */
+"Profile.AboutInfoField.aboutMe.footer" = "תיאור קצר עבור הפרופיל שלך.";
+
 /* Label of a field that contains the company or organization the user is affiliated with. */
 "Profile.AboutInfoField.company" = "חברה";
 
 /* Label of a field that contains a user’s display name. */
 "Profile.AboutInfoField.displayName" = "שם תצוגה";
 
+/* Label of a field that contains a user’s first name. */
+"Profile.AboutInfoField.firstName" = "שם פרטי";
+
 /* Label of a field that contains the user's current job title or role. */
 "Profile.AboutInfoField.jobTitle" = "שם המשרה";
+
+/* Label of a field that contains a user’s last name. */
+"Profile.AboutInfoField.lastName" = "שם משפחה";
 
 /* Label of a field that contains the user's geographic location. */
 "Profile.AboutInfoField.location" = "מיקום";
@@ -204,6 +225,30 @@
 /* Label of a field that contains a phonetic pronunciation of the user’s name. */
 "Profile.AboutInfoField.pronunciation" = "הגייה";
 
+/* Description for the 'Pronunciation' field in the profile editing screen. */
+"Profile.AboutInfoField.pronunciation.footer" = "כדאי להגיד להם איך מבטאים את שמך.";
+
+/* Title of the button to save changes in the profile editing screen. */
+"Profile.Save.title" = "לשמור";
+
+/* Title of the 'Extra' fields group section in the About Info editing screen. */
+"Profile.Section.Extra.header" = "תוספות";
+
+/* Footer text for the 'Extra' fields group section in the About Info editing screen. */
+"Profile.Section.Extra.notice" = "מידע זה לא יופיע בפרופיל האינטרנט שלך ב-Gravatar, אך אפליקציות ושירותים אחרים יוכלו להשתמש בו.";
+
+/* Title of the personal info section in the profile editing screen. */
+"Profile.Section.Personal.header" = "אישי";
+
+/* Title of the professional/work info section in the profile editing screen. */
+"Profile.Section.Professional.header" = "מקצועי";
+
+/* This error message shows when the user attempts to update fields of their profile and it fails. */
+"Profile.Update.Fail" = "אופס, משהו השתבש במהלך הניסיון לעדכן את הפרופיל שלך.";
+
+/* This confirmation message shows when the user updates fields of their profile. */
+"Profile.Update.Success" = "הפרופיל עודכן בהצלחה";
+
 /* Title for a button that allows you to claim a new Gravatar profile */
 "ProfileButton.title.create" = "לקבל בעלות על הפרופיל";
 
@@ -212,6 +257,12 @@
 
 /* Title for a button that allows you to view your Gravatar profile */
 "ProfileButton.title.view" = "להציג פרופיל";
+
+/* A message describing the error and advising the user to login again to resolve the issue */
+"ProfileEditor.ContentLoading.Failure.SessionExpired.Close.subtext" = "מצטערים, נראה שפג תוקף ההפעלה שלך. חשוב לוודא שהתחברת כדי לעדכן את הפרופיל שלך.";
+
+/* A message describing the error and advising the user to login again to resolve the issue */
+"ProfileEditor.ContentLoading.Failure.SessionExpired.LogIn.subtext" = "מטעמי אבטחה, פג תוקף ההפעלה. עליך להתחבר כדי לעדכן את הפרופיל שלך.";
 
 /* An option in a menu that will display the camera for taking a picture */
 "SystemImagePickerView.Source.Camera.title" = "לצלם תמונה";

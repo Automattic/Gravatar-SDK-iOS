@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-05-06 09:54:03+0000 */
+/* Translation-Revision-Date: 2025-05-29 11:54:06+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_CN */
@@ -114,6 +114,18 @@
 /* Message displayed when no image is selected */
 "AvatarPicker.NoImageSelected.message" = "未选择图片。 请选择一张图片，否则系统将使用默认图片。";
 
+/* Title of the action to discard changes and close the quick editor */
+"AvatarPicker.UnsavedChangesAlert.discardChangesButtonTitle" = "放弃";
+
+/* Title of the action to keep editing */
+"AvatarPicker.UnsavedChangesAlert.keepEditingButtonTitle" = "继续编辑";
+
+/* A message advising the user that will lose their unsaved changes if they close the quick editor */
+"AvatarPicker.UnsavedChangesAlert.message" = "如果您现在离开，您的更改将会丢失。";
+
+/* Title of an alert advising the user that they will lose their unsaved changes if they close the quick editor */
+"AvatarPicker.UnsavedChangesAlert.title" = "更改未保存";
+
 /* Error message to show when the upload fails because the image is too big. */
 "AvatarPicker.Upload.Error.ImageTooBig.Error" = "所提供图片的大小超出最大值：10 MB";
 
@@ -186,14 +198,23 @@
 /* Label of a field that contains a short biography or description about the user. */
 "Profile.AboutInfoField.aboutMe" = "关于我";
 
+/* Description for the 'About me' field in the profile editing screen. */
+"Profile.AboutInfoField.aboutMe.footer" = "简要描述您的个人资料。";
+
 /* Label of a field that contains the company or organization the user is affiliated with. */
 "Profile.AboutInfoField.company" = "公司";
 
 /* Label of a field that contains a user’s display name. */
 "Profile.AboutInfoField.displayName" = "显示名称";
 
+/* Label of a field that contains a user’s first name. */
+"Profile.AboutInfoField.firstName" = "名字";
+
 /* Label of a field that contains the user's current job title or role. */
 "Profile.AboutInfoField.jobTitle" = "职位";
+
+/* Label of a field that contains a user’s last name. */
+"Profile.AboutInfoField.lastName" = "姓氏";
 
 /* Label of a field that contains the user's geographic location. */
 "Profile.AboutInfoField.location" = "位置";
@@ -204,6 +225,30 @@
 /* Label of a field that contains a phonetic pronunciation of the user’s name. */
 "Profile.AboutInfoField.pronunciation" = "发音";
 
+/* Description for the 'Pronunciation' field in the profile editing screen. */
+"Profile.AboutInfoField.pronunciation.footer" = "告诉他们您名字的读音。";
+
+/* Title of the button to save changes in the profile editing screen. */
+"Profile.Save.title" = "保存";
+
+/* Title of the 'Extra' fields group section in the About Info editing screen. */
+"Profile.Section.Extra.header" = "其他";
+
+/* Footer text for the 'Extra' fields group section in the About Info editing screen. */
+"Profile.Section.Extra.notice" = "这些信息不会显示在您的 Gravatar Web 个人资料中，但可以用于其他应用程序和服务。";
+
+/* Title of the personal info section in the profile editing screen. */
+"Profile.Section.Personal.header" = "个人版";
+
+/* Title of the professional/work info section in the profile editing screen. */
+"Profile.Section.Professional.header" = "专业版";
+
+/* This error message shows when the user attempts to update fields of their profile and it fails. */
+"Profile.Update.Fail" = "糟糕，尝试更新您的个人资料时出现错误。";
+
+/* This confirmation message shows when the user updates fields of their profile. */
+"Profile.Update.Success" = "个人资料更新成功";
+
 /* Title for a button that allows you to claim a new Gravatar profile */
 "ProfileButton.title.create" = "申请个人资料";
 
@@ -212,6 +257,12 @@
 
 /* Title for a button that allows you to view your Gravatar profile */
 "ProfileButton.title.view" = "查看个人资料";
+
+/* A message describing the error and advising the user to login again to resolve the issue */
+"ProfileEditor.ContentLoading.Failure.SessionExpired.Close.subtext" = "很抱歉，您的会话似乎已过期。 请确保您已登录，以便更新您的个人资料。";
+
+/* A message describing the error and advising the user to login again to resolve the issue */
+"ProfileEditor.ContentLoading.Failure.SessionExpired.LogIn.subtext" = "出于安全原因，会话已过期。 请登录以更新您的个人资料。";
 
 /* An option in a menu that will display the camera for taking a picture */
 "SystemImagePickerView.Source.Camera.title" = "拍照";

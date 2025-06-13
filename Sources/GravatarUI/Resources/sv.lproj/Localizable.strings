@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-05-02 07:49:07+0000 */
+/* Translation-Revision-Date: 2025-05-28 13:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -114,6 +114,18 @@
 /* Message displayed when no image is selected */
 "AvatarPicker.NoImageSelected.message" = "Ingen bild vald. Välj en eller så kommer standard att användas.";
 
+/* Title of the action to discard changes and close the quick editor */
+"AvatarPicker.UnsavedChangesAlert.discardChangesButtonTitle" = "Kassera";
+
+/* Title of the action to keep editing */
+"AvatarPicker.UnsavedChangesAlert.keepEditingButtonTitle" = "Fortsätt redigera";
+
+/* A message advising the user that will lose their unsaved changes if they close the quick editor */
+"AvatarPicker.UnsavedChangesAlert.message" = "Om du lämnar nu kommer dina ändringar att gå förlorade.";
+
+/* Title of an alert advising the user that they will lose their unsaved changes if they close the quick editor */
+"AvatarPicker.UnsavedChangesAlert.title" = "Ej sparade ändringar";
+
 /* Error message to show when the upload fails because the image is too big. */
 "AvatarPicker.Upload.Error.ImageTooBig.Error" = "Den tillhandahållna bilden överskrider den maximala storleken: 10 MB";
 
@@ -186,14 +198,23 @@
 /* Label of a field that contains a short biography or description about the user. */
 "Profile.AboutInfoField.aboutMe" = "Om mig";
 
+/* Description for the 'About me' field in the profile editing screen. */
+"Profile.AboutInfoField.aboutMe.footer" = "Kort beskrivning för din profil.";
+
 /* Label of a field that contains the company or organization the user is affiliated with. */
 "Profile.AboutInfoField.company" = "Företag";
 
 /* Label of a field that contains a user’s display name. */
 "Profile.AboutInfoField.displayName" = "Visningsnamn";
 
+/* Label of a field that contains a user’s first name. */
+"Profile.AboutInfoField.firstName" = "Förnamn";
+
 /* Label of a field that contains the user's current job title or role. */
 "Profile.AboutInfoField.jobTitle" = "Jobbtitel";
+
+/* Label of a field that contains a user’s last name. */
+"Profile.AboutInfoField.lastName" = "Efternamn";
 
 /* Label of a field that contains the user's geographic location. */
 "Profile.AboutInfoField.location" = "Plats";
@@ -204,6 +225,30 @@
 /* Label of a field that contains a phonetic pronunciation of the user’s name. */
 "Profile.AboutInfoField.pronunciation" = "Uttal";
 
+/* Description for the 'Pronunciation' field in the profile editing screen. */
+"Profile.AboutInfoField.pronunciation.footer" = "Låt dem veta hur ditt namn låter.";
+
+/* Title of the button to save changes in the profile editing screen. */
+"Profile.Save.title" = "Spara";
+
+/* Title of the 'Extra' fields group section in the About Info editing screen. */
+"Profile.Section.Extra.header" = "Extra";
+
+/* Footer text for the 'Extra' fields group section in the About Info editing screen. */
+"Profile.Section.Extra.notice" = "Denna information kommer inte att visas på din Gravatar-webbprofil, men andra appar och tjänster kan använda den.";
+
+/* Title of the personal info section in the profile editing screen. */
+"Profile.Section.Personal.header" = "Personligt";
+
+/* Title of the professional/work info section in the profile editing screen. */
+"Profile.Section.Professional.header" = "Professionell";
+
+/* This error message shows when the user attempts to update fields of their profile and it fails. */
+"Profile.Update.Fail" = "Hoppsan, något fungerade inte riktigt när du försökte uppdatera din profil.";
+
+/* This confirmation message shows when the user updates fields of their profile. */
+"Profile.Update.Success" = "Profilen har uppdaterats";
+
 /* Title for a button that allows you to claim a new Gravatar profile */
 "ProfileButton.title.create" = "Gör anspråk på profil";
 
@@ -212,6 +257,12 @@
 
 /* Title for a button that allows you to view your Gravatar profile */
 "ProfileButton.title.view" = "Visa profil";
+
+/* A message describing the error and advising the user to login again to resolve the issue */
+"ProfileEditor.ContentLoading.Failure.SessionExpired.Close.subtext" = "Det verkar som att din session har löpt ut. Se till att du är inloggad för att uppdatera din profil.";
+
+/* A message describing the error and advising the user to login again to resolve the issue */
+"ProfileEditor.ContentLoading.Failure.SessionExpired.LogIn.subtext" = "Sessionen har löpt ut av säkerhetsskäl. Logga in för att uppdatera din profil.";
 
 /* An option in a menu that will display the camera for taking a picture */
 "SystemImagePickerView.Source.Camera.title" = "Ta ett foto";

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-05-07 09:54:06+0000 */
+/* Translation-Revision-Date: 2025-05-28 09:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -114,6 +114,18 @@
 /* Message displayed when no image is selected */
 "AvatarPicker.NoImageSelected.message" = "선택된 이미지가 없습니다. 이미지를 선택하지 않으면 기본 이미지가 사용됩니다.";
 
+/* Title of the action to discard changes and close the quick editor */
+"AvatarPicker.UnsavedChangesAlert.discardChangesButtonTitle" = "취소";
+
+/* Title of the action to keep editing */
+"AvatarPicker.UnsavedChangesAlert.keepEditingButtonTitle" = "계속 편집하기";
+
+/* A message advising the user that will lose their unsaved changes if they close the quick editor */
+"AvatarPicker.UnsavedChangesAlert.message" = "지금 나가면 변경 사항이 손실됩니다.";
+
+/* Title of an alert advising the user that they will lose their unsaved changes if they close the quick editor */
+"AvatarPicker.UnsavedChangesAlert.title" = "저장되지 않은 변경 사항";
+
 /* Error message to show when the upload fails because the image is too big. */
 "AvatarPicker.Upload.Error.ImageTooBig.Error" = "제공된 이미지가 최대 크기(10MB)를 초과합니다.";
 
@@ -186,14 +198,23 @@
 /* Label of a field that contains a short biography or description about the user. */
 "Profile.AboutInfoField.aboutMe" = "내 소개";
 
+/* Description for the 'About me' field in the profile editing screen. */
+"Profile.AboutInfoField.aboutMe.footer" = "프로필에 대한 간단한 설명입니다.";
+
 /* Label of a field that contains the company or organization the user is affiliated with. */
 "Profile.AboutInfoField.company" = "회사";
 
 /* Label of a field that contains a user’s display name. */
 "Profile.AboutInfoField.displayName" = "대화명";
 
+/* Label of a field that contains a user’s first name. */
+"Profile.AboutInfoField.firstName" = "이름";
+
 /* Label of a field that contains the user's current job title or role. */
 "Profile.AboutInfoField.jobTitle" = "직책";
+
+/* Label of a field that contains a user’s last name. */
+"Profile.AboutInfoField.lastName" = "성";
 
 /* Label of a field that contains the user's geographic location. */
 "Profile.AboutInfoField.location" = "위치";
@@ -204,6 +225,30 @@
 /* Label of a field that contains a phonetic pronunciation of the user’s name. */
 "Profile.AboutInfoField.pronunciation" = "발음";
 
+/* Description for the 'Pronunciation' field in the profile editing screen. */
+"Profile.AboutInfoField.pronunciation.footer" = "이름을 어떻게 발음하는지 알려주세요.";
+
+/* Title of the button to save changes in the profile editing screen. */
+"Profile.Save.title" = "저장";
+
+/* Title of the 'Extra' fields group section in the About Info editing screen. */
+"Profile.Section.Extra.header" = "추가 사항";
+
+/* Footer text for the 'Extra' fields group section in the About Info editing screen. */
+"Profile.Section.Extra.notice" = "이 정보는 그라바타 웹 프로필에 표시되지 않지만, 다른 앱과 서비스에서 사용할 수 있습니다.";
+
+/* Title of the personal info section in the profile editing screen. */
+"Profile.Section.Personal.header" = "개인";
+
+/* Title of the professional/work info section in the profile editing screen. */
+"Profile.Section.Professional.header" = "프로";
+
+/* This error message shows when the user attempts to update fields of their profile and it fails. */
+"Profile.Update.Fail" = "죄송합니다. 프로필 업데이트를 시도하는 동안 문제가 발생했습니다.";
+
+/* This confirmation message shows when the user updates fields of their profile. */
+"Profile.Update.Success" = "프로필 업데이트됨";
+
 /* Title for a button that allows you to claim a new Gravatar profile */
 "ProfileButton.title.create" = "프로필 신청";
 
@@ -212,6 +257,12 @@
 
 /* Title for a button that allows you to view your Gravatar profile */
 "ProfileButton.title.view" = "프로필 보기";
+
+/* A message describing the error and advising the user to login again to resolve the issue */
+"ProfileEditor.ContentLoading.Failure.SessionExpired.Close.subtext" = "죄송합니다. 회원님의 세션이 만료된 것 같습니다. 프로필을 업데이트하려면 로그인하셔야 합니다.";
+
+/* A message describing the error and advising the user to login again to resolve the issue */
+"ProfileEditor.ContentLoading.Failure.SessionExpired.LogIn.subtext" = "보안상의 이유로 세션이 만료되었습니다. 프로필을 업데이트하려면 로그인하세요.";
 
 /* An option in a menu that will display the camera for taking a picture */
 "SystemImagePickerView.Source.Camera.title" = "사진 촬영";

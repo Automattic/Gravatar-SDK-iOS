@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-05-06 13:54:02+0000 */
+/* Translation-Revision-Date: 2025-05-27 15:54:02+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -114,6 +114,18 @@
 /* Message displayed when no image is selected */
 "AvatarPicker.NoImageSelected.message" = "لم يتم تحديد صورة. يرجى تحديد صورة أو سيتم استخدام الصورة الافتراضية.";
 
+/* Title of the action to discard changes and close the quick editor */
+"AvatarPicker.UnsavedChangesAlert.discardChangesButtonTitle" = "تجاهل";
+
+/* Title of the action to keep editing */
+"AvatarPicker.UnsavedChangesAlert.keepEditingButtonTitle" = "متابعة التحرير";
+
+/* A message advising the user that will lose their unsaved changes if they close the quick editor */
+"AvatarPicker.UnsavedChangesAlert.message" = "إذا غادرت الآن، فستفقد التغييرات التي أجريتها.";
+
+/* Title of an alert advising the user that they will lose their unsaved changes if they close the quick editor */
+"AvatarPicker.UnsavedChangesAlert.title" = "تغييرات غير محفوظة";
+
 /* Error message to show when the upload fails because the image is too big. */
 "AvatarPicker.Upload.Error.ImageTooBig.Error" = "تتجاوز الصورة المتوفرة الحد الأقصى للحجم: 10 ميجابايت";
 
@@ -186,14 +198,23 @@
 /* Label of a field that contains a short biography or description about the user. */
 "Profile.AboutInfoField.aboutMe" = "نبذة عني";
 
+/* Description for the 'About me' field in the profile editing screen. */
+"Profile.AboutInfoField.aboutMe.footer" = "وصف موجز لملفك الشخصي.";
+
 /* Label of a field that contains the company or organization the user is affiliated with. */
 "Profile.AboutInfoField.company" = "الشركة";
 
 /* Label of a field that contains a user’s display name. */
 "Profile.AboutInfoField.displayName" = "اسم العرض";
 
+/* Label of a field that contains a user’s first name. */
+"Profile.AboutInfoField.firstName" = "الاسم الأول";
+
 /* Label of a field that contains the user's current job title or role. */
 "Profile.AboutInfoField.jobTitle" = "المسمى الوظيفي";
+
+/* Label of a field that contains a user’s last name. */
+"Profile.AboutInfoField.lastName" = "اسم العائلة";
 
 /* Label of a field that contains the user's geographic location. */
 "Profile.AboutInfoField.location" = "الموقع";
@@ -204,6 +225,30 @@
 /* Label of a field that contains a phonetic pronunciation of the user’s name. */
 "Profile.AboutInfoField.pronunciation" = "النطق";
 
+/* Description for the 'Pronunciation' field in the profile editing screen. */
+"Profile.AboutInfoField.pronunciation.footer" = "اسمح لهم بمعرفة كيف يظهر اسمك.";
+
+/* Title of the button to save changes in the profile editing screen. */
+"Profile.Save.title" = "حفظ";
+
+/* Title of the 'Extra' fields group section in the About Info editing screen. */
+"Profile.Section.Extra.header" = "إضافات";
+
+/* Footer text for the 'Extra' fields group section in the About Info editing screen. */
+"Profile.Section.Extra.notice" = "لن تظهر هذه المعلومات على ملفك الشخصي على جرافتار على الويب، ولكن يمكن للتطبيقات والخدمات الأخرى استخدامها.";
+
+/* Title of the personal info section in the profile editing screen. */
+"Profile.Section.Personal.header" = "شخصي";
+
+/* Title of the professional/work info section in the profile editing screen. */
+"Profile.Section.Professional.header" = "احترافي";
+
+/* This error message shows when the user attempts to update fields of their profile and it fails. */
+"Profile.Update.Fail" = "عذرًا، ثمَّة شيء لم يعمل بشكل طبيعي في أثناء محاولة تحديث ملفك الشخصي.";
+
+/* This confirmation message shows when the user updates fields of their profile. */
+"Profile.Update.Success" = "تم تحديث الملف الشخصي بنجاح";
+
 /* Title for a button that allows you to claim a new Gravatar profile */
 "ProfileButton.title.create" = "المطالبة بالملف الشخصي";
 
@@ -212,6 +257,12 @@
 
 /* Title for a button that allows you to view your Gravatar profile */
 "ProfileButton.title.view" = "عرض الملف الشخصي";
+
+/* A message describing the error and advising the user to login again to resolve the issue */
+"ProfileEditor.ContentLoading.Failure.SessionExpired.Close.subtext" = "عذرًا، يبدو أن جلستك قد انتهت صلاحيتها. تأكد من تسجيلك الدخول لتحديث ملفك الشخصي.";
+
+/* A message describing the error and advising the user to login again to resolve the issue */
+"ProfileEditor.ContentLoading.Failure.SessionExpired.LogIn.subtext" = "انتهت صلاحية الجلسة لأسباب تتعلق بالأمان. يرجى تسجيل الدخول لتحديث ملفك الشخصي.";
 
 /* An option in a menu that will display the camera for taking a picture */
 "SystemImagePickerView.Source.Camera.title" = "التقاط صورة";

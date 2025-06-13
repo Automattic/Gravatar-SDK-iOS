@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-05-06 15:54:03+0000 */
+/* Translation-Revision-Date: 2025-05-30 15:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: it */
@@ -114,6 +114,18 @@
 /* Message displayed when no image is selected */
 "AvatarPicker.NoImageSelected.message" = "Nessuna immagine selezionata. Seleziona un'immagine, altrimenti verrà usata quella predefinita.";
 
+/* Title of the action to discard changes and close the quick editor */
+"AvatarPicker.UnsavedChangesAlert.discardChangesButtonTitle" = "Annulla";
+
+/* Title of the action to keep editing */
+"AvatarPicker.UnsavedChangesAlert.keepEditingButtonTitle" = "Continua a modificare";
+
+/* A message advising the user that will lose their unsaved changes if they close the quick editor */
+"AvatarPicker.UnsavedChangesAlert.message" = "Se esci ora, le modifiche andranno perse.";
+
+/* Title of an alert advising the user that they will lose their unsaved changes if they close the quick editor */
+"AvatarPicker.UnsavedChangesAlert.title" = "Modifiche non salvate";
+
 /* Error message to show when the upload fails because the image is too big. */
 "AvatarPicker.Upload.Error.ImageTooBig.Error" = "L'immagine fornita supera il peso massimo: 10MB";
 
@@ -186,14 +198,23 @@
 /* Label of a field that contains a short biography or description about the user. */
 "Profile.AboutInfoField.aboutMe" = "Informazioni";
 
+/* Description for the 'About me' field in the profile editing screen. */
+"Profile.AboutInfoField.aboutMe.footer" = "Breve descrizione del tuo profilo.";
+
 /* Label of a field that contains the company or organization the user is affiliated with. */
 "Profile.AboutInfoField.company" = "Società";
 
 /* Label of a field that contains a user’s display name. */
 "Profile.AboutInfoField.displayName" = "Nome visualizzato";
 
+/* Label of a field that contains a user’s first name. */
+"Profile.AboutInfoField.firstName" = "Nome";
+
 /* Label of a field that contains the user's current job title or role. */
 "Profile.AboutInfoField.jobTitle" = "Titolo professionale";
+
+/* Label of a field that contains a user’s last name. */
+"Profile.AboutInfoField.lastName" = "Cognome";
 
 /* Label of a field that contains the user's geographic location. */
 "Profile.AboutInfoField.location" = "Posizione";
@@ -204,6 +225,30 @@
 /* Label of a field that contains a phonetic pronunciation of the user’s name. */
 "Profile.AboutInfoField.pronunciation" = "Pronuncia";
 
+/* Description for the 'Pronunciation' field in the profile editing screen. */
+"Profile.AboutInfoField.pronunciation.footer" = "Fai in modo che riconoscano il tuo nome.";
+
+/* Title of the button to save changes in the profile editing screen. */
+"Profile.Save.title" = "Salva";
+
+/* Title of the 'Extra' fields group section in the About Info editing screen. */
+"Profile.Section.Extra.header" = "Extra";
+
+/* Footer text for the 'Extra' fields group section in the About Info editing screen. */
+"Profile.Section.Extra.notice" = "Queste informazioni non appariranno sul tuo profilo Gravatar web, ma potrebbero essere usate da altre app e altri servizi.";
+
+/* Title of the personal info section in the profile editing screen. */
+"Profile.Section.Personal.header" = "Personale";
+
+/* Title of the professional/work info section in the profile editing screen. */
+"Profile.Section.Professional.header" = "Professionale";
+
+/* This error message shows when the user attempts to update fields of their profile and it fails. */
+"Profile.Update.Fail" = "Ops, qualcosa è andato storto durante il tentativo di aggiornamento del tuo profilo.";
+
+/* This confirmation message shows when the user updates fields of their profile. */
+"Profile.Update.Success" = "Profilo aggiornato correttamente";
+
 /* Title for a button that allows you to claim a new Gravatar profile */
 "ProfileButton.title.create" = "Rivendica profilo";
 
@@ -212,6 +257,12 @@
 
 /* Title for a button that allows you to view your Gravatar profile */
 "ProfileButton.title.view" = "Visualizza profilo";
+
+/* A message describing the error and advising the user to login again to resolve the issue */
+"ProfileEditor.ContentLoading.Failure.SessionExpired.Close.subtext" = "Sembra che la tua sessione sia scaduta. Assicurati di aver effettuato l'accesso per aggiornare il tuo profilo.";
+
+/* A message describing the error and advising the user to login again to resolve the issue */
+"ProfileEditor.ContentLoading.Failure.SessionExpired.LogIn.subtext" = "Sessione scaduta per ragioni di sicurezza. Accedi per aggiornare il tuo profilo.";
 
 /* An option in a menu that will display the camera for taking a picture */
 "SystemImagePickerView.Source.Camera.title" = "Scatta una foto";
