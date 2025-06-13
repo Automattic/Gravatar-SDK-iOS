@@ -129,6 +129,9 @@
 /* Title of a button that will take you to your Gravatar profile, with an arrow indicating that this action will cause you to leave this view */
 "AvatarPickerProfile.Button.ViewProfile.title" = "عرض الملف الشخصي ←";
 
+/* Title of a button that will take you to your Gravatar profile */
+"Profile.Button.ViewProfile.title" = "عرض الملف الشخصي";
+
 /* Placeholder text for the name field */
 "AvatarPickerProfile.Name.placeholder" = "اسمك";
 

@@ -129,6 +129,9 @@
 /* Title of a button that will take you to your Gravatar profile, with an arrow indicating that this action will cause you to leave this view */
 "AvatarPickerProfile.Button.ViewProfile.title" = "檢視個人檔案 →";
 
+/* Title of a button that will take you to your Gravatar profile */
+"Profile.Button.ViewProfile.title" = "檢視個人檔案";
+
 /* Placeholder text for the name field */
 "AvatarPickerProfile.Name.placeholder" = "你的姓名";
 
