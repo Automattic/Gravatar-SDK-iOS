@@ -236,8 +236,10 @@ struct QuickEditor<ImageEditor: ImageEditorView>: View {
     @ViewBuilder
     func profileCardHeaderView() -> some View {
         if !shouldHideProfileCardHeader {
-            EmailText(email: model.email)
-                .accumulateIntrinsicHeight()
+            if fetchedToken != nil {
+                EmailText(email: model.email)
+                    .accumulateIntrinsicHeight()
+            }
             profileView()
                 .accumulateIntrinsicHeight()
         } else {
