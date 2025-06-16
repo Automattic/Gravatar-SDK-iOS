@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-06-10 08:35:43+0000 */
+/* Translation-Revision-Date: 2025-06-16 13:08:21+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: tr */
@@ -214,7 +214,7 @@
 "Profile.AboutInfoField.jobTitle" = "İş Unvanı";
 
 /* Label of a field that contains a user’s last name. */
-"Profile.AboutInfoField.lastName" = "Soyadı";
+"Profile.AboutInfoField.lastName" = "Soyad";
 
 /* Label of a field that contains the user's geographic location. */
 "Profile.AboutInfoField.location" = "Konum";
@@ -235,7 +235,7 @@
 "Profile.Section.Extra.header" = "Ekstralar";
 
 /* Footer text for the 'Extra' fields group section in the About Info editing screen. */
-"Profile.Section.Extra.notice" = "Bu bilgiler Gravatar Web Profilinizde görüntülenmez ancak diğer uygulamalar ve hizmetler bunu kullanabilir.";
+"Profile.Section.Extra.notice" = "Bu bilgiler Gravatar Web Profilinizde görüntülenmez ancak diğer uygulamalar ve hizmetler bunları kullanabilir.";
 
 /* Title of the personal info section in the profile editing screen. */
 "Profile.Section.Personal.header" = "Kişisel";
