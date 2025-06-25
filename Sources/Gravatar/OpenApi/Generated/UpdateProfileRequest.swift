@@ -21,6 +21,12 @@ public struct UpdateProfileRequest: Codable, Hashable, Sendable {
     public private(set) var jobTitle: String?
     /// The user's current company's name.
     public private(set) var company: String?
+    /// The user's cell phone number.
+    public private(set) var cellPhone: String?
+    /// The user's contact email address.
+    public private(set) var contactEmail: String?
+    /// Whether the user's contact information is hidden on their profile.
+    public private(set) var hiddenContactInfo: Bool?
 
     public init(
         firstName: String? = nil,
@@ -31,7 +37,10 @@ public struct UpdateProfileRequest: Codable, Hashable, Sendable {
         pronouns: String? = nil,
         location: String? = nil,
         jobTitle: String? = nil,
-        company: String? = nil
+        company: String? = nil,
+        cellPhone: String? = nil,
+        contactEmail: String? = nil,
+        hiddenContactInfo: Bool? = nil
     ) {
         self.firstName = firstName
         self.lastName = lastName
@@ -42,6 +51,9 @@ public struct UpdateProfileRequest: Codable, Hashable, Sendable {
         self.location = location
         self.jobTitle = jobTitle
         self.company = company
+        self.cellPhone = cellPhone
+        self.contactEmail = contactEmail
+        self.hiddenContactInfo = hiddenContactInfo
     }
 
     enum CodingKeys: String, CodingKey, CaseIterable {
@@ -54,6 +66,9 @@ public struct UpdateProfileRequest: Codable, Hashable, Sendable {
         case location
         case jobTitle = "job_title"
         case company
+        case cellPhone = "cell_phone"
+        case contactEmail = "contact_email"
+        case hiddenContactInfo = "hidden_contact_info"
     }
 
     // Encodable protocol methods
@@ -69,5 +84,8 @@ public struct UpdateProfileRequest: Codable, Hashable, Sendable {
         try container.encodeIfPresent(location, forKey: .location)
         try container.encodeIfPresent(jobTitle, forKey: .jobTitle)
         try container.encodeIfPresent(company, forKey: .company)
+        try container.encodeIfPresent(cellPhone, forKey: .cellPhone)
+        try container.encodeIfPresent(contactEmail, forKey: .contactEmail)
+        try container.encodeIfPresent(hiddenContactInfo, forKey: .hiddenContactInfo)
     }
 }
