@@ -2,6 +2,12 @@ import UIKit
 import Gravatar
 
 class DemoFetchProfileViewController: UIViewController {
+    @StoredValue(keyName: "QEEmailKey", defaultValue: "")
+    var savedEmail: String
+
+    @StoredValue(keyName: "QETokenKey", defaultValue: "")
+    var savedToken: String
+
     let rootStackView: UIStackView = {
         let stack = UIStackView()
         stack.translatesAutoresizingMaskIntoConstraints = false
@@ -25,10 +31,11 @@ class DemoFetchProfileViewController: UIViewController {
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.placeholder = "OAuth Token (Optional)"
         textField.isSecureTextEntry = true
+        textField.text = savedToken
         return textField
     }()
 
-    let emailField: UITextField = {
+    lazy var emailField: UITextField = {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.placeholder = "Email"
@@ -36,6 +43,7 @@ class DemoFetchProfileViewController: UIViewController {
         textField.autocapitalizationType = .none
         textField.textContentType = .emailAddress
         textField.textAlignment = .center
+        textField.text = savedEmail
         return textField
     }()
     
