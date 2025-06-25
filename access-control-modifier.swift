@@ -8,7 +8,10 @@ let internalTypes: [String] = [
     "AssociatedResponse",
     "Avatar",
     "AvatarRating",
-    "UpdateAvatarRequest"
+    "UpdateAvatarRequest",
+    "GetVerifiedAccountServices200Response",
+    "GetVerifiedAccountServices200ResponseServicesInner",
+    "SearchProfilesByVerifiedAccount200Response"
 ]
 
 let packageTypes: [String] = [

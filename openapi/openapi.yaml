@@ -251,6 +251,20 @@ components:
         - pronunciation
         - pronouns
       properties:
+        user_id:
+          type: integer
+          description: >-
+            The unique user ID. NOTE: This is only provided in OAuth2
+            authenticated requests.
+          examples:
+            - 1234567890
+        user_login:
+          type: string
+          description: >-
+            The user's login name. NOTE: This is only provided in OAuth2
+            authenticated requests.
+          examples:
+            - alex
         hash:
           type: string
           description: The SHA256 hash of the user's primary email address.
@@ -658,6 +672,146 @@ paths:
           $ref: '#/components/responses/rate_limit_exceeded'
         '500':
           description: Internal server error
+  /profiles/search/by-verified-account:
+    get:
+      summary: Search for profiles by verified account username
+      description: >-
+        Searches Gravatar profiles that have a verified account with the given
+        username. Optionally filter by the service (e.g., 'github', 'twitter').
+        See `/verified-accounts/services` for supported ID values. Results are
+        paginated.
+      tags:
+        - experimental
+      operationId: searchProfilesByVerifiedAccount
+      parameters:
+        - name: username
+          in: query
+          required: true
+          description: The username used on the verified third-party service.
+          schema:
+            type: string
+        - name: service
+          in: query
+          required: false
+          description: >-
+            The service to limit search to (e.g., 'github', 'twitter'). See
+            `/verified-accounts/services` for supported IDs.
+          schema:
+            type: string
+        - name: page
+          in: query
+          required: false
+          description: Page number of results to retrieve.
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: per_page
+          in: query
+          required: false
+          description: 'Number of results per page. Defaults to 20, maximum 50.'
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 20
+      security:
+        - apiKey: []
+      responses:
+        '200':
+          description: List of matching profiles
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - profiles
+                  - total_pages
+                properties:
+                  profiles:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Profile'
+                  total_pages:
+                    type: integer
+                    description: Total number of pages available.
+                    examples:
+                      - 5
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/X-RateLimit-Limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/X-RateLimit-Remaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/X-RateLimit-Reset'
+        '400':
+          description: Missing or invalid parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          $ref: '#/components/responses/not_authorized'
+        '429':
+          $ref: '#/components/responses/rate_limit_exceeded'
+        '500':
+          description: Internal server error
+  /verified-accounts/services:
+    get:
+      summary: Get list of services supported as verified accounts
+      description: >-
+        Returns the list of verified account services with their ID and
+        human-readable labels.
+      tags:
+        - experimental
+      operationId: getVerifiedAccountServices
+      responses:
+        '200':
+          description: Supported verified account services
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - services
+                properties:
+                  services:
+                    type: array
+                    description: List of supported verified account services.
+                    items:
+                      type: object
+                      required:
+                        - id
+                        - label
+                      properties:
+                        id:
+                          type: string
+                          description: The identifier for the service.
+                          examples:
+                            - github
+                            - twitter
+                            - tumblr
+                            - mastodon
+                        label:
+                          type: string
+                          description: The human-readable label for the service.
+                          examples:
+                            - GitHub
+                            - Twitter
+                            - Tumblr
+                            - Mastodon
+                examples:
+                  - services:
+                      - id: github
+                        label: GitHub
+                      - id: twitter
+                        label: Twitter
+                      - id: tumblr
+                        label: Tumblr
+                      - id: mastodon
+                        label: Mastodon
+        '500':
+          description: Internal server error
   '/qr-code/{sha256_hash}':
     get:
       summary: Get QR code for an email address' profile
@@ -839,6 +993,23 @@ paths:
                   description: The user's current company's name.
                   examples:
                     - ACME Corp
+                cell_phone:
+                  type: string
+                  description: The user's cell phone number.
+                  examples:
+                    - '+1234567890'
+                contact_email:
+                  type: string
+                  description: The user's contact email address.
+                  examples:
+                    - alex@example.com
+                hidden_contact_info:
+                  type: boolean
+                  description: >-
+                    Whether the user's contact information is hidden on their
+                    profile.
+                  examples:
+                    - true
       responses:
         '200':
           description: Profile updated successfully

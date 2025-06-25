@@ -3,6 +3,10 @@ import Foundation
 /// A user's profile information.
 ///
 public struct Profile: Codable, Hashable, Sendable {
+    /// The unique user ID. NOTE: This is only provided in OAuth2 authenticated requests.
+    public private(set) var userId: Int?
+    /// The user's login name. NOTE: This is only provided in OAuth2 authenticated requests.
+    public private(set) var userLogin: String?
     /// The SHA256 hash of the user's primary email address.
     public private(set) var hash: String
     /// The user's display name. This is the name that is displayed on their profile.
@@ -58,6 +62,8 @@ public struct Profile: Codable, Hashable, Sendable {
     public private(set) var registrationDate: Date?
 
     init(
+        userId: Int? = nil,
+        userLogin: String? = nil,
         hash: String,
         displayName: String,
         profileUrl: String,
@@ -86,6 +92,8 @@ public struct Profile: Codable, Hashable, Sendable {
         lastProfileEdit: Date? = nil,
         registrationDate: Date? = nil
     ) {
+        self.userId = userId
+        self.userLogin = userLogin
         self.hash = hash
         self.displayName = displayName
         self.profileUrl = profileUrl
@@ -116,6 +124,8 @@ public struct Profile: Codable, Hashable, Sendable {
     }
 
     enum CodingKeys: String, CodingKey, CaseIterable {
+        case userId = "user_id"
+        case userLogin = "user_login"
         case hash
         case displayName = "display_name"
         case profileUrl = "profile_url"
@@ -149,6 +159,8 @@ public struct Profile: Codable, Hashable, Sendable {
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encodeIfPresent(userId, forKey: .userId)
+        try container.encodeIfPresent(userLogin, forKey: .userLogin)
         try container.encode(hash, forKey: .hash)
         try container.encode(displayName, forKey: .displayName)
         try container.encode(profileUrl, forKey: .profileUrl)
