@@ -3,8 +3,14 @@ import Gravatar
 import Combine
 
 class DemoUploadImageViewController: BaseFormViewController {
-    let emailFormField = TextFormField(placeholder: "Email", keyboardType: .emailAddress)
-    let tokenFormField = TextFormField(placeholder: "Token", isSecure: true)
+    @StoredValue(keyName: "QEEmailKey", defaultValue: "")
+    var savedEmail: String
+
+    @StoredValue(keyName: "QETokenKey", defaultValue: "")
+    var savedToken: String
+
+    lazy var emailFormField = TextFormField(placeholder: "Email", text: savedEmail, keyboardType: .emailAddress)
+    lazy var tokenFormField = TextFormField(placeholder: "Token", text: savedToken, isSecure: true)
     let avatarImageField = ImageFormField(size: .init(width: 300, height: 300))
     let resultField = LabelField(title: "", subtitle: "")
 
@@ -136,8 +142,7 @@ extension DemoUploadImageViewController: UIImagePickerControllerDelegate, UINavi
     @objc private func setAvatarSelectionMethod(with email: String, sender: UIView?) {
         let controller = UIAlertController(title: "Avatar selection behavior:", message: nil, preferredStyle: .actionSheet)
 
-
-        AvatarSelection.allCases(for: .init(email)).forEach { selectionCase in
+        AvatarSelection.allCases(for: .email(Email(email))).forEach { selectionCase in
             controller.addAction(UIAlertAction(title: selectionCase.description, style: .default) { [weak self] action in
                 guard let self else { return }
                 avatarSelectionBehavior = selectionCase

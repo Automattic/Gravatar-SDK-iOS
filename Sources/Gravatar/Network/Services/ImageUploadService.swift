@@ -104,15 +104,15 @@ extension URLRequest {
 extension AvatarSelection {
     var queryItems: [URLQueryItem] {
         switch self {
-        case .selectUploadedImage(let email):
+        case .selectUploadedImage(let profileID):
             [
                 .init(name: "select_avatar", value: "true"),
-                .init(name: "selected_email_hash", value: email.id),
+                .init(name: "selected_email_hash", value: profileID.id),
             ]
         case .preserveSelection:
             [.init(name: "select_avatar", value: "false")]
-        case .selectUploadedImageIfNoneSelected(let email):
-            [.init(name: "selected_email_hash", value: email.id)]
+        case .selectUploadedImageIfNoneSelected(let profileID):
+            [.init(name: "selected_email_hash", value: profileID.id)]
         }
     }
 }
