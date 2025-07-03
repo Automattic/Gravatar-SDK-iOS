@@ -50,15 +50,22 @@ public struct AvatarService: Sendable {
     ///   - accessToken: The authentication token for the user. This is a Gravatar OAuth2 access token.
     /// - Returns: An asynchronously-delivered `AvatarType` instance, containing data of the newly created avatar.
     @discardableResult
+    @available(*, deprecated, message: "Use `upload(_:accessToken:selectionBehavior:)` instead")
     public func upload(_ image: UIImage, selectionBehavior: AvatarSelection, accessToken: String) async throws -> AvatarType {
-        let avatar: Avatar = try await upload(image, accessToken: accessToken, selectionBehavior: selectionBehavior)
+        let avatar: Avatar = try await upload(image, accessToken: accessToken, selectionPolicy: selectionBehavior.map())
         return avatar
     }
 
+    /// Uploads an image to be used as the user's Gravatar profile image, and returns the `URLResponse` of the network tasks asynchronously. Throws
+    /// ``ImageUploadError``.
+    /// - Parameters:
+    ///   - image: The image to be uploaded.
+    ///   - selectionPolicy: How to handle avatar selection after uploading a new avatar
+    ///   - accessToken: The authentication token for the user. This is a Gravatar OAuth2 access token.
+    /// - Returns: An asynchronously-delivered `AvatarType` instance, containing data of the newly created avatar.
     @discardableResult
-    package func upload(_ image: UIImage, accessToken: String, selectionBehavior: AvatarSelection) async throws -> AvatarDetails {
-        let avatar: Avatar = try await upload(image, accessToken: accessToken, selectionBehavior: selectionBehavior)
-        return avatar
+    public func upload(_ image: UIImage, selectionPolicy: AvatarUploadSelectionPolicy, accessToken: String) async throws -> AvatarDetails {
+        try await upload(image, accessToken: accessToken, selectionPolicy: selectionPolicy)
     }
 
     /// Uploads an image to be used as the user's Gravatar profile image, and returns the `URLResponse` of the network tasks asynchronously. Throws
@@ -69,12 +76,12 @@ public struct AvatarService: Sendable {
     ///   - avatarSelection: How to handle avatar selection after uploading a new avatar
     /// - Returns: An asynchronously-delivered `Avatar` instance, containing data of the newly created avatar.
     @discardableResult
-    private func upload(_ image: UIImage, accessToken: String, selectionBehavior: AvatarSelection) async throws -> Avatar {
+    private func upload(_ image: UIImage, accessToken: String, selectionPolicy: AvatarUploadSelectionPolicy) async throws -> Avatar {
         do {
             let (data, _) = try await imageUploader.uploadImage(
                 image.squared(),
                 accessToken: accessToken,
-                avatarSelection: selectionBehavior,
+                avatarSelectionPolicy: selectionPolicy,
                 additionalHTTPHeaders: nil
             )
             let avatar: Avatar = try data.decode()

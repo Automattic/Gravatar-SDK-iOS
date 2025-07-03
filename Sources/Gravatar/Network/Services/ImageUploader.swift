@@ -14,10 +14,28 @@ protocol ImageUploader: Sendable {
     ///   - additionalHTTPHeaders: Additional headers to add.
     /// - Returns: An asynchronously-delivered `URLResponse` instance, containing the response of the upload network task.
     @discardableResult
+    @available(*, deprecated, renamed: "uploadImage(_:accessToken:avatarSelectionPolicy:additionalHTTPHeaders:)")
     func uploadImage(
         _ image: UIImage,
         accessToken: String,
         avatarSelection: AvatarSelection,
+        additionalHTTPHeaders: [HTTPHeaderField]?
+    ) async throws -> (data: Data, response: HTTPURLResponse)
+
+    /// Uploads an image to be used as the user's Gravatar profile image, and returns the `URLResponse` of the network tasks asynchronously. Throws
+    /// `ImageUploadError`.
+    /// - Parameters:
+    ///   - image: The image to be uploaded.
+    ///   - email: The user email account.
+    ///   - accessToken: The authentication token for the user.
+    ///   - avatarSelectionPolicy: How to handle avatar selection after uploading a new avatar
+    ///   - additionalHTTPHeaders: Additional headers to add.
+    /// - Returns: An asynchronously-delivered `URLResponse` instance, containing the response of the upload network task.
+    @discardableResult
+    func uploadImage(
+        _ image: UIImage,
+        accessToken: String,
+        avatarSelectionPolicy: AvatarUploadSelectionPolicy,
         additionalHTTPHeaders: [HTTPHeaderField]?
     ) async throws -> (data: Data, response: HTTPURLResponse)
 }

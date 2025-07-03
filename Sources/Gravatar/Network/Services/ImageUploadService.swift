@@ -11,7 +11,27 @@ struct ImageUploadService: ImageUploader {
         self.client = URLSessionHTTPClient(urlSession: urlSession)
     }
 
+    func uploadImage(
+        _ image: UIImage,
+        accessToken: String,
+        avatarSelectionPolicy selectionPolicy: AvatarUploadSelectionPolicy,
+        additionalHTTPHeaders: [HTTPHeaderField]?
+    ) async throws -> (data: Data, response: HTTPURLResponse) {
+        guard let data: Data = {
+            if #available(iOS 17.0, *) {
+                image.heicData()
+            } else {
+                image.jpegData(compressionQuality: 0.8)
+            }
+        }() else {
+            throw ImageUploadError.cannotConvertImageIntoData
+        }
+
+        return try await uploadImage(data: data, accessToken: accessToken, selectionPolicy: selectionPolicy, additionalHTTPHeaders: additionalHTTPHeaders)
+    }
+
     @discardableResult
+    @available(*, deprecated, message: "Use `uploadImage(_:accessToken:avatarSelectionPolicy:additionalHTTPHeaders:)` instead.")
     func uploadImage(
         _ image: UIImage,
         accessToken: String,
@@ -28,20 +48,25 @@ struct ImageUploadService: ImageUploader {
             throw ImageUploadError.cannotConvertImageIntoData
         }
 
-        return try await uploadImage(data: data, accessToken: accessToken, avatarSelection: avatarSelection, additionalHTTPHeaders: additionalHTTPHeaders)
+        return try await uploadImage(
+            data: data,
+            accessToken: accessToken,
+            selectionPolicy: avatarSelection.map(),
+            additionalHTTPHeaders: additionalHTTPHeaders
+        )
     }
 
     private func uploadImage(
         data: Data,
         accessToken: String,
-        avatarSelection: AvatarSelection,
+        selectionPolicy: AvatarUploadSelectionPolicy,
         additionalHTTPHeaders: [HTTPHeaderField]?
     ) async throws -> (Data, HTTPURLResponse) {
         let boundary = "\(UUID().uuidString)"
         let request = URLRequest.imageUploadRequest(
             with: boundary,
             additionalHTTPHeaders: additionalHTTPHeaders,
-            selectionBehavior: avatarSelection
+            selectionPolicy: selectionPolicy
         ).settingAuthorizationHeaderField(with: accessToken)
 
         let body = imageUploadBody(with: data, boundary: boundary)
@@ -89,9 +114,9 @@ extension URLRequest {
     fileprivate static func imageUploadRequest(
         with boundary: String,
         additionalHTTPHeaders: [HTTPHeaderField]?,
-        selectionBehavior: AvatarSelection
+        selectionPolicy: AvatarUploadSelectionPolicy
     ) -> URLRequest {
-        var request = URLRequest(url: .avatarsURL.appendingQueryItems(for: selectionBehavior))
+        var request = URLRequest(url: .avatarsURL.appendingQueryItems(for: selectionPolicy))
         request.addValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
         request.httpMethod = "POST"
         additionalHTTPHeaders?.forEach { headerTuple in
@@ -101,9 +126,9 @@ extension URLRequest {
     }
 }
 
-extension AvatarSelection {
+extension AvatarUploadSelectionPolicy {
     var queryItems: [URLQueryItem] {
-        switch self {
+        switch policy {
         case .selectUploadedImage(let profileID):
             [
                 .init(name: "select_avatar", value: "true"),

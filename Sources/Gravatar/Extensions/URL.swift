@@ -23,8 +23,8 @@ extension URL {
             && components.scheme == "https"
     }
 
-    func appendingQueryItems(for selectionBehavior: AvatarSelection) -> URL {
-        let queryItems = selectionBehavior.queryItems
+    func appendingQueryItems(for selectionPolicy: AvatarUploadSelectionPolicy) -> URL {
+        let queryItems = selectionPolicy.queryItems
         if #available(iOS 16.0, *) {
             return self.appending(queryItems: queryItems)
         } else {
