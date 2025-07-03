@@ -41,6 +41,7 @@ public struct AvatarUploadSelectionPolicy: Equatable, Sendable {
     public static func selectUploadedImage(for profileID: ProfileIdentifier) -> AvatarUploadSelectionPolicy {
         .init(policy: .selectUploadedImage(for: profileID))
     }
+
     // Set the uploaded image as the avatar for the profile only if there was no other avatar previously selected.
     public static func selectUploadedImageIfNoneSelected(for profileID: ProfileIdentifier) -> AvatarUploadSelectionPolicy {
         .init(policy: .selectUploadedImageIfNoneSelected(for: profileID))
