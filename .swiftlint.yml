@@ -1,5 +1,8 @@
 swiftlint_version: 0.57.1
 only_rules: # Rules to run
+  - contains_over_filter_is_empty
+  - empty_count
+  - empty_string
   - custom_rules
 
 # If true, SwiftLint will treat all warnings as errors.
