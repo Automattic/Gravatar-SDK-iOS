@@ -70,7 +70,7 @@
 		1E15CA7B2D3FB8F700B5FCB4 /* SegmentedControlField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentedControlField.swift; sourceTree = "<group>"; };
 		1E1C5F332D42734800209999 /* LabelField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelField.swift; sourceTree = "<group>"; };
 		1E3C4ADF2DD71111002867BC /* QEInitialPagePickerRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QEInitialPagePickerRow.swift; sourceTree = "<group>"; };
-		1E3FA23D2C74B7B5002901F2 /* Secrets.tpl */ = {isa = PBXFileReference; lastKnownFileType = text; path = Secrets.tpl; sourceTree = "<group>"; };
+		1E3FA23D2C74B7B5002901F2 /* Secrets.template.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Secrets.template.swift; sourceTree = "<group>"; };
 		1E3FA23F2C74B8CC002901F2 /* Secrets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Secrets.swift; sourceTree = DERIVED_FILE_DIR; };
 		1E3FA2442C75E403002901F2 /* DemoProfileEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoProfileEditorView.swift; sourceTree = "<group>"; };
 		1E741C432DBB9BDC00216752 /* QEScopesPickerRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QEScopesPickerRow.swift; sourceTree = "<group>"; };
@@ -290,7 +290,7 @@
 				1E3FA23F2C74B8CC002901F2 /* Secrets.swift */,
 				495775E02B5B34970082812A /* Gravatar-Demo */,
 				498060C82C6FF20B00C6848C /* Localizations */,
-				1E3FA23D2C74B7B5002901F2 /* Secrets.tpl */,
+				1E3FA23D2C74B7B5002901F2 /* Secrets.template.swift */,
 			);
 			path = Demo;
 			sourceTree = "<group>";

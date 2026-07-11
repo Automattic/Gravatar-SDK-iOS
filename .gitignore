@@ -41,6 +41,7 @@ vendor/swiftgen
 
 # Other
 openapi/GravatarOpenAPIClient/Sources/
+Demo/Demo/Secrets.external-contributors.swift
 Demo/Demo/Secrets.swift
 
 # a8c-secrets: commit only the metadata and encrypted blobs, never decrypted plaintext
