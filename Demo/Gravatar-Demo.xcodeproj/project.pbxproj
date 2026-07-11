@@ -71,7 +71,7 @@
 		1E1C5F332D42734800209999 /* LabelField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelField.swift; sourceTree = "<group>"; };
 		1E3C4ADF2DD71111002867BC /* QEInitialPagePickerRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QEInitialPagePickerRow.swift; sourceTree = "<group>"; };
 		1E3FA23D2C74B7B5002901F2 /* Secrets.tpl */ = {isa = PBXFileReference; lastKnownFileType = text; path = Secrets.tpl; sourceTree = "<group>"; };
-		1E3FA23F2C74B8CC002901F2 /* Secrets.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Secrets.swift; sourceTree = "<group>"; };
+		1E3FA23F2C74B8CC002901F2 /* Secrets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Secrets.swift; sourceTree = DERIVED_FILE_DIR; };
 		1E3FA2442C75E403002901F2 /* DemoProfileEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoProfileEditorView.swift; sourceTree = "<group>"; };
 		1E741C432DBB9BDC00216752 /* QEScopesPickerRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QEScopesPickerRow.swift; sourceTree = "<group>"; };
 		1E741C452DBB9BF800216752 /* QEVerticalStylePickerRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QEVerticalStylePickerRow.swift; sourceTree = "<group>"; };
@@ -403,19 +403,19 @@
 			files = (
 			);
 			inputFileListPaths = (
+				"$(SRCROOT)/../Scripts/build-phases/generate-secrets.xcfilelist",
 			);
 			inputPaths = (
-				"$(SRCROOT)/Demo/Secrets.tpl",
 			);
 			name = "Generate Secrets.swift";
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(SRCROOT)/Demo/Secrets.swift",
+				"$(DERIVED_FILE_DIR)/Secrets.swift",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "TEMPLATE_PATH=\"${SRCROOT}/Demo/Secrets.tpl\"\nSECRETS_PATH=\"${SRCROOT}/Demo/Secrets.swift\"\n\nif [ ! -f \"${SECRETS_PATH}\" ]; then\n    cp \"${TEMPLATE_PATH}\" \"${SECRETS_PATH}\"\nfi\n";
+			shellScript = "\"${SRCROOT}/../Scripts/build-phases/generate-secrets.sh\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 

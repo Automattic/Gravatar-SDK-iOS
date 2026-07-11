@@ -75,6 +75,9 @@ steps:
         command: |
           install_gems
           install_swiftpm_dependencies --project "Demo/Gravatar-Demo.xcodeproj"
+          curl -fsSL https://raw.githubusercontent.com/Automattic/a8c-secrets/main/install.sh | bash
+          # The installer drops the binary in ~/.local/bin, which isn't on the agent's PATH.
+          export PATH="$HOME/.local/bin:$PATH"
           make build-demo-for-distribution
         artifact_paths:
           - ".build/artifacts/*.ipa"

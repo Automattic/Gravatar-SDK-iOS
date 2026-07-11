@@ -132,6 +132,21 @@ platform :ios do
     )
   end
 
+  desc 'Decrypts the demo app secrets into ~/.a8c-secrets, outside the repo checkout'
+  lane :configure_secrets do
+    unless system('command -v a8c-secrets > /dev/null 2>&1')
+      UI.user_error!(<<~MSG)
+        `a8c-secrets` was not found on your PATH. Install it with:
+
+            curl -fsSL https://raw.githubusercontent.com/Automattic/a8c-secrets/main/install.sh | bash
+
+        See https://github.com/Automattic/a8c-secrets for details.
+      MSG
+    end
+
+    sh('a8c-secrets', 'decrypt', '--non-interactive')
+  end
+
   desc 'Fetches the code signing certificate and provisioning profile for the prototype builds'
   lane :configure_code_signing do |readonly: true|
     # Run one call only with multiple bundle ids to authenticate only once.

@@ -58,7 +58,7 @@ fetch-code-signing: bundle-install
 	bundle exec fastlane configure_code_signing
 
 setup-secrets: bundle-install
-	bundle exec fastlane run configure_apply
+	bundle exec fastlane configure_secrets
 
 swiftformat: check-docker # Automatically find and fixes lint issues
 	@docker run --rm -v $(shell pwd):$(shell pwd) -w $(shell pwd) ghcr.io/nicklockwood/swiftformat:$(SWIFTFORMAT_VERSION) Sources Tests
