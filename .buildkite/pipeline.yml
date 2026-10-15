@@ -70,6 +70,8 @@ steps:
     steps:
       # On PRs, build and share the Demo only on request, so that a Mac doesn't do it for every push.
       # On trunk, the input is skipped, which Buildkite treats as satisfied, so the Demo still builds.
+      # On PRs, these steps post no `github_commit_status`: it would post "pending" while they wait for
+      # the input, and leave those checks pending on every PR where nobody asks for a prototype.
       - input: "Deploy Prototype Build?"
         prompt: "Build the Demo app and share it via Firebase App Distribution?"
         key: prototype_triggered
@@ -87,12 +89,10 @@ steps:
         notify:
           - github_commit_status:
               context: "Build Prototype"
+            if: build.pull_request.id == null
 
       - label: "⬆️ Upload Demo to Firebase App Distribution"
         depends_on: build_demo
         plugins: [$CI_TOOLKIT]
         command: .buildkite/commands/upload-demo-to-firebase.sh
         if: build.pull_request.id != null
-        notify:
-          - github_commit_status:
-              context: "Publish Prototype"
