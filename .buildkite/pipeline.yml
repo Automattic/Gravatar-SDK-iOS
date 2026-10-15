@@ -68,9 +68,17 @@ steps:
   ###################
   - group: ":firebase: Prototype Build"
     steps:
+      # On PRs, build and share the Demo only on request, so that a Mac doesn't do it for every push.
+      # On trunk, the input is skipped, which Buildkite treats as satisfied, so the Demo still builds.
+      - input: "Deploy Prototype Build?"
+        prompt: "Build the Demo app and share it via Firebase App Distribution?"
+        key: prototype_triggered
+        if: build.pull_request.id != null
       - label: "🛠️ Build Demo"
         key: build_demo
-        depends_on: test
+        depends_on:
+          - test
+          - prototype_triggered
         plugins: [$CI_TOOLKIT]
         command: .buildkite/commands/build-demo.sh
         artifact_paths:
