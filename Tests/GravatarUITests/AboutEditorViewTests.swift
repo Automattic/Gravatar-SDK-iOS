@@ -169,7 +169,11 @@ struct AboutEditorViewTests {
     @MainActor
     @Test("Test about editor loading state snapshot")
     func testLoadingState() async throws {
-        let testModel = testModel()
+        let session = URLSessionMock(returnData: Bundle.fullProfileJsonData, response: .successResponse())
+        // Keeps the profile request in flight until it's cancelled, so the view stays in its loading state.
+        await session.update(isCancellable: true)
+        await session.update(maxDurationSeconds: 30)
+        let testModel = testModel(session: session)
 
         let view = AboutEditorView(
             isPresented: .constant(true),
@@ -177,11 +181,18 @@ struct AboutEditorViewTests {
             fields: .all
         )
 
-        Task(priority: .high) {
+        let fetchTask = Task {
             await testModel.fetchProfile()
         }
-        // Awaits for the previous task to start executing, and the view to start loading.
-        try await Task.sleep(nanoseconds: 20)
+        defer { fetchTask.cancel() }
+        // Waits for the fetch to start, rather than sleeping and hoping it has started but not yet finished.
+        var yields = 0
+        while !testModel.isProfileLoading, yields < 1000 {
+            yields += 1
+            await Task.yield()
+        }
+        try #require(testModel.isProfileLoading)
+
         assertSnapshots(
             of: view,
             as: [
