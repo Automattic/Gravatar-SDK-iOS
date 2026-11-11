@@ -10,7 +10,7 @@
         <scene sceneID="nco-5f-GNB">
             <objects>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="tPT-Fh-tIZ" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-                <tableViewController id="aLq-gW-JcM" customClass="MainTableViewController" customModule="Gravatar_Demo" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController id="aLq-gW-JcM" customClass="MainTableViewController" customModule="Gravatar_Demo" sceneMemberID="viewController">
                     <navigationItem key="navigationItem" title="Root View Controller" id="wYS-DK-y74"/>
                 </tableViewController>
             </objects>

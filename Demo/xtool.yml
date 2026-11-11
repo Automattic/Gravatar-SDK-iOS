@@ -1,0 +1,4 @@
+version: 1
+bundleID: com.automattic.gravatar-sdk-demo-xtool
+infoPath: xtool-Info.plist
+iconPath: Demo/Gravatar-Demo/Assets.xcassets/AppIcon.appiconset/1024x10244.png
