@@ -56,8 +56,9 @@ steps:
   - label: "📦 Build and Test Swift Package"
     key: "test"
     command: |
-      install_swiftpm_dependencies --use-spm
+      restore_swiftpm_cache --package-resolved Package.resolved
       validate_swift_package
+      save_swiftpm_cache --package-resolved Package.resolved
     plugins: [$CI_TOOLKIT]
     notify:
       - github_commit_status:
