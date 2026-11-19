@@ -50,6 +50,15 @@ steps:
         agents:
           queue: linter
 
+  - label: ":swift: xtool on Linux"
+    key: xtool-linux
+    command: .buildkite/commands/xtool-linux.sh
+    plugins:
+      - docker#v5.12.0:
+          image: swift:6.4.2-noble
+    agents:
+      queue: default
+
   #################
   # Build and Test
   #################

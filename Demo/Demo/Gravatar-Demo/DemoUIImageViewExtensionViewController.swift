@@ -79,7 +79,11 @@ class DemoUIImageViewExtensionViewController: BaseFormViewController {
 
     @objc private func fetchAvatarButtonHandler() {
         let options = setupOptions()
+        #if SWIFT_PACKAGE
+        let placeholderImage: UIImage? = showPlaceholderSwitch.isOn ? UIImage(named: "placeholder", in: .module, with: nil) : nil
+        #else
         let placeholderImage: UIImage? = showPlaceholderSwitch.isOn ? UIImage(named: "placeholder") : nil
+        #endif
         task = Task {
             do {
                 guard let result = try await avatarImageField.imageView?.gravatar.setImage(
