@@ -28,7 +28,7 @@ public struct ImageCache: ImageCaching {
     /// The default cache used by the image dowloader.
     public static let shared: ImageCaching = ImageCache()
 
-    public init() {}
+    private init() {}
 
     public func setEntry(_ entry: CacheEntry?, for key: String) {
         if let entry {
@@ -40,6 +40,10 @@ public struct ImageCache: ImageCaching {
 
     public func getEntry(with key: String) -> CacheEntry? {
         cache[key]
+    }
+
+    package func clear() {
+        cache.removeAllObjects()
     }
 }
 
